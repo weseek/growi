@@ -129,10 +129,27 @@ module.exports = (crowi) => {
    *      get:
    *        tags: [Pages]
    *        description: Get recently updated pages
+   *        parameters:
+   *          - name: limit
+   *            in: query
+   *            description: Limit of acquisitions
+   *            schema:
+   *              type: number
+   *            example: 10
+   *          - name: offset
+   *            in: query
+   *            description: Offset of acquisitions
+   *            schema:
+   *              type: number
+   *            example: 0
+   *          - name: includeWipPage
+   *            in: query
+   *            description: Whether to include WIP pages
+   *            schema:
+   *              type: string
    *        responses:
    *          200:
    *            description: Return pages recently updated
-   *
    */
   router.get('/recent', accessTokenParser, loginRequired, validator.recent, apiV3FormValidator, async(req, res) => {
     const limit = parseInt(req.query.limit) || 20;
@@ -233,6 +250,9 @@ module.exports = (crowi) => {
    *                  isRecursively:
    *                    type: boolean
    *                    description: whether rename page with descendants
+   *                  isMoveMode:
+   *                    type: boolean
+   *                    description: whether rename page with moving
    *                required:
    *                  - pageId
    *                  - revisionId
@@ -328,6 +348,30 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+    * @swagger
+    *    /pages/resume-rename:
+    *      post:
+    *        tags: [Pages]
+    *        operationId: resumeRenamePage
+    *        description: Resume rename page operation
+    *        requestBody:
+    *          content:
+    *            application/json:
+    *              schema:
+    *                properties:
+    *                  pageId:
+    *                    $ref: '#/components/schemas/Page/properties/_id'
+    *                required:
+    *                  - pageId
+    *        responses:
+    *          200:
+    *            description: Succeeded to resume rename page operation.
+    *            content:
+    *              application/json:
+    *                schema:
+    *                  type: object
+    */
   router.post('/resume-rename', accessTokenParser, loginRequiredStrictly, validator.resumeRenamePage, apiV3FormValidator,
     async(req, res) => {
 
@@ -369,6 +413,14 @@ module.exports = (crowi) => {
    *        responses:
    *          200:
    *            description: Succeeded to remove all trash pages
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    deletablePages:
+   *                      type: array
+   *                      items:
+   *                        $ref: '#/components/schemas/Page'
    */
   router.delete('/empty-trash', accessTokenParser, loginRequired, excludeReadOnlyUser, addActivity, apiV3FormValidator, async(req, res) => {
     const options = {};
@@ -423,6 +475,59 @@ module.exports = (crowi) => {
     query('limit').if(value => value != null).isInt({ max: 100 }).withMessage('You should set less than 100 or not to set limit.'),
   ];
 
+  /**
+    * @swagger
+    *
+    *    /pages/list:
+    *      get:
+    *        tags: [Pages]
+    *        operationId: getList
+    *        description: Get list of pages
+    *        parameters:
+    *          - name: path
+    *            in: query
+    *            description: Path to search
+    *            schema:
+    *              type: string
+    *          - name: limit
+    *            in: query
+    *            description: Limit of acquisitions
+    *            schema:
+    *              type: number
+    *          - name: page
+    *            in: query
+    *            description: Page number
+    *            schema:
+    *              type: number
+    *        responses:
+    *          200:
+    *            description: Succeeded to retrieve pages.
+    *            content:
+    *              application/json:
+    *                schema:
+    *                  properties:
+    *                    totalCount:
+    *                      type: number
+    *                      description: Total count of pages
+    *                      example: 3
+    *                    offset:
+    *                      type: number
+    *                      description: Offset of pages
+    *                      example: 0
+    *                    limit:
+    *                      type: number
+    *                      description: Limit of pages
+    *                      example: 10
+    *                    pages:
+    *                      type: array
+    *                      items:
+    *                        allOf:
+    *                          - $ref: '#/components/schemas/Page'
+    *                          - type: object
+    *                            properties:
+    *                              lastUpdateUser:
+    *                                $ref: '#/components/schemas/User'
+    */
   router.get('/list', accessTokenParser, loginRequired, validator.displayList, apiV3FormValidator, async(req, res) => {
 
     const { path } = req.query;
@@ -480,6 +585,9 @@ module.exports = (crowi) => {
    *                  isRecursively:
    *                    type: boolean
    *                    description: whether duplicate page with descendants
+   *                  onlyDuplicateUserRelatedResources:
+   *                    type: boolean
+   *                    description: whether duplicate only user related resources
    *                required:
    *                  - pageId
    *        responses:
@@ -589,11 +697,10 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    subordinatedPaths:
-   *                      type: object
-   *                      description: descendants page
-   *          500:
-   *            description: Internal server error.
+   *                    subordinatedPages:
+   *                      type: array
+   *                      items:
+   *                        $ref: '#/components/schemas/Page'
    */
   router.get('/subordinated-list', accessTokenParser, loginRequired, async(req, res) => {
     const { path } = req.query;
@@ -611,6 +718,50 @@ module.exports = (crowi) => {
 
   });
 
+  /**
+    * @swagger
+    *    /pages/delete:
+    *      post:
+    *        tags: [Pages]
+    *        operationId: deletePages
+    *        description: Delete pages
+    *        requestBody:
+    *          content:
+    *            application/json:
+    *              schema:
+    *                properties:
+    *                  pageIdToRevisionIdMap:
+    *                    type: object
+    *                    description: Map of page IDs to revision IDs
+    *                    example: { "5e2d6aede35da4004ef7e0b7": "5e07345972560e001761fa63" }
+    *                  isCompletely:
+    *                    type: boolean
+    *                    description: Whether to delete pages completely
+    *                  isRecursively:
+    *                    type: boolean
+    *                    description: Whether to delete pages recursively
+    *                  isAnyoneWithTheLink:
+    *                    type: boolean
+    *                    description: Whether the page is restricted to anyone with the link
+    *        responses:
+    *          200:
+    *            description: Succeeded to delete pages.
+    *            content:
+    *              application/json:
+    *                schema:
+    *                  properties:
+    *                    paths:
+    *                      type: array
+    *                      items:
+    *                        type: string
+    *                      description: List of deleted page paths
+    *                    isRecursively:
+    *                      type: boolean
+    *                      description: Whether pages were deleted recursively
+    *                    isCompletely:
+    *                      type: boolean
+    *                      description: Whether pages were deleted completely
+    */
   router.post('/delete', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, validator.deletePages, apiV3FormValidator, async(req, res) => {
     const {
       pageIdToRevisionIdMap, isCompletely, isRecursively, isAnyoneWithTheLink,
@@ -665,7 +816,32 @@ module.exports = (crowi) => {
     return res.apiv3({ paths: pagesCanBeDeleted.map(p => p.path), isRecursively, isCompletely });
   });
 
-
+  /**
+   * @swagger
+   *
+   *    /pages/convert-pages-by-path:
+   *      post:
+   *        tags: [Pages]
+   *        operationId: convertPagesByPath
+   *        description: Convert pages by path
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  convertPath:
+   *                    type: string
+   *                    description: Path to convert
+   *                    example: /user/alice
+   *        responses:
+   *          200:
+   *            description: Succeeded to convert pages.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  type: object
+   *                  description: Empty object
+   */
   // eslint-disable-next-line max-len
   router.post('/convert-pages-by-path', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, adminRequired, validator.convertPagesByPath, apiV3FormValidator, async(req, res) => {
     const { convertPath } = req.body;
@@ -688,6 +864,36 @@ module.exports = (crowi) => {
     return res.apiv3({});
   });
 
+  /**
+   * @swagger
+   *
+   *    /pages/legacy-pages-migration:
+   *      post:
+   *        tags: [Pages]
+   *        operationId: legacyPagesMigration
+   *        description: Migrate legacy pages
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  pageIds:
+   *                    type: array
+   *                    items:
+   *                      type: string
+   *                    description: List of page IDs to migrate
+   *                  isRecursively:
+   *                    type: boolean
+   *                    description: Whether to migrate pages recursively
+   *        responses:
+   *          200:
+   *            description: Succeeded to migrate legacy pages.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  type: object
+   *                  description: Empty object
+  */
   // eslint-disable-next-line max-len
   router.post('/legacy-pages-migration', accessTokenParser, loginRequired, excludeReadOnlyUser, validator.legacyPagesMigration, apiV3FormValidator, async(req, res) => {
     const { pageIds: _pageIds, isRecursively } = req.body;
@@ -717,6 +923,27 @@ module.exports = (crowi) => {
     return res.apiv3({});
   });
 
+  /**
+   * @swagger
+   *
+   *    /pages/v5-migration-status:
+   *      get:
+   *        tags: [Pages]
+   *        description: Get V5 migration status
+   *        responses:
+   *          200:
+   *            description: Return V5 migration status
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    isV5Compatible:
+   *                      type: boolean
+   *                      description: Whether the app is V5 compatible
+   *                    migratablePagesCount:
+   *                      type: number
+   *                      description: Number of pages that can be migrated
+   */
   router.get('/v5-migration-status', accessTokenParser, loginRequired, async(req, res) => {
     try {
       const isV5Compatible = crowi.configManager.getConfig('app:isV5Compatible');

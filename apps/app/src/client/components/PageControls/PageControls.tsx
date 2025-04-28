@@ -1,5 +1,5 @@
 import React, {
-  memo, useCallback, useEffect, useMemo, useRef,
+  memo, useCallback, useEffect, useMemo, useRef, type JSX,
 } from 'react';
 
 import type {
@@ -16,7 +16,7 @@ import {
   toggleLike, toggleSubscribe,
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
-import RagSearchButton from '~/features/openai/client/components/RagSearchButton';
+import OpenDefaultAiAssistantButton from '~/features/openai/client/components/AiAssistant/OpenDefaultAiAssistantButton';
 import { useIsGuestUser, useIsReadOnlyUser, useIsSearchPage } from '~/stores-universal/context';
 import {
   EditorMode, useEditorMode,
@@ -285,7 +285,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
       { isViewMode && isDeviceLargerThanMd && !isSearchPage && !isSearchPage && (
         <>
           <SearchButton />
-          <RagSearchButton />
+          <OpenDefaultAiAssistantButton />
         </>
       )}
 

@@ -1,8 +1,9 @@
 import { addDays } from 'date-fns';
-import type mongoose from 'mongoose';
 import { type Model, type Document, Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
+
+import { type IThreadRelation, ThreadType } from '../../interfaces/thread-relation';
 
 const DAYS_UNTIL_EXPIRATION = 3;
 
@@ -10,13 +11,7 @@ const generateExpirationDate = (): Date => {
   return addDays(new Date(), DAYS_UNTIL_EXPIRATION);
 };
 
-interface ThreadRelation {
-  userId: mongoose.Types.ObjectId;
-  threadId: string;
-  expiredAt: Date;
-}
-
-interface ThreadRelationDocument extends ThreadRelation, Document {
+export interface ThreadRelationDocument extends IThreadRelation, Document {
   updateThreadExpiration(): Promise<void>;
 }
 
@@ -30,10 +25,22 @@ const schema = new Schema<ThreadRelationDocument, ThreadRelationModel>({
     ref: 'User',
     required: true,
   },
+  aiAssistant: {
+    type: Schema.Types.ObjectId,
+    ref: 'AiAssistant',
+  },
   threadId: {
     type: String,
     required: true,
     unique: true,
+  },
+  title: {
+    type: String,
+  },
+  type: {
+    type: String,
+    enum: Object.values(ThreadType),
+    required: true,
   },
   expiredAt: {
     type: Date,

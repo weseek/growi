@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, type JSX } from 'react';
 
 import { type IPagePopulatedToShowRevision, getIdForRef } from '@growi/core';
 import type {
@@ -23,7 +23,7 @@ import ShareLink from '~/server/models/share-link';
 import {
   useCurrentUser, useRendererConfig, useIsSearchPage, useCurrentPathname,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useIsContainerFluid, useIsEnabledMarp,
-  useIsLocalAccountRegistrationEnabled,
+  useIsLocalAccountRegistrationEnabled, useShowPageSideAuthors,
 } from '~/stores-universal/context';
 import { useCurrentPageId, useIsNotFound, useSWRMUTxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
@@ -49,6 +49,7 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+  showPageSideAuthors: boolean,
   isEnabledMarp: boolean,
   isLocalAccountRegistrationEnabled: boolean,
   drawioUri: string | null,
@@ -99,6 +100,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
   useIsEnabledMarp(props.rendererConfig.isEnabledMarp);
   useIsLocalAccountRegistrationEnabled(props.isLocalAccountRegistrationEnabled);
+  useShowPageSideAuthors(props.showPageSideAuthors);
   useIsContainerFluid(props.isContainerFluid);
 
   const { trigger: mutateCurrentPage, data: currentPage } = useSWRMUTxCurrentPage();
@@ -163,6 +165,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('customize:isSearchScopeChildrenAsDefault');
 
   props.drawioUri = configManager.getConfig('app:drawioUri');
+
+  props.showPageSideAuthors = configManager.getConfig('customize:showPageSideAuthors');
 
   props.isLocalAccountRegistrationEnabled = crowi.passportService.isLocalStrategySetup
     && configManager.getConfig('security:registrationMode') !== RegistrationMode.CLOSED;

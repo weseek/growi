@@ -8,4 +8,5 @@ export type GrowiFacade = {
     },
     optionsMutators?: any,
   },
+  react?: any,
 };

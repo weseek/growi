@@ -152,6 +152,9 @@
   "Page Tree": "Page Tree",
   "Bookmarks": "Bookmarks",
   "In-App Notification": "Notifications",
+  "AI Assistant": "AI Assistant",
+  "Knowledge Assistant": "Knowledge Assistant (Beta)",
+  "Editor Assistant": "Editor Assistant (Beta)",
   "original_path": "Original path",
   "new_path": "New path",
   "duplicated_path": "Duplicated path",
@@ -184,7 +187,9 @@
   },
   "author_info": {
     "created_at": "Created at",
-    "last_revision_posted_at": "Last revision posted at"
+    "created_by": "Created by",
+    "last_revision_posted_at": "Last revision posted at",
+    "updated_by": "Updated by"
   },
   "installer": {
     "tab": "Create account",
@@ -340,6 +345,7 @@
       "file": "File only"
     },
     "editor_config": "Editor Config",
+    "editor_assistant": "Editor Assistant",
     "Show active line": "Show active line",
     "auto_format_table": "Auto format table",
     "overwrite_scopes": "{{operation}} and Overwrite scopes of all descendants",
@@ -454,7 +460,7 @@
   "modal_shortcuts": {
     "global": {
       "title": "Global shortcuts",
-      "Open/Close shortcut help": "Open/Close<br>shortcut help",
+      "Open/Close shortcut help": "Open/Close Shortcut Help",
       "Edit Page": "Edit Page",
       "Create Page": "Create Page",
       "Search": "Search",
@@ -468,11 +474,14 @@
       "Indent": "Indent",
       "Outdent": "Outdent",
       "Save Page": "Save Page",
-      "Delete Line": "Delete Line"
-    },
-    "commentform": {
-      "title": "Comment Form shortcuts",
-      "Post": "Post"
+      "Only Editor": "(Editor Only)",
+      "Delete Line": "Delete Line",
+      "Search in Editor": "Search in Editor",
+      "Move Line": "Move Line",
+      "Copy Line": "Copy Line",
+      "Toggle Line": "Toggle Line Comment",
+      "Insert Line": "Insert Line",
+      "Post Comment": "(Post Comment)"
     }
   },
   "modal_resolve_conflict": {
@@ -486,10 +495,12 @@
     "latest_revision": "theirs",
     "selected_editable_revision": "Selected Page Body (Editable)"
   },
-  "modal_aichat": {
-    "title": "Knowledge Assistant",
-    "title_beta_label": "(Beta)",
+  "sidebar_ai_assistant": {
+    "instruction_label": "Assistant instructions",
+    "reference_pages_label": "Reference pages",
     "placeholder": "Ask me anything.",
+    "knowledge_assistant_placeholder": "Ask me anything.",
+    "editor_assistant_placeholder": "Can I help you with anything?",
     "summary_mode_label": "Summary mode",
     "summary_mode_help": "Concise answer within 2-3 sentences",
     "caution_against_hallucination": "Please verify the information and check the sources.",
@@ -498,8 +509,109 @@
     "budget_exceeded": "You have reached your usage limit for OpenAI's API. To use the Knowledge Assistant again, please add credits from the OpenAI billing page.",
     "budget_exceeded_for_growi_cloud": "You have reached your OpenAI API usage limit. To use the Knowledge Assistant again, please add credits from the GROWI.cloud admin page for Hosted users or from the OpenAI billing page for Owned users.",
     "error_message": "An error has occurred",
-    "show_error_detail": "Show error details"
-
+    "show_error_detail": "Show error details",
+    "discard": "Discard",
+    "accept": "Accept",
+    "use_assistant": "Use Assistant",
+    "remove_assistant": "Deselect the selected assistant",
+    "preset_menu": {
+      "summarize": {
+        "title": "Summarize this article",
+        "prompt": "Please summarize the markdown content"
+      },
+      "correct": {
+        "title": "Correct errors in the text",
+        "prompt": "Please correct the errors in the markdown text"
+      }
+    }
+  },
+  "modal_ai_assistant": {
+    "header": {
+      "update_assistant": "Update Assistant",
+      "add_new_assistant": "Add New Assistant"
+    },
+    "assistant_name_placeholder": "Enter assistant name",
+    "page_count": "{{count}} pages",
+    "memo": {
+      "title": "Assistant memo",
+      "optional": "Optional",
+      "placeholder": "You can display notes about content and usage",
+      "description": "The contents of the memo do not affect the assistant's processing."
+    },
+    "submit_button": {
+      "update_assistant": "Update Assistant",
+      "create_assistant": "Create Assistant"
+    },
+    "toaster": {
+      "create_success": "Assistant has been created",
+      "update_success": "Assistant has been updated",
+      "create_failed": "Failed to create assistant",
+      "update_failed": "Failed to update assistant"
+    },
+    "edit_page_description": "Edit pages that the assistant can reference.<br> The assistant can reference up to {{limitLearnablePageCountPerAssistant}} pages including child pages.",
+    "default_instruction": "You are the knowledge assistant for this Wiki. Please provide support according to the following guidelines:\n\n- Analyze document relevance and connect information\n- Suggest new perspectives\n- Provide accurate information based on understanding the intent of questions\nI will provide information in a structured format when necessary.",
+    "add_page_button": "Add page",
+    "page_mode_title": {
+      "share": "Assistant Sharing",
+      "pages": "Reference Pages",
+      "instruction": "Assistant Instructions"
+    },
+    "share_assistant": "Share assistant",
+    "page_access_permission": "Page access permission",
+    "access_scope": {
+      "owner": "All pages accessible by {{username}}",
+      "groups": "Specify groups",
+      "publicOnly": "Public pages only"
+    },
+    "share_scope": {
+      "title": "Assistant sharing scope",
+      "owner": {
+        "label": "{{username}} only"
+      },
+      "publicOnly": {
+        "label": "Public",
+        "desc": "Shared with all users"
+      },
+      "groups": {
+        "label": "Specify groups",
+        "desc": "Shared only with members of selected groups"
+      },
+      "sameAsAccessScope": {
+        "label": "Same as page access scope",
+        "desc": "Shared with the same scope as page access"
+      }
+    },
+    "instructions": {
+      "description": "You can set instructions that determine how the assistant behaves.<br>The assistant will answer and analyze based on these instructions.",
+      "reset_to_default": "Reset to default"
+    }
+  },
+  "share_scope_warning_modal": {
+    "header_title": "Confirm Sharing Scope",
+    "warning_message": "This assistant includes pages with limited access.<br>With the current settings, information from these pages may be shared beyond their original access permissions through the assistant.",
+    "selected_pages_label": "Selected page paths",
+    "confirmation_message": "Please confirm that you understand the content of these pages may be shared within the assistant's public scope if you proceed.",
+    "button": {
+      "review": "Review settings",
+      "proceed": "Understand and proceed"
+    }
+  },
+  "default_ai_assistant": {
+    "not_set": "Default assistant is not set"
+  },
+  "ai_assistant_tree": {
+    "add_assistant": "Add Assistant",
+    "my_assistants": "My Assistants",
+    "team_assistants": "Team Assistants",
+    "thread_does_not_exist": "No threads exist",
+    "toaster": {
+      "ai_assistant_deleted_success": "Assistant deleted",
+      "ai_assistant_deleted_failed": "Failed to delete assistant",
+      "thread_deleted_success": "Thread deleted",
+      "thread_deleted_failed": "Failed to delete thread",
+      "ai_assistant_set_default_success": "Default assistant set successfully",
+      "ai_assistant_set_default_failed": "Failed to set default assistant"
+    }
   },
   "link_edit": {
     "edit_link": "Edit Link",
@@ -654,11 +766,26 @@
     "discription_heading": "Create Account",
     "discription": "Create an your account with the invited email address"
   },
-  "export_bulk": {
+  "page_export": {
     "failed_to_export": "Failed to export",
     "failed_to_count_pages": "Failed to count pages",
     "export_page_markdown": "Export page as Markdown",
-    "export_page_pdf": "Export page as PDF"
+    "export_page_pdf": "Export page as PDF",
+    "bulk_export": "Export page and all child pages",
+    "bulk_export_download_explanation": "A notification will be sent when the export is complete. To download the exported file, click the notification.",
+    "bulk_export_exec_time_warning": "If the number of pages is large, it may take a while to export",
+    "large_bulk_export_warning": "To conserve system resources, please refrain from exporting a large number of pages consecutively",
+    "markdown": "Markdown",
+    "choose_export_format": "Select export format",
+    "bulk_export_started": "Please wait a moment...",
+    "bulk_export_download_expired": "Download period has expired",
+    "bulk_export_job_expired": "Export process was canceled because it took too long",
+    "export_in_progress": "Export in progress",
+    "export_in_progress_explanation": "Export with the same format is already in progress. Would you like to restart to export the latest page contents?",
+    "export_cancel_warning": "The following export in progress will be canceled",
+    "restart": "Restart",
+    "format": "Format",
+    "started_on": "Started on"
   },
   "message": {
     "successfully_connected": "Successfully Connected!",
@@ -870,8 +997,7 @@
   },
   "sidebar_header": {
     "show_wip_page": "Show WIP",
-    "size_s": "Size: S",
-    "size_l": "Size: L"
+    "compact_view": "Compact View"
   },
   "create_page": {
     "untitled": "Untitled"

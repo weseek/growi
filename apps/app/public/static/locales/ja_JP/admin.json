@@ -19,6 +19,7 @@
   "only_me": "自分のみ",
   "only_inside_the_group": "特定グループのみ",
   "optional": "オプション",
+  "days": "日",
   "security_settings": {
     "security_settings": "セキュリティ設定",
     "scope_of_page_disclosure": "ページの公開範囲",
@@ -368,6 +369,11 @@
     "file_uploading": "ファイルアップロード",
     "enable_files_except_image": "画像以外のファイルアップロードを許可",
     "attach_enable": "許可をしている場合、画像以外のファイルをページに添付可能になります。",
+    "page_bulk_export_settings": "ページ一括エクスポート設定",
+    "enable_page_bulk_export": "一括エクスポートを有効にする",
+    "page_bulk_export_explanation": "すべてのユーザーが、ページメニューから選択したページとその配下ページをまとめてエクスポートできる機能を有効化します。エクスポートされたデータは保存期間経過後に自動的に削除されます。",
+    "page_bulk_export_warning": "ページ一括エクスポート機能は全ユーザーが利用可能です。システムリソースの維持のため、必要最小限の利用にご協力をお願いいたします。管理者の方は、この旨をユーザーの皆様にご周知ください。",
+    "page_bulk_export_storage_period": "保存期間",
     "update": "更新",
     "mail_settings": "メールの設定",
     "mailer_is_not_set_up": "メール設定がセットアップされていません。",
@@ -402,7 +408,7 @@
     "azure_storage_account_name": "ストレージアカウント名",
     "azure_storage_container_name": "コンテナ名",
     "azure_note_for_the_only_env_option": "現在Azure設定は環境変数の値によって制限されています<br>この設定を変更する場合は環境変数 <code>{{env}}</code> の値をfalseに変更もしくは削除してください",
-    "fixed_by_env_var": "環境変数 <code>FILE_UPLOAD={{fileUploadType}}</code> により固定されています。",
+    "fixed_by_env_var": "環境変数 <code>{{envKey}}={{envVar}}</code> により固定されています。",
     "file_upload": "ファイルをアップロードするための設定を行います。ファイルアップロードの設定を完了させると、ファイルアップロード機能、プロフィール写真機能などが有効になります。",
     "test_connection": "接続テスト",
     "change_setting": "この設定を途中で変更すると、これまでにアップロードしたファイル等へのアクセスができなくなりますのでご注意下さい。",
@@ -502,8 +508,9 @@
       "show_all_reply_comments": "返信コメントを全て表示する",
       "show_all_reply_comments_desc": "OFFの場合、最新2件のコメント以外が省略されます。",
       "select_search_scope_children_as_default": "検索範囲のデフォルト設定を「この階層下の子ページ」にする",
-      "select_search_scope_children_as_default_desc": "OFFの場合、検索範囲のデフォルト設定は「全てのページ」になります。"
-
+      "select_search_scope_children_as_default_desc": "OFFの場合、検索範囲のデフォルト設定は「全てのページ」になります。",
+      "show_page_side_authors": "作成者・更新者を目次上部に常時表示する",
+      "show_page_side_authors_desc": "ページサイドバーの目次上部に作成者と最終更新者の情報を表示します。"
     },
     "presentation":"プレゼンテーション",
     "presentation_options":{
@@ -1070,7 +1077,8 @@
     "ADMIN_USER_GROUP_ADD_USER": "ユーザーグループにユーザーを追加",
     "ADMIN_SEARCH_CONNECTION": "Elasticsearch の再接続の試行",
     "ADMIN_SEARCH_INDICES_NORMALIZE": "Elasticsearch のインデックスの正規化",
-    "ADMIN_SEARCH_INDICES_REBUILD": "Elasticsearch のインデックスのリビルド"
+    "ADMIN_SEARCH_INDICES_REBUILD": "Elasticsearch のインデックスのリビルド",
+    "ADMIN_PAGE_BULK_EXPORT_SETTINGS_UPDATE": "ページ一括エクスポート設定の更新"
   },
   "g2g": {
     "transfer_success": "G2G移行が完了しました",
@@ -1149,12 +1157,6 @@
   "ai_integration": {
     "ai_integration": "AI 連携",
     "disable_mode_explanation": "現在、AI 連携は無効になっています。有効にする場合は環境変数 <code>AI_ENABLED</code> の他、必要な環境変数を設定してください。<br><br>詳細は<a target='blank' rel='noopener noreferrer' href={{documentationUrl}}ja/guide/features/ai-knowledge-assistant.html>ドキュメント</a>を参照してください。",
-    "ai_search_management": "AI 検索管理",
-    "rebuild_vector_store": "Vector Store のリビルド",
-    "rebuild_vector_store_label": "リビルド",
-    "rebuild_vector_store_explanation1": "既存の Vector Store を削除し、公開ページの Vector Store を再作成します。",
-    "rebuild_vector_store_explanation2": "この作業には数分かかる可能性があります。",
-    "rebuild_vector_store_requested": "Vector Store のリビルドを受け付けました",
-    "rebuild_vector_store_failed": "Vector Store のリビルドに失敗しました"
+    "ai_search_management": "AI 検索管理"
   }
 }

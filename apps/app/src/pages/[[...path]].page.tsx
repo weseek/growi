@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, JSX } from 'react';
 import React, { useEffect } from 'react';
 
 import EventEmitter from 'events';
@@ -41,12 +41,13 @@ import {
   useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
-  useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
-  useIsUploadAllFileAllowed, useIsUploadEnabled,
+  useIsAllReplyShown, useShowPageSideAuthors, useIsContainerFluid, useIsNotCreatable,
+  useIsUploadAllFileAllowed, useIsUploadEnabled, useIsBulkExportPagesEnabled,
   useElasticsearchMaxBodyLengthToIndex,
   useIsLocalAccountRegistrationEnabled,
   useIsRomUserAllowedToComment,
-  useIsAiEnabled,
+  useIsPdfBulkExportEnabled,
+  useIsAiEnabled, useLimitLearnablePageCountPerAssistant,
 } from '~/stores-universal/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -177,9 +178,12 @@ type Props = CommonProps & {
   drawioUri: string | null,
   // highlightJsStyle: string,
   isAllReplyShown: boolean,
+  showPageSideAuthors: boolean,
   isContainerFluid: boolean,
   isUploadEnabled: boolean,
   isUploadAllFileAllowed: boolean,
+  isBulkExportPagesEnabled: boolean,
+  isPdfBulkExportEnabled: boolean,
   isEnabledStaleNotification: boolean,
   isEnabledAttachTitleHeader: boolean,
   // isEnabledLinebreaks: boolean,
@@ -195,6 +199,7 @@ type Props = CommonProps & {
   rendererConfig: RendererConfig,
 
   aiEnabled: boolean,
+  limitLearnablePageCountPerAssistant: number,
 };
 
 const Page: NextPageWithLayout<Props> = (props: Props) => {
@@ -240,14 +245,18 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
   useIsAllReplyShown(props.isAllReplyShown);
+  useShowPageSideAuthors(props.showPageSideAuthors);
 
   useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
   useIsUploadEnabled(props.isUploadEnabled);
+  useIsBulkExportPagesEnabled(props.isBulkExportPagesEnabled);
+  useIsPdfBulkExportEnabled(props.isPdfBulkExportEnabled);
 
   useIsLocalAccountRegistrationEnabled(props.isLocalAccountRegistrationEnabled);
   useIsRomUserAllowedToComment(props.isRomUserAllowedToComment);
 
   useIsAiEnabled(props.aiEnabled);
+  useLimitLearnablePageCountPerAssistant(props.limitLearnablePageCountPerAssistant);
 
   const { pageWithMeta } = props;
 
@@ -566,6 +575,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   } = crowi;
 
   props.aiEnabled = configManager.getConfig('app:aiEnabled');
+  props.limitLearnablePageCountPerAssistant = configManager.getConfig('openai:limitLearnablePageCountPerAssistant');
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
@@ -581,11 +591,15 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.drawioUri = configManager.getConfig('app:drawioUri');
   // props.highlightJsStyle = configManager.getConfig('customize:highlightJsStyle');
   props.isAllReplyShown = configManager.getConfig('customize:isAllReplyShown');
+  props.showPageSideAuthors = configManager.getConfig('customize:showPageSideAuthors');
   props.isContainerFluid = configManager.getConfig('customize:isContainerFluid');
   props.isEnabledStaleNotification = configManager.getConfig('customize:isEnabledStaleNotification');
   props.disableLinkSharing = configManager.getConfig('security:disableLinkSharing');
   props.isUploadAllFileAllowed = fileUploadService.getFileUploadEnabled();
   props.isUploadEnabled = fileUploadService.getIsUploadable();
+  // TODO: remove growiCloudUri condition when bulk export can be relased for GROWI.cloud (https://redmine.weseek.co.jp/issues/163220)
+  props.isBulkExportPagesEnabled = configManager.getConfig('app:isBulkExportPagesEnabled') && configManager.getConfig('app:growiCloudUri') == null;
+  props.isPdfBulkExportEnabled = configManager.getConfig('app:pageBulkExportPdfConverterUri') != null;
 
   props.isLocalAccountRegistrationEnabled = passportService.isLocalStrategySetup
   && configManager.getConfig('security:registrationMode') !== RegistrationMode.CLOSED;

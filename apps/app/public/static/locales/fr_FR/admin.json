@@ -10,6 +10,7 @@
   "only_me": "Seulement moi",
   "only_inside_the_group": "Utilisateurs du groupe",
   "optional": "Optionnel",
+  "days": "jours",
   "security_settings": {
     "security_settings": "Sécurité",
     "scope_of_page_disclosure": "Confidentialité de la page",
@@ -359,6 +360,11 @@
     "file_uploading": "Téléversement de fichiers",
     "enable_files_except_image": "Autoriser tout les types de fichiers",
     "attach_enable": "Autorise le téléversement de tout les types de fichiers.",
+    "page_bulk_export_settings": "Paramètres d'exportation de pages par lots",
+    "enable_page_bulk_export": "Activer l'exportation groupée",
+    "page_bulk_export_explanation": "Active une fonctionnalité qui permet à tous les utilisateurs d'exporter simultanément toutes les pages sélectionnées dans le menu des pages et leurs pages subordonnées. Les données exportées seront automatiquement supprimées une fois la période de conservation écoulée.",
+    "page_bulk_export_warning": "La fonctionnalité d’exportation de pages en masse est disponible pour tous les utilisateurs. Afin de maintenir les ressources du système, nous demandons votre coopération pour utiliser le montant minimum nécessaire. Si vous êtes administrateur, veuillez en informer tous les utilisateurs.",
+    "page_bulk_export_storage_period": "Date limite de téléchargement",
     "update": "Sauvegarder",
     "mail_settings": "SMTP",
     "mailer_is_not_set_up": "Paramètres d'envoi de courriels non configurés.",
@@ -382,7 +388,7 @@
     "file_delivery_method_relay": "Relai interne du système",
     "file_delivery_method_redirect_info": "Rediriger: Redirige vers une URL signé, performance excellente.",
     "file_delivery_method_relay_info": "Relai interne du système: Le serveur GROWI sert les fichiers directement au client, sécurité complète.",
-    "fixed_by_env_var": "Défini par une variable d'environnement <code>FILE_UPLOAD={{fileUploadType}}</code>.",
+    "fixed_by_env_var": "Défini par une variable d'environnement <code>{{envKey}}={{envVar}}</code>.",
     "gcs_label": "GCP(GCS)",
     "aws_label": "AWS(S3)",
     "local_label": "Local",
@@ -493,7 +499,9 @@
       "show_all_reply_comments": "Afficher tout les commentaires",
       "show_all_reply_comments_desc": "Lorsque désactivé, seul les deux commentaires les plus récents sont affichés",
       "select_search_scope_children_as_default": "'Seulement enfant de ce chemin' lors de la recherche",
-      "select_search_scope_children_as_default_desc": "Lorsque désactivé, utilise 'Toutes les pages' en portée de recherche."
+      "select_search_scope_children_as_default_desc": "Lorsque désactivé, utilise 'Toutes les pages' en portée de recherche.",
+      "show_page_side_authors": "Toujours afficher les créateurs et les modificateurs au-dessus de la table des matières",
+      "show_page_side_authors_desc": "Affiche les informations sur le créateur et le dernier modificateur au-dessus de la table des matières dans la barre latérale de la page."
     },
     "presentation": "Présentation",
     "presentation_options": {
@@ -1059,7 +1067,8 @@
     "ADMIN_USER_GROUP_ADD_USER": "Ajouter l'utilisateur au groupe",
     "ADMIN_SEARCH_CONNECTION": "Essai de reconnexion Elasticsearch",
     "ADMIN_SEARCH_INDICES_NORMALIZE": "Nomarliser l'index Elasticsearch",
-    "ADMIN_SEARCH_INDICES_REBUILD": "Reconstruire l'index Elasticsearch"
+    "ADMIN_SEARCH_INDICES_REBUILD": "Reconstruire l'index Elasticsearch",
+    "ADMIN_PAGE_BULK_EXPORT_SETTINGS_UPDATE": "Mettre à jour les paramètres d'exportation groupée de la page"
   },
   "g2g": {
     "transfer_success": "Transfert de GROWI vers GROWI complété!",
@@ -1138,12 +1147,6 @@
   "ai_integration": {
     "ai_integration": "Intégration de l'IA",
     "disable_mode_explanation": "Actuellement, l'intégration AI est désactivée. Pour l'activer, configurez la variable d'environnement <code>AI_ENABLED</code> ainsi que les autres variables nécessaires.<br><br>Pour plus de détails, veuillez consulter la <a target='blank' rel='noopener noreferrer' href={{documentationUrl}}en/guide/features/ai-knowledge-assistant.html>documentation</a>.",
-    "ai_search_management": "Gestion de la recherche par l'IA",
-    "rebuild_vector_store": "Reconstruire le magasin Vector",
-    "rebuild_vector_store_label": "Reconstruire",
-    "rebuild_vector_store_explanation1": "Supprimez le Vector Store existant et recréez le Vector Store sur la page publique.",
-    "rebuild_vector_store_explanation2": "Ce processus peut prendre plusieurs minutes.",
-    "rebuild_vector_store_requested": "La reconstruction du magasin Vector a été demandée",
-    "rebuild_vector_store_failed": "Échec de la reconstruction du magasin de vecteurs"
+    "ai_search_management": "Gestion de la recherche par l'IA"
   }
 }

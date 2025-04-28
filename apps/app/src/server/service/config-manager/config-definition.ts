@@ -207,7 +207,6 @@ export const CONFIG_KEYS = [
   'customize:highlightJsStyle',
   'customize:highlightJsStyleBorder',
   'customize:theme',
-  'customize:theme:forcedColorScheme',
   'customize:isContainerFluid',
   'customize:isEnabledTimeline',
   'customize:isEnabledAttachTitleHeader',
@@ -218,6 +217,7 @@ export const CONFIG_KEYS = [
   'customize:isEnabledStaleNotification',
   'customize:isAllReplyShown',
   'customize:isSearchScopeChildrenAsDefault',
+  'customize:showPageSideAuthors',
   'customize:isEnabledMarp',
   'customize:isSidebarCollapsedMode',
   'customize:isSidebarClosedAtDockMode',
@@ -260,6 +260,7 @@ export const CONFIG_KEYS = [
   'openai:vectorStoreFileDeletionCronExpression',
   'openai:vectorStoreFileDeletionBarchSize',
   'openai:vectorStoreFileDeletionApiCallInterval',
+  'openai:limitLearnablePageCountPerAssistant',
 
   // OpenTelemetry Settings
   'otel:enabled',
@@ -316,6 +317,17 @@ export const CONFIG_KEYS = [
   'env:useOnlyEnvVars:security:passport-saml',
   'env:useOnlyEnvVars:gcs',
   'env:useOnlyEnvVars:azure',
+
+  // Page Bulk Export Settings
+  'app:bulkExportJobExpirationSeconds',
+  'app:bulkExportDownloadExpirationSeconds',
+  'app:pageBulkExportJobCronSchedule',
+  'app:checkPageBulkExportJobInProgressCronSchedule',
+  'app:pageBulkExportJobCleanUpCronSchedule',
+  'app:pageBulkExportParallelExecLimit',
+  'app:pageBulkExportPdfConverterUri',
+  'app:isBulkExportPagesEnabled',
+  'env:useOnlyEnvVars:app:isBulkExportPagesEnabled',
 
 ] as const;
 
@@ -597,15 +609,15 @@ export const CONFIG_DEFINITIONS = {
     defaultValue: undefined,
   }),
   'security:passport-saml:entryPoint': defineConfig<string | undefined>({
-    envVarName: 'SECURITY_PASSPORT_SAML_ENTRY_POINT',
+    envVarName: 'SAML_ENTRY_POINT',
     defaultValue: undefined,
   }),
   'security:passport-saml:issuer': defineConfig<string | undefined>({
-    envVarName: 'SECURITY_PASSPORT_SAML_ISSUER',
+    envVarName: 'SAML_ISSUER',
     defaultValue: undefined,
   }),
   'security:passport-saml:cert': defineConfig<string | undefined>({
-    envVarName: 'SECURITY_PASSPORT_SAML_CERT',
+    envVarName: 'SAML_CERT',
     defaultValue: undefined,
   }),
   'security:passport-oidc:timeoutMultiplier': defineConfig<number>({
@@ -937,9 +949,6 @@ export const CONFIG_DEFINITIONS = {
   'customize:theme': defineConfig<string>({
     defaultValue: 'default',
   }),
-  'customize:theme:forcedColorScheme': defineConfig<string | null>({
-    defaultValue: null,
-  }),
   'customize:isContainerFluid': defineConfig<boolean>({
     defaultValue: false,
   }),
@@ -968,6 +977,9 @@ export const CONFIG_DEFINITIONS = {
     defaultValue: false,
   }),
   'customize:isSearchScopeChildrenAsDefault': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'customize:showPageSideAuthors': defineConfig<boolean>({
     defaultValue: false,
   }),
   'customize:isEnabledMarp': defineConfig<boolean>({
@@ -1125,6 +1137,10 @@ Guideline as a RAG:
     envVarName: 'OPENAI_SEARCH_ASSISTANT_INSTRUCTIONS',
     defaultValue: '',
   }),
+  'openai:limitLearnablePageCountPerAssistant': defineConfig<number>({
+    envVarName: 'OPENAI_LIMIT_LEARNABLE_PAGE_COUNT_PER_ASSISTANT',
+    defaultValue: 3000,
+  }),
 
   // OpenTelemetry Settings
   'otel:enabled': defineConfig<boolean>({
@@ -1278,6 +1294,42 @@ Guideline as a RAG:
   }),
   'env:useOnlyEnvVars:azure': defineConfig<boolean>({
     envVarName: 'AZURE_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS',
+    defaultValue: false,
+  }),
+  'app:bulkExportJobExpirationSeconds': defineConfig<number>({
+    envVarName: 'BULK_EXPORT_JOB_EXPIRATION_SECONDS',
+    defaultValue: 86400,
+  }),
+  'app:bulkExportDownloadExpirationSeconds': defineConfig<number>({
+    envVarName: 'BULK_EXPORT_DOWNLOAD_EXPIRATION_SECONDS',
+    defaultValue: 259200,
+  }),
+  'app:pageBulkExportJobCronSchedule': defineConfig<string>({
+    envVarName: 'BULK_EXPORT_JOB_CRON_SCHEDULE',
+    defaultValue: '*/10 * * * * *',
+  }),
+  'app:checkPageBulkExportJobInProgressCronSchedule': defineConfig<string>({
+    envVarName: 'CHECK_PAGE_BULK_EXPORT_JOB_IN_PROGRESS_CRON_SCHEDULE',
+    defaultValue: '*/3 * * * *',
+  }),
+  'app:pageBulkExportJobCleanUpCronSchedule': defineConfig<string>({
+    envVarName: 'BULK_EXPORT_JOB_CLEAN_UP_CRON_SCHEDULE',
+    defaultValue: '*/10 * * * *',
+  }),
+  'app:pageBulkExportParallelExecLimit': defineConfig<number>({
+    envVarName: 'BULK_EXPORT_PARALLEL_EXEC_LIMIT',
+    defaultValue: 5,
+  }),
+  'app:pageBulkExportPdfConverterUri': defineConfig<string | undefined>({
+    envVarName: 'BULK_EXPORT_PDF_CONVERTER_URI',
+    defaultValue: undefined,
+  }),
+  'app:isBulkExportPagesEnabled': defineConfig<boolean>({
+    envVarName: 'BULK_EXPORT_PAGES_ENABLED',
+    defaultValue: true,
+  }),
+  'env:useOnlyEnvVars:app:isBulkExportPagesEnabled': defineConfig<boolean>({
+    envVarName: 'BULK_EXPORT_PAGES_ENABLED_USES_ONLY_ENV_VARS',
     defaultValue: false,
   }),
 } as const;

@@ -1,4 +1,8 @@
+import type { JSX } from 'react';
+
 import type { Nullable } from '@growi/core';
+
+import type { IPageForItem } from '~/interfaces/page';
 
 
 export const SidebarMode = {
@@ -15,6 +19,7 @@ export const SidebarContentsType = {
   TAG: 'tag',
   BOOKMARKS: 'bookmarks',
   NOTIFICATION: 'notification',
+  AI_ASSISTANT: 'aiAssistant',
 } as const;
 export const AllSidebarContentsType = Object.values(SidebarContentsType);
 export type SidebarContentsType = typeof SidebarContentsType[keyof typeof SidebarContentsType];
@@ -35,4 +40,4 @@ export type OnRenamedFunction = (path: string) => void;
 export type OnDuplicatedFunction = (fromPath: string, toPath: string) => void;
 export type OnPutBackedFunction = (path: string) => void;
 export type onDeletedBookmarkFolderFunction = (bookmarkFolderId: string) => void;
-export type OnSelectedFunction = () => void;
+export type OnSelectedFunction = (page: IPageForItem, isIncludeSubPage: boolean) => void;

@@ -19,6 +19,7 @@
   "only_me": "只有我",
   "only_inside_the_group": "仅组内",
   "optional": "可选的",
+  "days": "天",
   "security_settings": {
     "security_settings": "安全设置",
     "scope_of_page_disclosure": "页面公开范围",
@@ -368,6 +369,11 @@
     "file_uploading": "文件上传",
     "enable_files_except_image": "启用此选项将允许上传任何文件类型。如果没有此选项，则仅支持图像文件上载。",
     "attach_enable": "如果启用此选项，则可以附加图像文件以外的文件。",
+    "page_bulk_export_settings": "页面批量导出设置",
+    "enable_page_bulk_export": "启用批量导出",
+    "page_bulk_export_explanation": "启用一项功能，允许所有用户一次性导出从页面菜单中选择的所有页面及其下级页面。保留期限过后，导出的数据将自动删除。",
+    "page_bulk_export_warning": "批量页面导出功能可供所有用户使用。为了维护系统资源，请您配合使用最低限度的资源。如果您是管理员，请将此事实告知所有用户。",
+    "page_bulk_export_storage_period": "储存期限",
     "update": "更新",
     "mail_settings": "邮件设置",
     "mailer_is_not_set_up": "邮件设置尚未完成。",
@@ -402,7 +408,7 @@
     "azure_storage_account_name": "Storage Account Name",
     "azure_storage_container_name": "Container Name",
     "azure_note_for_the_only_env_option": "The Azure Settings is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
-    "fixed_by_env_var": "这是由env var 修复的 <code>{{key}}={{value}}</code>.",
+    "fixed_by_env_var": "这是由env var 修复的 <code>{{envKey}}={{envVar}}</code>.",
     "file_upload": "This is for uploading file settings. If you complete file upload settings, file upload function, profile picture function etc will be enabled.",
     "test_connection": "测试邮件服务器连接",
     "change_setting": "注意：如果你更改此设置未完成，您将无法访问迄今为止上传的文件。",
@@ -502,7 +508,9 @@
       "show_all_reply_comments": "显示所有回复评论",
       "show_all_reply_comments_desc": "当设置值为“关”时，将忽略最近两个之外的注释。",
       "select_search_scope_children_as_default": "选择“当前分支以下内容”, 作为搜索范围的默认值",
-      "select_search_scope_children_as_default_desc": "当设置值为“关”时，“所有页面”被作为搜索范围的默认值。"
+      "select_search_scope_children_as_default_desc": "当设置值为“关”时，“所有页面”被作为搜索范围的默认值。",
+      "show_page_side_authors": "在目录上方始终显示创建者和更新者",
+      "show_page_side_authors_desc": "在页面侧边栏的目录上方显示创建者和最后更新者的信息。"
     },
       "presentation": "表达",
       "presentation_options": {
@@ -1069,7 +1077,8 @@
     "ADMIN_USER_GROUP_ADD_USER": "添加用户到用户组",
     "ADMIN_SEARCH_CONNECTION": "重试Elasticsearch连接",
     "ADMIN_SEARCH_INDICES_NORMALIZE": "试图重新连接Elasticsearch",
-    "ADMIN_SEARCH_INDICES_REBUILD": "重建 Elasticsearch 索引"
+    "ADMIN_SEARCH_INDICES_REBUILD": "重建 Elasticsearch 索引",
+    "ADMIN_PAGE_BULK_EXPORT_SETTINGS_UPDATE": "更新页面批量导出设置"
   },
   "g2g": {
     "transfer_success": "Completed GROWI to GROWI transfer successfully",
@@ -1148,12 +1157,6 @@
   "ai_integration": {
     "ai_integration": "AI 集成",
     "disable_mode_explanation": "目前，AI 集成已被禁用。若要启用，请配置 <code>AI_ENABLED</code> 环境变量以及其他必要的变量。<br><br>详细信息请参考<a target='blank' rel='noopener noreferrer' href={{documentationUrl}}en/guide/features/ai-knowledge-assistant.html>文档</a>。",
-    "ai_search_management": "AI 搜索管理",
-    "rebuild_vector_store": "重建矢量商店",
-    "rebuild_vector_store_label": "重建",
-    "rebuild_vector_store_explanation1": "删除现有的矢量存储，在公共页面上重新创建矢量存储。",
-    "rebuild_vector_store_explanation2": "这个过程可能需要几分钟。",
-    "rebuild_vector_store_requested": "已要求重建矢量存储库",
-    "rebuild_vector_store_failed": "向量存储区重建失败"
+    "ai_search_management": "AI 搜索管理"
   }
 }

@@ -158,6 +158,9 @@
   "Page Tree": "页面树",
   "Bookmarks": "书签",
   "In-App Notification": "通知",
+  "AI Assistant": "AI助手",
+  "Knowledge Assistant": "知识助手 (测试版)",
+  "Editor Assistant": "编辑助理 (测试版)",
   "original_path": "Original path",
   "new_path": "New path",
   "duplicated_path": "Duplicated path",
@@ -189,10 +192,12 @@
   "custom_navigation": {
     "no_pages_under_this_page": "There are no pages under this page."
   },
-  "author_info": {
-    "created_at": "Created at",
-    "last_revision_posted_at": "Last revision posted at"
-  },
+"author_info": {
+  "created_at": "创建日期",
+  "created_by": "创建者:",
+  "last_revision_posted_at": "最后更新日期",
+  "updated_by": "更新者:"
+},
   "installer": {
     "tab": "创建账户",
     "title": "安装",
@@ -330,6 +335,7 @@
       "file": "仅文件"
     },
     "editor_config": "编辑器配置",
+    "editor_assistant": "编辑助手",
 		"Show active line": "显示活动行",
 		"auto_format_table": "自动格式化表格",
 		"overwrite_scopes": "{{operation}和覆盖所有子体的作用域",
@@ -449,6 +455,7 @@
       "Create Page": "创建页面",
       "Search": "搜索",
       "Show Contributors": "显示参与者",
+      "MirrorMode": "镜像模式",
       "Konami Code": "Konami Code",
       "konami_code_url": "https://en.wikipedia.org/wiki/Konami_Code"
     },
@@ -457,11 +464,14 @@
       "Indent": "缩进",
       "Outdent": "回退缩进",
       "Save Page": "保存页面",
-      "Delete Line": "删除行"
-    },
-    "commentform": {
-      "title": "注释窗体快捷方式",
-      "Post": "提交"
+      "Only Editor": "(仅编辑器)",
+      "Delete Line": "删除行",
+      "Search in Editor": "编辑器内搜索",
+      "Move Line": "移动行",
+      "Copy Line": "复制行",
+      "Toggle Line": "注释/取消注释行",
+      "Insert Line": "插入行",
+      "Post Comment": "(发表评论)"
     }
   },
   "modal_resolve_conflict": {
@@ -475,10 +485,11 @@
     "latest_revision": "最新页面正文",
     "selected_editable_revision": "选定的可编辑页面正文"
   },
-  "modal_aichat": {
-    "title": "知识助手",
-    "title_beta_label": "(测试版)",
-    "placeholder": "问我任何问题。",
+  "sidebar_ai_assistant": {
+    "instruction_label": "助手指令",
+    "reference_pages_label": "参考页面",
+    "knowledge_assistant_placeholder": "问我任何问题。",
+    "editor_assistant_placeholder": "有什么需要帮忙的吗？",
     "summary_mode_label": "摘要模式",
     "summary_mode_help": "简洁回答在2-3句话内",
     "caution_against_hallucination": "请核实信息并检查来源。",
@@ -487,7 +498,109 @@
     "budget_exceeded": "您已达到 OpenAI API 的使用上限。要再次使用知识助手，请从 OpenAI 账单页面添加点数。",
     "budget_exceeded_for_growi_cloud": "您已达到 OpenAI API 使用上限。如需再次使用知识助手，请从GROWI.cloud管理页面为托管用户添加点数，或从OpenAI计费页面为自有用户添加点数。",
     "error_message": "错误",
-    "show_error_detail": "显示详情"
+    "show_error_detail": "显示详情",
+    "discard": "丢弃",
+    "accept": "接受",
+    "use_assistant": "使用助手",
+    "remove_assistant": "取消选定的助手",
+    "preset_menu": {
+      "summarize": {
+        "title": "为此文章创建摘要",
+        "prompt": "请总结这个 markdown 内容"
+      },
+      "correct": {
+        "title": "修正文本中的错误",
+        "prompt": "请修正 markdown 中的文本错误"
+      }
+    }
+  },
+  "modal_ai_assistant": {
+    "header": {
+      "update_assistant": "更新助手",
+      "add_new_assistant": "添加新助手"
+    },
+    "assistant_name_placeholder": "输入助手名称",
+    "page_count": "{{count}} 页",
+    "memo": {
+      "title": "助手备忘录",
+      "optional": "可选",
+      "placeholder": "您可以显示关于内容和用途的备注",
+      "description": "备忘录的内容不会影响助手的处理。"
+    },
+    "submit_button": {
+      "update_assistant": "更新助手",
+      "create_assistant": "创建助手"
+    },
+    "toaster": {
+      "create_success": "助手已创建",
+      "update_success": "助手已更新",
+      "create_failed": "创建助手失败",
+      "update_failed": "更新助手失败"
+    },
+    "edit_page_description": "编辑助手可以参考的页面。<br> 助手可以参考最多 {{limitLearnablePageCountPerAssistant}} 个页面，包括子页面。",
+    "default_instruction": "您是这个Wiki的知识助手。请按照以下方针提供支持：\n\n- 分析文档相关性并连接信息\n- 提出新的观点\n- 理解问题意图并提供准确信息\n必要时我会以结构化的形式提供信息。",
+    "add_page_button": "添加页面",
+    "page_mode_title": {
+      "share": "助理共享",
+      "pages": "参考页面",
+      "instruction": "助理指示"
+    },
+    "share_assistant": "共享助手",
+    "page_access_permission": "页面访问权限",
+    "access_scope": {
+      "owner": "{{username}} 可访问的所有页面",
+      "groups": "指定群组",
+      "publicOnly": "仅公开页面"
+    },
+    "share_scope": {
+      "title": "助手共享范围",
+      "owner": {
+        "label": "仅 {{ username }}"
+      },
+      "publicOnly": {
+        "label": "公开",
+        "desc": "与所有用户共享"
+      },
+      "groups": {
+        "label": "指定群组",
+        "desc": "仅与选定组的成员共享"
+      },
+      "sameAsAccessScope": {
+        "label": "与页面访问范围相同",
+        "desc": "与页面访问范围相同的范围共享"
+      }
+    },
+    "instructions": {
+      "description": "您可以设置决定助手行为的指令。<br>助手将根据这些指令进行回答和分析。",
+      "reset_to_default": "恢复默认设置"
+    }
+  },
+  "share_scope_warning_modal": {
+    "header_title": "确认共享范围",
+    "warning_message": "此助手包含访问受限的页面。<br>使用当前设置，这些页面的信息可能通过助手超出其原始访问权限范围进行共享。",
+    "selected_pages_label": "已选择的页面路径",
+    "confirmation_message": "如果继续，请确认您了解这些页面的内容可能会在助手的公开范围内共享。",
+    "button": {
+      "review": "重新检查设置",
+      "proceed": "了解并继续"
+    }
+  },
+  "default_ai_assistant": {
+    "not_set": "未设置默认助手"
+  },
+  "ai_assistant_tree": {
+    "add_assistant": "添加助手",
+    "my_assistants": "我的助手",
+    "team_assistants": "团队助手",
+    "thread_does_not_exist": "暂无会话",
+    "toaster": {
+      "ai_assistant_deleted_success": "已删除助手",
+      "ai_assistant_deleted_failed": "删除助手失败",
+      "thread_deleted_success": "已删除会话",
+      "thread_deleted_failed": "删除会话失败",
+      "ai_assistant_set_default_success": "已成功设置默认助手",
+      "ai_assistant_set_default_failed": "设置默认助手失败"
+    }
   },
   "link_edit": {
     "edit_link": "Edit Link",
@@ -656,11 +769,26 @@
     "discription_heading": "创建账户",
     "discription": "用被邀请的电子邮件地址创建一个你的账户"
   },
-  "export_bulk": {
+  "page_export": {
     "failed_to_export": "导出失败",
     "failed_to_count_pages": "页面计数失败",
     "export_page_markdown": "以Markdown格式导出页面",
-    "export_page_pdf": "以PDF格式导出页面"
+    "export_page_pdf": "以PDF格式导出页面",
+    "bulk_export": "导出页面及其下的所有页面",
+    "bulk_export_download_explanation": "导出完成后将发送通知。要下载导出的文件，请单击通知。",
+    "bulk_export_exec_time_warning": "如果页数较多，导出可能需要一段时间",
+    "large_bulk_export_warning": "为了节省系统资源，请避免连续导出大量页面",
+    "markdown": "Markdown",
+    "choose_export_format": "选择导出格式",
+    "bulk_export_started": "目前我们正在准备...",
+    "bulk_export_download_expired": "下载期限已过",
+    "bulk_export_job_expired": "由于导出时间太长，处理被中断",
+    "export_in_progress": "导出正在进行中",
+    "export_in_progress_explanation": "已在进行相同格式的导出。您要重新启动以导出最新的页面内容吗？",
+    "export_cancel_warning": "以下正在进行的导出将被取消",
+    "restart": "重新开始",
+    "format": "格式",
+    "started_on": "开始于"
   },
   "message": {
     "successfully_connected": "连接成功！",
@@ -872,8 +1000,7 @@
   },
   "sidebar_header": {
     "show_wip_page": "显示 WIP",
-    "size_s": "尺寸: S",
-    "size_l": "尺寸: L"
+    "compact_view": "紧凑视图"
   },
   "create_page": {
     "untitled": "Untitled"

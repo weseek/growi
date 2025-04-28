@@ -1,8 +1,86 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.1.9...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.2.2...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.2.2](https://github.com/weseek/growi/compare/v7.2.1...v7.2.2) - 2025-04-17
+
+### 🐛 Bug Fixes
+
+* fix: Export page API is broken (#9870) @yuki-takei
+
+## [v7.2.1](https://github.com/weseek/growi/compare/v7.2.0...v7.2.1) - 2025-04-16
+
+### 💎 Features
+
+* feat: Page bulk export (pdf export included) (#9678) @arafubeatbox
+
+### 🚀 Improvement
+
+* imprv: Add util method to get react instance of growi via growifacade (#9775) @NaokiHigashi28
+* imprv: Adjust comment editor clickable area (#9840) @yuki-takei
+* imprv: Make user activation middleware securely (#9818) @yuki-takei
+* imprv: Prepare to upgrade React and Next.js (#9816) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: The order of multer middleware (#9772) @NaokiHigashi28
+* fix: growi pluginkit growifacade typo (#9812) @NaokiHigashi28
+* fix: Migration script to remove index for 'ns' from config collection (#9770) @yuki-takei
+* fix: Assistant remains default when made unpublished (#9763) @miya
+* fix: Fix layout when safari browse (#9744) @satof3
+* fix:  Prevent GrowiPlugin from being downloaded outside the plugin directory (#9712) @NaokiHigashi28
+* fix: The link for Telemetry of GROWI Docs (#9737) @yuki-takei
+
+### 🧰 Maintenance
+
+* ci(deps): bump next from 14.2.22 to 14.2.25 (#9761) @[dependabot[bot]](https://github.com/apps/dependabot)
+* ci(deps-dev): bump vite from 5.4.16 to 5.4.17 (#9837) @[dependabot[bot]](https://github.com/apps/dependabot)
+* ci(deps-dev): bump vite from 5.4.15 to 5.4.16 (#9830) @[dependabot[bot]](https://github.com/apps/dependabot)
+* support: Upgrade Next.js (#9825) @yuki-takei
+* support: Upgrade SWR (#9814) @yuki-takei
+* ci(deps-dev): bump vite from 5.4.14 to 5.4.15 (#9781) @[dependabot[bot]](https://github.com/apps/dependabot)
+* ci(deps): bump dependabot/fetch-metadata from 1 to 2 (#9636) @[dependabot[bot]](https://github.com/apps/dependabot)
+* ci(deps): bump docker/build-push-action from 4 to 6 (#9638) @[dependabot[bot]](https://github.com/apps/dependabot)
+* ci(deps): bump release-drafter/release-drafter from 5 to 6 (#9637) @[dependabot[bot]](https://github.com/apps/dependabot)
+
+## [v7.2.0](https://github.com/weseek/growi/compare/v7.1.9...v7.2.0) - 2025-03-11
+
+### 💎 Features
+
+* feat: GROWI AI Next Gen (#9492) @miya
+* feat: Support OpenTelemetry (#8810) @yuki-takei
+* feat: Add AuthorInfo display setting to PageSideContents (#9689) @satof3
+* feat: Expose React Insance to window via GrowiFacade (#9729) @NaokiHigashi28
+* feat: Normalize remark growi directives for v6.0.x or above (#9690) @yuki-takei
+
+### 🚀 Improvement
+
+* imprv: Fix RecentChanges dropdown label (#9711) @satof3
+* imprv: Border color for dark mode (#9695) @satof3
+* imprv: Update shortcut key modal (#9651) @satof3
+* imprv: Suppresses unnecessary re-rendering within PageEditor (#9629) @reiji-h
+
+### 🐛 Bug Fixes
+
+* fix: Redirection after login does not work on systems with guest mode enabled (#9653) @reiji-h
+* fix: Data migration script for CSV and TSV (#9641) @miya
+* fix: Authenticate before uploading at /_api/v3/import/upload endpoint (#9647) @NaokiHigashi28
+* fix: Add XSS filter to remark-attachment-refs /refs endpoint (#9631) @NaokiHigashi28
+* fix: PageTree auto-scrolling sometimges not woking (#9544) @reiji-h
+* fix: Middlewares about installation (#9616) @yuki-takei
+* fix: Typo for bookmark API (#9613) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Upgrade runtime versions (#9655) @yuki-takei
+* support: Display brand logo when editor mode (#9632) @satof3
+* support: Upgrade CodeMirror (#9633) @yuki-takei
+* ci(deps): bump docker/login-action from 2 to 3 (#8208) @dependabot
+* ci(deps): bump google-github-actions/auth from 1 to 2 (#9557) @dependabot
+* ci(deps): bump myrotvorets/info-from-package-json-action from 2.0.1 to 2.0.2 (#9558) @dependabot
+* support: Remove legacy ConfigManager (#9624) @yuki-takei
 
 ## [v7.1.9](https://github.com/weseek/growi/compare/v7.1.8...v7.1.9) - 2025-02-03
 

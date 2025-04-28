@@ -222,6 +222,7 @@ module.exports = (crowi) => {
       body('isEnabledStaleNotification').isBoolean(),
       body('isAllReplyShown').isBoolean(),
       body('isSearchScopeChildrenAsDefault').isBoolean(),
+      body('showPageSideAuthors').isBoolean(),
     ],
     CustomizePresentation: [
       body('isEnabledMarp').isBoolean(),
@@ -283,6 +284,7 @@ module.exports = (crowi) => {
       pageLimitationXL: await configManager.getConfig('customize:showPageLimitationXL'),
       isEnabledStaleNotification: await configManager.getConfig('customize:isEnabledStaleNotification'),
       isAllReplyShown: await configManager.getConfig('customize:isAllReplyShown'),
+      showPageSideAuthors: await configManager.getConfig('customize:showPageSideAuthors'),
       isSearchScopeChildrenAsDefault: await configManager.getConfig('customize:isSearchScopeChildrenAsDefault'),
       isEnabledMarp: await configManager.getConfig('customize:isEnabledMarp'),
       styleName: await configManager.getConfig('customize:highlightJsStyle'),
@@ -601,6 +603,7 @@ module.exports = (crowi) => {
       'customize:isEnabledStaleNotification': req.body.isEnabledStaleNotification,
       'customize:isAllReplyShown': req.body.isAllReplyShown,
       'customize:isSearchScopeChildrenAsDefault': req.body.isSearchScopeChildrenAsDefault,
+      'customize:showPageSideAuthors': req.body.showPageSideAuthors,
     };
 
     try {
@@ -615,6 +618,7 @@ module.exports = (crowi) => {
         isEnabledStaleNotification: await configManager.getConfig('customize:isEnabledStaleNotification'),
         isAllReplyShown: await configManager.getConfig('customize:isAllReplyShown'),
         isSearchScopeChildrenAsDefault: await configManager.getConfig('customize:isSearchScopeChildrenAsDefault'),
+        showPageSideAuthors: await configManager.getConfig('customize:showPageSideAuthors'),
       };
       const parameters = { action: SupportedAction.ACTION_ADMIN_FUNCTION_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
@@ -1017,8 +1021,8 @@ module.exports = (crowi) => {
    *                            temporaryUrlExpiredAt: {}
    *                            temporaryUrlCached: {}
    */
-  router.post('/upload-brand-logo', uploads.single('file'), loginRequiredStrictly,
-    adminRequired, validator.logo, apiV3FormValidator, async(req, res) => {
+  router.post('/upload-brand-logo', loginRequiredStrictly, adminRequired,
+    uploads.single('file'), validator.logo, apiV3FormValidator, async(req, res) => {
 
       if (req.file == null) {
         return res.apiv3Err(new ErrorV3('File error.', 'upload-brand-logo-failed'));

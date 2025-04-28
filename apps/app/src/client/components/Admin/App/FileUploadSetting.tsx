@@ -1,10 +1,11 @@
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, JSX } from 'react';
 import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 import { toastSuccess, toastError } from '~/client/util/toastr';
+import { FileUploadType } from '~/interfaces/file-uploader';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
@@ -15,9 +16,6 @@ import { AzureSettingMolecule } from './AzureSetting';
 import type { AzureSettingMoleculeProps } from './AzureSetting';
 import { GcsSettingMolecule } from './GcsSetting';
 import type { GcsSettingMoleculeProps } from './GcsSetting';
-
-
-const fileUploadTypes = ['aws', 'gcs', 'azure', 'gridfs', 'local'] as const;
 
 type FileUploadSettingMoleculeProps = {
   fileUploadType: string
@@ -45,7 +43,7 @@ export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMol
         </label>
 
         <div className="col-md-6 py-2">
-          {fileUploadTypes.map((type) => {
+          {Object.values(FileUploadType).map((type) => {
             return (
               <div key={type} className="form-check form-check-inline">
                 <input
@@ -67,7 +65,13 @@ export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMol
             <span className="material-symbols-outlined">help</span>
             <b>FIXED</b><br />
             {/* eslint-disable-next-line react/no-danger */}
-            <b dangerouslySetInnerHTML={{ __html: t('admin:app_setting.fixed_by_env_var', { fileUploadType: props.envFileUploadType }) }} />
+            <b dangerouslySetInnerHTML={{
+              __html: t('admin:app_setting.fixed_by_env_var', {
+                envKey: 'FILE_UPLOAD',
+                envVar: props.envFileUploadType,
+              }),
+            }}
+            />
           </p>
         )}
       </div>

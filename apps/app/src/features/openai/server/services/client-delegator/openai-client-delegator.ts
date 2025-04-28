@@ -1,11 +1,11 @@
 import OpenAI from 'openai';
 import { type Uploadable } from 'openai/uploads';
 
-import type { VectorStoreScopeType } from '~/features/openai/server/models/vector-store';
 import { configManager } from '~/server/service/config-manager';
 
-import type { IOpenaiClientDelegator } from './interfaces';
+import type { MessageListParams } from '../../../interfaces/message';
 
+import type { IOpenaiClientDelegator } from './interfaces';
 
 export class OpenaiClientDelegator implements IOpenaiClientDelegator {
 
@@ -24,8 +24,24 @@ export class OpenaiClientDelegator implements IOpenaiClientDelegator {
     this.client = new OpenAI({ apiKey });
   }
 
-  async createThread(vectorStoreId: string): Promise<OpenAI.Beta.Threads.Thread> {
-    return this.client.beta.threads.create({
+  async createThread(vectorStoreId?: string): Promise<OpenAI.Beta.Threads.Thread> {
+    return this.client.beta.threads.create(vectorStoreId != null
+      ? {
+        tool_resources: {
+          file_search: {
+            vector_store_ids: [vectorStoreId],
+          },
+        },
+      }
+      : undefined);
+  }
+
+  async retrieveThread(threadId: string): Promise<OpenAI.Beta.Threads.Thread> {
+    return this.client.beta.threads.retrieve(threadId);
+  }
+
+  async updateThread(threadId: string, vectorStoreId: string): Promise<OpenAI.Beta.Threads.Thread> {
+    return this.client.beta.threads.update(threadId, {
       tool_resources: {
         file_search: {
           vector_store_ids: [vectorStoreId],
@@ -34,16 +50,21 @@ export class OpenaiClientDelegator implements IOpenaiClientDelegator {
     });
   }
 
-  async retrieveThread(threadId: string): Promise<OpenAI.Beta.Threads.Thread> {
-    return this.client.beta.threads.retrieve(threadId);
-  }
-
   async deleteThread(threadId: string): Promise<OpenAI.Beta.Threads.ThreadDeleted> {
     return this.client.beta.threads.del(threadId);
   }
 
-  async createVectorStore(scopeType:VectorStoreScopeType): Promise<OpenAI.Beta.VectorStores.VectorStore> {
-    return this.client.beta.vectorStores.create({ name: `growi-vector-store-${scopeType}` });
+  async getMessages(threadId: string, options?: MessageListParams): Promise<OpenAI.Beta.Threads.Messages.MessagesPage> {
+    return this.client.beta.threads.messages.list(threadId, {
+      order: options?.order,
+      limit: options?.limit,
+      before: options?.before,
+      after: options?.after,
+    });
+  }
+
+  async createVectorStore(name: string): Promise<OpenAI.Beta.VectorStores.VectorStore> {
+    return this.client.beta.vectorStores.create({ name: `growi-vector-store-for-${name}` });
   }
 
   async retrieveVectorStore(vectorStoreId: string): Promise<OpenAI.Beta.VectorStores.VectorStore> {
@@ -68,6 +89,10 @@ export class OpenaiClientDelegator implements IOpenaiClientDelegator {
 
   async uploadAndPoll(vectorStoreId: string, files: Uploadable[]): Promise<OpenAI.Beta.VectorStores.FileBatches.VectorStoreFileBatch> {
     return this.client.beta.vectorStores.fileBatches.uploadAndPoll(vectorStoreId, { files });
+  }
+
+  async chatCompletion(body: OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming): Promise<OpenAI.Chat.Completions.ChatCompletion> {
+    return this.client.chat.completions.create(body);
   }
 
 }

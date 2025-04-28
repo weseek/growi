@@ -1,6 +1,9 @@
+import type { JSX } from 'react';
+
 import { useCurrentUser } from '~/stores-universal/context';
 
 import type { IQuestionHasId } from '../../interfaces/question';
+
 
 type QuestionProps = {
   question: IQuestionHasId,

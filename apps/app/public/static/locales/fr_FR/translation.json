@@ -153,6 +153,9 @@
   "Page Tree": "Arborescence",
   "Bookmarks": "Favoris",
   "In-App Notification": "Notifications",
+  "AI Assistant": "Assistant IA",
+  "Knowledge Assistant": "Assistant de Connaissances (Bêta)",
+  "Editor Assistant": "Assistante de rédaction (Bêta)",
   "original_path": "Chemin originel",
   "new_path": "Nouveau chemin",
   "duplicated_path": "Chemin dupliqué",
@@ -185,7 +188,9 @@
   },
   "author_info": {
     "created_at": "Crée le",
-    "last_revision_posted_at": "Dernière révision le"
+    "created_by": "Créé par",
+    "last_revision_posted_at": "Dernière révision le",
+    "updated_by": "Mis à jour par"
   },
   "installer": {
     "tab": "Créer compte",
@@ -341,6 +346,7 @@
       "file": "Fichier seulement"
     },
     "editor_config": "Préférences de l'éditeur",
+    "editor_assistant": "Assistant d'édition",
     "Show active line": "Surligner la ligne active",
     "auto_format_table": "Formatter les tableaux",
     "overwrite_scopes": "{{operation}} et écraser les scopes des pages enfants",
@@ -456,18 +462,21 @@
       "Show Contributors": "Voir contributeurs",
       "MirrorMode": "Mode mirroir",
       "Konami Code": "Code Konami",
-      "konami_code_url": "https://en.wikipedia.org/wiki/Konami_Code"
+      "konami_code_url": "https://fr.wikipedia.org/wiki/Code_Konami"
     },
     "editor": {
       "title": "Raccourcis d'édition",
       "Indent": "Indentation",
       "Outdent": "Retrait",
       "Save Page": "Sauvegarder la page",
-      "Delete Line": "Supprimer la ligne"
-    },
-    "commentform": {
-      "title": "Raccourcis de commentaires",
-      "Post": "Poster"
+      "Only Editor": "(Éditeur uniquement)",
+      "Delete Line": "Supprimer la ligne",
+      "Search in Editor": "Rechercher dans l'éditeur",
+      "Move Line": "Déplacer la ligne",
+      "Copy Line": "Copier la ligne",
+      "Toggle Line": "Commenter/Décommenter la ligne",
+      "Insert Line": "Insérer une ligne",
+      "Post Comment": "(Publier le commentaire)"
     }
   },
   "modal_resolve_conflict": {
@@ -481,10 +490,11 @@
     "latest_revision": "les autres",
     "selected_editable_revision": "Corps de page sélectionné (Modifiable)"
   },
-  "modal_aichat": {
-    "title": "Assistant de Connaissance",
-    "title_beta_label": "(Bêta)",
-    "placeholder": "Demandez-moi n'importe quoi.",
+  "sidebar_ai_assistant": {
+    "instruction_label": "Instructions pour l'assistant",
+    "reference_pages_label": "Pages de référence",
+    "knowledge_assistant_placeholder": "Demandez-moi n'importe quoi.",
+    "editor_assistant_placeholder": "Puis-je vous aider ?",
     "summary_mode_label": "Mode résumé",
     "summary_mode_help": "Réponse concise en 2-3 phrases",
     "caution_against_hallucination": "Veuillez vérifier les informations et consulter les sources.",
@@ -493,7 +503,109 @@
     "budget_exceeded": "Vous avez atteint votre limite d'utilisation de l'API de l'OpenAI. Pour utiliser à nouveau l'assistant de connaissance, veuillez ajouter des crédits à partir de la page de facturation d'OpenAI.",
     "budget_exceeded_for_growi_cloud": "Vous avez atteint votre limite d'utilisation de l'API de l'OpenAI. Pour utiliser à nouveau l'assistant de connaissance, veuillez ajouter des crédits à partir de la page d'administration de GROWI.cloud pour les utilisateurs hébergés ou à partir de la page de facturation de l'OpenAI pour les utilisateurs propriétaires.",
     "error_message": "Erreur",
-    "show_error_detail": "Détails de l'exposition"
+    "show_error_detail": "Détails de l'exposition",
+    "discard": "Annuler",
+    "accept": "Accepter",
+    "use_assistant": "Utiliser l'assistant",
+    "remove_assistant": "Désélectionner l'assistant sélectionné",
+    "preset_menu": {
+      "summarize": {
+        "title": "Résumer cet article'",
+        "prompt": "Veuillez résumer le contenu markdown"
+      },
+      "correct": {
+        "title": "Corriger les erreurs du texte",
+        "prompt": "Veuillez corriger les erreurs dans le texte markdown"
+      }
+    }
+  },
+  "modal_ai_assistant": {
+    "header": {
+      "update_assistant": "Mettre à jour l'assistant",
+      "add_new_assistant": "Ajouter un nouvel assistant"
+    },
+    "assistant_name_placeholder": "Entrer le nom de l'assistant",
+    "page_count": "{{count}} pages",
+    "memo": {
+      "title": "Note sur l'assistant",
+      "optional": "Optionnel",
+      "placeholder": "Vous pouvez afficher des notes sur le contenu et l'utilisation",
+      "description": "Le contenu de la note n'affecte pas le traitement de l'assistant."
+    },
+    "submit_button": {
+      "update_assistant": "Mettre à jour l'assistant",
+      "create_assistant": "Créer l'assistant"
+    },
+    "toaster": {
+      "create_success": "L'assistant a été créé",
+      "update_success": "L'assistant a été mis à jour",
+      "create_failed": "Échec de la création de l'assistant",
+      "update_failed": "Échec de la mise à jour de l'assistant"
+    },
+    "edit_page_description": "Modifier les pages que l'assistant peut référencer.<br> L'assistant peut référencer jusqu'à {{limitLearnablePageCountPerAssistant}} pages, y compris les pages enfants.",
+    "default_instruction": "Vous êtes l'assistant de connaissances pour ce Wiki. Veuillez fournir un support selon les directives suivantes :\n\n- Analyser la pertinence des documents et relier les informations\n- Proposer de nouvelles perspectives\n- Fournir des informations précises en comprenant l'intention des questions\nJe fournirai les informations sous forme structurée si nécessaire.",
+    "add_page_button": "Ajouter une page",
+    "page_mode_title": {
+      "share": "Partage de l'assistant",
+      "pages": "Pages de référence",
+      "instruction": "Instructions de l'assistant"
+    },
+    "share_assistant": "Partager l'assistant",
+    "page_access_permission": "Autorisation d'accès à la page",
+    "access_scope": {
+      "owner": "Toutes les pages accessibles par {{username}}",
+      "groups": "Spécifier les groupes",
+      "publicOnly": "Pages publiques uniquement"
+    },
+    "share_scope": {
+      "title": "Portée de partage de l'assistant",
+      "owner": {
+        "label": "Seulement {{username}}"
+      },
+      "publicOnly": {
+        "label": "Public",
+        "desc": "Partagé avec tous les utilisateurs"
+      },
+      "groups": {
+        "label": "Spécifier les groupes",
+        "desc": "Partagé uniquement avec les membres des groupes sélectionnés"
+      },
+      "sameAsAccessScope": {
+        "label": "Même portée que l'accès à la page",
+        "desc": "Partagé avec la même portée que l'accès à la page"
+      }
+    },
+    "instructions": {
+      "description": "Vous pouvez définir des instructions qui déterminent le comportement de l'assistant.<br>L'assistant répondra et analysera en fonction de ces instructions.",
+      "reset_to_default": "Réinitialiser par défaut"
+    }
+  },
+  "share_scope_warning_modal": {
+    "header_title": "Confirmation de la portée de partage",
+    "warning_message": "Cet assistant comprend des pages à accès limité.<br>Avec les paramètres actuels, les informations de ces pages peuvent être partagées au-delà de leurs autorisations d'accès d'origine via l'assistant.",
+    "selected_pages_label": "Chemins de pages sélectionnés",
+    "confirmation_message": "Veuillez confirmer que vous comprenez que le contenu de ces pages peut être partagé dans la portée publique de l'assistant si vous continuez.",
+    "button": {
+      "review": "Réviser les paramètres",
+      "proceed": "Comprendre et continuer"
+    }
+  },
+  "default_ai_assistant": {
+    "not_set": "L'assistant par défaut n'est pas configuré"
+  },
+ "ai_assistant_tree": {
+    "add_assistant": "Ajouter un assistant",
+    "my_assistants": "Mes assistants",
+    "team_assistants": "Assistants d'équipe",
+    "thread_does_not_exist": "Aucune discussion",
+    "toaster": {
+      "ai_assistant_deleted_success": "Assistant supprimé",
+      "ai_assistant_deleted_failed": "Échec de la suppression de l'assistant",
+      "thread_deleted_success": "Discussion supprimée",
+      "thread_deleted_failed": "Échec de la suppression de la discussion",
+      "ai_assistant_set_default_success": "Assistant par défaut défini avec succès",
+      "ai_assistant_set_default_failed": "Échec de la définition de l'assistant par défaut"
+    }
   },
   "link_edit": {
     "edit_link": "Modifier lien",
@@ -648,11 +760,26 @@
     "discription_heading": "Créer un compte",
     "discription": "Créer un compte avec votre adresse courriel invitée"
   },
-  "export_bulk": {
+  "page_export": {
     "failed_to_export": "Échec de l'export",
     "failed_to_count_pages": "Échec du compte des pages",
     "export_page_markdown": "Exporter la page en Markdown",
-    "export_page_pdf": "Exporter la page en PDF"
+    "export_page_pdf": "Exporter la page en PDF",
+    "bulk_export": "Exporter la page et toutes les pages enfants",
+    "bulk_export_download_explanation": "Une notification sera envoyée lorsque l’exportation sera terminée. Pour télécharger le fichier exporté, cliquez sur la notification.",
+    "bulk_export_exec_time_warning": "Si le nombre de pages est important, l'exportation peut prendre un certain temps.",
+    "large_bulk_export_warning": "Pour préserver les ressources du système, veuillez éviter d'exporter un grand nombre de pages consécutivement",
+    "markdown": "Markdown",
+    "choose_export_format": "Sélectionnez le format d'exportation",
+    "bulk_export_started": "Patientez s'il-vous-plait...",
+    "bulk_export_download_expired": "La période de téléchargement a expiré",
+    "bulk_export_job_expired": "Le traitement a été interrompu car le temps d'exportation était trop long",
+    "export_in_progress": "Exportation en cours",
+    "export_in_progress_explanation": "L'exportation avec le même format est déjà en cours. Souhaitez-vous redémarrer pour exporter le dernier contenu de la page ?",
+    "export_cancel_warning": "Les exportations suivantes en cours seront annulées",
+    "restart": "Redémarrage",
+    "format": "Format",
+    "started_on": "Commencé le"
   },
   "message": {
     "successfully_connected": "Connecté!",
@@ -864,8 +991,7 @@
   },
   "sidebar_header": {
     "show_wip_page": "Voir brouillon",
-    "size_s": "Taille: P",
-    "size_l": "Taille: G"
+    "compact_view": "Vue compacte"
   },
   "sync-latest-revision-body": {
     "menuitem": "Synchroniser avec la dernière révision",

@@ -1,5 +1,11 @@
 # @growi/core
 
+## 1.5.0
+
+### Minor Changes
+
+- [#9729](https://github.com/weseek/growi/pull/9729) [`29ce07f`](https://github.com/weseek/growi/commit/29ce07f562cdef44550adc32d92c5456226c4669) Thanks [@NaokiHigashi28](https://github.com/NaokiHigashi28)! - Expose React instance to window via GrowiFacade
+
 ## 1.4.0
 
 ### Minor Changes
