@@ -71,7 +71,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     createThread: createThreadForKnowledgeAssistant,
     postMessage: postMessageForKnowledgeAssistant,
     processMessage: processMessageForKnowledgeAssistant,
-    form: formForForKnowledgeAssistant,
+    form: formForKnowledgeAssistant,
     resetForm: resetFormForKnowledgeAssistant,
 
     // Views
@@ -87,7 +87,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     createThread: createThreadForEditorAssistant,
     postMessage: postMessageForEditorAssistant,
     processMessage: processMessageForEditorAssistant,
-    form: formForForEditorAssistant,
+    form: formForEditorAssistant,
     resetForm: resetFormEditorAssistant,
     isTextSelected,
 
@@ -99,7 +99,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     placeHolder: placeHolderForEditorAssistant,
   } = useEditorAssistant();
 
-  const form = isEditorAssistant ? formForForEditorAssistant : formForForKnowledgeAssistant;
+  const form = isEditorAssistant ? formForEditorAssistant : formForKnowledgeAssistant;
 
   // Effects
   useFetchAndSetMessageDataEffect(setMessageLogs, threadData?.threadId);
