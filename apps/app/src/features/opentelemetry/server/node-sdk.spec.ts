@@ -1,9 +1,6 @@
 import { ConfigSource } from '@growi/core/dist/interfaces';
 import { Resource } from '@opentelemetry/resources';
 import { NodeSDK } from '@opentelemetry/sdk-node';
-import {
-  beforeEach, describe, expect, it, vi,
-} from 'vitest';
 
 import { configManager } from '~/server/service/config-manager';
 

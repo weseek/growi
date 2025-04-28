@@ -74,7 +74,11 @@ For more information, see https://docs.growi.org/en/admin-guide/admin-cookbook/t
 export const detectServiceInstanceId = async(): Promise<void> => {
   const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
 
-  if (instrumentationEnabled && sdkInstance != null) {
+  if (instrumentationEnabled) {
+    if (sdkInstance == null) {
+      throw new Error('OpenTelemetry instrumentation is not initialized');
+    }
+
     const { generateNodeSDKConfiguration } = await import('./node-sdk-configuration');
 
     const serviceInstanceId = configManager.getConfig('otel:serviceInstanceId')
@@ -90,6 +94,9 @@ export const startOpenTelemetry = (): void => {
   const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
 
   if (instrumentationEnabled && sdkInstance != null) {
+    if (sdkInstance == null) {
+      throw new Error('OpenTelemetry instrumentation is not initialized');
+    }
     sdkInstance.start();
   }
 };
