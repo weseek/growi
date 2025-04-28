@@ -69,7 +69,6 @@ For more information, see https://docs.growi.org/en/admin-guide/admin-cookbook/t
     const { generateNodeSDKConfiguration } = await import('./node-sdk-configuration');
 
     sdkInstance = new NodeSDK(generateNodeSDKConfiguration());
-    sdkInstance.start();
   }
 };
 
@@ -84,7 +83,9 @@ export const initServiceInstanceId = async(): Promise<void> => {
 
     // overwrite resource
     const updatedResource = generateNodeSDKConfiguration(serviceInstanceId).resource;
-    (sdkInstance as any).resource = updatedResource;
+    (sdkInstance as any)._resource = updatedResource;
+
+    sdkInstance.start();
   }
 };
 
