@@ -1,3 +1,4 @@
+import { ConfigSource } from '@growi/core/dist/interfaces';
 import { Resource } from '@opentelemetry/resources';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import {
@@ -25,10 +26,11 @@ describe('node-sdk', () => {
     resetSdkInstance();
 
     // Reset configManager mock implementation
-    (configManager.getConfig as any).mockImplementation((key: string) => {
-      if (key === 'otel:enabled') return true;
-      if (key === 'otel:serviceInstanceId') return undefined;
-      if (key === 'app:serviceInstanceId') return 'test-instance-id';
+    vi.mocked(configManager.getConfig).mockImplementation((key: string, source?: ConfigSource) => {
+      // For otel:enabled, always expect ConfigSource.env
+      if (key === 'otel:enabled') {
+        return source === ConfigSource.env ? true : undefined;
+      }
       return undefined;
     });
   });
@@ -43,9 +45,23 @@ describe('node-sdk', () => {
       expect(sdkInstance).toBeDefined();
       expect(sdkInstance).toBeInstanceOf(NodeSDK);
 
-      assert(sdkInstance != null);
-
       // Verify initial state (service.instance.id should not be set)
+      if (sdkInstance == null) {
+        throw new Error('SDK instance should be defined');
+      }
+
+      // Mock app:serviceInstanceId is available
+      vi.mocked(configManager.getConfig).mockImplementation((key: string, source?: ConfigSource) => {
+        // For otel:enabled, always expect ConfigSource.env
+        if (key === 'otel:enabled') {
+          return source === ConfigSource.env ? true : undefined;
+        }
+
+        // For service instance IDs, only respond when no source is specified
+        if (key === 'app:serviceInstanceId') return 'test-instance-id';
+        return undefined;
+      });
+
       const resource = getResource(sdkInstance);
       expect(resource).toBeInstanceOf(Resource);
       expect(resource.attributes['service.instance.id']).toBeUndefined();
@@ -59,23 +75,32 @@ describe('node-sdk', () => {
     });
 
     it('should update service.instance.id with otel:serviceInstanceId if available', async() => {
-      // Mock otel:serviceInstanceId is available
-      (configManager.getConfig as any).mockImplementation((key: string) => {
-        if (key === 'otel:enabled') return true;
-        if (key === 'otel:serviceInstanceId') return 'otel-instance-id';
-        if (key === 'app:serviceInstanceId') return 'test-instance-id';
-        return undefined;
-      });
-
       // Initialize SDK
       await initInstrumentation();
 
-      // Verify initial state
+      // Get instance and verify initial state
       const sdkInstance = getSdkInstance();
-      assert(sdkInstance != null);
-
+      if (sdkInstance == null) {
+        throw new Error('SDK instance should be defined');
+      }
       const resource = getResource(sdkInstance);
       expect(resource.attributes['service.instance.id']).toBeUndefined();
+
+      // Mock otel:serviceInstanceId is available
+      vi.mocked(configManager.getConfig).mockImplementation((key: string, source?: ConfigSource) => {
+        // For otel:enabled, always expect ConfigSource.env
+        if (key === 'otel:enabled') {
+          return source === ConfigSource.env ? true : undefined;
+        }
+
+        // For service instance IDs, only respond when no source is specified
+        if (source === undefined) {
+          if (key === 'otel:serviceInstanceId') return 'otel-instance-id';
+          if (key === 'app:serviceInstanceId') return 'test-instance-id';
+        }
+
+        return undefined;
+      });
 
       // Call detectServiceInstanceId
       await detectServiceInstanceId();
@@ -87,8 +112,11 @@ describe('node-sdk', () => {
 
     it('should not create SDK instance if instrumentation is disabled', async() => {
       // Mock instrumentation as disabled
-      (configManager.getConfig as any).mockImplementation((key: string) => {
-        if (key === 'otel:enabled') return false;
+      vi.mocked(configManager.getConfig).mockImplementation((key: string, source?: ConfigSource) => {
+        // For otel:enabled, always expect ConfigSource.env and return false
+        if (key === 'otel:enabled') {
+          return source === ConfigSource.env ? false : undefined;
+        }
         return undefined;
       });
 
