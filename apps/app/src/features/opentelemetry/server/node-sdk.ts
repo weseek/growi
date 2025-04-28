@@ -73,7 +73,11 @@ For more information, see https://docs.growi.org/en/admin-guide/admin-cookbook/t
 export const detectServiceInstanceId = async(): Promise<void> => {
   const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
 
-  if (instrumentationEnabled && sdkInstance != null) {
+  if (instrumentationEnabled) {
+    if (sdkInstance == null) {
+      throw new Error('OpenTelemetry SDK instance is not initialized');
+    }
+
     const { generateNodeSDKConfiguration } = await import('./node-sdk-configuration');
 
     const serviceInstanceId = configManager.getConfig('otel:serviceInstanceId')
@@ -90,15 +94,19 @@ export const detectServiceInstanceId = async(): Promise<void> => {
 export const startOpenTelemetry = (): void => {
   const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
 
-  if (instrumentationEnabled && sdkInstance != null) {
+  if (instrumentationEnabled) {
+    if (sdkInstance == null) {
+      throw new Error('OpenTelemetry SDK instance is not initialized');
+    }
+
     sdkInstance.start();
   }
 };
 
 // For testing purposes only
 export const __testing__ = {
-  getSdkInstance: () => sdkInstance,
-  reset: () => {
+  getSdkInstance: (): NodeSDK | undefined => sdkInstance,
+  reset: (): void => {
     sdkInstance = undefined;
   },
 };
