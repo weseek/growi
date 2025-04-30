@@ -371,7 +371,8 @@ module.exports = (crowi) => {
 
         const isVectorStoreCompatible_ = isVectorStoreCompatible(file.originalname, file.mimetype);
         if (isVectorStoreCompatible_) {
-          // TODO: Process for uploading to VectorStore
+          // TODO: https://redmine.weseek.co.jp/issues/165326
+          // Process for uploading to VectorStore
         }
 
         activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ATTACHMENT_ADD });
