@@ -369,8 +369,7 @@ module.exports = (crowi) => {
           attachment: attachment.toObject({ virtuals: true }),
         };
 
-        const isVectorStoreCompatible_ = isVectorStoreCompatible(file);
-        if (isVectorStoreCompatible_) {
+        if (isVectorStoreCompatible(file)) {
           // TODO: https://redmine.weseek.co.jp/issues/165326
           // Process for uploading to VectorStore
         }
