@@ -4,6 +4,7 @@ import express from 'express';
 import multer from 'multer';
 import autoReap from 'multer-autoreap';
 
+import { isVectorStoreCompatible } from '~/features/openai/server/utils/is-vector-store-compatible';
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
@@ -367,6 +368,11 @@ module.exports = (crowi) => {
           revision: serializeRevisionSecurely(page.revision),
           attachment: attachment.toObject({ virtuals: true }),
         };
+
+        const isVectorStoreCompatible_ = isVectorStoreCompatible(file.originalname, file.mimetype);
+        if (isVectorStoreCompatible_) {
+          // TODO: Process for uploading to VectorStore
+        }
 
         activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ATTACHMENT_ADD });
 
