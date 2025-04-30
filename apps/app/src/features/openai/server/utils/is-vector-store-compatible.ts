@@ -29,7 +29,7 @@ type SupportedExtension = keyof typeof supportedFormats;
 
 export const isVectorStoreCompatible = (file: Express.Multer.File): boolean => {
   // Get extension
-  const extension = path.extname(file.originalname);
+  const extension = path.extname(file.originalname).toLowerCase();
 
   // Check if the file extension is supported
   if (!(extension in supportedFormats)) {
