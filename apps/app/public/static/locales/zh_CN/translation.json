@@ -538,7 +538,7 @@
       "update_failed": "更新助手失败"
     },
     "edit_page_description": "编辑助手可以参考的页面。<br> 助手可以参考最多 {{limitLearnablePageCountPerAssistant}} 个页面，包括子页面。",
-    "default_instruction": "您是这个Wiki的知识助手。请按照以下方针提供支持：\n\n- 分析文档相关性并连接信息\n- 提出新的观点\n- 理解问题意图并提供准确信息\n必要时我会以结构化的形式提供信息。",
+    "default_instruction": "您是这个Wiki的知识助手。\n\n## 多语言支持：\n请使用用户输入中使用的相同语言进行回复。\n",
     "add_page_button": "添加页面",
     "page_mode_title": {
       "share": "助理共享",

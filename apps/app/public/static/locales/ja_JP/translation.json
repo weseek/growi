@@ -580,8 +580,8 @@
       "create_failed": "アシスタントの作成に失敗しました",
       "update_failed": "アシスタントの更新に失敗しました"
     },
-    "default_instruction": "あなたはこのWikiの知識アシスタントです。以下の方針で支援を行ってください：\n\n- 文書の関連性分析と情報の関連付け\n- 新しい視点の提案\n- 質問の意図を理解した的確な情報提供 必要に応じて構造化された形式で情報を提供します。",
     "edit_page_description": " アシスタントが参照するページを編集します。<br> 参照できるページは配下ページも含めて {{limitLearnablePageCountPerAssistant}} ページまでです。",
+    "default_instruction": "あなたはこのWikiの知識アシスタントです。\n\n## 多言語サポート:\nユーザーが入力で使用した言語と同じ言語で応答してください。\n",
     "add_page_button": "ページを追加する",
     "page_mode_title": {
       "share": "アシスタントの共有",
