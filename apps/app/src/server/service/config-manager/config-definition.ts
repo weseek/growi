@@ -254,6 +254,7 @@ export const CONFIG_KEYS = [
   'openai:apiKey',
   'openai:chatAssistantInstructions',
   'openai:assistantModel:chat',
+  'openai:assistantModel:edit',
   'openai:threadDeletionCronExpression',
   'openai:threadDeletionBarchSize',
   'openai:threadDeletionApiCallInterval',
@@ -1107,7 +1108,11 @@ Guideline as a RAG:
   /* eslint-enable max-len */
   'openai:assistantModel:chat': defineConfig<OpenAI.Chat.ChatModel>({
     envVarName: 'OPENAI_CHAT_ASSISTANT_MODEL',
-    defaultValue: 'gpt-4o-mini',
+    defaultValue: 'gpt-4.1-mini',
+  }),
+  'openai:assistantModel:edit': defineConfig<OpenAI.Chat.ChatModel>({
+    envVarName: 'OPENAI_EDITOR_ASSISTANT_MODEL',
+    defaultValue: 'gpt-4.1-mini',
   }),
   'openai:threadDeletionCronExpression': defineConfig<string>({
     envVarName: 'OPENAI_THREAD_DELETION_CRON_EXPRESSION',
