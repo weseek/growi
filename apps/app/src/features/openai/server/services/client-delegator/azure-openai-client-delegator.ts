@@ -78,6 +78,10 @@ export class AzureOpenaiClientDelegator implements IOpenaiClientDelegator {
     return this.client.files.create({ file, purpose: 'assistants' });
   }
 
+  async createVectorStoreFile(vectorStoreId: string, fileId: string): Promise<OpenAI.Beta.VectorStores.Files.VectorStoreFile> {
+    return this.client.beta.vectorStores.files.create(vectorStoreId, { file_id: fileId });
+  }
+
   async createVectorStoreFileBatch(vectorStoreId: string, fileIds: string[]): Promise<OpenAI.Beta.VectorStores.FileBatches.VectorStoreFileBatch> {
     return this.client.beta.vectorStores.fileBatches.create(vectorStoreId, { file_ids: fileIds });
   }
