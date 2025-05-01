@@ -4,6 +4,7 @@ import express from 'express';
 import multer from 'multer';
 import autoReap from 'multer-autoreap';
 
+import { getOpenaiService } from '~/features/openai/server/services/openai';
 import { isVectorStoreCompatible } from '~/features/openai/server/utils/is-vector-store-compatible';
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
@@ -370,8 +371,9 @@ module.exports = (crowi) => {
         };
 
         if (isVectorStoreCompatible(file)) {
-          // TODO: https://redmine.weseek.co.jp/issues/165326
-          // Process for uploading to VectorStore
+          const openaiService = getOpenaiService();
+          // no await
+          openaiService?.createVectorStoreFileOnUploadAttachment(page, file);
         }
 
         activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ATTACHMENT_ADD });
