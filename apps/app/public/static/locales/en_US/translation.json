@@ -496,7 +496,6 @@
     "selected_editable_revision": "Selected Page Body (Editable)"
   },
   "sidebar_ai_assistant": {
-    "instruction_label": "Assistant instructions",
     "reference_pages_label": "Reference pages",
     "placeholder": "Ask me anything.",
     "knowledge_assistant_placeholder": "Ask me anything.",
@@ -549,7 +548,7 @@
       "update_failed": "Failed to update assistant"
     },
     "edit_page_description": "Edit pages that the assistant can reference.<br> The assistant can reference up to {{limitLearnablePageCountPerAssistant}} pages including child pages.",
-    "default_instruction": "You are the knowledge assistant for this Wiki. Please provide support according to the following guidelines:\n\n- Analyze document relevance and connect information\n- Suggest new perspectives\n- Provide accurate information based on understanding the intent of questions\nI will provide information in a structured format when necessary.",
+    "default_instruction": "You are the knowledge assistant for this Wiki.\n\n## Multilingual Support:\nRespond in the same language the user uses in their input.\n",
     "add_page_button": "Add page",
     "page_mode_title": {
       "share": "Assistant Sharing",
