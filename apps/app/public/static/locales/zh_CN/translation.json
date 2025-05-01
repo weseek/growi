@@ -486,7 +486,6 @@
     "selected_editable_revision": "选定的可编辑页面正文"
   },
   "sidebar_ai_assistant": {
-    "instruction_label": "助手指令",
     "reference_pages_label": "参考页面",
     "knowledge_assistant_placeholder": "问我任何问题。",
     "editor_assistant_placeholder": "有什么需要帮忙的吗？",

@@ -142,7 +142,6 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
     return (
       <AiAssistantChatInitialView
         description={aiAssistantSidebarData.aiAssistantData.description}
-        additionalInstruction={aiAssistantSidebarData.aiAssistantData.additionalInstruction}
         pagePathPatterns={aiAssistantSidebarData.aiAssistantData.pagePathPatterns}
       />
     );

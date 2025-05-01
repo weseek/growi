@@ -496,7 +496,6 @@
     "selected_editable_revision": "Selected Page Body (Editable)"
   },
   "sidebar_ai_assistant": {
-    "instruction_label": "Assistant instructions",
     "reference_pages_label": "Reference pages",
     "placeholder": "Ask me anything.",
     "knowledge_assistant_placeholder": "Ask me anything.",

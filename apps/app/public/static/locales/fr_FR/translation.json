@@ -491,7 +491,6 @@
     "selected_editable_revision": "Corps de page sélectionné (Modifiable)"
   },
   "sidebar_ai_assistant": {
-    "instruction_label": "Instructions pour l'assistant",
     "reference_pages_label": "Pages de référence",
     "knowledge_assistant_placeholder": "Demandez-moi n'importe quoi.",
     "editor_assistant_placeholder": "Puis-je vous aider ?",
