@@ -9,12 +9,12 @@ export interface IOpenaiClientDelegator {
   retrieveThread(threadId: string): Promise<OpenAI.Beta.Threads.Thread>
   deleteThread(threadId: string): Promise<OpenAI.Beta.Threads.ThreadDeleted>
   getMessages(threadId: string, options?: MessageListParams): Promise<OpenAI.Beta.Threads.Messages.MessagesPage>
-  retrieveVectorStore(vectorStoreId: string): Promise<OpenAI.Beta.VectorStores.VectorStore>
-  createVectorStore(name: string): Promise<OpenAI.Beta.VectorStores.VectorStore>
-  deleteVectorStore(vectorStoreId: string): Promise<OpenAI.Beta.VectorStores.VectorStoreDeleted>
+  retrieveVectorStore(vectorStoreId: string): Promise<OpenAI.VectorStores.VectorStore>
+  createVectorStore(name: string): Promise<OpenAI.VectorStores.VectorStore>
+  deleteVectorStore(vectorStoreId: string): Promise<OpenAI.VectorStores.VectorStoreDeleted>
   uploadFile(file: Uploadable): Promise<OpenAI.Files.FileObject>
-  createVectorStoreFile(vectorStoreId: string, fileId: string): Promise<OpenAI.Beta.VectorStores.Files.VectorStoreFile>
-  createVectorStoreFileBatch(vectorStoreId: string, fileIds: string[]): Promise<OpenAI.Beta.VectorStores.FileBatches.VectorStoreFileBatch>
+  createVectorStoreFile(vectorStoreId: string, fileId: string): Promise<OpenAI.VectorStores.Files.VectorStoreFile>
+  createVectorStoreFileBatch(vectorStoreId: string, fileIds: string[]): Promise<OpenAI.VectorStores.FileBatches.VectorStoreFileBatch>
   deleteFile(fileId: string): Promise<OpenAI.Files.FileDeleted>;
   chatCompletion(body: OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming): Promise<OpenAI.Chat.Completions.ChatCompletion>
 }
