@@ -76,7 +76,7 @@ const contributors = [
           { name: 'maeshinshin' },
           { name: 'arafubeatbox' },
           { name: 'Shunm634-source' },
-          { name: 'kamiji' },
+          { name: 'kamij-i' },
           { name: 'shironegi39' },
           { name: 'ryo-h15' },
           { name: 'jam411' },
