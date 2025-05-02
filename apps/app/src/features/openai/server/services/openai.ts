@@ -588,6 +588,11 @@ class OpenaiService implements IOpenaiService {
     const uploadedFile = await this.client.uploadFile(file_);
 
     for await (const aiAssistant of aiAssistants) {
+      const pagesToVectorize = await this.filterPagesByAccessScope(aiAssistant, [page]);
+      if (pagesToVectorize.length === 0) {
+        continue;
+      }
+
       const vectorStoreRelation = aiAssistant.vectorStore;
       if (vectorStoreRelation == null || !isPopulated(vectorStoreRelation)) {
         continue;
