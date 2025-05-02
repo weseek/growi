@@ -35,6 +35,7 @@ import {
 } from '../../interfaces/ai-assistant';
 import type { MessageListParams } from '../../interfaces/message';
 import { ThreadType } from '../../interfaces/thread-relation';
+import type { IVectorStore } from '../../interfaces/vector-store';
 import { removeGlobPath } from '../../utils/remove-glob-path';
 import AiAssistantModel, { type AiAssistantDocument } from '../models/ai-assistant';
 import { convertMarkdownToHtml } from '../utils/convert-markdown-to-html';
@@ -131,8 +132,11 @@ class OpenaiService implements IOpenaiService {
     }
 
     try {
-      const vectorStoreRelation = aiAssistantId != null ? await this.getVectorStoreRelationByAiAssistantId(aiAssistantId) : null;
-      const thread = await this.client.createThread(vectorStoreRelation?.vectorStoreId);
+      const aiAssistant = aiAssistantId != null
+        ? await AiAssistantModel.findOne({ _id: { $eq: aiAssistantId } }).populate<{ vectorStore: IVectorStore }>('vectorStore')
+        : null;
+
+      const thread = await this.client.createThread(aiAssistant?.vectorStore?.vectorStoreId);
       const threadRelation = await ThreadRelationModel.create({
         userId,
         type,
@@ -222,15 +226,6 @@ class OpenaiService implements IOpenaiService {
     return messages;
   }
 
-
-  async getVectorStoreRelationByAiAssistantId(aiAssistantId: string): Promise<VectorStoreDocument> {
-    const aiAssistant = await AiAssistantModel.findOne({ _id: { $eq: aiAssistantId } }).populate('vectorStore');
-    if (aiAssistant == null) {
-      throw createError(404, 'AiAssistant document does not exist');
-    }
-
-    return aiAssistant.vectorStore as VectorStoreDocument;
-  }
 
   async getVectorStoreRelationsByPageIds(pageIds: Types.ObjectId[]): Promise<VectorStoreDocument[]> {
     const pipeline = [
