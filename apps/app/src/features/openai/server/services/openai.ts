@@ -1,4 +1,3 @@
-import fs from 'fs';
 import assert from 'node:assert';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
