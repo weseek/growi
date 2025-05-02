@@ -79,7 +79,7 @@ export interface IOpenaiService {
   createVectorStoreFile(vectorStoreRelation: VectorStoreDocument, pages: PageDocument[]): Promise<void>;
   createVectorStoreFileOnPageCreate(pages: PageDocument[]): Promise<void>;
   updateVectorStoreFileOnPageUpdate(page: HydratedDocument<PageDocument>): Promise<void>;
-  createVectorStoreFileOnUploadAttachment(page: HydratedDocument<PageDocument>, file: Express.Multer.File): Promise<void>;
+  createVectorStoreFileOnUploadAttachment(page: HydratedDocument<PageDocument>, buffer: Buffer, fileName: string): Promise<void>;
   deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId): Promise<void>;
   deleteVectorStoreFilesByPageIds(pageIds: Types.ObjectId[]): Promise<void>;
   deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
@@ -577,15 +577,15 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  async createVectorStoreFileOnUploadAttachment(page: HydratedDocument<PageDocument>, file: Express.Multer.File): Promise<void> {
+  async createVectorStoreFileOnUploadAttachment(page: HydratedDocument<PageDocument>, buffer: Buffer, fileName: string): Promise<void> {
     const aiAssistants = await this.findAiAssistantByPagePath([page.path], { shouldPopulateVectorStore: true });
     if (aiAssistants.length === 0) {
       return;
     }
 
-    const fileStream = fs.createReadStream(file.path, { flags: 'r', autoClose: true });
-    const file_ = await toFile(fileStream, file.originalname);
+    const file_ = await toFile(buffer, fileName);
     const uploadedFile = await this.client.uploadFile(file_);
+    logger.debug('uploadedFile', uploadedFile);
 
     for await (const aiAssistant of aiAssistants) {
       const pagesToVectorize = await this.filterPagesByAccessScope(aiAssistant, [page]);

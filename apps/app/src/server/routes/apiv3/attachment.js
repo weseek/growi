@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 import { ErrorV3 } from '@growi/core/dist/models';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import express from 'express';
@@ -371,9 +373,12 @@ module.exports = (crowi) => {
         };
 
         if (isVectorStoreCompatible(file)) {
+          const fileName = file.originalname;
+          // Keep uploaded files in memory as they are deleted by autoReap middleware
+          const fileContent = fs.readFileSync(file.path);
           const openaiService = getOpenaiService();
           // no await
-          openaiService?.createVectorStoreFileOnUploadAttachment(page, file);
+          openaiService?.createVectorStoreFileOnUploadAttachment(page, fileContent, fileName);
         }
 
         activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ATTACHMENT_ADD });
