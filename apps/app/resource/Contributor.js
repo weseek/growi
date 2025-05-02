@@ -69,8 +69,6 @@ const contributors = [
           { name: 'naoki-higashi-28' },
           { name: 'meiri-k' },
           { name: 'soumaeda' },
-          { name: 'Keigo-Hirohara' },
-          { name: 'AikaHiyama' },
           { name: 'akin0ri' },
           { name: 'ffujisawa' },
           { name: 'maeshinshin' },
