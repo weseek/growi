@@ -304,6 +304,12 @@ class OpenaiService implements IOpenaiService {
     return uploadedFile;
   }
 
+  private async uploadFileForAttachment(fileContent: Buffer, fileName: string): Promise<OpenAI.Files.FileObject> {
+    const file = await toFile(Readable.from(fileContent), fileName);
+    const uploadedFile = await this.client.uploadFile(file);
+    return uploadedFile;
+  }
+
   async deleteVectorStore(vectorStoreRelationId: string): Promise<void> {
     const vectorStoreDocument: VectorStoreDocument | null = await VectorStoreModel.findOne({ _id: vectorStoreRelationId, isDeleted: false });
     if (vectorStoreDocument == null) {
@@ -582,10 +588,7 @@ class OpenaiService implements IOpenaiService {
       return;
     }
 
-    const file_ = await toFile(buffer, fileName);
-    const uploadedFile = await this.client.uploadFile(file_);
-    logger.debug('uploadedFile', uploadedFile);
-
+    const uploadedFile = await this.uploadFileForAttachment(buffer, fileName);
     for await (const aiAssistant of aiAssistants) {
       const pagesToVectorize = await this.filterPagesByAccessScope(aiAssistant, [page]);
       if (pagesToVectorize.length === 0) {
@@ -596,6 +599,11 @@ class OpenaiService implements IOpenaiService {
       if (vectorStoreRelation == null || !isPopulated(vectorStoreRelation)) {
         continue;
       }
+
+      const vectorStoreFileRelationsMap: VectorStoreFileRelationsMap = new Map();
+      prepareVectorStoreFileRelations(vectorStoreRelation._id as Types.ObjectId, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
+      const vectorStoreFileRelations = Array.from(vectorStoreFileRelationsMap.values());
+      await VectorStoreFileRelationModel.upsertVectorStoreFileRelations(vectorStoreFileRelations);
 
       await this.client.createVectorStoreFile(vectorStoreRelation.vectorStoreId, uploadedFile.id);
     }
