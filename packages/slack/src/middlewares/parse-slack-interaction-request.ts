@@ -1,4 +1,4 @@
-import type { Response, NextFunction } from 'express';
+import type { NextFunction, Response } from 'express';
 
 import type { RequestFromSlack } from '../interfaces/request-from-slack';
 import { InteractionPayloadAccessor } from '../utils/interaction-payload-accessor';

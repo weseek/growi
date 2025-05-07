@@ -1,4 +1,4 @@
-import type { Response, NextFunction } from 'express';
+import type { NextFunction, Response } from 'express';
 import createError from 'http-errors';
 
 import type { RequestFromGrowi } from '../interfaces/request-between-growi-and-proxy';
