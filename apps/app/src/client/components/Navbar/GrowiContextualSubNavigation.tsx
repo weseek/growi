@@ -160,7 +160,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
             </DropdownItem>
           </span>
           <Tooltip
-            placement="left"
+            placement={window.innerWidth < 800 ? 'bottom' : 'left'}
             isOpen={!isUploadEnabled && isBulkExportTooltipOpen}
             // Tooltip cannot be activated when target is disabled so set the target to wrapper span
             target="bulkExportDropdownItem"
