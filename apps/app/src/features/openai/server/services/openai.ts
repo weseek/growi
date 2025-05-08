@@ -95,7 +95,6 @@ class OpenaiService implements IOpenaiService {
   }
 
   async generateThreadTitle(message: string): Promise<string | null> {
-    const model = configManager.getConfig('openai:assistantModel:chat');
     const systemMessage = [
       'Create a brief title (max 5 words) from your message.',
       'Respond in the same language the user uses in their input.',
@@ -103,7 +102,7 @@ class OpenaiService implements IOpenaiService {
     ].join('');
 
     const threadTitleCompletion = await this.client.chatCompletion({
-      model,
+      model: 'gpt-4.1-nano',
       messages: [
         {
           role: 'system',
