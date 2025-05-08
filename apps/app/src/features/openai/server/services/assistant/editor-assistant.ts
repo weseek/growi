@@ -2,8 +2,8 @@ import type OpenAI from 'openai';
 
 import { configManager } from '~/server/service/config-manager';
 
+import { AssistantType } from './assistant-types';
 import { getOrCreateAssistant } from './create-assistant';
-
 
 let editorAssistant: OpenAI.Beta.Assistant | undefined;
 
