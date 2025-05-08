@@ -1,13 +1,9 @@
-import fs from 'fs';
-
 import { ErrorV3 } from '@growi/core/dist/models';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import express from 'express';
 import multer from 'multer';
-import autoReap from 'multer-autoreap';
 
 import { getOpenaiService } from '~/features/openai/server/services/openai';
-import { isVectorStoreCompatible } from '~/features/openai/server/utils/is-vector-store-compatible';
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
@@ -19,6 +15,7 @@ import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { certifySharedPageAttachmentMiddleware } from '../../middlewares/certify-shared-page-attachment';
 import { excludeReadOnlyUser } from '../../middlewares/exclude-read-only-user';
+import { reapFileManually } from '../../util/reap-files-manually';
 
 
 const logger = loggerFactory('growi:routes:apiv3:attachment'); // eslint-disable-line no-unused-vars
@@ -343,7 +340,7 @@ module.exports = (crowi) => {
    *          500:
    *            $ref: '#/components/responses/500'
    */
-  router.post('/', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, uploads.single('file'), autoReap,
+  router.post('/', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, uploads.single('file'),
     validator.retrieveAddAttachment, apiV3FormValidator, addActivity,
     async(req, res) => {
 
@@ -364,22 +361,17 @@ module.exports = (crowi) => {
           return res.apiv3Err(`Forbidden to access to the page '${page.id}'`);
         }
 
-        const attachment = await attachmentService.createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE);
+        // TODO: move later
+        const openaiService = getOpenaiService();
+        attachmentService.addAttachHandler(openaiService.createVectorStoreFileOnUploadAttachment);
+
+        const attachment = await attachmentService.createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE, reapFileManually);
 
         const result = {
           page: serializePageSecurely(page),
           revision: serializeRevisionSecurely(page.revision),
           attachment: attachment.toObject({ virtuals: true }),
         };
-
-        if (isVectorStoreCompatible(file)) {
-          const fileName = file.originalname;
-          // Keep uploaded files in memory as they are deleted by autoReap middleware
-          const fileContent = fs.readFileSync(file.path);
-          const openaiService = getOpenaiService();
-          // no await
-          openaiService?.createVectorStoreFileOnUploadAttachment(page, fileContent, fileName);
-        }
 
         activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ATTACHMENT_ADD });
 

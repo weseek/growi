@@ -40,6 +40,7 @@ import { removeGlobPath } from '../../utils/remove-glob-path';
 import AiAssistantModel, { type AiAssistantDocument } from '../models/ai-assistant';
 import { convertMarkdownToHtml } from '../utils/convert-markdown-to-html';
 import { generateGlobPatterns } from '../utils/generate-glob-patterns';
+import { isVectorStoreCompatible } from '../utils/is-vector-store-compatible';
 
 import { getClient } from './client-delegator';
 import { openaiApiErrorHandler } from './openai-api-error-handler';
@@ -78,7 +79,7 @@ export interface IOpenaiService {
   createVectorStoreFile(vectorStoreRelation: VectorStoreDocument, pages: PageDocument[]): Promise<void>;
   createVectorStoreFileOnPageCreate(pages: PageDocument[]): Promise<void>;
   updateVectorStoreFileOnPageUpdate(page: HydratedDocument<PageDocument>): Promise<void>;
-  createVectorStoreFileOnUploadAttachment(page: HydratedDocument<PageDocument>, buffer: Buffer, fileName: string): Promise<void>;
+  createVectorStoreFileOnUploadAttachment(pageId: string, file: Express.Multer.File, readable: Readable): Promise<void>;
   deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId): Promise<void>;
   deleteVectorStoreFilesByPageIds(pageIds: Types.ObjectId[]): Promise<void>;
   deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
@@ -89,6 +90,10 @@ export interface IOpenaiService {
   isLearnablePageLimitExceeded(user: IUserHasId, pagePathPatterns: string[]): Promise<boolean>;
 }
 class OpenaiService implements IOpenaiService {
+
+  constructor() {
+    this.createVectorStoreFileOnUploadAttachment = this.createVectorStoreFileOnUploadAttachment.bind(this);
+  }
 
   private get client() {
     const openaiServiceType = configManager.getConfig('openai:serviceType');
@@ -304,9 +309,9 @@ class OpenaiService implements IOpenaiService {
     return uploadedFile;
   }
 
-  private async uploadFileForAttachment(fileContent: Buffer, fileName: string): Promise<OpenAI.Files.FileObject> {
-    const file = await toFile(Readable.from(fileContent), fileName);
-    const uploadedFile = await this.client.uploadFile(file);
+  private async uploadFileForAttachment(readable: Readable, fileName: string): Promise<OpenAI.Files.FileObject> {
+    const uploadableFile = await toFile(Readable.from(readable), fileName);
+    const uploadedFile = await this.client.uploadFile(uploadableFile);
     return uploadedFile;
   }
 
@@ -557,6 +562,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   async updateVectorStoreFileOnPageUpdate(page: HydratedDocument<PageDocument>) {
+    console.log('this', this);
     const aiAssistants = await this.findAiAssistantByPagePath([page.path], { shouldPopulateVectorStore: true });
 
     if (aiAssistants.length === 0) {
@@ -582,13 +588,25 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  async createVectorStoreFileOnUploadAttachment(page: HydratedDocument<PageDocument>, buffer: Buffer, fileName: string): Promise<void> {
+  async createVectorStoreFileOnUploadAttachment(pageId: string, file: Express.Multer.File, readable: Readable): Promise<void> {
+    if (!isVectorStoreCompatible(file)) {
+      return;
+    }
+
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
+    const page = await Page.findById(pageId);
+    if (page == null) {
+      return;
+    }
+
     const aiAssistants = await this.findAiAssistantByPagePath([page.path], { shouldPopulateVectorStore: true });
     if (aiAssistants.length === 0) {
       return;
     }
 
-    const uploadedFile = await this.uploadFileForAttachment(buffer, fileName);
+    const uploadedFile = await this.uploadFileForAttachment(readable, file.originalname);
+    logger.debug('Uploaded file', uploadedFile);
+
     for await (const aiAssistant of aiAssistants) {
       const pagesToVectorize = await this.filterPagesByAccessScope(aiAssistant, [page]);
       if (pagesToVectorize.length === 0) {

@@ -15,6 +15,11 @@ const logger = loggerFactory('growi:service:AttachmentService');
  */
 class AttachmentService {
 
+  /** @type {Array<(pageId: string, file: Express.Multer.File, readable: Readable) => Promise<void>>} */
+  attachHandlers = [];
+
+  detachHandlers = [];
+
   /** @type {import('~/server/crowi').default} Crowi instance */
   crowi;
 
@@ -23,7 +28,7 @@ class AttachmentService {
     this.crowi = crowi;
   }
 
-  async createAttachment(file, user, pageId = null, attachmentType) {
+  async createAttachment(file, user, pageId = null, attachmentType, onAttached) {
     const { fileUploadService } = this.crowi;
 
     // check limit
@@ -39,6 +44,12 @@ class AttachmentService {
     // create an Attachment document and upload file
     let attachment;
     try {
+      const attachedHandlerPromises = this.attachHandlers.map((handler) => {
+        return handler(pageId, file, fileStream);
+      });
+
+      Promise.all(attachedHandlerPromises);
+
       attachment = Attachment.createWithoutSave(pageId, user, file.originalname, file.mimetype, file.size, attachmentType);
       await fileUploadService.uploadAttachment(fileStream, attachment);
       await attachment.save();
@@ -47,6 +58,12 @@ class AttachmentService {
       // delete temporary file
       fs.unlink(file.path, (err) => { if (err) { logger.error('Error while deleting tmp file.') } });
       throw err;
+    }
+    finally {
+      onAttached?.(file);
+
+      // TODO: move later
+      this.attachHandlers = [];
     }
 
     return attachment;
@@ -86,6 +103,22 @@ class AttachmentService {
     const count = await Attachment.countDocuments(query);
 
     return count >= 1;
+  }
+
+  /**
+   * Register a handler that will be called after attachment creation
+   * @param {(pageId: string, file: Express.Multer.File, readable: Readable) => Promise<void>} handler
+   */
+  addAttachHandler(handler) {
+    this.attachHandlers.push(handler);
+  }
+
+  /**
+   * Register a handler that will be called before attachment deletion
+   * @param {(attachment: Attachment) => Promise<void>} handler
+   */
+  addDetachHandler(handler) {
+    this.detachHandlers.push(handler);
   }
 
 }
