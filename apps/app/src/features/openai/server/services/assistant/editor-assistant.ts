@@ -14,7 +14,7 @@ export const getOrCreateEditorAssistant = async(): Promise<OpenAI.Beta.Assistant
 
   editorAssistant = await getOrCreateAssistant({
     type: AssistantType.EDIT,
-    model: configManager.getConfig('openai:assistantModel:chat'),
+    model: configManager.getConfig('openai:assistantModel:edit'),
     /* eslint-disable max-len */
     instructions: `# Your Role
 You are an Editor Assistant for GROWI, a markdown wiki system.
