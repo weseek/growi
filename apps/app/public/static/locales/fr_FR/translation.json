@@ -778,7 +778,8 @@
     "export_cancel_warning": "Les exportations suivantes en cours seront annulées",
     "restart": "Redémarrage",
     "format": "Format",
-    "started_on": "Commencé le"
+    "started_on": "Commencé le",
+    "file_upload_not_configured": "Les paramètres de téléchargement de fichiers ne sont pas configurés"
   },
   "message": {
     "successfully_connected": "Connecté!",

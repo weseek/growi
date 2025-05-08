@@ -784,7 +784,8 @@
     "export_cancel_warning": "The following export in progress will be canceled",
     "restart": "Restart",
     "format": "Format",
-    "started_on": "Started on"
+    "started_on": "Started on",
+    "file_upload_not_configured": "File upload settings are not configured"
   },
   "message": {
     "successfully_connected": "Successfully Connected!",
