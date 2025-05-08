@@ -25,7 +25,6 @@ export const publishInitialHomeView = (
             type: 'mrkdwn',
             text:
               'Learn how to use GROWI Official bot.' +
-              // eslint-disable-next-line max-len
               'See <https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html#official-bot-settings | Docs>.',
           },
         },
