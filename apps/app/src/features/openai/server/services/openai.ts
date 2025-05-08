@@ -562,7 +562,6 @@ class OpenaiService implements IOpenaiService {
   }
 
   async updateVectorStoreFileOnPageUpdate(page: HydratedDocument<PageDocument>) {
-    console.log('this', this);
     const aiAssistants = await this.findAiAssistantByPagePath([page.path], { shouldPopulateVectorStore: true });
 
     if (aiAssistants.length === 0) {
