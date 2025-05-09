@@ -4,6 +4,8 @@ import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { Attachment } from '../../models/attachment';
+
+import { validateImageContentType } from './image-content-type-validator';
 /* eslint-disable no-use-before-define */
 
 
@@ -246,10 +248,11 @@ export const routesFactory = (crowi) => {
 
     const file = req.file;
 
-    // check type
-    const acceptableFileType = /image\/.+/;
-    if (!file.mimetype.match(acceptableFileType)) {
-      return res.json(ApiResponse.error('File type error. Only image files is allowed to set as user picture.'));
+    // Validate file type
+    const { isValid, error } = validateImageContentType(file.mimetype);
+
+    if (!isValid) {
+      return res.json(ApiResponse.error(error));
     }
 
     let attachment;

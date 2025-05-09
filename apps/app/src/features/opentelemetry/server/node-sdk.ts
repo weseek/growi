@@ -4,10 +4,11 @@ import type { NodeSDK } from '@opentelemetry/sdk-node';
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
+import { setResource } from './node-sdk-resource';
+
 const logger = loggerFactory('growi:opentelemetry:server');
 
-
-let sdkInstance: NodeSDK;
+let sdkInstance: NodeSDK | undefined;
 
 /**
  * Overwrite "OTEL_SDK_DISABLED" env var before sdk.start() is invoked if needed.
@@ -33,10 +34,9 @@ function overwriteSdkDisabled(): void {
     process.env.OTEL_SDK_DISABLED = 'true';
     return;
   }
-
 }
 
-export const startInstrumentation = async(): Promise<void> => {
+export const initInstrumentation = async(): Promise<void> => {
   if (sdkInstance != null) {
     logger.warn('OpenTelemetry instrumentation already started');
     return;
@@ -49,7 +49,6 @@ export const startInstrumentation = async(): Promise<void> => {
 
   const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
   if (instrumentationEnabled) {
-
     logger.info(`GROWI now collects anonymous telemetry.
 
 This data is used to help improve GROWI, but you can opt-out at any time.
@@ -69,35 +68,43 @@ For more information, see https://docs.growi.org/en/admin-guide/admin-cookbook/t
     const { generateNodeSDKConfiguration } = await import('./node-sdk-configuration');
 
     sdkInstance = new NodeSDK(generateNodeSDKConfiguration());
-    sdkInstance.start();
   }
 };
 
-export const initServiceInstanceId = async(): Promise<void> => {
+export const detectServiceInstanceId = async(): Promise<void> => {
   const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
 
   if (instrumentationEnabled) {
+    if (sdkInstance == null) {
+      throw new Error('OpenTelemetry instrumentation is not initialized');
+    }
+
     const { generateNodeSDKConfiguration } = await import('./node-sdk-configuration');
 
     const serviceInstanceId = configManager.getConfig('otel:serviceInstanceId')
       ?? configManager.getConfig('app:serviceInstanceId');
 
-    // overwrite resource
-    const updatedResource = generateNodeSDKConfiguration(serviceInstanceId).resource;
-    (sdkInstance as any).resource = updatedResource;
+    // Update resource with new service instance id
+    const newConfig = generateNodeSDKConfiguration(serviceInstanceId);
+    setResource(sdkInstance, newConfig.resource);
   }
 };
 
-// public async shutdownInstrumentation(): Promise<void> {
-//   await this.sdkInstance.shutdown();
+export const startOpenTelemetry = (): void => {
+  const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
 
-//   // メモ: 以下の restart コードは動かない
-//   // span/metrics ともに何も出なくなる
-//   // そもそも、restart するような使い方が出来なさそう？
-//   // see: https://github.com/open-telemetry/opentelemetry-specification/issues/27/
-//   // const sdk = new NodeSDK({...});
-//   // sdk.start();
-//   // await sdk.shutdown().catch(console.error);
-//   // const newSdk = new NodeSDK({...});
-//   // newSdk.start();
-// }
+  if (instrumentationEnabled && sdkInstance != null) {
+    if (sdkInstance == null) {
+      throw new Error('OpenTelemetry instrumentation is not initialized');
+    }
+    sdkInstance.start();
+  }
+};
+
+// For testing purposes only
+export const __testing__ = {
+  getSdkInstance: (): NodeSDK | undefined => sdkInstance,
+  reset: (): void => {
+    sdkInstance = undefined;
+  },
+};

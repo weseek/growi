@@ -147,7 +147,12 @@ const ProfileImageSettings = (): JSX.Element => {
               {t('Upload new image')}
             </label>
             <div className="col-md-6 col-lg-8">
-              <input type="file" onChange={selectFileHandler} name="profileImage" accept="image/*" />
+              <input
+                type="file"
+                onChange={selectFileHandler}
+                name="profileImage"
+                accept="image/png,image/jpeg,image/jpg,image/gif,image/webp,image/avif,image/heic,image/heif,image/tiff,image/svg+xml"
+              />
             </div>
           </div>
         </div>

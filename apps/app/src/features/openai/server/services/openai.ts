@@ -34,6 +34,8 @@ import {
   type AccessibleAiAssistants, type AiAssistant, AiAssistantAccessScope, AiAssistantShareScope,
 } from '../../interfaces/ai-assistant';
 import type { MessageListParams } from '../../interfaces/message';
+import { ThreadType } from '../../interfaces/thread-relation';
+import type { IVectorStore } from '../../interfaces/vector-store';
 import { removeGlobPath } from '../../utils/remove-glob-path';
 import AiAssistantModel, { type AiAssistantDocument } from '../models/ai-assistant';
 import { convertMarkdownToHtml } from '../utils/convert-markdown-to-html';
@@ -66,7 +68,7 @@ const convertPathPatternsToRegExp = (pagePathPatterns: string[]): Array<string |
 };
 
 export interface IOpenaiService {
-  createThread(userId: string, aiAssistantId: string, initialUserMessage: string): Promise<ThreadRelationDocument>;
+  createThread(userId: string, type: ThreadType, aiAssistantId?: string, initialUserMessage?: string): Promise<ThreadRelationDocument>;
   getThreadsByAiAssistantId(aiAssistantId: string): Promise<ThreadRelationDocument[]>
   deleteThread(threadRelationId: string): Promise<ThreadRelationDocument>;
   deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
@@ -93,7 +95,6 @@ class OpenaiService implements IOpenaiService {
   }
 
   async generateThreadTitle(message: string): Promise<string | null> {
-    const model = configManager.getConfig('openai:assistantModel:chat');
     const systemMessage = [
       'Create a brief title (max 5 words) from your message.',
       'Respond in the same language the user uses in their input.',
@@ -101,7 +102,7 @@ class OpenaiService implements IOpenaiService {
     ].join('');
 
     const threadTitleCompletion = await this.client.chatCompletion({
-      model,
+      model: 'gpt-4.1-nano',
       messages: [
         {
           role: 'system',
@@ -118,9 +119,7 @@ class OpenaiService implements IOpenaiService {
     return threadTitle;
   }
 
-  async createThread(userId: string, aiAssistantId: string, initialUserMessage: string): Promise<ThreadRelationDocument> {
-    const vectorStoreRelation = await this.getVectorStoreRelationByAiAssistantId(aiAssistantId);
-
+  async createThread(userId: string, type: ThreadType, aiAssistantId?: string, initialUserMessage?: string): Promise<ThreadRelationDocument> {
     let threadTitle: string | null = null;
     if (initialUserMessage != null) {
       try {
@@ -132,9 +131,14 @@ class OpenaiService implements IOpenaiService {
     }
 
     try {
-      const thread = await this.client.createThread(vectorStoreRelation.vectorStoreId);
+      const aiAssistant = aiAssistantId != null
+        ? await AiAssistantModel.findOne({ _id: { $eq: aiAssistantId } }).populate<{ vectorStore: IVectorStore }>('vectorStore')
+        : null;
+
+      const thread = await this.client.createThread(aiAssistant?.vectorStore?.vectorStoreId);
       const threadRelation = await ThreadRelationModel.create({
         userId,
+        type,
         aiAssistant: aiAssistantId,
         threadId: thread.id,
         title: threadTitle,
@@ -159,8 +163,8 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  async getThreadsByAiAssistantId(aiAssistantId: string): Promise<ThreadRelationDocument[]> {
-    const threadRelations = await ThreadRelationModel.find({ aiAssistant: aiAssistantId });
+  async getThreadsByAiAssistantId(aiAssistantId: string, type: ThreadType = ThreadType.KNOWLEDGE): Promise<ThreadRelationDocument[]> {
+    const threadRelations = await ThreadRelationModel.find({ aiAssistant: aiAssistantId, type });
     return threadRelations;
   }
 
@@ -221,15 +225,6 @@ class OpenaiService implements IOpenaiService {
     return messages;
   }
 
-
-  async getVectorStoreRelationByAiAssistantId(aiAssistantId: string): Promise<VectorStoreDocument> {
-    const aiAssistant = await AiAssistantModel.findOne({ _id: { $eq: aiAssistantId } }).populate('vectorStore');
-    if (aiAssistant == null) {
-      throw createError(404, 'AiAssistant document does not exist');
-    }
-
-    return aiAssistant.vectorStore as VectorStoreDocument;
-  }
 
   async getVectorStoreRelationsByPageIds(pageIds: Types.ObjectId[]): Promise<VectorStoreDocument[]> {
     const pipeline = [

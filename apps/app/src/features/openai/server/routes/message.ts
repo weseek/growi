@@ -13,7 +13,6 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
-import { shouldHideMessageKey } from '../../interfaces/message';
 import { MessageErrorCode, type StreamErrorCode } from '../../interfaces/message-error';
 import AiAssistantModel from '../models/ai-assistant';
 import ThreadRelationModel from '../models/thread-relation';
@@ -85,6 +84,7 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
       threadRelation.updateThreadExpiration();
 
       let stream: AssistantStream;
+      const isSummaryMode = req.body.summaryMode ?? false;
 
       try {
         const assistant = await getOrCreateChatAssistant();
@@ -93,18 +93,14 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
         stream = openaiClient.beta.threads.runs.stream(thread.id, {
           assistant_id: assistant.id,
           additional_messages: [
-            {
-              role: 'assistant',
-              content: req.body.summaryMode
-                ? 'Turn on summary mode: I will try to answer concisely, aiming for 1-3 sentences.'
-                : 'I will turn off summary mode and answer.',
-              metadata: {
-                [shouldHideMessageKey]: 'true',
-              },
-            },
             { role: 'user', content: req.body.userMessage },
           ],
-          additional_instructions: aiAssistant.additionalInstruction,
+          additional_instructions: [
+            aiAssistant.additionalInstruction,
+            isSummaryMode
+              ? 'Turn on summary mode: I will try to answer concisely, aiming for 1-3 sentences.'
+              : 'I will turn off summary mode and answer.',
+          ].join('\n'),
         });
 
       }

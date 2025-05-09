@@ -23,9 +23,10 @@ import { useSWRxCurrentPage, useCurrentPagePath } from '~/stores/page';
 import { useIsDeviceLargerThanMd, useSelectedGrant } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
-import { NotAvailable } from './NotAvailable';
-import { GrantSelector } from './SavePageControls/GrantSelector';
-import { SlackNotification } from './SlackNotification';
+import { NotAvailable } from '../../NotAvailable';
+import { SlackNotification } from '../../SlackNotification';
+
+import { GrantSelector } from './GrantSelector';
 
 
 declare global {

@@ -20,7 +20,7 @@ export const UserInfo = (props: UserInfoProps): JSX.Element => {
 
   return (
     <div className={`${styles['grw-users-info']} grw-users-info d-flex align-items-center d-edit-none mb-5 pb-3 border-bottom`} data-testid="grw-users-info">
-      <UserPicture user={author} />
+      <UserPicture user={author} noTooltip noLink />
       <div className="users-meta">
         <h1 className="user-page-name">
           {author.name}

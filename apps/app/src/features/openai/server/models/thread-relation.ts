@@ -3,7 +3,7 @@ import { type Model, type Document, Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
-import type { IThreadRelation } from '../../interfaces/thread-relation';
+import { type IThreadRelation, ThreadType } from '../../interfaces/thread-relation';
 
 const DAYS_UNTIL_EXPIRATION = 3;
 
@@ -28,7 +28,6 @@ const schema = new Schema<ThreadRelationDocument, ThreadRelationModel>({
   aiAssistant: {
     type: Schema.Types.ObjectId,
     ref: 'AiAssistant',
-    required: true,
   },
   threadId: {
     type: String,
@@ -37,6 +36,11 @@ const schema = new Schema<ThreadRelationDocument, ThreadRelationModel>({
   },
   title: {
     type: String,
+  },
+  type: {
+    type: String,
+    enum: Object.values(ThreadType),
+    required: true,
   },
   expiredAt: {
     type: Date,

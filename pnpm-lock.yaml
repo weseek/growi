@@ -206,8 +206,8 @@ importers:
         specifier: ^4.4.1
         version: 4.4.1
       '@azure/openai':
-        specifier: ^2.0.0-beta.2
-        version: 2.0.0-beta.2
+        specifier: ^2.0.0
+        version: 2.0.0
       '@azure/storage-blob':
         specifier: ^12.16.0
         version: 12.23.0
@@ -448,6 +448,9 @@ importers:
       js-yaml:
         specifier: ^4.1.0
         version: 4.1.0
+      jsonrepair:
+        specifier: ^3.12.0
+        version: 3.12.0
       katex:
         specifier: ^0.16.21
         version: 0.16.21
@@ -542,8 +545,8 @@ importers:
         specifier: ~1.5.0
         version: 1.5.1
       openai:
-        specifier: ^4.56.0
-        version: 4.56.0(encoding@0.1.13)(zod@3.23.8)
+        specifier: ^4.96.2
+        version: 4.96.2(encoding@0.1.13)(ws@8.18.0)(zod@3.24.2)
       openid-client:
         specifier: ^5.4.0
         version: 5.6.5
@@ -754,6 +757,9 @@ importers:
       yjs:
         specifier: ^13.6.18
         version: 13.6.19
+      zod:
+        specifier: ^3.24.2
+        version: 3.24.2
     devDependencies:
       '@emoji-mart/data':
         specifier: ^1.2.1
@@ -1342,6 +1348,12 @@ importers:
       simplebar-react:
         specifier: ^2.3.6
         version: 2.4.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      socket.io:
+        specifier: ^4.7.5
+        version: 4.8.1
+      socket.io-client:
+        specifier: ^4.7.5
+        version: 4.8.1
       string-width:
         specifier: '=4.2.2'
         version: 4.2.2
@@ -2217,8 +2229,8 @@ packages:
     resolution: {integrity: sha512-8tvi6Cos3m+0KmRbPjgkySXi+UQU/QiuVRFnrxIwt5xZlEEFa69O04RTaNESGgImyBBlYbo2mfE8/U8Bbdk1WQ==}
     engines: {node: '>=16'}
 
-  '@azure/openai@2.0.0-beta.2':
-    resolution: {integrity: sha512-cElfZcBno4h3OWxZPvqqqtDUQ7jcGANlzF1oC9bigRiKe/0bAfBmOSYqPyb6Gaf+ngBVo9IWJs/5ZWNAVSvkqQ==}
+  '@azure/openai@2.0.0':
+    resolution: {integrity: sha512-zSNhwarYbqg3P048uKMjEjbge41OnAgmiiE1elCHVsuCCXRyz2BXnHMJkW6WR6ZKQy5NHswJNUNSWsuqancqFA==}
     engines: {node: '>=18.0.0'}
 
   '@azure/storage-blob@12.23.0':
@@ -9932,6 +9944,10 @@ packages:
     resolution: {integrity: sha512-p/nXbhSEcu3pZRdkW1OfJhpsVtW1gd4Wa1fnQc9YLiTfAjn0312eMKimbdIQzuZl9aa9xUGaRlP9T/CJE/ditQ==}
     engines: {node: '>=0.10.0'}
 
+  jsonrepair@3.12.0:
+    resolution: {integrity: sha512-SWfjz8SuQ0wZjwsxtSJ3Zy8vvLg6aO/kxcp9TWNPGwJKgTZVfhNEQBMk/vPOpYCDFWRxD6QWuI6IHR1t615f0w==}
+    hasBin: true
+
   jsonwebtoken@9.0.2:
     resolution: {integrity: sha512-PRp66vJ865SSqOlgqS8hujT5U4AOgMfhrwYIuIhfKaoSCZcirrmASQr8CX7cUg+RMih+hgznrjp99o+W4pJLHQ==}
     engines: {node: '>=12', npm: '>=6'}
@@ -11075,6 +11091,7 @@ packages:
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
     engines: {node: '>=10.5.0'}
+    deprecated: Use your platform's native DOMException instead
 
   node-fetch-h2@2.3.0:
     resolution: {integrity: sha512-ofRW94Ab0T4AOh5Fk8t0h8OBWrmjb0SSB20xh1H8YnPV9EJ+f5AMoYSUQ2zgJ4Iq2HAK0I2l5/Nequ8YzFS3Hg==}
@@ -11313,12 +11330,15 @@ packages:
     resolution: {integrity: sha512-XgFPPM+B28FtCCgSb9I+s9szOC1vZRSwgWsRUA5ylIxRTgKozqjOCrVOqGsYABPYK5qnfqClxZTFBa8PKt2v6Q==}
     engines: {node: '>=12'}
 
-  openai@4.56.0:
-    resolution: {integrity: sha512-zcag97+3bG890MNNa0DQD9dGmmTWL8unJdNkulZzWRXrl+QeD+YkBI4H58rJcwErxqGK6a0jVPZ4ReJjhDGcmw==}
+  openai@4.96.2:
+    resolution: {integrity: sha512-R2XnxvMsizkROr7BV3uNp1q/3skwPZ7fmPjO1bXLnfB4Tu5xKxrT1EVwzjhxn0MZKBKAvOaGWS63jTMN6KrIXA==}
     hasBin: true
     peerDependencies:
+      ws: ^8.18.0
       zod: ^3.23.8
     peerDependenciesMeta:
+      ws:
+        optional: true
       zod:
         optional: true
 
@@ -14613,6 +14633,9 @@ packages:
   zod@3.23.8:
     resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
 
+  zod@3.24.2:
+    resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}
+
   zwitch@1.0.5:
     resolution: {integrity: sha512-V50KMwwzqJV0NpZIZFwfOD5/lyny3WlSzRiXgA0G7VUnRlqttta1L6UQIHzd6EuBY/cHGfwTIck7w1yH6Q5zUw==}
 
@@ -15716,7 +15739,7 @@ snapshots:
       jsonwebtoken: 9.0.2
       uuid: 8.3.2
 
-  '@azure/openai@2.0.0-beta.2':
+  '@azure/openai@2.0.0':
     dependencies:
       '@azure-rest/core-client': 2.2.0
       tslib: 2.8.1
@@ -20151,7 +20174,7 @@ snapshots:
 
   '@types/node-fetch@2.6.11':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 22.14.0
       form-data: 4.0.0
 
   '@types/node@12.20.55': {}
@@ -25426,6 +25449,8 @@ snapshots:
 
   jsonpointer@5.0.1: {}
 
+  jsonrepair@3.12.0: {}
+
   jsonwebtoken@9.0.2:
     dependencies:
       jws: 3.2.2
@@ -27229,7 +27254,7 @@ snapshots:
       is-docker: 2.2.1
       is-wsl: 2.2.0
 
-  openai@4.56.0(encoding@0.1.13)(zod@3.23.8):
+  openai@4.96.2(encoding@0.1.13)(ws@8.18.0)(zod@3.24.2):
     dependencies:
       '@types/node': 18.19.46
       '@types/node-fetch': 2.6.11
@@ -27239,7 +27264,8 @@ snapshots:
       formdata-node: 4.4.1
       node-fetch: 2.7.0(encoding@0.1.13)
     optionalDependencies:
-      zod: 3.23.8
+      ws: 8.18.0
+      zod: 3.24.2
     transitivePeerDependencies:
       - encoding
 
@@ -31083,6 +31109,8 @@ snapshots:
       readable-stream: 3.6.0
 
   zod@3.23.8: {}
+
+  zod@3.24.2: {}
 
   zwitch@1.0.5: {}
 
