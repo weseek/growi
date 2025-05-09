@@ -9,8 +9,12 @@ import useSWRImmutable from 'swr/immutable';
 
 import type { SupportedActionType } from '~/interfaces/activity';
 import type { RendererConfig } from '~/interfaces/services/renderer';
+import { defaultRendererConfig } from '~/interfaces/services/renderer';
+import loggerFactory from '~/utils/logger';
 
 import { useContextSWR } from './use-context-swr';
+
+const logger = loggerFactory('growi:cli:context:useRendererConfig');
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
@@ -145,7 +149,11 @@ export const useIsEnabledStaleNotification = (initialData?: boolean): SWRRespons
 };
 
 export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<RendererConfig, any> => {
-  return useContextSWR('growiRendererConfig', initialData);
+  if (initialData == null) {
+    logger.error('RndererConfig is `undefined` or `null`. Use default value');
+  }
+  const config = initialData != null ? { ...defaultRendererConfig, ...initialData } : defaultRendererConfig;
+  return useContextSWR('growiRendererConfig', config);
 };
 
 export const useIsAllReplyShown = (initialData?: boolean): SWRResponse<boolean, Error> => {
