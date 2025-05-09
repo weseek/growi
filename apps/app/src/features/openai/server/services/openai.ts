@@ -295,9 +295,11 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  private async uploadFile(pageId: Types.ObjectId, pagePath: string, revisionBody: string): Promise<OpenAI.Files.FileObject> {
-    const convertedHtml = await convertMarkdownToHtml({ pagePath, revisionBody });
-    const file = await toFile(Readable.from(convertedHtml), `${pageId}.html`);
+  private async uploadFile(revisionBody: string, page: HydratedDocument<PageDocument>): Promise<OpenAI.Files.FileObject> {
+    const siteUrl = configManager.getConfig('app:siteUrl');
+
+    const convertedHtml = await convertMarkdownToHtml(revisionBody, { page, siteUrl });
+    const file = await toFile(Readable.from(convertedHtml), `${page._id}.html`);
     const uploadedFile = await this.client.uploadFile(file);
     return uploadedFile;
   }
@@ -325,14 +327,14 @@ class OpenaiService implements IOpenaiService {
     const processUploadFile = async(page: HydratedDocument<PageDocument>) => {
       if (page._id != null && page.revision != null) {
         if (isPopulated(page.revision) && page.revision.body.length > 0) {
-          const uploadedFile = await this.uploadFile(page._id, page.path, page.revision.body);
+          const uploadedFile = await this.uploadFile(page.revision.body, page);
           prepareVectorStoreFileRelations(vectorStoreRelation._id, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
           return;
         }
 
         const pagePopulatedToShowRevision = await page.populateDataToShowRevision();
         if (pagePopulatedToShowRevision.revision != null && pagePopulatedToShowRevision.revision.body.length > 0) {
-          const uploadedFile = await this.uploadFile(page._id, page.path, pagePopulatedToShowRevision.revision.body);
+          const uploadedFile = await this.uploadFile(pagePopulatedToShowRevision.revision.body, page);
           prepareVectorStoreFileRelations(vectorStoreRelation._id, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
         }
       }
