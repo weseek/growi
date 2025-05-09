@@ -983,10 +983,6 @@ class OpenaiService implements IOpenaiService {
 
 let instance: OpenaiService;
 export const initializeOpenaiService = (crowi: Crowi): void => {
-  if (crowi == null) {
-    throw new Error('Crowi instance is required to initialize OpenaiService');
-  }
-
   const aiEnabled = configManager.getConfig('app:aiEnabled');
   const openaiServiceType = configManager.getConfig('openai:serviceType');
   if (aiEnabled && openaiServiceType != null && OpenaiServiceTypes.includes(openaiServiceType)) {
