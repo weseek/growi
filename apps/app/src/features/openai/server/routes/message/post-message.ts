@@ -30,6 +30,7 @@ type ReqBody = {
   aiAssistantId: string,
   threadId?: string,
   summaryMode?: boolean,
+  extendedThinkingMode?: boolean,
 }
 
 type Req = Request<undefined, Response, ReqBody> & {
@@ -83,7 +84,8 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
       threadRelation.updateThreadExpiration();
 
       let stream: AssistantStream;
-      const isSummaryMode = req.body.summaryMode ?? false;
+      const useSummaryMode = req.body.summaryMode ?? false;
+      const useExtendedThinkingMode = req.body.extendedThinkingMode ?? false;
 
       try {
         const assistant = await getOrCreateChatAssistant();
@@ -96,9 +98,12 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
           ],
           additional_instructions: [
             aiAssistant.additionalInstruction,
-            isSummaryMode
-              ? 'Turn on summary mode: I will try to answer concisely, aiming for 1-3 sentences.'
-              : 'I will turn off summary mode and answer.',
+            useSummaryMode
+              ? '**IMPORTANT** : Turn on "Summary Mode"'
+              : '**IMPORTANT** : Turn off "Summary Mode"',
+            useExtendedThinkingMode
+              ? '**IMPORTANT** : Turn on "Extended Thinking Mode"'
+              : '**IMPORTANT** : Turn off "Extended Thinking Mode"',
           ].join('\n'),
         });
 
