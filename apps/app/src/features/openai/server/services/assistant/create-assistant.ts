@@ -4,6 +4,8 @@ import { configManager } from '~/server/service/config-manager';
 
 import { openaiClient } from '../client';
 
+import type { AssistantType } from './assistant-types';
+
 
 const findAssistantByName = async(assistantName: string): Promise<OpenAI.Beta.Assistant | undefined> => {
 
