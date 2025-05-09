@@ -31,11 +31,8 @@ export const factory = (crowi: Crowi): express.Router => {
       router.delete('/thread/:aiAssistantId/:threadRelationId', deleteThreadFactory(crowi));
     });
 
-    import('./message').then(({ postMessageHandlersFactory }) => {
+    import('./message').then(({ getMessagesFactory, postMessageHandlersFactory }) => {
       router.post('/message', postMessageHandlersFactory(crowi));
-    });
-
-    import('./get-messages').then(({ getMessagesFactory }) => {
       router.get('/messages/:aiAssistantId/:threadId', getMessagesFactory(crowi));
     });
 

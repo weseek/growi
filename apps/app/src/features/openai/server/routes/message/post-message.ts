@@ -13,15 +13,14 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
-import { MessageErrorCode, type StreamErrorCode } from '../../interfaces/message-error';
-import AiAssistantModel from '../models/ai-assistant';
-import ThreadRelationModel from '../models/thread-relation';
-import { openaiClient } from '../services/client';
-import { getStreamErrorCode } from '../services/getStreamErrorCode';
-import { getOpenaiService } from '../services/openai';
-import { replaceAnnotationWithPageLink } from '../services/replace-annotation-with-page-link';
-
-import { certifyAiService } from './middlewares/certify-ai-service';
+import { MessageErrorCode, type StreamErrorCode } from '../../../interfaces/message-error';
+import AiAssistantModel from '../../models/ai-assistant';
+import ThreadRelationModel from '../../models/thread-relation';
+import { openaiClient } from '../../services/client';
+import { getStreamErrorCode } from '../../services/getStreamErrorCode';
+import { getOpenaiService } from '../../services/openai';
+import { replaceAnnotationWithPageLink } from '../../services/replace-annotation-with-page-link';
+import { certifyAiService } from '../middlewares/certify-ai-service';
 
 const logger = loggerFactory('growi:routes:apiv3:openai:message');
 
