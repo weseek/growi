@@ -61,9 +61,6 @@ class AttachmentService {
     }
     finally {
       onAttached?.(file);
-
-      // TODO: move later
-      this.attachHandlers = [];
     }
 
     return attachment;

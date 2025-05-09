@@ -22,6 +22,7 @@ import VectorStoreFileRelationModel, {
   type VectorStoreFileRelation,
   prepareVectorStoreFileRelations,
 } from '~/features/openai/server/models/vector-store-file-relation';
+import type Crowi from '~/server/crowi';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import UserGroupRelation from '~/server/models/user-group-relation';
 import { configManager } from '~/server/service/config-manager';
@@ -91,8 +92,9 @@ export interface IOpenaiService {
 }
 class OpenaiService implements IOpenaiService {
 
-  constructor() {
+  constructor(crowi: Crowi) {
     this.createVectorStoreFileOnUploadAttachment = this.createVectorStoreFileOnUploadAttachment.bind(this);
+    crowi.attachmentService.addAttachHandler(this.createVectorStoreFileOnUploadAttachment);
   }
 
   private get client() {
@@ -980,15 +982,20 @@ class OpenaiService implements IOpenaiService {
 }
 
 let instance: OpenaiService;
-export const getOpenaiService = (): IOpenaiService | undefined => {
-  if (instance != null) {
-    return instance;
+export const initializeOpenaiService = (crowi: Crowi): void => {
+  if (crowi == null) {
+    throw new Error('Crowi instance is required to initialize OpenaiService');
   }
 
   const aiEnabled = configManager.getConfig('app:aiEnabled');
   const openaiServiceType = configManager.getConfig('openai:serviceType');
   if (aiEnabled && openaiServiceType != null && OpenaiServiceTypes.includes(openaiServiceType)) {
-    instance = new OpenaiService();
+    instance = new OpenaiService(crowi);
+  }
+};
+
+export const getOpenaiService = (): IOpenaiService | undefined => {
+  if (instance != null) {
     return instance;
   }
 

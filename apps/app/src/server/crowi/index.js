@@ -11,6 +11,7 @@ import next from 'next';
 import { KeycloakUserGroupSyncService } from '~/features/external-user-group/server/service/keycloak-user-group-sync';
 import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
 import { startCronIfEnabled as startOpenaiCronIfEnabled } from '~/features/openai/server/services/cron';
+import { initializeOpenaiService } from '~/features/openai/server/services/openai';
 import { checkPageBulkExportJobInProgressCronService } from '~/features/page-bulk-export/server/service/check-page-bulk-export-job-in-progress-cron';
 import instanciatePageBulkExportJobCleanUpCronService, {
   pageBulkExportJobCleanUpCronService,
@@ -177,6 +178,13 @@ Crowi.prototype.init = async function() {
   this.models = await setupModelsDependentOnCrowi(this);
   await this.setupConfigManager();
   await this.setupSessionConfig();
+
+  this.setupAttachmentService();
+
+  // OpenaiService depends on AttachmentService
+  this.setupOpenaiService();
+
+  // OpenaiService (cron) depends on OpenaiService
   this.setupCron();
 
   // setup messaging services
@@ -200,7 +208,6 @@ Crowi.prototype.init = async function() {
     this.setupG2GTransferService(),
     this.setUpFileUpload(),
     this.setUpFileUploaderSwitchService(),
-    this.setupAttachmentService(),
     this.setUpAcl(),
     this.setUpRestQiitaAPI(),
     this.setupUserGroupService(),
@@ -807,6 +814,10 @@ Crowi.prototype.setupExternalAccountService = function() {
 Crowi.prototype.setupExternalUserGroupSyncService = function() {
   this.ldapUserGroupSyncService = new LdapUserGroupSyncService(this.passportService, this.s2sMessagingService, this.socketIoService);
   this.keycloakUserGroupSyncService = new KeycloakUserGroupSyncService(this.s2sMessagingService, this.socketIoService);
+};
+
+Crowi.prototype.setupOpenaiService = function() {
+  initializeOpenaiService(this);
 };
 
 export default Crowi;

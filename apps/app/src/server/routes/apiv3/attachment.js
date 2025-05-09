@@ -4,7 +4,6 @@ import express from 'express';
 import multer from 'multer';
 import autoReap from 'multer-autoreap';
 
-import { getOpenaiService } from '~/features/openai/server/services/openai';
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
@@ -360,10 +359,6 @@ module.exports = (crowi) => {
         if (!isAccessible) {
           return res.apiv3Err(`Forbidden to access to the page '${page.id}'`);
         }
-
-        // TODO: move later
-        const openaiService = getOpenaiService();
-        attachmentService.addAttachHandler(openaiService.createVectorStoreFileOnUploadAttachment);
 
         const attachment = await attachmentService.createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE, autoReap(req, res, () => {}));
 
