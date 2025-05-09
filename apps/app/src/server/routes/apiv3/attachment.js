@@ -2,6 +2,7 @@ import { ErrorV3 } from '@growi/core/dist/models';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import express from 'express';
 import multer from 'multer';
+import autoReap from 'multer-autoreap';
 
 import { getOpenaiService } from '~/features/openai/server/services/openai';
 import { SupportedAction } from '~/interfaces/activity';
@@ -15,7 +16,6 @@ import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { certifySharedPageAttachmentMiddleware } from '../../middlewares/certify-shared-page-attachment';
 import { excludeReadOnlyUser } from '../../middlewares/exclude-read-only-user';
-import { reapFileManually } from '../../util/reap-files-manually';
 
 
 const logger = loggerFactory('growi:routes:apiv3:attachment'); // eslint-disable-line no-unused-vars
@@ -365,7 +365,7 @@ module.exports = (crowi) => {
         const openaiService = getOpenaiService();
         attachmentService.addAttachHandler(openaiService.createVectorStoreFileOnUploadAttachment);
 
-        const attachment = await attachmentService.createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE, reapFileManually);
+        const attachment = await attachmentService.createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE, autoReap(req, res, () => {}));
 
         const result = {
           page: serializePageSecurely(page),
