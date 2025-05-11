@@ -1,7 +1,7 @@
 {
   "$schema": "../../node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "ignore": ["./dist/**", "./coverage/**", "./vite.config.ts.timestamp-*"]
+    "ignore": ["./dist/**", "./node_modules/**", "./coverage/**", "./vite.config.ts.timestamp-*"]
   },
   "formatter": {
     "enabled": true,
