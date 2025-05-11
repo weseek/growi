@@ -1,9 +1,13 @@
 import {
-  type ReactNode, type JSX,
-  memo, forwardRef, useCallback, useRef,
+  type JSX,
+  type ReactNode,
+  forwardRef,
+  memo,
+  useCallback,
+  useRef,
 } from 'react';
 
-import type { Ref, IUser } from '@growi/core';
+import type { IUser, Ref } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -14,31 +18,43 @@ import styles from './UserPicture.module.scss';
 const moduleClass = styles['user-picture'];
 const moduleTooltipClass = styles['user-picture-tooltip'];
 
-const UncontrolledTooltip = dynamic<UncontrolledTooltipProps>(() => import('reactstrap').then(mod => mod.UncontrolledTooltip), { ssr: false });
+const UncontrolledTooltip = dynamic<UncontrolledTooltipProps>(
+  () => import('reactstrap').then((mod) => mod.UncontrolledTooltip),
+  { ssr: false },
+);
 
 const DEFAULT_IMAGE = '/images/icons/user.svg';
-
 
 type UserPictureSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 type BaseUserPictureRootProps = {
-  displayName: string,
-  children: ReactNode,
-  size?: UserPictureSize,
-  className?: string,
-}
+  displayName: string;
+  children: ReactNode;
+  size?: UserPictureSize;
+  className?: string;
+};
 
 type UserPictureRootWithoutLinkProps = BaseUserPictureRootProps;
 
 type UserPictureRootWithLinkProps = BaseUserPictureRootProps & {
-  username: string,
-}
+  username: string;
+};
 
-const UserPictureRootWithoutLink = forwardRef<HTMLSpanElement, UserPictureRootWithoutLinkProps>((props, ref) => {
-  return <span ref={ref} className={props.className}>{props.children}</span>;
+const UserPictureRootWithoutLink = forwardRef<
+  HTMLSpanElement,
+  UserPictureRootWithoutLinkProps
+>((props, ref) => {
+  return (
+    <span ref={ref} className={props.className}>
+      {props.children}
+    </span>
+  );
 });
 
-const UserPictureRootWithLink = forwardRef<HTMLSpanElement, UserPictureRootWithLinkProps>((props, ref) => {
+const UserPictureRootWithLink = forwardRef<
+  HTMLSpanElement,
+  UserPictureRootWithLinkProps
+>((props, ref) => {
   const router = useRouter();
 
   const { username } = props;
@@ -51,14 +67,29 @@ const UserPictureRootWithLink = forwardRef<HTMLSpanElement, UserPictureRootWithL
   // Using <span> tag here instead of <a> tag because UserPicture is used in SearchResultList which is essentially a anchor tag.
   // Nested anchor tags causes a warning.
   // https://stackoverflow.com/questions/13052598/creating-anchor-tag-inside-anchor-taga
-  return <span ref={ref} className={props.className} onClick={clickHandler} style={{ cursor: 'pointer' }}>{props.children}</span>;
+  return (
+    <span
+      ref={ref}
+      className={props.className}
+      onClick={clickHandler}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') clickHandler();
+      }}
+      style={{ cursor: 'pointer' }}
+    >
+      {props.children}
+    </span>
+  );
 });
 
-
 // wrapper with Tooltip
-const withTooltip = <P extends BaseUserPictureRootProps>(
-  UserPictureSpanElm: React.ForwardRefExoticComponent<P & React.RefAttributes<HTMLSpanElement>>,
-) => (props: P): JSX.Element => {
+const withTooltip =
+  <P extends BaseUserPictureRootProps>(
+    UserPictureSpanElm: React.ForwardRefExoticComponent<
+      P & React.RefAttributes<HTMLSpanElement>
+    >,
+  ) =>
+  (props: P): JSX.Element => {
     const { displayName, size } = props;
     const username = 'username' in props ? props.username : undefined;
 
@@ -75,53 +106,68 @@ const withTooltip = <P extends BaseUserPictureRootProps>(
           delay={0}
           fade={false}
         >
-          {username ? <>{`@${username}`}<br /></> : null}
+          {username ? (
+            <>
+              {`@${username}`}
+              <br />
+            </>
+          ) : null}
           {displayName}
         </UncontrolledTooltip>
       </>
     );
   };
 
-
 /**
  * type guard to determine whether the specified object is IUser
  */
-const hasUsername = (obj: Partial<IUser> | Ref<IUser> | null | undefined): obj is { username: string } => {
+const hasUsername = (
+  obj: Partial<IUser> | Ref<IUser> | null | undefined,
+): obj is { username: string } => {
   return obj != null && typeof obj !== 'string' && 'username' in obj;
 };
 
 /**
  * Type guard to determine whether tooltip should be shown
  */
-const hasName = (obj: Partial<IUser> | Ref<IUser> | null | undefined): obj is { name: string } => {
+const hasName = (
+  obj: Partial<IUser> | Ref<IUser> | null | undefined,
+): obj is { name: string } => {
   return obj != null && typeof obj === 'object' && 'name' in obj;
 };
 
 /**
  * type guard to determine whether the specified object is IUser
  */
-const hasProfileImage = (obj: Partial<IUser> | Ref<IUser> | null | undefined): obj is { imageUrlCached: string } => {
+const hasProfileImage = (
+  obj: Partial<IUser> | Ref<IUser> | null | undefined,
+): obj is { imageUrlCached: string } => {
   return obj != null && typeof obj === 'object' && 'imageUrlCached' in obj;
 };
 
-
 type Props = {
-  user?: Partial<IUser> | Ref<IUser> | null,
-  size?: UserPictureSize,
-  noLink?: boolean,
-  noTooltip?: boolean,
-  className?: string
+  user?: Partial<IUser> | Ref<IUser> | null;
+  size?: UserPictureSize;
+  noLink?: boolean;
+  noTooltip?: boolean;
+  className?: string;
 };
 
 export const UserPicture = memo((userProps: Props): JSX.Element => {
   const {
-    user, size, noLink, noTooltip, className: additionalClassName,
+    user,
+    size,
+    noLink,
+    noTooltip,
+    className: additionalClassName,
   } = userProps;
 
   // Extract user information
   const username = hasUsername(user) ? user.username : undefined;
   const displayName = hasName(user) ? user.name : 'someone';
-  const src = hasProfileImage(user) ? user.imageUrlCached ?? DEFAULT_IMAGE : DEFAULT_IMAGE;
+  const src = hasProfileImage(user)
+    ? (user.imageUrlCached ?? DEFAULT_IMAGE)
+    : DEFAULT_IMAGE;
   const showTooltip = !noTooltip && hasName(user);
 
   // Build className
@@ -131,7 +177,9 @@ export const UserPicture = memo((userProps: Props): JSX.Element => {
     'rounded-circle',
     size && `user-picture-${size}`,
     additionalClassName,
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const imgElement = <img src={src} alt={displayName} className={className} />;
   const baseProps = { displayName, size, children: imgElement };
