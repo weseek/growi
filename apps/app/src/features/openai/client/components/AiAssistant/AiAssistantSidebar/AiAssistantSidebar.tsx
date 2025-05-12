@@ -29,6 +29,7 @@ import {
   type FormData as FormDataForKnowledgeAssistant,
 } from '../../../services/knowledge-assistant';
 import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
+// import { useSWRxThreads } from '../../../stores/thread'; // 削除
 
 import { MessageCard, type MessageCardRole } from './MessageCard';
 import { ResizableTextarea } from './ResizableTextArea';
@@ -66,6 +67,8 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   // Hooks
   const { t } = useTranslation();
   const { data: growiCloudUri } = useGrowiCloudUri();
+  // const { data: threads, isLoading: isLoadingThreads } = useSWRxThreads(aiAssistantData?._id); // 削除
+  const { data: aiAssistantSidebarData, refreshCurrentThreadData } = useAiAssistantSidebar(); // refreshCurrentThreadData を追加
 
   const {
     createThread: createThreadForKnowledgeAssistant,
@@ -226,6 +229,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
             setMessageLogs(msgs => [...msgs, generatingAnswerMessage]);
             return undefined;
           });
+          refreshCurrentThreadData(); // メッセージ送信成功後に呼び出し
           return;
         }
 
@@ -318,11 +322,22 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
       : headerIconForKnowledgeAssistant;
   }, [headerIconForEditorAssistant, headerIconForKnowledgeAssistant, isEditorAssistant]);
 
+  // const currentThreadTitleFromSWR = useMemo(() => { // 削除
+  //   if (isLoadingThreads || threads == null || currentThreadId == null) { // 削除
+  //     return undefined; // 削除
+  //   } // 削除
+  //   const foundThread = threads.find(t => t.threadId === currentThreadId); // 削除
+  //   return foundThread?.title; // 削除
+  // }, [threads, currentThreadId, isLoadingThreads]); // 削除
+
   const headerText = useMemo(() => {
+    if (aiAssistantSidebarData?.threadData?.title) { // useAiAssistantSidebar から取得した title を使用
+      return aiAssistantSidebarData.threadData.title;
+    }
     return isEditorAssistant
       ? headerTextForEditorAssistant
       : headerTextForKnowledgeAssistant;
-  }, [isEditorAssistant, headerTextForEditorAssistant, headerTextForKnowledgeAssistant]);
+  }, [isEditorAssistant, headerTextForEditorAssistant, headerTextForKnowledgeAssistant, aiAssistantSidebarData?.threadData?.title]); // 依存配列を更新
 
   const placeHolder = useMemo(() => {
     if (form.formState.isSubmitting) {
