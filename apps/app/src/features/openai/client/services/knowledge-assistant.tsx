@@ -245,7 +245,7 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
     // Views
     initialView,
     generateMessageCard,
-    generateModeSwitchesDropdown, // Added
+    generateModeSwitchesDropdown,
     headerIcon,
     headerText,
     placeHolder,
