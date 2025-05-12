@@ -5,7 +5,9 @@ import {
 
 import { useForm, type UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { UncontrolledTooltip } from 'reactstrap';
+import {
+  UncontrolledTooltip, Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
+} from 'reactstrap';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { SseMessageSchema, type SseMessage } from '~/features/openai/interfaces/knowledge-assistant/sse-schemas';
@@ -38,13 +40,14 @@ interface GenerateMessageCard {
   (role: MessageCardRole, children: string): JSX.Element;
 }
 
-interface GenerateSummaryModeSwitch {
-  (isGenerating: boolean): JSX.Element
-}
-
 export interface FormData {
   input: string
   summaryMode?: boolean
+  extendedThinkingMode?: boolean
+}
+
+interface GenerateModeSwitchesDropdown {
+  (isGenerating: boolean): JSX.Element
 }
 
 type UseKnowledgeAssistant = () => {
@@ -57,7 +60,7 @@ type UseKnowledgeAssistant = () => {
   // Views
   initialView: JSX.Element
   generateMessageCard: GenerateMessageCard
-  generateSummaryModeSwitch: GenerateSummaryModeSwitch
+  generateModeSwitchesDropdown: GenerateModeSwitchesDropdown
   headerIcon: JSX.Element
   headerText: JSX.Element
   placeHolder: string
@@ -75,6 +78,7 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
     defaultValues: {
       input: '',
       summaryMode: true,
+      extendedThinkingMode: false,
     },
   });
 
@@ -84,7 +88,8 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
   // Functions
   const resetForm = useCallback(() => {
     const summaryMode = form.getValues('summaryMode');
-    form.reset({ input: '', summaryMode });
+    const extendedThinkingMode = form.getValues('extendedThinkingMode');
+    form.reset({ input: '', summaryMode, extendedThinkingMode });
   }, [form]);
 
   const createThread: CreateThread = useCallback(async(aiAssistantId, initialUserMessage) => {
@@ -112,6 +117,7 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
         threadId,
         userMessage: formData.input,
         summaryMode: form.getValues('summaryMode'),
+        extendedThinkingMode: form.getValues('extendedThinkingMode'),
       }),
     });
     return response;
@@ -157,37 +163,77 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
     );
   }, []);
 
-  const generateSummaryModeSwitch: GenerateSummaryModeSwitch = useCallback((isGenerating) => {
-    return (
-      <div className="form-check form-switch">
-        <input
-          id="swSummaryMode"
-          type="checkbox"
-          role="switch"
-          className="form-check-input"
-          {...form.register('summaryMode')}
-          disabled={form.formState.isSubmitting || isGenerating}
-        />
-        <label className="form-check-label" htmlFor="swSummaryMode">
-          {t('sidebar_ai_assistant.summary_mode_label')}
-        </label>
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-        {/* Help */}
-        <a
-          id="tooltipForHelpOfSummaryMode"
-          role="button"
-          className="ms-1"
-        >
-          <span className="material-symbols-outlined fs-6" style={{ lineHeight: 'unset' }}>help</span>
-        </a>
-        <UncontrolledTooltip
-          target="tooltipForHelpOfSummaryMode"
-        >
-          {t('sidebar_ai_assistant.summary_mode_help')}
-        </UncontrolledTooltip>
-      </div>
+  const toggleDropdown = useCallback(() => {
+    setDropdownOpen(prevState => !prevState);
+  }, []);
+
+  const generateModeSwitchesDropdown: GenerateModeSwitchesDropdown = useCallback((isGenerating) => {
+    return (
+      <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown} direction="up">
+        <DropdownToggle size="sm" outline className="border-0">
+          <span className="material-symbols-outlined">tune</span>
+        </DropdownToggle>
+        <DropdownMenu>
+          <DropdownItem tag="div" toggle={false}>
+            <div className="form-check form-switch">
+              <input
+                id="swSummaryMode"
+                type="checkbox"
+                role="switch"
+                className="form-check-input"
+                {...form.register('summaryMode')}
+                disabled={form.formState.isSubmitting || isGenerating}
+              />
+              <label className="form-check-label" htmlFor="swSummaryMode">
+                {t('sidebar_ai_assistant.summary_mode_label')}
+              </label>
+              <a
+                id="tooltipForHelpOfSummaryMode"
+                role="button"
+                className="ms-1"
+              >
+                <span className="material-symbols-outlined fs-6" style={{ lineHeight: 'unset' }}>help</span>
+              </a>
+              <UncontrolledTooltip
+                target="tooltipForHelpOfSummaryMode"
+              >
+                {t('sidebar_ai_assistant.summary_mode_help')}
+              </UncontrolledTooltip>
+            </div>
+          </DropdownItem>
+          <DropdownItem tag="div" toggle={false}>
+            <div className="form-check form-switch">
+              <input
+                id="swExtendedThinkingMode"
+                type="checkbox"
+                role="switch"
+                className="form-check-input"
+                {...form.register('extendedThinkingMode')}
+                disabled={form.formState.isSubmitting || isGenerating}
+              />
+              <label className="form-check-label" htmlFor="swExtendedThinkingMode">
+                {t('sidebar_ai_assistant.extended_thinking_mode_label')}
+              </label>
+              <a
+                id="tooltipForHelpOfExtendedThinkingMode"
+                role="button"
+                className="ms-1"
+              >
+                <span className="material-symbols-outlined fs-6" style={{ lineHeight: 'unset' }}>help</span>
+              </a>
+              <UncontrolledTooltip
+                target="tooltipForHelpOfExtendedThinkingMode"
+              >
+                {t('sidebar_ai_assistant.extended_thinking_mode_help')}
+              </UncontrolledTooltip>
+            </div>
+          </DropdownItem>
+        </DropdownMenu>
+      </Dropdown>
     );
-  }, [form, t]);
+  }, [dropdownOpen, toggleDropdown, form, t]);
 
   return {
     createThread,
@@ -199,7 +245,7 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
     // Views
     initialView,
     generateMessageCard,
-    generateSummaryModeSwitch,
+    generateModeSwitchesDropdown, // Added
     headerIcon,
     headerText,
     placeHolder,
