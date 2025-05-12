@@ -77,7 +77,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     // Views
     initialView: initialViewForKnowledgeAssistant,
     generateMessageCard: generateMessageCardForKnowledgeAssistant,
-    generateSummaryModeSwitch: generateSummaryModeSwitchForKnowledgeAssistant,
+    generateModeSwitchesDropdown: generateModeSwitchesDropdownForKnowledgeAssistant,
     headerIcon: headerIconForKnowledgeAssistant,
     headerText: headerTextForKnowledgeAssistant,
     placeHolder: placeHolderForKnowledgeAssistant,
@@ -341,14 +341,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     return initialViewForKnowledgeAssistant;
   }, [generateInitialViewForEditorAssistant, initialViewForKnowledgeAssistant, isEditorAssistant, submit]);
 
-  const additionalInputControl = useMemo(() => {
-    if (isEditorAssistant) {
-      return <></>;
-    }
-
-    return generateSummaryModeSwitchForKnowledgeAssistant(isGenerating);
-  }, [generateSummaryModeSwitchForKnowledgeAssistant, isEditorAssistant, isGenerating]);
-
   const messageCard = useCallback(
     (role: MessageCardRole, children: string, messageId?: string, messageLogs?: MessageLog[], generatingAnswerMessage?: MessageLog) => {
       if (isEditorAssistant) {
@@ -406,24 +398,25 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
           }
 
           <div className="mt-auto">
-            <form onSubmit={form.handleSubmit(submit)} className="flex-fill vstack gap-3">
-              <div className="flex-fill hstack gap-2 align-items-end m-0">
-                <Controller
-                  name="input"
-                  control={form.control}
-                  render={({ field }) => (
-                    <ResizableTextarea
-                      {...field}
-                      required
-                      className="form-control textarea-ask"
-                      style={{ resize: 'none' }}
-                      rows={1}
-                      placeholder={placeHolder}
-                      onKeyDown={keyDownHandler}
-                      disabled={form.formState.isSubmitting}
-                    />
-                  )}
-                />
+            <form onSubmit={form.handleSubmit(submit)} className="flex-fill vstack gap-2">
+              <Controller
+                name="input"
+                control={form.control}
+                render={({ field }) => (
+                  <ResizableTextarea
+                    {...field}
+                    required
+                    className="form-control textarea-ask"
+                    style={{ resize: 'none' }}
+                    rows={1}
+                    placeholder={placeHolder}
+                    onKeyDown={keyDownHandler}
+                    disabled={form.formState.isSubmitting}
+                  />
+                )}
+              />
+              <div className="flex-fill hstack gap-2 justify-content-between m-0">
+                {!isEditorAssistant && generateModeSwitchesDropdownForKnowledgeAssistant(isGenerating)}
                 <button
                   type="submit"
                   className="btn btn-submit no-border"
@@ -432,7 +425,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                   <span className="material-symbols-outlined">send</span>
                 </button>
               </div>
-              { additionalInputControl }
             </form>
 
             {form.formState.errors.input != null && (
