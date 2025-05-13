@@ -7,7 +7,7 @@ import useSWRImmutable from 'swr/immutable';
 import { apiv3Get } from '~/client/util/apiv3-client';
 
 import { type AccessibleAiAssistantsHasId, type AiAssistantHasId } from '../../interfaces/ai-assistant';
-import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
+import type { IThreadRelationHasId } from '../../interfaces/thread-relation'; // IThreadHasId を削除
 
 export const AiAssistantManagementModalPageMode = {
   HOME: 'home',
@@ -72,6 +72,7 @@ type AiAssistantSidebarUtils = {
   ): void
   openEditor(): void
   close(): void
+  refreshThreadData(threadData?: IThreadRelationHasId): void
 }
 
 export const useAiAssistantSidebar = (
@@ -83,7 +84,7 @@ export const useAiAssistantSidebar = (
   return {
     ...swrResponse,
     openChat: useCallback(
-      (aiAssistantData: AiAssistantHasId, threadData: IThreadRelationHasId) => {
+      (aiAssistantData: AiAssistantHasId, threadData?: IThreadRelationHasId) => {
         swrResponse.mutate({ isOpened: true, aiAssistantData, threadData });
       }, [swrResponse],
     ),
@@ -98,6 +99,13 @@ export const useAiAssistantSidebar = (
       () => swrResponse.mutate({
         isOpened: false, isEditorAssistant: false, aiAssistantData: undefined, threadData: undefined,
       }), [swrResponse],
+    ),
+    refreshThreadData: useCallback(
+      (threadData?: IThreadRelationHasId) => {
+        swrResponse.mutate((currentState = { isOpened: false }) => {
+          return { ...currentState, threadData };
+        });
+      }, [swrResponse],
     ),
   };
 };
