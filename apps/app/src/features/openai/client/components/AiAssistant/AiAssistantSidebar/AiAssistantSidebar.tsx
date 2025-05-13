@@ -398,7 +398,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
           }
 
           <div className="mt-auto">
-            <form onSubmit={form.handleSubmit(submit)} className="flex-fill vstack gap-2">
+            <form onSubmit={form.handleSubmit(submit)} className="flex-fill vstack gap-1">
               <Controller
                 name="input"
                 control={form.control}
@@ -416,7 +416,8 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                 )}
               />
               <div className="flex-fill hstack gap-2 justify-content-between m-0">
-                {!isEditorAssistant && generateModeSwitchesDropdownForKnowledgeAssistant(isGenerating)}
+                { !isEditorAssistant && generateModeSwitchesDropdownForKnowledgeAssistant(isGenerating) }
+                { isEditorAssistant && <div /> }
                 <button
                   type="submit"
                   className="btn btn-submit no-border"
