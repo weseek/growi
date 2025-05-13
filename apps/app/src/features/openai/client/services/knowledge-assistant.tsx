@@ -257,7 +257,7 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
 const transformApiMessagesToLogs = (
     apiMessageData: MessageWithCustomMetaData | null | undefined,
 ): MessageLog[] => {
-  if (apiMessageData == null || !Array.isArray(apiMessageData.data)) {
+  if (apiMessageData?.data == null || !Array.isArray(apiMessageData.data)) {
     return [];
   }
 
@@ -269,16 +269,11 @@ const transformApiMessagesToLogs = (
     .reverse()
     .filter((message: ApiMessageItem) => message.metadata?.shouldHideMessage !== 'true')
     .map((message: ApiMessageItem): MessageLog => {
+      // Extract the first text content block, if any
       let messageTextContent = '';
-      // message.content is an array of content blocks
-      if (message.content && message.content.length > 0) {
-        for (const contentBlock of message.content) {
-          // Check if the content block is of type 'text'
-          if (contentBlock.type === 'text') {
-            messageTextContent = contentBlock.text.value;
-            break; // Use the first text content block found
-          }
-        }
+      const textContentBlock = message.content?.find(contentBlock => contentBlock.type === 'text');
+      if (textContentBlock != null && textContentBlock.type === 'text') {
+        messageTextContent = textContentBlock.text.value;
       }
 
       return {
@@ -318,11 +313,8 @@ export const useFetchAndSetMessageDataEffect = (
             && currentLogs[0].isUserMessage
             && fetchedLogs.length === 0;
 
-          if (shouldPreserveCurrentMessage) {
-            return currentLogs;
-          }
-          // Otherwise, update with the fetched logs (which could be an empty array).
-          return fetchedLogs;
+          // Update with fetched logs, or preserve current if applicable
+          return shouldPreserveCurrentMessage ? currentLogs : fetchedLogs;
         });
       }
       catch (error) {
