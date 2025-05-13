@@ -66,7 +66,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
   const {
     pageId, isLoading, pageInfo, isEnableActions, isReadOnlyUser, forceHideMenuItems, operationProcessData,
-    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem,
+    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem,
     onClickRevertMenuItem, onClickPathRecoveryMenuItem,
     additionalMenuItemOnTopRenderer: AdditionalMenuItemsOnTop,
     additionalMenuItemRenderer: AdditionalMenuItems,
@@ -109,16 +109,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   }, [onClickRevertMenuItem, pageId]);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const deleteItemClickedHandler = useCallback(async() => {
-    if (pageInfo == null || onClickDeleteMenuItem == null) {
-      return;
-    }
-    if (!pageInfo.isDeletable) {
-      logger.warn('This page could not be deleted.');
-      return;
-    }
-    await onClickDeleteMenuItem(pageId, pageInfo);
-  }, [onClickDeleteMenuItem, pageId, pageInfo]);
+
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const pathRecoveryItemClickedHandler = useCallback(async() => {
@@ -140,7 +131,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   else if (pageId != null && pageInfo != null) {
 
     const showDeviderBeforeAdditionalMenuItems = (forceHideMenuItems?.length ?? 0) < 3;
-    const showDeviderBeforeDelete = AdditionalMenuItems != null || showDeviderBeforeAdditionalMenuItems;
+
 
     // PathRecovery
     // Todo: It is wanted to find a better way to pass operationProcessData to PageItemControl
@@ -230,20 +221,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
         {/* divider */}
         {/* Delete */}
-        { !forceHideMenuItems?.includes(MenuItemType.DELETE) && isEnableActions && !isReadOnlyUser && pageInfo.isDeletable && (
-          <>
-            { showDeviderBeforeDelete && <DropdownItem divider /> }
-            <DropdownItem
-              className={`pt-2 grw-page-control-dropdown-item ${pageInfo.isDeletable ? 'text-danger' : ''}`}
-              disabled={!pageInfo.isDeletable}
-              onClick={deleteItemClickedHandler}
-              data-testid="open-page-delete-modal-btn"
-            >
-              <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">delete</span>
-              {t('Delete')}
-            </DropdownItem>
-          </>
-        )}
+
       </>
     );
   }
