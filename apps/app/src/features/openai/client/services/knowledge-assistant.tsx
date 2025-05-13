@@ -269,7 +269,7 @@ export const useFetchAndSetMessageDataEffect = (setMessageLogs: Dispatch<SetStat
           return normalizedMessageData.map((message, index) => (
             {
               id: index.toString(),
-              content: message.content[0].type === 'text' ? message.content[0].text.value : '',
+              content: (message.content.length > 0 && message.content[0].type === 'text') ? message.content[0].text.value : '',
               isUserMessage: message.role === 'user',
             }
           ));
