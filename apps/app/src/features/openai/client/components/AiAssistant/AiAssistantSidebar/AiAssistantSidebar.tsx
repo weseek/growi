@@ -60,7 +60,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   } = props;
 
   // States
-  const [currentThreadId, setCurrentThreadId] = useState<string | undefined>(threadData?.threadId);
   const [messageLogs, setMessageLogs] = useState<MessageLog[]>([]);
   const [generatingAnswerMessage, setGeneratingAnswerMessage] = useState<MessageLog>();
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
@@ -174,18 +173,17 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     setGeneratingAnswerMessage(newAnswerMessage);
 
     // create thread
-    let currentThreadId_ = currentThreadId;
-    if (currentThreadId_ == null) {
+    let threadId = threadData?.threadId;
+    if (threadId == null) {
       try {
-        const thread = await createThread(newUserMessage.content);
-        if (thread == null) {
+        const newThread = await createThread(newUserMessage.content);
+        if (newThread == null) {
           return;
         }
 
-        setCurrentThreadId(thread.threadId);
-        currentThreadId_ = thread.threadId;
+        threadId = newThread.threadId;
 
-        onNewThreadCreated?.(thread);
+        onNewThreadCreated?.(newThread);
       }
       catch (err) {
         logger.error(err.toString());
@@ -195,11 +193,11 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
     // post message
     try {
-      if (currentThreadId_ == null) {
+      if (threadId == null) {
         return;
       }
 
-      const response = await postMessage(currentThreadId_, data);
+      const response = await postMessage(threadId, data);
       if (response == null) {
         return;
       }
@@ -299,7 +297,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     }
 
   // eslint-disable-next-line max-len
-  }, [isGenerating, messageLogs, resetForm, currentThreadId, createThread, t, postMessage, form, onMessageReceived, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri]);
+  }, [isGenerating, messageLogs, resetForm, threadData?.threadId, createThread, onNewThreadCreated, t, postMessage, form, onMessageReceived, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri]);
 
   const submit = useCallback((data: FormData) => {
     if (isEditorAssistant) {
@@ -387,7 +385,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
         </div>
         <div className="p-4 d-flex flex-column gap-4 vh-100">
 
-          { currentThreadId != null
+          { threadData != null
             ? (
               <div className="vstack gap-4 pb-2">
                 { messageLogs.map(message => (
