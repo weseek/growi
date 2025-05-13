@@ -18,14 +18,12 @@ import { MessageErrorCode, StreamErrorCode } from '../../../../interfaces/messag
 import type { IThreadRelationHasId } from '../../../../interfaces/thread-relation';
 import {
   useEditorAssistant,
-  useAiAssistantSidebarCloseEffect as useAiAssistantSidebarCloseEffectForEditorAssistant,
   isEditorAssistantFormData,
   type FormData as FormDataForEditorAssistant,
 } from '../../../services/editor-assistant';
 import {
   useKnowledgeAssistant,
   useFetchAndSetMessageDataEffect,
-  useAiAssistantSidebarCloseEffect as useAiAssistantSidebarCloseEffectForKnowledgeAssistant,
   type FormData as FormDataForKnowledgeAssistant,
 } from '../../../services/knowledge-assistant';
 import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
@@ -498,9 +496,6 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
   const threadData = aiAssistantSidebarData?.threadData;
   const isOpened = aiAssistantSidebarData?.isOpened;
   const isEditorAssistant = aiAssistantSidebarData?.isEditorAssistant ?? false;
-
-  useAiAssistantSidebarCloseEffectForEditorAssistant();
-  useAiAssistantSidebarCloseEffectForKnowledgeAssistant(sidebarRef);
 
   useEffect(() => {
     if (!aiAssistantSidebarData?.isOpened) {

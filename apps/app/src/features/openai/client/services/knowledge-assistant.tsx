@@ -283,20 +283,3 @@ export const useFetchAndSetMessageDataEffect = (setMessageLogs: Dispatch<SetStat
 
   }, [mutateMessageData, setMessageLogs, threadId]);
 };
-
-export const useAiAssistantSidebarCloseEffect = (sidebarRef: RefObject<HTMLDivElement>): void => {
-  const { data, close } = useAiAssistantSidebar();
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (data?.isOpened && sidebarRef.current && !sidebarRef.current.contains(event.target as Node) && !data.isEditorAssistant) {
-        close();
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [close, data?.isEditorAssistant, data?.isOpened, sidebarRef]);
-};
