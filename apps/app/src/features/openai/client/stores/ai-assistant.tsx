@@ -1,15 +1,13 @@
 import { useCallback } from 'react';
 
 import { useSWRStatic } from '@growi/core/dist/swr';
-import { type SWRResponse, mutate, useSWRConfig } from 'swr';
+import { type SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 
 import { type AccessibleAiAssistantsHasId, type AiAssistantHasId } from '../../interfaces/ai-assistant';
 import type { IThreadRelationHasId } from '../../interfaces/thread-relation'; // IThreadHasId を削除
-
-import { useSWRxThreads } from './thread';
 
 export const AiAssistantManagementModalPageMode = {
   HOME: 'home',
