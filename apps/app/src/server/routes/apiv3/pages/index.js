@@ -91,6 +91,11 @@ module.exports = (crowi) => {
     resumeRenamePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
     ],
+    list: [
+      query('path').optional(),
+      query('page').optional().isInt().withMessage('page must be integer'),
+      query('limit').optional().isInt().withMessage('limit must be integer'),
+    ],
     duplicatePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
       body('pageNameInput').trim().isLength({ min: 1 }).withMessage('pageNameInput is required'),
@@ -529,10 +534,10 @@ module.exports = (crowi) => {
     *                              lastUpdateUser:
     *                                $ref: '#/components/schemas/User'
     */
-  router.get('/list', accessTokenParser, loginRequired, validator.displayList, apiV3FormValidator, async(req, res) => {
+  router.get('/list', accessTokenParser, loginRequired, validator.list, apiV3FormValidator, async(req, res) => {
 
-    const { path } = req.query;
-    const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('customize:showPageLimitationS') || 10;
+    const path = normalizePath(req.query.path ?? '/');
+    const limit = parseInt(req.query.limit ?? configManager.getConfig('customize:showPageLimitationS'));
     const page = req.query.page || 1;
     const offset = (page - 1) * limit;
 
