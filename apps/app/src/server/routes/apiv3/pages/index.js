@@ -12,6 +12,7 @@ import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import PageTagRelation from '~/server/models/page-tag-relation';
+import { configManager } from '~/server/service/config-manager';
 import { preNotifyService } from '~/server/service/pre-notify';
 import loggerFactory from '~/utils/logger';
 
@@ -156,8 +157,8 @@ module.exports = (crowi) => {
     const offset = parseInt(req.query.offset) || 0;
     const includeWipPage = req.query.includeWipPage === 'true'; // Need validation using express-validator
 
-    const hideRestrictedByOwner = await crowi.configManager.getConfig('security:list-policy:hideRestrictedByOwner');
-    const hideRestrictedByGroup = await crowi.configManager.getConfig('security:list-policy:hideRestrictedByGroup');
+    const hideRestrictedByOwner = configManager.getConfig('security:list-policy:hideRestrictedByOwner');
+    const hideRestrictedByGroup = configManager.getConfig('security:list-policy:hideRestrictedByGroup');
 
     /**
     * @type {import('~/server/models/page').FindRecentUpdatedPagesOption}
@@ -946,7 +947,7 @@ module.exports = (crowi) => {
    */
   router.get('/v5-migration-status', accessTokenParser, loginRequired, async(req, res) => {
     try {
-      const isV5Compatible = crowi.configManager.getConfig('app:isV5Compatible');
+      const isV5Compatible = configManager.getConfig('app:isV5Compatible');
       const migratablePagesCount = req.user != null ? await crowi.pageService.countPagesCanNormalizeParentByUser(req.user) : null; // null check since not using loginRequiredStrictly
       return res.apiv3({ isV5Compatible, migratablePagesCount });
     }
