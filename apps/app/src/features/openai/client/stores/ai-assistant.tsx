@@ -74,7 +74,7 @@ type AiAssistantSidebarUtils = {
   ): void
   openEditor(): void
   close(): void
-  refreshCurrentThreadData(): Promise<void>
+  refreshThreadData(threadData?: IThreadRelationHasId): void
 }
 
 export const useAiAssistantSidebar = (
@@ -82,32 +82,6 @@ export const useAiAssistantSidebar = (
 ): SWRResponse<AiAssistantSidebarStatus, Error> & AiAssistantSidebarUtils => {
   const initialStatus = { isOpened: false };
   const swrResponse = useSWRStatic<AiAssistantSidebarStatus, Error>('AiAssistantSidebar', status, { fallbackData: initialStatus });
-  const { cache } = useSWRConfig();
-
-  const refreshCurrentThreadData = useCallback(async() => {
-    const { aiAssistantData, threadData } = swrResponse.data ?? {};
-
-    if (aiAssistantData?._id == null || threadData?._id == null) {
-      return;
-    }
-
-    const threadsCacheKey = ['threads', aiAssistantData._id];
-    await mutate(threadsCacheKey);
-
-    // useSWRxThreads を直接呼び出す代わりに cache を使用
-    // cache.get のキーは文字列である必要があるため、配列を結合
-    const threadsData = cache.get(threadsCacheKey.join(','))?.data as IThreadRelationHasId[] | undefined; // IThread を IThreadRelationHasId に変更
-
-    if (threadsData == null) {
-      return;
-    }
-
-    const newThreadDataFromServer = threadsData.find(t => t._id === threadData._id);
-
-    if (newThreadDataFromServer != null && swrResponse.data != null) { // swrResponse.data の存在を確認
-      swrResponse.mutate({ ...swrResponse.data, threadData: newThreadDataFromServer });
-    }
-  }, [swrResponse, cache]);
 
   return {
     ...swrResponse,
@@ -128,6 +102,12 @@ export const useAiAssistantSidebar = (
         isOpened: false, isEditorAssistant: false, aiAssistantData: undefined, threadData: undefined,
       }), [swrResponse],
     ),
-    refreshCurrentThreadData,
+    refreshThreadData: useCallback(
+      (threadData?: IThreadRelationHasId) => {
+        swrResponse.mutate((currentState = { isOpened: false }) => {
+          return { ...currentState, threadData };
+        });
+      }, [swrResponse],
+    ),
   };
 };

@@ -29,7 +29,7 @@ import {
   type FormData as FormDataForKnowledgeAssistant,
 } from '../../../services/knowledge-assistant';
 import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
-// import { useSWRxThreads } from '../../../stores/thread'; // 削除
+import { useSWRxThreads } from '../../../stores/thread';
 
 import { MessageCard, type MessageCardRole } from './MessageCard';
 import { ResizableTextarea } from './ResizableTextArea';
@@ -67,8 +67,8 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   // Hooks
   const { t } = useTranslation();
   const { data: growiCloudUri } = useGrowiCloudUri();
-  // const { data: threads, isLoading: isLoadingThreads } = useSWRxThreads(aiAssistantData?._id); // 削除
-  const { data: aiAssistantSidebarData, refreshCurrentThreadData } = useAiAssistantSidebar(); // refreshCurrentThreadData を追加
+  const { data: threads, mutate: mutateThreads } = useSWRxThreads(aiAssistantData?._id);
+  const { data: aiAssistantSidebarData, refreshThreadData } = useAiAssistantSidebar();
 
   const {
     createThread: createThreadForKnowledgeAssistant,
@@ -106,6 +106,18 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
   // Effects
   useFetchAndSetMessageDataEffect(setMessageLogs, threadData?.threadId);
+
+  // refresh thread data when the data is changed
+  useEffect(() => {
+    if (threads == null) {
+      return;
+    }
+
+    const currentThread = threads.find(t => t.threadId === currentThreadId);
+    if (currentThread != null) {
+      refreshThreadData(currentThread);
+    }
+  }, [threads, currentThreadId, refreshThreadData]);
 
   // Functions
   const resetForm = useCallback(() => {
@@ -229,7 +241,9 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
             setMessageLogs(msgs => [...msgs, generatingAnswerMessage]);
             return undefined;
           });
-          refreshCurrentThreadData(); // メッセージ送信成功後に呼び出し
+
+          // refresh thread data
+          mutateThreads();
           return;
         }
 
@@ -291,7 +305,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     }
 
   // eslint-disable-next-line max-len
-  }, [isGenerating, messageLogs, resetForm, currentThreadId, createThread, t, postMessage, form, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri]);
+  }, [isGenerating, messageLogs, resetForm, currentThreadId, createThread, t, postMessage, form, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri, mutateThreads]);
 
   const submit = useCallback((data: FormData) => {
     if (isEditorAssistant) {
@@ -321,14 +335,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
       ? headerIconForEditorAssistant
       : headerIconForKnowledgeAssistant;
   }, [headerIconForEditorAssistant, headerIconForKnowledgeAssistant, isEditorAssistant]);
-
-  // const currentThreadTitleFromSWR = useMemo(() => { // 削除
-  //   if (isLoadingThreads || threads == null || currentThreadId == null) { // 削除
-  //     return undefined; // 削除
-  //   } // 削除
-  //   const foundThread = threads.find(t => t.threadId === currentThreadId); // 削除
-  //   return foundThread?.title; // 削除
-  // }, [threads, currentThreadId, isLoadingThreads]); // 削除
 
   const headerText = useMemo(() => {
     if (aiAssistantSidebarData?.threadData?.title) { // useAiAssistantSidebar から取得した title を使用
