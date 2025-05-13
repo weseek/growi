@@ -1,4 +1,4 @@
-import type { Dispatch, SetStateAction, RefObject } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 import {
   useCallback, useMemo, useState, useEffect,
 } from 'react';
@@ -13,7 +13,7 @@ import { apiv3Post } from '~/client/util/apiv3-client';
 import { SseMessageSchema, type SseMessage } from '~/features/openai/interfaces/knowledge-assistant/sse-schemas';
 import { handleIfSuccessfullyParsed } from '~/features/openai/utils/handle-if-successfully-parsed';
 
-import type { MessageLog } from '../../interfaces/message';
+import type { MessageLog, MessageWithCustomMetaData } from '../../interfaces/message';
 import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
 import { ThreadType } from '../../interfaces/thread-relation';
 import { AiAssistantChatInitialView } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantChatInitialView';
@@ -253,33 +253,84 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
 };
 
 
-export const useFetchAndSetMessageDataEffect = (setMessageLogs: Dispatch<SetStateAction<MessageLog[]>>, threadId?: string): void => {
+// Helper function to transform API message data to MessageLog[]
+const transformApiMessagesToLogs = (
+    apiMessageData: MessageWithCustomMetaData | null | undefined,
+): MessageLog[] => {
+  if (apiMessageData == null || !Array.isArray(apiMessageData.data)) {
+    return [];
+  }
+
+  // Define a type for the items in apiMessageData.data for clarity
+  type ApiMessageItem = (typeof apiMessageData.data)[number];
+
+  return apiMessageData.data
+    .slice() // Create a shallow copy before reversing
+    .reverse()
+    .filter((message: ApiMessageItem) => message.metadata?.shouldHideMessage !== 'true')
+    .map((message: ApiMessageItem): MessageLog => {
+      let messageTextContent = '';
+      // message.content is an array of content blocks
+      if (message.content && message.content.length > 0) {
+        for (const contentBlock of message.content) {
+          // Check if the content block is of type 'text'
+          if (contentBlock.type === 'text') {
+            messageTextContent = contentBlock.text.value;
+            break; // Use the first text content block found
+          }
+        }
+      }
+
+      return {
+        id: message.id, // Use the actual message ID from OpenAI
+        content: messageTextContent,
+        isUserMessage: message.role === 'user',
+      };
+    });
+};
+
+export const useFetchAndSetMessageDataEffect = (
+    setMessageLogs: Dispatch<SetStateAction<MessageLog[]>>,
+    threadId?: string,
+): void => {
   const { data: aiAssistantSidebarData } = useAiAssistantSidebar();
-  const { trigger: mutateMessageData } = useSWRMUTxMessages(aiAssistantSidebarData?.aiAssistantData?._id, threadId);
+  const { trigger: mutateMessageData } = useSWRMUTxMessages(
+    aiAssistantSidebarData?.aiAssistantData?._id,
+    threadId,
+  );
 
   useEffect(() => {
-    const fetchAndSetMessageData = async() => {
-      const messageData = await mutateMessageData();
-      if (messageData != null) {
-        const normalizedMessageData = messageData.data
-          .reverse()
-          .filter(message => message.metadata?.shouldHideMessage !== 'true');
+    if (threadId == null) {
+      setMessageLogs([]);
+      return; // Early return if no threadId
+    }
 
-        setMessageLogs(() => {
-          return normalizedMessageData.map((message, index) => (
-            {
-              id: index.toString(),
-              content: (message.content.length > 0 && message.content[0].type === 'text') ? message.content[0].text.value : '',
-              isUserMessage: message.role === 'user',
-            }
-          ));
+    const fetchAndSetLogs = async() => {
+      try {
+        // Assuming mutateMessageData() returns a Promise<MessageWithCustomMetaData | null | undefined>
+        const rawApiMessageData: MessageWithCustomMetaData | null | undefined = await mutateMessageData();
+        const fetchedLogs = transformApiMessagesToLogs(rawApiMessageData);
+
+        setMessageLogs((currentLogs) => {
+          // Preserve current logs if they represent a single, user-submitted message
+          // AND the newly fetched logs are empty (common for new threads).
+          const shouldPreserveCurrentMessage = currentLogs.length === 1
+            && currentLogs[0].isUserMessage
+            && fetchedLogs.length === 0;
+
+          if (shouldPreserveCurrentMessage) {
+            return currentLogs;
+          }
+          // Otherwise, update with the fetched logs (which could be an empty array).
+          return fetchedLogs;
         });
+      }
+      catch (error) {
+        // console.error('Failed to fetch or process message data:', error); // Optional: for debugging
+        setMessageLogs([]); // Clear logs on error to avoid inconsistent state
       }
     };
 
-    if (threadId != null) {
-      fetchAndSetMessageData();
-    }
-
-  }, [mutateMessageData, setMessageLogs, threadId]);
+    fetchAndSetLogs();
+  }, [threadId, mutateMessageData, setMessageLogs]); // Dependencies
 };
