@@ -44,7 +44,7 @@ type AiAssistantSidebarSubstanceProps = {
   isEditorAssistant: boolean;
   aiAssistantData?: AiAssistantHasId;
   threadData?: IThreadRelationHasId;
-  closeAiAssistantSidebar: () => void
+  onCloseButtonClicked: () => void
 }
 
 const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = (props: AiAssistantSidebarSubstanceProps) => {
@@ -52,7 +52,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     isEditorAssistant,
     aiAssistantData,
     threadData,
-    closeAiAssistantSidebar,
+    onCloseButtonClicked,
   } = props;
 
   // States
@@ -384,7 +384,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
           <button
             type="button"
             className="btn btn-link p-0 border-0"
-            onClick={closeAiAssistantSidebar}
+            onClick={onCloseButtonClicked}
           >
             <span className="material-symbols-outlined">close</span>
           </button>
@@ -522,7 +522,7 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
           isEditorAssistant={isEditorAssistant}
           threadData={threadData}
           aiAssistantData={aiAssistantData}
-          closeAiAssistantSidebar={closeAiAssistantSidebar}
+          onCloseButtonClicked={closeAiAssistantSidebar}
         />
       </SimpleBar>
     </div>
