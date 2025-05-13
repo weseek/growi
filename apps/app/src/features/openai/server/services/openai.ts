@@ -120,16 +120,6 @@ class OpenaiService implements IOpenaiService {
   }
 
   async createThread(userId: string, type: ThreadType, aiAssistantId?: string, initialUserMessage?: string): Promise<ThreadRelationDocument> {
-    let threadTitle: string | null = null;
-    if (initialUserMessage != null) {
-      try {
-        threadTitle = await this.generateThreadTitle(initialUserMessage);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    }
-
     try {
       const aiAssistant = aiAssistantId != null
         ? await AiAssistantModel.findOne({ _id: { $eq: aiAssistantId } }).populate<{ vectorStore: IVectorStore }>('vectorStore')
@@ -141,8 +131,23 @@ class OpenaiService implements IOpenaiService {
         type,
         aiAssistant: aiAssistantId,
         threadId: thread.id,
-        title: threadTitle,
+        title: null, // Initialize title as null
       });
+
+      if (initialUserMessage != null) {
+        // Do not await, run in background
+        this.generateThreadTitle(initialUserMessage)
+          .then(async(generatedTitle) => {
+            if (generatedTitle != null) {
+              threadRelation.title = generatedTitle;
+              await threadRelation.save();
+            }
+          })
+          .catch((err) => {
+            logger.error(`Failed to generate thread title for threadId ${thread.id}:`, err);
+          });
+      }
+
       return threadRelation;
     }
     catch (err) {
