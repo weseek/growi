@@ -224,6 +224,10 @@ export const useLimitLearnablePageCountPerAssistant = (initialData?: number): SW
   return useContextSWR('limitLearnablePageCountPerAssistant', initialData);
 };
 
+export const useIsUsersHomepageDeletionEnabled = (initialData?: boolean): SWRResponse<boolean, false> => {
+  return useContextSWR('isUsersHomepageDeletionEnabled', initialData);
+};
+
 /** **********************************************************
  *                     Computed contexts
  *********************************************************** */
