@@ -1,6 +1,6 @@
 {
   "name": "@growi/app",
-  "version": "7.2.2",
+  "version": "7.2.3-RC.0",
   "license": "MIT",
   "private": "true",
   "scripts": {
@@ -64,7 +64,7 @@
     "@aws-sdk/client-s3": "3.454.0",
     "@aws-sdk/s3-request-presigner": "3.454.0",
     "@azure/identity": "^4.4.1",
-    "@azure/openai": "^2.0.0-beta.2",
+    "@azure/openai": "^2.0.0",
     "@azure/storage-blob": "^12.16.0",
     "@browser-bunyan/console-formatted-stream": "^1.8.0",
     "@cspell/dynamic-import": "^8.15.4",
@@ -145,6 +145,7 @@
     "is-iso-date": "^0.0.1",
     "js-tiktoken": "^1.0.15",
     "js-yaml": "^4.1.0",
+    "jsonrepair": "^3.12.0",
     "katex": "^0.16.21",
     "ldapjs": "^3.0.2",
     "lucene-query-parser": "^1.2.0",
@@ -176,7 +177,7 @@
     "node-cron": "^3.0.2",
     "nodemailer": "^6.9.15",
     "nodemailer-ses-transport": "~1.5.0",
-    "openai": "^4.56.0",
+    "openai": "^4.96.2",
     "openid-client": "^5.4.0",
     "p-retry": "^4.0.0",
     "passport": "^0.6.0",
@@ -246,7 +247,8 @@
     "xss": "^1.0.15",
     "y-mongodb-provider": "^0.2.0",
     "y-socket.io": "^1.1.3",
-    "yjs": "^13.6.18"
+    "yjs": "^13.6.18",
+    "zod": "^3.24.2"
   },
   "// comments for defDependencies": {
     "bootstrap": "v5.3.3 has a bug. refs: https://github.com/twbs/bootstrap/issues/39798",
