@@ -1,3 +1,9 @@
+/* eslint-disable import/first */
+
+// Load the require hook as early as possible
+// Assuming it's compiled to .js in the dist folder
+// require('./require-hook');
+
 import type Logger from 'bunyan';
 
 import { initInstrumentation, detectServiceInstanceId, startOpenTelemetry } from '~/features/opentelemetry/server';
