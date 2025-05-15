@@ -6,8 +6,6 @@ import ReactMarkdown from 'react-markdown';
 
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 
-import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
-
 import styles from './MessageCard.module.scss';
 
 const moduleClass = styles['message-card'] ?? '';
@@ -27,14 +25,8 @@ const UserMessageCard = ({ children }: { children: string }): JSX.Element => (
 const assistantMessageCardModuleClass = styles['assistant-message-card'] ?? '';
 
 const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): JSX.Element => {
-  const { close: closeAiAssistantSidebar } = useAiAssistantSidebar();
-
-  const onClick = useCallback(() => {
-    closeAiAssistantSidebar();
-  }, [closeAiAssistantSidebar]);
-
   return (
-    <NextLink href={props.href} onClick={onClick} className="link-primary">
+    <NextLink href={props.href} className="link-primary">
       {props.children}
     </NextLink>
   );

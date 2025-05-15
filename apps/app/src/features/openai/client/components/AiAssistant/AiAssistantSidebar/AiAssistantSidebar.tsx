@@ -18,17 +18,16 @@ import { MessageErrorCode, StreamErrorCode } from '../../../../interfaces/messag
 import type { IThreadRelationHasId } from '../../../../interfaces/thread-relation';
 import {
   useEditorAssistant,
-  useAiAssistantSidebarCloseEffect as useAiAssistantSidebarCloseEffectForEditorAssistant,
   isEditorAssistantFormData,
   type FormData as FormDataForEditorAssistant,
 } from '../../../services/editor-assistant';
 import {
   useKnowledgeAssistant,
   useFetchAndSetMessageDataEffect,
-  useAiAssistantSidebarCloseEffect as useAiAssistantSidebarCloseEffectForKnowledgeAssistant,
   type FormData as FormDataForKnowledgeAssistant,
 } from '../../../services/knowledge-assistant';
 import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
+import { useSWRxThreads } from '../../../stores/thread';
 
 import { MessageCard, type MessageCardRole } from './MessageCard';
 import { ResizableTextarea } from './ResizableTextArea';
@@ -45,7 +44,9 @@ type AiAssistantSidebarSubstanceProps = {
   isEditorAssistant: boolean;
   aiAssistantData?: AiAssistantHasId;
   threadData?: IThreadRelationHasId;
-  closeAiAssistantSidebar: () => void
+  onCloseButtonClicked?: () => void;
+  onNewThreadCreated?: (thread: IThreadRelationHasId) => void;
+  onMessageReceived?: () => void;
 }
 
 const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = (props: AiAssistantSidebarSubstanceProps) => {
@@ -53,11 +54,12 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     isEditorAssistant,
     aiAssistantData,
     threadData,
-    closeAiAssistantSidebar,
+    onCloseButtonClicked,
+    onNewThreadCreated,
+    onMessageReceived,
   } = props;
 
   // States
-  const [currentThreadId, setCurrentThreadId] = useState<string | undefined>(threadData?.threadId);
   const [messageLogs, setMessageLogs] = useState<MessageLog[]>([]);
   const [generatingAnswerMessage, setGeneratingAnswerMessage] = useState<MessageLog>();
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
@@ -77,7 +79,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     // Views
     initialView: initialViewForKnowledgeAssistant,
     generateMessageCard: generateMessageCardForKnowledgeAssistant,
-    generateSummaryModeSwitch: generateSummaryModeSwitchForKnowledgeAssistant,
+    generateModeSwitchesDropdown: generateModeSwitchesDropdownForKnowledgeAssistant,
     headerIcon: headerIconForKnowledgeAssistant,
     headerText: headerTextForKnowledgeAssistant,
     placeHolder: placeHolderForKnowledgeAssistant,
@@ -126,16 +128,20 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     return thread;
   }, [aiAssistantData, createThreadForEditorAssistant, createThreadForKnowledgeAssistant, isEditorAssistant]);
 
-  const postMessage = useCallback(async(currentThreadId: string, formData: FormData) => {
+  const postMessage = useCallback(async(threadId: string, formData: FormData) => {
+    if (threadId == null) {
+      throw new Error('threadId is not set');
+    }
+
     if (isEditorAssistant) {
       if (isEditorAssistantFormData(formData)) {
-        const response = await postMessageForEditorAssistant(currentThreadId, formData);
+        const response = await postMessageForEditorAssistant(threadId, formData);
         return response;
       }
       return;
     }
     if (aiAssistantData?._id != null) {
-      const response = await postMessageForKnowledgeAssistant(aiAssistantData._id, currentThreadId, formData);
+      const response = await postMessageForKnowledgeAssistant(aiAssistantData._id, threadId, formData);
       return response;
     }
   }, [aiAssistantData?._id, isEditorAssistant, postMessageForEditorAssistant, postMessageForKnowledgeAssistant]);
@@ -167,16 +173,17 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     setGeneratingAnswerMessage(newAnswerMessage);
 
     // create thread
-    let currentThreadId_ = currentThreadId;
-    if (currentThreadId_ == null) {
+    let threadId = threadData?.threadId;
+    if (threadId == null) {
       try {
-        const thread = await createThread(newUserMessage.content);
-        if (thread == null) {
+        const newThread = await createThread(newUserMessage.content);
+        if (newThread == null) {
           return;
         }
 
-        setCurrentThreadId(thread.threadId);
-        currentThreadId_ = thread.threadId;
+        threadId = newThread.threadId;
+
+        onNewThreadCreated?.(newThread);
       }
       catch (err) {
         logger.error(err.toString());
@@ -186,11 +193,11 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
     // post message
     try {
-      if (currentThreadId_ == null) {
+      if (threadId == null) {
         return;
       }
 
-      const response = await postMessage(currentThreadId_, data);
+      const response = await postMessage(threadId, data);
       if (response == null) {
         return;
       }
@@ -226,6 +233,9 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
             setMessageLogs(msgs => [...msgs, generatingAnswerMessage]);
             return undefined;
           });
+
+          // refresh thread data
+          onMessageReceived?.();
           return;
         }
 
@@ -249,10 +259,10 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                 textValues.push(data.appendedMessage);
               },
               onDetectedDiff: (data) => {
-                console.log('sse diff', { data });
+                logger.debug('sse diff', { data });
               },
               onFinalized: (data) => {
-                console.log('sse finalized', { data });
+                logger.debug('sse finalized', { data });
               },
             });
           }
@@ -287,7 +297,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     }
 
   // eslint-disable-next-line max-len
-  }, [isGenerating, messageLogs, resetForm, currentThreadId, createThread, t, postMessage, form, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri]);
+  }, [isGenerating, messageLogs, resetForm, threadData?.threadId, createThread, onNewThreadCreated, t, postMessage, form, onMessageReceived, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri]);
 
   const submit = useCallback((data: FormData) => {
     if (isEditorAssistant) {
@@ -319,10 +329,13 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   }, [headerIconForEditorAssistant, headerIconForKnowledgeAssistant, isEditorAssistant]);
 
   const headerText = useMemo(() => {
+    if (threadData?.title) {
+      return threadData.title;
+    }
     return isEditorAssistant
       ? headerTextForEditorAssistant
       : headerTextForKnowledgeAssistant;
-  }, [isEditorAssistant, headerTextForEditorAssistant, headerTextForKnowledgeAssistant]);
+  }, [threadData?.title, isEditorAssistant, headerTextForEditorAssistant, headerTextForKnowledgeAssistant]);
 
   const placeHolder = useMemo(() => {
     if (form.formState.isSubmitting) {
@@ -340,14 +353,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
     return initialViewForKnowledgeAssistant;
   }, [generateInitialViewForEditorAssistant, initialViewForKnowledgeAssistant, isEditorAssistant, submit]);
-
-  const additionalInputControl = useMemo(() => {
-    if (isEditorAssistant) {
-      return <></>;
-    }
-
-    return generateSummaryModeSwitchForKnowledgeAssistant(isGenerating);
-  }, [generateSummaryModeSwitchForKnowledgeAssistant, isEditorAssistant, isGenerating]);
 
   const messageCard = useCallback(
     (role: MessageCardRole, children: string, messageId?: string, messageLogs?: MessageLog[], generatingAnswerMessage?: MessageLog) => {
@@ -373,14 +378,14 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
           <button
             type="button"
             className="btn btn-link p-0 border-0"
-            onClick={closeAiAssistantSidebar}
+            onClick={onCloseButtonClicked}
           >
             <span className="material-symbols-outlined">close</span>
           </button>
         </div>
         <div className="p-4 d-flex flex-column gap-4 vh-100">
 
-          { currentThreadId != null
+          { threadData != null
             ? (
               <div className="vstack gap-4 pb-2">
                 { messageLogs.map(message => (
@@ -406,24 +411,26 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
           }
 
           <div className="mt-auto">
-            <form onSubmit={form.handleSubmit(submit)} className="flex-fill vstack gap-3">
-              <div className="flex-fill hstack gap-2 align-items-end m-0">
-                <Controller
-                  name="input"
-                  control={form.control}
-                  render={({ field }) => (
-                    <ResizableTextarea
-                      {...field}
-                      required
-                      className="form-control textarea-ask"
-                      style={{ resize: 'none' }}
-                      rows={1}
-                      placeholder={placeHolder}
-                      onKeyDown={keyDownHandler}
-                      disabled={form.formState.isSubmitting}
-                    />
-                  )}
-                />
+            <form onSubmit={form.handleSubmit(submit)} className="flex-fill vstack gap-1">
+              <Controller
+                name="input"
+                control={form.control}
+                render={({ field }) => (
+                  <ResizableTextarea
+                    {...field}
+                    required
+                    className="form-control textarea-ask"
+                    style={{ resize: 'none' }}
+                    rows={1}
+                    placeholder={placeHolder}
+                    onKeyDown={keyDownHandler}
+                    disabled={form.formState.isSubmitting}
+                  />
+                )}
+              />
+              <div className="flex-fill hstack gap-2 justify-content-between m-0">
+                { !isEditorAssistant && generateModeSwitchesDropdownForKnowledgeAssistant(isGenerating) }
+                { isEditorAssistant && <div /> }
                 <button
                   type="submit"
                   className="btn btn-submit no-border"
@@ -432,7 +439,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                   <span className="material-symbols-outlined">send</span>
                 </button>
               </div>
-              { additionalInputControl }
             </form>
 
             {form.formState.errors.input != null && (
@@ -478,7 +484,7 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const sidebarScrollerRef = useRef<HTMLDivElement>(null);
 
-  const { data: aiAssistantSidebarData, close: closeAiAssistantSidebar } = useAiAssistantSidebar();
+  const { data: aiAssistantSidebarData, close: closeAiAssistantSidebar, refreshThreadData } = useAiAssistantSidebar();
   const { mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
 
   const aiAssistantData = aiAssistantSidebarData?.aiAssistantData;
@@ -486,14 +492,29 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
   const isOpened = aiAssistantSidebarData?.isOpened;
   const isEditorAssistant = aiAssistantSidebarData?.isEditorAssistant ?? false;
 
-  useAiAssistantSidebarCloseEffectForEditorAssistant();
-  useAiAssistantSidebarCloseEffectForKnowledgeAssistant(sidebarRef);
+  const { data: threads, mutate: mutateThreads } = useSWRxThreads(aiAssistantData?._id);
+
+  const newThreadCreatedHandler = useCallback((thread: IThreadRelationHasId): void => {
+    refreshThreadData(thread);
+  }, [refreshThreadData]);
 
   useEffect(() => {
     if (!aiAssistantSidebarData?.isOpened) {
       mutateIsEnableUnifiedMergeView(false);
     }
   }, [aiAssistantSidebarData?.isOpened, mutateIsEnableUnifiedMergeView]);
+
+  // refresh thread data when the data is changed
+  useEffect(() => {
+    if (threads == null) {
+      return;
+    }
+
+    const currentThread = threads.find(t => t.threadId === threadData?.threadId);
+    if (currentThread != null) {
+      refreshThreadData(currentThread);
+    }
+  }, [threads, refreshThreadData, threadData?.threadId]);
 
   if (!isOpened) {
     return <></>;
@@ -514,7 +535,9 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
           isEditorAssistant={isEditorAssistant}
           threadData={threadData}
           aiAssistantData={aiAssistantData}
-          closeAiAssistantSidebar={closeAiAssistantSidebar}
+          onMessageReceived={mutateThreads}
+          onNewThreadCreated={newThreadCreatedHandler}
+          onCloseButtonClicked={closeAiAssistantSidebar}
         />
       </SimpleBar>
     </div>

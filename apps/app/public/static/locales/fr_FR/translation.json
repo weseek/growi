@@ -496,6 +496,8 @@
     "editor_assistant_placeholder": "Puis-je vous aider ?",
     "summary_mode_label": "Mode résumé",
     "summary_mode_help": "Réponse concise en 2-3 phrases",
+    "extended_thinking_mode_label": "Mode réflexion approfondie",
+    "extended_thinking_mode_help": "Lorsqu'activé, l'IA prendra plus de temps pour réfléchir et fournir une réponse plus complète.",
     "caution_against_hallucination": "Veuillez vérifier les informations et consulter les sources.",
     "progress_label": "Génération des réponses",
     "failed_to_create_or_retrieve_thread": "Échec de la création ou de la récupération du fil de discussion",
@@ -778,7 +780,8 @@
     "export_cancel_warning": "Les exportations suivantes en cours seront annulées",
     "restart": "Redémarrage",
     "format": "Format",
-    "started_on": "Commencé le"
+    "started_on": "Commencé le",
+    "file_upload_not_configured": "Les paramètres de téléchargement de fichiers ne sont pas configurés"
   },
   "message": {
     "successfully_connected": "Connecté!",

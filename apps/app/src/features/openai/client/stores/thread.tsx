@@ -22,5 +22,6 @@ export const useSWRMUTxThreads = (aiAssistantId?: string): SWRMutationResponse<I
   return useSWRMutation(
     key,
     ([endpoint]) => apiv3Get(endpoint).then(response => response.data.threads),
+    { revalidate: true },
   );
 };

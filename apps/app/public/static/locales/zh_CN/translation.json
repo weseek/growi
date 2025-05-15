@@ -491,6 +491,8 @@
     "editor_assistant_placeholder": "有什么需要帮忙的吗？",
     "summary_mode_label": "摘要模式",
     "summary_mode_help": "简洁回答在2-3句话内",
+    "extended_thinking_mode_label": "延伸思考模式",
+    "extended_thinking_mode_help": "启用后，AI 将花更多时间思考并提供更全面的回答。",
     "caution_against_hallucination": "请核实信息并检查来源。",
     "progress_label": "生成答案中",
     "failed_to_create_or_retrieve_thread": "创建或获取线程失败",
@@ -787,7 +789,8 @@
     "export_cancel_warning": "以下正在进行的导出将被取消",
     "restart": "重新开始",
     "format": "格式",
-    "started_on": "开始于"
+    "started_on": "开始于",
+    "file_upload_not_configured": "未配置文件上传设置"
   },
   "message": {
     "successfully_connected": "连接成功！",

@@ -13,15 +13,14 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
-import { MessageErrorCode, type StreamErrorCode } from '../../interfaces/message-error';
-import AiAssistantModel from '../models/ai-assistant';
-import ThreadRelationModel from '../models/thread-relation';
-import { openaiClient } from '../services/client';
-import { getStreamErrorCode } from '../services/getStreamErrorCode';
-import { getOpenaiService } from '../services/openai';
-import { replaceAnnotationWithPageLink } from '../services/replace-annotation-with-page-link';
-
-import { certifyAiService } from './middlewares/certify-ai-service';
+import { MessageErrorCode, type StreamErrorCode } from '../../../interfaces/message-error';
+import AiAssistantModel from '../../models/ai-assistant';
+import ThreadRelationModel from '../../models/thread-relation';
+import { openaiClient } from '../../services/client';
+import { getStreamErrorCode } from '../../services/getStreamErrorCode';
+import { getOpenaiService } from '../../services/openai';
+import { replaceAnnotationWithPageLink } from '../../services/replace-annotation-with-page-link';
+import { certifyAiService } from '../middlewares/certify-ai-service';
 
 const logger = loggerFactory('growi:routes:apiv3:openai:message');
 
@@ -31,6 +30,7 @@ type ReqBody = {
   aiAssistantId: string,
   threadId?: string,
   summaryMode?: boolean,
+  extendedThinkingMode?: boolean,
 }
 
 type Req = Request<undefined, Response, ReqBody> & {
@@ -84,7 +84,8 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
       threadRelation.updateThreadExpiration();
 
       let stream: AssistantStream;
-      const isSummaryMode = req.body.summaryMode ?? false;
+      const useSummaryMode = req.body.summaryMode ?? false;
+      const useExtendedThinkingMode = req.body.extendedThinkingMode ?? false;
 
       try {
         const assistant = await getOrCreateChatAssistant();
@@ -97,9 +98,12 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
           ],
           additional_instructions: [
             aiAssistant.additionalInstruction,
-            isSummaryMode
-              ? 'Turn on summary mode: I will try to answer concisely, aiming for 1-3 sentences.'
-              : 'I will turn off summary mode and answer.',
+            useSummaryMode
+              ? '**IMPORTANT** : Turn on "Summary Mode"'
+              : '**IMPORTANT** : Turn off "Summary Mode"',
+            useExtendedThinkingMode
+              ? '**IMPORTANT** : Turn on "Extended Thinking Mode"'
+              : '**IMPORTANT** : Turn off "Extended Thinking Mode"',
           ].join('\n'),
         });
 
