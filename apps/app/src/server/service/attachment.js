@@ -44,23 +44,27 @@ class AttachmentService {
     // create an Attachment document and upload file
     let attachment;
     try {
-      const attachedHandlerPromises = this.attachHandlers.map((handler) => {
-        return handler(pageId, file, fileStream);
-      });
-
-      Promise.all(attachedHandlerPromises);
-
       attachment = Attachment.createWithoutSave(pageId, user, file.originalname, file.mimetype, file.size, attachmentType);
       await fileUploadService.uploadAttachment(fileStream, attachment);
       await attachment.save();
+
+      const fileStreamForAttachedHandler = fs.createReadStream(file.path, {
+        flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true,
+      });
+
+      const attachedHandlerPromises = this.attachHandlers.map((handler) => {
+        return handler(pageId, file, fileStreamForAttachedHandler);
+      });
+
+      // Do not await, run in background
+      Promise.all(attachedHandlerPromises).then(() => {
+        onAttached?.(file);
+      });
     }
     catch (err) {
       // delete temporary file
       fs.unlink(file.path, (err) => { if (err) { logger.error('Error while deleting tmp file.') } });
       throw err;
-    }
-    finally {
-      onAttached?.(file);
     }
 
     return attachment;
