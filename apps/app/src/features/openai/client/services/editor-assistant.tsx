@@ -413,17 +413,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   };
 };
 
-export const useAiAssistantSidebarCloseEffect = (): void => {
-  const { data, close } = useAiAssistantSidebar();
-  const { data: editorMode } = useEditorMode();
-
-  useEffect(() => {
-    if (data?.isEditorAssistant && editorMode !== EditorMode.Editor) {
-      close();
-    }
-  }, [close, data?.isEditorAssistant, editorMode]);
-};
-
 // type guard
 export const isEditorAssistantFormData = (formData): formData is FormData => {
   return 'markdownType' in formData;

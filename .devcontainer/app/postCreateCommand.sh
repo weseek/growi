@@ -11,6 +11,9 @@ mkdir -p /tmp/page-bulk-export
 sudo chown -R vscode:vscode /tmp/page-bulk-export
 sudo chmod 700 /tmp/page-bulk-export
 
+# Install uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
 # Setup pnpm
 SHELL=bash pnpm setup
 eval "$(cat /home/vscode/.bashrc)"

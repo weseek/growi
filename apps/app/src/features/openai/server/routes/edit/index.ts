@@ -62,58 +62,37 @@ type PostMessageHandlersFactory = (crowi: Crowi) => RequestHandler[];
 // Instructions
 // -----------------------------------------------------------------------------
 /* eslint-disable max-len */
-const instructionWithMarkdown = `You are an Editor Assistant for GROWI, a markdown wiki system.
-    Your task is to help users edit their markdown content based on their requests.
-    Spaces and line breaks are also counted as individual characters.
+const withMarkdownCaution = `# IMPORTANT:
+- Spaces and line breaks are also counted as individual characters.
+- The text for lines that do not need correction must be returned exactly as in the original text.
+- Include original text in the replace object even if it contains only spaces or line breaks
+`;
 
-    RESPONSE FORMAT:
-    You must respond with a JSON object in the following format example:
-    {
-      "contents": [
-        { "message": "Your brief message about the upcoming change or proposal.\n\n" },
-        { "replace": "New text 1" },
-        { "message": "Additional explanation if needed" },
-        { "replace": "New text 2" },
-        ...more items if needed
-        { "message": "Your friendly message explaining what changes were made or suggested." }
-      ]
-    }
+function instruction(withMarkdown: boolean): string {
+  return `# RESPONSE FORMAT:
+You must respond with a JSON object in the following format example:
+{
+  "contents": [
+    { "message": "Your brief message about the upcoming change or proposal.\n\n" },
+    { "replace": "New text 1" },
+    { "message": "Additional explanation if needed" },
+    { "replace": "New text 2" },
+    ...more items if needed
+    { "message": "Your friendly message explaining what changes were made or suggested." }
+  ]
+}
 
-    The array should contain:
-    - [At the beginning of the list] A "message" object that has your brief message about the upcoming change or proposal. Be sure to add two consecutive line feeds ('\n\n') at the end.
-    - Objects with a "message" key for explanatory text to the user if needed.
-    - Edit markdown according to user instructions and include it line by line in the 'replace' object. Return original text for lines that do not need editing.
-    - [At the end of the list] A "message" object that contains your friendly message explaining that the operation was completed and what changes were made.
+The array should contain:
+- [At the beginning of the list] A "message" object that has your brief message about the upcoming change or proposal. Be sure to add two consecutive line feeds ('\n\n') at the end.
+- Objects with a "message" key for explanatory text to the user if needed.
+- Edit markdown according to user instructions and include it line by line in the 'replace' object. ${withMarkdown ? 'Return original text for lines that do not need editing.' : ''}
+- [At the end of the list] A "message" object that contains your friendly message explaining that the operation was completed and what changes were made.
 
-    IMPORTANT:
-    - The text for lines that do not need correction must be returned exactly as in the original text.
-    - Include original text in the replace object even if it contains only spaces or line breaks
+${withMarkdown ? withMarkdownCaution : ''}
 
-    Always provide messages in the same language as the user's request.`;
-
-const instructionWithoutMarkdown = `You are an Editor Assistant for GROWI, a markdown wiki system.
-    Your task is to help users edit their markdown content based on their requests.
-
-    RESPONSE FORMAT:
-    You must respond with a JSON object in the following format example:
-    {
-      "contents": [
-        { "message": "Your brief message about the upcoming change or proposal.\n\n" },
-        { "replace": "New text 1" },
-        { "message": "Additional explanation if needed" },
-        { "replace": "New text 2" },
-        ...more items if needed
-        { "message": "Your friendly message explaining what changes were made or suggested." }
-      ]
-    }
-
-    The array should contain:
-    - [At the beginning of the list] A "message" object that has your brief message about the upcoming change or proposal. Be sure to add two consecutive line feeds ('\n\n') at the end.
-    - Objects with a "message" key for explanatory text to the user if needed.
-    - Edit markdown according to user instructions and include it line by line in the 'replace' object.
-    - [At the end of the list] A "message" object that contains your friendly message explaining that the operation was completed and what changes were made.
-
-    Always provide messages in the same language as the user's request.`;
+# Multilingual Support:
+Always provide messages in the same language as the user's request.`;
+}
 /* eslint-disable max-len */
 
 /**
@@ -201,40 +180,8 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
           additional_messages: [
             {
               role: 'assistant',
-              content: markdown != null
-                ? instructionWithMarkdown
-                : instructionWithoutMarkdown,
+              content: instruction(markdown != null),
             },
-            // {
-            //   role: 'assistant',
-            //   content: `You are an Editor Assistant for GROWI, a markdown wiki system.
-            //   Your task is to help users edit their markdown content based on their requests.
-
-            //   RESPONSE FORMAT:
-            //   You must respond with a JSON object in the following format example:
-            //   {
-            //     "contents": [
-            //       { "message": "Your brief message about the upcoming change or proposal.\n\n" },
-            //       { "retain": 10 },
-            //       { "insert": "New text 1" },
-            //       { "message": "Additional explanation if needed" },
-            //       { "retain": 100 },
-            //       { "delete": 15 },
-            //       { "insert": "New text 2" },
-            //       ...more items if needed
-            //       { "message": "Your friendly message explaining what changes were made or suggested." }
-            //     ]
-            //   }
-
-            //   The array should contain:
-            //   - [At the beginning of the list] A "message" object that has your brief message about the upcoming change or proposal. Be sure to add two consecutive line feeds ('\n\n') at the end.
-            //   - Objects with a "message" key for explanatory text to the user if needed.
-            //   - Objects with "insert", "delete", and "retain" keys for replacements (Delta format by Quill Rich Text Editor)
-            //   - [At the end of the list] A "message" object that contains your friendly message explaining that the operation was completed and what changes were made.
-
-            //   If no changes are needed, include only message objects with explanations.
-            //   Always provide messages in the same language as the user's request.`,
-            // },
             {
               role: 'user',
               content: `Current markdown content:\n\`\`\`markdown\n${markdown}\n\`\`\`\n\nUser request: ${userMessage}`,
