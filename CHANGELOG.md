@@ -30,7 +30,6 @@
 * fix: User picture tooltip (2) (#9898) @yuki-takei
 * fix: ConfigLoader.loadFromDB for JSON parsing error handling (#9890) @yuki-takei
 * fix: Profile image upload functionality and accepted file types (#9886) @yuki-takei
-* fix: User picture tooltip (2) (#9898) @yuki-takei
 * fix: Tooltip for UserPicture doesn't work (#9884) @yuki-takei
 
 ### 🧰 Maintenance
