@@ -179,14 +179,6 @@ Crowi.prototype.init = async function() {
   await this.setupConfigManager();
   await this.setupSessionConfig();
 
-  this.setupAttachmentService();
-
-  // OpenaiService depends on AttachmentService
-  this.setupOpenaiService();
-
-  // OpenaiService (cron) depends on OpenaiService
-  this.setupCron();
-
   // setup messaging services
   await this.setupS2sMessagingService();
   await this.setupSocketIoService();
@@ -208,6 +200,7 @@ Crowi.prototype.init = async function() {
     this.setupG2GTransferService(),
     this.setUpFileUpload(),
     this.setUpFileUploaderSwitchService(),
+    this.setupAttachmentService(),
     this.setUpAcl(),
     this.setUpRestQiitaAPI(),
     this.setupUserGroupService(),
@@ -230,7 +223,12 @@ Crowi.prototype.init = async function() {
     // depends on passport service
     this.setupExternalAccountService(),
     this.setupExternalUserGroupSyncService(),
+
+    // depends on AttachmentService
+    this.setupOpenaiService(),
   ]);
+
+  this.setupCron();
 
   await normalizeData();
 };
