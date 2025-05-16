@@ -60,9 +60,8 @@ class AttachmentService {
       });
 
       // Do not await, run in background
-      Promise.all(attachedHandlerPromises).then(() => {
-        disposeTmpFileCallback?.(file);
-      });
+      Promise.all(attachedHandlerPromises)
+        .finally(disposeTmpFileCallback?.(file));
     }
     catch (err) {
       logger.error('Error while creating attachment', err);
