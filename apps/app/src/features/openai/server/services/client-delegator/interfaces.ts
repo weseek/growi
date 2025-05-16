@@ -13,6 +13,7 @@ export interface IOpenaiClientDelegator {
   createVectorStore(name: string): Promise<OpenAI.VectorStores.VectorStore>
   deleteVectorStore(vectorStoreId: string): Promise<OpenAI.VectorStores.VectorStoreDeleted>
   uploadFile(file: Uploadable): Promise<OpenAI.Files.FileObject>
+  createVectorStoreFile(vectorStoreId: string, fileId: string): Promise<OpenAI.VectorStores.Files.VectorStoreFile>
   createVectorStoreFileBatch(vectorStoreId: string, fileIds: string[]): Promise<OpenAI.VectorStores.FileBatches.VectorStoreFileBatch>
   deleteFile(fileId: string): Promise<OpenAI.Files.FileDeleted>;
   chatCompletion(body: OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming): Promise<OpenAI.Chat.Completions.ChatCompletion>
