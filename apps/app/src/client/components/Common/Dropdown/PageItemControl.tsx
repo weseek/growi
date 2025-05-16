@@ -52,7 +52,6 @@ type CommonProps = {
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
   isInstantRename?: boolean,
   alignEnd?: boolean,
-  isUsersHomepageDeletionEnabled?: boolean,
 }
 
 
@@ -231,7 +230,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
         {/* divider */}
         {/* Delete */}
-        { !forceHideMenuItems?.includes(MenuItemType.DELETE) && isEnableActions && !isReadOnlyUser && (
+        { !forceHideMenuItems?.includes(MenuItemType.DELETE) && isEnableActions && !isReadOnlyUser && pageInfo.isDeletable && (
           <>
             { showDeviderBeforeDelete && <DropdownItem divider /> }
             <DropdownItem
