@@ -71,7 +71,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     onClickRevertMenuItem, onClickPathRecoveryMenuItem,
     additionalMenuItemOnTopRenderer: AdditionalMenuItemsOnTop,
     additionalMenuItemRenderer: AdditionalMenuItems,
-    isInstantRename, alignEnd, isUsersHomepageDeletionEnabled,
+    isInstantRename, alignEnd,
   } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -231,7 +231,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
         {/* divider */}
         {/* Delete */}
-        { !forceHideMenuItems?.includes(MenuItemType.DELETE) && isEnableActions && !isReadOnlyUser && isUsersHomepageDeletionEnabled && (
+        { !forceHideMenuItems?.includes(MenuItemType.DELETE) && isEnableActions && !isReadOnlyUser && (
           <>
             { showDeviderBeforeDelete && <DropdownItem divider /> }
             <DropdownItem
