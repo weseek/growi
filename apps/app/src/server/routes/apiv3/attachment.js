@@ -360,7 +360,7 @@ module.exports = (crowi) => {
           return res.apiv3Err(`Forbidden to access to the page '${page.id}'`);
         }
 
-        const attachment = await attachmentService.createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE, autoReap(req, res, () => {}));
+        const attachment = await attachmentService.createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE, () => autoReap(req, res, () => {}));
 
         const result = {
           page: serializePageSecurely(page),

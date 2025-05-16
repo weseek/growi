@@ -28,7 +28,7 @@ class AttachmentService {
     this.crowi = crowi;
   }
 
-  async createAttachment(file, user, pageId = null, attachmentType, onAttached) {
+  async createAttachment(file, user, pageId = null, attachmentType, disposeTmpFileCallback) {
     const { fileUploadService } = this.crowi;
 
     // check limit
@@ -58,12 +58,12 @@ class AttachmentService {
 
       // Do not await, run in background
       Promise.all(attachedHandlerPromises).then(() => {
-        onAttached?.(file);
+        disposeTmpFileCallback?.(file);
       });
     }
     catch (err) {
-      // delete temporary file
-      fs.unlink(file.path, (err) => { if (err) { logger.error('Error while deleting tmp file.') } });
+      logger.error('Error while creating attachment', err);
+      disposeTmpFileCallback?.(file);
       throw err;
     }
 
