@@ -16,7 +16,7 @@ jobs:
         ref: ${{ github.event.pull_request.base.ref }}
 
     - name: Retrieve information from package.json
-      uses: myrotvorets/info-from-package-json-action@2.0.1
+      uses: myrotvorets/info-from-package-json-action@v2.0.2
       id: package-json
       with:
         workingDir: apps/pdf-converter
@@ -96,7 +96,7 @@ jobs:
         turbo run version:prerelease --filter=@growi/pdf-converter
 
     - name: Retrieve information from package.json
-      uses: myrotvorets/info-from-package-json-action@2.0.1
+      uses: myrotvorets/info-from-package-json-action@v2.0.2
       id: package-json
       with:
         workingDir: apps/pdf-converter
