@@ -10,6 +10,12 @@ const mongoose = require('mongoose');
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:service:AttachmentService');
 
+const createReadStream = (filePath) => {
+  return fs.createReadStream(filePath, {
+    flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true,
+  });
+};
+
 /**
  * the service class for Attachment and file-uploader
  */
@@ -37,20 +43,17 @@ class AttachmentService {
       throw new Error(res.errorMessage);
     }
 
-    const fileStream = fs.createReadStream(file.path, {
-      flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true,
-    });
-
     // create an Attachment document and upload file
     let attachment;
     try {
       attachment = Attachment.createWithoutSave(pageId, user, file.originalname, file.mimetype, file.size, attachmentType);
-      await fileUploadService.uploadAttachment(fileStream, attachment);
+      await fileUploadService.uploadAttachment(createReadStream(file.path), attachment);
       await attachment.save();
 
-      const fileStreamForAttachedHandler = fs.createReadStream(file.path, {
-        flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true,
-      });
+      let fileStreamForAttachedHandler;
+      if (this.attachHandlers.length !== 0) {
+        fileStreamForAttachedHandler = createReadStream(file.path);
+      }
 
       const attachedHandlerPromises = this.attachHandlers.map((handler) => {
         return handler(pageId, file, fileStreamForAttachedHandler);
