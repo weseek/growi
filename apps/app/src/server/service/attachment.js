@@ -50,6 +50,10 @@ class AttachmentService {
       await fileUploadService.uploadAttachment(createReadStream(file.path), attachment);
       await attachment.save();
 
+      //  Creates a new stream for each operation instead of reusing the original stream.
+      //  REASON: Node.js Readable streams cannot be reused after consumption.
+      //  When a stream is piped or consumed, its internal state changes and the data pointers
+      //  are advanced to the end, making it impossible to read the same data again.
       let fileStreamForAttachedHandler;
       if (this.attachHandlers.length !== 0) {
         fileStreamForAttachedHandler = createReadStream(file.path);

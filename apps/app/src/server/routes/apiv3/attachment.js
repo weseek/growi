@@ -341,6 +341,7 @@ module.exports = (crowi) => {
    */
   router.post('/', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, uploads.single('file'),
     validator.retrieveAddAttachment, apiV3FormValidator, addActivity,
+    // Removed autoReap middleware to use file data in asynchronous processes. Instead, implemented file deletion after asynchronous processes complete
     async(req, res) => {
 
       const pageId = req.body.page_id;
