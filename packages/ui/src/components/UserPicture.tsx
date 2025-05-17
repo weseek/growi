@@ -72,9 +72,7 @@ const UserPictureRootWithLink = forwardRef<
       ref={ref}
       className={props.className}
       onClick={clickHandler}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter') clickHandler();
-      }}
+      onKeyDown={() => {}}
       style={{ cursor: 'pointer' }}
     >
       {props.children}

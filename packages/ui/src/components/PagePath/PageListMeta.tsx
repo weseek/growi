@@ -1,7 +1,5 @@
 import type { FC, JSX } from 'react';
 
-import assert from 'node:assert';
-
 import type { IPageHasId } from '@growi/core';
 import { pagePathUtils, templateChecker } from '@growi/core/dist/utils';
 
@@ -41,7 +39,9 @@ const SeenUsersCount = (props: SeenUsersCountProps): JSX.Element => {
     return <></>;
   }
 
-  assert(strengthLevel >= 0 && strengthLevel <= MAX_STRENGTH_LEVEL); // [0, MAX_STRENGTH_LEVEL)
+  if (!(strengthLevel >= 0 && strengthLevel <= MAX_STRENGTH_LEVEL)) {
+    throw new Error('strengthLevel out of range');
+  } // [0, MAX_STRENGTH_LEVEL)
 
   const strengthClass = `strength-${strengthLevel}`; // strength-{0, 1, 2, 3, 4}
 
