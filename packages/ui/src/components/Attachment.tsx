@@ -34,7 +34,7 @@ export const Attachment = (props: AttachmentProps): JSX.Element => {
   );
   const btnTrash = isUserLoggedIn ? (
     <button
-      className="text-danger attachment-delete"
+      className="text-danger attachment-delete btn btn-link p-0"
       onClick={_onAttachmentDeleteClicked}
       type="button"
     >
