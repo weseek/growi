@@ -36,7 +36,7 @@ class PdfCtrl {
   ): Promise<{ status: JobStatus } | undefined> {
     const expirationDate = new Date(expirationDateStr);
     try {
-      await this.pdfConvertService.registerOrUpdateJob(orgId, appId, jobId, expirationDate, growiJobStatus);
+      await this.pdfConvertService.registerOrUpdateJob(jobId, expirationDate, growiJobStatus, orgId, appId);
       const status = this.pdfConvertService.getJobStatus(jobId); // get status before cleanup
       this.pdfConvertService.cleanUpJobList();
       return { status };
