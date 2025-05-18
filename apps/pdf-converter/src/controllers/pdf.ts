@@ -3,7 +3,7 @@ import { Controller } from '@tsed/di';
 import { InternalServerError } from '@tsed/exceptions';
 import { Logger } from '@tsed/logger';
 import {
-  Post, Returns, Enum, Description,
+  Post, Returns, Enum, Description, Required,
 } from '@tsed/schema';
 
 import PdfConvertService, { JobStatusSharedWithGrowi, JobStatus } from '../service/pdf-convert.js';
@@ -28,20 +28,24 @@ class PdfCtrl {
     Return resulting status of job to GROWI.
   `)
   async syncJobStatus(
-    @BodyParams('jobId') jobId: string,
-    @BodyParams('expirationDate') expirationDateStr: string,
-    @BodyParams('status') @Enum(Object.values(JobStatusSharedWithGrowi)) growiJobStatus: JobStatusSharedWithGrowi,
-  ): Promise<{ status: JobStatus }> {
+    @BodyParams('orgId') orgId: string | undefined,
+    @BodyParams('appId') appId: string | undefined,
+    @Required() @BodyParams('jobId') jobId: string,
+    @Required() @BodyParams('expirationDate') expirationDateStr: string,
+    @Required() @BodyParams('status') @Enum(Object.values(JobStatusSharedWithGrowi)) growiJobStatus: JobStatusSharedWithGrowi,
+  ): Promise<{ status: JobStatus } | undefined> {
     const expirationDate = new Date(expirationDateStr);
     try {
-      await this.pdfConvertService.registerOrUpdateJob(jobId, expirationDate, growiJobStatus);
+      await this.pdfConvertService.registerOrUpdateJob(orgId, appId, jobId, expirationDate, growiJobStatus);
       const status = this.pdfConvertService.getJobStatus(jobId); // get status before cleanup
       this.pdfConvertService.cleanUpJobList();
       return { status };
     }
     catch (err) {
       this.logger.error('Failed to register or update job', err);
-      throw new InternalServerError(err);
+      if (err instanceof Error) {
+        throw new InternalServerError(err.message);
+      }
     }
   }
 
