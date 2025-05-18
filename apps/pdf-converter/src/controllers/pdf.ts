@@ -28,11 +28,11 @@ class PdfCtrl {
     Return resulting status of job to GROWI.
   `)
   async syncJobStatus(
-    @BodyParams('orgId') orgId: string | undefined,
-    @BodyParams('appId') appId: string | undefined,
     @Required() @BodyParams('jobId') jobId: string,
     @Required() @BodyParams('expirationDate') expirationDateStr: string,
     @Required() @BodyParams('status') @Enum(Object.values(JobStatusSharedWithGrowi)) growiJobStatus: JobStatusSharedWithGrowi,
+    @BodyParams('orgId') orgId?: string,
+    @BodyParams('appId') appId?: string,
   ): Promise<{ status: JobStatus } | undefined> {
     const expirationDate = new Date(expirationDateStr);
     try {
