@@ -1,27 +1,13 @@
 import type { IPageHasId } from '@growi/core';
+import { getParentPath as getParentPathCore } from '@growi/core/dist/utils/path-utils';
 import type { ParseRangeResult } from '@growi/core/dist/remark-plugins';
 import { removeTrailingSlash } from '@growi/core/dist/utils/path-utils';
 
 import type { PageNode } from '../../interfaces/page-node';
 import { getDepthOfPath } from '../../utils/depth-utils';
 
-/**
- * Method to replace url.resolve.
- * url.resolve is legacy, use WHATWG URL API instead.
- * c.f) https://nodejs.org/api/url.html#url_url_resolve_from_to
- */
-function resolve(from: string, to: string) {
-  const resolvedUrl = new URL(to, new URL(from, 'resolve://'));
-  if (resolvedUrl.protocol === 'resolve:') {
-    // `from` is a relative URL.
-    const { pathname, search, hash } = resolvedUrl;
-    return pathname + search + hash;
-  }
-  return resolvedUrl.toString();
-}
-
 function getParentPath(path: string) {
-  return removeTrailingSlash(decodeURIComponent(resolve(path, './')));
+  return removeTrailingSlash(decodeURIComponent(getParentPathCore(path)));
 }
 
 /**
