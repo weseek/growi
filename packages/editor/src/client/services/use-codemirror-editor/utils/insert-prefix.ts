@@ -13,36 +13,35 @@ const removePrefix = (text: string, prefix: string): string => {
 };
 
 const allLinesEmpty = (doc: Text, startLine: Line, endLine: Line) => {
-  let allLinesEmpty = true;
   for (let i = startLine.number; i <= endLine.number; i++) {
     const line = doc.line(i);
     if (line.text.trim() !== '') {
-      allLinesEmpty = false;
-      break;
+      return false;
     }
   }
-
-  return allLinesEmpty;
+  return true;
 };
 
 const allLinesHavePrefix = (doc: Text, startLine: Line, endLine: Line, prefix: string) => {
-  let allLinesHavePrefix = true;
+  let hasNonEmptyLine = false;
+
   for (let i = startLine.number; i <= endLine.number; i++) {
     const line = doc.line(i);
     const trimmedLine = line.text.trim();
-    if (trimmedLine !== '' && !trimmedLine.startsWith(prefix)) {
-      allLinesHavePrefix = false;
-      break;
+
+    if (trimmedLine !== '') {
+      hasNonEmptyLine = true;
+      if (!trimmedLine.startsWith(prefix)) {
+        return false;
+      }
     }
   }
 
-  return allLinesHavePrefix;
+  return hasNonEmptyLine;
 };
 
 export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
   return useCallback((prefix: string, noSpaceIfPrefixExists = false) => {
-    let prefixCount = 0;
-
     if (view == null) {
       return;
     }
@@ -53,6 +52,7 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
     const endLine = doc.lineAt(to);
 
     const changes: ChangeSpec[] = [];
+    let totalLengthChange = 0;
 
     const isPrefixRemoval = allLinesHavePrefix(doc, startLine, endLine, prefix);
 
@@ -61,20 +61,26 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
         const line = view.state.doc.line(i);
         const leadingSpaces = line.text.match(/^\s*/)?.[0] || '';
         const insertText = `${leadingSpaces}${prefix} `;
-        changes.push({
+
+        const change = {
           from: line.from,
           to: line.to,
           insert: insertText,
-        });
-        prefixCount++;
+        };
+
+        changes.push(change);
+        totalLengthChange += insertText.length - (line.to - line.from);
       }
 
       view.dispatch({ changes });
       view.dispatch({
         selection: {
-          anchor: endLine.to + prefixCount * 3,
+          anchor: from + totalLengthChange,
+          head: to + totalLengthChange,
         },
       });
+      view.focus();
+      return;
     }
 
     for (let i = startLine.number; i <= endLine.number; i++) {
@@ -87,64 +93,65 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
         continue;
       }
 
+      let newLine = '';
+      let lengthChange = 0;
+
       if (isPrefixRemoval) {
         const contentStartMatch = line.text.match(new RegExp(`^\\s*(${prefix}+)\\s*`));
+
         if (contentStartMatch) {
           if (noSpaceIfPrefixExists) {
             const existingPrefixes = contentStartMatch[1];
             const indentLevel = Math.floor(leadingSpaces.length / 2) * 2;
             const newIndent = ' '.repeat(indentLevel);
-            const newPrefix = `${newIndent}${existingPrefixes}${prefix} `;
-
-            const restOfLine = line.text.slice(contentStartMatch[0].length);
-            const newLine = `${newPrefix}${restOfLine}`;
-
-            changes.push({
-              from: line.from,
-              to: line.to,
-              insert: newLine,
-            });
-
-            prefixCount++;
+            newLine = `${newIndent}${existingPrefixes}${prefix} ${line.text.slice(contentStartMatch[0].length)}`;
           }
           else {
-            const prefixWithSpaces = contentStartMatch[0];
             const indentLevel = Math.floor(leadingSpaces.length / 2) * 2;
             const newIndent = ' '.repeat(indentLevel);
             const prefixRemovedText = removePrefix(contentTrimmed, prefix);
-
-            changes.push({
-              from: line.from,
-              to: line.from + prefixWithSpaces.length,
-              insert: `${newIndent}${prefixRemovedText}`,
-            });
-
-            prefixCount--;
+            newLine = `${newIndent}${prefixRemovedText}`;
           }
+
+          lengthChange = newLine.length - (line.to - line.from);
+
+          changes.push({
+            from: line.from,
+            to: line.to,
+            insert: newLine,
+          });
         }
       }
       else {
-        const insertText = noSpaceIfPrefixExists && line.text.startsWith(prefix)
-          ? `${leadingSpaces}${prefix}${contentTrimmed}`
-          : `${leadingSpaces}${prefix} ${contentTrimmed}`;
+        if (noSpaceIfPrefixExists && contentTrimmed.startsWith(prefix)) {
+          newLine = `${leadingSpaces}${prefix}${contentTrimmed}`;
+        }
+        else {
+          newLine = `${leadingSpaces}${prefix} ${contentTrimmed}`;
+        }
+
+        lengthChange = newLine.length - (line.to - line.from);
 
         changes.push({
           from: line.from,
           to: line.to,
-          insert: insertText,
+          insert: newLine,
         });
-        prefixCount++;
       }
+
+      totalLengthChange += lengthChange;
     }
 
-    view.dispatch({ changes });
+    if (changes.length > 0) {
+      view.dispatch({ changes });
 
-    view.dispatch({
-      selection: {
-        anchor: from,
-        head: to + prefixCount * 3,
-      },
-    });
-    view.focus();
+      view.dispatch({
+        selection: {
+          anchor: from,
+          head: to + totalLengthChange,
+        },
+      });
+      view.focus();
+    }
   }, [view]);
 };
