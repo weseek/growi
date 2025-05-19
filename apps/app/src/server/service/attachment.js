@@ -24,6 +24,7 @@ class AttachmentService {
   /** @type {Array<(pageId: string, file: Express.Multer.File, readable: Readable) => Promise<void>>} */
   attachHandlers = [];
 
+  /** @type {Array<(attachmentId: string) => Promise<void>>} */
   detachHandlers = [];
 
   /** @type {import('~/server/crowi').default} Crowi instance */
@@ -112,6 +113,16 @@ class AttachmentService {
     await fileUploadService.deleteFile(attachment);
     await attachment.remove();
 
+    const detachedHandlerPromises = this.detachHandlers.map((handler) => {
+      return handler(attachment._id);
+    });
+
+    // Do not await, run in background
+    Promise.all(detachedHandlerPromises)
+      .catch((err) => {
+        logger.error('Error while executing detached handler', err);
+      });
+
     return;
   }
 
@@ -132,7 +143,7 @@ class AttachmentService {
 
   /**
    * Register a handler that will be called before attachment deletion
-   * @param {(attachment: Attachment) => Promise<void>} handler
+   * @param {(attachmentId: string) => Promise<void>} handler
    */
   addDetachHandler(handler) {
     this.detachHandlers.push(handler);
