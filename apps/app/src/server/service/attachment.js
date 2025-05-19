@@ -24,7 +24,7 @@ class AttachmentService {
   /** @type {Array<(pageId: string, file: Express.Multer.File, readable: Readable) => Promise<void>>} */
   attachHandlers = [];
 
-  /** @type {Array<(attachmentId: string) => Promise<void>} */
+  /** @type {Array<(attachmentId: string) => Promise<void>>} */
   detachHandlers = [];
 
   /** @type {import('~/server/crowi').default} Crowi instance */
