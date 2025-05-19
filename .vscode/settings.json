@@ -18,6 +18,8 @@
     "source.fixAll.stylelint": "explicit"
   },
 
+  "editor.formatOnSave": true,
+
   "githubPullRequests.ignoredPullRequestBranches": [
     "master"
   ],
