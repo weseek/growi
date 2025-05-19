@@ -56,12 +56,10 @@ class AttachmentService {
       //  REASON: Node.js Readable streams cannot be reused after consumption.
       //  When a stream is piped or consumed, its internal state changes and the data pointers
       //  are advanced to the end, making it impossible to read the same data again.
-      let readStreamForAttachedHandler;
-      if (this.attachHandlers.length !== 0) {
-        readStreamForAttachedHandler = createReadStream(file.path);
-      }
-
+      const readStreamForAttachedHandlers = [];
       const attachedHandlerPromises = this.attachHandlers.map((handler) => {
+        const readStreamForAttachedHandler = createReadStream(file.path);
+        readStreamForAttachedHandlers.push(readStreamForAttachedHandler);
         return handler(pageId, file, readStreamForAttachedHandler);
       });
 
@@ -71,7 +69,8 @@ class AttachmentService {
           logger.error('Error while executing attach handler', err);
         })
         .finally(() => {
-          readStreamForAttachedHandler?.destroy();
+          // readStreamForAttachedHandler?.destroy();
+          readStreamForAttachedHandlers.forEach(readStream => readStream.destroy());
           disposeTmpFileCallback?.(file);
         });
     }
