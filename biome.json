@@ -6,6 +6,7 @@
       "node_modules/**",
       "coverage/**",
       "vite.config.ts.timestamp-*",
+      "vite.server.config.ts.timestamp-*",
       ".pnpm-store/**",
       ".turbo/**",
       ".vscode/**",
@@ -29,8 +30,7 @@
       "./packages/preset-themes/**",
       "./packages/remark-attachment-refs/**",
       "./packages/remark-drawio/**",
-      "./packages/remark-growi-directive/**",
-      "./packages/remark-lsx/**"
+      "./packages/remark-growi-directive/**"
     ]
   },
   "formatter": {
