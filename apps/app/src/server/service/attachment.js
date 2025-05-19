@@ -43,14 +43,14 @@ class AttachmentService {
       throw new Error(res.errorMessage);
     }
 
+    const readStreamForCreateAttachmentDocument = createReadStream(file.path);
+
     // create an Attachment document and upload file
     let attachment;
     try {
-      const readStreamForCreateAttachmentDocument = createReadStream(file.path);
       attachment = Attachment.createWithoutSave(pageId, user, file.originalname, file.mimetype, file.size, attachmentType);
       await fileUploadService.uploadAttachment(readStreamForCreateAttachmentDocument, attachment);
       await attachment.save();
-      readStreamForCreateAttachmentDocument.destroy();
 
       //  Creates a new stream for each operation instead of reusing the original stream.
       //  REASON: Node.js Readable streams cannot be reused after consumption.
@@ -79,6 +79,9 @@ class AttachmentService {
       logger.error('Error while creating attachment', err);
       disposeTmpFileCallback?.(file);
       throw err;
+    }
+    finally {
+      readStreamForCreateAttachmentDocument.destroy();
     }
 
     return attachment;
