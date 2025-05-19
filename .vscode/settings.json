@@ -14,6 +14,7 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
     "source.fixAll.biome": "explicit",
+    "source.organizeImports.biome": "explicit",
     "source.fixAll.markdownlint": "explicit",
     "source.fixAll.stylelint": "explicit"
   },
