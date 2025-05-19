@@ -525,7 +525,7 @@ class OpenaiService implements IOpenaiService {
       }
     }
 
-    deleteAllRelationDocument();
+    await deleteAllRelationDocument();
   }
 
 
