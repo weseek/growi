@@ -23,6 +23,7 @@ import VectorStoreFileRelationModel, {
   prepareVectorStoreFileRelations,
 } from '~/features/openai/server/models/vector-store-file-relation';
 import type Crowi from '~/server/crowi';
+import type { IAttachmentDocument } from '~/server/models/attachment';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import UserGroupRelation from '~/server/models/user-group-relation';
 import { configManager } from '~/server/service/config-manager';
@@ -80,7 +81,8 @@ export interface IOpenaiService {
   createVectorStoreFile(vectorStoreRelation: VectorStoreDocument, pages: PageDocument[]): Promise<void>;
   createVectorStoreFileOnPageCreate(pages: PageDocument[]): Promise<void>;
   updateVectorStoreFileOnPageUpdate(page: HydratedDocument<PageDocument>): Promise<void>;
-  createVectorStoreFileOnUploadAttachment(pageId: string, file: Express.Multer.File, readable: Readable): Promise<void>;
+  createVectorStoreFileOnUploadAttachment(
+    pageId: string, attachment: HydratedDocument<IAttachmentDocument>, file: Express.Multer.File, readable: Readable): Promise<void>;
   deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId): Promise<void>;
   deleteVectorStoreFilesByPageIds(pageIds: Types.ObjectId[]): Promise<void>;
   deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
@@ -595,7 +597,9 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  async createVectorStoreFileOnUploadAttachment(pageId: string, file: Express.Multer.File, readable: Readable): Promise<void> {
+  async createVectorStoreFileOnUploadAttachment(
+      pageId: string, attachment:HydratedDocument<IAttachmentDocument>, file: Express.Multer.File, readable: Readable,
+  ): Promise<void> {
     if (!isVectorStoreCompatible(file)) {
       return;
     }
@@ -625,12 +629,14 @@ class OpenaiService implements IOpenaiService {
         continue;
       }
 
-      const vectorStoreFileRelationsMap: VectorStoreFileRelationsMap = new Map();
-      prepareVectorStoreFileRelations(vectorStoreRelation._id as Types.ObjectId, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
-      const vectorStoreFileRelations = Array.from(vectorStoreFileRelationsMap.values());
-      await VectorStoreFileRelationModel.upsertVectorStoreFileRelations(vectorStoreFileRelations);
-
       await this.client.createVectorStoreFile(vectorStoreRelation.vectorStoreId, uploadedFile.id);
+      await VectorStoreFileRelationModel.create({
+        vectorStoreRelationId: vectorStoreRelation._id,
+        page: page._id,
+        attachment: attachment._id,
+        fileIds: [uploadedFile.id],
+        isAttachedToVectorStore: true,
+      });
     }
   }
 

@@ -60,7 +60,7 @@ class AttachmentService {
       }
 
       const attachedHandlerPromises = this.attachHandlers.map((handler) => {
-        return handler(pageId, file, fileStreamForAttachedHandler);
+        return handler(pageId, attachment, file, fileStreamForAttachedHandler);
       });
 
       // Do not await, run in background
