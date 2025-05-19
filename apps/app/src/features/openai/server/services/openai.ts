@@ -505,6 +505,8 @@ class OpenaiService implements IOpenaiService {
   }
 
   async deleteVectorStoreFileOnDeleteAttachment(attachmentId: string) {
+    // An Attachment has only one VectorStoreFile. This means the id of VectorStoreFile linked to VectorStore is one per Attachment.
+    // Therefore, retrieve only one VectorStoreFile Relation with the target attachmentId.
     const vectorStoreFileRelation = await VectorStoreFileRelationModel.findOne({ attachment: attachmentId });
     if (vectorStoreFileRelation == null) {
       return;
