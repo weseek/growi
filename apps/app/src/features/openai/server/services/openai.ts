@@ -510,13 +510,24 @@ class OpenaiService implements IOpenaiService {
       return;
     }
 
+    const deleteAllRelationDocument = async() => {
+      await VectorStoreFileRelationModel.deleteMany({ attachment: attachmentId });
+    };
+
     for await (const fileId of vectorStoreFileRelation.fileIds) {
-      const response = await this.client.deleteFile(fileId);
-      logger.debug('Delete vector store file', response);
+      try {
+        const response = await this.client.deleteFile(fileId);
+        logger.debug('Delete vector store file', response);
+      }
+      catch (err) {
+        logger.error(err);
+        await openaiApiErrorHandler(err, { notFoundError: () => deleteAllRelationDocument() });
+      }
     }
 
-    await VectorStoreFileRelationModel.deleteMany({ attachment: attachmentId });
+    deleteAllRelationDocument();
   }
+
 
   async filterPagesByAccessScope(aiAssistant: AiAssistantDocument, pages: HydratedDocument<PageDocument>[]) {
     const isPublicPage = (page :HydratedDocument<PageDocument>) => page.grant === PageGrant.GRANT_PUBLIC;
