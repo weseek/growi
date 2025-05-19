@@ -41,6 +41,8 @@ const allLinesHavePrefix = (doc: Text, startLine: Line, endLine: Line, prefix: s
 
 export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
   return useCallback((prefix: string, noSpaceIfPrefixExists = false) => {
+    let prefixCount = 0;
+
     if (view == null) {
       return;
     }
@@ -51,7 +53,29 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
     const endLine = doc.lineAt(to);
 
     const changes: ChangeSpec[] = [];
-    let totalLengthChange = 0;
+
+    const isPrefixRemoval = allLinesHavePrefix(doc, startLine, endLine, prefix);
+
+    if (allLinesEmpty(doc, startLine, endLine)) {
+      for (let i = startLine.number; i <= endLine.number; i++) {
+        const line = view.state.doc.line(i);
+        const leadingSpaces = line.text.match(/^\s*/)?.[0] || '';
+        const insertText = `${leadingSpaces}${prefix} `;
+        changes.push({
+          from: line.from,
+          to: line.to,
+          insert: insertText,
+        });
+        prefixCount++;
+      }
+
+      view.dispatch({ changes });
+      view.dispatch({
+        selection: {
+          anchor: endLine.to + prefixCount * 3,
+        },
+      });
+    }
 
     for (let i = startLine.number; i <= endLine.number; i++) {
       const line = view.state.doc.line(i);
@@ -59,22 +83,11 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
       const leadingSpaces = line.text.match(/^\s*/)?.[0] || '';
       const contentTrimmed = line.text.trimStart();
 
-      if (allLinesEmpty(doc, startLine, endLine)) {
-        const insertText = `${leadingSpaces}${prefix} `;
-        changes.push({
-          from: line.from,
-          to: line.to,
-          insert: insertText,
-        });
-        totalLengthChange += (insertText.length - line.text.length);
-        continue;
-      }
-
       if (trimmedLine === '') {
         continue;
       }
 
-      if (allLinesHavePrefix(doc, startLine, endLine, prefix)) {
+      if (isPrefixRemoval) {
         const contentStartMatch = line.text.match(new RegExp(`^\\s*(${prefix}+)\\s*`));
         if (contentStartMatch) {
           if (noSpaceIfPrefixExists) {
@@ -92,7 +105,7 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
               insert: newLine,
             });
 
-            totalLengthChange += (newLine.length - line.text.length);
+            prefixCount++;
           }
           else {
             const prefixWithSpaces = contentStartMatch[0];
@@ -106,7 +119,7 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
               insert: `${newIndent}${prefixRemovedText}`,
             });
 
-            totalLengthChange -= (prefixWithSpaces.length - newIndent.length);
+            prefixCount--;
           }
         }
       }
@@ -120,7 +133,7 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
           to: line.to,
           insert: insertText,
         });
-        totalLengthChange += (insertText.length - line.text.length);
+        prefixCount++;
       }
     }
 
@@ -128,7 +141,8 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
 
     view.dispatch({
       selection: {
-        anchor: endLine.to + totalLengthChange,
+        anchor: from,
+        head: to + prefixCount * 3,
       },
     });
     view.focus();
