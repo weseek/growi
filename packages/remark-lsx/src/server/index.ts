@@ -27,8 +27,7 @@ const lsxValidator = [
         });
 
         return jsonData;
-      }
-      catch (err) {
+      } catch (err) {
         throw new Error('Invalid JSON format in options');
       }
     }),
@@ -46,15 +45,26 @@ const paramValidator = (req: Request, res: Response, next: NextFunction) => {
     return new Error(`Invalid lsx parameter: ${err.param}: ${err.msg}`);
   });
 
-  res.status(400).json({ errors: errs.map(err => err.message) });
+  res.status(400).json({ errors: errs.map((err) => err.message) });
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
 const middleware = (crowi: any, app: any): void => {
-  const loginRequired = crowi.require('../middlewares/login-required')(crowi, true, loginRequiredFallback);
+  const loginRequired = crowi.require('../middlewares/login-required')(
+    crowi,
+    true,
+    loginRequiredFallback,
+  );
   const accessTokenParser = crowi.accessTokenParser;
 
-  app.get('/_api/lsx', accessTokenParser, loginRequired, lsxValidator, paramValidator, listPages);
+  app.get(
+    '/_api/lsx',
+    accessTokenParser,
+    loginRequired,
+    lsxValidator,
+    paramValidator,
+    listPages,
+  );
 };
 
 export default middleware;
