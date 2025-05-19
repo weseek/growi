@@ -58,7 +58,7 @@ const LsxSubstance = React.memo(
     const hasError = error != null;
     const errorMessage = error?.message;
 
-    const Error = useCallback((): JSX.Element => {
+    const ErrorMessage = useCallback((): JSX.Element => {
       if (!hasError) {
         return <></>;
       }
@@ -150,7 +150,7 @@ const LsxSubstance = React.memo(
 
     return (
       <div className={`lsx ${styles.lsx}`}>
-        <Error />
+        <ErrorMessage />
         <Loading />
         {contents}
         <LoadMore />

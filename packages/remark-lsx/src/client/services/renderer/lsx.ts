@@ -1,5 +1,3 @@
-import assert from 'assert';
-
 import {
   addTrailingSlash,
   hasHeadingSlash,
@@ -45,7 +43,8 @@ export const remarkPlugin: Plugin = () => (tree) => {
         return;
       }
 
-      const data = node.data ?? (node.data = {});
+      const data = node.data ?? {};
+      node.data = data;
       const attributes = (node.attributes as DirectiveAttributes) || {};
 
       // set 'prefix' attribute if the first attribute is only value
@@ -94,11 +93,9 @@ const pathResolver = (href: string, basePath: string): string => {
 };
 
 export const rehypePlugin: Plugin<[LsxRehypePluginParams]> = (options = {}) => {
-  assert.notStrictEqual(
-    options.pagePath,
-    null,
-    "lsx rehype plugin requires 'pagePath' option",
-  );
+  if (options.pagePath == null) {
+    throw new Error("lsx rehype plugin requires 'pagePath' option");
+  }
 
   return (tree) => {
     if (options.pagePath == null) {
@@ -108,7 +105,7 @@ export const rehypePlugin: Plugin<[LsxRehypePluginParams]> = (options = {}) => {
     const basePagePath = options.pagePath;
     const elements = selectAll('lsx', tree as HastNode);
 
-    elements.forEach((lsxElem) => {
+    for (const lsxElem of elements) {
       if (lsxElem.properties == null) {
         return;
       }
@@ -133,7 +130,7 @@ export const rehypePlugin: Plugin<[LsxRehypePluginParams]> = (options = {}) => {
 
       // resolve relative path
       lsxElem.properties.prefix = decodeURI(pathResolver(prefix, basePagePath));
-    });
+    }
   };
 };
 

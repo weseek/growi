@@ -8,7 +8,7 @@ import { generatePageNodeTree } from './page-node';
 
 function omitPageData(pageNode: PageNode): Omit<PageNode, 'page'> {
   const obj = Object.assign({}, pageNode);
-  delete obj.page;
+  obj.page = undefined;
 
   // omit data in children
   obj.children = obj.children.map((child) => omitPageData(child));

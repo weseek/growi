@@ -18,7 +18,7 @@ export const generateBaseQuery = async (
   user: IUser,
 ): Promise<PageQueryBuilder> => {
   const Page = model<IPageHasId>('Page');
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: ignore
   const PageAny = Page as any;
 
   const baseQuery = Page.find();

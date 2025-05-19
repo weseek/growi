@@ -1,5 +1,3 @@
-import * as url from 'url';
-
 import type { IPageHasId } from '@growi/core';
 import type { ParseRangeResult } from '@growi/core/dist/remark-plugins';
 import { removeTrailingSlash } from '@growi/core/dist/utils/path-utils';
@@ -7,8 +5,20 @@ import { removeTrailingSlash } from '@growi/core/dist/utils/path-utils';
 import type { PageNode } from '../../interfaces/page-node';
 import { getDepthOfPath } from '../../utils/depth-utils';
 
+// url.resolve is legacy, use WHATWG URL API instead
+// c.f) https://nodejs.org/api/url.html#url_url_resolve_from_to
+function resolve(from, to) {
+  const resolvedUrl = new URL(to, new URL(from, 'resolve://'));
+  if (resolvedUrl.protocol === 'resolve:') {
+    // `from` is a relative URL.
+    const { pathname, search, hash } = resolvedUrl;
+    return pathname + search + hash;
+  }
+  return resolvedUrl.toString();
+}
+
 function getParentPath(path: string) {
-  return removeTrailingSlash(decodeURIComponent(url.resolve(path, './')));
+  return removeTrailingSlash(decodeURIComponent(resolve(path, './')));
 }
 
 /**
@@ -76,7 +86,7 @@ export function generatePageNodeTree(
 ): PageNode[] {
   const pathToNodeMap: Record<string, PageNode> = {};
 
-  pages.forEach((page) => {
+  for (const page of pages) {
     const node = generatePageNode(
       pathToNodeMap,
       rootPagePath,
@@ -86,22 +96,22 @@ export function generatePageNodeTree(
 
     // exclude rootPagePath itself
     if (node == null) {
-      return;
+      continue;
     }
 
     // set the Page substance
     node.page = page;
-  });
+  }
 
   // return root objects
   const rootNodes: PageNode[] = [];
-  Object.keys(pathToNodeMap).forEach((pagePath) => {
+  for (const pagePath in pathToNodeMap) {
     const parentPath = getParentPath(pagePath);
 
     // pick up what parent doesn't exist
     if (parentPath === '/' || !(parentPath in pathToNodeMap)) {
       rootNodes.push(pathToNodeMap[pagePath]);
     }
-  });
+  }
   return rootNodes;
 }

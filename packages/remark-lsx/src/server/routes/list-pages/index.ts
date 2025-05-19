@@ -34,7 +34,7 @@ function addFilterCondition(
 
   const pagePathForRegexp = escapeStringRegexp(addTrailingSlash(pagePath));
 
-  let filterPath;
+  let filterPath: RegExp;
   try {
     if (optionsFilter.charAt(0) === '^') {
       // move '^' to the first of path
@@ -88,7 +88,7 @@ export const listPages = async (
   const builder = await generateBaseQuery(params.pagePath, user);
 
   // count viewers of `/`
-  let toppageViewersCount;
+  let toppageViewersCount: number;
   try {
     toppageViewersCount = await getToppageViewersCount();
   } catch (error) {

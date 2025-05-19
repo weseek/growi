@@ -12,9 +12,9 @@ export class LsxContext {
     this.pagePath = pagePath;
 
     // remove undefined keys
-    Object.keys(options).forEach(
-      (key) => options[key] === undefined && delete options[key],
-    );
+    for (const key in options) {
+      options[key] === undefined && delete options[key];
+    }
 
     this.options = options;
   }

@@ -22,9 +22,9 @@ const lsxValidator = [
       try {
         const jsonData: LsxApiOptions = JSON.parse(options);
 
-        Object.keys(jsonData).forEach((key) => {
+        for (const key in jsonData) {
           jsonData[key] = filterXSS.process(jsonData[key]);
-        });
+        }
 
         return jsonData;
       } catch (err) {
@@ -48,7 +48,7 @@ const paramValidator = (req: Request, res: Response, next: NextFunction) => {
   res.status(400).json({ errors: errs.map((err) => err.message) });
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: ignore
 const middleware = (crowi: any, app: any): void => {
   const loginRequired = crowi.require('../middlewares/login-required')(
     crowi,
