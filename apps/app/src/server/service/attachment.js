@@ -24,7 +24,7 @@ const createReadStream = (filePath) => {
  */
 class AttachmentService {
 
-  /** @type {Array<(pageId: string, attachment: Attachment file: Express.Multer.File, buffer: Buffer) => Promise<void>>} */
+  /** @type {Array<(pageId: string, attachment: Attachment, file: Express.Multer.File, buffer: Buffer) => Promise<void>>} */
   attachHandlers = [];
 
   /** @type {Array<(attachmentId: string) => Promise<void>>} */
@@ -166,7 +166,7 @@ class AttachmentService {
 
   /**
    * Register a handler that will be called after attachment creation
-   * @param {(pageId: string, attachment: Attachment file: Express.Multer.File, buffer: Buffer) => Promise<void>} handler
+   * @param {(pageId: string, attachment: Attachment, file: Express.Multer.File, buffer: Buffer) => Promise<void>} handler
    */
   addAttachHandler(handler) {
     this.attachHandlers.push(handler);
