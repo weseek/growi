@@ -30,7 +30,6 @@
       "./packages/remark-attachment-refs/**",
       "./packages/remark-drawio/**",
       "./packages/remark-growi-directive/**",
-      "./packages/remark-lsx/**",
       "./packages/ui/**"
     ]
   },
