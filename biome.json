@@ -6,6 +6,7 @@
       "node_modules/**",
       "coverage/**",
       "vite.config.ts.timestamp-*",
+      "vite.server.config.ts.timestamp-*",
       ".pnpm-store/**",
       ".turbo/**",
       ".vscode/**",
