@@ -1,8 +1,14 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.2.3...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.2.4...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.2.4](https://github.com/weseek/growi/compare/v7.2.3...v7.2.4) - 2025-05-15
+
+### 🐛 Bug Fixes
+
+* fix: Picture size (#9938) @yuki-takei
 
 ## [v7.2.3](https://github.com/weseek/growi/compare/v7.2.2...v7.2.3) - 2025-05-14
 
@@ -30,7 +36,6 @@
 * fix: User picture tooltip (2) (#9898) @yuki-takei
 * fix: ConfigLoader.loadFromDB for JSON parsing error handling (#9890) @yuki-takei
 * fix: Profile image upload functionality and accepted file types (#9886) @yuki-takei
-* fix: User picture tooltip (2) (#9898) @yuki-takei
 * fix: Tooltip for UserPicture doesn't work (#9884) @yuki-takei
 
 ### 🧰 Maintenance
