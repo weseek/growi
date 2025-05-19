@@ -7,6 +7,7 @@ import { getOrCreateModel } from '~/server/util/mongoose-utils';
 export interface VectorStoreFileRelation {
   vectorStoreRelationId: mongoose.Types.ObjectId;
   page: mongoose.Types.ObjectId;
+  attachment?: mongoose.Types.ObjectId;
   fileIds: string[];
   isAttachedToVectorStore: boolean;
 }
@@ -19,7 +20,11 @@ interface VectorStoreFileRelationModel extends Model<VectorStoreFileRelation> {
 }
 
 export const prepareVectorStoreFileRelations = (
-    vectorStoreRelationId: Types.ObjectId, page: Types.ObjectId, fileId: string, relationsMap: Map<string, VectorStoreFileRelation>,
+    vectorStoreRelationId: Types.ObjectId,
+    page: Types.ObjectId,
+    fileId: string,
+    relationsMap: Map<string, VectorStoreFileRelation>,
+    attachment?: Types.ObjectId,
 ): Map<string, VectorStoreFileRelation> => {
   const pageIdStr = page.toHexString();
   const existingData = relationsMap.get(pageIdStr);
@@ -35,6 +40,7 @@ export const prepareVectorStoreFileRelations = (
       page,
       fileIds: [fileId],
       isAttachedToVectorStore: false,
+      attachment,
     });
   }
 
@@ -52,6 +58,10 @@ const schema = new Schema<VectorStoreFileRelationDocument, VectorStoreFileRelati
     ref: 'Page',
     required: true,
   },
+  attachment: {
+    type: Schema.Types.ObjectId,
+    ref: 'Attachment',
+  },
   fileIds: [{
     type: String,
     required: true,
@@ -64,7 +74,7 @@ const schema = new Schema<VectorStoreFileRelationDocument, VectorStoreFileRelati
 });
 
 // define unique compound index
-schema.index({ vectorStoreRelationId: 1, page: 1 }, { unique: true });
+schema.index({ vectorStoreRelationId: 1, page: 1, attachment: 1 }, { unique: true });
 
 schema.statics.upsertVectorStoreFileRelations = async function(vectorStoreFileRelations: VectorStoreFileRelation[]): Promise<void> {
   await this.bulkWrite(
