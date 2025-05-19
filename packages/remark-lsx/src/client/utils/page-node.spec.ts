@@ -7,13 +7,12 @@ import type { PageNode } from '../../interfaces/page-node';
 import { generatePageNodeTree } from './page-node';
 
 function omitPageData(pageNode: PageNode): Omit<PageNode, 'page'> {
-  const obj = Object.assign({}, pageNode);
-  obj.page = undefined;
-
-  // omit data in children
-  obj.children = obj.children.map((child) => omitPageData(child));
-
-  return obj;
+  // Destructure to omit 'page', and recursively process children
+  const { page, children, ...rest } = pageNode;
+  return {
+    ...rest,
+    children: children.map((child) => omitPageData(child)),
+  };
 }
 
 describe('generatePageNodeTree()', () => {
