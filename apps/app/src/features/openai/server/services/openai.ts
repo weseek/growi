@@ -82,7 +82,8 @@ export interface IOpenaiService {
   createVectorStoreFileOnPageCreate(pages: PageDocument[]): Promise<void>;
   updateVectorStoreFileOnPageUpdate(page: HydratedDocument<PageDocument>): Promise<void>;
   createVectorStoreFileOnUploadAttachment(
-    pageId: string, attachment: HydratedDocument<IAttachmentDocument>, file: Express.Multer.File, readable: Readable): Promise<void>;
+    pageId: string, attachment:HydratedDocument<IAttachmentDocument>, file: Express.Multer.File, buffer: Buffer
+  ): Promise<void>;
   deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId): Promise<void>;
   deleteVectorStoreFilesByPageIds(pageIds: Types.ObjectId[]): Promise<void>;
   deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
@@ -323,8 +324,8 @@ class OpenaiService implements IOpenaiService {
     return uploadedFile;
   }
 
-  private async uploadFileForAttachment(readable: Readable, fileName: string): Promise<OpenAI.Files.FileObject> {
-    const uploadableFile = await toFile(Readable.from(readable), fileName);
+  private async uploadFileForAttachment(buffer: Buffer, fileName: string): Promise<OpenAI.Files.FileObject> {
+    const uploadableFile = await toFile(Readable.from(buffer), fileName);
     const uploadedFile = await this.client.uploadFile(uploadableFile);
     return uploadedFile;
   }
@@ -629,7 +630,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   async createVectorStoreFileOnUploadAttachment(
-      pageId: string, attachment:HydratedDocument<IAttachmentDocument>, file: Express.Multer.File, readable: Readable,
+      pageId: string, attachment:HydratedDocument<IAttachmentDocument>, file: Express.Multer.File, buffer: Buffer,
   ): Promise<void> {
     if (!isVectorStoreCompatible(file)) {
       return;
@@ -646,7 +647,7 @@ class OpenaiService implements IOpenaiService {
       return;
     }
 
-    const uploadedFile = await this.uploadFileForAttachment(readable, file.originalname);
+    const uploadedFile = await this.uploadFileForAttachment(buffer, file.originalname);
     logger.debug('Uploaded file', uploadedFile);
 
     for await (const aiAssistant of aiAssistants) {

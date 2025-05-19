@@ -1,3 +1,4 @@
+import { Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 
 import loggerFactory from '~/utils/logger';
@@ -23,7 +24,7 @@ const createReadStream = (filePath) => {
  */
 class AttachmentService {
 
-  /** @type {Array<(pageId: string, file: Express.Multer.File, readable: Readable) => Promise<void>>} */
+  /** @type {Array<(pageId: string, attachment: Attachment file: Express.Multer.File, buffer: Buffer) => Promise<void>>} */
   attachHandlers = [];
 
   /** @type {Array<(attachmentId: string) => Promise<void>>} */
@@ -61,13 +62,31 @@ class AttachmentService {
         //  When a stream is piped or consumed, its internal state changes and the data pointers
         //  are advanced to the end, making it impossible to read the same data again.
         const readStreamForHandler = createReadStream(file.path);
+        const chunks = [];
+
+        const attachedHandlerStream = new Transform({
+          objectMode: true,
+          transform(chunk, encoding, callback) {
+            chunks.push(chunk);
+            callback(null, chunk);
+          },
+          async flush(callback) {
+            try {
+              const completeData = Buffer.concat(chunks);
+              await handler(pageId, attachment, file, completeData);
+              callback();
+            }
+            catch (err) {
+              logger.error('Error in attach handler:', err);
+              callback(err);
+            }
+          },
+        });
 
         try {
           await pipeline(
             readStreamForHandler,
-            async(source) => {
-              await handler(pageId, attachment, file, source);
-            },
+            attachedHandlerStream,
           );
         }
         catch (err) {
@@ -147,7 +166,7 @@ class AttachmentService {
 
   /**
    * Register a handler that will be called after attachment creation
-   * @param {(pageId: string, file: Express.Multer.File, readable: Readable) => Promise<void>} handler
+   * @param {(pageId: string, attachment: Attachment file: Express.Multer.File, buffer: Buffer) => Promise<void>} handler
    */
   addAttachHandler(handler) {
     this.attachHandlers.push(handler);
