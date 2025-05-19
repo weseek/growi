@@ -46,21 +46,23 @@ class AttachmentService {
     // create an Attachment document and upload file
     let attachment;
     try {
+      const readStreamForCreateAttachmentDocument = createReadStream(file.path);
       attachment = Attachment.createWithoutSave(pageId, user, file.originalname, file.mimetype, file.size, attachmentType);
-      await fileUploadService.uploadAttachment(createReadStream(file.path), attachment);
+      await fileUploadService.uploadAttachment(readStreamForCreateAttachmentDocument, attachment);
       await attachment.save();
+      readStreamForCreateAttachmentDocument.destroy();
 
       //  Creates a new stream for each operation instead of reusing the original stream.
       //  REASON: Node.js Readable streams cannot be reused after consumption.
       //  When a stream is piped or consumed, its internal state changes and the data pointers
       //  are advanced to the end, making it impossible to read the same data again.
-      let fileStreamForAttachedHandler;
+      let readStreamForAttachedHandler;
       if (this.attachHandlers.length !== 0) {
-        fileStreamForAttachedHandler = createReadStream(file.path);
+        readStreamForAttachedHandler = createReadStream(file.path);
       }
 
       const attachedHandlerPromises = this.attachHandlers.map((handler) => {
-        return handler(pageId, file, fileStreamForAttachedHandler);
+        return handler(pageId, file, readStreamForAttachedHandler);
       });
 
       // Do not await, run in background
@@ -69,6 +71,7 @@ class AttachmentService {
           logger.error('Error while executing attach handler', err);
         })
         .finally(() => {
+          readStreamForAttachedHandler?.destroy();
           disposeTmpFileCallback?.(file);
         });
     }
