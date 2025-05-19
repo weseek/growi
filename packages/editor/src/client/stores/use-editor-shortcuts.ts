@@ -85,8 +85,13 @@ const makeTextCodeBlock: Command = (view: EditorView) => {
         insert: '\n```',
       });
 
-      // Position cursor to include the entire wrapped content with markers
-      newSelections.push(EditorSelection.range(startLine.from, endLine.to + 8));
+      if (selectedText.length === 0) {
+        newSelections.push(EditorSelection.cursor(startLine.from + 4));
+      }
+      else {
+        // Position cursor to include the entire wrapped content with markers
+        newSelections.push(EditorSelection.range(startLine.from, endLine.to + 8));
+      }
     }
   });
 
