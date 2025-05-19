@@ -107,6 +107,16 @@ class AttachmentService {
     await fileUploadService.deleteFile(attachment);
     await attachment.remove();
 
+    const detachedHandlerPromises = this.detachHandlers.map((handler) => {
+      return handler(attachment._id);
+    });
+
+    // Do not await, run in background
+    Promise.all(detachedHandlerPromises)
+      .catch((err) => {
+        logger.error('Error while executing detached handler', err);
+      });
+
     return;
   }
 

@@ -86,6 +86,7 @@ export interface IOpenaiService {
   deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId): Promise<void>;
   deleteVectorStoreFilesByPageIds(pageIds: Types.ObjectId[]): Promise<void>;
   deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
+  deleteVectorStoreFileOnDeleteAttachment(attachmentId: string): Promise<void>;
   isAiAssistantUsable(aiAssistantId: string, user: IUserHasId): Promise<boolean>;
   createAiAssistant(data: UpsertAiAssistantData, user: IUserHasId): Promise<AiAssistantDocument>;
   updateAiAssistant(aiAssistantId: string, data: UpsertAiAssistantData, user: IUserHasId): Promise<AiAssistantDocument>;
@@ -97,6 +98,9 @@ class OpenaiService implements IOpenaiService {
   constructor(crowi: Crowi) {
     this.createVectorStoreFileOnUploadAttachment = this.createVectorStoreFileOnUploadAttachment.bind(this);
     crowi.attachmentService.addAttachHandler(this.createVectorStoreFileOnUploadAttachment);
+
+    this.deleteVectorStoreFileOnDeleteAttachment = this.deleteVectorStoreFileOnDeleteAttachment.bind(this);
+    crowi.attachmentService.addDetachHandler(this.deleteVectorStoreFileOnDeleteAttachment);
   }
 
   private get client() {
@@ -498,6 +502,20 @@ class OpenaiService implements IOpenaiService {
         logger.error(err);
       }
     }
+  }
+
+  async deleteVectorStoreFileOnDeleteAttachment(attachmentId: string) {
+    const vectorStoreFileRelation = await VectorStoreFileRelationModel.findOne({ attachment: attachmentId });
+    if (vectorStoreFileRelation == null) {
+      return;
+    }
+
+    for await (const fileId of vectorStoreFileRelation.fileIds) {
+      const response = await this.client.deleteFile(fileId);
+      logger.debug('Delete vector store file', response);
+    }
+
+    await VectorStoreFileRelationModel.deleteMany({ attachment: attachmentId });
   }
 
   async filterPagesByAccessScope(aiAssistant: AiAssistantDocument, pages: HydratedDocument<PageDocument>[]) {
