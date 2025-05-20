@@ -53,10 +53,11 @@ const makeTextCodeBlock: Command = (view: EditorView) => {
     const selectedText = doc.sliceString(range.from, range.to, '');
     const isAlreadyWrapped = selectedText.startsWith('```') && selectedText.endsWith('```');
 
+    const codeBlockMarkerLength = 4;
+
     if (isAlreadyWrapped) {
-      // Remove existing code block markers
-      const startMarkerEnd = startLine.from + 4; // '```\n' length
-      const endMarkerStart = endLine.to - 4; // '\n```' length
+      const startMarkerEnd = startLine.from + codeBlockMarkerLength;
+      const endMarkerStart = endLine.to - codeBlockMarkerLength;
 
       changes.push({
         from: startLine.from,
@@ -70,8 +71,7 @@ const makeTextCodeBlock: Command = (view: EditorView) => {
         insert: '',
       });
 
-      // Position cursor at the start of the unwrapped content
-      newSelections.push(EditorSelection.range(startLine.from, endMarkerStart - 4));
+      newSelections.push(EditorSelection.range(startLine.from, endMarkerStart - codeBlockMarkerLength));
     }
     else {
       // Add code block markers
@@ -86,16 +86,14 @@ const makeTextCodeBlock: Command = (view: EditorView) => {
       });
 
       if (selectedText.length === 0) {
-        newSelections.push(EditorSelection.cursor(startLine.from + 4));
+        newSelections.push(EditorSelection.cursor(startLine.from + codeBlockMarkerLength));
       }
       else {
-        // Position cursor to include the entire wrapped content with markers
-        newSelections.push(EditorSelection.range(startLine.from, endLine.to + 8));
+        newSelections.push(EditorSelection.range(startLine.from, endLine.to + codeBlockMarkerLength * 2));
       }
     }
   });
 
-  // Send a single transaction with both changes and selection update
   view.dispatch({
     changes,
     selection: EditorSelection.create(newSelections),
