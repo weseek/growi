@@ -56,6 +56,11 @@ class AttachmentService {
       await fileUploadService.uploadAttachment(readStreamForCreateAttachmentDocument, attachment);
       await attachment.save();
 
+      if (this.attachHandlers.length === 0) {
+        disposeTmpFileCallback?.(file);
+        return attachment;
+      }
+
       const readStreamForAttacheHandler = createReadStream(file.path);
       const chunks = [];
       const attachHandlers = this.attachHandlers;
