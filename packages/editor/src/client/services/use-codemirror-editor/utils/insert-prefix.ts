@@ -5,6 +5,11 @@ import type { EditorView } from '@codemirror/view';
 
 export type InsertPrefix = (prefix: string, noSpaceIfPrefixExists?: boolean) => void;
 
+// https:// regex101.com/r/5ILXUX/1
+const LEADING_SPACES = /^\s*/;
+// https://regex101.com/r/ScAXzy/1
+const createPrefixPattern = (prefix: string) => new RegExp(`^\\s*(${prefix}+)\\s*`);
+
 const removePrefix = (text: string, prefix: string): string => {
   if (text.startsWith(prefix)) {
     return text.slice(prefix.length).trimStart();
@@ -59,7 +64,7 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
     if (allLinesEmpty(doc, startLine, endLine)) {
       for (let i = startLine.number; i <= endLine.number; i++) {
         const line = view.state.doc.line(i);
-        const leadingSpaces = line.text.match(/^\s*/)?.[0] || '';
+        const leadingSpaces = line.text.match(LEADING_SPACES)?.[0] || '';
         const insertText = `${leadingSpaces}${prefix} `;
 
         const change = {
@@ -86,7 +91,7 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
     for (let i = startLine.number; i <= endLine.number; i++) {
       const line = view.state.doc.line(i);
       const trimmedLine = line.text.trim();
-      const leadingSpaces = line.text.match(/^\s*/)?.[0] || '';
+      const leadingSpaces = line.text.match(LEADING_SPACES)?.[0] || '';
       const contentTrimmed = line.text.trimStart();
 
       if (trimmedLine === '') {
@@ -97,7 +102,8 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
       let lengthChange = 0;
 
       if (isPrefixRemoval) {
-        const contentStartMatch = line.text.match(new RegExp(`^\\s*(${prefix}+)\\s*`));
+        const prefixPattern = createPrefixPattern(prefix);
+        const contentStartMatch = line.text.match(prefixPattern);
 
         if (contentStartMatch) {
           if (noSpaceIfPrefixExists) {
