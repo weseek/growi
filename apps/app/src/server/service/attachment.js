@@ -56,7 +56,7 @@ class AttachmentService {
       await fileUploadService.uploadAttachment(readStreamForCreateAttachmentDocument, attachment);
       await attachment.save();
 
-      const attachedHandlerPromises = this.attachHandlers.map(async(handler) => {
+      this.attachHandlers.forEach(async(handler) => {
         //  Creates a new stream for each operation instead of reusing the original stream.
         //  REASON: Node.js Readable streams cannot be reused after consumption.
         //  When a stream is piped or consumed, its internal state changes and the data pointers
