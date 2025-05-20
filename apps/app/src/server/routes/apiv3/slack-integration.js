@@ -221,7 +221,7 @@ module.exports = (crowi) => {
       throw SlackCommandHandlerError('App site url must exist.');
     }
 
-    return generateRespondUtil(responseUrl, proxyUri, appSiteUrl);
+    return generateRespondUtil({ responseUrl, proxyUri, appSiteUrl });
   }
 
   function getGrowiCommand(body) {

@@ -28,12 +28,18 @@ function getUrl(responseUrl: string, proxyUri?: string): string {
   return finalUrl;
 }
 
+type RespondUtilConstructorArgs = {
+  responseUrl: string;
+  appSiteUrl: string;
+  proxyUri?: string;
+};
+
 export class RespondUtil implements IRespondUtil {
   url!: string;
 
   options!: AxiosOptions;
 
-  constructor(responseUrl: string, appSiteUrl: string, proxyUri?: string) {
+  constructor({ responseUrl, appSiteUrl, proxyUri }: RespondUtilConstructorArgs) {
     this.url = getUrl(responseUrl, proxyUri);
 
     this.options = {
@@ -91,10 +97,6 @@ export class RespondUtil implements IRespondUtil {
   }
 }
 
-export function generateRespondUtil(
-  responseUrl: string,
-  appSiteUrl: string,
-  proxyUri?: string,
-): RespondUtil {
-  return new RespondUtil(responseUrl, appSiteUrl, proxyUri);
+export function generateRespondUtil(args: RespondUtilConstructorArgs): RespondUtil {
+  return new RespondUtil(args);
 }
