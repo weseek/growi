@@ -623,8 +623,8 @@ class OpenaiService implements IOpenaiService {
       logger.debug('-----------------------------------------------------');
 
       // Do not create a new VectorStoreFile if page is changed to a permission that AiAssistant does not have access to
-      await this.createVectorStoreFile(vectorStoreRelation as VectorStoreDocument, pagesToVectorize);
       await this.deleteVectorStoreFile((vectorStoreRelation as VectorStoreDocument)._id, page._id);
+      await this.createVectorStoreFile(vectorStoreRelation as VectorStoreDocument, pagesToVectorize);
     }
   }
 
