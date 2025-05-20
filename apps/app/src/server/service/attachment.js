@@ -92,9 +92,6 @@ class AttachmentService {
         catch (err) {
           logger.error('Error in stream processing:', err);
         }
-        finally {
-          readStreamForHandler.destroy();
-        }
       });
 
       // Do not await, run in background
