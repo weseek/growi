@@ -286,6 +286,7 @@ module.exports = (crowi) => {
       await slackIntegrationService.handleCommandRequest(growiCommand, client, body, respondUtil);
     }
     catch (err) {
+      logger.error(err.message);
       return handleError(err, responseUrl);
     }
 
@@ -421,6 +422,7 @@ module.exports = (crowi) => {
       client = await slackIntegrationService.generateClientByTokenPtoG(tokenPtoG);
     }
     catch (err) {
+      logger.error(err.message);
       return handleError(err, responseUrl);
     }
 
