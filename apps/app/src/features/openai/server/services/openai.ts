@@ -34,6 +34,8 @@ import {
   type AccessibleAiAssistants, type AiAssistant, AiAssistantAccessScope, AiAssistantShareScope,
 } from '../../interfaces/ai-assistant';
 import type { MessageListParams } from '../../interfaces/message';
+import { ThreadType } from '../../interfaces/thread-relation';
+import type { IVectorStore } from '../../interfaces/vector-store';
 import { removeGlobPath } from '../../utils/remove-glob-path';
 import AiAssistantModel, { type AiAssistantDocument } from '../models/ai-assistant';
 import { convertMarkdownToHtml } from '../utils/convert-markdown-to-html';
@@ -66,7 +68,7 @@ const convertPathPatternsToRegExp = (pagePathPatterns: string[]): Array<string |
 };
 
 export interface IOpenaiService {
-  createThread(userId: string, aiAssistantId: string, initialUserMessage: string): Promise<ThreadRelationDocument>;
+  createThread(userId: string, type: ThreadType, aiAssistantId?: string, initialUserMessage?: string): Promise<ThreadRelationDocument>;
   getThreadsByAiAssistantId(aiAssistantId: string): Promise<ThreadRelationDocument[]>
   deleteThread(threadRelationId: string): Promise<ThreadRelationDocument>;
   deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
@@ -93,7 +95,6 @@ class OpenaiService implements IOpenaiService {
   }
 
   async generateThreadTitle(message: string): Promise<string | null> {
-    const model = configManager.getConfig('openai:assistantModel:chat');
     const systemMessage = [
       'Create a brief title (max 5 words) from your message.',
       'Respond in the same language the user uses in their input.',
@@ -101,7 +102,7 @@ class OpenaiService implements IOpenaiService {
     ].join('');
 
     const threadTitleCompletion = await this.client.chatCompletion({
-      model,
+      model: 'gpt-4.1-nano',
       messages: [
         {
           role: 'system',
@@ -118,27 +119,35 @@ class OpenaiService implements IOpenaiService {
     return threadTitle;
   }
 
-  async createThread(userId: string, aiAssistantId: string, initialUserMessage: string): Promise<ThreadRelationDocument> {
-    const vectorStoreRelation = await this.getVectorStoreRelationByAiAssistantId(aiAssistantId);
-
-    let threadTitle: string | null = null;
-    if (initialUserMessage != null) {
-      try {
-        threadTitle = await this.generateThreadTitle(initialUserMessage);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    }
-
+  async createThread(userId: string, type: ThreadType, aiAssistantId?: string, initialUserMessage?: string): Promise<ThreadRelationDocument> {
     try {
-      const thread = await this.client.createThread(vectorStoreRelation.vectorStoreId);
+      const aiAssistant = aiAssistantId != null
+        ? await AiAssistantModel.findOne({ _id: { $eq: aiAssistantId } }).populate<{ vectorStore: IVectorStore }>('vectorStore')
+        : null;
+
+      const thread = await this.client.createThread(aiAssistant?.vectorStore?.vectorStoreId);
       const threadRelation = await ThreadRelationModel.create({
         userId,
+        type,
         aiAssistant: aiAssistantId,
         threadId: thread.id,
-        title: threadTitle,
+        title: null, // Initialize title as null
       });
+
+      if (initialUserMessage != null) {
+        // Do not await, run in background
+        this.generateThreadTitle(initialUserMessage)
+          .then(async(generatedTitle) => {
+            if (generatedTitle != null) {
+              threadRelation.title = generatedTitle;
+              await threadRelation.save();
+            }
+          })
+          .catch((err) => {
+            logger.error(`Failed to generate thread title for threadId ${thread.id}:`, err);
+          });
+      }
+
       return threadRelation;
     }
     catch (err) {
@@ -159,8 +168,8 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  async getThreadsByAiAssistantId(aiAssistantId: string): Promise<ThreadRelationDocument[]> {
-    const threadRelations = await ThreadRelationModel.find({ aiAssistant: aiAssistantId });
+  async getThreadsByAiAssistantId(aiAssistantId: string, type: ThreadType = ThreadType.KNOWLEDGE): Promise<ThreadRelationDocument[]> {
+    const threadRelations = await ThreadRelationModel.find({ aiAssistant: aiAssistantId, type });
     return threadRelations;
   }
 
@@ -221,15 +230,6 @@ class OpenaiService implements IOpenaiService {
     return messages;
   }
 
-
-  async getVectorStoreRelationByAiAssistantId(aiAssistantId: string): Promise<VectorStoreDocument> {
-    const aiAssistant = await AiAssistantModel.findOne({ _id: { $eq: aiAssistantId } }).populate('vectorStore');
-    if (aiAssistant == null) {
-      throw createError(404, 'AiAssistant document does not exist');
-    }
-
-    return aiAssistant.vectorStore as VectorStoreDocument;
-  }
 
   async getVectorStoreRelationsByPageIds(pageIds: Types.ObjectId[]): Promise<VectorStoreDocument[]> {
     const pipeline = [
@@ -300,9 +300,11 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  private async uploadFile(pageId: Types.ObjectId, pagePath: string, revisionBody: string): Promise<OpenAI.Files.FileObject> {
-    const convertedHtml = await convertMarkdownToHtml({ pagePath, revisionBody });
-    const file = await toFile(Readable.from(convertedHtml), `${pageId}.html`);
+  private async uploadFile(revisionBody: string, page: HydratedDocument<PageDocument>): Promise<OpenAI.Files.FileObject> {
+    const siteUrl = configManager.getConfig('app:siteUrl');
+
+    const convertedHtml = await convertMarkdownToHtml(revisionBody, { page, siteUrl });
+    const file = await toFile(Readable.from(convertedHtml), `${page._id}.html`);
     const uploadedFile = await this.client.uploadFile(file);
     return uploadedFile;
   }
@@ -330,14 +332,14 @@ class OpenaiService implements IOpenaiService {
     const processUploadFile = async(page: HydratedDocument<PageDocument>) => {
       if (page._id != null && page.revision != null) {
         if (isPopulated(page.revision) && page.revision.body.length > 0) {
-          const uploadedFile = await this.uploadFile(page._id, page.path, page.revision.body);
+          const uploadedFile = await this.uploadFile(page.revision.body, page);
           prepareVectorStoreFileRelations(vectorStoreRelation._id, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
           return;
         }
 
         const pagePopulatedToShowRevision = await page.populateDataToShowRevision();
         if (pagePopulatedToShowRevision.revision != null && pagePopulatedToShowRevision.revision.body.length > 0) {
-          const uploadedFile = await this.uploadFile(page._id, page.path, pagePopulatedToShowRevision.revision.body);
+          const uploadedFile = await this.uploadFile(pagePopulatedToShowRevision.revision.body, page);
           prepareVectorStoreFileRelations(vectorStoreRelation._id, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
         }
       }
