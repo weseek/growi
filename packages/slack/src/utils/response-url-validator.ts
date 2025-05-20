@@ -2,12 +2,18 @@ import { URL } from 'node:url';
 
 const ALLOWED_SLACK_HOST = 'hooks.slack.com';
 
-export function isValidResponseUrl(responseUrl: string, slackbotProxyUri?: string): boolean {
+export function isValidResponseUrl(
+  responseUrl: string,
+  slackbotProxyUri?: string,
+): boolean {
   try {
     const parsedUrl = new URL(responseUrl);
 
     // Case 1: Direct to Slack
-    if (parsedUrl.protocol === 'https:' && parsedUrl.hostname === ALLOWED_SLACK_HOST) {
+    if (
+      parsedUrl.protocol === 'https:' &&
+      parsedUrl.hostname === ALLOWED_SLACK_HOST
+    ) {
       return true;
     }
 
@@ -20,7 +26,8 @@ export function isValidResponseUrl(responseUrl: string, slackbotProxyUri?: strin
         parsedUrl.hostname === parsedProxyUri.hostname &&
         parsedUrl.pathname === '/g2s/respond'
       ) {
-        const slackResponseUrlParam = parsedUrl.searchParams.get('response_url');
+        const slackResponseUrlParam =
+          parsedUrl.searchParams.get('response_url');
         if (slackResponseUrlParam) {
           // Recursively validate the response_url parameter
           return isValidResponseUrl(slackResponseUrlParam); // No proxy URI for the inner check

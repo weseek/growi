@@ -16,9 +16,10 @@ function getResponseUrlForProxy(proxyUri: string, responseUrl: string): string {
 }
 
 function getUrl(responseUrl: string, proxyUri?: string): string {
-  const finalUrl = proxyUri === undefined
-    ? responseUrl
-    : getResponseUrlForProxy(proxyUri, responseUrl);
+  const finalUrl =
+    proxyUri === undefined
+      ? responseUrl
+      : getResponseUrlForProxy(proxyUri, responseUrl);
 
   if (!isValidResponseUrl(responseUrl, proxyUri)) {
     throw new Error('Invalid final response URL');
@@ -32,11 +33,7 @@ export class RespondUtil implements IRespondUtil {
 
   options!: AxiosOptions;
 
-  constructor(
-    responseUrl: string,
-    appSiteUrl: string,
-    proxyUri?: string,
-  ) {
+  constructor(responseUrl: string, appSiteUrl: string, proxyUri?: string) {
     this.url = getUrl(responseUrl, proxyUri);
 
     this.options = {
