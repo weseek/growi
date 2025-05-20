@@ -11,9 +11,3 @@ export type MessageWithCustomMetaData = Omit<OpenAI.Beta.Threads.Messages.Messag
 };
 
 export type MessageListParams = OpenAI.Beta.Threads.Messages.MessageListParams;
-
-export type MessageLog = {
-  id: string,
-  content: string,
-  isUserMessage?: boolean,
-}

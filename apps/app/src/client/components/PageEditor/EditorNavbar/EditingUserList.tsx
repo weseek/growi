@@ -1,6 +1,6 @@
 import { type FC, useState } from 'react';
 
-import type { EditingClient } from '@growi/editor';
+import type { IUserHasId } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
 import { Popover, PopoverBody } from 'reactstrap';
 
@@ -11,28 +11,28 @@ import styles from './EditingUserList.module.scss';
 const userListPopoverClass = styles['user-list-popover'] ?? '';
 
 type Props = {
-  clientList: EditingClient[]
+  userList: IUserHasId[]
 }
 
-export const EditingUserList: FC<Props> = ({ clientList }) => {
+export const EditingUserList: FC<Props> = ({ userList }) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const togglePopover = () => setIsPopoverOpen(!isPopoverOpen);
 
-  const firstFourUsers = clientList.slice(0, 4);
-  const remainingUsers = clientList.slice(4);
+  const firstFourUsers = userList.slice(0, 4);
+  const remainingUsers = userList.slice(4);
 
-  if (clientList.length === 0) {
+  if (userList.length === 0) {
     return <></>;
   }
 
   return (
     <div className="d-flex flex-column justify-content-start justify-content-sm-end">
       <div className="d-flex justify-content-start justify-content-sm-end">
-        {firstFourUsers.map(editingClient => (
-          <div key={editingClient.clientId} className="ms-1">
+        {firstFourUsers.map(user => (
+          <div key={user._id} className="ms-1">
             <UserPicture
-              user={editingClient}
+              user={user}
               noLink
               className="border border-info"
             />

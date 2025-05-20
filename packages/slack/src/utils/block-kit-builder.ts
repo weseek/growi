@@ -1,21 +1,9 @@
 import type {
-  Action,
-  ActionsBlock,
+  SectionBlock, HeaderBlock, InputBlock, DividerBlock, ActionsBlock,
+  Button, Overflow, Datepicker, Select, RadioButtons, Checkboxes, Action, MultiSelect, PlainTextInput, Option,
   ActionsBlockElement,
-  Button,
-  Checkboxes,
-  Datepicker,
-  DividerBlock,
-  HeaderBlock,
-  InputBlock,
-  MultiSelect,
-  Option,
-  Overflow,
-  PlainTextInput,
-  RadioButtons,
-  SectionBlock,
-  Select,
 } from '@slack/types';
+
 
 export function divider(): DividerBlock {
   return {
@@ -43,13 +31,7 @@ export function markdownSectionBlock(text: string): SectionBlock {
   };
 }
 
-export function inputSectionBlock(
-  blockId: string,
-  labelText: string,
-  actionId: string,
-  isMultiline: boolean,
-  placeholder: string,
-): InputBlock {
+export function inputSectionBlock(blockId: string, labelText: string, actionId: string, isMultiline: boolean, placeholder: string): InputBlock {
   return {
     type: 'input',
     block_id: blockId,
@@ -77,15 +59,7 @@ export function actionsBlock(...elements: ActionsBlockElement[]): ActionsBlock {
 }
 
 export function inputBlock(
-  element:
-    | Select
-    | MultiSelect
-    | Datepicker
-    | PlainTextInput
-    | RadioButtons
-    | Checkboxes,
-  blockId: string,
-  labelText: string,
+    element: Select | MultiSelect | Datepicker | PlainTextInput | RadioButtons | Checkboxes, blockId: string, labelText: string,
 ): InputBlock {
   return {
     type: 'input',
@@ -99,22 +73,19 @@ export function inputBlock(
 }
 
 type ButtonElement = {
-  text: string;
-  actionId: string;
-  style?: string;
-  value?: string;
-};
+  text: string,
+  actionId: string,
+  style?: string,
+  value?:string
+}
 
 /**
  * Button element
  * https://api.slack.com/reference/block-kit/block-elements#button
  */
 export function buttonElement({
-  text,
-  actionId,
-  style,
-  value,
-}: ButtonElement): Button {
+  text, actionId, style, value,
+}:ButtonElement): Button {
   const button: Button = {
     type: 'button',
     text: {
@@ -134,11 +105,7 @@ export function buttonElement({
  * Option object
  * https://api.slack.com/reference/block-kit/composition-objects#option
  */
-export function checkboxesElementOption(
-  text: string,
-  description: string,
-  value: string,
-): Option {
+export function checkboxesElementOption(text: string, description: string, value: string): Option {
   return {
     text: {
       type: 'mrkdwn',

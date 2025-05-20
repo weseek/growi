@@ -3,10 +3,12 @@ import type { WebAPICallResult } from '@slack/web-api';
 import { markdownSectionBlock } from './block-kit-builder';
 import { respond } from './response-url';
 
-export const respondRejectedErrors = async (
-  rejectedResults: PromiseRejectedResult[],
-  responseUrl: string,
-): Promise<WebAPICallResult | undefined> => {
+
+export const respondRejectedErrors = async(
+    rejectedResults: PromiseRejectedResult[],
+    responseUrl: string,
+): Promise<WebAPICallResult|void> => {
+
   if (rejectedResults.length > 0) {
     await respond(responseUrl, {
       text: 'Error occured.',

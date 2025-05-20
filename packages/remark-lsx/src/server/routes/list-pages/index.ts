@@ -1,3 +1,4 @@
+
 import type { IUser } from '@growi/core';
 import { OptionParser } from '@growi/core/dist/remark-plugins';
 import { pathUtils } from '@growi/core/dist/utils';
@@ -10,41 +11,34 @@ import type { LsxApiParams, LsxApiResponseData } from '../../../interfaces/api';
 import { addDepthCondition } from './add-depth-condition';
 import { addNumCondition } from './add-num-condition';
 import { addSortCondition } from './add-sort-condition';
-import { type PageQuery, generateBaseQuery } from './generate-base-query';
+import { generateBaseQuery, type PageQuery } from './generate-base-query';
 import { getToppageViewersCount } from './get-toppage-viewers-count';
+
 
 const { addTrailingSlash, removeTrailingSlash } = pathUtils;
 
 /**
  * add filter condition that filter fetched pages
  */
-function addFilterCondition(
-  query,
-  pagePath,
-  optionsFilter,
-  isExceptFilter = false,
-): PageQuery {
+function addFilterCondition(query, pagePath, optionsFilter, isExceptFilter = false): PageQuery {
   // when option strings is 'filter=', the option value is true
   if (optionsFilter == null || optionsFilter === true) {
-    throw createError(
-      400,
-      'filter option require value in regular expression.',
-    );
+    throw createError(400, 'filter option require value in regular expression.');
   }
 
   const pagePathForRegexp = escapeStringRegexp(addTrailingSlash(pagePath));
 
-  let filterPath: RegExp;
+  let filterPath;
   try {
     if (optionsFilter.charAt(0) === '^') {
       // move '^' to the first of path
-      filterPath = new RegExp(
-        `^${pagePathForRegexp}${optionsFilter.slice(1, optionsFilter.length)}`,
-      );
-    } else {
+      filterPath = new RegExp(`^${pagePathForRegexp}${optionsFilter.slice(1, optionsFilter.length)}`);
+    }
+    else {
       filterPath = new RegExp(`^${pagePathForRegexp}.*${optionsFilter}`);
     }
-  } catch (err) {
+  }
+  catch (err) {
     throw createError(400, err);
   }
 
@@ -62,15 +56,12 @@ function addExceptCondition(query, pagePath, optionsFilter): PageQuery {
   return addFilterCondition(query, pagePath, optionsFilter, true);
 }
 
-interface IListPagesRequest
-  extends Request<undefined, undefined, undefined, LsxApiParams> {
-  user: IUser;
+interface IListPagesRequest extends Request<undefined, undefined, undefined, LsxApiParams> {
+  user: IUser,
 }
 
-export const listPages = async (
-  req: IListPagesRequest,
-  res: Response,
-): Promise<Response> => {
+
+export const listPages = async(req: IListPagesRequest, res: Response): Promise<Response> => {
   const user = req.user;
 
   if (req.query.pagePath == null) {
@@ -84,14 +75,17 @@ export const listPages = async (
     options: req.query?.options ?? {},
   };
 
-  const { pagePath, offset, limit, options } = params;
+  const {
+    pagePath, offset, limit, options,
+  } = params;
   const builder = await generateBaseQuery(params.pagePath, user);
 
   // count viewers of `/`
-  let toppageViewersCount: number;
+  let toppageViewersCount;
   try {
     toppageViewersCount = await getToppageViewersCount();
-  } catch (error) {
+  }
+  catch (error) {
     return res.status(500).send(error);
   }
 
@@ -99,11 +93,7 @@ export const listPages = async (
   try {
     // depth
     if (options?.depth != null) {
-      query = addDepthCondition(
-        query,
-        params.pagePath,
-        OptionParser.parseRange(options.depth),
-      );
+      query = addDepthCondition(query, params.pagePath, OptionParser.parseRange(options.depth));
     }
     // filter
     if (options?.filter != null) {
@@ -125,16 +115,15 @@ export const listPages = async (
     const cursor = (offset ?? 0) + pages.length;
 
     const responseData: LsxApiResponseData = {
-      pages,
-      cursor,
-      total,
-      toppageViewersCount,
+      pages, cursor, total, toppageViewersCount,
     };
     return res.status(200).send(responseData);
-  } catch (error) {
+  }
+  catch (error) {
     if (isHttpError(error)) {
       return res.status(error.status).send(error.message);
     }
     return res.status(500).send(error.message);
   }
+
 };

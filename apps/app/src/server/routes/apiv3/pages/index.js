@@ -12,7 +12,6 @@ import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import PageTagRelation from '~/server/models/page-tag-relation';
-import { configManager } from '~/server/service/config-manager';
 import { preNotifyService } from '~/server/service/pre-notify';
 import loggerFactory from '~/utils/logger';
 
@@ -91,11 +90,6 @@ module.exports = (crowi) => {
     resumeRenamePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
     ],
-    list: [
-      query('path').optional(),
-      query('page').optional().isInt().withMessage('page must be integer'),
-      query('limit').optional().isInt().withMessage('limit must be integer'),
-    ],
     duplicatePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
       body('pageNameInput').trim().isLength({ min: 1 }).withMessage('pageNameInput is required'),
@@ -162,8 +156,8 @@ module.exports = (crowi) => {
     const offset = parseInt(req.query.offset) || 0;
     const includeWipPage = req.query.includeWipPage === 'true'; // Need validation using express-validator
 
-    const hideRestrictedByOwner = configManager.getConfig('security:list-policy:hideRestrictedByOwner');
-    const hideRestrictedByGroup = configManager.getConfig('security:list-policy:hideRestrictedByGroup');
+    const hideRestrictedByOwner = await crowi.configManager.getConfig('security:list-policy:hideRestrictedByOwner');
+    const hideRestrictedByGroup = await crowi.configManager.getConfig('security:list-policy:hideRestrictedByGroup');
 
     /**
     * @type {import('~/server/models/page').FindRecentUpdatedPagesOption}
@@ -534,10 +528,10 @@ module.exports = (crowi) => {
     *                              lastUpdateUser:
     *                                $ref: '#/components/schemas/User'
     */
-  router.get('/list', accessTokenParser, loginRequired, validator.list, apiV3FormValidator, async(req, res) => {
+  router.get('/list', accessTokenParser, loginRequired, validator.displayList, apiV3FormValidator, async(req, res) => {
 
-    const path = normalizePath(req.query.path ?? '/');
-    const limit = parseInt(req.query.limit ?? configManager.getConfig('customize:showPageLimitationS'));
+    const { path } = req.query;
+    const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('customize:showPageLimitationS') || 10;
     const page = req.query.page || 1;
     const offset = (page - 1) * limit;
 
@@ -952,7 +946,7 @@ module.exports = (crowi) => {
    */
   router.get('/v5-migration-status', accessTokenParser, loginRequired, async(req, res) => {
     try {
-      const isV5Compatible = configManager.getConfig('app:isV5Compatible');
+      const isV5Compatible = crowi.configManager.getConfig('app:isV5Compatible');
       const migratablePagesCount = req.user != null ? await crowi.pageService.countPagesCanNormalizeParentByUser(req.user) : null; // null check since not using loginRequiredStrictly
       return res.apiv3({ isV5Compatible, migratablePagesCount });
     }

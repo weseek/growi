@@ -7,9 +7,8 @@ import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import deepmerge from 'ts-deepmerge';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
-import type { EditingClient } from '../../interfaces';
 import { CodeMirrorEditor, type CodeMirrorEditorProps } from '../components-internal/CodeMirrorEditor';
-import { setDataLine, useUnifiedMergeView, codemirrorEditorClassForUnifiedMergeView } from '../services-internal';
+import { setDataLine } from '../services-internal';
 import { useCodeMirrorEditorIsolated } from '../stores/codemirror-editor';
 import { useCollaborativeEditorMode } from '../stores/use-collaborative-editor-mode';
 
@@ -25,29 +24,19 @@ type Props = CodeMirrorEditorProps & {
   user?: IUserHasId,
   pageId?: string,
   initialValue?: string,
-  enableCollaboration?: boolean,
-  enableUnifiedMergeView?: boolean,
-  onEditorsUpdated?: (clientList: EditingClient[]) => void,
+  isEditorMode: boolean,
+  onEditorsUpdated?: (userList: IUserHasId[]) => void,
 }
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    user, pageId,
-    enableCollaboration = false, enableUnifiedMergeView = false,
-    cmProps,
+    user, pageId, initialValue, isEditorMode, cmProps,
     onSave, onEditorsUpdated, ...otherProps
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
-  useCollaborativeEditorMode(enableCollaboration, codeMirrorEditor, {
-    user,
-    pageId,
-    onEditorsUpdated,
-    reviewMode: enableUnifiedMergeView,
-  });
-
-  useUnifiedMergeView(enableUnifiedMergeView, codeMirrorEditor, { pageId });
+  useCollaborativeEditorMode(isEditorMode, user, pageId, initialValue, onEditorsUpdated, codeMirrorEditor);
 
   // setup additional extensions
   useEffect(() => {
@@ -92,7 +81,6 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   return (
     <CodeMirrorEditor
       editorKey={GlobalCodeMirrorEditorKey.MAIN}
-      className={codemirrorEditorClassForUnifiedMergeView}
       onSave={onSave}
       cmProps={cmPropsOverride}
       {...otherProps}

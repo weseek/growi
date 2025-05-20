@@ -4,9 +4,14 @@
   "description": "GROWI UI Libraries",
   "license": "MIT",
   "private": "true",
-  "keywords": ["growi"],
+  "keywords": [
+    "growi"
+  ],
   "type": "module",
-  "files": ["dist", "scss"],
+  "files": [
+    "dist",
+    "scss"
+  ],
   "exports": {
     "./dist/components": {
       "import": "./dist/components/index.js"
@@ -27,7 +32,7 @@
     "clean": "shx rm -rf dist",
     "dev": "vite build --mode dev",
     "watch": "pnpm run dev -w --emptyOutDir=false",
-    "lint:js": "biome check",
+    "lint:js": "eslint **/*.{js,ts}",
     "lint:styles": "stylelint \"./scss/**/*\"",
     "lint:typecheck": "vue-tsc --noEmit",
     "lint": "npm-run-all -p lint:*"

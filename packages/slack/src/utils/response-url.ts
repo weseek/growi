@@ -2,10 +2,7 @@ import axios from 'axios';
 
 import type { RespondBodyForResponseUrl } from '../interfaces/response-url';
 
-export async function respond(
-  responseUrl: string,
-  body: RespondBodyForResponseUrl,
-): Promise<void> {
+export async function respond(responseUrl: string, body: RespondBodyForResponseUrl): Promise<void> {
   return axios.post(responseUrl, {
     replace_original: false,
     text: body.text,
@@ -13,10 +10,7 @@ export async function respond(
   });
 }
 
-export async function respondInChannel(
-  responseUrl: string,
-  body: RespondBodyForResponseUrl,
-): Promise<void> {
+export async function respondInChannel(responseUrl: string, body: RespondBodyForResponseUrl): Promise<void> {
   return axios.post(responseUrl, {
     response_type: 'in_channel',
     replace_original: false,
@@ -25,10 +19,7 @@ export async function respondInChannel(
   });
 }
 
-export async function replaceOriginal(
-  responseUrl: string,
-  body: RespondBodyForResponseUrl,
-): Promise<void> {
+export async function replaceOriginal(responseUrl: string, body: RespondBodyForResponseUrl): Promise<void> {
   return axios.post(responseUrl, {
     replace_original: true,
     text: body.text,

@@ -4,7 +4,9 @@
   "compilerOptions": {
     "jsx": "react-jsx",
 
-    "types": ["vitest/globals"],
+    "types": [
+      "vitest/globals"
+    ],
 
     /* TODO: remove below flags for strict checking */
     "strict": false,
@@ -13,5 +15,7 @@
     "noImplicitAny": false,
     "noImplicitOverride": true
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }

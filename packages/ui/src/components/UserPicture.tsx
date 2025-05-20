@@ -1,13 +1,9 @@
 import {
-  type JSX,
-  type ReactNode,
-  forwardRef,
-  memo,
-  useCallback,
-  useRef,
+  type ReactNode, type JSX,
+  memo, forwardRef, useCallback, useRef,
 } from 'react';
 
-import type { IUser, Ref } from '@growi/core';
+import type { Ref, IUser } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -18,180 +14,127 @@ import styles from './UserPicture.module.scss';
 const moduleClass = styles['user-picture'];
 const moduleTooltipClass = styles['user-picture-tooltip'];
 
-const UncontrolledTooltip = dynamic<UncontrolledTooltipProps>(
-  () => import('reactstrap').then((mod) => mod.UncontrolledTooltip),
-  { ssr: false },
-);
+const UncontrolledTooltip = dynamic<UncontrolledTooltipProps>(() => import('reactstrap').then(mod => mod.UncontrolledTooltip), { ssr: false });
 
 const DEFAULT_IMAGE = '/images/icons/user.svg';
 
-type UserPictureSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
-type BaseUserPictureRootProps = {
-  displayName: string;
-  children: ReactNode;
-  size?: UserPictureSize;
-  className?: string;
-};
+type UserPitureSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
-type UserPictureRootWithoutLinkProps = BaseUserPictureRootProps;
+type UserPictureRootProps = {
+  user: IUser,
+  size?: UserPitureSize,
+  className?: string,
+  children?: ReactNode,
+}
 
-type UserPictureRootWithLinkProps = BaseUserPictureRootProps & {
-  username: string;
-};
-
-const UserPictureRootWithoutLink = forwardRef<
-  HTMLSpanElement,
-  UserPictureRootWithoutLinkProps
->((props, ref) => {
-  return (
-    <span ref={ref} className={props.className}>
-      {props.children}
-    </span>
-  );
+const UserPictureRootWithoutLink = forwardRef<HTMLSpanElement, UserPictureRootProps>((props, ref) => {
+  return <span ref={ref} className={props.className}>{props.children}</span>;
 });
 
-const UserPictureRootWithLink = forwardRef<
-  HTMLSpanElement,
-  UserPictureRootWithLinkProps
->((props, ref) => {
+const UserPictureRootWithLink = forwardRef<HTMLSpanElement, UserPictureRootProps>((props, ref) => {
   const router = useRouter();
 
-  const { username } = props;
+  const { user } = props;
 
   const clickHandler = useCallback(() => {
-    const href = pagePathUtils.userHomepagePath({ username });
+    const href = pagePathUtils.userHomepagePath(user);
     router.push(href);
-  }, [router, username]);
+  }, [router, user]);
 
   // Using <span> tag here instead of <a> tag because UserPicture is used in SearchResultList which is essentially a anchor tag.
   // Nested anchor tags causes a warning.
   // https://stackoverflow.com/questions/13052598/creating-anchor-tag-inside-anchor-taga
-  return (
-    <span
-      ref={ref}
-      className={props.className}
-      onClick={clickHandler}
-      onKeyDown={() => {}}
-      style={{ cursor: 'pointer' }}
-    >
-      {props.children}
-    </span>
-  );
+  return <span ref={ref} className={props.className} onClick={clickHandler} style={{ cursor: 'pointer' }}>{props.children}</span>;
 });
 
+
 // wrapper with Tooltip
-const withTooltip =
-  <P extends BaseUserPictureRootProps>(
-    UserPictureSpanElm: React.ForwardRefExoticComponent<
-      P & React.RefAttributes<HTMLSpanElement>
-    >,
-  ) =>
-  (props: P): JSX.Element => {
-    const { displayName, size } = props;
-    const username = 'username' in props ? props.username : undefined;
+const withTooltip = (UserPictureSpanElm: React.ForwardRefExoticComponent<UserPictureRootProps & React.RefAttributes<HTMLSpanElement>>) => {
+  return (props: UserPictureRootProps) => {
+    const { user, size } = props;
 
     const tooltipClassName = `${moduleTooltipClass} user-picture-tooltip-${size ?? 'md'}`;
+
     const userPictureRef = useRef<HTMLSpanElement>(null);
 
     return (
       <>
-        <UserPictureSpanElm ref={userPictureRef} {...props} />
+        <UserPictureSpanElm ref={userPictureRef} user={user}>{props.children}</UserPictureSpanElm>
         <UncontrolledTooltip
           placement="bottom"
           target={userPictureRef}
           popperClassName={tooltipClassName}
           delay={0}
           fade={false}
+          show
         >
-          {username ? (
-            <>
-              {`@${username}`}
-              <br />
-            </>
-          ) : null}
-          {displayName}
+          @{user.username}<br />
+          {user.name}
         </UncontrolledTooltip>
       </>
     );
   };
+};
+
 
 /**
  * type guard to determine whether the specified object is IUser
  */
-const hasUsername = (
-  obj: Partial<IUser> | Ref<IUser> | null | undefined,
-): obj is { username: string } => {
-  return obj != null && typeof obj !== 'string' && 'username' in obj;
+const isUserObj = (obj: Partial<IUser> | Ref<IUser>): obj is IUser => {
+  return typeof obj !== 'string' && 'username' in obj;
 };
 
-/**
- * Type guard to determine whether tooltip should be shown
- */
-const hasName = (
-  obj: Partial<IUser> | Ref<IUser> | null | undefined,
-): obj is { name: string } => {
-  return obj != null && typeof obj === 'object' && 'name' in obj;
-};
-
-/**
- * type guard to determine whether the specified object is IUser
- */
-const hasProfileImage = (
-  obj: Partial<IUser> | Ref<IUser> | null | undefined,
-): obj is { imageUrlCached: string } => {
-  return obj != null && typeof obj === 'object' && 'imageUrlCached' in obj;
-};
 
 type Props = {
-  user?: Partial<IUser> | Ref<IUser> | null;
-  size?: UserPictureSize;
-  noLink?: boolean;
-  noTooltip?: boolean;
-  className?: string;
+  user?: Partial<IUser> | Ref<IUser> | null,
+  size?: UserPitureSize,
+  noLink?: boolean,
+  noTooltip?: boolean,
+  className?: string
 };
 
-export const UserPicture = memo((userProps: Props): JSX.Element => {
+export const UserPicture = memo((props: Props): JSX.Element => {
+
   const {
-    user,
-    size,
-    noLink,
-    noTooltip,
-    className: additionalClassName,
-  } = userProps;
+    user, size, noLink, noTooltip, className: additionalClassName,
+  } = props;
 
-  // Extract user information
-  const username = hasUsername(user) ? user.username : undefined;
-  const displayName = hasName(user) ? user.name : 'someone';
-  const src = hasProfileImage(user)
-    ? (user.imageUrlCached ?? DEFAULT_IMAGE)
-    : DEFAULT_IMAGE;
-  const showTooltip = !noTooltip && hasName(user);
+  const classNames = [moduleClass, 'user-picture', 'rounded-circle'];
+  if (size != null) {
+    classNames.push(`user-picture-${size}`);
+  }
+  if (additionalClassName != null) {
+    classNames.push(additionalClassName);
+  }
+  const className = classNames.join(' ');
 
-  // Build className
-  const className = [
-    moduleClass,
-    'user-picture',
-    'rounded-circle',
-    size && `user-picture-${size}`,
-    additionalClassName,
-  ]
-    .filter(Boolean)
-    .join(' ');
-
-  const imgElement = <img src={src} alt={displayName} className={className} />;
-  const baseProps = { displayName, size, children: imgElement };
-
-  if (username == null || noLink) {
-    const Component = showTooltip
-      ? withTooltip(UserPictureRootWithoutLink)
-      : UserPictureRootWithoutLink;
-    return <Component {...baseProps} />;
+  if (user == null || !isUserObj(user)) {
+    return (
+      <img
+        src={DEFAULT_IMAGE}
+        alt="someone"
+        className={className}
+      />
+    );
   }
 
-  const Component = showTooltip
-    ? withTooltip(UserPictureRootWithLink)
-    : UserPictureRootWithLink;
-  return <Component {...baseProps} username={username} />;
+  // determine RootElm
+  const UserPictureSpanElm = noLink ? UserPictureRootWithoutLink : UserPictureRootWithLink;
+  const UserPictureRootElm = noTooltip
+    ? UserPictureSpanElm
+    : withTooltip(UserPictureSpanElm);
+
+  const userPictureSrc = user.imageUrlCached ?? DEFAULT_IMAGE;
+
+  return (
+    <UserPictureRootElm user={user} size={size}>
+      <img
+        src={userPictureSrc}
+        alt={user.username}
+        className={className}
+      />
+    </UserPictureRootElm>
+  );
 });
 UserPicture.displayName = 'UserPicture';

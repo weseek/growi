@@ -1,10 +1,11 @@
-import type Logger from 'bunyan';
+import Logger from 'bunyan';
 import { createLogger } from 'universal-bunyan';
 
-const loggerFactory = (name: string): Logger =>
-  createLogger({
+const loggerFactory = function(name: string): Logger {
+  return createLogger({
     name,
     config: { default: 'info' },
   });
+};
 
 export default loggerFactory;

@@ -27,7 +27,7 @@ import {
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
   useIsEditable, useIsIndentSizeForced,
-  useAcceptedUploadFileType, useIsEnableUnifiedMergeView,
+  useAcceptedUploadFileType,
 } from '~/stores-universal/context';
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
@@ -44,11 +44,11 @@ import {
 import { mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 import { usePreviewOptions } from '~/stores/renderer';
 import { useIsUntitledPage, useSelectedGrant } from '~/stores/ui';
-import { useEditingClients } from '~/stores/use-editing-clients';
+import { useEditingUsers } from '~/stores/use-editing-users';
 import loggerFactory from '~/utils/logger';
 
 import { EditorNavbar } from './EditorNavbar';
-import { EditorNavbarBottom } from './EditorNavbarBottom';
+import EditorNavbarBottom from './EditorNavbarBottom';
 import Preview from './Preview';
 import { useScrollSync } from './ScrollSyncHelper';
 import { useConflictResolver, useConflictEffect, type ConflictHandler } from './conflict';
@@ -108,10 +108,9 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
   const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsGrantNormalized } = useSWRxCurrentGrantData(currentPage?._id);
   const { data: user } = useCurrentUser();
-  const { mutate: mutateEditingUsers } = useEditingClients();
+  const { onEditorsUpdated } = useEditingUsers();
   const onConflict = useConflictResolver();
   const { data: reservedNextCaretLine, mutate: mutateReservedNextCaretLine } = useReservedNextCaretLine();
-  const { data: isEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
 
   const { data: rendererOptions } = usePreviewOptions();
 
@@ -366,8 +365,7 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
     <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
       <div className="page-editor-editor-container flex-expand-vert border-end">
         <CodeMirrorEditorMain
-          enableUnifiedMergeView={isEnableUnifiedMergeView}
-          enableCollaboration={editorMode === EditorMode.Editor}
+          isEditorMode={editorMode === EditorMode.Editor}
           onSave={saveWithShortcut}
           onUpload={uploadHandler}
           acceptedUploadFileType={acceptedUploadFileType}
@@ -375,8 +373,9 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
           indentSize={currentIndentSize ?? defaultIndentSize}
           user={user ?? undefined}
           pageId={pageId ?? undefined}
+          initialValue={initialValue}
           editorSettings={editorSettings}
-          onEditorsUpdated={mutateEditingUsers}
+          onEditorsUpdated={onEditorsUpdated}
           cmProps={cmProps}
         />
       </div>

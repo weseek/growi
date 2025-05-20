@@ -5,15 +5,19 @@ import type { LsxContext } from '../lsx-context';
 
 import { LsxPage } from './LsxPage';
 
+
 import styles from './LsxListView.module.scss';
 
+
 type Props = {
-  nodeTree?: PageNode[];
-  lsxContext: LsxContext;
-  basisViewersCount?: number;
+  nodeTree?: PageNode[],
+  lsxContext: LsxContext,
+  basisViewersCount?: number,
 };
 
+
 export const LsxListView = React.memo((props: Props): JSX.Element => {
+
   const { nodeTree, lsxContext, basisViewersCount } = props;
 
   const isEmpty = nodeTree == null || nodeTree.length === 0;
@@ -23,14 +27,8 @@ export const LsxListView = React.memo((props: Props): JSX.Element => {
       return (
         <div className="text-muted">
           <small>
-            <span
-              className="material-symbols-outlined fs-5 me-1"
-              aria-hidden="true"
-            >
-              info
-            </span>
-            $lsx(<a href={lsxContext.pagePath}>{lsxContext.pagePath}</a>) has no
-            contents
+            <span className="material-symbols-outlined fs-5 me-1" aria-hidden="true">info</span>
+            $lsx(<a href={lsxContext.pagePath}>{lsxContext.pagePath}</a>) has no contents
           </small>
         </div>
       );
@@ -51,8 +49,11 @@ export const LsxListView = React.memo((props: Props): JSX.Element => {
 
   return (
     <div className={`page-list ${styles['page-list']}`}>
-      <ul className="page-list-ul">{contents}</ul>
+      <ul className="page-list-ul">
+        {contents}
+      </ul>
     </div>
   );
+
 });
 LsxListView.displayName = 'LsxListView';

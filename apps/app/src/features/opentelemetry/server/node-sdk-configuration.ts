@@ -51,3 +51,17 @@ export const generateNodeSDKConfiguration = (serviceInstanceId?: string): Config
 
   return configuration;
 };
+
+// public async shutdownInstrumentation(): Promise<void> {
+//   await this.sdkInstance.shutdown();
+
+//   // メモ: 以下の restart コードは動かない
+//   // span/metrics ともに何も出なくなる
+//   // そもそも、restart するような使い方が出来なさそう？
+//   // see: https://github.com/open-telemetry/opentelemetry-specification/issues/27/
+//   // const sdk = new NodeSDK({...});
+//   // sdk.start();
+//   // await sdk.shutdown().catch(console.error);
+//   // const newSdk = new NodeSDK({...});
+//   // newSdk.start();
+// }
