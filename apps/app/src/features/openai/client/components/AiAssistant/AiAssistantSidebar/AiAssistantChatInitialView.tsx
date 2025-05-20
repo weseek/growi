@@ -2,11 +2,10 @@ import { useTranslation } from 'react-i18next';
 
 type Props = {
   description: string,
-  additionalInstruction: string,
   pagePathPatterns: string[],
 }
 
-export const AiAssistantChatInitialView: React.FC<Props> = ({ description, additionalInstruction, pagePathPatterns }: Props): JSX.Element => {
+export const AiAssistantChatInitialView: React.FC<Props> = ({ description, pagePathPatterns }: Props): JSX.Element => {
   const { t } = useTranslation();
 
   return (
@@ -14,17 +13,6 @@ export const AiAssistantChatInitialView: React.FC<Props> = ({ description, addit
       <p className="fs-6 text-body-secondary mb-0">
         {description}
       </p>
-
-      <div>
-        <p className="text-body-secondary">{t('sidebar_ai_assistant.instruction_label')}</p>
-        <div className="card bg-body-tertiary border-0">
-          <div className="card-body p-3">
-            <p className="fs-6 text-body-secondary mb-0">
-              {additionalInstruction}
-            </p>
-          </div>
-        </div>
-      </div>
 
       <div>
         <div className="d-flex align-items-center">

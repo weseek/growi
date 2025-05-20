@@ -8,6 +8,7 @@ import {
 } from '@growi/editor/dist/client/services/unified-merge-view';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useSecondaryYdocs } from '@growi/editor/dist/client/stores/use-secondary-ydocs';
+import { useForm, type UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { type Text as YText } from 'yjs';
 
@@ -34,7 +35,7 @@ import type { MessageLog } from '../../interfaces/message';
 import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
 import { ThreadType } from '../../interfaces/thread-relation';
 import { AiAssistantDropdown } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantDropdown';
-import { type FormData } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantSidebar';
+// import { type FormData } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantSidebar';
 import { MessageCard, type MessageCardRole } from '../components/AiAssistant/AiAssistantSidebar/MessageCard';
 import { QuickMenuList } from '../components/AiAssistant/AiAssistantSidebar/QuickMenuList';
 import { useAiAssistantSidebar } from '../stores/ai-assistant';
@@ -43,7 +44,7 @@ interface CreateThread {
   (): Promise<IThreadRelationHasId>;
 }
 interface PostMessage {
-  (threadId: string, userMessage: string): Promise<Response>;
+  (threadId: string, formData: FormData): Promise<Response>;
 }
 interface ProcessMessage {
   (data: unknown, handler: {
@@ -59,6 +60,10 @@ interface GenerateInitialView {
 interface GenerateMessageCard {
   (role: MessageCardRole, children: string, messageId: string, messageLogs: MessageLog[], generatingAnswerMessage?: MessageLog): JSX.Element;
 }
+export interface FormData {
+  input: string,
+  markdownType?: 'full' | 'selected' | 'none'
+}
 
 type DetectedDiff = Array<{
   data: SseDetectedDiff,
@@ -70,6 +75,9 @@ type UseEditorAssistant = () => {
   createThread: CreateThread,
   postMessage: PostMessage,
   processMessage: ProcessMessage,
+  form: UseFormReturn<FormData>
+  resetForm: () => void
+  isTextSelected: boolean,
 
   // Views
   generateInitialView: GenerateInitialView,
@@ -139,8 +147,10 @@ export const useEditorAssistant: UseEditorAssistant = () => {
 
   // States
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
-  const [selectedText, setSelectedText] = useState<string>();
   const [selectedAiAssistant, setSelectedAiAssistant] = useState<AiAssistantHasId>();
+  const [selectedText, setSelectedText] = useState<string>();
+
+  const isTextSelected = useMemo(() => selectedText != null && selectedText.length !== 0, [selectedText]);
 
   // Hooks
   const { t } = useTranslation();
@@ -150,7 +160,17 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   const yDocs = useSecondaryYdocs(isEnableUnifiedMergeView ?? false, { pageId: currentPageId ?? undefined, useSecondary: isEnableUnifiedMergeView ?? false });
   const { data: aiAssistantSidebarData } = useAiAssistantSidebar();
 
+  const form = useForm<FormData>({
+    defaultValues: {
+      input: '',
+    },
+  });
+
   // Functions
+  const resetForm = useCallback(() => {
+    form.reset({ input: '' });
+  }, [form]);
+
   const createThread: CreateThread = useCallback(async() => {
     const response = await apiv3Post<IThreadRelationHasId>('/openai/thread', {
       type: ThreadType.EDITOR,
@@ -159,21 +179,33 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     return response.data;
   }, [selectedAiAssistant?._id]);
 
-  const postMessage: PostMessage = useCallback(async(threadId, userMessage) => {
+  const postMessage: PostMessage = useCallback(async(threadId, formData) => {
+    const getMarkdown = (): string | undefined => {
+      if (formData.markdownType === 'none') {
+        return undefined;
+      }
+
+      if (formData.markdownType === 'selected') {
+        return selectedText;
+      }
+
+      if (formData.markdownType === 'full') {
+        return codeMirrorEditor?.getDoc();
+      }
+    };
+
     const response = await fetch('/_api/v3/openai/edit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         threadId,
-        userMessage,
-        markdown: selectedText != null && selectedText.length !== 0
-          ? selectedText
-          : undefined,
+        userMessage: formData.input,
+        markdown: getMarkdown(),
       }),
     });
 
     return response;
-  }, [selectedText]);
+  }, [codeMirrorEditor, selectedText]);
 
   const processMessage: ProcessMessage = useCallback((data, handler) => {
     handleIfSuccessfullyParsed(data, SseMessageSchema, (data: SseMessage) => {
@@ -231,7 +263,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
         pendingDetectedDiff.forEach((detectedDiff) => {
           if (isReplaceDiff(detectedDiff.data)) {
 
-            if (selectedText != null && selectedText.length !== 0) {
+            if (isTextSelected) {
               const lineInfo = getLineInfo(yText, lineRef.current);
               if (lineInfo != null && lineInfo.text !== detectedDiff.data.diff.replace) {
                 yText.delete(lineInfo.startIndex, lineInfo.text.length);
@@ -256,26 +288,29 @@ export const useEditorAssistant: UseEditorAssistant = () => {
         });
       });
 
-      // Mark as applied: true after applying to secondaryDoc
+      // Mark items as applied after applying to secondaryDoc
       setDetectedDiff((prev) => {
+        if (!prev) return prev;
         const pendingDetectedDiffIds = pendingDetectedDiff.map(diff => diff.id);
-        prev?.forEach((diff) => {
+        return prev.map((diff) => {
           if (pendingDetectedDiffIds.includes(diff.id)) {
-            diff.applied = true;
+            return { ...diff, applied: true };
           }
+          return diff;
         });
-        return prev;
       });
-
-      // Set detectedDiff to undefined after applying all detectedDiff to secondaryDoc
-      if (detectedDiff?.filter(detectedDiff => detectedDiff.applied === false).length === 0) {
-        setSelectedText(undefined);
-        setDetectedDiff(undefined);
-        lineRef.current = 0;
-        // positionRef.current = 0;
-      }
     }
-  }, [codeMirrorEditor, detectedDiff, selectedText, yDocs?.secondaryDoc]);
+  }, [codeMirrorEditor, detectedDiff, isTextSelected, selectedText, yDocs?.secondaryDoc]);
+
+  // Set detectedDiff to undefined after applying all detectedDiff to secondaryDoc
+  useEffect(() => {
+    if (detectedDiff?.filter(detectedDiff => detectedDiff.applied === false).length === 0) {
+      setSelectedText(undefined);
+      setDetectedDiff(undefined);
+      lineRef.current = 0;
+      // positionRef.current = 0;
+    }
+  }, [detectedDiff]);
 
 
   // Views
@@ -295,7 +330,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     };
 
     const clickQuickMenuHandler = async(quickMenu: string) => {
-      await onSubmit({ input: quickMenu });
+      await onSubmit({ input: quickMenu, markdownType: 'full' });
     };
 
     return (
@@ -365,6 +400,9 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     createThread,
     postMessage,
     processMessage,
+    form,
+    resetForm,
+    isTextSelected,
 
     // Views
     generateInitialView,
@@ -375,13 +413,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   };
 };
 
-export const useAiAssistantSidebarCloseEffect = (): void => {
-  const { data, close } = useAiAssistantSidebar();
-  const { data: editorMode } = useEditorMode();
-
-  useEffect(() => {
-    if (data?.isEditorAssistant && editorMode !== EditorMode.Editor) {
-      close();
-    }
-  }, [close, data?.isEditorAssistant, editorMode]);
+// type guard
+export const isEditorAssistantFormData = (formData): formData is FormData => {
+  return 'markdownType' in formData;
 };

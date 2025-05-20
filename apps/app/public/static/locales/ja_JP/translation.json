@@ -529,12 +529,13 @@
     "selected_editable_revision": "保存するページ本文(編集可能)"
   },
   "sidebar_ai_assistant": {
-    "instruction_label": "アシスタントへの指示",
     "reference_pages_label": "参照するページ",
     "knowledge_assistant_placeholder": "ききたいことを入力してください",
     "editor_assistant_placeholder": "お手伝いできることはありますか？",
     "summary_mode_label": "要約モード",
     "summary_mode_help": "2～3文以内の簡潔な回答",
+    "extended_thinking_mode_label": "拡張思考モード",
+    "extended_thinking_mode_help": "有効にすると、AIはより時間をかけて考え、より包括的な回答を提供します。",
     "caution_against_hallucination": "情報が正しいか出典を確認しましょう",
     "progress_label": "回答を生成しています",
     "failed_to_create_or_retrieve_thread": "スレッドの作成または取得に失敗しました",
@@ -580,8 +581,8 @@
       "create_failed": "アシスタントの作成に失敗しました",
       "update_failed": "アシスタントの更新に失敗しました"
     },
-    "default_instruction": "あなたはこのWikiの知識アシスタントです。以下の方針で支援を行ってください：\n\n- 文書の関連性分析と情報の関連付け\n- 新しい視点の提案\n- 質問の意図を理解した的確な情報提供 必要に応じて構造化された形式で情報を提供します。",
     "edit_page_description": " アシスタントが参照するページを編集します。<br> 参照できるページは配下ページも含めて {{limitLearnablePageCountPerAssistant}} ページまでです。",
+    "default_instruction": "あなたはこのWikiの知識アシスタントです。\n\n## 多言語サポート:\nユーザーが入力で使用した言語と同じ言語で応答してください。\n",
     "add_page_button": "ページを追加する",
     "page_mode_title": {
       "share": "アシスタントの共有",
@@ -817,7 +818,8 @@
     "export_cancel_warning": "進行中の以下のエクスポートはキャンセルされます",
     "restart": "やり直す",
     "format": "形式",
-    "started_on": "開始日時"
+    "started_on": "開始日時",
+    "file_upload_not_configured": "ファイルアップロード設定が完了していません"
   },
   "message": {
     "successfully_connected": "接続に成功しました!",
