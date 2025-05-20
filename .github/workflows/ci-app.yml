@@ -74,7 +74,7 @@ jobs:
 
       - name: Lint
         run: |
-          turbo run lint --filter=@growi/app --filter=./packages/*
+          turbo run lint --filter=!@growi/slackbot-proxy
 
       - name: Slack Notification
         uses: weseek/ghaction-slack-notification@master
@@ -128,7 +128,7 @@ jobs:
 
       - name: Test
         run: |
-          turbo run test --filter=@growi/app --filter=./packages/* --env-mode=loose
+          turbo run test --filter=!@growi/slackbot-proxy --env-mode=loose
         env:
           MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
 

@@ -1,4 +1,4 @@
-import path from 'node:path';
+import path from 'path';
 
 import glob from 'glob';
 import { nodeExternals } from 'rollup-plugin-node-externals';

@@ -1,49 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.2.4...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.2.2...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
-
-## [v7.2.4](https://github.com/weseek/growi/compare/v7.2.3...v7.2.4) - 2025-05-15
-
-### 🐛 Bug Fixes
-
-* fix: Picture size (#9938) @yuki-takei
-
-## [v7.2.3](https://github.com/weseek/growi/compare/v7.2.2...v7.2.3) - 2025-05-14
-
-### 💎 Features
-
-* feat(ai): Unified merge view (#9643) @yuki-takei
-
-### 🚀 Improvement
-
-* imprv(ai): AI models and instructions (#9913) @yuki-takei
-* imprv(ai): Evaluate article headers (#9921) @yuki-takei
-* imprv(ai): Tidy up instructions (#9918) @yuki-takei
-* imprv: Disable page bulk export when file upload settings are not configured (#9900) @arafubeatbox
-* imprv: add contributors that has not been added to konami command (#9901) @Ryosei-Fukushima
-* imprv(ai): AI models and instructions (#9913) @yuki-takei
-* imprv: Hide summary mode switch in editor assistant mode (#9897) @miya
-* imprv: User picture tooltip (#9892) @yuki-takei
-* imprv: User picture tooltip (2) (#9898) @yuki-takei
-
-### 🐛 Bug Fixes
-
-* fix: PagePathHeader maxWidth for editor (#9930) @yuki-takei
-* fix: Pages list API (#9928) @yuki-takei
-* fix: Set OpenTelemetry resource attribute `service.instance.id` (#9902) @yuki-takei
-* fix: User picture tooltip (2) (#9898) @yuki-takei
-* fix: ConfigLoader.loadFromDB for JSON parsing error handling (#9890) @yuki-takei
-* fix: Profile image upload functionality and accepted file types (#9886) @yuki-takei
-* fix: Tooltip for UserPicture doesn't work (#9884) @yuki-takei
-
-### 🧰 Maintenance
-
-* support: Improve the official docker image size (#9874) @yuki-takei
-* support: Upgrade openai package (#9909) @yuki-takei
-* support(pdf-converter): Improve the official docker image size for pdf-converter (#9880) @yuki-takei
-* support: Improve the official docker image size (#9874) @yuki-takei
 
 ## [v7.2.2](https://github.com/weseek/growi/compare/v7.2.1...v7.2.2) - 2025-04-17
 

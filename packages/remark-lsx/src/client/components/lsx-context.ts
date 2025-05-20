@@ -1,20 +1,17 @@
-import {
-  OptionParser,
-  type ParseRangeResult,
-} from '@growi/core/dist/remark-plugins';
+import { OptionParser, type ParseRangeResult } from '@growi/core/dist/remark-plugins';
+
 
 export class LsxContext {
+
   pagePath: string;
 
-  options?: Record<string, string | undefined>;
+  options?: Record<string, string|undefined>;
 
-  constructor(pagePath: string, options: Record<string, string | undefined>) {
+  constructor(pagePath: string, options: Record<string, string|undefined>) {
     this.pagePath = pagePath;
 
     // remove undefined keys
-    for (const key in options) {
-      options[key] === undefined && delete options[key];
-    }
+    Object.keys(options).forEach(key => options[key] === undefined && delete options[key]);
 
     this.options = options;
   }
@@ -45,4 +42,5 @@ export class LsxContext {
   toString(): string {
     return `$lsx(${this.getStringifiedAttributes()})`;
   }
+
 }

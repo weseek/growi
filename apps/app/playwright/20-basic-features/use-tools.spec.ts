@@ -34,12 +34,8 @@ const openPutBackPageModal = async(page: Page): Promise<void> => {
 
   // Scroll to the top of the page to prevent the subnav hide the button
   await page.evaluate(() => {
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0; // For Safari and older browsers
+    window.scrollTo(0, 0);
   });
-
-  // Add a small delay to ensure scrolling is complete and the button is interactive
-  await page.waitForTimeout(200); // Increased delay
 
   await button.click();
   await expect(page.getByTestId('put-back-page-modal')).toBeVisible();

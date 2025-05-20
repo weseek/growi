@@ -1,9 +1,7 @@
 import type { GrowiCommand } from '../interfaces/growi-command';
 import { InvalidGrowiCommandError } from '../models/errors';
 
-export const parseSlashCommand = (slashCommand: {
-  [key: string]: string;
-}): GrowiCommand => {
+export const parseSlashCommand = (slashCommand:{[key:string]:string}): GrowiCommand => {
   if (slashCommand.text == null) {
     throw new InvalidGrowiCommandError('The SlashCommand.text is null');
   }
@@ -12,9 +10,7 @@ export const parseSlashCommand = (slashCommand: {
   const splitted = trimmedText.split(' ');
 
   if (splitted[0] === '') {
-    throw new InvalidGrowiCommandError(
-      'The SlashCommand.text does not specify GrowiCommand type',
-    );
+    throw new InvalidGrowiCommandError('The SlashCommand.text does not specify GrowiCommand type');
   }
 
   return {

@@ -108,9 +108,6 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
 
   const isInvalid = validationResult != null;
 
-  const fixedMaxWidth = maxWidth != null
-    ? maxWidth - 60 // 60px is the width of the buttons
-    : undefined;
   const inputMaxWidth = maxWidth != null
     ? getAdjustedMaxWidthForAutosizeInput(maxWidth, 'sm', validationResult != null ? false : undefined) - 16
     : undefined;
@@ -124,7 +121,6 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
     >
       <div
         className="page-path-header-input d-inline-block"
-        style={{ maxWidth: fixedMaxWidth }}
       >
         { isRenameInputShown && (
           <div className="position-relative">

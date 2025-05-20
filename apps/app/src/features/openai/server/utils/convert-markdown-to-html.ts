@@ -1,6 +1,4 @@
 import { dynamicImport } from '@cspell/dynamic-import';
-import type { IPage } from '@growi/core/dist/interfaces';
-import { DevidedPagePath } from '@growi/core/dist/models';
 import type { Root, Code } from 'mdast';
 import type * as RehypeMeta from 'rehype-meta';
 import type * as RehypeStringify from 'rehype-stringify';
@@ -57,12 +55,7 @@ const initializeModules = async(): Promise<void> => {
   };
 };
 
-type ConvertMarkdownToHtmlArgs = {
-  page: IPage,
-  siteUrl: string | undefined,
-}
-
-export const convertMarkdownToHtml = async(revisionBody: string, args: ConvertMarkdownToHtmlArgs): Promise<string> => {
+export const convertMarkdownToHtml = async({ pagePath, revisionBody }: { pagePath: string, revisionBody: string }): Promise<string> => {
   await initializeModules();
 
   const {
@@ -83,21 +76,12 @@ export const convertMarkdownToHtml = async(revisionBody: string, args: ConvertMa
     };
   };
 
-  const { page, siteUrl } = args;
-  const { latter: title } = new DevidedPagePath(page.path);
-
   const processor = unified()
     .use(remarkParse)
     .use(sanitizeMarkdown)
     .use(remarkRehype)
     .use(rehypeMeta, {
-      og: true,
-      type: 'article',
-      title,
-      pathname: page.path,
-      published: page.createdAt,
-      modified: page.updatedAt,
-      origin: siteUrl,
+      title: pagePath,
     })
     .use(rehypeStringify);
 
