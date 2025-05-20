@@ -70,18 +70,19 @@ class AttachmentService {
             chunks.push(chunk);
             callback(null, chunk);
           },
+
           async flush(callback) {
-            try {
-              // At this point we have the complete file as a Buffer
-              // This approach assumes handler needs the complete file data
-              const completeData = Buffer.concat(chunks);
-              await handler(pageId, attachment, file, completeData);
-              callback();
-            }
-            catch (err) {
-              logger.error('Error in attach handler:', err);
-              callback(err);
-            }
+            // At this point we have the complete file as a Buffer
+            // This approach assumes handler needs the complete file data
+            const completeData = Buffer.concat(chunks);
+            handler(pageId, attachment, file, completeData)
+              .then(() => {
+                callback();
+              })
+              .catch((err) => {
+                logger.error('Error in attach handler:', err);
+                callback(err);
+              });
           },
         });
 
