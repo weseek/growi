@@ -32,6 +32,7 @@ export class InstallerService {
       clientId,
       clientSecret,
       stateSecret,
+      legacyStateVerification: true,
       installationStore: {
         // upsert
         storeInstallation: async(slackInstallation: SlackInstallation<'v1' | 'v2', boolean>) => {
