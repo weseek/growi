@@ -82,7 +82,7 @@ export interface IOpenaiService {
   createVectorStoreFileOnPageCreate(pages: PageDocument[]): Promise<void>;
   updateVectorStoreFileOnPageUpdate(page: HydratedDocument<PageDocument>): Promise<void>;
   createVectorStoreFileOnUploadAttachment(
-    pageId: string, attachment:HydratedDocument<IAttachmentDocument>, file: Express.Multer.File, buffer: Buffer
+    pageId: string, attachment: HydratedDocument<IAttachmentDocument>, file: Express.Multer.File, buffer: Buffer
   ): Promise<void>;
   deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId): Promise<void>;
   deleteVectorStoreFilesByPageIds(pageIds: Types.ObjectId[]): Promise<void>;
