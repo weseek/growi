@@ -61,7 +61,7 @@ class AttachmentService {
         return attachment;
       }
 
-      const readStreamForAttacheHandler = createReadStream(file.path);
+      const readStreamForAttachHandler = createReadStream(file.path);
       const chunks = [];
       const attachHandlers = this.attachHandlers;
 
@@ -93,7 +93,7 @@ class AttachmentService {
       });
 
       // Do not await, run in background
-      pipeline(readStreamForAttacheHandler, attachedHandlerStream)
+      pipeline(readStreamForAttachHandler, attachedHandlerStream)
         .catch((err) => {
           logger.error('Error in stream processing', err);
         })
