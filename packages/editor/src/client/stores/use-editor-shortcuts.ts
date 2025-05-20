@@ -15,18 +15,18 @@ import type { InsertPrefix } from '../services/use-codemirror-editor/utils/inser
 import type { KeyMapMode } from 'src/consts';
 
 const generateAddMarkdownSymbolCommand = (
-    insertMarkdown: InsertMarkdownElements | InsertPrefix,
-    prefix: string,
-    suffix?: string,
+  insertMarkdown: InsertMarkdownElements | InsertPrefix,
+  prefix: string,
+  suffix?: string,
 ): Command => {
 
   const isInsertMarkdownElements = (
-      fn: InsertMarkdownElements | InsertPrefix,
+    fn: InsertMarkdownElements | InsertPrefix,
   ): fn is InsertMarkdownElements => {
     return fn.length === 2;
   };
 
-  const addMarkdownSymbolCommand: Command = (view: EditorView) => {
+  const addMarkdownSymbolCommand: Command = () => {
     if (isInsertMarkdownElements(insertMarkdown)) {
       if (suffix == null) return false;
       insertMarkdown(prefix, suffix);
