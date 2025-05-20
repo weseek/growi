@@ -295,10 +295,20 @@ module.exports = (crowi) => {
   // TODO: this method will be a middleware when typescriptize in the future
   function getResponseUrl(req) {
     const { body } = req;
-    const responseUrl = body?.growiCommand?.responseUrl;
+    const { crowi } = req;
+    const responseUrl = body?.growiCommand?.responseUrl ?? body.response_url;
+
     if (responseUrl == null) {
-      return body.response_url; // may be null
+      return null;
     }
+
+    const proxyUri = crowi.slackIntegrationService.proxyUriForCurrentType;
+    const { isValidResponseUrl } = require('@growi/slack/src/utils/response-url-validator');
+
+    if (!isValidResponseUrl(responseUrl, proxyUri)) {
+      throw createError(400, 'Invalid response_url');
+    }
+
     return responseUrl;
   }
 

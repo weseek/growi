@@ -3,6 +3,7 @@ import urljoin from 'url-join';
 
 import type { IRespondUtil } from '../interfaces/respond-util';
 import type { RespondBodyForResponseUrl } from '../interfaces/response-url';
+import { isValidResponseUrl } from './response-url-validator';
 
 type AxiosOptions = {
   headers?: {
@@ -14,10 +15,16 @@ function getResponseUrlForProxy(proxyUri: string, responseUrl: string): string {
   return urljoin(proxyUri, `/g2s/respond?response_url=${responseUrl}`);
 }
 
-function getUrl(responseUrl: string, proxyUri: string | null): string {
-  return proxyUri == null
+function getUrl(responseUrl: string, proxyUri?: string): string {
+  const finalUrl = proxyUri === undefined
     ? responseUrl
     : getResponseUrlForProxy(proxyUri, responseUrl);
+
+  if (!isValidResponseUrl(responseUrl, proxyUri)) {
+    throw new Error('Invalid final response URL');
+  }
+
+  return finalUrl;
 }
 
 export class RespondUtil implements IRespondUtil {
@@ -27,8 +34,8 @@ export class RespondUtil implements IRespondUtil {
 
   constructor(
     responseUrl: string,
-    proxyUri: string | null,
     appSiteUrl: string,
+    proxyUri?: string,
   ) {
     this.url = getUrl(responseUrl, proxyUri);
 
@@ -89,8 +96,8 @@ export class RespondUtil implements IRespondUtil {
 
 export function generateRespondUtil(
   responseUrl: string,
-  proxyUri: string | null,
   appSiteUrl: string,
+  proxyUri?: string,
 ): RespondUtil {
-  return new RespondUtil(responseUrl, proxyUri, appSiteUrl);
+  return new RespondUtil(responseUrl, appSiteUrl, proxyUri);
 }
