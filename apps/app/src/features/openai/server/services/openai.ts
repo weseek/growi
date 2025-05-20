@@ -630,7 +630,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   async createVectorStoreFileOnUploadAttachment(
-      pageId: string, attachment:HydratedDocument<IAttachmentDocument>, file: Express.Multer.File, buffer: Buffer,
+      pageId: string, attachment: HydratedDocument<IAttachmentDocument>, file: Express.Multer.File, buffer: Buffer,
   ): Promise<void> {
     if (!isVectorStoreCompatible(file)) {
       return;
