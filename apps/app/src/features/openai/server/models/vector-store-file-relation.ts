@@ -77,19 +77,40 @@ const schema = new Schema<VectorStoreFileRelationDocument, VectorStoreFileRelati
 schema.index({ vectorStoreRelationId: 1, page: 1, attachment: 1 }, { unique: true });
 
 schema.statics.upsertVectorStoreFileRelations = async function(vectorStoreFileRelations: VectorStoreFileRelation[]): Promise<void> {
-  await this.bulkWrite(
-    vectorStoreFileRelations.map((data) => {
-      return {
-        updateOne: {
-          filter: { page: data.page, vectorStoreRelationId: data.vectorStoreRelationId },
-          update: {
-            $addToSet: { fileIds: { $each: data.fileIds } },
-          },
-          upsert: true,
+  const upsertOps = vectorStoreFileRelations
+    .filter(data => data.attachment == null)
+    .map(data => ({
+      updateOne: {
+        filter: {
+          page: data.page,
+          vectorStoreRelationId: data.vectorStoreRelationId,
+          attachment: { $exists: false },
         },
-      };
-    }),
-  );
+        update: {
+          $addToSet: { fileIds: { $each: data.fileIds } },
+        },
+        upsert: true,
+      },
+    }));
+
+  const insertOps = vectorStoreFileRelations
+    .filter(data => data.attachment != null)
+    .map(data => ({
+      insertOne: {
+        document: {
+          vectorStoreRelationId: data.vectorStoreRelationId,
+          page: data.page,
+          attachment: data.attachment,
+          fileIds: data.fileIds,
+          isAttachedToVectorStore: data.isAttachedToVectorStore,
+        },
+      },
+    }));
+
+  const bulkOps = [...upsertOps, ...insertOps];
+  if (bulkOps.length > 0) {
+    await this.bulkWrite(bulkOps);
+  }
 };
 
 // Used when attached to VectorStore
