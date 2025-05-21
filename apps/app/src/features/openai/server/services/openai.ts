@@ -454,8 +454,7 @@ class OpenaiService implements IOpenaiService {
       // Delete related VectorStoreFileRelation document
       const attachmentId = vectorStoreFileRelation.attachment;
       if (attachmentId != null) {
-        await VectorStoreFileRelationModel.deleteMany({ attachment: attachmentId });
-        deleteAllAttachmentVectorStoreFileRelations();
+        await deleteAllAttachmentVectorStoreFileRelations();
       }
     }
     catch (err) {
