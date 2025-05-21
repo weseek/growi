@@ -1,13 +1,14 @@
 - [English 🇺🇸](./README.md)
-  <p align="center">
-    <a href="https://growi.org">
-      <img src="https://github.com/user-attachments/assets/0acf1409-cea7-4f0e-841c-af5bd8be6711" width="360px">
-    </a>
-  </p>
-  <p align="center">
-    <a href="https://github.com/weseek/growi/releases/latest"><img src="https://img.shields.io/github/release/weseek/growi.svg"></a>
-    <a href="https://communityinviter.com/apps/wsgrowi/invite/">join our Slack team</a>
-  </p>
+
+<p align="center">
+  <a href="https://growi.org">
+    <img src="https://github.com/user-attachments/assets/0acf1409-cea7-4f0e-841c-af5bd8be6711" width="360px">
+  </a>
+</p>
+<p align="center">
+  <a href="https://github.com/weseek/growi/releases/latest"><img src="https://img.shields.io/github/release/weseek/growi.svg" alt="Latest version"></a>
+  <a href="https://communityinviter.com/apps/wsgrowi/invite/"><img src="https://img.shields.io/badge/Slack-Join%20Us-4A154B?style=flat&logo=slack&logoColor=white" alt="Slack - Join US"></a>
+</p>
 
 <p align="center">
   <a href="https://docs.growi.org">ドキュメント</a> / <a href="https://demo.growi.org">デモ</a>
@@ -15,8 +16,10 @@
 
 # GROWI
 
-[![Actions Status](https://github.com/weseek/growi/workflows/Release/badge.svg)](https://github.com/weseek/growi/actions)
 [![docker pulls](https://img.shields.io/docker/pulls/weseek/growi.svg)](https://hub.docker.com/r/weseek/growi/)
+[![CodeQL](https://github.com/weseek/growi/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/weseek/growi/actions/workflows/codeql-analysis.yml)
+[![Node CI for app development](https://github.com/weseek/growi/actions/workflows/ci-app.yml/badge.svg)](https://github.com/weseek/growi/actions/workflows/ci-app.yml)
+[![Node CI for app production](https://github.com/weseek/growi/actions/workflows/ci-app-prod.yml/badge.svg)](https://github.com/weseek/growi/actions/workflows/ci-app-prod.yml)
 
 |                                                　デモンストレーション                                                 |
 | :-------------------------------------------------------------------------------------------------------------------: |
