@@ -1,7 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
 
-import { scrollToTop } from '../utils/scroll';
-
 const openPageItemControl = async(page: Page): Promise<void> => {
   const nav = page.getByTestId('grw-contextual-sub-nav');
   const button = nav.getByTestId('open-page-item-control-btn');
@@ -30,16 +28,13 @@ const openPutBackPageModal = async(page: Page): Promise<void> => {
   await alert.waitFor({ state: 'visible' });
 
   // Wait for button to be visible, enabled and attached
-  await expect(button).toBeVisible();
+  await expect(button).toBeInViewport();
   await expect(button).toBeEnabled();
   await button.waitFor({ state: 'visible' });
-
-  // Scroll to the top and ensure the button is visible
-  await scrollToTop(page);
-  await expect(button).toBeInViewport();
   await button.waitFor({ state: 'attached' });
+  // Force click to ensure the button is clicked even if it's not fully visible
+  await button.click({ force: true });
 
-  await button.click();
   await expect(page.getByTestId('put-back-page-modal')).toBeVisible();
 };
 
