@@ -19,7 +19,10 @@ test('Presentation', async({ page }) => {
     .toHaveText(/What can you do with GROWI?/);
 
   // forward the slide with button
-  await page.getByRole('application').getByLabel('next slide').click();
+  const nextSlideButton = await page.getByRole('application').getByLabel('next slide');
+  await expect(nextSlideButton).toBeVisible();
+  await expect(nextSlideButton).toBeEnabled();
+  await nextSlideButton.click();
 
   // check the content of the h2
   await expect(page.getByRole('application').getByRole('heading', { level: 2 }))
