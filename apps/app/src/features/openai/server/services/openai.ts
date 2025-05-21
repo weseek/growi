@@ -2,6 +2,7 @@ import assert from 'node:assert';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 
+
 import type {
   IUser, Ref, Lang, IPage,
 } from '@growi/core';
@@ -23,6 +24,7 @@ import VectorStoreFileRelationModel, {
   prepareVectorStoreFileRelations,
 } from '~/features/openai/server/models/vector-store-file-relation';
 import type Crowi from '~/server/crowi';
+import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import type { IAttachmentDocument } from '~/server/models/attachment';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import UserGroupRelation from '~/server/models/user-group-relation';
@@ -434,6 +436,32 @@ class OpenaiService implements IOpenaiService {
     await VectorStoreModel.deleteMany({ _id: { $nin: currentVectorStoreRelationIds }, isDeleted: true });
   }
 
+  private async deleteVectorStoreFileForAttachment(vectorStoreFileRelation: VectorStoreFileRelation): Promise<void> {
+    const deleteAllAttachmentVectorStoreFileRelations = async() => {
+      await VectorStoreFileRelationModel.deleteMany({ attachment: vectorStoreFileRelation.attachment });
+    };
+
+    try {
+      // Delete entities in VectorStoreFile
+      const fileId = vectorStoreFileRelation.fileIds[0];
+      const deleteFileResponse = await this.client.deleteFile(fileId);
+      logger.debug('Delete vector store file (attachment) ', deleteFileResponse);
+
+      // Delete related VectorStoreFileRelation document
+      const attachmentId = vectorStoreFileRelation.attachment;
+      if (attachmentId != null) {
+        await VectorStoreFileRelationModel.deleteMany({ attachment: attachmentId });
+        deleteAllAttachmentVectorStoreFileRelations();
+      }
+    }
+    catch (err) {
+      logger.error(err);
+      await openaiApiErrorHandler(err, {
+        notFoundError: () => deleteAllAttachmentVectorStoreFileRelations(),
+      });
+    }
+  }
+
   async deleteVectorStoreFile(
       vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId, ignoreAttachments = false, apiCallInterval?: number,
   ): Promise<void> {
@@ -447,16 +475,7 @@ class OpenaiService implements IOpenaiService {
       if (vectorStoreFileRelationsForAttachment.length !== 0) {
         for await (const vectorStoreFileRelation of vectorStoreFileRelationsForAttachment) {
           try {
-            // Delete entities in VectorStoreFile
-            const fileId = vectorStoreFileRelation.fileIds[0];
-            const deleteFileResponse = await this.client.deleteFile(fileId);
-            logger.debug('Delete vector store file (attachment) ', deleteFileResponse);
-
-            // Delete related VectorStoreFileRelation document
-            const attachmentId = vectorStoreFileRelation.attachment;
-            if (attachmentId != null) {
-              await VectorStoreFileRelationModel.deleteMany({ attachment: attachmentId });
-            }
+            await this.deleteVectorStoreFileForAttachment(vectorStoreFileRelation);
           }
           catch (err) {
             logger.error(err);
@@ -541,18 +560,11 @@ class OpenaiService implements IOpenaiService {
       return;
     }
 
-    const deleteAllAttachmentVectorStoreFileRelations = async() => {
-      await VectorStoreFileRelationModel.deleteMany({ attachment: attachmentId });
-    };
-
     try {
-      const response = await this.client.deleteFile(vectorStoreFileRelation.fileIds[0]);
-      logger.debug('Delete vector store file', response);
-      await deleteAllAttachmentVectorStoreFileRelations();
+      await this.deleteVectorStoreFileForAttachment(vectorStoreFileRelation);
     }
     catch (err) {
       logger.error(err);
-      await openaiApiErrorHandler(err, { notFoundError: () => deleteAllAttachmentVectorStoreFileRelations() });
     }
   }
 
