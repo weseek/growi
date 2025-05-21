@@ -437,6 +437,10 @@ class OpenaiService implements IOpenaiService {
   }
 
   private async deleteVectorStoreFileForAttachment(vectorStoreFileRelation: VectorStoreFileRelation): Promise<void> {
+    if (vectorStoreFileRelation.attachment == null) {
+      return;
+    }
+
     const deleteAllAttachmentVectorStoreFileRelations = async() => {
       await VectorStoreFileRelationModel.deleteMany({ attachment: vectorStoreFileRelation.attachment });
     };
