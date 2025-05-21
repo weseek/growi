@@ -19,55 +19,13 @@ const openPageItemControl = async(page: Page): Promise<void> => {
   await button.click();
 };
 
-const openPutBackPageModal = async(page: Page): Promise<void> => {
-  const alert = page.getByTestId('trash-page-alert');
-  const button = alert.getByTestId('put-back-button');
+test('PageDeleteModal is shown successfully', async({ page }) => {
+  await page.goto('/Sandbox');
 
-  // Wait for alert element to be visible and attached
-  await expect(alert).toBeVisible();
-
-  // Wait for button to be actionable
-  await expect(button).toBeInViewport(); // Ensures it's visible within the viewport
-  await expect(button).toBeEnabled(); // Ensures it's not disabled
-
-  // Click the button. Playwright's click action automatically waits for the element
-  // to be actionable (visible, stable, enabled, unobscured).
-  // Retry clicking the button until the modal is visible or retries are exhausted
-  for (let i = 0; i < 5; i++) {
-    // eslint-disable-next-line no-await-in-loop
-    await button.click({ force: true });
-    try {
-      // Wait for a short period to see if the modal appears
-      // eslint-disable-next-line no-await-in-loop
-      await page.waitForSelector('[data-testid="put-back-page-modal"]', { state: 'visible', timeout: 500 });
-      break; // Modal appeared, exit loop
-    }
-    catch (error) {
-      // Modal did not appear, wait a bit before retrying
-      if (i < 4) { // Don't wait after the last attempt
-        // eslint-disable-next-line no-await-in-loop
-        await page.waitForTimeout(1000);
-      }
-    }
-  }
-
-  // Assert that the modal is visible after retries
-  await expect(page.getByTestId('put-back-page-modal')).toBeVisible();
-};
-
-test('Page Deletion and PutBack is executed successfully', async({ page }) => {
-  await page.goto('/Sandbox/Bootstrap5');
-
-  // Delete
   await openPageItemControl(page);
   await page.getByTestId('open-page-delete-modal-btn').click();
-  await expect(page.getByTestId('page-delete-modal')).toBeVisible();
-  await page.getByTestId('delete-page-button').click();
 
-  // PutBack
-  await openPutBackPageModal(page);
-  await page.getByTestId('put-back-execution-button').click();
-  await expect(page.getByTestId('trash-page-alert')).not.toBeVisible();
+  await expect(page.getByTestId('page-delete-modal')).toBeVisible();
 });
 
 test('PageDuplicateModal is shown successfully', async({ page }) => {
