@@ -47,17 +47,26 @@ class AttachmentService {
       throw new Error(res.errorMessage);
     }
 
-    const readStreamForCreateAttachmentDocument = createReadStream(file.path);
+    // Always call only once
+    let isDisposedTmpFile = false;
+    const safeDisposeTmpFile = () => {
+      if (!isDisposedTmpFile && disposeTmpFileCallback) {
+        isDisposedTmpFile = true;
+        disposeTmpFileCallback?.(file);
+      }
+    };
 
     // create an Attachment document and upload file
     let attachment;
+    let readStreamForCreateAttachmentDocument;
     try {
+      readStreamForCreateAttachmentDocument = createReadStream(file.path);
       attachment = Attachment.createWithoutSave(pageId, user, file.originalname, file.mimetype, file.size, attachmentType);
       await fileUploadService.uploadAttachment(readStreamForCreateAttachmentDocument, attachment);
       await attachment.save();
 
       if (this.attachHandlers.length === 0) {
-        disposeTmpFileCallback?.(file);
+        safeDisposeTmpFile();
         return attachment;
       }
 
@@ -98,12 +107,12 @@ class AttachmentService {
           logger.error('Error in stream processing', err);
         })
         .finally(() => {
-          disposeTmpFileCallback?.(file);
+          safeDisposeTmpFile();
         });
     }
     catch (err) {
       logger.error('Error while creating attachment', err);
-      disposeTmpFileCallback?.(file);
+      safeDisposeTmpFile();
       throw err;
     }
     finally {
