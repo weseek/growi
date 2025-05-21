@@ -7,6 +7,7 @@
       "coverage/**",
       "vite.config.ts.timestamp-*",
       "vite.server.config.ts.timestamp-*",
+      "vite.client.config.ts.timestamp-*",
       ".pnpm-store/**",
       ".turbo/**",
       ".vscode/**",
@@ -17,7 +18,6 @@
       ".eslintrc.js",
       ".stylelintrc.json",
       "package.json",
-
       "./apps/**",
       "./packages/core/**",
       "./packages/core-styles/**",
