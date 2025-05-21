@@ -32,6 +32,10 @@ const openPutBackPageModal = async(page: Page): Promise<void> => {
   await expect(button).toBeEnabled();
   await button.waitFor({ state: 'visible' });
   await button.waitFor({ state: 'attached' });
+
+  // Add a small delay to ensure the button is fully interactive
+  await page.waitForTimeout(100);
+
   // Force click to ensure the button is clicked even if it's not fully visible
   await button.click({ force: true });
 
