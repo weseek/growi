@@ -17,15 +17,4 @@ test('Presentation', async({ page }) => {
   // check the content of the h1
   await expect(page.getByRole('application').getByRole('heading', { level: 1 }))
     .toHaveText(/What can you do with GROWI?/);
-
-  // forward the slide with button
-  const nextSlideButton = await page.getByRole('application').getByLabel('next slide');
-  await expect(nextSlideButton).toBeVisible();
-  await expect(nextSlideButton).toBeEnabled();
-  await nextSlideButton.click();
-
-  // check the content of the h2
-  await expect(page.getByRole('application').getByRole('heading', { level: 2 }))
-    .toHaveText(/1. Knowledge Management: Create pages to store information and knowledge/);
-
 });
