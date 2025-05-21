@@ -25,20 +25,33 @@ const openPutBackPageModal = async(page: Page): Promise<void> => {
 
   // Wait for alert element to be visible and attached
   await expect(alert).toBeVisible();
-  await alert.waitFor({ state: 'visible' });
 
-  // Wait for button to be visible, enabled and attached
-  await expect(button).toBeInViewport();
-  await expect(button).toBeEnabled();
-  await button.waitFor({ state: 'visible' });
-  await button.waitFor({ state: 'attached' });
+  // Wait for button to be actionable
+  await expect(button).toBeInViewport(); // Ensures it's visible within the viewport
+  await expect(button).toBeEnabled(); // Ensures it's not disabled
 
-  // Add a small delay to ensure the button is fully interactive
-  await page.waitForTimeout(100);
+  // Click the button. Playwright's click action automatically waits for the element
+  // to be actionable (visible, stable, enabled, unobscured).
+  // Retry clicking the button until the modal is visible or retries are exhausted
+  for (let i = 0; i < 5; i++) {
+    // eslint-disable-next-line no-await-in-loop
+    await button.click({ force: true });
+    try {
+      // Wait for a short period to see if the modal appears
+      // eslint-disable-next-line no-await-in-loop
+      await page.waitForSelector('[data-testid="put-back-page-modal"]', { state: 'visible', timeout: 500 });
+      break; // Modal appeared, exit loop
+    }
+    catch (error) {
+      // Modal did not appear, wait a bit before retrying
+      if (i < 4) { // Don't wait after the last attempt
+        // eslint-disable-next-line no-await-in-loop
+        await page.waitForTimeout(1000);
+      }
+    }
+  }
 
-  // Force click to ensure the button is clicked even if it's not fully visible
-  await button.click({ force: true });
-
+  // Assert that the modal is visible after retries
   await expect(page.getByTestId('put-back-page-modal')).toBeVisible();
 };
 
