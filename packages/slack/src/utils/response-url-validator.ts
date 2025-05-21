@@ -26,7 +26,8 @@ export function isValidResponseUrl(
         parsedUrl.hostname === parsedProxyUri.hostname &&
         parsedUrl.pathname === '/g2s/respond'
       ) {
-        const slackResponseUrlParam = parsedUrl.searchParams.get('response_url');
+        const slackResponseUrlParam =
+          parsedUrl.searchParams.get('response_url');
         if (slackResponseUrlParam) {
           // Recursively validate the response_url parameter
           return isValidResponseUrl(slackResponseUrlParam); // No proxy URI for the inner check

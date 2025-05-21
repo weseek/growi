@@ -39,7 +39,11 @@ export class RespondUtil implements IRespondUtil {
 
   options!: AxiosOptions;
 
-  constructor({ responseUrl, appSiteUrl, proxyUri }: RespondUtilConstructorArgs) {
+  constructor({
+    responseUrl,
+    appSiteUrl,
+    proxyUri,
+  }: RespondUtilConstructorArgs) {
     this.url = getUrl(responseUrl, proxyUri);
 
     this.options = {
@@ -97,6 +101,8 @@ export class RespondUtil implements IRespondUtil {
   }
 }
 
-export function generateRespondUtil(args: RespondUtilConstructorArgs): RespondUtil {
+export function generateRespondUtil(
+  args: RespondUtilConstructorArgs,
+): RespondUtil {
   return new RespondUtil(args);
 }
