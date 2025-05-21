@@ -24,7 +24,6 @@ import VectorStoreFileRelationModel, {
   prepareVectorStoreFileRelations,
 } from '~/features/openai/server/models/vector-store-file-relation';
 import type Crowi from '~/server/crowi';
-import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import type { IAttachmentDocument } from '~/server/models/attachment';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import UserGroupRelation from '~/server/models/user-group-relation';
