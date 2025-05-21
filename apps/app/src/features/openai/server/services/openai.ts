@@ -439,15 +439,24 @@ class OpenaiService implements IOpenaiService {
   ): Promise<void> {
 
     if (!ignoreAttachments) {
+      // Get all VectorStoreFIleDocument (attachments) associated with the page
       const vectorStoreFileRelationsForAttachment = await VectorStoreFileRelationModel.find({
         vectorStoreRelationId, page: pageId, attachment: { $exists: true },
       });
+
       if (vectorStoreFileRelationsForAttachment.length !== 0) {
         for await (const vectorStoreFileRelation of vectorStoreFileRelationsForAttachment) {
           try {
+            // Delete entities in VectorStoreFile
             const fileId = vectorStoreFileRelation.fileIds[0];
             const deleteFileResponse = await this.client.deleteFile(fileId);
             logger.debug('Delete vector store file (attachment) ', deleteFileResponse);
+
+            // Delete related VectorStoreFileRelation document
+            const attachmentId = vectorStoreFileRelation.attachment;
+            if (attachmentId != null) {
+              await VectorStoreFileRelationModel.deleteMany({ attachment: attachmentId });
+            }
           }
           catch (err) {
             logger.error(err);
@@ -527,29 +536,24 @@ class OpenaiService implements IOpenaiService {
   }
 
   async deleteVectorStoreFileOnDeleteAttachment(attachmentId: string) {
-    // An Attachment has only one VectorStoreFile. This means the id of VectorStoreFile linked to VectorStore is one per Attachment.
-    // Therefore, retrieve only one VectorStoreFile Relation with the target attachmentId.
     const vectorStoreFileRelation = await VectorStoreFileRelationModel.findOne({ attachment: attachmentId });
     if (vectorStoreFileRelation == null) {
       return;
     }
 
-    const deleteAllRelationDocument = async() => {
+    const deleteAllAttachmentVectorStoreFileRelations = async() => {
       await VectorStoreFileRelationModel.deleteMany({ attachment: attachmentId });
     };
 
-    for await (const fileId of vectorStoreFileRelation.fileIds) {
-      try {
-        const response = await this.client.deleteFile(fileId);
-        logger.debug('Delete vector store file', response);
-      }
-      catch (err) {
-        logger.error(err);
-        await openaiApiErrorHandler(err, { notFoundError: () => deleteAllRelationDocument() });
-      }
+    try {
+      const response = await this.client.deleteFile(vectorStoreFileRelation.fileIds[0]);
+      logger.debug('Delete vector store file', response);
+      await deleteAllAttachmentVectorStoreFileRelations();
     }
-
-    await deleteAllRelationDocument();
+    catch (err) {
+      logger.error(err);
+      await openaiApiErrorHandler(err, { notFoundError: () => deleteAllAttachmentVectorStoreFileRelations() });
+    }
   }
 
 
