@@ -20,9 +20,8 @@ export async function requestPdfConverter(pageBulkExportJob: PageBulkExportJobDo
 
   const isGrowiCloud = configManager.getConfig('app:growiCloudUri') != null;
   const appId = configManager.getConfig('app:growiAppIdForCloud');
-  const orgId = configManager.getConfig('app:growiOrgIdForCloud');
-  if (isGrowiCloud && (appId == null || orgId == null)) {
-    throw new Error('appId and orgId is required for bulk export on GROWI.cloud');
+  if (isGrowiCloud && (appId == null)) {
+    throw new Error('appId is required for bulk export on GROWI.cloud');
   }
 
   const exportJobExpirationSeconds = configManager.getConfig('app:bulkExportJobExpirationSeconds');
@@ -48,7 +47,6 @@ export async function requestPdfConverter(pageBulkExportJob: PageBulkExportJobDo
     }
 
     const res = await pdfCtrlSyncJobStatus({
-      orgId: orgId?.toString(),
       appId: appId?.toString(),
       jobId: pageBulkExportJob._id.toString(),
       expirationDate: bulkExportJobExpirationDate.toISOString(),

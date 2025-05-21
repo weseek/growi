@@ -31,12 +31,11 @@ class PdfCtrl {
     @Required() @BodyParams('jobId') jobId: string,
     @Required() @BodyParams('expirationDate') expirationDateStr: string,
     @Required() @BodyParams('status') @Enum(Object.values(JobStatusSharedWithGrowi)) growiJobStatus: JobStatusSharedWithGrowi,
-    @BodyParams('orgId') orgId?: string,
     @BodyParams('appId') appId?: string,
   ): Promise<{ status: JobStatus } | undefined> {
     const expirationDate = new Date(expirationDateStr);
     try {
-      await this.pdfConvertService.registerOrUpdateJob(jobId, expirationDate, growiJobStatus, orgId, appId);
+      await this.pdfConvertService.registerOrUpdateJob(jobId, expirationDate, growiJobStatus, appId);
       const status = this.pdfConvertService.getJobStatus(jobId); // get status before cleanup
       this.pdfConvertService.cleanUpJobList();
       return { status };

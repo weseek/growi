@@ -105,17 +105,16 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
   getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument, isHtmlPath = false): string {
     const isGrowiCloud = configManager.getConfig('app:growiCloudUri') != null;
     const appId = configManager.getConfig('app:growiAppIdForCloud')?.toString();
-    const orgId = configManager.getConfig('app:growiOrgIdForCloud')?.toString();
     const jobId = pageBulkExportJob._id.toString();
 
     if (isGrowiCloud) {
-      if (appId == null || orgId == null) {
-        throw new Error('appId and orgId is required for bulk export on GROWI.cloud');
+      if (appId == null) {
+        throw new Error('appId is required for bulk export on GROWI.cloud');
       }
     }
 
     const basePath = isHtmlPath ? path.join(this.tmpOutputRootDir, 'html') : this.tmpOutputRootDir;
-    return path.join(basePath, orgId ?? '', appId ?? '', jobId);
+    return path.join(basePath, appId ?? '', jobId);
   }
 
   /**

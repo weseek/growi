@@ -43,7 +43,6 @@ export type PdfCtrlSyncJobStatusBody = {
   expirationDate: string;
   /** @minLength 1 */
   jobId: string;
-  orgId?: string;
   /** @minLength 1 */
   status: PdfCtrlSyncJobStatusBodyStatus;
 };

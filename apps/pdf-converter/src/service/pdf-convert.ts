@@ -62,14 +62,12 @@ class PdfConvertService implements OnInit {
    * @param jobId PageBulkExportJob ID
    * @param expirationDate expiration date of job
    * @param status status of job
-   * @param orgId organization ID for GROWI.cloud
    * @param appId application ID for GROWI.cloud
    */
   async registerOrUpdateJob(
       jobId: string,
       expirationDate: Date,
       status: JobStatusSharedWithGrowi,
-      orgId?: string,
       appId?: string,
   ): Promise<void> {
     const isJobNew = !(jobId in this.jobList);
@@ -91,7 +89,7 @@ class PdfConvertService implements OnInit {
     }
 
     if (isJobNew && status !== JobStatus.FAILED) {
-      this.readHtmlAndConvertToPdfUntilFinish(jobId, orgId, appId);
+      this.readHtmlAndConvertToPdfUntilFinish(jobId, appId);
     }
   }
 
@@ -143,10 +141,9 @@ class PdfConvertService implements OnInit {
    * Read html files from shared fs path, convert them to pdf, and save them to shared fs path.
    * Repeat this until all html files are converted to pdf or job fails.
    * @param jobId PageBulkExportJob ID
-   * @param orgId organization ID for GROWI.cloud
    * @param appId application ID for GROWI.cloud
    */
-  private async readHtmlAndConvertToPdfUntilFinish(jobId: string, orgId?: string, appId?: string): Promise<void> {
+  private async readHtmlAndConvertToPdfUntilFinish(jobId: string, appId?: string): Promise<void> {
     while (!this.isJobCompleted(jobId)) {
       // eslint-disable-next-line no-await-in-loop
       await new Promise(resolve => setTimeout(resolve, 10 * 1000));
@@ -156,7 +153,7 @@ class PdfConvertService implements OnInit {
           throw new Error('Job expired');
         }
 
-        const htmlReadable = this.getHtmlReadable(jobId, orgId, appId);
+        const htmlReadable = this.getHtmlReadable(jobId, appId);
         const pdfWritable = this.getPdfWritable();
         this.jobList[jobId].currentStream = htmlReadable;
 
@@ -176,12 +173,11 @@ class PdfConvertService implements OnInit {
   /**
    * Get readable stream that reads html files from shared fs path
    * @param jobId PageBulkExportJob ID
-   * @param orgId organization ID for GROWI.cloud
    * @param appId application ID for GROWI.cloud
    * @returns readable stream
    */
-  private getHtmlReadable(jobId: string, orgId?: string, appId?: string): Readable {
-    const jobHtmlDir = path.join(this.tmpHtmlDir, orgId ?? '', appId ?? '', jobId);
+  private getHtmlReadable(jobId: string, appId?: string): Readable {
+    const jobHtmlDir = path.join(this.tmpHtmlDir, appId ?? '', jobId);
     const htmlFileEntries = fs.readdirSync(jobHtmlDir, { recursive: true, withFileTypes: true }).filter(entry => entry.isFile());
     let index = 0;
 

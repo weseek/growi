@@ -58,7 +58,6 @@ export const CONFIG_KEYS = [
   'app:elasticsearchReindexOnBoot',
   'app:growiCloudUri',
   'app:growiAppIdForCloud',
-  'app:growiOrgIdForCloud',
   'app:ogpUri',
   'app:minPasswordLength',
   'app:auditLogEnabled',
@@ -469,10 +468,6 @@ export const CONFIG_DEFINITIONS = {
   }),
   'app:growiAppIdForCloud': defineConfig<number | undefined>({
     envVarName: 'GROWI_APP_ID_FOR_GROWI_CLOUD',
-    defaultValue: undefined,
-  }),
-  'app:growiOrgIdForCloud': defineConfig<number | undefined>({
-    envVarName: 'GROWI_ORG_ID_FOR_GROWI_CLOUD',
     defaultValue: undefined,
   }),
   'app:ogpUri': defineConfig<string | undefined>({
