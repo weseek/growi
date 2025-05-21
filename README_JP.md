@@ -1,7 +1,7 @@
 - [English 🇺🇸](./README.md)
   <p align="center">
     <a href="https://growi.org">
-      <img src="https://user-images.githubusercontent.com/1638767/38254268-d4476bbe-3793-11e8-964c-8865d690baff.png" width="240px">
+      <img src="https://github.com/user-attachments/assets/0acf1409-cea7-4f0e-841c-af5bd8be6711" width="360px">
     </a>
   </p>
   <p align="center">
@@ -15,7 +15,7 @@
 
 # GROWI
 
-[![Actions Status](https://github.com/weseek/growi/workflows/Node%20CI/badge.svg)](https://github.com/weseek/growi/actions)
+[![Actions Status](https://github.com/weseek/growi/workflows/Release/badge.svg)](https://github.com/weseek/growi/actions)
 [![docker pulls](https://img.shields.io/docker/pulls/weseek/growi.svg)](https://hub.docker.com/r/weseek/growi/)
 
 |                                                　デモンストレーション                                                 |
