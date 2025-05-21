@@ -683,13 +683,12 @@ class OpenaiService implements IOpenaiService {
       }
 
       await this.client.createVectorStoreFile(vectorStoreRelation.vectorStoreId, uploadedFile.id);
-      await VectorStoreFileRelationModel.create({
-        vectorStoreRelationId: vectorStoreRelation._id,
-        page: page._id,
-        attachment: attachment._id,
-        fileIds: [uploadedFile.id],
-        isAttachedToVectorStore: true,
-      });
+
+      const vectorStoreFileRelationsMap: VectorStoreFileRelationsMap = new Map();
+      prepareVectorStoreFileRelations(vectorStoreRelation._id as Types.ObjectId, page._id, uploadedFile.id, vectorStoreFileRelationsMap, attachment._id);
+      const vectorStoreFileRelations = Array.from(vectorStoreFileRelationsMap.values());
+
+      await VectorStoreFileRelationModel.upsertVectorStoreFileRelations(vectorStoreFileRelations);
     }
   }
 
