@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://growi.org">
-    <img src="https://user-images.githubusercontent.com/1638767/38254268-d4476bbe-3793-11e8-964c-8865d690baff.png" width="240px">
+    <img src="https://github.com/user-attachments/assets/0acf1409-cea7-4f0e-841c-af5bd8be6711" width="360px">
   </a>
 </p>
 <p align="center">
