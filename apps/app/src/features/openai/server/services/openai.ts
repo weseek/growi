@@ -2,6 +2,7 @@ import assert from 'node:assert';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 
+
 import type {
   IUser, Ref, Lang, IPage,
 } from '@growi/core';
@@ -84,7 +85,7 @@ export interface IOpenaiService {
   createVectorStoreFileOnUploadAttachment(
     pageId: string, attachment: HydratedDocument<IAttachmentDocument>, file: Express.Multer.File, buffer: Buffer
   ): Promise<void>;
-  deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId): Promise<void>;
+  deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId, ignoreAttachments?: boolean, apiCallInterval?: number): Promise<void>;
   deleteVectorStoreFilesByPageIds(pageIds: Types.ObjectId[]): Promise<void>;
   deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   deleteVectorStoreFileOnDeleteAttachment(attachmentId: string): Promise<void>;
@@ -434,7 +435,57 @@ class OpenaiService implements IOpenaiService {
     await VectorStoreModel.deleteMany({ _id: { $nin: currentVectorStoreRelationIds }, isDeleted: true });
   }
 
-  async deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId, apiCallInterval?: number): Promise<void> {
+  private async deleteVectorStoreFileForAttachment(vectorStoreFileRelation: VectorStoreFileRelation): Promise<void> {
+    if (vectorStoreFileRelation.attachment == null) {
+      return;
+    }
+
+    const deleteAllAttachmentVectorStoreFileRelations = async() => {
+      await VectorStoreFileRelationModel.deleteMany({ attachment: vectorStoreFileRelation.attachment });
+    };
+
+    try {
+      // Delete entities in VectorStoreFile
+      const fileId = vectorStoreFileRelation.fileIds[0];
+      const deleteFileResponse = await this.client.deleteFile(fileId);
+      logger.debug('Delete vector store file (attachment) ', deleteFileResponse);
+
+      // Delete related VectorStoreFileRelation document
+      const attachmentId = vectorStoreFileRelation.attachment;
+      if (attachmentId != null) {
+        await deleteAllAttachmentVectorStoreFileRelations();
+      }
+    }
+    catch (err) {
+      logger.error(err);
+      await openaiApiErrorHandler(err, {
+        notFoundError: () => deleteAllAttachmentVectorStoreFileRelations(),
+      });
+    }
+  }
+
+  async deleteVectorStoreFile(
+      vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId, ignoreAttachments = false, apiCallInterval?: number,
+  ): Promise<void> {
+
+    if (!ignoreAttachments) {
+      // Get all VectorStoreFIleDocument (attachments) associated with the page
+      const vectorStoreFileRelationsForAttachment = await VectorStoreFileRelationModel.find({
+        vectorStoreRelationId, page: pageId, attachment: { $exists: true },
+      });
+
+      if (vectorStoreFileRelationsForAttachment.length !== 0) {
+        for await (const vectorStoreFileRelation of vectorStoreFileRelationsForAttachment) {
+          try {
+            await this.deleteVectorStoreFileForAttachment(vectorStoreFileRelation);
+          }
+          catch (err) {
+            logger.error(err);
+          }
+        }
+      }
+    }
+
     // Delete vector store file and delete vector store file relation
     const vectorStoreFileRelation = await VectorStoreFileRelationModel.findOne({ vectorStoreRelationId, page: pageId });
     if (vectorStoreFileRelation == null) {
@@ -497,7 +548,7 @@ class OpenaiService implements IOpenaiService {
     // Delete obsolete VectorStoreFile
     for await (const vectorStoreFileRelation of obsoleteVectorStoreFileRelations) {
       try {
-        await this.deleteVectorStoreFile(vectorStoreFileRelation.vectorStoreRelationId, vectorStoreFileRelation.page, apiCallInterval);
+        await this.deleteVectorStoreFile(vectorStoreFileRelation.vectorStoreRelationId, vectorStoreFileRelation.page, false, apiCallInterval);
       }
       catch (err) {
         logger.error(err);
@@ -506,29 +557,17 @@ class OpenaiService implements IOpenaiService {
   }
 
   async deleteVectorStoreFileOnDeleteAttachment(attachmentId: string) {
-    // An Attachment has only one VectorStoreFile. This means the id of VectorStoreFile linked to VectorStore is one per Attachment.
-    // Therefore, retrieve only one VectorStoreFile Relation with the target attachmentId.
     const vectorStoreFileRelation = await VectorStoreFileRelationModel.findOne({ attachment: attachmentId });
     if (vectorStoreFileRelation == null) {
       return;
     }
 
-    const deleteAllRelationDocument = async() => {
-      await VectorStoreFileRelationModel.deleteMany({ attachment: attachmentId });
-    };
-
-    for await (const fileId of vectorStoreFileRelation.fileIds) {
-      try {
-        const response = await this.client.deleteFile(fileId);
-        logger.debug('Delete vector store file', response);
-      }
-      catch (err) {
-        logger.error(err);
-        await openaiApiErrorHandler(err, { notFoundError: () => deleteAllRelationDocument() });
-      }
+    try {
+      await this.deleteVectorStoreFileForAttachment(vectorStoreFileRelation);
     }
-
-    await deleteAllRelationDocument();
+    catch (err) {
+      logger.error(err);
+    }
   }
 
 
@@ -624,7 +663,7 @@ class OpenaiService implements IOpenaiService {
       logger.debug('-----------------------------------------------------');
 
       // Do not create a new VectorStoreFile if page is changed to a permission that AiAssistant does not have access to
-      await this.deleteVectorStoreFile((vectorStoreRelation as VectorStoreDocument)._id, page._id);
+      await this.deleteVectorStoreFile((vectorStoreRelation as VectorStoreDocument)._id, page._id, true);
       await this.createVectorStoreFile(vectorStoreRelation as VectorStoreDocument, pagesToVectorize);
     }
   }
@@ -662,13 +701,12 @@ class OpenaiService implements IOpenaiService {
       }
 
       await this.client.createVectorStoreFile(vectorStoreRelation.vectorStoreId, uploadedFile.id);
-      await VectorStoreFileRelationModel.create({
-        vectorStoreRelationId: vectorStoreRelation._id,
-        page: page._id,
-        attachment: attachment._id,
-        fileIds: [uploadedFile.id],
-        isAttachedToVectorStore: true,
-      });
+
+      const vectorStoreFileRelationsMap: VectorStoreFileRelationsMap = new Map();
+      prepareVectorStoreFileRelations(vectorStoreRelation._id as Types.ObjectId, page._id, uploadedFile.id, vectorStoreFileRelationsMap, attachment._id);
+      const vectorStoreFileRelations = Array.from(vectorStoreFileRelationsMap.values());
+
+      await VectorStoreFileRelationModel.upsertVectorStoreFileRelations(vectorStoreFileRelations);
     }
   }
 
