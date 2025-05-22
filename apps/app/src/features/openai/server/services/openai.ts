@@ -81,13 +81,8 @@ export interface IOpenaiService {
   getMessageData(threadId: string, lang?: Lang, options?: MessageListParams): Promise<OpenAI.Beta.Threads.Messages.MessagesPage>;
   createVectorStoreFileOnPageCreate(pages: PageDocument[]): Promise<void>;
   updateVectorStoreFileOnPageUpdate(page: HydratedDocument<PageDocument>): Promise<void>;
-  createVectorStoreFileOnUploadAttachment(
-    pageId: string, attachment: HydratedDocument<IAttachmentDocument>, file: Express.Multer.File, buffer: Buffer
-  ): Promise<void>;
-  deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId, ignoreAttachments?: boolean, apiCallInterval?: number): Promise<void>;
   deleteVectorStoreFilesByPageIds(pageIds: Types.ObjectId[]): Promise<void>;
   deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
-  deleteVectorStoreFileOnDeleteAttachment(attachmentId: string): Promise<void>;
   isAiAssistantUsable(aiAssistantId: string, user: IUserHasId): Promise<boolean>;
   createAiAssistant(data: UpsertAiAssistantData, user: IUserHasId): Promise<AiAssistantDocument>;
   updateAiAssistant(aiAssistantId: string, data: UpsertAiAssistantData, user: IUserHasId): Promise<AiAssistantDocument>;
@@ -109,7 +104,7 @@ class OpenaiService implements IOpenaiService {
     return getClient({ openaiServiceType });
   }
 
-  async generateThreadTitle(message: string): Promise<string | null> {
+  private async generateThreadTitle(message: string): Promise<string | null> {
     const systemMessage = [
       'Create a brief title (max 5 words) from your message.',
       'Respond in the same language the user uses in their input.',
@@ -170,7 +165,7 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  async updateThreads(aiAssistantId: string, vectorStoreId: string): Promise<void> {
+  private async updateThreads(aiAssistantId: string, vectorStoreId: string): Promise<void> {
     const threadRelations = await this.getThreadsByAiAssistantId(aiAssistantId);
     for await (const threadRelation of threadRelations) {
       try {
@@ -246,7 +241,7 @@ class OpenaiService implements IOpenaiService {
   }
 
 
-  async getVectorStoreRelationsByPageIds(pageIds: Types.ObjectId[]): Promise<VectorStoreDocument[]> {
+  private async getVectorStoreRelationsByPageIds(pageIds: Types.ObjectId[]): Promise<VectorStoreDocument[]> {
     const pipeline = [
       // Stage 1: Match documents with the given pageId
       {
@@ -462,7 +457,7 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  async deleteVectorStoreFile(
+  private async deleteVectorStoreFile(
       vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId, ignoreAttachments = false, apiCallInterval?: number,
   ): Promise<void> {
 
@@ -554,7 +549,7 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  async deleteVectorStoreFileOnDeleteAttachment(attachmentId: string) {
+  private async deleteVectorStoreFileOnDeleteAttachment(attachmentId: string) {
     const vectorStoreFileRelation = await VectorStoreFileRelationModel.findOne({ attachment: attachmentId });
     if (vectorStoreFileRelation == null) {
       return;
@@ -569,7 +564,7 @@ class OpenaiService implements IOpenaiService {
   }
 
 
-  async filterPagesByAccessScope(aiAssistant: AiAssistantDocument, pages: HydratedDocument<PageDocument>[]) {
+  private async filterPagesByAccessScope(aiAssistant: AiAssistantDocument, pages: HydratedDocument<PageDocument>[]) {
     const isPublicPage = (page :HydratedDocument<PageDocument>) => page.grant === PageGrant.GRANT_PUBLIC;
 
     const isUserGroupAccessible = (page :HydratedDocument<PageDocument>, ownerUserGroupIds: string[]) => {
@@ -666,7 +661,7 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  async createVectorStoreFileOnUploadAttachment(
+  private async createVectorStoreFileOnUploadAttachment(
       pageId: string, attachment: HydratedDocument<IAttachmentDocument>, file: Express.Multer.File, buffer: Buffer,
   ): Promise<void> {
     if (!isVectorStoreCompatible(file)) {
@@ -1032,7 +1027,7 @@ class OpenaiService implements IOpenaiService {
     return totalPageCount > limitLearnablePageCountPerAssistant;
   }
 
-  async findAiAssistantByPagePath(
+  private async findAiAssistantByPagePath(
       pagePaths: string[], options?: { shouldPopulateOwner?: boolean, shouldPopulateVectorStore?: boolean },
   ): Promise<AiAssistantDocument[]> {
 
