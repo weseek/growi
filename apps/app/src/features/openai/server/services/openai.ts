@@ -723,7 +723,7 @@ class OpenaiService implements IOpenaiService {
       objectMode: true,
       async transform(chunk: HydratedDocument<PageDocument>[], encoding, callback) {
         try {
-          logger.debug('Search results of page paths', chunk.map(page => page.path));
+          logger.debug('Target page path for VectorStoreFile generation: ', chunk.map(page => page.path));
           await createVectorStoreFile(vectorStoreRelation, chunk);
           this.push(chunk);
           callback();
