@@ -323,7 +323,13 @@ class OpenaiService implements IOpenaiService {
   }
 
   private async uploadFileForAttachment(file: Buffer | NodeJS.ReadableStream, fileName: string): Promise<OpenAI.Files.FileObject> {
-    const uploadableFile = await toFile(Readable.from([file]), fileName);
+    const uploadableFile = await toFile(
+      file instanceof Readable
+        ? file
+        : Readable.from([file]),
+      fileName,
+    );
+
     const uploadedFile = await this.client.uploadFile(uploadableFile);
     return uploadedFile;
   }
