@@ -357,17 +357,18 @@ class OpenaiService implements IOpenaiService {
       objectMode: true,
       write: async(attachments: HydratedDocument<IAttachmentDocument>[], _encoding, callback) => {
         for await (const attachment of attachments) {
-          if (isVectorStoreCompatible(attachment.originalName, attachment.fileFormat)) {
-            try {
-              const fileStream = await this.crowi.fileUploadService.findDeliveryFile(attachment);
-              const uploadedFileForAttachment = await this.uploadFileForAttachment(fileStream, attachment.originalName);
-              prepareVectorStoreFileRelations(
-                vectorStoreRelationId, pageId, uploadedFileForAttachment.id, vectorStoreFileRelationsMap, attachment._id,
-              );
+          try {
+            if (!isVectorStoreCompatible(attachment.originalName, attachment.fileFormat)) {
+              continue;
             }
-            catch (err) {
-              logger.error(err);
-            }
+            const fileStream = await this.crowi.fileUploadService.findDeliveryFile(attachment);
+            const uploadedFileForAttachment = await this.uploadFileForAttachment(fileStream, attachment.originalName);
+            prepareVectorStoreFileRelations(
+              vectorStoreRelationId, pageId, uploadedFileForAttachment.id, vectorStoreFileRelationsMap, attachment._id,
+            );
+          }
+          catch (err) {
+            logger.error(err);
           }
         }
         callback();
