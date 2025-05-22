@@ -61,7 +61,7 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
     }
   }, [disableLinkSharing, props.disableLinkSharing]);
 
-  const headerContents = <PagePathNavTitle pageId={page?._id} pagePath={pagePath} />;
+  const headerContents = <PagePathNavTitle pageId={page?._id} pagePath={pagePath} isWipPage={page?.wip} />;
 
   const sideContents = !isNotFound
     ? (
