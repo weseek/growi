@@ -178,8 +178,11 @@ describe('access-token-parser middleware', () => {
 
     expect(reqMock.user).toBeUndefined();
 
+    // Generate random string that is guaranteed to be invalid for Basic auth (1024 chars)
+    const randomString = faker.string.alpha(1024);
+
     // act
-    reqMock.headers.authorization = 'Basic dXNlcjpwYXNz'; // Basic auth header
+    reqMock.headers.authorization = `Basic ${randomString}`; // Basic auth header with random string
     await accessTokenParser(reqMock, resMock, nextMock);
 
     // assert
