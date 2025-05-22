@@ -2,7 +2,6 @@ import assert from 'node:assert';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 
-
 import type {
   IUser, Ref, Lang, IPage,
 } from '@growi/core';
@@ -664,7 +663,7 @@ class OpenaiService implements IOpenaiService {
   private async createVectorStoreFileOnUploadAttachment(
       pageId: string, attachment: HydratedDocument<IAttachmentDocument>, file: Express.Multer.File, buffer: Buffer,
   ): Promise<void> {
-    if (!isVectorStoreCompatible(file)) {
+    if (!isVectorStoreCompatible(file.originalname, file.mimetype)) {
       return;
     }
 

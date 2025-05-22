@@ -27,9 +27,9 @@ const supportedFormats = {
 
 type SupportedExtension = keyof typeof supportedFormats;
 
-export const isVectorStoreCompatible = (file: Express.Multer.File): boolean => {
+export const isVectorStoreCompatible = (originalName: string, mimeType: string): boolean => {
   // Get extension
-  const extension = path.extname(file.originalname).toLowerCase();
+  const extension = path.extname(originalName).toLowerCase();
 
   // Check if the file extension is supported
   if (!(extension in supportedFormats)) {
@@ -40,7 +40,6 @@ export const isVectorStoreCompatible = (file: Express.Multer.File): boolean => {
   const supportedMimeType = supportedFormats[extension as SupportedExtension];
 
   // Check if the mimeType is supported
-  const mimeType = file.mimetype;
   return Array.isArray(supportedMimeType)
     ? supportedMimeType.includes(mimeType)
     : supportedMimeType === mimeType;
