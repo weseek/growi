@@ -345,7 +345,7 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  private async createVectorStoreFileForAttachment(
+  private async createVectorStoreFileWithStreamForAttachment(
       pageId: Types.ObjectId, vectorStoreRelationId: Types.ObjectId, vectorStoreFileRelationsMap: VectorStoreFileRelationsMap,
   ): Promise<void> {
 
@@ -392,7 +392,7 @@ class OpenaiService implements IOpenaiService {
           prepareVectorStoreFileRelations(vectorStoreRelation._id, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
 
           if (!ignoreAttachments) {
-            await this.createVectorStoreFileForAttachment(page._id, vectorStoreRelation._id, vectorStoreFileRelationsMap);
+            await this.createVectorStoreFileWithStreamForAttachment(page._id, vectorStoreRelation._id, vectorStoreFileRelationsMap);
           }
           return;
         }
@@ -403,7 +403,7 @@ class OpenaiService implements IOpenaiService {
           prepareVectorStoreFileRelations(vectorStoreRelation._id, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
 
           if (!ignoreAttachments) {
-            await this.createVectorStoreFileForAttachment(page._id, vectorStoreRelation._id, vectorStoreFileRelationsMap);
+            await this.createVectorStoreFileWithStreamForAttachment(page._id, vectorStoreRelation._id, vectorStoreFileRelationsMap);
           }
         }
       }
