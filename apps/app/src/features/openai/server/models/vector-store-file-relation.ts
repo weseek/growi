@@ -26,8 +26,15 @@ export const prepareVectorStoreFileRelations = (
     relationsMap: Map<string, VectorStoreFileRelation>,
     attachment?: Types.ObjectId,
 ): Map<string, VectorStoreFileRelation> => {
-  const pageIdStr = page.toHexString();
-  const existingData = relationsMap.get(pageIdStr);
+
+  const key = (() => {
+    if (attachment == null) {
+      return page.toHexString();
+    }
+    return page.toHexString() + attachment.toHexString();
+  })();
+
+  const existingData = relationsMap.get(key);
 
   // If the data exists, add the fileId to the fileIds array
   if (existingData != null) {
@@ -35,7 +42,7 @@ export const prepareVectorStoreFileRelations = (
   }
   // If the data doesn't exist, create a new one and add it to the map
   else {
-    relationsMap.set(pageIdStr, {
+    relationsMap.set(key, {
       vectorStoreRelationId,
       page,
       fileIds: [fileId],

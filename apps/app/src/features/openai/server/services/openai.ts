@@ -1,7 +1,6 @@
 import assert from 'node:assert';
-import { Readable, Transform } from 'stream';
+import { Readable, Transform, Writable } from 'stream';
 import { pipeline } from 'stream/promises';
-
 
 import type {
   IUser, Ref, Lang, IPage,
@@ -24,7 +23,7 @@ import VectorStoreFileRelationModel, {
   prepareVectorStoreFileRelations,
 } from '~/features/openai/server/models/vector-store-file-relation';
 import type Crowi from '~/server/crowi';
-import type { IAttachmentDocument } from '~/server/models/attachment';
+import type { IAttachmentDocument, IAttachmentModel } from '~/server/models/attachment';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import UserGroupRelation from '~/server/models/user-group-relation';
 import { configManager } from '~/server/service/config-manager';
@@ -79,16 +78,10 @@ export interface IOpenaiService {
   deleteObsoletedVectorStoreRelations(): Promise<void> // for CronJob
   deleteVectorStore(vectorStoreRelationId: string): Promise<void>;
   getMessageData(threadId: string, lang?: Lang, options?: MessageListParams): Promise<OpenAI.Beta.Threads.Messages.MessagesPage>;
-  createVectorStoreFile(vectorStoreRelation: VectorStoreDocument, pages: PageDocument[]): Promise<void>;
   createVectorStoreFileOnPageCreate(pages: PageDocument[]): Promise<void>;
   updateVectorStoreFileOnPageUpdate(page: HydratedDocument<PageDocument>): Promise<void>;
-  createVectorStoreFileOnUploadAttachment(
-    pageId: string, attachment: HydratedDocument<IAttachmentDocument>, file: Express.Multer.File, buffer: Buffer
-  ): Promise<void>;
-  deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId, ignoreAttachments?: boolean, apiCallInterval?: number): Promise<void>;
   deleteVectorStoreFilesByPageIds(pageIds: Types.ObjectId[]): Promise<void>;
   deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
-  deleteVectorStoreFileOnDeleteAttachment(attachmentId: string): Promise<void>;
   isAiAssistantUsable(aiAssistantId: string, user: IUserHasId): Promise<boolean>;
   createAiAssistant(data: UpsertAiAssistantData, user: IUserHasId): Promise<AiAssistantDocument>;
   updateAiAssistant(aiAssistantId: string, data: UpsertAiAssistantData, user: IUserHasId): Promise<AiAssistantDocument>;
@@ -97,7 +90,11 @@ export interface IOpenaiService {
 }
 class OpenaiService implements IOpenaiService {
 
+  private crowi: Crowi;
+
   constructor(crowi: Crowi) {
+    this.crowi = crowi;
+
     this.createVectorStoreFileOnUploadAttachment = this.createVectorStoreFileOnUploadAttachment.bind(this);
     crowi.attachmentService.addAttachHandler(this.createVectorStoreFileOnUploadAttachment);
 
@@ -110,7 +107,7 @@ class OpenaiService implements IOpenaiService {
     return getClient({ openaiServiceType });
   }
 
-  async generateThreadTitle(message: string): Promise<string | null> {
+  private async generateThreadTitle(message: string): Promise<string | null> {
     const systemMessage = [
       'Create a brief title (max 5 words) from your message.',
       'Respond in the same language the user uses in their input.',
@@ -171,7 +168,7 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  async updateThreads(aiAssistantId: string, vectorStoreId: string): Promise<void> {
+  private async updateThreads(aiAssistantId: string, vectorStoreId: string): Promise<void> {
     const threadRelations = await this.getThreadsByAiAssistantId(aiAssistantId);
     for await (const threadRelation of threadRelations) {
       try {
@@ -247,7 +244,7 @@ class OpenaiService implements IOpenaiService {
   }
 
 
-  async getVectorStoreRelationsByPageIds(pageIds: Types.ObjectId[]): Promise<VectorStoreDocument[]> {
+  private async getVectorStoreRelationsByPageIds(pageIds: Types.ObjectId[]): Promise<VectorStoreDocument[]> {
     const pipeline = [
       // Stage 1: Match documents with the given pageId
       {
@@ -325,8 +322,14 @@ class OpenaiService implements IOpenaiService {
     return uploadedFile;
   }
 
-  private async uploadFileForAttachment(buffer: Buffer, fileName: string): Promise<OpenAI.Files.FileObject> {
-    const uploadableFile = await toFile(Readable.from([buffer]), fileName);
+  private async uploadFileForAttachment(file: Buffer | NodeJS.ReadableStream, fileName: string): Promise<OpenAI.Files.FileObject> {
+    const uploadableFile = await toFile(
+      file instanceof Readable
+        ? file
+        : Readable.from([file]),
+      fileName,
+    );
+
     const uploadedFile = await this.client.uploadFile(uploadableFile);
     return uploadedFile;
   }
@@ -348,14 +351,56 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  async createVectorStoreFile(vectorStoreRelation: VectorStoreDocument, pages: Array<HydratedDocument<PageDocument>>): Promise<void> {
-    // const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
+  private async createVectorStoreFileWithStreamForAttachment(
+      pageId: Types.ObjectId, vectorStoreRelationId: Types.ObjectId, vectorStoreFileRelationsMap: VectorStoreFileRelationsMap,
+  ): Promise<void> {
+
+    const Attachment = mongoose.model<HydratedDocument<IAttachmentDocument>, IAttachmentModel>('Attachment');
+    const attachmentsCursor = Attachment.find({ page: pageId }).cursor();
+    const batchStream = createBatchStream(BATCH_SIZE);
+
+    const uploadFileStreamForAttachment = new Writable({
+      objectMode: true,
+      write: async(attachments: HydratedDocument<IAttachmentDocument>[], _encoding, callback) => {
+        for await (const attachment of attachments) {
+          try {
+            if (!isVectorStoreCompatible(attachment.originalName, attachment.fileFormat)) {
+              continue;
+            }
+            const fileStream = await this.crowi.fileUploadService.findDeliveryFile(attachment);
+            const uploadedFileForAttachment = await this.uploadFileForAttachment(fileStream, attachment.originalName);
+            prepareVectorStoreFileRelations(
+              vectorStoreRelationId, pageId, uploadedFileForAttachment.id, vectorStoreFileRelationsMap, attachment._id,
+            );
+          }
+          catch (err) {
+            logger.error(err);
+          }
+        }
+        callback();
+      },
+      final: (callback) => {
+        logger.debug('Finished uploading attachments');
+        callback();
+      },
+    });
+
+    await pipeline(attachmentsCursor, batchStream, uploadFileStreamForAttachment);
+  }
+
+  private async createVectorStoreFile(
+      vectorStoreRelation: VectorStoreDocument, pages: Array<HydratedDocument<PageDocument>>, ignoreAttachments = false,
+  ): Promise<void> {
     const vectorStoreFileRelationsMap: VectorStoreFileRelationsMap = new Map();
     const processUploadFile = async(page: HydratedDocument<PageDocument>) => {
       if (page._id != null && page.revision != null) {
         if (isPopulated(page.revision) && page.revision.body.length > 0) {
           const uploadedFile = await this.uploadFile(page.revision.body, page);
           prepareVectorStoreFileRelations(vectorStoreRelation._id, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
+
+          if (!ignoreAttachments) {
+            await this.createVectorStoreFileWithStreamForAttachment(page._id, vectorStoreRelation._id, vectorStoreFileRelationsMap);
+          }
           return;
         }
 
@@ -363,6 +408,10 @@ class OpenaiService implements IOpenaiService {
         if (pagePopulatedToShowRevision.revision != null && pagePopulatedToShowRevision.revision.body.length > 0) {
           const uploadedFile = await this.uploadFile(pagePopulatedToShowRevision.revision.body, page);
           prepareVectorStoreFileRelations(vectorStoreRelation._id, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
+
+          if (!ignoreAttachments) {
+            await this.createVectorStoreFileWithStreamForAttachment(page._id, vectorStoreRelation._id, vectorStoreFileRelationsMap);
+          }
         }
       }
     };
@@ -464,7 +513,7 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  async deleteVectorStoreFile(
+  private async deleteVectorStoreFile(
       vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId, ignoreAttachments = false, apiCallInterval?: number,
   ): Promise<void> {
 
@@ -556,7 +605,7 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  async deleteVectorStoreFileOnDeleteAttachment(attachmentId: string) {
+  private async deleteVectorStoreFileOnDeleteAttachment(attachmentId: string) {
     const vectorStoreFileRelation = await VectorStoreFileRelationModel.findOne({ attachment: attachmentId });
     if (vectorStoreFileRelation == null) {
       return;
@@ -571,7 +620,7 @@ class OpenaiService implements IOpenaiService {
   }
 
 
-  async filterPagesByAccessScope(aiAssistant: AiAssistantDocument, pages: HydratedDocument<PageDocument>[]) {
+  private async filterPagesByAccessScope(aiAssistant: AiAssistantDocument, pages: HydratedDocument<PageDocument>[]) {
     const isPublicPage = (page :HydratedDocument<PageDocument>) => page.grant === PageGrant.GRANT_PUBLIC;
 
     const isUserGroupAccessible = (page :HydratedDocument<PageDocument>, ownerUserGroupIds: string[]) => {
@@ -663,15 +712,23 @@ class OpenaiService implements IOpenaiService {
       logger.debug('-----------------------------------------------------');
 
       // Do not create a new VectorStoreFile if page is changed to a permission that AiAssistant does not have access to
-      await this.deleteVectorStoreFile((vectorStoreRelation as VectorStoreDocument)._id, page._id, true);
-      await this.createVectorStoreFile(vectorStoreRelation as VectorStoreDocument, pagesToVectorize);
+      await this.deleteVectorStoreFile(
+        (vectorStoreRelation as VectorStoreDocument)._id,
+        page._id,
+        true, // ignoreAttachments = true
+      );
+      await this.createVectorStoreFile(
+        vectorStoreRelation as VectorStoreDocument,
+        pagesToVectorize,
+        true, // ignoreAttachments = true
+      );
     }
   }
 
-  async createVectorStoreFileOnUploadAttachment(
+  private async createVectorStoreFileOnUploadAttachment(
       pageId: string, attachment: HydratedDocument<IAttachmentDocument>, file: Express.Multer.File, buffer: Buffer,
   ): Promise<void> {
-    if (!isVectorStoreCompatible(file)) {
+    if (!isVectorStoreCompatible(file.originalname, file.mimetype)) {
       return;
     }
 
@@ -723,7 +780,7 @@ class OpenaiService implements IOpenaiService {
       objectMode: true,
       async transform(chunk: HydratedDocument<PageDocument>[], encoding, callback) {
         try {
-          logger.debug('Search results of page paths', chunk.map(page => page.path));
+          logger.debug('Target page path for VectorStoreFile generation: ', chunk.map(page => page.path));
           await createVectorStoreFile(vectorStoreRelation, chunk);
           this.push(chunk);
           callback();
@@ -1034,7 +1091,7 @@ class OpenaiService implements IOpenaiService {
     return totalPageCount > limitLearnablePageCountPerAssistant;
   }
 
-  async findAiAssistantByPagePath(
+  private async findAiAssistantByPagePath(
       pagePaths: string[], options?: { shouldPopulateOwner?: boolean, shouldPopulateVectorStore?: boolean },
   ): Promise<AiAssistantDocument[]> {
 
