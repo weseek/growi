@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import { Readable, Transform } from 'stream';
+import { Readable, Transform, Writable } from 'stream';
 import { pipeline } from 'stream/promises';
 
 import type {
@@ -23,7 +23,7 @@ import VectorStoreFileRelationModel, {
   prepareVectorStoreFileRelations,
 } from '~/features/openai/server/models/vector-store-file-relation';
 import type Crowi from '~/server/crowi';
-import type { IAttachmentDocument } from '~/server/models/attachment';
+import type { IAttachmentDocument, IAttachmentModel } from '~/server/models/attachment';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import UserGroupRelation from '~/server/models/user-group-relation';
 import { configManager } from '~/server/service/config-manager';
@@ -90,7 +90,11 @@ export interface IOpenaiService {
 }
 class OpenaiService implements IOpenaiService {
 
+  private crowi: Crowi;
+
   constructor(crowi: Crowi) {
+    this.crowi = crowi;
+
     this.createVectorStoreFileOnUploadAttachment = this.createVectorStoreFileOnUploadAttachment.bind(this);
     crowi.attachmentService.addAttachHandler(this.createVectorStoreFileOnUploadAttachment);
 
@@ -318,8 +322,8 @@ class OpenaiService implements IOpenaiService {
     return uploadedFile;
   }
 
-  private async uploadFileForAttachment(buffer: Buffer, fileName: string): Promise<OpenAI.Files.FileObject> {
-    const uploadableFile = await toFile(Readable.from([buffer]), fileName);
+  private async uploadFileForAttachment(file: Buffer | NodeJS.ReadableStream, fileName: string): Promise<OpenAI.Files.FileObject> {
+    const uploadableFile = await toFile(Readable.from([file]), fileName);
     const uploadedFile = await this.client.uploadFile(uploadableFile);
     return uploadedFile;
   }
@@ -341,6 +345,42 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
+  private async createVectorStoreFileForAttachment(
+      pageId: Types.ObjectId, vectorStoreRelationId: Types.ObjectId, vectorStoreFileRelationsMap: VectorStoreFileRelationsMap,
+  ): Promise<void> {
+
+    const Attachment = mongoose.model<HydratedDocument<IAttachmentDocument>, IAttachmentModel>('Attachment');
+    const attachmentsCursor = Attachment.find({ page: pageId }).cursor();
+    const batchStream = createBatchStream(BATCH_SIZE);
+
+    const uploadFileStreamForAttachment = new Writable({
+      objectMode: true,
+      write: async(attachments: HydratedDocument<IAttachmentDocument>[], _encoding, callback) => {
+        for await (const attachment of attachments) {
+          if (isVectorStoreCompatible(attachment.originalName, attachment.fileFormat)) {
+            try {
+              const fileStream = await this.crowi.fileUploadService.findDeliveryFile(attachment);
+              const uploadedFileForAttachment = await this.uploadFileForAttachment(fileStream, attachment.originalName);
+              prepareVectorStoreFileRelations(
+                vectorStoreRelationId, pageId, uploadedFileForAttachment.id, vectorStoreFileRelationsMap, attachment._id,
+              );
+            }
+            catch (err) {
+              logger.error(err);
+            }
+          }
+        }
+        callback();
+      },
+      final: (callback) => {
+        logger.debug('Finished uploading attachments');
+        callback();
+      },
+    });
+
+    await pipeline(attachmentsCursor, batchStream, uploadFileStreamForAttachment);
+  }
+
   private async createVectorStoreFile(vectorStoreRelation: VectorStoreDocument, pages: Array<HydratedDocument<PageDocument>>): Promise<void> {
     const vectorStoreFileRelationsMap: VectorStoreFileRelationsMap = new Map();
     const processUploadFile = async(page: HydratedDocument<PageDocument>) => {
@@ -348,6 +388,7 @@ class OpenaiService implements IOpenaiService {
         if (isPopulated(page.revision) && page.revision.body.length > 0) {
           const uploadedFile = await this.uploadFile(page.revision.body, page);
           prepareVectorStoreFileRelations(vectorStoreRelation._id, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
+          await this.createVectorStoreFileForAttachment(page._id, vectorStoreRelation._id, vectorStoreFileRelationsMap);
           return;
         }
 
@@ -355,6 +396,7 @@ class OpenaiService implements IOpenaiService {
         if (pagePopulatedToShowRevision.revision != null && pagePopulatedToShowRevision.revision.body.length > 0) {
           const uploadedFile = await this.uploadFile(pagePopulatedToShowRevision.revision.body, page);
           prepareVectorStoreFileRelations(vectorStoreRelation._id, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
+          await this.createVectorStoreFileForAttachment(page._id, vectorStoreRelation._id, vectorStoreFileRelationsMap);
         }
       }
     };
@@ -372,6 +414,7 @@ class OpenaiService implements IOpenaiService {
     });
 
     const vectorStoreFileRelations = Array.from(vectorStoreFileRelationsMap.values());
+    console.log('ectorStoreFileRelations', vectorStoreFileRelations);
     const uploadedFileIds = vectorStoreFileRelations.map(data => data.fileIds).flat();
 
     if (uploadedFileIds.length === 0) {
