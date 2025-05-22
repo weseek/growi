@@ -381,14 +381,19 @@ class OpenaiService implements IOpenaiService {
     await pipeline(attachmentsCursor, batchStream, uploadFileStreamForAttachment);
   }
 
-  private async createVectorStoreFile(vectorStoreRelation: VectorStoreDocument, pages: Array<HydratedDocument<PageDocument>>): Promise<void> {
+  private async createVectorStoreFile(
+      vectorStoreRelation: VectorStoreDocument, pages: Array<HydratedDocument<PageDocument>>, ignoreAttachments = false,
+  ): Promise<void> {
     const vectorStoreFileRelationsMap: VectorStoreFileRelationsMap = new Map();
     const processUploadFile = async(page: HydratedDocument<PageDocument>) => {
       if (page._id != null && page.revision != null) {
         if (isPopulated(page.revision) && page.revision.body.length > 0) {
           const uploadedFile = await this.uploadFile(page.revision.body, page);
           prepareVectorStoreFileRelations(vectorStoreRelation._id, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
-          await this.createVectorStoreFileForAttachment(page._id, vectorStoreRelation._id, vectorStoreFileRelationsMap);
+
+          if (!ignoreAttachments) {
+            await this.createVectorStoreFileForAttachment(page._id, vectorStoreRelation._id, vectorStoreFileRelationsMap);
+          }
           return;
         }
 
@@ -396,7 +401,10 @@ class OpenaiService implements IOpenaiService {
         if (pagePopulatedToShowRevision.revision != null && pagePopulatedToShowRevision.revision.body.length > 0) {
           const uploadedFile = await this.uploadFile(pagePopulatedToShowRevision.revision.body, page);
           prepareVectorStoreFileRelations(vectorStoreRelation._id, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
-          await this.createVectorStoreFileForAttachment(page._id, vectorStoreRelation._id, vectorStoreFileRelationsMap);
+
+          if (!ignoreAttachments) {
+            await this.createVectorStoreFileForAttachment(page._id, vectorStoreRelation._id, vectorStoreFileRelationsMap);
+          }
         }
       }
     };
@@ -697,8 +705,16 @@ class OpenaiService implements IOpenaiService {
       logger.debug('-----------------------------------------------------');
 
       // Do not create a new VectorStoreFile if page is changed to a permission that AiAssistant does not have access to
-      await this.deleteVectorStoreFile((vectorStoreRelation as VectorStoreDocument)._id, page._id, true);
-      await this.createVectorStoreFile(vectorStoreRelation as VectorStoreDocument, pagesToVectorize);
+      await this.deleteVectorStoreFile(
+        (vectorStoreRelation as VectorStoreDocument)._id,
+        page._id,
+        true, // ignoreAttachments = true
+      );
+      await this.createVectorStoreFile(
+        vectorStoreRelation as VectorStoreDocument,
+        pagesToVectorize,
+        true, // ignoreAttachments = true
+      );
     }
   }
 
