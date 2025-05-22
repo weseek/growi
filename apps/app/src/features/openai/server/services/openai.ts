@@ -79,7 +79,6 @@ export interface IOpenaiService {
   deleteObsoletedVectorStoreRelations(): Promise<void> // for CronJob
   deleteVectorStore(vectorStoreRelationId: string): Promise<void>;
   getMessageData(threadId: string, lang?: Lang, options?: MessageListParams): Promise<OpenAI.Beta.Threads.Messages.MessagesPage>;
-  createVectorStoreFile(vectorStoreRelation: VectorStoreDocument, pages: PageDocument[]): Promise<void>;
   createVectorStoreFileOnPageCreate(pages: PageDocument[]): Promise<void>;
   updateVectorStoreFileOnPageUpdate(page: HydratedDocument<PageDocument>): Promise<void>;
   createVectorStoreFileOnUploadAttachment(
@@ -348,7 +347,7 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  async createVectorStoreFile(vectorStoreRelation: VectorStoreDocument, pages: Array<HydratedDocument<PageDocument>>): Promise<void> {
+  private async createVectorStoreFile(vectorStoreRelation: VectorStoreDocument, pages: Array<HydratedDocument<PageDocument>>): Promise<void> {
     // const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
     const vectorStoreFileRelationsMap: VectorStoreFileRelationsMap = new Map();
     const processUploadFile = async(page: HydratedDocument<PageDocument>) => {
