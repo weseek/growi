@@ -414,7 +414,6 @@ class OpenaiService implements IOpenaiService {
     });
 
     const vectorStoreFileRelations = Array.from(vectorStoreFileRelationsMap.values());
-    console.log('ectorStoreFileRelations', vectorStoreFileRelations);
     const uploadedFileIds = vectorStoreFileRelations.map(data => data.fileIds).flat();
 
     if (uploadedFileIds.length === 0) {
