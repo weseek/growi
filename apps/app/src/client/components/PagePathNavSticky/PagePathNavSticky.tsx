@@ -107,7 +107,7 @@ export const PagePathNavSticky = (props: PagePathNavLayoutProps): JSX.Element =>
             // Use 'd-block' to make the children take the full width
             // This is to improve UX when opening/closing CopyDropdown
             <div className="d-block pe-auto">
-              <PagePathNav {...props} />
+              <PagePathNav {...props} inline />
             </div>
           );
         }}
