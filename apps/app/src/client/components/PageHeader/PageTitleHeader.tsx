@@ -103,6 +103,7 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
 
   const isInvalid = validationResult != null;
 
+  // calculate inputMaxWidth as the maximum width of AutoSizeInput minus the width of WIP badge and CopyDropdown
   const inputMaxWidth = useMemo(() => {
     if (maxWidth == null) {
       return undefined;
@@ -115,6 +116,7 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
     return getAdjustedMaxWidthForAutosizeInput(maxWidth, 'md', validationResult != null ? false : undefined) - wipBadgeAndCopyDropdownWidth;
   }, [currentPage.wip, maxWidth, validationResult]);
 
+  // calculate h1MaxWidth as the inputMaxWidth plus padding
   const h1MaxWidth = useMemo(() => {
     if (inputMaxWidth == null) {
       return undefined;
