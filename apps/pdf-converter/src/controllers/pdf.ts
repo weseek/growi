@@ -3,7 +3,7 @@ import { Controller } from '@tsed/di';
 import { InternalServerError } from '@tsed/exceptions';
 import { Logger } from '@tsed/logger';
 import {
-  Post, Returns, Enum, Description, Required,
+  Post, Returns, Enum, Description, Required, Integer,
 } from '@tsed/schema';
 
 import PdfConvertService, { JobStatusSharedWithGrowi, JobStatus } from '../service/pdf-convert.js';
@@ -31,7 +31,7 @@ class PdfCtrl {
     @Required() @BodyParams('jobId') jobId: string,
     @Required() @BodyParams('expirationDate') expirationDateStr: string,
     @Required() @BodyParams('status') @Enum(Object.values(JobStatusSharedWithGrowi)) growiJobStatus: JobStatusSharedWithGrowi,
-    @BodyParams('appId') appId?: string,
+    @Integer() @BodyParams('appId') appId?: number,
   ): Promise<{ status: JobStatus } | undefined> {
     const expirationDate = new Date(expirationDateStr);
     try {
