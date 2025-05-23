@@ -32,7 +32,16 @@ module.exports = {
     await collection.createIndex({ vectorStoreRelationId: 1, page: 1, attachment: 1 }, { unique: true });
 
   },
-  async down() {
-    // No rollback
+  async down(db) {
+    logger.info('Rollback migration');
+
+    await mongoose.connect(getMongoUri(), mongoOptions);
+
+    // Drop new index
+    await dropIndexIfExists(db, 'vectorstorefilerelations', 'vectorStoreRelationId_1_page_1_attachment_1');
+
+    // Recreate old index
+    const collection = mongoose.connection.collection('vectorstorefilerelations');
+    await collection.createIndex({ vectorStoreRelationId: 1, page: 1 }, { unique: true });
   },
 };
