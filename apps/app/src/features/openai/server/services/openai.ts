@@ -1,3 +1,4 @@
+import fs from 'fs';
 import assert from 'node:assert';
 import { Readable, Transform, Writable } from 'stream';
 import { pipeline } from 'stream/promises';
@@ -322,11 +323,21 @@ class OpenaiService implements IOpenaiService {
     return uploadedFile;
   }
 
-  private async uploadFileForAttachment(file: Buffer | NodeJS.ReadableStream, fileName: string): Promise<OpenAI.Files.FileObject> {
+  private async uploadFileForAttachment(fileName: string, readStream?: NodeJS.ReadableStream, filePath?: string): Promise<OpenAI.Files.FileObject> {
+    const streamSource: NodeJS.ReadableStream = (() => {
+      if (readStream != null) {
+        return readStream;
+      }
+
+      if (filePath != null) {
+        return fs.createReadStream(filePath);
+      }
+
+      throw new Error('readStream and filePath are both null');
+    })();
+
     const uploadableFile = await toFile(
-      file instanceof Readable
-        ? file
-        : Readable.from([file]),
+      streamSource,
       fileName,
     );
 
@@ -367,8 +378,8 @@ class OpenaiService implements IOpenaiService {
             if (!isVectorStoreCompatible(attachment.originalName, attachment.fileFormat)) {
               continue;
             }
-            const fileStream = await this.crowi.fileUploadService.findDeliveryFile(attachment);
-            const uploadedFileForAttachment = await this.uploadFileForAttachment(fileStream, attachment.originalName);
+            const readStream = await this.crowi.fileUploadService.findDeliveryFile(attachment);
+            const uploadedFileForAttachment = await this.uploadFileForAttachment(attachment.originalName, readStream);
             prepareVectorStoreFileRelations(
               vectorStoreRelationId, pageId, uploadedFileForAttachment.id, vectorStoreFileRelationsMap, attachment._id,
             );
@@ -621,9 +632,9 @@ class OpenaiService implements IOpenaiService {
 
 
   private async filterPagesByAccessScope(aiAssistant: AiAssistantDocument, pages: HydratedDocument<PageDocument>[]) {
-    const isPublicPage = (page :HydratedDocument<PageDocument>) => page.grant === PageGrant.GRANT_PUBLIC;
+    const isPublicPage = (page: HydratedDocument<PageDocument>) => page.grant === PageGrant.GRANT_PUBLIC;
 
-    const isUserGroupAccessible = (page :HydratedDocument<PageDocument>, ownerUserGroupIds: string[]) => {
+    const isUserGroupAccessible = (page: HydratedDocument<PageDocument>, ownerUserGroupIds: string[]) => {
       if (page.grant !== PageGrant.GRANT_USER_GROUP) return false;
       return page.grantedGroups.some(group => ownerUserGroupIds.includes(getIdStringForRef(group.item)));
     };
@@ -726,7 +737,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   private async createVectorStoreFileOnUploadAttachment(
-      pageId: string, attachment: HydratedDocument<IAttachmentDocument>, file: Express.Multer.File, buffer: Buffer,
+      pageId: string, attachment: HydratedDocument<IAttachmentDocument>, file: Express.Multer.File,
   ): Promise<void> {
     if (!isVectorStoreCompatible(file.originalname, file.mimetype)) {
       return;
@@ -743,7 +754,7 @@ class OpenaiService implements IOpenaiService {
       return;
     }
 
-    const uploadedFile = await this.uploadFileForAttachment(buffer, file.originalname);
+    const uploadedFile = await this.uploadFileForAttachment(file.originalname, undefined, file.path);
     logger.debug('Uploaded file', uploadedFile);
 
     for await (const aiAssistant of aiAssistants) {
