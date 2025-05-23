@@ -18,6 +18,12 @@ export async function requestPdfConverter(pageBulkExportJob: PageBulkExportJobDo
     throw new Error('createdAt is not set');
   }
 
+  const isGrowiCloud = configManager.getConfig('app:growiCloudUri') != null;
+  const appId = configManager.getConfig('app:growiAppIdForCloud');
+  if (isGrowiCloud && (appId == null)) {
+    throw new Error('appId is required for bulk export on GROWI.cloud');
+  }
+
   const exportJobExpirationSeconds = configManager.getConfig('app:bulkExportJobExpirationSeconds');
   const bulkExportJobExpirationDate = new Date(jobCreatedAt.getTime() + exportJobExpirationSeconds * 1000);
   let pdfConvertStatus: PdfCtrlSyncJobStatusBodyStatus = PdfCtrlSyncJobStatusBodyStatus.HTML_EXPORT_IN_PROGRESS;
@@ -41,7 +47,10 @@ export async function requestPdfConverter(pageBulkExportJob: PageBulkExportJobDo
     }
 
     const res = await pdfCtrlSyncJobStatus({
-      jobId: pageBulkExportJob._id.toString(), expirationDate: bulkExportJobExpirationDate.toISOString(), status: pdfConvertStatus,
+      appId: appId?.toString(),
+      jobId: pageBulkExportJob._id.toString(),
+      expirationDate: bulkExportJobExpirationDate.toISOString(),
+      status: pdfConvertStatus,
     }, { baseURL: configManager.getConfig('app:pageBulkExportPdfConverterUri') });
 
     if (res.data.status === PdfCtrlSyncJobStatus202Status.PDF_EXPORT_DONE) {

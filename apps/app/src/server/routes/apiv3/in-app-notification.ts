@@ -103,7 +103,8 @@ module.exports = (crowi) => {
    *    get:
    *      tags: [NotificationSetting]
    *      security:
-   *        - api_key: []
+   *        - bearer: []
+   *        - accessTokenInQuery: []
    *      operationId: getInAppNotificationList
    *      summary: /in-app-notification/list
    *      description: Get the list of in-app notifications
@@ -193,7 +194,8 @@ module.exports = (crowi) => {
    *    get:
    *      tags: [NotificationSetting]
    *      security:
-   *        - api_key: []
+   *        - bearer: []
+   *        - accessTokenInQuery: []
    *      operationId: getInAppNotificationStatus
    *      summary: /in-app-notification/status
    *      description: Get the status of in-app notifications
@@ -229,7 +231,8 @@ module.exports = (crowi) => {
    *    post:
    *      tags: [NotificationSetting]
    *      security:
-   *        - api_key: []
+   *        - bearer: []
+   *        - accessTokenInQuery: []
    *      operationId: openInAppNotification
    *      summary: /in-app-notification/open
    *      description: Open the in-app notification
@@ -275,7 +278,8 @@ module.exports = (crowi) => {
    *    put:
    *      tags: [NotificationSetting]
    *      security:
-   *        - api_key: []
+   *        - bearer: []
+   *        - accessTokenInQuery: []
    *      operationId: openAllInAppNotification
    *      summary: /in-app-notification/all-statuses-open
    *      description: Open all in-app notifications

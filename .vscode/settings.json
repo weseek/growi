@@ -3,6 +3,14 @@
 
   "eslint.workingDirectories": [{ "mode": "auto" }],
 
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+
   // use vscode-stylelint
   // see https://github.com/stylelint/vscode-stylelint
   "stylelint.validate": ["css", "less", "scss"],
@@ -13,9 +21,13 @@
 
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
+    "source.fixAll.biome": "explicit",
+    "source.organizeImports.biome": "explicit",
     "source.fixAll.markdownlint": "explicit",
     "source.fixAll.stylelint": "explicit"
   },
+
+  "editor.formatOnSave": true,
 
   "githubPullRequests.ignoredPullRequestBranches": [
     "master"
@@ -28,4 +40,5 @@
   "typescript.surveys.enabled": false,
 
   "vitest.filesWatcherInclude": "**/*"
+
 }

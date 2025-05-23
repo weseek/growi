@@ -8,7 +8,7 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "strict": false
+    "strict": true
   },
   "include": ["./src/**/*", "./test/**/*"],
   "exclude": ["node_modules", "dist"]

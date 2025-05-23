@@ -441,7 +441,8 @@ module.exports = (crowi: Crowi): Router => {
    *      summary: /g2g-transfer/generate-key
    *      tags: [GROWI to GROWI Transfer]
    *      security:
-   *        - api_key: []
+   *        - bearer: []
+   *        - accessTokenInQuery: []
    *      requestBody:
    *        required: true
    *        content:
@@ -498,7 +499,8 @@ module.exports = (crowi: Crowi): Router => {
    *      summary: /g2g-transfer/transfer
    *      tags: [GROWI to GROWI Transfer]
    *      security:
-   *        - api_key: []
+   *        - bearer: []
+   *        - accessTokenInQuery: []
    *      requestBody:
    *        required: true
    *        content:

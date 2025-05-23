@@ -130,7 +130,8 @@ module.exports = (crowi) => {
    *        tags: [BookmarkFolders]
    *        operationId: createBookmarkFolder
    *        security:
-   *          - api_key: []
+   *          - bearer: []
+   *          - accessTokenInQuery: []
    *        summary: Create bookmark folder
    *        description: Create a new bookmark folder
    *        requestBody:
@@ -185,7 +186,8 @@ module.exports = (crowi) => {
    *        tags: [BookmarkFolders]
    *        operationId: listBookmarkFolders
    *        security:
-   *          - api_key: []
+   *          - bearer: []
+   *          - accessTokenInQuery: []
    *        summary: List bookmark folders of a user
    *        description: List bookmark folders of a user
    *        parameters:
@@ -274,7 +276,8 @@ module.exports = (crowi) => {
    *        tags: [BookmarkFolders]
    *        operationId: deleteBookmarkFolder
    *        security:
-   *          - api_key: []
+   *          - bearer: []
+   *          - accessTokenInQuery: []
    *        summary: Delete bookmark folder
    *        description: Delete a bookmark folder and its children
    *        parameters:
@@ -317,7 +320,8 @@ module.exports = (crowi) => {
    *        tags: [BookmarkFolders]
    *        operationId: updateBookmarkFolder
    *        security:
-   *          - api_key: []
+   *          - bearer: []
+   *          - accessTokenInQuery: []
    *        summary: Update bookmark folder
    *        description: Update a bookmark folder
    *        requestBody:
@@ -374,7 +378,8 @@ module.exports = (crowi) => {
    *        tags: [BookmarkFolders]
    *        operationId: addBookmarkToFolder
    *        security:
-   *          - api_key: []
+   *          - bearer: []
+   *          - accessTokenInQuery: []
    *        summary: Update bookmark folder
    *        description: Update a bookmark folder
    *        requestBody:
@@ -424,7 +429,8 @@ module.exports = (crowi) => {
    *        tags: [BookmarkFolders]
    *        operationId: updateBookmarkInFolder
    *        security:
-   *          - api_key: []
+   *          - bearer: []
+   *          - accessTokenInQuery: []
    *        summary: Update bookmark in folder
    *        description: Update a bookmark in a folder
    *        requestBody:
