@@ -164,7 +164,7 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
         <CopyDropdown
           pageId={currentPage._id}
           pagePath={currentPage.path}
-          dropdownToggleId={`copydropdown-${currentPage._id}`}
+          dropdownToggleId={`copydropdown-in-pagetitleheader-${currentPage._id}`}
           dropdownToggleClassName="p-1"
         >
           <span className="material-symbols-outlined fs-6">content_paste</span>

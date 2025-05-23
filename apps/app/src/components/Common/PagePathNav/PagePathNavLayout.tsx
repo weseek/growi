@@ -40,7 +40,7 @@ export const PagePathNavLayout = (props: Props): JSX.Element => {
 
   const { data: isNotFound } = useIsNotFound();
 
-  const copyDropdownId = `copydropdown-${pageId}`;
+  const copyDropdownId = `copydropdown-in-pagepathnavlayout-${pageId}`;
 
   const containerLaoutClass = inline ? '' : 'd-flex align-items-center';
 
