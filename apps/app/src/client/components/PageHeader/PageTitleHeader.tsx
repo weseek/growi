@@ -1,5 +1,7 @@
 import type { ChangeEvent, JSX } from 'react';
-import { useState, useCallback, useEffect } from 'react';
+import {
+  useState, useCallback, useEffect, useMemo,
+} from 'react';
 
 import nodePath from 'path';
 
@@ -101,9 +103,25 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
 
   const isInvalid = validationResult != null;
 
-  const inputMaxWidth = maxWidth != null
-    ? getAdjustedMaxWidthForAutosizeInput(maxWidth, 'md', validationResult != null ? false : undefined) - 16
-    : undefined;
+  const inputMaxWidth = useMemo(() => {
+    if (maxWidth == null) {
+      return undefined;
+    }
+
+    const wipBadgeAndCopyDropdownWidth = 4 // me-1
+      + (currentPage.wip ? 49 : 0) // WIP badge + gap
+      + 24; // CopyDropdown
+
+    return getAdjustedMaxWidthForAutosizeInput(maxWidth, 'md', validationResult != null ? false : undefined) - wipBadgeAndCopyDropdownWidth;
+  }, [currentPage.wip, maxWidth, validationResult]);
+
+  const h1MaxWidth = useMemo(() => {
+    if (inputMaxWidth == null) {
+      return undefined;
+    }
+
+    return inputMaxWidth + 16; // plus the padding of px-2 because AutosizeInput has "box-sizing: content-box;"
+  }, [inputMaxWidth]);
 
   return (
     <div className={`d-flex ${moduleClass} ${props.className ?? ''} position-relative`}>
@@ -129,16 +147,16 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
             ${isRenameInputShown ? 'invisible' : ''} text-truncate
             ${isMovable ? 'border border-2 rounded-2' : ''} ${borderColorClass}
           `}
-          style={{ maxWidth: inputMaxWidth }}
+          style={{ maxWidth: h1MaxWidth }}
           onClick={onClickPageTitle}
         >
           {pageTitle}
         </h1>
       </div>
 
-      <div className={`${isRenameInputShown ? 'invisible' : ''} d-flex align-items-center`}>
+      <div className={`${isRenameInputShown ? 'invisible' : ''} d-flex align-items-center gap-2`}>
         { currentPage.wip && (
-          <span className="badge rounded-pill text-bg-secondary ms-2">WIP</span>
+          <span className="badge rounded-pill text-bg-secondary">WIP</span>
         )}
 
         <CopyDropdown
