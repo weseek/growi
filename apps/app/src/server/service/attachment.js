@@ -1,6 +1,3 @@
-import { Transform } from 'stream';
-import { pipeline } from 'stream/promises';
-
 import loggerFactory from '~/utils/logger';
 
 import { AttachmentType } from '../interfaces/attachment';
