@@ -25,7 +25,7 @@ module.exports = {
     await mongoose.connect(getMongoUri(), mongoOptions);
 
     // Drop old index
-    dropIndexIfExists(db, 'vectorstorefilerelations', 'vectorStoreRelationId_1_page_1');
+    await dropIndexIfExists(db, 'vectorstorefilerelations', 'vectorStoreRelationId_1_page_1');
 
     // Create index
     const collection = mongoose.connection.collection('vectorstorefilerelations');
