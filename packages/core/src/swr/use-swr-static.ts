@@ -1,6 +1,5 @@
-import {
-  Key, SWRConfiguration, SWRResponse, useSWRConfig,
-} from 'swr';
+import type { Key, SWRConfiguration, SWRResponse } from 'swr';
+import { useSWRConfig } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 
