@@ -17,7 +17,9 @@ import {
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
 import OpenDefaultAiAssistantButton from '~/features/openai/client/components/AiAssistant/OpenDefaultAiAssistantButton';
-import { useIsGuestUser, useIsReadOnlyUser, useIsSearchPage } from '~/stores-universal/context';
+import {
+  useIsGuestUser, useIsReadOnlyUser, useIsSearchPage, useIsUsersHomepageDeletionEnabled,
+} from '~/stores-universal/context';
 import {
   EditorMode, useEditorMode,
 } from '~/stores-universal/ui';
@@ -134,6 +136,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const { data: editorMode } = useEditorMode();
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
   const { data: isSearchPage } = useIsSearchPage();
+  const { data: isUsersHomepageDeletionEnabled } = useIsUsersHomepageDeletionEnabled();
 
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
 
@@ -332,7 +335,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
         <PageItemControl
           pageId={pageId}
           pageInfo={pageInfo}
-          isEnableActions={!isGuestUser}
+          isEnableActions={!isGuestUser && isUsersHomepageDeletionEnabled}
           isReadOnlyUser={!!isReadOnlyUser}
           forceHideMenuItems={forceHideMenuItemsWithAdditions}
           additionalMenuItemOnTopRenderer={!isReadOnlyUser ? additionalMenuItemOnTopRenderer : undefined}

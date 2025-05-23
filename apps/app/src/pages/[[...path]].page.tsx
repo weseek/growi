@@ -47,7 +47,7 @@ import {
   useIsLocalAccountRegistrationEnabled,
   useIsRomUserAllowedToComment,
   useIsPdfBulkExportEnabled,
-  useIsAiEnabled, useLimitLearnablePageCountPerAssistant,
+  useIsAiEnabled, useLimitLearnablePageCountPerAssistant, useIsUsersHomepageDeletionEnabled,
 } from '~/stores-universal/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -200,6 +200,7 @@ type Props = CommonProps & {
 
   aiEnabled: boolean,
   limitLearnablePageCountPerAssistant: number,
+  isUsersHomepageDeletionEnabled: boolean,
 };
 
 const Page: NextPageWithLayout<Props> = (props: Props) => {
@@ -257,6 +258,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useIsAiEnabled(props.aiEnabled);
   useLimitLearnablePageCountPerAssistant(props.limitLearnablePageCountPerAssistant);
+
+  useIsUsersHomepageDeletionEnabled(props.isUsersHomepageDeletionEnabled);
 
   const { pageWithMeta } = props;
 
@@ -576,6 +579,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
 
   props.aiEnabled = configManager.getConfig('app:aiEnabled');
   props.limitLearnablePageCountPerAssistant = configManager.getConfig('openai:limitLearnablePageCountPerAssistant');
+  props.isUsersHomepageDeletionEnabled = configManager.getConfig('security:user-homepage-deletion:isEnabled');
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
