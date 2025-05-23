@@ -101,7 +101,7 @@ export const PageView = (props: Props): JSX.Element => {
     }
   }, [isForbidden, isIdenticalPathPage, isNotCreatable]);
 
-  const headerContents = <PagePathNavTitle pageId={page?._id} pagePath={pagePath} />;
+  const headerContents = <PagePathNavTitle pageId={page?._id} pagePath={pagePath} isWipPage={page?.wip} />;
 
   const sideContents = !isNotFound && !isNotCreatable
     ? (
