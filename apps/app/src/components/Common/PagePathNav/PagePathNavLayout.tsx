@@ -42,7 +42,7 @@ export const PagePathNavLayout = (props: Props): JSX.Element => {
 
   const copyDropdownId = `copydropdown-in-pagepathnavlayout-${pageId}`;
 
-  const containerLaoutClass = inline ? '' : 'd-flex align-items-center';
+  const containerLayoutClass = inline ? '' : 'd-flex align-items-center';
 
   return (
     <div
@@ -50,7 +50,7 @@ export const PagePathNavLayout = (props: Props): JSX.Element => {
       style={{ maxWidth }}
     >
       <span className={`${formerLinkClassName ?? ''} ${styles['grw-former-link']}`}>{formerLink}</span>
-      <div className={containerLaoutClass}>
+      <div className={containerLayoutClass}>
         <h1 className={`m-0 d-inline align-bottom ${latterLinkClassName}`}>
           {latterLink}
         </h1>
