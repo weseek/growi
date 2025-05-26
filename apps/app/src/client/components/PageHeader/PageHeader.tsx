@@ -26,8 +26,10 @@ export const PageHeader = (): JSX.Element => {
       setMaxWidth(300);
       return;
     }
-    // At least 10px space between PageHeader and PageControls
-    const maxWidth = pageControlsX - pageHeaderRef.current.getBoundingClientRect().x - 10;
+
+    // PageControls.x - PageHeader.x
+    const maxWidth = pageControlsX - pageHeaderRef.current.getBoundingClientRect().x;
+
     setMaxWidth(maxWidth);
   }, [pageControlsX]);
 
