@@ -1,6 +1,6 @@
 function matchSlashes(path: string): RegExpMatchArray | null {
-  // https://regex101.com/r/Z21fEd/5
-  return path.match(/^((\/+)?(.+?))(\/+)?$/);
+  // https://regex101.com/r/FzHxQ9/1
+  return path.match(/^(?=\/|[^\n])((\/+)?([^\n]+?))(\/+)?$/);
 }
 
 export function hasHeadingSlash(path: string): boolean {
