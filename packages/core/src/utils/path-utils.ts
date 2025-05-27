@@ -4,11 +4,15 @@ function matchSlashes(path: string): RegExpMatchArray | null {
 }
 
 export function hasHeadingSlash(path: string): boolean {
+  if (path === '/') return true;
+
   const match = matchSlashes(path);
   return (match?.[2] != null);
 }
 
 export function hasTrailingSlash(path: string): boolean {
+  if (path === '/') return true;
+
   const match = matchSlashes(path);
   return (match?.[4] != null);
 }
