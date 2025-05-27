@@ -128,7 +128,9 @@ describe('listPages', () => {
       expect(mocks.addNumConditionMock).toHaveBeenCalledOnce(); // throw an error
       expect(mocks.addSortConditionMock).not.toHaveBeenCalledOnce(); // does not called
       expect(resMock.status).toHaveBeenCalledOnce();
-      expect(resStatusMock.send).toHaveBeenCalledWith('error for test');
+      expect(resStatusMock.send).toHaveBeenCalledWith(
+        'An internal server error occurred.',
+      );
     });
 
     it('returns 400 HTTP response when the value is invalid', async () => {

@@ -92,7 +92,8 @@ export const listPages = async (
   try {
     toppageViewersCount = await getToppageViewersCount();
   } catch (error) {
-    return res.status(500).send(error);
+    console.error('Error occurred in getToppageViewersCount:', error);
+    return res.status(500).send('An internal server error occurred.');
   }
 
   let query = builder.query;
@@ -132,9 +133,10 @@ export const listPages = async (
     };
     return res.status(200).send(responseData);
   } catch (error) {
+    console.error('Error occurred while processing listPages request:', error);
     if (isHttpError(error)) {
       return res.status(error.status).send(error.message);
     }
-    return res.status(500).send(error.message);
+    return res.status(500).send('An internal server error occurred.');
   }
 };
