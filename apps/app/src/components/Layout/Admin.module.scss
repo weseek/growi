@@ -224,7 +224,6 @@ $slack-work-space-name-card-border: #efc1f6;
   // }
 
   .admin-audit-log {
-    overflow-x: hidden;
     .select-action-dropdown {
       max-height: 500px;
       overflow-y: auto;
@@ -232,14 +231,15 @@ $slack-work-space-name-card-border: #efc1f6;
     .date-range-picker {
       width: 188px;
       height: auto;
+      word-break: break-all!important;
     }
     .jump-page-input {
       width: 50px;
     }
-    .table-user-list{
+    .table-user-list {
       max-width: 50px;
-      overflow-x: hidden;
     }
+
 
   }
 
