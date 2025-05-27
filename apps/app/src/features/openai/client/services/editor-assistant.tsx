@@ -27,7 +27,6 @@ import {
 } from '~/features/openai/interfaces/editor-assistant/sse-schemas';
 import { handleIfSuccessfullyParsed } from '~/features/openai/utils/handle-if-successfully-parsed';
 import { useIsEnableUnifiedMergeView } from '~/stores-universal/context';
-import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useCurrentPageId } from '~/stores/page';
 
 import type { AiAssistantHasId } from '../../interfaces/ai-assistant';
