@@ -1,51 +1,25 @@
-/**
- * @private
- *
- *
- * @param {string} path
- * @returns {RegExpMatchArray}
- * @memberof pathUtils
- */
-function matchSlashes(path) {
+function matchSlashes(path: string): RegExpMatchArray | null {
   // https://regex101.com/r/Z21fEd/5
   return path.match(/^((\/+)?(.+?))(\/+)?$/);
 }
 
-/**
- *
- * @param {string} path
- * @returns {boolean}
- * @memberof pathUtils
- */
-export function hasHeadingSlash(path) {
+export function hasHeadingSlash(path: string): boolean {
   if (path === '') {
     return false;
   }
   const match = matchSlashes(path);
-  return (match[2] != null);
+  return (match?.[2] != null);
 }
 
-/**
- *
- * @param {string} path
- * @returns {boolean}
- * @memberof pathUtils
- */
-export function hasTrailingSlash(path) {
+export function hasTrailingSlash(path: string): boolean {
   if (path === '') {
     return false;
   }
   const match = matchSlashes(path);
-  return (match[4] != null);
+  return (match?.[4] != null);
 }
 
-/**
- *
- * @param {string} path
- * @returns {string}
- * @memberof pathUtils
- */
-export function addHeadingSlash(path) {
+export function addHeadingSlash(path: string): string {
   if (path === '/') {
     return path;
   }
@@ -56,13 +30,7 @@ export function addHeadingSlash(path) {
   return path;
 }
 
-/**
- *
- * @param {string} path
- * @returns {string}
- * @memberof pathUtils
- */
-export function addTrailingSlash(path) {
+export function addTrailingSlash(path: string): string {
   if (path === '/') {
     return path;
   }
@@ -73,13 +41,7 @@ export function addTrailingSlash(path) {
   return path;
 }
 
-/**
- *
- * @param {string} path
- * @returns {string}
- * @memberof pathUtils
- */
-export function removeHeadingSlash(path) {
+export function removeHeadingSlash(path: string): string {
   if (path === '/') {
     return path;
   }
@@ -89,29 +51,19 @@ export function removeHeadingSlash(path) {
     : path;
 }
 
-/**
- *
- * @param {string} path
- * @returns {string}
- * @memberof pathUtils
- */
-export function removeTrailingSlash(path) {
+export function removeTrailingSlash(path: string): string {
   if (path === '/') {
     return path;
   }
 
   const match = matchSlashes(path);
-  return match[1];
+  return match != null ? match[1] : path;
 }
 
 /**
  * A short-hand method to add heading slash and remove trailing slash.
- *
- * @param {string} path
- * @returns {string}
- * @memberof pathUtils
  */
-export function normalizePath(path) {
+export function normalizePath(path: string): string {
   if (path === '' || path === '/') {
     return '/';
   }
@@ -124,25 +76,14 @@ export function normalizePath(path) {
 }
 
 
-/**
- *
- * @param {string} path
- * @returns {string}
- * @memberof pathUtils
- */
-export function attachTitleHeader(path) {
+export function attachTitleHeader(path: string): string {
   return `# ${path}`;
 }
 
 /**
  * If the pagePath is top page path, eliminate the pageId from the url path.
- *
- * @param {string} path
- * @param {string} id
- * @returns {string}
- * @memberof pathUtils
  */
-export function returnPathForURL(path, id) {
+export function returnPathForURL(path: string, id: string): string {
   if (path === '/') {
     return path;
   }
@@ -152,11 +93,7 @@ export function returnPathForURL(path, id) {
 
 /**
  * Get the parent path of the specified path.
- *
- * @param {string} path
- * @returns {string}
- * @memberof pathUtils
  */
-export function getParentPath(path) {
+export function getParentPath(path: string): string {
   return normalizePath(path.split('/').slice(0, -1).join('/'));
 }
