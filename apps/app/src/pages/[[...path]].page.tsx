@@ -261,6 +261,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useIsUsersHomepageDeletionEnabled(props.isUsersHomepageDeletionEnabled);
 
+
   const { pageWithMeta } = props;
 
   const pageId = pageWithMeta?.data._id;
@@ -579,7 +580,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
 
   props.aiEnabled = configManager.getConfig('app:aiEnabled');
   props.limitLearnablePageCountPerAssistant = configManager.getConfig('openai:limitLearnablePageCountPerAssistant');
-  props.isUsersHomepageDeletionEnabled = configManager.getConfig('security:user-homepage-deletion:isEnabled');
+  props.isUsersHomepageDeletionEnabled = configManager.getConfig('security:user-homepage-deletion:isEnabled') && 'isUsersHomepage';
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
