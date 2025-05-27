@@ -7,7 +7,7 @@ interface PathParts {
 }
 
 function parsePath(path: string): PathParts | null {
-  if (!path || path === '') return null;
+  if (typeof path !== 'string' || !path || path === '') return null;
 
   // Special case for root path
   if (path === '/') {
@@ -111,7 +111,7 @@ export function removeTrailingSlash(path: string): string {
  * A short-hand method to add heading slash and remove trailing slash.
  */
 export function normalizePath(path: string): string {
-  if (path === '' || path === '/') {
+  if (typeof path !== 'string' || path === '' || path === '/') {
     return '/';
   }
 
