@@ -120,7 +120,7 @@ describe('page-utils', () => {
       ${'/path1/path2'}     | ${'path1/path2'}
       ${'path1/path2/'}     | ${'path1/path2/'}
       ${'/path1/path2/'}    | ${'path1/path2/'}
-      ${'//path1/path2//'}  | ${'/path1/path2//'}
+      ${'//path1/path2//'}  | ${'path1/path2//'}
       ${'https://example.com'} | ${'https://example.com'}
       ${'https://example.com/'} | ${'https://example.com/'}
       ${'//'}               | ${'/'}                  // from former specific test
