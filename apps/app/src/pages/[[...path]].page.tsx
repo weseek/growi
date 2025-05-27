@@ -580,8 +580,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
 
   props.aiEnabled = configManager.getConfig('app:aiEnabled');
   props.limitLearnablePageCountPerAssistant = configManager.getConfig('openai:limitLearnablePageCountPerAssistant');
-  props.isUsersHomepageDeletionEnabled = configManager.getConfig('security:user-homepage-deletion:isEnabled') && 'isUsersHomepage';
-
+  props.isUsersHomepageDeletionEnabled = configManager.getConfig('security:user-homepage-deletion:isEnabled') && pagePathUtils.isUsersHomepage(props.pageWithMeta?.data.path ?? '');
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('customize:isSearchScopeChildrenAsDefault');
