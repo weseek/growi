@@ -276,6 +276,17 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     }
   }, [detectedDiff]);
 
+  // Disable UnifiedMergeView when starting to write text in Form while UnifiedMergeView is enabled
+  useEffect(() => {
+    const subscription = form.watch(
+      (formData) => {
+        if (formData.input != null && formData.input.length > 0 && isEnableUnifiedMergeView) {
+          mutateIsEnableUnifiedMergeView(false);
+        }
+      },
+    );
+    return () => subscription.unsubscribe();
+  }, [form, form.watch, isEnableUnifiedMergeView, mutateIsEnableUnifiedMergeView]);
 
   // Views
   const headerIcon = useMemo(() => {
@@ -319,6 +330,10 @@ export const useEditorAssistant: UseEditorAssistant = () => {
         return false;
       }
 
+      if (!isEnableUnifiedMergeView) {
+        return false;
+      }
+
       if (generatingAnswerMessage != null) {
         return false;
       }
@@ -358,7 +373,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
         {children}
       </MessageCard>
     );
-  }, [aiAssistantSidebarData?.isEditorAssistant, codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
+  }, [aiAssistantSidebarData?.isEditorAssistant, codeMirrorEditor?.view, isEnableUnifiedMergeView, mutateIsEnableUnifiedMergeView]);
 
   return {
     createThread,
