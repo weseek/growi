@@ -185,7 +185,8 @@ module.exports = (crowi: Crowi): Router => {
    *     summary: /activity
    *     tags: [Activity]
    *     security:
-   *       - api_key: []
+   *       - bearer: []
+   *       - accessTokenInQuery: []
    *     parameters:
    *       - name: limit
    *         in: query

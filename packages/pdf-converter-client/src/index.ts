@@ -24,6 +24,9 @@ export type PdfCtrlSyncJobStatus202 = {
   status: PdfCtrlSyncJobStatus202Status;
 };
 
+/**
+ * @minLength 1
+ */
 export type PdfCtrlSyncJobStatusBodyStatus = typeof PdfCtrlSyncJobStatusBodyStatus[keyof typeof PdfCtrlSyncJobStatusBodyStatus];
 
 
@@ -35,9 +38,13 @@ export const PdfCtrlSyncJobStatusBodyStatus = {
 } as const;
 
 export type PdfCtrlSyncJobStatusBody = {
-  expirationDate?: string;
-  jobId?: string;
-  status?: PdfCtrlSyncJobStatusBodyStatus;
+  appId?: string;
+  /** @minLength 1 */
+  expirationDate: string;
+  /** @minLength 1 */
+  jobId: string;
+  /** @minLength 1 */
+  status: PdfCtrlSyncJobStatusBodyStatus;
 };
 
 export interface GenericError {
@@ -85,7 +92,7 @@ export interface InternalServerError {
   
  */
 export const pdfCtrlSyncJobStatus = <TData = AxiosResponse<PdfCtrlSyncJobStatus202>>(
-    pdfCtrlSyncJobStatusBody?: PdfCtrlSyncJobStatusBody, options?: AxiosRequestConfig
+    pdfCtrlSyncJobStatusBody: PdfCtrlSyncJobStatusBody, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.post(
       `/pdf/sync-job`,

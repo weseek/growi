@@ -1,6 +1,6 @@
 {
   "name": "@growi/slackbot-proxy",
-  "version": "7.2.4-slackbot-proxy.0",
+  "version": "7.2.5-slackbot-proxy.0",
   "license": "MIT",
   "private": "true",
   "scripts": {
@@ -36,7 +36,7 @@
   "dependencies": {
     "@godaddy/terminus": "^4.9.0",
     "@growi/slack": "workspace:^",
-    "@slack/oauth": "^2.0.1",
+    "@slack/oauth": "^3.0.3",
     "@slack/web-api": "^6.2.4",
     "@tsed/common": "=6.43.0",
     "@tsed/di": "=6.43.0",
