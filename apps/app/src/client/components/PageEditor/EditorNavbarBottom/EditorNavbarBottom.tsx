@@ -1,6 +1,5 @@
 import type { JSX } from 'react';
 
-import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 
 import { useDrawerOpened } from '~/stores/ui';
@@ -16,7 +15,6 @@ const SavePageControls = dynamic(() => import('./SavePageControls').then(mod => 
 const OptionsSelector = dynamic(() => import('./OptionsSelector').then(mod => mod.OptionsSelector), { ssr: false });
 
 export const EditorNavbarBottom = (): JSX.Element => {
-  const { t } = useTranslation();
   const { mutate: mutateDrawerOpened } = useDrawerOpened();
 
   return (
