@@ -1,8 +1,8 @@
 import type { JSX } from 'react';
 
-import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 
+import { useIsAiEnabled } from '~/stores-universal/context';
 import { useDrawerOpened } from '~/stores/ui';
 
 import { EditorAssistantToggleButton } from './EditorAssistantToggleButton';
@@ -16,7 +16,7 @@ const SavePageControls = dynamic(() => import('./SavePageControls').then(mod => 
 const OptionsSelector = dynamic(() => import('./OptionsSelector').then(mod => mod.OptionsSelector), { ssr: false });
 
 export const EditorNavbarBottom = (): JSX.Element => {
-  const { t } = useTranslation();
+  const { data: isAiEnabled } = useIsAiEnabled();
   const { mutate: mutateDrawerOpened } = useDrawerOpened();
 
   return (
@@ -31,7 +31,9 @@ export const EditorNavbarBottom = (): JSX.Element => {
         </a>
         <form className="me-auto d-flex gap-2">
           <OptionsSelector />
-          <EditorAssistantToggleButton />
+          {isAiEnabled && (
+            <EditorAssistantToggleButton />
+          )}
         </form>
         <form>
           <SavePageControls />
