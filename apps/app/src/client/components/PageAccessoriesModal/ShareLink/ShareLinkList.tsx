@@ -30,7 +30,7 @@ const ShareLinkTr = (props: ShareLinkTrProps): JSX.Element => {
         { isRelatedPageExists && (
           <CopyDropdown
             pagePath={relatedPage.path}
-            dropdownToggleId={`copydropdown-${shareLinkId}`}
+            dropdownToggleId={`copydropdown-for-share-link-list-${shareLinkId}`}
             pageId={shareLinkId}
             isShareLinkMode
           >

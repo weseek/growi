@@ -72,7 +72,8 @@ const routerFactory = (crowi: Crowi): Router => {
    *   get:
    *     tags: [PageListing]
    *     security:
-   *       - api_key: []
+   *       - bearer: []
+   *       - accessTokenInQuery: []
    *     summary: /page-listing/root
    *     description: Get the root page
    *     responses:
@@ -107,7 +108,8 @@ const routerFactory = (crowi: Crowi): Router => {
    *   get:
    *     tags: [PageListing]
    *     security:
-   *       - api_key: []
+   *       - bearer: []
+   *       - accessTokenInQuery: []
    *     summary: /page-listing/ancestors-children
    *     description: Get the ancestors and children of a page
    *     parameters:
@@ -172,7 +174,8 @@ const routerFactory = (crowi: Crowi): Router => {
    *   get:
    *     tags: [PageListing]
    *     security:
-   *       - api_key: []
+   *       - bearer: []
+   *       - accessTokenInQuery: []
    *     summary: /page-listing/children
    *     description: Get the children of a page
    *     parameters:
@@ -211,7 +214,7 @@ const routerFactory = (crowi: Crowi): Router => {
 
     try {
       const pages = await pageService.findChildrenByParentPathOrIdAndViewer(
-        (id || path)as string, req.user, undefined, !hideRestrictedByOwner, !hideRestrictedByGroup,
+        (id || path) as string, req.user, undefined, !hideRestrictedByOwner, !hideRestrictedByGroup,
       );
       return res.apiv3({ children: pages });
     }
@@ -228,7 +231,8 @@ const routerFactory = (crowi: Crowi): Router => {
    *   get:
    *     tags: [PageListing]
    *     security:
-   *       - api_key: []
+   *       - bearer: []
+   *       - accessTokenInQuery: []
    *     summary: /page-listing/info
    *     description: Get the information of a page
    *     parameters:

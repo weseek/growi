@@ -295,6 +295,10 @@ export const useFetchAndSetMessageDataEffect = (
   );
 
   useEffect(() => {
+    if (aiAssistantSidebarData?.isEditorAssistant) {
+      return;
+    }
+
     if (threadId == null) {
       setMessageLogs([]);
       return; // Early return if no threadId
