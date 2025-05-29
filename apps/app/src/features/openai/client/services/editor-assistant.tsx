@@ -137,7 +137,7 @@ const getLineInfo = (yText: YText, lineNumber: number): { text: string, startInd
 };
 
 export const useEditorAssistant: UseEditorAssistant = () => {
-  // Refs\
+  // Refs
   const lineRef = useRef<number>(0);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
