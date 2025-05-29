@@ -144,6 +144,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   // Refs
   // const positionRef = useRef<number>(0);
   const lineRef = useRef<number>(0);
+  const isApplyingDiffRef = useRef<boolean>(false);
 
   // States
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
@@ -210,8 +211,10 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   const processMessage: ProcessMessage = useCallback((data, handler) => {
     handleIfSuccessfullyParsed(data, SseMessageSchema, (data: SseMessage) => {
       handler.onMessage(data);
+      isApplyingDiffRef.current = false;
     });
     handleIfSuccessfullyParsed(data, SseDetectedDiffSchema, (data: SseDetectedDiff) => {
+      isApplyingDiffRef.current = true;
       mutateIsEnableUnifiedMergeView(true);
       setDetectedDiff((prev) => {
         const newData = { data, applied: false, id: crypto.randomUUID() };
