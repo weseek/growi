@@ -188,6 +188,9 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       }
     };
 
+    // Disable UnifiedMergeView when a Form is submitted with UnifiedMergeView enabled
+    mutateIsEnableUnifiedMergeView(false);
+
     const response = await fetch('/_api/v3/openai/edit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -199,7 +202,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     });
 
     return response;
-  }, [codeMirrorEditor, selectedText]);
+  }, [codeMirrorEditor, mutateIsEnableUnifiedMergeView, selectedText]);
 
   const processMessage: ProcessMessage = useCallback((data, handler) => {
     handleIfSuccessfullyParsed(data, SseMessageSchema, (data: SseMessage) => {
@@ -275,18 +278,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       lineRef.current = 0;
     }
   }, [detectedDiff]);
-
-  // Disable UnifiedMergeView when starting to write text in Form while UnifiedMergeView is enabled
-  useEffect(() => {
-    const subscription = form.watch(
-      (formData) => {
-        if (formData.input != null && formData.input.length > 0 && isEnableUnifiedMergeView) {
-          mutateIsEnableUnifiedMergeView(false);
-        }
-      },
-    );
-    return () => subscription.unsubscribe();
-  }, [form, form.watch, isEnableUnifiedMergeView, mutateIsEnableUnifiedMergeView]);
 
   // Views
   const headerIcon = useMemo(() => {
