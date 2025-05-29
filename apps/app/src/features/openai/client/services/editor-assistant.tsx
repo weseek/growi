@@ -18,16 +18,12 @@ import {
   SseDetectedDiffSchema,
   SseFinalizedSchema,
   isReplaceDiff,
-  // isInsertDiff,
-  // isDeleteDiff,
-  // isRetainDiff,
   type SseMessage,
   type SseDetectedDiff,
   type SseFinalized,
 } from '~/features/openai/interfaces/editor-assistant/sse-schemas';
 import { handleIfSuccessfullyParsed } from '~/features/openai/utils/handle-if-successfully-parsed';
 import { useIsEnableUnifiedMergeView } from '~/stores-universal/context';
-import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useCurrentPageId } from '~/stores/page';
 
 import type { AiAssistantHasId } from '../../interfaces/ai-assistant';
@@ -35,7 +31,6 @@ import type { MessageLog } from '../../interfaces/message';
 import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
 import { ThreadType } from '../../interfaces/thread-relation';
 import { AiAssistantDropdown } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantDropdown';
-// import { type FormData } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantSidebar';
 import { MessageCard, type MessageCardRole } from '../components/AiAssistant/AiAssistantSidebar/MessageCard';
 import { QuickMenuList } from '../components/AiAssistant/AiAssistantSidebar/QuickMenuList';
 import { useAiAssistantSidebar } from '../stores/ai-assistant';
@@ -143,7 +138,6 @@ const getLineInfo = (yText: YText, lineNumber: number): { text: string, startInd
 
 export const useEditorAssistant: UseEditorAssistant = () => {
   // Refs
-  // const positionRef = useRef<number>(0);
   const lineRef = useRef<number>(0);
 
   // States
@@ -196,6 +190,9 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       }
     };
 
+    // Disable UnifiedMergeView when a Form is submitted with UnifiedMergeView enabled
+    mutateIsEnableUnifiedMergeView(false);
+
     const response = await fetch('/_api/v3/openai/edit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -207,7 +204,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     });
 
     return response;
-  }, [codeMirrorEditor, selectedText]);
+  }, [codeMirrorEditor, mutateIsEnableUnifiedMergeView, selectedText]);
 
   const processMessage: ProcessMessage = useCallback((data, handler) => {
     handleIfSuccessfullyParsed(data, SseMessageSchema, (data: SseMessage) => {
@@ -242,26 +239,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   useEffect(() => {
     const pendingDetectedDiff: DetectedDiff | undefined = detectedDiff?.filter(diff => diff.applied === false);
     if (yDocs?.secondaryDoc != null && pendingDetectedDiff != null && pendingDetectedDiff.length > 0) {
-
-      // For debug
-      // const testDetectedDiff = [
-      //   {
-      //     data: { diff: { retain: 9 } },
-      //     applied: false,
-      //     id: crypto.randomUUID(),
-      //   },
-      //   {
-      //     data: { diff: { delete: 5 } },
-      //     applied: false,
-      //     id: crypto.randomUUID(),
-      //   },
-      //   {
-      //     data: { diff: { insert: 'growi' } },
-      //     applied: false,
-      //     id: crypto.randomUUID(),
-      //   },
-      // ];
-
       const yText = yDocs.secondaryDoc.getText('codemirror');
       yDocs.secondaryDoc.transact(() => {
         pendingDetectedDiff.forEach((detectedDiff) => {
@@ -280,15 +257,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
               appendTextLastLine(yText, detectedDiff.data.diff.replace);
             }
           }
-          // if (isInsertDiff(detectedDiff.data)) {
-          //   yText.insert(positionRef.current, detectedDiff.data.diff.insert);
-          // }
-          // if (isDeleteDiff(detectedDiff.data)) {
-          //   yText.delete(positionRef.current, detectedDiff.data.diff.delete);
-          // }
-          // if (isRetainDiff(detectedDiff.data)) {
-          //   positionRef.current += detectedDiff.data.diff.retain;
-          // }
         });
       });
 
@@ -312,10 +280,8 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       setSelectedText(undefined);
       setDetectedDiff(undefined);
       lineRef.current = 0;
-      // positionRef.current = 0;
     }
   }, [detectedDiff]);
-
 
   // Views
   const headerIcon = useMemo(() => {
@@ -359,6 +325,10 @@ export const useEditorAssistant: UseEditorAssistant = () => {
         return false;
       }
 
+      if (!isEnableUnifiedMergeView) {
+        return false;
+      }
+
       if (generatingAnswerMessage != null) {
         return false;
       }
@@ -398,7 +368,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
         {children}
       </MessageCard>
     );
-  }, [aiAssistantSidebarData?.isEditorAssistant, codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
+  }, [aiAssistantSidebarData?.isEditorAssistant, codeMirrorEditor?.view, isEnableUnifiedMergeView, mutateIsEnableUnifiedMergeView]);
 
   return {
     createThread,
