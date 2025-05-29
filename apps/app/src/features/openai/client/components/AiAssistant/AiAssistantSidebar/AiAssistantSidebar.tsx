@@ -92,6 +92,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     form: formForEditorAssistant,
     resetForm: resetFormEditorAssistant,
     isTextSelected,
+    isGeneratingEditorText,
 
     // Views
     generateInitialView: generateInitialViewForEditorAssistant,
@@ -394,7 +395,12 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                   </>
                 )) }
                 { generatingAnswerMessage != null && (
-                  <MessageCard role="assistant">{generatingAnswerMessage.content}</MessageCard>
+                  <MessageCard
+                    isGeneratingEditorText={isGeneratingEditorText}
+                    role="assistant"
+                  >
+                    {generatingAnswerMessage.content}
+                  </MessageCard>
                 )}
                 { messageLogs.length > 0 && (
                   <div className="d-flex justify-content-center">

@@ -78,6 +78,7 @@ type UseEditorAssistant = () => {
   form: UseFormReturn<FormData>
   resetForm: () => void
   isTextSelected: boolean,
+  isGeneratingEditorText: boolean,
 
   // Views
   generateInitialView: GenerateInitialView,
@@ -144,12 +145,12 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   // Refs
   // const positionRef = useRef<number>(0);
   const lineRef = useRef<number>(0);
-  const isApplyingDiffRef = useRef<boolean>(false);
 
   // States
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
   const [selectedAiAssistant, setSelectedAiAssistant] = useState<AiAssistantHasId>();
   const [selectedText, setSelectedText] = useState<string>();
+  const [isGeneratingEditorText, setIsGeneratingEditorText] = useState<boolean>(false);
 
   const isTextSelected = useMemo(() => selectedText != null && selectedText.length !== 0, [selectedText]);
 
@@ -211,10 +212,9 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   const processMessage: ProcessMessage = useCallback((data, handler) => {
     handleIfSuccessfullyParsed(data, SseMessageSchema, (data: SseMessage) => {
       handler.onMessage(data);
-      isApplyingDiffRef.current = false;
+      setIsGeneratingEditorText(true);
     });
     handleIfSuccessfullyParsed(data, SseDetectedDiffSchema, (data: SseDetectedDiff) => {
-      isApplyingDiffRef.current = true;
       mutateIsEnableUnifiedMergeView(true);
       setDetectedDiff((prev) => {
         const newData = { data, applied: false, id: crypto.randomUUID() };
@@ -226,6 +226,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       handler.onDetectedDiff(data);
     });
     handleIfSuccessfullyParsed(data, SseFinalizedSchema, (data: SseFinalized) => {
+      setIsGeneratingEditorText(false);
       handler.onFinalized(data);
     });
   }, [mutateIsEnableUnifiedMergeView]);
@@ -406,6 +407,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     form,
     resetForm,
     isTextSelected,
+    isGeneratingEditorText,
 
     // Views
     generateInitialView,

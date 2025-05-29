@@ -1,5 +1,6 @@
 import { useCallback, useState, type JSX } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import type { LinkProps } from 'next/link';
 import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
@@ -33,10 +34,11 @@ const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): J
 };
 
 const AssistantMessageCard = ({
-  children, showActionButtons, onAccept, onDiscard,
+  children, isGeneratingEditorText, showActionButtons, onAccept, onDiscard,
 }: {
   children: string,
   showActionButtons?: boolean
+  isGeneratingEditorText?: boolean
   onAccept?: () => void,
   onDiscard?: () => void,
 }): JSX.Element => {
@@ -65,6 +67,13 @@ const AssistantMessageCard = ({
             ? (
               <>
                 <ReactMarkdown components={{ a: NextLinkWrapper }}>{children}</ReactMarkdown>
+
+                {isGeneratingEditorText && (
+                  <div className="text-muted mb-3">
+                    <LoadingSpinner />
+                    <span className="ms-2">{t('sidebar_ai_assistant.text_generation_by_editor_assistant_label')}</span>
+                  </div>
+                )}
 
                 {showActionButtons && !isActionButtonClicked && (
                   <div className="d-flex mt-2 justify-content-start">
@@ -104,13 +113,14 @@ type Props = {
   role: MessageCardRole,
   children: string,
   showActionButtons?: boolean,
+  isGeneratingEditorText?: boolean,
   onDiscard?: () => void,
   onAccept?: () => void,
 }
 
 export const MessageCard = (props: Props): JSX.Element => {
   const {
-    role, children, showActionButtons, onAccept, onDiscard,
+    role, children, showActionButtons, isGeneratingEditorText, onAccept, onDiscard,
   } = props;
 
   return role === 'user'
@@ -118,6 +128,7 @@ export const MessageCard = (props: Props): JSX.Element => {
     : (
       <AssistantMessageCard
         showActionButtons={showActionButtons}
+        isGeneratingEditorText={isGeneratingEditorText}
         onAccept={onAccept}
         onDiscard={onDiscard}
       >{children}
