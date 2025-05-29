@@ -137,8 +137,9 @@ const getLineInfo = (yText: YText, lineNumber: number): { text: string, startInd
 };
 
 export const useEditorAssistant: UseEditorAssistant = () => {
-  // Refs
+  // Refs\
   const lineRef = useRef<number>(0);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // States
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
@@ -207,11 +208,28 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   }, [codeMirrorEditor, mutateIsEnableUnifiedMergeView, selectedText]);
 
   const processMessage: ProcessMessage = useCallback((data, handler) => {
+    // Reset timer whenever data is received
+    const handleDataReceived = () => {
+    // Clear existing timer
+      if (timerRef.current != null) {
+        clearTimeout(timerRef.current);
+      }
+
+      // Hide spinner since data is flowing
+      setIsGeneratingEditorText(false);
+
+      // Set new timer
+      timerRef.current = setTimeout(() => {
+        setIsGeneratingEditorText(true);
+      }, 500);
+    };
+
     handleIfSuccessfullyParsed(data, SseMessageSchema, (data: SseMessage) => {
       handler.onMessage(data);
-      setIsGeneratingEditorText(true);
+      handleDataReceived();
     });
     handleIfSuccessfullyParsed(data, SseDetectedDiffSchema, (data: SseDetectedDiff) => {
+      handleDataReceived();
       mutateIsEnableUnifiedMergeView(true);
       setDetectedDiff((prev) => {
         const newData = { data, applied: false, id: crypto.randomUUID() };
@@ -223,7 +241,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       handler.onDetectedDiff(data);
     });
     handleIfSuccessfullyParsed(data, SseFinalizedSchema, (data: SseFinalized) => {
-      setIsGeneratingEditorText(false);
       handler.onFinalized(data);
     });
   }, [mutateIsEnableUnifiedMergeView]);
