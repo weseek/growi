@@ -30,9 +30,6 @@ const PORT = Number(process.env.PORT || 3010);
   terminus: {
     signals: ['SIGINT', 'SIGTERM'],
   },
-  logger: {
-    level: 'debug',
-  },
 })
 class Server {
 

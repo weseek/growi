@@ -7,7 +7,6 @@ export default defineConfig({
     root: './',
   },
   plugins: [
-    // This is required to build the test files with SWC
     swc.vite(),
   ],
 });
