@@ -534,6 +534,7 @@
     "accept": "接受",
     "use_assistant": "使用助手",
     "remove_assistant": "取消选定的助手",
+    "text_generation_by_editor_assistant_label": "编辑助理正在生成文本",
     "preset_menu": {
       "summarize": {
         "title": "为此文章创建摘要",

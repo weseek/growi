@@ -1,5 +1,5 @@
 import {
-  useCallback, useEffect, useState, useRef, useMemo,
+  useCallback, useEffect, useState, useRef, useMemo, type FC,
 } from 'react';
 
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
@@ -31,7 +31,6 @@ import type { MessageLog } from '../../interfaces/message';
 import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
 import { ThreadType } from '../../interfaces/thread-relation';
 import { AiAssistantDropdown } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantDropdown';
-import { MessageCard, type MessageCardRole } from '../components/AiAssistant/AiAssistantSidebar/MessageCard';
 import { QuickMenuList } from '../components/AiAssistant/AiAssistantSidebar/QuickMenuList';
 import { useAiAssistantSidebar } from '../stores/ai-assistant';
 
@@ -52,8 +51,8 @@ interface ProcessMessage {
 interface GenerateInitialView {
   (onSubmit: (data: FormData) => Promise<void>): JSX.Element;
 }
-interface GenerateMessageCard {
-  (role: MessageCardRole, children: string, messageId: string, messageLogs: MessageLog[], generatingAnswerMessage?: MessageLog): JSX.Element;
+interface GenerateActionButtons {
+  (messageId: string, messageLogs: MessageLog[], generatingAnswerMessage?: MessageLog): JSX.Element;
 }
 export interface FormData {
   input: string,
@@ -73,10 +72,12 @@ type UseEditorAssistant = () => {
   form: UseFormReturn<FormData>
   resetForm: () => void
   isTextSelected: boolean,
+  isGeneratingEditorText: boolean,
 
   // Views
   generateInitialView: GenerateInitialView,
-  generateMessageCard: GenerateMessageCard,
+  generatingEditorTextLabel?: JSX.Element,
+  generateActionButtons: GenerateActionButtons,
   headerIcon: JSX.Element,
   headerText: JSX.Element,
   placeHolder: string,
@@ -138,11 +139,13 @@ const getLineInfo = (yText: YText, lineNumber: number): { text: string, startInd
 export const useEditorAssistant: UseEditorAssistant = () => {
   // Refs
   const lineRef = useRef<number>(0);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // States
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
   const [selectedAiAssistant, setSelectedAiAssistant] = useState<AiAssistantHasId>();
   const [selectedText, setSelectedText] = useState<string>();
+  const [isGeneratingEditorText, setIsGeneratingEditorText] = useState<boolean>(false);
 
   const isTextSelected = useMemo(() => selectedText != null && selectedText.length !== 0, [selectedText]);
 
@@ -205,10 +208,30 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   }, [codeMirrorEditor, mutateIsEnableUnifiedMergeView, selectedText]);
 
   const processMessage: ProcessMessage = useCallback((data, handler) => {
+    // Reset timer whenever data is received
+    const handleDataReceived = () => {
+    // Clear existing timer
+      if (timerRef.current != null) {
+        clearTimeout(timerRef.current);
+      }
+
+      // Hide spinner since data is flowing
+      if (isGeneratingEditorText) {
+        setIsGeneratingEditorText(false);
+      }
+
+      // Set new timer
+      timerRef.current = setTimeout(() => {
+        setIsGeneratingEditorText(true);
+      }, 500);
+    };
+
     handleIfSuccessfullyParsed(data, SseMessageSchema, (data: SseMessage) => {
+      handleDataReceived();
       handler.onMessage(data);
     });
     handleIfSuccessfullyParsed(data, SseDetectedDiffSchema, (data: SseDetectedDiff) => {
+      handleDataReceived();
       mutateIsEnableUnifiedMergeView(true);
       setDetectedDiff((prev) => {
         const newData = { data, applied: false, id: crypto.randomUUID() };
@@ -222,12 +245,13 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     handleIfSuccessfullyParsed(data, SseFinalizedSchema, (data: SseFinalized) => {
       handler.onFinalized(data);
     });
-  }, [mutateIsEnableUnifiedMergeView]);
+  }, [isGeneratingEditorText, mutateIsEnableUnifiedMergeView]);
 
   const selectTextHandler = useCallback((selectedText: string, selectedTextFirstLineNumber: number) => {
     setSelectedText(selectedText);
     lineRef.current = selectedTextFirstLineNumber;
   }, []);
+
 
   // Effects
   useTextSelectionEffect(codeMirrorEditor, selectTextHandler);
@@ -279,6 +303,16 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     }
   }, [detectedDiff]);
 
+  useEffect(() => {
+    return () => {
+      if (timerRef.current != null) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, []);
+
+
   // Views
   const headerIcon = useMemo(() => {
     return <span className="material-symbols-outlined growi-ai-chat-icon me-3 fs-4">support_agent</span>;
@@ -314,8 +348,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     );
   }, [selectedAiAssistant]);
 
-
-  const generateMessageCard: GenerateMessageCard = useCallback((role, children, messageId, messageLogs, generatingAnswerMessage) => {
+  const generateActionButtons: GenerateActionButtons = useCallback((messageId, messageLogs, generatingAnswerMessage) => {
     const isActionButtonShown = (() => {
       if (!aiAssistantSidebarData?.isEditorAssistant) {
         return false;
@@ -340,7 +373,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       return false;
     })();
 
-
     const accept = () => {
       if (codeMirrorEditor?.view == null) {
         return;
@@ -354,17 +386,41 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       mutateIsEnableUnifiedMergeView(false);
     };
 
+    if (!isActionButtonShown) {
+      return <></>;
+    }
+
     return (
-      <MessageCard
-        role={role}
-        showActionButtons={isActionButtonShown}
-        onAccept={accept}
-        onDiscard={reject}
-      >
-        {children}
-      </MessageCard>
+      <div className="d-flex mt-2 justify-content-start">
+        <button
+          type="button"
+          className="btn btn-outline-secondary me-2"
+          onClick={reject}
+        >
+          {t('sidebar_ai_assistant.discard')}
+        </button>
+        <button
+          type="button"
+          className="btn btn-success"
+          onClick={accept}
+        >
+          {t('sidebar_ai_assistant.accept')}
+        </button>
+      </div>
     );
-  }, [aiAssistantSidebarData?.isEditorAssistant, codeMirrorEditor?.view, isEnableUnifiedMergeView, mutateIsEnableUnifiedMergeView]);
+  }, [aiAssistantSidebarData?.isEditorAssistant, codeMirrorEditor?.view, isEnableUnifiedMergeView, mutateIsEnableUnifiedMergeView, t]);
+
+  const generatingEditorTextLabel = useMemo(() => {
+    return (
+      <>
+        {isGeneratingEditorText && (
+          <span className="text-thinking">
+            {t('sidebar_ai_assistant.text_generation_by_editor_assistant_label')}
+          </span>
+        )}
+      </>
+    );
+  }, [isGeneratingEditorText, t]);
 
   return {
     createThread,
@@ -373,10 +429,12 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     form,
     resetForm,
     isTextSelected,
+    isGeneratingEditorText,
 
     // Views
     generateInitialView,
-    generateMessageCard,
+    generatingEditorTextLabel,
+    generateActionButtons,
     headerIcon,
     headerText,
     placeHolder,

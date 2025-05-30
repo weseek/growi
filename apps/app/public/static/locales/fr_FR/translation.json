@@ -538,6 +538,7 @@
     "accept": "Accepter",
     "use_assistant": "Utiliser l'assistant",
     "remove_assistant": "Désélectionner l'assistant sélectionné",
+    "text_generation_by_editor_assistant_label": "L'assistant de rédaction génère du texte",
     "preset_menu": {
       "summarize": {
         "title": "Résumer cet article'",
