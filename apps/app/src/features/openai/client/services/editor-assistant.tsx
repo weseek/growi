@@ -252,6 +252,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     lineRef.current = selectedTextFirstLineNumber;
   }, []);
 
+
   // Effects
   useTextSelectionEffect(codeMirrorEditor, selectTextHandler);
 
@@ -301,6 +302,16 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       lineRef.current = 0;
     }
   }, [detectedDiff]);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current != null) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, []);
+
 
   // Views
   const headerIcon = useMemo(() => {
