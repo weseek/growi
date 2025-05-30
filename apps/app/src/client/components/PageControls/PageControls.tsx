@@ -8,6 +8,7 @@ import type {
 import {
   isIPageInfoForEntity, isIPageInfoForOperation,
 } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { DropdownItem } from 'reactstrap';
@@ -17,7 +18,9 @@ import {
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
 import OpenDefaultAiAssistantButton from '~/features/openai/client/components/AiAssistant/OpenDefaultAiAssistantButton';
-import { useIsGuestUser, useIsReadOnlyUser, useIsSearchPage } from '~/stores-universal/context';
+import {
+  useIsGuestUser, useIsReadOnlyUser, useIsSearchPage, useIsUsersHomepageDeletionEnabled,
+} from '~/stores-universal/context';
 import {
   EditorMode, useEditorMode,
 } from '~/stores-universal/ui';
@@ -27,7 +30,7 @@ import {
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
-import { useSWRxPageInfo, useSWRxTagsInfo } from '../../../stores/page';
+import { useSWRxPageInfo, useSWRxTagsInfo, useCurrentPagePath } from '../../../stores/page';
 import { useSWRxUsersList } from '../../../stores/user';
 import type { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 import {
@@ -134,6 +137,12 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const { data: editorMode } = useEditorMode();
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
   const { data: isSearchPage } = useIsSearchPage();
+  const { data: isUsersHomepageDeletionEnabled } = useIsUsersHomepageDeletionEnabled();
+  const { data: currentPagePath } = useCurrentPagePath();
+
+  const isUsersHomepage = pagePathUtils.isUsersHomepage(currentPagePath ?? '');
+  console.log(isUsersHomepage);
+
 
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
 
@@ -280,6 +289,18 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const _isIPageInfoForOperation = isIPageInfoForOperation(pageInfo);
   const isViewMode = editorMode === EditorMode.View;
 
+  const isEnableActions = () => {
+    if (isGuestUser) {
+      return false;
+    }
+
+    if (isUsersHomepage && !isUsersHomepageDeletionEnabled) {
+      return false;
+    }
+
+    return true;
+  };
+
   return (
     <div className={`${styles['grw-page-controls']} hstack gap-2`} ref={pageControlsRef}>
       { isViewMode && isDeviceLargerThanMd && !isSearchPage && !isSearchPage && (
@@ -332,7 +353,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
         <PageItemControl
           pageId={pageId}
           pageInfo={pageInfo}
-          isEnableActions={!isGuestUser}
+          isEnableActions={isEnableActions()}
           isReadOnlyUser={!!isReadOnlyUser}
           forceHideMenuItems={forceHideMenuItemsWithAdditions}
           additionalMenuItemOnTopRenderer={!isReadOnlyUser ? additionalMenuItemOnTopRenderer : undefined}
