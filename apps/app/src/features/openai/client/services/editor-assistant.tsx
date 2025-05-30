@@ -216,7 +216,9 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       }
 
       // Hide spinner since data is flowing
-      setIsGeneratingEditorText(false);
+      if (isGeneratingEditorText) {
+        setIsGeneratingEditorText(false);
+      }
 
       // Set new timer
       timerRef.current = setTimeout(() => {
