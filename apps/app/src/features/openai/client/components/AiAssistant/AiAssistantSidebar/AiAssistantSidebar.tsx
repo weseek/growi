@@ -29,7 +29,7 @@ import {
 import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
 import { useSWRxThreads } from '../../../stores/thread';
 
-import { MessageCard, type MessageCardRole } from './MessageCard';
+import { MessageCard } from './MessageCard';
 import { ResizableTextarea } from './ResizableTextArea';
 
 import styles from './AiAssistantSidebar.module.scss';
@@ -78,7 +78,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
     // Views
     initialView: initialViewForKnowledgeAssistant,
-    generateMessageCard: generateMessageCardForKnowledgeAssistant,
     generateModeSwitchesDropdown: generateModeSwitchesDropdownForKnowledgeAssistant,
     headerIcon: headerIconForKnowledgeAssistant,
     headerText: headerTextForKnowledgeAssistant,
@@ -95,7 +94,8 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
     // Views
     generateInitialView: generateInitialViewForEditorAssistant,
-    generateMessageCard: generateMessageCardForEditorAssistant,
+    generatingEditorTextLabel,
+    generateActionButtons,
     headerIcon: headerIconForEditorAssistant,
     headerText: headerTextForEditorAssistant,
     placeHolder: placeHolderForEditorAssistant,
@@ -354,18 +354,25 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     return initialViewForKnowledgeAssistant;
   }, [generateInitialViewForEditorAssistant, initialViewForKnowledgeAssistant, isEditorAssistant, submit]);
 
-  const messageCard = useCallback(
-    (role: MessageCardRole, children: string, messageId?: string, messageLogs?: MessageLog[], generatingAnswerMessage?: MessageLog) => {
-      if (isEditorAssistant) {
-        if (messageId == null || messageLogs == null) {
-          return <></>;
-        }
-        return generateMessageCardForEditorAssistant(role, children, messageId, messageLogs, generatingAnswerMessage);
-      }
+  const messageCardAdditionalItemForGeneratingMessage = useMemo(() => {
+    if (isEditorAssistant) {
+      return generatingEditorTextLabel;
+    }
 
-      return generateMessageCardForKnowledgeAssistant(role, children);
-    }, [generateMessageCardForEditorAssistant, generateMessageCardForKnowledgeAssistant, isEditorAssistant],
-  );
+    return <></>;
+  }, [generatingEditorTextLabel, isEditorAssistant]);
+
+
+  const messageCardAdditionalItemForGeneratedMessage = useCallback((messageId?: string) => {
+    if (isEditorAssistant) {
+      if (messageId == null || messageLogs == null) {
+        return <></>;
+      }
+      return generateActionButtons(messageId, messageLogs, generatingAnswerMessage);
+    }
+
+    return undefined;
+  }, [generateActionButtons, generatingAnswerMessage, isEditorAssistant, messageLogs]);
 
   return (
     <>
@@ -390,11 +397,21 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
               <div className="vstack gap-4 pb-2">
                 { messageLogs.map(message => (
                   <>
-                    {messageCard(message.isUserMessage ? 'user' : 'assistant', message.content, message.id, messageLogs, generatingAnswerMessage)}
+                    <MessageCard
+                      role={message.isUserMessage ? 'user' : 'assistant'}
+                      additionalItem={messageCardAdditionalItemForGeneratedMessage(message.id)}
+                    >
+                      {message.content}
+                    </MessageCard>
                   </>
                 )) }
                 { generatingAnswerMessage != null && (
-                  <MessageCard role="assistant">{generatingAnswerMessage.content}</MessageCard>
+                  <MessageCard
+                    role="assistant"
+                    additionalItem={messageCardAdditionalItemForGeneratingMessage}
+                  >
+                    {generatingAnswerMessage.content}
+                  </MessageCard>
                 )}
                 { messageLogs.length > 0 && (
                   <div className="d-flex justify-content-center">
@@ -471,7 +488,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                 </Collapse>
               </div>
             )}
-
           </div>
         </div>
       </div>

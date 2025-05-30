@@ -1,4 +1,4 @@
-import { useCallback, useState, type JSX } from 'react';
+import { type JSX } from 'react';
 
 import type { LinkProps } from 'next/link';
 import { useTranslation } from 'react-i18next';
@@ -33,26 +33,13 @@ const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): J
 };
 
 const AssistantMessageCard = ({
-  children, showActionButtons, onAccept, onDiscard,
+  children,
+  additionalItem,
 }: {
   children: string,
-  showActionButtons?: boolean
-  onAccept?: () => void,
-  onDiscard?: () => void,
+  additionalItem?: JSX.Element,
 }): JSX.Element => {
   const { t } = useTranslation();
-
-  const [isActionButtonClicked, setIsActionButtonClicked] = useState(false);
-
-  const clickActionButtonHandler = useCallback((action: 'accept' | 'discard') => {
-    setIsActionButtonClicked(true);
-    if (action === 'accept') {
-      onAccept?.();
-      return;
-    }
-
-    onDiscard?.();
-  }, [onAccept, onDiscard]);
 
   return (
     <div className={`card border-0 ${moduleClass} ${assistantMessageCardModuleClass}`}>
@@ -65,25 +52,7 @@ const AssistantMessageCard = ({
             ? (
               <>
                 <ReactMarkdown components={{ a: NextLinkWrapper }}>{children}</ReactMarkdown>
-
-                {showActionButtons && !isActionButtonClicked && (
-                  <div className="d-flex mt-2 justify-content-start">
-                    <button
-                      type="button"
-                      className="btn btn-outline-secondary me-2"
-                      onClick={() => clickActionButtonHandler('discard')}
-                    >
-                      {t('sidebar_ai_assistant.discard')}
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-success"
-                      onClick={() => clickActionButtonHandler('accept')}
-                    >
-                      {t('sidebar_ai_assistant.accept')}
-                    </button>
-                  </div>
-                )}
+                { additionalItem }
               </>
             )
             : (
@@ -98,28 +67,25 @@ const AssistantMessageCard = ({
   );
 };
 
-export type MessageCardRole = 'user' | 'assistant';
+
+type MessageCardRole = 'user' | 'assistant';
 
 type Props = {
   role: MessageCardRole,
   children: string,
-  showActionButtons?: boolean,
-  onDiscard?: () => void,
-  onAccept?: () => void,
+  additionalItem?: JSX.Element,
 }
 
 export const MessageCard = (props: Props): JSX.Element => {
   const {
-    role, children, showActionButtons, onAccept, onDiscard,
+    role, children, additionalItem,
   } = props;
 
   return role === 'user'
     ? <UserMessageCard>{children}</UserMessageCard>
     : (
       <AssistantMessageCard
-        showActionButtons={showActionButtons}
-        onAccept={onAccept}
-        onDiscard={onDiscard}
+        additionalItem={additionalItem}
       >{children}
       </AssistantMessageCard>
     );
