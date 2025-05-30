@@ -72,6 +72,8 @@ export default defineConfig({
     trace: 'on-first-retry',
 
     viewport: { width: 1400, height: 1024 },
+
+    screenshot: 'only-on-failure',
   },
 
   /* Configure projects for major browsers */

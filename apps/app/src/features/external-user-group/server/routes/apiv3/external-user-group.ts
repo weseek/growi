@@ -454,13 +454,13 @@ module.exports = (crowi: Crowi): Router => {
   /**
    * @swagger
    *   paths:
-   *     /external-user-groups/:id/external-user-group-relations:
+   *     /external-user-groups/{id}/external-user-group-relations:
    *       get:
    *         tags: [ExternalUserGroups]
    *         security:
    *           - cookieAuth: []
    *         operationId: getExternalUserGroupRelations
-   *         summary: /external-user-groups/:id/external-user-group-relations
+   *         summary: /external-user-groups/{id}/external-user-group-relations
    *         parameters:
    *           - name: id
    *             in: path
@@ -819,7 +819,7 @@ module.exports = (crowi: Crowi): Router => {
    *             content:
    *               application/json:
    *                 schema:
-   *                 type: object
+   *                   type: object
    */
   router.put('/keycloak/sync', accessTokenParser([SCOPE.WRITE.ADMIN.USER_GROUP_MANAGEMENT]), loginRequiredStrictly, adminRequired,
     async(req: AuthorizedRequest, res: ApiV3Response) => {

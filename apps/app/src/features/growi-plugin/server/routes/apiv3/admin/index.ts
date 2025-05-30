@@ -109,7 +109,8 @@ module.exports = (crowi: Crowi): Router => {
    *       - name: id
    *         in: path
    *         required: true
-   *         type: string
+   *         schema:
+   *           type: string
    *     responses:
    *       200:
    *         description: OK
@@ -164,7 +165,8 @@ module.exports = (crowi: Crowi): Router => {
    *       - name: id
    *         in: path
    *         required: true
-   *         type: string
+   *         schema:
+   *           type: string
    *     responses:
    *       200:
    *         description: OK

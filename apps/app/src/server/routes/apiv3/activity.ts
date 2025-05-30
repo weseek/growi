@@ -186,20 +186,24 @@ module.exports = (crowi: Crowi): Router => {
    *     summary: /activity
    *     tags: [Activity]
    *     security:
-   *       - api_key: []
+   *       - bearer: []
+   *       - accessTokenInQuery: []
    *     parameters:
    *       - name: limit
    *         in: query
    *         required: false
-   *         type: integer
+   *         schema:
+   *           type: integer
    *       - name: offset
    *         in: query
    *         required: false
-   *         type: integer
+   *         schema:
+   *           type: integer
    *       - name: searchFilter
    *         in: query
    *         required: false
-   *         type: string
+   *         schema:
+   *           type: string
    *     responses:
    *       200:
    *         description: Activity fetched successfully

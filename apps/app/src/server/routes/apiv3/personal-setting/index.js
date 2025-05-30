@@ -283,9 +283,11 @@ module.exports = (crowi) => {
    *          required: true
    *          content:
    *            application/json:
-   *              properties:
-   *                isGravatarEnabled:
-   *                  type: boolean
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  isGravatarEnabled:
+   *                    type: boolean
    *        responses:
    *          200:
    *            description: succeded to update user image type
@@ -363,11 +365,13 @@ module.exports = (crowi) => {
    *          required: true
    *          content:
    *            application/json:
-   *              properties:
-   *                oldPassword:
-   *                  type: string
-   *                newPassword:
-   *                  type: string
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  oldPassword:
+   *                    type: string
+   *                  newPassword:
+   *                    type: string
    *        responses:
    *          200:
    *            description: user password
@@ -539,6 +543,7 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
+   *                type: object
    *                properties:
    *                  username:
    *                    type: string
@@ -619,7 +624,11 @@ module.exports = (crowi) => {
         if (user.password == null && count <= 1) {
           return res.apiv3Err('disassociate-ldap-account-failed');
         }
-        const disassociateUser = await ExternalAccount.findOneAndRemove({ providerType, accountId, user });
+        const disassociateUser = await ExternalAccount.findOneAndRemove({
+          providerType: { $eq: providerType },
+          accountId: { $eq: accountId },
+          user,
+        });
 
         const parameters = { action: SupportedAction.ACTION_USER_LDAP_ACCOUNT_DISCONNECT };
         activityEvent.emit('update', res.locals.activity._id, parameters);

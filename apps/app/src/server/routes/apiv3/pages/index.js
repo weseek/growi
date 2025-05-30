@@ -13,6 +13,7 @@ import { SCOPE } from '~/interfaces/scope';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import PageTagRelation from '~/server/models/page-tag-relation';
+import { configManager } from '~/server/service/config-manager';
 import { preNotifyService } from '~/server/service/pre-notify';
 import loggerFactory from '~/utils/logger';
 
@@ -91,6 +92,11 @@ module.exports = (crowi) => {
     resumeRenamePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
     ],
+    list: [
+      query('path').optional(),
+      query('page').optional().isInt().withMessage('page must be integer'),
+      query('limit').optional().isInt().withMessage('limit must be integer'),
+    ],
     duplicatePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
       body('pageNameInput').trim().isLength({ min: 1 }).withMessage('pageNameInput is required'),
@@ -157,8 +163,8 @@ module.exports = (crowi) => {
     const offset = parseInt(req.query.offset) || 0;
     const includeWipPage = req.query.includeWipPage === 'true'; // Need validation using express-validator
 
-    const hideRestrictedByOwner = await crowi.configManager.getConfig('security:list-policy:hideRestrictedByOwner');
-    const hideRestrictedByGroup = await crowi.configManager.getConfig('security:list-policy:hideRestrictedByGroup');
+    const hideRestrictedByOwner = configManager.getConfig('security:list-policy:hideRestrictedByOwner');
+    const hideRestrictedByGroup = configManager.getConfig('security:list-policy:hideRestrictedByGroup');
 
     /**
     * @type {import('~/server/models/page').FindRecentUpdatedPagesOption}
@@ -377,7 +383,9 @@ module.exports = (crowi) => {
     *          200:
     *            description: Succeeded to resume rename page operation.
     *            content:
-    *              description: Empty response
+    *              application/json:
+    *                schema:
+    *                  type: object
     */
   router.post(
     '/resume-rename',
@@ -549,47 +557,40 @@ module.exports = (crowi) => {
     *                              lastUpdateUser:
     *                                $ref: '#/components/schemas/User'
     */
-  router.get(
-    '/list',
-    accessTokenParser([SCOPE.READ.FEATURES.PAGE]),
-    loginRequired,
-    validator.displayList,
-    apiV3FormValidator,
-    async(req, res) => {
-      const { path } = req.query;
-      const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('customize:showPageLimitationS') || 10;
-      const page = req.query.page || 1;
-      const offset = (page - 1) * limit;
+  router.get('/list', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, validator.list, apiV3FormValidator, async(req, res) => {
 
-      let includeTrashed = false;
+    const path = normalizePath(req.query.path ?? '/');
+    const limit = parseInt(req.query.limit ?? configManager.getConfig('customize:showPageLimitationS'));
+    const page = req.query.page || 1;
+    const offset = (page - 1) * limit;
+    let includeTrashed = false;
 
-      if (isTrashPage(path)) {
-        includeTrashed = true;
-      }
+    if (isTrashPage(path)) {
+      includeTrashed = true;
+    }
 
-      const queryOptions = {
-        offset,
-        limit,
-        includeTrashed,
-      };
+    const queryOptions = {
+      offset,
+      limit,
+      includeTrashed,
+    };
 
-      try {
-        const result = await Page.findListWithDescendants(path, req.user, queryOptions);
+    try {
+      const result = await Page.findListWithDescendants(path, req.user, queryOptions);
 
-        result.pages.forEach((page) => {
-          if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
-            page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
-          }
-        });
+      result.pages.forEach((page) => {
+        if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
+          page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
+        }
+      });
 
-        return res.apiv3(result);
-      }
-      catch (err) {
-        logger.error('Failed to get Descendants Pages', err);
-        return res.apiv3Err(err, 500);
-      }
-    },
-  );
+      return res.apiv3(result);
+    }
+    catch (err) {
+      logger.error('Failed to get Descendants Pages', err);
+      return res.apiv3Err(err, 500);
+    }
+  });
 
   /**
    * @swagger
@@ -1008,21 +1009,16 @@ module.exports = (crowi) => {
    *                      type: number
    *                      description: Number of pages that can be migrated
    */
-  router.get(
-    '/v5-migration-status',
-    accessTokenParser([SCOPE.READ.FEATURES.PAGE]),
-    loginRequired,
-    async(req, res) => {
-      try {
-        const isV5Compatible = crowi.configManager.getConfig('app:isV5Compatible');
-        const migratablePagesCount = req.user != null ? await crowi.pageService.countPagesCanNormalizeParentByUser(req.user) : null; // null check since not using loginRequiredStrictly
-        return res.apiv3({ isV5Compatible, migratablePagesCount });
-      }
-      catch (err) {
-        return res.apiv3Err(new ErrorV3('Failed to obtain migration status'));
-      }
-    },
-  );
+  router.get('/v5-migration-status', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, async(req, res) => {
+    try {
+      const isV5Compatible = configManager.getConfig('app:isV5Compatible');
+      const migratablePagesCount = req.user != null ? await crowi.pageService.countPagesCanNormalizeParentByUser(req.user) : null; // null check since not using loginRequiredStrictly
+      return res.apiv3({ isV5Compatible, migratablePagesCount });
+    }
+    catch (err) {
+      return res.apiv3Err(new ErrorV3('Failed to obtain migration status'));
+    }
+  });
 
   return router;
 };

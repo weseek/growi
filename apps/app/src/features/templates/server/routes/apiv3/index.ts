@@ -53,7 +53,8 @@ module.exports = (crowi: Crowi) => {
    *         in: query
    *         description: Whether to include invalid templates
    *         required: false
-   *         type: boolean
+   *         schema:
+   *           type: boolean
    *     responses:
    *       200:
    *         description: OK
@@ -128,9 +129,15 @@ module.exports = (crowi: Crowi) => {
    *       - name: templateId
    *         in: path
    *         description: The template ID
+   *         required: true
+   *         schema:
+   *           type: string
    *       - name: locale
    *         in: path
    *         description: The locale
+   *         required: true
+   *         schema:
+   *           type: string
    *     responses:
    *       200:
    *         description: OK
@@ -174,15 +181,27 @@ module.exports = (crowi: Crowi) => {
    *       - name: organizationId
    *         in: path
    *         description: The organization ID
+   *         required: true
+   *         schema:
+   *           type: string
    *       - name: reposId
    *         in: path
    *         description: The repository ID
+   *         required: true
+   *         schema:
+   *           type: string
    *       - name: templateId
    *         in: path
    *         description: The template ID
+   *         required: true
+   *         schema:
+   *           type: string
    *       - name: locale
    *         in: path
    *         description: The locale
+   *         required: true
+   *         schema:
+   *           type: string
    *     responses:
    *       200:
    *         description: OK

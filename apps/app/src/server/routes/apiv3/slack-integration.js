@@ -5,25 +5,25 @@ import { InvalidGrowiCommandError } from '@growi/slack/dist/models';
 import { markdownSectionBlock } from '@growi/slack/dist/utils/block-kit-builder';
 import { InteractionPayloadAccessor } from '@growi/slack/dist/utils/interaction-payload-accessor';
 import { generateRespondUtil } from '@growi/slack/dist/utils/respond-util-factory';
+import { isValidResponseUrl } from '@growi/slack/dist/utils/response-url-validator';
 import { parseSlashCommand } from '@growi/slack/dist/utils/slash-command-parser';
+import express from 'express';
+import { body } from 'express-validator';
 import createError from 'http-errors';
+import mongoose from 'mongoose';
 
 import { SlackCommandHandlerError } from '~/server/models/vo/slack-command-handler-error';
 import { configManager } from '~/server/service/config-manager';
 import { growiInfoService } from '~/server/service/growi-info';
 import loggerFactory from '~/utils/logger';
 
-
-const express = require('express');
-const { body } = require('express-validator');
-const mongoose = require('mongoose');
+import { handleError } from '../../service/slack-command-handler/error-handler';
+import { checkPermission } from '../../util/slack-integration';
 
 
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
 const SlackAppIntegration = mongoose.model('SlackAppIntegration');
-const { handleError } = require('../../service/slack-command-handler/error-handler');
-const { checkPermission } = require('../../util/slack-integration');
 
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
@@ -221,7 +221,7 @@ module.exports = (crowi) => {
       throw SlackCommandHandlerError('App site url must exist.');
     }
 
-    return generateRespondUtil(responseUrl, proxyUri, appSiteUrl);
+    return generateRespondUtil({ responseUrl, proxyUri, appSiteUrl });
   }
 
   function getGrowiCommand(body) {
@@ -286,6 +286,7 @@ module.exports = (crowi) => {
       await slackIntegrationService.handleCommandRequest(growiCommand, client, body, respondUtil);
     }
     catch (err) {
+      logger.error(err.message);
       return handleError(err, responseUrl);
     }
 
@@ -294,10 +295,18 @@ module.exports = (crowi) => {
   // TODO: this method will be a middleware when typescriptize in the future
   function getResponseUrl(req) {
     const { body } = req;
-    const responseUrl = body?.growiCommand?.responseUrl;
+    const responseUrl = body?.growiCommand?.responseUrl ?? body.response_url;
+
     if (responseUrl == null) {
-      return body.response_url; // may be null
+      return null;
     }
+
+    const proxyUri = slackIntegrationService.proxyUriForCurrentType;
+
+    if (!isValidResponseUrl(responseUrl, proxyUri)) {
+      throw createError(400, 'Invalid response_url');
+    }
+
     return responseUrl;
   }
 
@@ -320,9 +329,11 @@ module.exports = (crowi) => {
    *     responses:
    *       200:
    *         description: OK
-   *         schema:
-   *           type: string
-   *           example: "No text."
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: string
+   *               example: "No text."
    */
   router.post('/commands', addSigningSecretToReq, verifySlackRequest, checkCommandsPermission, async(req, res) => {
     const { body } = req;
@@ -365,11 +376,13 @@ module.exports = (crowi) => {
    *     responses:
    *       200:
    *         description: OK
-   *         schema:
-   *           type: object
-   *           properties:
-   *             challenge:
-   *               type: string
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 challenge:
+   *                   type: string
    */
   router.post('/proxied/verify', verifyAccessTokenFromProxy, async(req, res) => {
     const { body } = req;
@@ -400,9 +413,11 @@ module.exports = (crowi) => {
    *     responses:
    *       200:
    *         description: OK
-   *         schema:
-   *           type: string
-   *           example: "No text."
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: string
+   *               example: "No text."
    */
   router.post('/proxied/commands', verifyAccessTokenFromProxy, checkCommandsPermission, async(req, res) => {
     const { body } = req;
@@ -415,6 +430,7 @@ module.exports = (crowi) => {
       client = await slackIntegrationService.generateClientByTokenPtoG(tokenPtoG);
     }
     catch (err) {
+      logger.error(err.message);
       return handleError(err, responseUrl);
     }
 
@@ -554,8 +570,10 @@ module.exports = (crowi) => {
    *     responses:
    *       200:
    *         description: OK
-   *         schema:
-   *           type: object
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
    */
   router.post('/events', verifyUrlMiddleware, addSigningSecretToReq, verifySlackRequest, async(req, res) => {
     const { event } = req.body;

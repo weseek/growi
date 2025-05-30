@@ -30,7 +30,53 @@ module.exports = (crowi: Crowi): Router => {
     ],
   };
 
-  router.get('/', accessTokenParser([SCOPE.READ.ADMIN.USER_GROUP_MANAGEMENT]), loginRequiredStrictly, adminRequired, validators.list,
+  /**
+   * @swagger
+   * /external-user-group-relations:
+   *   get:
+   *     summary: /external-user-group-relations
+   *     description: Get user group relations
+   *     tags: [ExternalUserGroups]
+   *     security:
+   *       - cookieAuth: []
+   *     parameters:
+   *       - name: groupIds
+   *         in: query
+   *         description: The group IDs to get relations for
+   *         schema:
+   *           type: array
+   *           items:
+   *             type: string
+   *       - name: childGroupIds
+   *         in: query
+   *         description: The child group IDs to get relations for
+   *         required: false
+   *         schema:
+   *           type: array
+   *           items:
+   *             type: string
+   *     responses:
+   *       200:
+   *         description: The user group relations
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 userGroupRelations:
+   *                   type: array
+   *                   items:
+   *                     type: object
+   *                 relationsOfChildGroups:
+   *                   type: array
+   *                   items:
+   *                     type: object
+   */
+  router.get('/',
+    accessTokenParser([SCOPE.READ.ADMIN.USER_GROUP_MANAGEMENT]),
+    loginRequiredStrictly,
+    adminRequired,
+    validators.list,
     async(req: Request, res: ApiV3Response) => {
       const { query } = req;
 

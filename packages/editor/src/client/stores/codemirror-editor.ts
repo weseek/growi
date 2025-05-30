@@ -10,7 +10,6 @@ import { type UseCodeMirrorEditor, useCodeMirrorEditor } from '../services';
 
 const { isDeepEquals } = deepEquals;
 
-
 const isValid = (u: UseCodeMirrorEditor) => {
   return u.state != null && u.view != null;
 };

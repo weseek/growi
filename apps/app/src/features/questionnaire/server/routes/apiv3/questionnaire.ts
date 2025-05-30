@@ -69,7 +69,8 @@ module.exports = (crowi: Crowi): Router => {
    *   get:
    *     tags: [Questionnaire]
    *     security:
-   *       - api_key: []
+   *       - bearer: []
+   *       - accessTokenInQuery: []
    *     summary: /questionnaire/orders
    *     description: Get questionnaire orders
    *     responses:
@@ -107,7 +108,8 @@ module.exports = (crowi: Crowi): Router => {
    *   get:
    *     tags: [Questionnaire]
    *     security:
-   *       - api_key: []
+   *       - bearer: []
+   *       - accessTokenInQuery: []
    *     summary: /questionnaire/is-enabled
    *     description: Get questionnaire is enabled
    *     responses:
@@ -134,7 +136,8 @@ module.exports = (crowi: Crowi): Router => {
    *   post:
    *     tags: [Questionnaire]
    *     security:
-   *       - api_key: []
+   *       - bearer: []
+   *       - accessTokenInQuery: []
    *     summary: /questionnaire/proactive/answer
    *     description: Post proactive questionnaire answer
    *     requestBody:
@@ -209,7 +212,8 @@ module.exports = (crowi: Crowi): Router => {
    *   put:
    *     tags: [Questionnaire]
    *     security:
-   *       - api_key: []
+   *       - bearer: []
+   *       - accessTokenInQuery: []
    *     summary: /questionnaire/answer
    *     description: Post questionnaire answer
    *     requestBody:
@@ -290,7 +294,8 @@ module.exports = (crowi: Crowi): Router => {
    *   put:
    *     tags: [Questionnaire]
    *     security:
-   *       - api_key: []
+   *       - bearer: []
+   *       - accessTokenInQuery: []
    *     summary: /questionnaire/skip
    *     description: Skip questionnaire
    *     requestBody:
@@ -339,7 +344,8 @@ module.exports = (crowi: Crowi): Router => {
    *   put:
    *     tags: [Questionnaire]
    *     security:
-   *       - api_key: []
+   *       - bearer: []
+   *       - accessTokenInQuery: []
    *     summary: /questionnaire/deny
    *     description: Deny questionnaire
    *     requestBody:

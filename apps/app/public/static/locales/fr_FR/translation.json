@@ -155,6 +155,7 @@
   "In-App Notification": "Notifications",
   "AI Assistant": "Assistant IA",
   "Knowledge Assistant": "Assistant de Connaissances (Bêta)",
+  "Editor Assistant": "Assistante de rédaction (Bêta)",
   "original_path": "Chemin originel",
   "new_path": "Nouveau chemin",
   "duplicated_path": "Chemin dupliqué",
@@ -374,6 +375,7 @@
       "file": "Fichier seulement"
     },
     "editor_config": "Préférences de l'éditeur",
+    "editor_assistant": "Assistant d'édition",
     "Show active line": "Surligner la ligne active",
     "auto_format_table": "Formatter les tableaux",
     "overwrite_scopes": "{{operation}} et écraser les scopes des pages enfants",
@@ -517,19 +519,35 @@
     "latest_revision": "les autres",
     "selected_editable_revision": "Corps de page sélectionné (Modifiable)"
   },
-  "sidebar_aichat": {
-    "instruction_label": "Instructions pour l'assistant",
+  "sidebar_ai_assistant": {
     "reference_pages_label": "Pages de référence",
-    "placeholder": "Demandez-moi n'importe quoi.",
+    "knowledge_assistant_placeholder": "Demandez-moi n'importe quoi.",
+    "editor_assistant_placeholder": "Puis-je vous aider ?",
     "summary_mode_label": "Mode résumé",
     "summary_mode_help": "Réponse concise en 2-3 phrases",
+    "extended_thinking_mode_label": "Mode réflexion approfondie",
+    "extended_thinking_mode_help": "Lorsqu'activé, l'IA prendra plus de temps pour réfléchir et fournir une réponse plus complète.",
     "caution_against_hallucination": "Veuillez vérifier les informations et consulter les sources.",
     "progress_label": "Génération des réponses",
     "failed_to_create_or_retrieve_thread": "Échec de la création ou de la récupération du fil de discussion",
     "budget_exceeded": "Vous avez atteint votre limite d'utilisation de l'API de l'OpenAI. Pour utiliser à nouveau l'assistant de connaissance, veuillez ajouter des crédits à partir de la page de facturation d'OpenAI.",
     "budget_exceeded_for_growi_cloud": "Vous avez atteint votre limite d'utilisation de l'API de l'OpenAI. Pour utiliser à nouveau l'assistant de connaissance, veuillez ajouter des crédits à partir de la page d'administration de GROWI.cloud pour les utilisateurs hébergés ou à partir de la page de facturation de l'OpenAI pour les utilisateurs propriétaires.",
     "error_message": "Erreur",
-    "show_error_detail": "Détails de l'exposition"
+    "show_error_detail": "Détails de l'exposition",
+    "discard": "Annuler",
+    "accept": "Accepter",
+    "use_assistant": "Utiliser l'assistant",
+    "remove_assistant": "Désélectionner l'assistant sélectionné",
+    "preset_menu": {
+      "summarize": {
+        "title": "Résumer cet article'",
+        "prompt": "Veuillez résumer le contenu markdown"
+      },
+      "correct": {
+        "title": "Corriger les erreurs du texte",
+        "prompt": "Veuillez corriger les erreurs dans le texte markdown"
+      }
+    }
   },
   "modal_ai_assistant": {
     "header": {
@@ -555,7 +573,7 @@
       "update_failed": "Échec de la mise à jour de l'assistant"
     },
     "edit_page_description": "Modifier les pages que l'assistant peut référencer.<br> L'assistant peut référencer jusqu'à {{limitLearnablePageCountPerAssistant}} pages, y compris les pages enfants.",
-    "default_instruction": "Vous êtes l'assistant de connaissances pour ce Wiki. Veuillez fournir un support selon les directives suivantes :\n\n- Analyser la pertinence des documents et relier les informations\n- Proposer de nouvelles perspectives\n- Fournir des informations précises en comprenant l'intention des questions\nJe fournirai les informations sous forme structurée si nécessaire.",
+    "default_instruction": "Vous êtes l'assistant de connaissances pour ce Wiki.\n\n## Support multilingue :\nRépondez dans la même langue que celle utilisée par l'utilisateur dans sa requête.\n",
     "add_page_button": "Ajouter une page",
     "page_mode_title": {
       "share": "Partage de l'assistant",
@@ -791,7 +809,8 @@
     "export_cancel_warning": "Les exportations suivantes en cours seront annulées",
     "restart": "Redémarrage",
     "format": "Format",
-    "started_on": "Commencé le"
+    "started_on": "Commencé le",
+    "file_upload_not_configured": "Les paramètres de téléchargement de fichiers ne sont pas configurés"
   },
   "message": {
     "successfully_connected": "Connecté!",

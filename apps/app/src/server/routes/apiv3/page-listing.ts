@@ -74,7 +74,8 @@ const routerFactory = (crowi: Crowi): Router => {
    *   get:
    *     tags: [PageListing]
    *     security:
-   *       - api_key: []
+   *       - bearer: []
+   *       - accessTokenInQuery: []
    *     summary: /page-listing/root
    *     description: Get the root page
    *     responses:
@@ -109,14 +110,16 @@ const routerFactory = (crowi: Crowi): Router => {
    *   get:
    *     tags: [PageListing]
    *     security:
-   *       - api_key: []
+   *       - bearer: []
+   *       - accessTokenInQuery: []
    *     summary: /page-listing/ancestors-children
    *     description: Get the ancestors and children of a page
    *     parameters:
    *       - name: path
    *         in: query
    *         required: true
-   *         type: string
+   *         schema:
+   *           type: string
    *     responses:
    *       200:
    *         description: Get the ancestors and children of a page
@@ -173,16 +176,19 @@ const routerFactory = (crowi: Crowi): Router => {
    *   get:
    *     tags: [PageListing]
    *     security:
-   *       - api_key: []
+   *       - bearer: []
+   *       - accessTokenInQuery: []
    *     summary: /page-listing/children
    *     description: Get the children of a page
    *     parameters:
    *       - name: id
    *         in: query
-   *         type: string
+   *         schema:
+   *           type: string
    *       - name: path
    *         in: query
-   *         type: string
+   *         schema:
+   *           type: string
    *     responses:
    *       200:
    *         description: Get the children of a page
@@ -210,7 +216,7 @@ const routerFactory = (crowi: Crowi): Router => {
 
     try {
       const pages = await pageService.findChildrenByParentPathOrIdAndViewer(
-        (id || path)as string, req.user, undefined, !hideRestrictedByOwner, !hideRestrictedByGroup,
+        (id || path) as string, req.user, undefined, !hideRestrictedByOwner, !hideRestrictedByGroup,
       );
       return res.apiv3({ children: pages });
     }
@@ -227,22 +233,29 @@ const routerFactory = (crowi: Crowi): Router => {
    *   get:
    *     tags: [PageListing]
    *     security:
-   *       - api_key: []
+   *       - bearer: []
+   *       - accessTokenInQuery: []
    *     summary: /page-listing/info
    *     description: Get the information of a page
    *     parameters:
    *       - name: pageIds
    *         in: query
-   *         type: array
+   *         schema:
+   *           type: array
+   *           items:
+   *             type: string
    *       - name: path
    *         in: query
-   *         type: string
+   *         schema:
+   *           type: string
    *       - name: attachBookmarkCount
    *         in: query
-   *         type: boolean
+   *         schema:
+   *           type: boolean
    *       - name: attachShortBody
    *         in: query
-   *         type: boolean
+   *         schema:
+   *           type: boolean
    *     responses:
    *       200:
    *         description: Get the information of a page

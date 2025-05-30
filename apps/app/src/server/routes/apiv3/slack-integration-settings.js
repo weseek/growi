@@ -170,32 +170,34 @@ module.exports = (crowi) => {
    *            description: Succeeded to get info.
    *            content:
    *              application/json:
-   *                properties:
-   *                  currentBotType:
-   *                    type: string
-   *                  settings:
-   *                    type: object
-   *                    properties:
-   *                      slackSigningSecretEnvVars:
-   *                        type: string
-   *                      slackBotTokenEnvVars:
-   *                        type: string
-   *                      slackSigningSecret:
-   *                        type: string
-   *                      slackBotToken:
-   *                        type: string
-   *                      commandPermission:
-   *                        type: object
-   *                      eventActionsPermission:
-   *                        type: object
-   *                      proxyServerUri:
-   *                        type: string
-   *                  connectionStatuses:
-   *                    type: object
-   *                  errorMsg:
-   *                    type: string
-   *                  errorCode:
-   *                    type: string
+   *                schema:
+   *                  type: object
+   *                  properties:
+   *                    currentBotType:
+   *                      type: string
+   *                    settings:
+   *                      type: object
+   *                      properties:
+   *                        slackSigningSecretEnvVars:
+   *                          type: string
+   *                        slackBotTokenEnvVars:
+   *                          type: string
+   *                        slackSigningSecret:
+   *                          type: string
+   *                        slackBotToken:
+   *                          type: string
+   *                        commandPermission:
+   *                          type: object
+   *                        eventActionsPermission:
+   *                          type: object
+   *                        proxyServerUri:
+   *                          type: string
+   *                    connectionStatuses:
+   *                      type: object
+   *                    errorMsg:
+   *                      type: string
+   *                    errorCode:
+   *                      type: string
    */
   router.get('/', accessTokenParser([SCOPE.READ.ADMIN.SLACK_INTEGRATION]), loginRequiredStrictly, adminRequired, async(req, res) => {
 
@@ -400,6 +402,7 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
+   *                type: object
    *                properties:
    *                  slackSigningSecret:
    *                    type: string
@@ -453,6 +456,7 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
+   *                type: object
    *                properties:
    *                  commandPermission:
    *                    type: object
@@ -508,19 +512,21 @@ module.exports = (crowi) => {
    *            description: Succeeded to create slack app integration
    *            content:
    *              application/json:
-   *                properties:
-   *                  tokenGtoP:
-   *                    type: string
-   *                  tokenPtoG:
-   *                    type: string
-   *                  permissionsForBroadcastUseCommands:
-   *                    type: object
-   *                  permissionsForSingleUseCommands:
-   *                    type: object
-   *                  permissionsForSlackEvents:
-   *                    type: object
-   *                  isPrimary:
-   *                    type: boolean
+   *                schema:
+   *                  type: object
+   *                  properties:
+   *                    tokenGtoP:
+   *                      type: string
+   *                    tokenPtoG:
+   *                      type: string
+   *                    permissionsForBroadcastUseCommands:
+   *                      type: object
+   *                    permissionsForSingleUseCommands:
+   *                      type: object
+   *                    permissionsForSlackEvents:
+   *                      type: object
+   *                    isPrimary:
+   *                      type: boolean
    */
   router.post('/slack-app-integrations', accessTokenParser([SCOPE.WRITE.ADMIN.SLACK_INTEGRATION]), loginRequiredStrictly, adminRequired, addActivity,
     async(req, res) => {
@@ -563,7 +569,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration-settings/slack-app-integrations/:id:
+   *    /slack-integration-settings/slack-app-integrations/{id}:
    *      delete:
    *        tags: [SlackIntegrationSettings (with proxy)]
    *        security:
@@ -582,9 +588,11 @@ module.exports = (crowi) => {
    *            description: Succeeded to delete access tokens for slack
    *            content:
    *              application/json:
-   *                properties:
-   *                  response:
-   *                    type: object
+   *                schema:
+   *                  type: object
+   *                  properties:
+   *                    response:
+   *                      type: object
    */
   router.delete('/slack-app-integrations/:id', accessTokenParser([SCOPE.WRITE.ADMIN.SLACK_INTEGRATION]), loginRequiredStrictly, adminRequired,
     validator.deleteIntegration, apiV3FormValidator, addActivity,
@@ -663,7 +671,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration-settings/slack-app-integrations/:id/makeprimary:
+   *    /slack-integration-settings/slack-app-integrations/{id}/makeprimary:
    *      put:
    *        tags: [SlackIntegrationSettings (with proxy)]
    *        security:
@@ -718,7 +726,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration-settings/slack-app-integrations/:id/regenerate-tokens:
+   *    /slack-integration-settings/slack-app-integrations/{id}/regenerate-tokens:
    *      put:
    *        tags: [SlackIntegrationSettings (with proxy)]
    *        security:
@@ -763,7 +771,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration-settings/slack-app-integrations/:id/permissions:
+   *    /slack-integration-settings/slack-app-integrations/{id}/permissions:
    *      put:
    *        tags: [SlackIntegrationSettings (with proxy)]
    *        security:
@@ -846,7 +854,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration-settings/slack-app-integrations/:id/relation-test:
+   *    /slack-integration-settings/slack-app-integrations/{id}/relation-test:
    *      post:
    *        tags: [SlackIntegrationSettings (with proxy)]
    *        security:

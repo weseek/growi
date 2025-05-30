@@ -3,6 +3,7 @@ import path from 'path';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import { userHomepagePath } from '@growi/core/dist/utils/page-path-utils';
+import escapeStringRegexp from 'escape-string-regexp';
 import express from 'express';
 import { body, query } from 'express-validator';
 import { isEmail } from 'validator';
@@ -27,7 +28,6 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 const logger = loggerFactory('growi:routes:apiv3:users');
 
 const router = express.Router();
-
 
 const PAGE_ITEMS = 50;
 
@@ -135,15 +135,15 @@ module.exports = (crowi) => {
   };
 
   validator.statusList = [
-    query('selectedStatusList').if(value => value != null).custom((value, { req }) => {
-
-      const { user } = req;
-
-      if (user != null && user.admin) {
-        return value;
-      }
-      throw new Error('the param \'selectedStatusList\' is not allowed to use by the users except administrators');
-    }),
+    query('selectedStatusList').if(value => value != null).isArray().withMessage('selectedStatusList must be an array')
+      .custom((value, { req }) => {
+        const { user } = req;
+        if (user != null && user.admin) {
+          return value;
+        }
+        throw new Error('the param \'selectedStatusList\' is not allowed to use by the users except administrators');
+      }),
+    query('forceIncludeAttributes').if(value => value != null).isArray().withMessage('forceIncludeAttributes must be an array'),
     // validate sortOrder : asc or desc
     query('sortOrder').isIn(['asc', 'desc']),
     // validate sort : what column you will sort
@@ -290,15 +290,20 @@ module.exports = (crowi) => {
   router.get('/', accessTokenParser([SCOPE.READ.USER_SETTINGS.INFO]), loginRequired, validator.statusList, apiV3FormValidator, async(req, res) => {
 
     const page = parseInt(req.query.page) || 1;
+
     // status
-    const { forceIncludeAttributes } = req.query;
-    const selectedStatusList = req.query.selectedStatusList || ['active'];
+    const forceIncludeAttributes = Array.isArray(req.query.forceIncludeAttributes)
+      ? req.query.forceIncludeAttributes
+      : [];
+    const selectedStatusList = Array.isArray(req.query.selectedStatusList)
+      ? req.query.selectedStatusList
+      : ['active'];
 
     const statusNoList = (selectedStatusList.includes('all')) ? Object.values(statusNo) : selectedStatusList.map(element => statusNo[element]);
 
     // Search from input
     const searchText = req.query.searchText || '';
-    const searchWord = new RegExp(`${searchText}`);
+    const searchWord = new RegExp(escapeStringRegexp(searchText));
     // Sort
     const { sort, sortOrder } = req.query;
     const sortOutput = {
