@@ -231,7 +231,6 @@ $slack-work-space-name-card-border: #efc1f6;
     .date-range-picker {
       width: 188px;
       height: auto;
-      word-break: break-all!important;
     }
     .jump-page-input {
       width: 50px;
@@ -241,6 +240,7 @@ $slack-work-space-name-card-border: #efc1f6;
     }
 
 
+    overflow-x: hidden!important;
   }
 
   .settings-table {
