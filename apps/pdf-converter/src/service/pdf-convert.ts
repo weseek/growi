@@ -262,8 +262,7 @@ class PdfConvertService implements OnInit {
    * Initialize puppeteer cluster
    */
   private async initPuppeteerCluster(): Promise<void> {
-    // puppeteer is unnecessary for swagger schema generation
-    if (process.env.SWAGGER_GENERATION === 'true') return;
+    if (process.env.SKIP_PUPPETEER_INIT === 'true') return;
 
     this.puppeteerCluster = await Cluster.launch({
       concurrency: Cluster.CONCURRENCY_PAGE,
