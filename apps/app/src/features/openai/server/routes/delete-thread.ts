@@ -45,7 +45,7 @@ export const deleteThreadFactory: DeleteThreadFactory = (crowi) => {
         return res.apiv3Err(new ErrorV3('GROWI AI is not enabled'), 501);
       }
 
-      const isAiAssistantUsable = openaiService.isAiAssistantUsable(aiAssistantId, user);
+      const isAiAssistantUsable = await openaiService.isAiAssistantUsable(aiAssistantId, user);
       if (!isAiAssistantUsable) {
         return res.apiv3Err(new ErrorV3('The specified AI assistant is not usable'), 400);
       }
