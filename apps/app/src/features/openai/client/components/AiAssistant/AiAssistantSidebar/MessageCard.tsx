@@ -34,10 +34,10 @@ const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): J
 
 const AssistantMessageCard = ({
   children,
-  additionaltem,
+  additionalItem,
 }: {
   children: string,
-  additionaltem?: JSX.Element,
+  additionalItem?: JSX.Element,
 }): JSX.Element => {
   const { t } = useTranslation();
 
@@ -52,7 +52,7 @@ const AssistantMessageCard = ({
             ? (
               <>
                 <ReactMarkdown components={{ a: NextLinkWrapper }}>{children}</ReactMarkdown>
-                { additionaltem }
+                { additionalItem }
               </>
             )
             : (
@@ -73,19 +73,19 @@ type MessageCardRole = 'user' | 'assistant';
 type Props = {
   role: MessageCardRole,
   children: string,
-  additionaltem?: JSX.Element,
+  additionalItem?: JSX.Element,
 }
 
 export const MessageCard = (props: Props): JSX.Element => {
   const {
-    role, children, additionaltem,
+    role, children, additionalItem,
   } = props;
 
   return role === 'user'
     ? <UserMessageCard>{children}</UserMessageCard>
     : (
       <AssistantMessageCard
-        additionaltem={additionaltem}
+        additionalItem={additionalItem}
       >{children}
       </AssistantMessageCard>
     );

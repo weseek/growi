@@ -78,7 +78,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
     // Views
     initialView: initialViewForKnowledgeAssistant,
-    // generateMessageCard: generateMessageCardForKnowledgeAssistant,
     generateModeSwitchesDropdown: generateModeSwitchesDropdownForKnowledgeAssistant,
     headerIcon: headerIconForKnowledgeAssistant,
     headerText: headerTextForKnowledgeAssistant,
@@ -97,9 +96,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     generateInitialView: generateInitialViewForEditorAssistant,
     generatingEditorTextLabel,
     generateActionButtons,
-    // generateMessageCard: generateMessageCardForEditorAssistant,
-    // generatingEditorTextForMessageCardAdditionaltem,
-    // actionButtonsForMessageCardAdditionaltem,
     headerIcon: headerIconForEditorAssistant,
     headerText: headerTextForEditorAssistant,
     placeHolder: placeHolderForEditorAssistant,
@@ -358,7 +354,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     return initialViewForKnowledgeAssistant;
   }, [generateInitialViewForEditorAssistant, initialViewForKnowledgeAssistant, isEditorAssistant, submit]);
 
-  const messageCardAdditionaltemForGeneratingMessage = useMemo(() => {
+  const messageCardAdditionalItemForGeneratingMessage = useMemo(() => {
     if (isEditorAssistant) {
       return generatingEditorTextLabel;
     }
@@ -367,7 +363,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   }, [generatingEditorTextLabel, isEditorAssistant]);
 
 
-  const messageCardAdditionaltemForGeneratedMessage = useCallback((messageId?: string) => {
+  const messageCardAdditionalItemForGeneratedMessage = useCallback((messageId?: string) => {
     if (isEditorAssistant) {
       if (messageId == null || messageLogs == null) {
         return <></>;
@@ -403,7 +399,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                   <>
                     <MessageCard
                       role={message.isUserMessage ? 'user' : 'assistant'}
-                      additionaltem={messageCardAdditionaltemForGeneratedMessage(message.id)}
+                      additionalItem={messageCardAdditionalItemForGeneratedMessage(message.id)}
                     >
                       {message.content}
                     </MessageCard>
@@ -412,7 +408,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                 { generatingAnswerMessage != null && (
                   <MessageCard
                     role="assistant"
-                    additionaltem={messageCardAdditionaltemForGeneratingMessage}
+                    additionalItem={messageCardAdditionalItemForGeneratingMessage}
                   >
                     {generatingAnswerMessage.content}
                   </MessageCard>
