@@ -547,6 +547,7 @@
     "accept": "採用",
     "use_assistant": "アシスタントを使用する",
     "remove_assistant": "選択されているアシスタントの解除",
+    "text_generation_by_editor_assistant_label": "エディターアシスタントが文章を生成中",
     "preset_menu": {
       "summarize": {
         "title": "この記事の要約をつくる",
