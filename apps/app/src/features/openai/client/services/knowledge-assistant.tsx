@@ -54,7 +54,6 @@ type UseKnowledgeAssistant = () => {
 
   // Views
   initialView: JSX.Element
-  // generateMessageCard: GenerateMessageCard
   generateModeSwitchesDropdown: GenerateModeSwitchesDropdown
   headerIcon: JSX.Element
   headerText: JSX.Element
