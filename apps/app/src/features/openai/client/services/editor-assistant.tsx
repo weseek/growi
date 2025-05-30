@@ -1,5 +1,5 @@
 import {
-  useCallback, useEffect, useState, useRef, useMemo,
+  useCallback, useEffect, useState, useRef, useMemo, type FC,
 } from 'react';
 
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
@@ -31,7 +31,6 @@ import type { MessageLog } from '../../interfaces/message';
 import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
 import { ThreadType } from '../../interfaces/thread-relation';
 import { AiAssistantDropdown } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantDropdown';
-import { MessageCard, type MessageCardRole } from '../components/AiAssistant/AiAssistantSidebar/MessageCard';
 import { QuickMenuList } from '../components/AiAssistant/AiAssistantSidebar/QuickMenuList';
 import { useAiAssistantSidebar } from '../stores/ai-assistant';
 
@@ -52,8 +51,8 @@ interface ProcessMessage {
 interface GenerateInitialView {
   (onSubmit: (data: FormData) => Promise<void>): JSX.Element;
 }
-interface GenerateMessageCard {
-  (role: MessageCardRole, children: string, messageId: string, messageLogs: MessageLog[], generatingAnswerMessage?: MessageLog): JSX.Element;
+interface GenerateActionButtons {
+  (messageId: string, messageLogs: MessageLog[], generatingAnswerMessage?: MessageLog): JSX.Element;
 }
 export interface FormData {
   input: string,
@@ -77,7 +76,8 @@ type UseEditorAssistant = () => {
 
   // Views
   generateInitialView: GenerateInitialView,
-  generateMessageCard: GenerateMessageCard,
+  generatingEditorTextLabel?: JSX.Element,
+  generateActionButtons: GenerateActionButtons,
   headerIcon: JSX.Element,
   headerText: JSX.Element,
   placeHolder: string,
@@ -348,8 +348,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     );
   }, [selectedAiAssistant]);
 
-
-  const generateMessageCard: GenerateMessageCard = useCallback((role, children, messageId, messageLogs, generatingAnswerMessage) => {
+  const generateActionButtons: GenerateActionButtons = useCallback((messageId, messageLogs, generatingAnswerMessage) => {
     const isActionButtonShown = (() => {
       if (!aiAssistantSidebarData?.isEditorAssistant) {
         return false;
@@ -374,7 +373,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       return false;
     })();
 
-
     const accept = () => {
       if (codeMirrorEditor?.view == null) {
         return;
@@ -388,17 +386,41 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       mutateIsEnableUnifiedMergeView(false);
     };
 
+    if (!isActionButtonShown) {
+      return <></>;
+    }
+
     return (
-      <MessageCard
-        role={role}
-        showActionButtons={isActionButtonShown}
-        onAccept={accept}
-        onDiscard={reject}
-      >
-        {children}
-      </MessageCard>
+      <div className="d-flex mt-2 justify-content-start">
+        <button
+          type="button"
+          className="btn btn-outline-secondary me-2"
+          onClick={reject}
+        >
+          {t('sidebar_ai_assistant.discard')}
+        </button>
+        <button
+          type="button"
+          className="btn btn-success"
+          onClick={accept}
+        >
+          {t('sidebar_ai_assistant.accept')}
+        </button>
+      </div>
     );
-  }, [aiAssistantSidebarData?.isEditorAssistant, codeMirrorEditor?.view, isEnableUnifiedMergeView, mutateIsEnableUnifiedMergeView]);
+  }, [aiAssistantSidebarData?.isEditorAssistant, codeMirrorEditor?.view, isEnableUnifiedMergeView, mutateIsEnableUnifiedMergeView, t]);
+
+  const generatingEditorTextLabel = useMemo(() => {
+    return (
+      <>
+        {isGeneratingEditorText && (
+          <span className="text-thinking">
+            {t('sidebar_ai_assistant.text_generation_by_editor_assistant_label')}
+          </span>
+        )}
+      </>
+    );
+  }, [isGeneratingEditorText, t]);
 
   return {
     createThread,
@@ -411,7 +433,8 @@ export const useEditorAssistant: UseEditorAssistant = () => {
 
     // Views
     generateInitialView,
-    generateMessageCard,
+    generatingEditorTextLabel,
+    generateActionButtons,
     headerIcon,
     headerText,
     placeHolder,
