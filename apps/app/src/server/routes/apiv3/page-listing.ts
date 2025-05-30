@@ -9,6 +9,7 @@ import { query, oneOf } from 'express-validator';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
+import { SCOPE } from '~/interfaces/scope';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { configManager } from '~/server/service/config-manager';
 import type { IPageGrantService } from '~/server/service/page-grant';
@@ -65,6 +66,7 @@ const routerFactory = (crowi: Crowi): Router => {
 
   const router = express.Router();
 
+
   /**
    * @swagger
    *
@@ -87,7 +89,7 @@ const routerFactory = (crowi: Crowi): Router => {
    *                 rootPage:
    *                   $ref: '#/components/schemas/Page'
    */
-  router.get('/root', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/root', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const Page = mongoose.model<IPage, PageModel>('Page');
 
     let rootPage;
@@ -152,7 +154,7 @@ const routerFactory = (crowi: Crowi): Router => {
    *                         description: Revision ID (nullable)
    */
   // eslint-disable-next-line max-len
-  router.get('/ancestors-children', accessTokenParser, loginRequired, ...validator.pagePathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
+  router.get('/ancestors-children', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, ...validator.pagePathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
     const { path } = req.query;
 
     const pageService = crowi.pageService;
@@ -204,7 +206,7 @@ const routerFactory = (crowi: Crowi): Router => {
    * In most cases, using id should be prioritized
    */
   // eslint-disable-next-line max-len
-  router.get('/children', accessTokenParser, loginRequired, validator.pageIdOrPathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/children', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, validator.pageIdOrPathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const { id, path } = req.query;
 
     const pageService = crowi.pageService;
@@ -299,7 +301,7 @@ const routerFactory = (crowi: Crowi): Router => {
    *                         type: integer
    */
   // eslint-disable-next-line max-len
-  router.get('/info', accessTokenParser, loginRequired, validator.pageIdsOrPathRequired, validator.infoParams, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/info', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, validator.pageIdsOrPathRequired, validator.infoParams, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const {
       pageIds, path, attachBookmarkCount: attachBookmarkCountParam, attachShortBody: attachShortBodyParam,
     } = req.query;

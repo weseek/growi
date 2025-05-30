@@ -1,3 +1,5 @@
+import { SCOPE } from '~/interfaces/scope';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { configManager } from '~/server/service/config-manager';
 import { getGrowiVersion } from '~/utils/growi-version';
 
@@ -83,7 +85,7 @@ module.exports = (crowi) => {
    *                    adminHomeParams:
    *                      $ref: "#/components/schemas/SystemInformationParams"
    */
-  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', accessTokenParser([SCOPE.READ.ADMIN.TOP]), loginRequiredStrictly, adminRequired, async(req, res) => {
     const { getRuntimeVersions } = await import('~/server/util/runtime-versions');
     const runtimeVersions = await getRuntimeVersions();
 

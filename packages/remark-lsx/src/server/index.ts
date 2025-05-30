@@ -59,7 +59,7 @@ const middleware = (crowi: any, app: any): void => {
 
   app.get(
     '/_api/lsx',
-    accessTokenParser,
+    accessTokenParser(),
     loginRequired,
     lsxValidator,
     paramValidator,
