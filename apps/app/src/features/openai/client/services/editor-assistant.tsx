@@ -245,7 +245,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     handleIfSuccessfullyParsed(data, SseFinalizedSchema, (data: SseFinalized) => {
       handler.onFinalized(data);
     });
-  }, [mutateIsEnableUnifiedMergeView]);
+  }, [isGeneratingEditorText, mutateIsEnableUnifiedMergeView]);
 
   const selectTextHandler = useCallback((selectedText: string, selectedTextFirstLineNumber: number) => {
     setSelectedText(selectedText);
