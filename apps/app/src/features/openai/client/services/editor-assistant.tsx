@@ -227,8 +227,8 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     };
 
     handleIfSuccessfullyParsed(data, SseMessageSchema, (data: SseMessage) => {
-      handler.onMessage(data);
       handleDataReceived();
+      handler.onMessage(data);
     });
     handleIfSuccessfullyParsed(data, SseDetectedDiffSchema, (data: SseDetectedDiff) => {
       handleDataReceived();
