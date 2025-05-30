@@ -256,6 +256,18 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     }
   }, [expandContentWidth, isGuestUser, isReadOnlyUser, onClickSwitchContentWidth, pageId, pageInfo]);
 
+  const isEnableActions = useMemo(() => {
+    if (isGuestUser) {
+      return false;
+    }
+
+    if (isUsersHomepage && !isUsersHomepageDeletionEnabled) {
+      return false;
+    }
+
+    return true;
+  }, [isGuestUser, isUsersHomepage, isUsersHomepageDeletionEnabled]);
+
   const additionalMenuItemOnTopRenderer = useMemo(() => {
     if (!isIPageInfoForEntity(pageInfo)) {
       return undefined;
@@ -286,18 +298,6 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
 
   const _isIPageInfoForOperation = isIPageInfoForOperation(pageInfo);
   const isViewMode = editorMode === EditorMode.View;
-
-  const isEnableActions = useMemo(() => {
-    if (isGuestUser) {
-      return false;
-    }
-
-    if (isUsersHomepage && !isUsersHomepageDeletionEnabled) {
-      return false;
-    }
-
-    return true;
-  }, [isGuestUser, isUsersHomepage, isUsersHomepageDeletionEnabled]);
 
   return (
     <div className={`${styles['grw-page-controls']} hstack gap-2`} ref={pageControlsRef}>
