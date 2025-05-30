@@ -141,8 +141,6 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const { data: currentPagePath } = useCurrentPagePath();
 
   const isUsersHomepage = pagePathUtils.isUsersHomepage(currentPagePath ?? '');
-  console.log(isUsersHomepage);
-
 
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
 
@@ -289,7 +287,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const _isIPageInfoForOperation = isIPageInfoForOperation(pageInfo);
   const isViewMode = editorMode === EditorMode.View;
 
-  const isEnableActions = () => {
+  const isEnableActions = useMemo(() => {
     if (isGuestUser) {
       return false;
     }
@@ -299,7 +297,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     }
 
     return true;
-  };
+  }, [isGuestUser, isUsersHomepage, isUsersHomepageDeletionEnabled]);
 
   return (
     <div className={`${styles['grw-page-controls']} hstack gap-2`} ref={pageControlsRef}>
@@ -353,7 +351,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
         <PageItemControl
           pageId={pageId}
           pageInfo={pageInfo}
-          isEnableActions={isEnableActions()}
+          isEnableActions={isEnableActions}
           isReadOnlyUser={!!isReadOnlyUser}
           forceHideMenuItems={forceHideMenuItemsWithAdditions}
           additionalMenuItemOnTopRenderer={!isReadOnlyUser ? additionalMenuItemOnTopRenderer : undefined}
