@@ -22,7 +22,10 @@ import { directive } from './micromark-extension-growi-directive/index.js';
  *   Nothing.
  */
 export function remarkGrowiDirectivePlugin() {
-  const data = this.data();
+  // @ts-expect-error: TS is wrong about `this`.
+  // biome-ignore lint/complexity/noUselessThisAlias: ignore
+  const self = /** @type {Processor} */ (this);
+  const data = self.data();
 
   if (!data.micromarkExtensions) data.micromarkExtensions = [];
   if (!data.fromMarkdownExtensions) data.fromMarkdownExtensions = [];
