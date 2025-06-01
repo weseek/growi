@@ -5,12 +5,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-
 import { isHidden } from 'is-hidden';
 import { remark } from 'remark';
 import { readSync } from 'to-vfile';
 import { unified } from 'unified';
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { remarkGrowiDirectivePlugin } from '../src/remark-growi-directive.js';
 
@@ -30,7 +29,7 @@ describe('directive()', () => {
 
 describe('fixtures', () => {
   const base = path.join('test', 'fixtures');
-  const entries = fs.readdirSync(base).filter(d => !isHidden(d));
+  const entries = fs.readdirSync(base).filter((d) => !isHidden(d));
 
   entries.forEach((fixture) => {
     it(`should handle ${fixture}`, () => {
@@ -47,8 +46,7 @@ describe('fixtures', () => {
 
       try {
         expected = JSON.parse(String(fs.readFileSync(treePath)));
-      }
-      catch {
+      } catch {
         // New fixture.
         fs.writeFileSync(treePath, `${JSON.stringify(actual, null, 2)}\n`);
         expected = actual;
@@ -56,8 +54,7 @@ describe('fixtures', () => {
 
       try {
         output = fs.readFileSync(outputPath, 'utf8');
-      }
-      catch {
+      } catch {
         output = input;
       }
 

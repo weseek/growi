@@ -24,7 +24,6 @@ const own = {}.hasOwnProperty;
 
 const shortcut = /^[^\t\n\r "#'.<=>`}]+$/;
 
-
 export const DirectiveType = Object.freeze({
   Text: 'textGrowiPluginDirective',
   Leaf: 'leafGrowiPluginDirective',
@@ -102,9 +101,15 @@ function enterText(token) {
  * @param {Token} token
  */
 function enter(type, token) {
-  this.enter({
-    type, name: '', attributes: {}, children: [],
-  }, token);
+  this.enter(
+    {
+      type,
+      name: '',
+      attributes: {},
+      children: [],
+    },
+    token,
+  );
 }
 
 /**
@@ -213,7 +218,8 @@ function peekDirective() {
  */
 function attributes(node, state) {
   const quote = state.options.quote || '"';
-  const subset = node.type === DirectiveType.Text ? [quote] : [quote, '\n', '\r'];
+  const subset =
+    node.type === DirectiveType.Text ? [quote] : [quote, '\n', '\r'];
   const attrs = node.attributes || {};
   /** @type {Array.<string>} */
   const values = [];
@@ -229,9 +235,9 @@ function attributes(node, state) {
   // eslint-disable-next-line no-restricted-syntax
   for (key in attrs) {
     if (
-      own.call(attrs, key)
-      && attrs[key] !== undefined
-      && attrs[key] !== null
+      own.call(attrs, key) &&
+      attrs[key] !== undefined &&
+      attrs[key] !== null
     ) {
       const value = String(attrs[key]);
 
@@ -248,8 +254,8 @@ function attributes(node, state) {
    */
   function quoted(key, value) {
     return (
-      key
-      + (value
+      key +
+      (value
         ? `=${quote}${stringifyEntitiesLight(value, { subset })}${quote}`
         : '')
     );
@@ -265,11 +271,9 @@ function fence(node) {
 
   if (node.type === DirectiveType.Leaf) {
     size = 1;
-  }
-  else {
+  } else {
     size = 1;
   }
 
   return '$'.repeat(size);
-
 }
