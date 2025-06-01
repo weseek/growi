@@ -24,14 +24,11 @@ import { directive } from './micromark-extension-growi-directive/index.js';
 export function remarkGrowiDirectivePlugin() {
   const data = this.data();
 
-  const micromarkExtensions =
-    data.micromarkExtensions || (data.micromarkExtensions = []);
-  const fromMarkdownExtensions =
-    data.fromMarkdownExtensions || (data.fromMarkdownExtensions = []);
-  const toMarkdownExtensions =
-    data.toMarkdownExtensions || (data.toMarkdownExtensions = []);
+  if (!data.micromarkExtensions) data.micromarkExtensions = [];
+  if (!data.fromMarkdownExtensions) data.fromMarkdownExtensions = [];
+  if (!data.toMarkdownExtensions) data.toMarkdownExtensions = [];
 
-  micromarkExtensions.push(directive());
-  fromMarkdownExtensions.push(directiveFromMarkdown());
-  toMarkdownExtensions.push(directiveToMarkdown());
+  data.micromarkExtensions.push(directive());
+  data.fromMarkdownExtensions.push(directiveFromMarkdown());
+  data.toMarkdownExtensions.push(directiveToMarkdown());
 }

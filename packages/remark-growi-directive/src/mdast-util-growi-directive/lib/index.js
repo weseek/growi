@@ -184,7 +184,7 @@ function handleDirective(node, _, context, safeOptions) {
   /** @type {Directive|Paragraph|undefined} */
   const label = node;
 
-  if (label && label.children && label.children.length > 0) {
+  if (label?.children && label.children.length > 0) {
     const exit = context.enter('label');
     const subexit = context.enter(`${node.type}Label`);
     value += tracker.move('[');

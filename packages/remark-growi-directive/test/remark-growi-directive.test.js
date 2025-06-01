@@ -31,7 +31,7 @@ describe('fixtures', () => {
   const base = path.join('test', 'fixtures');
   const entries = fs.readdirSync(base).filter((d) => !isHidden(d));
 
-  entries.forEach((fixture) => {
+  for (const fixture of entries) {
     it(`should handle ${fixture}`, () => {
       const file = readSync(path.join(base, fixture, 'input.md'));
       const input = String(file);
@@ -61,5 +61,5 @@ describe('fixtures', () => {
       expect(actual).toEqual(expected);
       expect(String(proc.processSync(file))).toBe(output);
     });
-  });
+  }
 });

@@ -70,7 +70,10 @@ export function directiveHtml(options = {}) {
   function enter(type) {
     /** @type {Directive[]} */
     let stack = this.getData('directiveStack');
-    if (!stack) this.setData('directiveStack', (stack = []));
+    if (!stack) {
+      stack = [];
+      this.setData('directiveStack', stack);
+    }
     stack.push({ type, name: '' });
   }
 
