@@ -1,8 +1,34 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.2.4...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.2.5...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.2.5](https://github.com/weseek/growi/compare/v7.2.4...v7.2.5) - 2025-05-28
+
+### 💎 Features
+
+* feat: Save attachment to VectorStore (#9906) @miya
+
+### 🚀 Improvement
+
+* imprv: Headers and CopyDropdown UX (#9973) @yuki-takei
+* imprv(api): Support Bearer token (#9971) @yuki-takei
+* imprv: Add orgId and appId to bulk export path (#9946) @arafubeatbox
+
+### 🐛 Bug Fixes
+
+* fix: Prevent submission during text composition in SearchTypeahead (#9977) @miya
+* fix(ai): First user message is not displayed (#9976) @miya
+* fix: Vectorstore file not rebuilt after page update (#9951) @miya
+
+### 🧰 Maintenance
+
+* ci(deps-dev): bump vite from 5.4.17 to 5.4.19 (#9911) @[dependabot[bot]](https://github.com/apps/dependabot)
+* support: Prevent SSRF for slack integration (#9952) @yuki-takei
+* support: Remark lsx package biome migration (#9948) @arafubeatbox
+* support: UI package biome migration (#9945) @arafubeatbox
+* support: Migrate linter/formatter to biome for @growi/slack package (#9917) @arafubeatbox
 
 ## [v7.2.4](https://github.com/weseek/growi/compare/v7.2.3...v7.2.4) - 2025-05-15
 

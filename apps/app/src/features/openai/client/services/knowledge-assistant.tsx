@@ -17,7 +17,6 @@ import type { MessageLog, MessageWithCustomMetaData } from '../../interfaces/mes
 import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
 import { ThreadType } from '../../interfaces/thread-relation';
 import { AiAssistantChatInitialView } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantChatInitialView';
-import { MessageCard, type MessageCardRole } from '../components/AiAssistant/AiAssistantSidebar/MessageCard';
 import { useAiAssistantSidebar } from '../stores/ai-assistant';
 import { useSWRMUTxMessages } from '../stores/message';
 import { useSWRMUTxThreads } from '../stores/thread';
@@ -34,10 +33,6 @@ interface ProcessMessage {
   (data: unknown, handler: {
     onMessage: (data: SseMessage) => void}
   ): void;
-}
-
-interface GenerateMessageCard {
-  (role: MessageCardRole, children: string): JSX.Element;
 }
 
 export interface FormData {
@@ -59,7 +54,6 @@ type UseKnowledgeAssistant = () => {
 
   // Views
   initialView: JSX.Element
-  generateMessageCard: GenerateMessageCard
   generateModeSwitchesDropdown: GenerateModeSwitchesDropdown
   headerIcon: JSX.Element
   headerText: JSX.Element
@@ -153,16 +147,6 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
     );
   }, [aiAssistantSidebarData?.aiAssistantData]);
 
-  const generateMessageCard: GenerateMessageCard = useCallback((role, children) => {
-    return (
-      <MessageCard
-        role={role}
-      >
-        {children}
-      </MessageCard>
-    );
-  }, []);
-
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleDropdown = useCallback(() => {
@@ -244,7 +228,7 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
 
     // Views
     initialView,
-    generateMessageCard,
+    // generateMessageCard,
     generateModeSwitchesDropdown,
     headerIcon,
     headerText,
@@ -295,6 +279,10 @@ export const useFetchAndSetMessageDataEffect = (
   );
 
   useEffect(() => {
+    if (aiAssistantSidebarData?.isEditorAssistant) {
+      return;
+    }
+
     if (threadId == null) {
       setMessageLogs([]);
       return; // Early return if no threadId
@@ -324,5 +312,5 @@ export const useFetchAndSetMessageDataEffect = (
     };
 
     fetchAndSetLogs();
-  }, [threadId, mutateMessageData, setMessageLogs]); // Dependencies
+  }, [threadId, mutateMessageData, setMessageLogs, aiAssistantSidebarData?.isEditorAssistant]); // Dependencies
 };

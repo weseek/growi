@@ -8,7 +8,8 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "strict": false
+    "strict": true,
+    "types": ["vitest/globals"]
   },
   "include": ["./src/**/*", "./test/**/*"],
   "exclude": ["node_modules", "dist"]

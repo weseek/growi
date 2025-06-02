@@ -420,7 +420,8 @@ module.exports = (crowi) => {
    *        tags: [AppSettings]
    *        operationId: getAppSettings
    *        security:
-   *          - api_key: []
+   *          - bearer: []
+   *          - accessTokenInQuery: []
    *        summary: /app-settings
    *        description: get app setting params
    *        responses:
@@ -1065,7 +1066,8 @@ module.exports = (crowi) => {
    *        tags: [AppSettings]
    *        operationId: updateAppSettingV5SchemaMigration
    *        security:
-   *          - api_key: []
+   *          - bearer: []
+   *          - accessTokenInQuery: []
    *        summary: AccessToken supported.
    *        description: Update V5SchemaMigration
    *        responses:
@@ -1110,7 +1112,8 @@ module.exports = (crowi) => {
    *        tags: [AppSettings]
    *        operationId: updateAppSettingMaintenanceMode
    *        security:
-   *          - api_key: []
+   *          - bearer: []
+   *          - accessTokenInQuery: []
    *        summary: AccessToken supported.
    *        description: Update MaintenanceMode
    *        requestBody:

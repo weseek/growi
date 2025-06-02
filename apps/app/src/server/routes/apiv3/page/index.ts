@@ -318,17 +318,14 @@ module.exports = (crowi) => {
    *                    $ref: '#/components/schemas/Page/properties/path'
    *                  grant:
    *                    $ref: '#/components/schemas/Page/properties/grant'
-   *                  grantUserGroupId:
+   *                  grantUserGroupIds:
    *                    type: string
    *                    description: UserGroup ID
    *                    example: 5ae5fccfc5577b0004dbd8ab
    *                  pageTags:
    *                    type: array
    *                    items:
-   *                      $ref: '#/components/schemas/Tag'
-   *                  shouldGeneratePath:
-   *                    type: boolean
-   *                    description: Determine whether a new path should be generated
+   *                      type: string
    *                required:
    *                  - body
    *                  - path
