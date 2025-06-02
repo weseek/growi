@@ -29,8 +29,7 @@
       "./packages/preset-templates/**",
       "./packages/preset-themes/**",
       "./packages/remark-attachment-refs/**",
-      "./packages/remark-drawio/**",
-      "./packages/remark-growi-directive/**"
+      "./packages/remark-drawio/**"
     ]
   },
   "formatter": {
