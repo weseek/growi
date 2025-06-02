@@ -61,6 +61,30 @@ module.exports = (crowi: Crowi): Router => {
     return 404;
   };
 
+  /**
+   * @swagger
+   *
+   * /questionnaire/orders:
+   *   get:
+   *     tags: [Questionnaire]
+   *     security:
+   *       - bearer: []
+   *       - accessTokenInQuery: []
+   *     summary: /questionnaire/orders
+   *     description: Get questionnaire orders
+   *     responses:
+   *       200:
+   *         description: OK
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 questionnaireOrders:
+   *                   type: array
+   *                   items:
+   *                     type: object
+   */
   router.get('/orders', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const growiInfo = await growiInfoService.getGrowiInfo(true);
     const userInfo = crowi.questionnaireService.getUserInfo(req.user ?? null, getSiteUrlHashed(growiInfo.appSiteUrl));
@@ -76,11 +100,58 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   * /questionnaire/is-enabled:
+   *   get:
+   *     tags: [Questionnaire]
+   *     security:
+   *       - bearer: []
+   *       - accessTokenInQuery: []
+   *     summary: /questionnaire/is-enabled
+   *     description: Get questionnaire is enabled
+   *     responses:
+   *       200:
+   *         description: OK
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 isEnabled:
+   *                   type: boolean
+   */
   router.get('/is-enabled', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const isEnabled = configManager.getConfig('questionnaire:isQuestionnaireEnabled');
     return res.apiv3({ isEnabled });
   });
 
+  /**
+   * @swagger
+   *
+   * /questionnaire/proactive/answer:
+   *   post:
+   *     tags: [Questionnaire]
+   *     security:
+   *       - bearer: []
+   *       - accessTokenInQuery: []
+   *     summary: /questionnaire/proactive/answer
+   *     description: Post proactive questionnaire answer
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *     responses:
+   *       200:
+   *         description: Success
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   */
   router.post('/proactive/answer', accessTokenParser, loginRequired, validators.proactiveAnswer, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const sendQuestionnaireAnswer = async() => {
       const questionnaireServerOrigin = configManager.getConfig('app:questionnaireServerOrigin');
@@ -130,6 +201,39 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   * /questionnaire/answer:
+   *   put:
+   *     tags: [Questionnaire]
+   *     security:
+   *       - bearer: []
+   *       - accessTokenInQuery: []
+   *     summary: /questionnaire/answer
+   *     description: Post questionnaire answer
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *     responses:
+   *       201:
+   *         description: Created
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *       204:
+   *         description: No Content
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *       404:
+   *         description: Not Found
+   */
   router.put('/answer', accessTokenParser, loginRequired, validators.answer, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const sendQuestionnaireAnswer = async(user: IUserHasId, answers: IAnswer[]) => {
       const questionnaireServerOrigin = crowi.configManager.getConfig('app:questionnaireServerOrigin');
@@ -177,6 +281,39 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   * /questionnaire/skip:
+   *   put:
+   *     tags: [Questionnaire]
+   *     security:
+   *       - bearer: []
+   *       - accessTokenInQuery: []
+   *     summary: /questionnaire/skip
+   *     description: Skip questionnaire
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *     responses:
+   *       201:
+   *         description: Created
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *       204:
+   *         description: No Content
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *       404:
+   *         description: Not Found
+   */
   router.put('/skip', accessTokenParser, loginRequired, validators.skipDeny, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -193,6 +330,39 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   * /questionnaire/deny:
+   *   put:
+   *     tags: [Questionnaire]
+   *     security:
+   *       - bearer: []
+   *       - accessTokenInQuery: []
+   *     summary: /questionnaire/deny
+   *     description: Deny questionnaire
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *     responses:
+   *       201:
+   *         description: Created
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *       204:
+   *         description: No Content
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *       404:
+   *         description: Not Found
+   */
   router.put('/deny', accessTokenParser, loginRequired, validators.skipDeny, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

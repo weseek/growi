@@ -1,4 +1,6 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, {
+  useState, useCallback, useMemo, type JSX,
+} from 'react';
 
 
 import { isPopulated } from '@growi/core';
@@ -9,12 +11,12 @@ import type {
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
+import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
 import Sticky from 'react-stickynode';
-import { Tooltip, DropdownItem, UncontrolledTooltip } from 'reactstrap';
+import { DropdownItem, UncontrolledTooltip, Tooltip } from 'reactstrap';
 
 import { exportAsMarkdown, updateContentWidth, syncLatestRevisionBody } from '~/client/services/page-operation';
 import { toastSuccess, toastError, toastWarning } from '~/client/util/toastr';
@@ -22,6 +24,12 @@ import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import { usePageBulkExportSelectModal } from '~/features/page-bulk-export/client/stores/modal';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
+import {
+  useCurrentPathname,
+  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsBulkExportPagesEnabled,
+  useIsLocalAccountRegistrationEnabled, useIsSharedUser, useShareLinkId, useIsUploadEnabled,
+} from '~/stores-universal/context';
+import { useEditorMode } from '~/stores-universal/ui';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, type IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
@@ -35,11 +43,6 @@ import {
   useIsAbleToChangeEditorMode,
   useIsDeviceLargerThanMd,
 } from '~/stores/ui';
-import {
-  useCurrentPathname,
-  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsBulkExportPagesEnabled, useIsLocalAccountRegistrationEnabled, useIsSharedUser, useShareLinkId,
-} from '~/stores-universal/context';
-import { useEditorMode } from '~/stores-universal/ui';
 
 import { NotAvailable } from '../NotAvailable';
 import { Skeleton } from '../Skeleton';
@@ -77,12 +80,15 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: isBulkExportPagesEnabled } = useIsBulkExportPagesEnabled();
+  const { data: isUploadEnabled } = useIsUploadEnabled();
 
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
   const { open: openPageBulkExportSelectModal } = usePageBulkExportSelectModal();
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
+
+  const [isBulkExportTooltipOpen, setIsBulkExportTooltipOpen] = useState(false);
 
   const syncLatestRevisionBodyHandler = useCallback(async() => {
     // eslint-disable-next-line no-alert
@@ -142,15 +148,27 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
 
       {/* Bulk export */}
       {isBulkExportPagesEnabled && (
-        <span id="bulkExportDropdownItem">
-          <DropdownItem
-            onClick={openPageBulkExportSelectModal}
-            className="grw-page-control-dropdown-item"
+        <>
+          <span id="bulkExportDropdownItem">
+            <DropdownItem
+              onClick={openPageBulkExportSelectModal}
+              className="grw-page-control-dropdown-item"
+              disabled={!isUploadEnabled ?? true}
+            >
+              <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">cloud_download</span>
+              {t('page_export.bulk_export')}
+            </DropdownItem>
+          </span>
+          <Tooltip
+            placement={window.innerWidth < 800 ? 'bottom' : 'left'}
+            isOpen={!isUploadEnabled && isBulkExportTooltipOpen}
+            // Tooltip cannot be activated when target is disabled so set the target to wrapper span
+            target="bulkExportDropdownItem"
+            toggle={() => setIsBulkExportTooltipOpen(!isBulkExportTooltipOpen)}
           >
-            <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">cloud_download</span>
-            {t('page_export.bulk_export')}
-          </DropdownItem>
-        </span>
+            {t('page_export.file_upload_not_configured')}
+          </Tooltip>
+        </>
       )}
 
       <DropdownItem divider />

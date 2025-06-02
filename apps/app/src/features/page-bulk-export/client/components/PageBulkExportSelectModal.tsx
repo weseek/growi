@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type JSX } from 'react';
 
 import { format } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';

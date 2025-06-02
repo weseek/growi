@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, JSX } from 'react';
 import React from 'react';
 
 import dynamic from 'next/dynamic';
@@ -8,9 +8,9 @@ import { RawLayout } from './RawLayout';
 
 import styles from './BasicLayout.module.scss';
 
-const AiAssistantChatSidebar = dynamic(
-  () => import('~/features/openai/client/components/AiAssistant/AiAssistantChatSidebar/AiAssistantChatSidebar')
-    .then(mod => mod.AiAssistantChatSidebar), { ssr: false },
+const AiAssistantSidebar = dynamic(
+  () => import('~/features/openai/client/components/AiAssistant/AiAssistantSidebar/AiAssistantSidebar')
+    .then(mod => mod.AiAssistantSidebar), { ssr: false },
 );
 
 
@@ -67,7 +67,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
           {children}
         </div>
 
-        <AiAssistantChatSidebar />
+        <AiAssistantSidebar />
       </div>
 
       <GrowiNavbarBottom />

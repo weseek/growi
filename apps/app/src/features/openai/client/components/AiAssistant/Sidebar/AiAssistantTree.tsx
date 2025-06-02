@@ -9,13 +9,13 @@ import type { IThreadRelationHasId } from '~/features/openai/interfaces/thread-r
 import { useCurrentUser } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
-import type { AiAssistantAccessScope } from '../../../../interfaces/ai-assistant';
 import { AiAssistantShareScope, type AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { determineShareScope } from '../../../../utils/determine-share-scope';
 import { deleteAiAssistant, setDefaultAiAssistant } from '../../../services/ai-assistant';
 import { deleteThread } from '../../../services/thread';
-import { useAiAssistantChatSidebar, useAiAssistantManagementModal } from '../../../stores/ai-assistant';
+import { useAiAssistantSidebar, useAiAssistantManagementModal } from '../../../stores/ai-assistant';
 import { useSWRMUTxThreads, useSWRxThreads } from '../../../stores/thread';
+import { getShareScopeIcon } from '../../../utils/get-share-scope-Icon';
 
 import styles from './AiAssistantTree.module.scss';
 
@@ -125,20 +125,6 @@ const ThreadItems: React.FC<ThreadItemsProps> = ({ aiAssistantData, onThreadClic
 /*
 *  AiAssistantItem
 */
-const getShareScopeIcon = (shareScope: AiAssistantShareScope, accessScope: AiAssistantAccessScope): string => {
-  const determinedSharedScope = determineShareScope(shareScope, accessScope);
-  switch (determinedSharedScope) {
-    case AiAssistantShareScope.OWNER:
-      return 'lock';
-    case AiAssistantShareScope.GROUPS:
-      return 'account_tree';
-    case AiAssistantShareScope.PUBLIC_ONLY:
-      return 'group';
-    case AiAssistantShareScope.SAME_AS_ACCESS_SCOPE:
-      return '';
-  }
-};
-
 type AiAssistantItemProps = {
   currentUser?: IUserHasId | null;
   aiAssistant: AiAssistantHasId;
@@ -298,7 +284,7 @@ type AiAssistantTreeProps = {
 
 export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, onUpdated, onDeleted }) => {
   const { data: currentUser } = useCurrentUser();
-  const { open: openAiAssistantChatSidebar } = useAiAssistantChatSidebar();
+  const { openChat } = useAiAssistantSidebar();
   const { open: openAiAssistantManagementModal } = useAiAssistantManagementModal();
 
   return (
@@ -309,7 +295,7 @@ export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, 
           currentUser={currentUser}
           aiAssistant={assistant}
           onEditClick={openAiAssistantManagementModal}
-          onItemClick={openAiAssistantChatSidebar}
+          onItemClick={openChat}
           onUpdated={onUpdated}
           onDeleted={onDeleted}
         />

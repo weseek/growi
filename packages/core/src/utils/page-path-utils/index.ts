@@ -128,7 +128,7 @@ export const isCreatablePage = (path: string): boolean => {
  * return user's homepage path
  * @param user
  */
-export const userHomepagePath = (user: IUser | null | undefined): string => {
+export const userHomepagePath = (user: { username: string } | null | undefined): string => {
   if (user?.username == null) {
     return '';
   }

@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, JSX } from 'react';
 import React, {
-  useCallback, useState, useEffect,
+  useCallback, useState, useEffect, useLayoutEffect,
   useMemo,
 } from 'react';
 
@@ -224,6 +224,11 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     codeMirrorEditor?.initDoc(commentBody);
   }, [codeMirrorEditor, commentBody]);
 
+  // set handler to focus
+  useLayoutEffect(() => {
+    if (showPreview) return;
+    codeMirrorEditor?.focus();
+  }, [codeMirrorEditor, showPreview]);
 
   const errorMessage = useMemo(() => <span className="text-danger text-end me-2">{error}</span>, [error]);
   const cancelButton = useMemo(() => (
@@ -336,7 +341,7 @@ export const CommentEditorPre = (props: CommentEditorProps): JSX.Element => {
               onClick={() => setIsReadyToUse(true)}
               data-testid="open-comment-editor-button"
             >
-              <UserPicture user={currentUser} noLink noTooltip additionalClassName="me-3" />
+              <UserPicture user={currentUser} noLink noTooltip className="me-3" />
               <span className="material-symbols-outlined me-1 fs-5">add_comment</span>
               <small>{t('page_comment.add_a_comment')}...</small>
             </button>

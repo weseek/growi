@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, JSX } from 'react';
 import React, { useEffect } from 'react';
 
 import EventEmitter from 'events';

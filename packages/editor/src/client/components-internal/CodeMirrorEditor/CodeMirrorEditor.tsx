@@ -1,4 +1,4 @@
-import type { DetailedHTMLProps } from 'react';
+import type { DetailedHTMLProps, JSX } from 'react';
 import {
   forwardRef, useMemo, useRef, useEffect,
 } from 'react';
@@ -22,6 +22,8 @@ import { Toolbar } from './Toolbar';
 
 
 import style from './CodeMirrorEditor.module.scss';
+
+const moduleClass = style['codemirror-editor'];
 
 
 // Fix IME cursor position issue by EditContext
@@ -54,12 +56,14 @@ export type CodeMirrorEditorProps = {
 
 type Props = CodeMirrorEditorProps & {
   editorKey: string | GlobalCodeMirrorEditorKey,
+  className?: string,
   hideToolbar?: boolean,
 }
 
 export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const {
     editorKey,
+    className,
     hideToolbar,
 
     cmProps,
@@ -217,7 +221,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   }, [isUploading, isDragAccept, isDragReject, acceptedUploadFileType]);
 
   return (
-    <div className={`${style['codemirror-editor']} flex-expand-vert overflow-y-hidden`}>
+    <div className={`${className} ${moduleClass} flex-expand-vert overflow-y-hidden`}>
       <div {...getRootProps()} className={`dropzone  ${fileUploadState} flex-expand-vert`}>
         <input {...getInputProps()} />
         <FileDropzoneOverlay isEnabled={isDragActive} />

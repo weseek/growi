@@ -1,6 +1,7 @@
+import type { JSX } from 'react';
 
 import { PageHeader } from '~/client/components/PageHeader';
-import { useEditingUsers } from '~/stores/use-editing-users';
+import { useEditingClients } from '~/stores/use-editing-clients';
 
 import { EditingUserList } from './EditingUserList';
 
@@ -9,10 +10,10 @@ import styles from './EditorNavbar.module.scss';
 const moduleClass = styles['editor-navbar'] ?? '';
 
 const EditingUsers = (): JSX.Element => {
-  const { data: editingUsers } = useEditingUsers();
+  const { data: editingClients } = useEditingClients();
   return (
     <EditingUserList
-      userList={editingUsers?.userList ?? []}
+      clientList={editingClients ?? []}
     />
   );
 };

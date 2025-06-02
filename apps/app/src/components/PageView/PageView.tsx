@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useMemo, useRef, useState,
+  useEffect, useMemo, useRef, useState, type JSX,
 } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
@@ -101,7 +101,7 @@ export const PageView = (props: Props): JSX.Element => {
     }
   }, [isForbidden, isIdenticalPathPage, isNotCreatable]);
 
-  const headerContents = <PagePathNavTitle pageId={page?._id} pagePath={pagePath} />;
+  const headerContents = <PagePathNavTitle pageId={page?._id} pagePath={pagePath} isWipPage={page?.wip} />;
 
   const sideContents = !isNotFound && !isNotCreatable
     ? (

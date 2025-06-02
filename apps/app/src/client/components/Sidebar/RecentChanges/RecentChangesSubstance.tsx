@@ -1,5 +1,5 @@
 import React, {
-  memo, useCallback, useEffect,
+  memo, useCallback, useEffect, type JSX,
 } from 'react';
 
 import {
@@ -108,7 +108,9 @@ const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Elemen
     <li className={`list-group-item ${styles['list-group-item']} py-2 px-0`}>
       <div className="d-flex w-100">
 
-        <UserPicture user={page.lastUpdateUser} size="md" noTooltip />
+        <div>
+          <UserPicture user={page.lastUpdateUser} size="md" className="d-inline-block" />
+        </div>
 
         <div className="flex-grow-1 ms-2">
           <div className={`row ${isSmall ? 'gy-0' : 'gy-1'}`}>

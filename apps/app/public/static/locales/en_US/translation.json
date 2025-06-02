@@ -154,6 +154,7 @@
   "In-App Notification": "Notifications",
   "AI Assistant": "AI Assistant",
   "Knowledge Assistant": "Knowledge Assistant (Beta)",
+  "Editor Assistant": "Editor Assistant (Beta)",
   "original_path": "Original path",
   "new_path": "New path",
   "duplicated_path": "Duplicated path",
@@ -344,6 +345,7 @@
       "file": "File only"
     },
     "editor_config": "Editor Config",
+    "editor_assistant": "Editor Assistant",
     "Show active line": "Show active line",
     "auto_format_table": "Auto format table",
     "overwrite_scopes": "{{operation}} and Overwrite scopes of all descendants",
@@ -493,19 +495,37 @@
     "latest_revision": "theirs",
     "selected_editable_revision": "Selected Page Body (Editable)"
   },
-  "sidebar_aichat": {
-    "instruction_label": "Assistant instructions",
+  "sidebar_ai_assistant": {
     "reference_pages_label": "Reference pages",
     "placeholder": "Ask me anything.",
+    "knowledge_assistant_placeholder": "Ask me anything.",
+    "editor_assistant_placeholder": "Can I help you with anything?",
     "summary_mode_label": "Summary mode",
     "summary_mode_help": "Concise answer within 2-3 sentences",
+    "extended_thinking_mode_label": "Extended Thinking Mode",
+    "extended_thinking_mode_help": "When enabled, the AI will take more time to think and provide a more comprehensive answer.",
     "caution_against_hallucination": "Please verify the information and check the sources.",
     "progress_label": "Generating answers",
     "failed_to_create_or_retrieve_thread": "Failed to create or retrieve thread",
     "budget_exceeded": "You have reached your usage limit for OpenAI's API. To use the Knowledge Assistant again, please add credits from the OpenAI billing page.",
     "budget_exceeded_for_growi_cloud": "You have reached your OpenAI API usage limit. To use the Knowledge Assistant again, please add credits from the GROWI.cloud admin page for Hosted users or from the OpenAI billing page for Owned users.",
     "error_message": "An error has occurred",
-    "show_error_detail": "Show error details"
+    "show_error_detail": "Show error details",
+    "discard": "Discard",
+    "accept": "Accept",
+    "use_assistant": "Use Assistant",
+    "remove_assistant": "Deselect the selected assistant",
+    "text_generation_by_editor_assistant_label": "Editor Assistant is generating text",
+    "preset_menu": {
+      "summarize": {
+        "title": "Summarize this article",
+        "prompt": "Please summarize the markdown content"
+      },
+      "correct": {
+        "title": "Correct errors in the text",
+        "prompt": "Please correct the errors in the markdown text"
+      }
+    }
   },
   "modal_ai_assistant": {
     "header": {
@@ -531,7 +551,7 @@
       "update_failed": "Failed to update assistant"
     },
     "edit_page_description": "Edit pages that the assistant can reference.<br> The assistant can reference up to {{limitLearnablePageCountPerAssistant}} pages including child pages.",
-    "default_instruction": "You are the knowledge assistant for this Wiki. Please provide support according to the following guidelines:\n\n- Analyze document relevance and connect information\n- Suggest new perspectives\n- Provide accurate information based on understanding the intent of questions\nI will provide information in a structured format when necessary.",
+    "default_instruction": "You are the knowledge assistant for this Wiki.\n\n## Multilingual Support:\nRespond in the same language the user uses in their input.\n",
     "add_page_button": "Add page",
     "page_mode_title": {
       "share": "Assistant Sharing",
@@ -767,7 +787,8 @@
     "export_cancel_warning": "The following export in progress will be canceled",
     "restart": "Restart",
     "format": "Format",
-    "started_on": "Started on"
+    "started_on": "Started on",
+    "file_upload_not_configured": "File upload settings are not configured"
   },
   "message": {
     "successfully_connected": "Successfully Connected!",

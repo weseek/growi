@@ -1,9 +1,9 @@
 import { BodyParams } from '@tsed/common';
 import { Controller } from '@tsed/di';
-import { InternalServerError } from '@tsed/exceptions';
+import { InternalServerError, BadRequest } from '@tsed/exceptions';
 import { Logger } from '@tsed/logger';
 import {
-  Post, Returns, Enum, Description,
+  Post, Returns, Enum, Description, Required, Integer,
 } from '@tsed/schema';
 
 import PdfConvertService, { JobStatusSharedWithGrowi, JobStatus } from '../service/pdf-convert.js';
@@ -28,20 +28,28 @@ class PdfCtrl {
     Return resulting status of job to GROWI.
   `)
   async syncJobStatus(
-    @BodyParams('jobId') jobId: string,
-    @BodyParams('expirationDate') expirationDateStr: string,
-    @BodyParams('status') @Enum(Object.values(JobStatusSharedWithGrowi)) growiJobStatus: JobStatusSharedWithGrowi,
-  ): Promise<{ status: JobStatus }> {
+    @Required() @BodyParams('jobId') jobId: string,
+    @Required() @BodyParams('expirationDate') expirationDateStr: string,
+    @Required() @BodyParams('status') @Enum(Object.values(JobStatusSharedWithGrowi)) growiJobStatus: JobStatusSharedWithGrowi,
+    @Integer() @BodyParams('appId') appId?: number, // prevent path traversal attack
+  ): Promise<{ status: JobStatus } | undefined> {
+    // prevent path traversal attack
+    if (!/^[a-f\d]{24}$/i.test(jobId)) {
+      throw new BadRequest('jobId must be a valid MongoDB ObjectId');
+    }
+
     const expirationDate = new Date(expirationDateStr);
     try {
-      await this.pdfConvertService.registerOrUpdateJob(jobId, expirationDate, growiJobStatus);
+      await this.pdfConvertService.registerOrUpdateJob(jobId, expirationDate, growiJobStatus, appId);
       const status = this.pdfConvertService.getJobStatus(jobId); // get status before cleanup
       this.pdfConvertService.cleanUpJobList();
       return { status };
     }
     catch (err) {
       this.logger.error('Failed to register or update job', err);
-      throw new InternalServerError(err);
+      if (err instanceof Error) {
+        throw new InternalServerError(err.message);
+      }
     }
   }
 
