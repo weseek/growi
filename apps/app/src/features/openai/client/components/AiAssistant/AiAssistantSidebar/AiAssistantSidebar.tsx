@@ -1,6 +1,6 @@
 import type { KeyboardEvent, JSX } from 'react';
 import {
-  type FC, memo, useRef, useEffect, useState, useCallback, useMemo,
+  type FC, memo, useEffect, useState, useCallback, useMemo,
 } from 'react';
 
 import { Controller } from 'react-hook-form';
@@ -504,8 +504,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
 
 export const AiAssistantSidebar: FC = memo((): JSX.Element => {
-  const sidebarRef = useRef<HTMLDivElement>(null);
-
   const { data: aiAssistantSidebarData, close: closeAiAssistantSidebar, refreshThreadData } = useAiAssistantSidebar();
   const { mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
 
@@ -544,7 +542,6 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
 
   return (
     <div
-      ref={sidebarRef}
       className={`position-fixed top-0 end-0 h-100 border-start bg-body shadow-sm overflow-hidden ${moduleClass}`}
       data-testid="grw-right-sidebar"
     >
