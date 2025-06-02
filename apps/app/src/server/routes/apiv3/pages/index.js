@@ -87,7 +87,6 @@ module.exports = (crowi) => {
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
       body('isRenameRedirect').if(value => value != null).isBoolean().withMessage('isRenameRedirect must be boolean'),
       body('updateMetadata').if(value => value != null).isBoolean().withMessage('updateMetadata must be boolean'),
-      body('isMoveMode').if(value => value != null).isBoolean().withMessage('isMoveMode must be boolean'),
     ],
     resumeRenamePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
@@ -257,9 +256,6 @@ module.exports = (crowi) => {
    *                  isRecursively:
    *                    type: boolean
    *                    description: whether rename page with descendants
-   *                  isMoveMode:
-   *                    type: boolean
-   *                    description: whether rename page with moving
    *                required:
    *                  - pageId
    *                  - revisionId
@@ -293,7 +289,6 @@ module.exports = (crowi) => {
         isRecursively: req.body.isRecursively,
         createRedirectPage: req.body.isRenameRedirect,
         updateMetadata: req.body.updateMetadata,
-        isMoveMode: req.body.isMoveMode,
       };
 
       const activityParameters = {
