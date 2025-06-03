@@ -258,6 +258,7 @@
     "mongodb": "mongoose which is used requires mongo@4.16.0."
   },
   "devDependencies": {
+    "@apidevtools/swagger-parser": "^10.1.1",
     "@emoji-mart/data": "^1.2.1",
     "@growi/core-styles": "workspace:^",
     "@growi/custom-icons": "workspace:^",
@@ -293,6 +294,7 @@
     "@types/uuid": "^10.0.0",
     "babel-loader": "^8.2.5",
     "bootstrap": "=5.3.2",
+    "commander": "^14.0.0",
     "connect-browser-sync": "^2.1.0",
     "diff2html": "^3.4.47",
     "downshift": "^8.2.3",
@@ -315,6 +317,7 @@
     "mongodb-memory-server-core": "^9.1.1",
     "morgan": "^1.10.0",
     "null-loader": "^4.0.1",
+    "openapi-typescript": "^7.8.0",
     "pretty-bytes": "^6.1.1",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dnd": "^14.0.5",
