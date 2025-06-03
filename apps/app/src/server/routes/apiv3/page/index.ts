@@ -190,7 +190,6 @@ module.exports = (crowi) => {
    *    /page:
    *      get:
    *        tags: [Page]
-   *        operationId: getPage
    *        summary: Get page
    *        description: get page by pagePath or pageId
    *        parameters:
@@ -304,7 +303,6 @@ module.exports = (crowi) => {
    *      post:
    *        tags: [Page]
    *        summary: Create page
-   *        operationId: createPage
    *        description: Create page
    *        requestBody:
    *          content:
@@ -358,7 +356,6 @@ module.exports = (crowi) => {
    *    /page:
    *      put:
    *        tags: [Page]
-   *        operationId: updatePage
    *        description: Update page
    *        requestBody:
    *          content:
@@ -426,7 +423,6 @@ module.exports = (crowi) => {
    *        tags: [Page]
    *        summary: Get page likes
    *        description: Update liked status
-   *        operationId: updateLikedStatus
    *        requestBody:
    *          content:
    *            application/json:
@@ -494,7 +490,6 @@ module.exports = (crowi) => {
    *        tags: [Page]
    *        summary: Get page info
    *        description: Retrieve current page info
-   *        operationId: getPageInfo
    *        requestBody:
    *          content:
    *            application/json:
@@ -538,7 +533,6 @@ module.exports = (crowi) => {
    *        tags: [Page]
    *        summary: Get page grant data
    *        description: Retrieve current page's grant data
-   *        operationId: getPageGrantData
    *        parameters:
    *          - name: pageId
    *            in: query
@@ -951,7 +945,6 @@ module.exports = (crowi) => {
    *          - cookieAuth: []
    *        summary: Get already exist paths
    *        description: Get already exist paths
-   *        operationId: getAlreadyExistPaths
    *        parameters:
    *          - name: fromPath
    *            in: query
@@ -1012,7 +1005,6 @@ module.exports = (crowi) => {
    *        tags: [Page]
    *        summary: Update subscription status
    *        description: Update subscription status
-   *        operationId: updateSubscriptionStatus
    *        requestBody:
    *          content:
    *            application/json:

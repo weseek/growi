@@ -134,7 +134,6 @@ module.exports = (crowi) => {
    *    /personal-setting:
    *      get:
    *        tags: [GeneralSetting]
-   *        operationId: getPersonalSetting
    *        summary: /personal-setting
    *        description: Get personal parameters
    *        responses:
@@ -173,7 +172,6 @@ module.exports = (crowi) => {
    *    /personal-setting/is-password-set:
    *      get:
    *        tags: [GeneralSetting]
-   *        operationId: getIsPasswordSet
    *        summary: /personal-setting
    *        description: Get whether a password has been set
    *        responses:
@@ -212,7 +210,6 @@ module.exports = (crowi) => {
    *    /personal-setting:
    *      put:
    *        tags: [GeneralSetting]
-   *        operationId: updatePersonalSetting
    *        summary: /personal-setting
    *        description: Update personal setting
    *        requestBody:
@@ -269,7 +266,6 @@ module.exports = (crowi) => {
    *    /personal-setting/image-type:
    *      put:
    *        tags: [GeneralSetting]
-   *        operationId: putUserImageType
    *        summary: /personal-setting/image-type
    *        description: Update user image type
    *        requestBody:
@@ -315,7 +311,6 @@ module.exports = (crowi) => {
    *    /personal-setting/external-accounts:
    *      get:
    *        tags: [GeneralSetting]
-   *        operationId: getExternalAccounts
    *        summary: /personal-setting/external-accounts
    *        description: Get external accounts that linked current user
    *        responses:
@@ -349,7 +344,6 @@ module.exports = (crowi) => {
    *    /personal-setting/password:
    *      put:
    *        tags: [GeneralSetting]
-   *        operationId: putUserPassword
    *        summary: /personal-setting/password
    *        description: Update user password
    *        requestBody:
@@ -404,7 +398,6 @@ module.exports = (crowi) => {
    *        tags: [GeneralSetting]
    *        security:
    *          - cookieAuth: []
-   *        operationId: putUserApiToken
    *        summary: /personal-setting/api-token
    *        description: Update user api token
    *        responses:
@@ -442,7 +435,6 @@ module.exports = (crowi) => {
    *    /personal-setting/associate-ldap:
    *      put:
    *        tags: [GeneralSetting]
-   *        operationId: associateLdapAccount
    *        summary: /personal-setting/associate-ldap
    *        description: associate Ldap account
    *        requestBody:
@@ -497,7 +489,6 @@ module.exports = (crowi) => {
    *    /personal-setting/disassociate-ldap:
    *      put:
    *        tags: [GeneralSetting]
-   *        operationId: disassociateLdapAccount
    *        summary: /personal-setting/disassociate-ldap
    *        description: disassociate Ldap account
    *        requestBody:
@@ -552,7 +543,6 @@ module.exports = (crowi) => {
    *    /personal-setting/editor-settings:
    *      put:
    *        tags: [EditorSetting]
-   *        operationId: putEditorSettings
    *        summary: /personal-setting/editor-settings
    *        description: Put editor preferences
    *        requestBody:
@@ -614,7 +604,6 @@ module.exports = (crowi) => {
    *    /personal-setting/editor-settings:
    *      get:
    *        tags: [EditorSetting]
-   *        operationId: getEditorSettings
    *        summary: /personal-setting/editor-settings
    *        description: Get editor preferences
    *        responses:
@@ -644,7 +633,6 @@ module.exports = (crowi) => {
    *    /personal-setting/in-app-notification-settings:
    *      put:
    *        tags: [InAppNotificationSettings]
-   *        operationId: putInAppNotificationSettings
    *        summary: /personal-setting/in-app-notification-settings
    *        description: Put InAppNotificationSettings
    *        requestBody:
@@ -700,7 +688,6 @@ module.exports = (crowi) => {
    *    /personal-setting/in-app-notification-settings:
    *      get:
    *        tags: [InAppNotificationSettings]
-   *        operationId: getInAppNotificationSettings
    *        summary: personal-setting/in-app-notification-settings
    *        description: Get InAppNotificationSettings
    *        responses:
@@ -731,7 +718,6 @@ module.exports = (crowi) => {
    *   /personal-setting/questionnaire-settings:
    *     put:
    *       tags: [QuestionnaireSetting]
-   *       operationId: putQuestionnaireSetting
    *       summary: /personal-setting/questionnaire-settings
    *       description: Update the questionnaire settings for the current user
    *       requestBody:
