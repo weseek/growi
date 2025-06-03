@@ -151,7 +151,7 @@ describe('access-token-parser middleware', () => {
 
     // act
     reqMock.headers.authorization = `Bearer ${targetUser.apiToken}`;
-    await accessTokenParser(reqMock, resMock, nextMock);
+    await parserForApiToken(reqMock, resMock, nextMock);
 
     // assert
     expect(reqMock.user).toBeDefined();
@@ -178,7 +178,7 @@ describe('access-token-parser middleware', () => {
 
     // act
     reqMock.headers.authorization = `Basic ${randomString}`; // Basic auth header with random string
-    await accessTokenParser(reqMock, resMock, nextMock);
+    await parserForApiToken(reqMock, resMock, nextMock);
 
     // assert
     expect(reqMock.user).toBeUndefined();
