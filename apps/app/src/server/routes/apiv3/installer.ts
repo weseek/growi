@@ -43,7 +43,6 @@ module.exports = (crowi: Crowi): Router => {
    *    post:
    *      tags: [Install]
    *      security: []
-   *      operationId: Install
    *      summary: /installer
    *      description: Install GROWI
    *      requestBody:

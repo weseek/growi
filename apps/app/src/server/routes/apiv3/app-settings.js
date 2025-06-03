@@ -418,7 +418,6 @@ module.exports = (crowi) => {
    *    /app-settings:
    *      get:
    *        tags: [AppSettings]
-   *        operationId: getAppSettings
    *        security:
    *          - bearer: []
    *          - accessTokenInQuery: []
@@ -515,7 +514,6 @@ module.exports = (crowi) => {
    *    /app-settings/app-setting:
    *      put:
    *        tags: [AppSettings]
-   *        operationId: updateAppSettings
    *        security:
    *          - cookieAuth: []
    *        summary: /app-settings/app-setting
@@ -576,7 +574,6 @@ module.exports = (crowi) => {
    *    /app-settings/site-url-setting:
    *      put:
    *        tags: [AppSettings]
-   *        operationId: updateAppSettingSiteUrlSetting
    *        security:
    *          - cookieAuth: []
    *        summary: /app-settings/site-url-setting
@@ -727,7 +724,6 @@ module.exports = (crowi) => {
    *    /app-settings/smtp-setting:
    *      put:
    *        tags: [AppSettings]
-   *        operationId: updateAppSettingSmtpSetting
    *        security:
    *          - cookieAuth: []
    *        summary: /app-settings/smtp-setting
@@ -779,7 +775,6 @@ module.exports = (crowi) => {
    *    /app-settings/smtp-test:
    *      post:
    *        tags: [AppSettings]
-   *        operationId: postSmtpTest
    *        security:
    *          - cookieAuth: []
    *        summary: /app-settings/smtp-setting
@@ -816,7 +811,6 @@ module.exports = (crowi) => {
    *    /app-settings/ses-setting:
    *      put:
    *        tags: [AppSettings]
-   *        operationId: updateAppSettingSesSetting
    *        security:
    *          - cookieAuth: []
    *        summary: /app-settings/ses-setting
@@ -868,7 +862,6 @@ module.exports = (crowi) => {
    *    /app-settings/file-upload-settings:
    *      put:
    *        tags: [AppSettings]
-   *        operationId: updateAppSettingFileUploadSetting
    *        security:
    *          - cookieAuth: []
    *        summary: /app-settings/file-upload-setting
@@ -979,7 +972,6 @@ module.exports = (crowi) => {
    *    /app-settings/questionnaire-settings:
    *      put:
    *        tags: [AppSettings]
-   *        operationId: updateAppSettingQuestionnaireSettings
    *        security:
    *          - cookieAuth: []
    *        summary: /app-settings/questionnaire-settings
@@ -1064,7 +1056,6 @@ module.exports = (crowi) => {
    *    /app-settings/v5-schema-migration:
    *      post:
    *        tags: [AppSettings]
-   *        operationId: updateAppSettingV5SchemaMigration
    *        security:
    *          - bearer: []
    *          - accessTokenInQuery: []
@@ -1110,7 +1101,6 @@ module.exports = (crowi) => {
    *    /app-settings/maintenance-mode:
    *      post:
    *        tags: [AppSettings]
-   *        operationId: updateAppSettingMaintenanceMode
    *        security:
    *          - bearer: []
    *          - accessTokenInQuery: []

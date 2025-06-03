@@ -110,7 +110,6 @@ module.exports = (crowi) => {
    *        tags: [Bookmarks]
    *        summary: /bookmarks/info
    *        description: Get bookmarked info
-   *        operationId: getBookmarkedInfo
    *        parameters:
    *          - name: pageId
    *            in: query
@@ -172,7 +171,6 @@ module.exports = (crowi) => {
    *        tags: [Bookmarks]
    *        summary: /bookmarks/{userId}
    *        description: Get my bookmarked status
-   *        operationId: getMyBookmarkedStatus
    *        parameters:
    *          - name: userId
    *            in: path
@@ -232,7 +230,6 @@ module.exports = (crowi) => {
    *        tags: [Bookmarks]
    *        summary: /bookmarks
    *        description: Update bookmarked status
-   *        operationId: updateBookmarkedStatus
    *        requestBody:
    *          content:
    *            application/json:

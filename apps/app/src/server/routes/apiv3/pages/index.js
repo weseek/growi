@@ -227,7 +227,6 @@ module.exports = (crowi) => {
    *    /pages/rename:
    *      post:
    *        tags: [Pages]
-   *        operationId: renamePage
    *        description: Rename page
    *        requestBody:
    *          content:
@@ -354,7 +353,6 @@ module.exports = (crowi) => {
     *    /pages/resume-rename:
     *      post:
     *        tags: [Pages]
-    *        operationId: resumeRenamePage
     *        description: Resume rename page operation
     *        requestBody:
     *          content:
@@ -482,7 +480,6 @@ module.exports = (crowi) => {
     *    /pages/list:
     *      get:
     *        tags: [Pages]
-    *        operationId: getList
     *        description: Get list of pages
     *        parameters:
     *          - name: path
@@ -572,7 +569,6 @@ module.exports = (crowi) => {
    *    /pages/duplicate:
    *      post:
    *        tags: [Pages]
-   *        operationId: duplicatePage
    *        description: Duplicate page
    *        requestBody:
    *          content:
@@ -678,7 +674,6 @@ module.exports = (crowi) => {
    *    /pages/subordinated-list:
    *      get:
    *        tags: [Pages]
-   *        operationId: subordinatedList
    *        description: Get subordinated pages
    *        parameters:
    *          - name: path
@@ -724,7 +719,6 @@ module.exports = (crowi) => {
     *    /pages/delete:
     *      post:
     *        tags: [Pages]
-    *        operationId: deletePages
     *        description: Delete pages
     *        requestBody:
     *          content:
@@ -823,7 +817,6 @@ module.exports = (crowi) => {
    *    /pages/convert-pages-by-path:
    *      post:
    *        tags: [Pages]
-   *        operationId: convertPagesByPath
    *        description: Convert pages by path
    *        requestBody:
    *          content:
@@ -871,7 +864,6 @@ module.exports = (crowi) => {
    *    /pages/legacy-pages-migration:
    *      post:
    *        tags: [Pages]
-   *        operationId: legacyPagesMigration
    *        description: Migrate legacy pages
    *        requestBody:
    *          content:
