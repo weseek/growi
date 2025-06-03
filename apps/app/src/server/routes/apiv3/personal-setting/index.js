@@ -489,7 +489,7 @@ module.exports = (crowi) => {
    *                     type: string
    *                     description: access token
    *                   expiredAt:
-   *                     type: Date
+   *                     type: string
    *                     description: expired date
    *                   description:
    *                     type: string
