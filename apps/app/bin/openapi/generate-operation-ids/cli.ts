@@ -4,7 +4,7 @@ import { Command } from 'commander';
 
 import { generateOperationIds } from './generate-operation-ids';
 
-const main = async() => {
+export const main = async(): Promise<void> => {
   // parse command line arguments
   const program = new Command();
   program
@@ -20,8 +20,10 @@ const main = async() => {
   // eslint-disable-next-line no-console
   const jsonStrings = await generateOperationIds(inputFile, { overwriteExisting }).catch(console.error);
   if (jsonStrings != null) {
-    writeFileSync(outputFile, jsonStrings);
+    writeFileSync(outputFile ?? inputFile, jsonStrings);
   }
 };
 
-main();
+if (require.main === module) {
+  main();
+}
