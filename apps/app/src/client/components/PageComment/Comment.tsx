@@ -80,6 +80,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
 
   const getRootClassName = (comment: ICommentHasId) => {
     let className = 'page-comment flex-column';
+
     // TODO: fix so that `comment.createdAt` to be type Date https://redmine.weseek.co.jp/issues/113876
     const commentCreatedAtFixed = typeof comment.createdAt === 'string'
       ? parseISO(comment.createdAt)
