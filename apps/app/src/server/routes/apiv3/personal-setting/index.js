@@ -495,7 +495,7 @@ module.exports = (crowi) => {
    *                     type: string
    *                     description: description of access token
    *                   scope:
-   *                     type: string[]
+   *                     type: array
    *                     description: scope of access token
    */
   router.post('/access-token', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.API.ACCESS_TOKEN]), generateAccessTokenHandlerFactory(crowi));
