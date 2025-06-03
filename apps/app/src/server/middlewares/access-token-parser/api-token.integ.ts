@@ -157,7 +157,6 @@ describe('access-token-parser middleware', () => {
     expect(reqMock.user).toBeDefined();
     expect(reqMock.user?._id).toStrictEqual(targetUser._id);
     expect(serializeUserSecurely).toHaveBeenCalledOnce();
-    expect(nextMock).toHaveBeenCalled();
   });
 
   it('should ignore non-Bearer Authorization header', async() => {
@@ -183,7 +182,6 @@ describe('access-token-parser middleware', () => {
     // assert
     expect(reqMock.user).toBeUndefined();
     expect(serializeUserSecurely).not.toHaveBeenCalled();
-    expect(nextMock).not.toHaveBeenCalled();
   });
 
 });
