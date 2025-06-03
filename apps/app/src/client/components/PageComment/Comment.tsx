@@ -53,9 +53,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
 
   const commentId = comment._id;
   const creator = isPopulated(comment.creator) ? comment.creator : undefined;
-  const createdAt = new Date(comment.createdAt);
-  const updatedAt = new Date(comment.updatedAt);
-  const isEdited = createdAt < updatedAt;
+  const isEdited = comment.createdAt < comment.updatedAt;
 
   useEffect(() => {
     if (revisionId == null) {
@@ -81,10 +79,6 @@ export const Comment = (props: CommentProps): JSX.Element => {
   const getRootClassName = (comment: ICommentHasId) => {
     let className = 'page-comment flex-column';
 
-    // TODO: fix so that `comment.createdAt` to be type Date https://redmine.weseek.co.jp/issues/113876
-    const commentCreatedAtFixed = typeof comment.createdAt === 'string'
-      ? parseISO(comment.createdAt)
-      : comment.createdAt;
     const revisionCreatedAtFixed = typeof revisionCreatedAt === 'string'
       ? parseISO(revisionCreatedAt)
       : revisionCreatedAt;
@@ -94,7 +88,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
       if (comment.revision === revisionId) {
         className += ' page-comment-current';
       }
-      else if (commentCreatedAtFixed.getTime() > revisionCreatedAtFixed.getTime()) {
+      else if (comment.createdAt.getTime() > revisionCreatedAtFixed.getTime()) {
         className += ' page-comment-newer';
       }
       else {
@@ -130,7 +124,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
   const rootClassName = getRootClassName(comment);
   const revHref = `?revisionId=${comment.revision}`;
   const editedDateId = `editedDate-${comment._id}`;
-  const editedDateFormatted = isEdited ? format(updatedAt, 'yyyy/MM/dd HH:mm') : null;
+  const editedDateFormatted = isEdited ? format(comment.updatedAt, 'yyyy/MM/dd HH:mm') : null;
 
   return (
     <div className={`${styles['comment-styles']}`}>
