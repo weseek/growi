@@ -506,13 +506,13 @@ module.exports = (crowi) => {
    * @swagger
    *   /personal-setting/access-token/:
    *     delete:
-   *     tags: [GeneralSetting]
-   *     operationId: deleteAccessToken
-   *     summary: /personal-setting/access-token
-   *     description: Delete access token
-   *     responses:
-   *       200:
-   *         description: succeded to delete access token
+   *       tags: [GeneralSetting]
+   *       operationId: deleteAccessToken
+   *       summary: /personal-setting/access-token
+   *       description: Delete access token
+   *       responses:
+   *         200:
+   *           description: succeded to delete access token
    *
    */
   router.delete('/access-token', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.API.ACCESS_TOKEN]), deleteAccessTokenHandlersFactory(crowi));
