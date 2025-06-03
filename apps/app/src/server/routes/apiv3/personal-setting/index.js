@@ -462,7 +462,7 @@ module.exports = (crowi) => {
    *               schema:
    *                 properties:
    *                   accessTokens:
-   *                     type: objet
+   *                     type: object
    *                     description: array of access tokens
    */
   router.get('/access-token', accessTokenParser([SCOPE.READ.USER_SETTINGS.API.ACCESS_TOKEN]), getAccessTokenHandlerFactory(crowi));
