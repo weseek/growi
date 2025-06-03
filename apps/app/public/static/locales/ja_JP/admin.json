@@ -28,8 +28,6 @@
     "readonly_users_access": "閲覧のみユーザーのアクセス",
     "always_hidden": "表示しない",
     "always_displayed": "表示する",
-    "displayed": "表示する",
-    "hidden": "表示しない",
     "Fixed by env var": "環境変数 <code>{{forcewikimode}}={{wikimode}}</code> により固定されています。",
     "register_limitation": "登録の制限",
     "register_limitation_desc": "新しいユーザーを登録する方法を制限します。",

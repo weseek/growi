@@ -19,8 +19,6 @@
     "readonly_users_access": "Read only users' access",
     "always_hidden": "Always hidden",
     "always_displayed": "Always displayed",
-    "displayed": "Displayed",
-    "hidden": "Hidden",
     "Fixed by env var": "This is fixed by the env var <code>{{key}}={{value}}</code>.",
     "register_limitation": "Register limitation",
     "register_limitation_desc": "Restriction of new users' registration",

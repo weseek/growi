@@ -360,8 +360,8 @@ class SecuritySetting extends React.Component {
         <div className="row mb-4">
           <div className="col-md-10">
             <div className="row">
+
               {/* Left Column: Labels */}
-              {/* Increased to col-5 to give more room for longer labels */}
               <div className="col-5 d-flex flex-column align-items-end p-4">
                 <div className="fw-bold mb-4">{t('public')}</div>
                 <div className="fw-bold mb-4">{t('anyone_with_the_link')}</div>
@@ -370,7 +370,6 @@ class SecuritySetting extends React.Component {
               </div>
 
               {/* Right Column: Content */}
-              {/* Adjusted to col-7 to compensate for col-5 on the left */}
               <div className="col-7 d-flex flex-column align-items-start pt-4 pb-4">
                 <div className="mb-4 d-flex align-items-center">
                   <span className="material-symbols-outlined text-success me-1"></span>
@@ -393,8 +392,8 @@ class SecuritySetting extends React.Component {
                       aria-expanded="true"
                     >
                       <span className="float-start">
-                        {adminGeneralSecurityContainer.state.currentOwnerRestrictionDisplayMode === 'Displayed' && t('security_settings.displayed')}
-                        {adminGeneralSecurityContainer.state.currentOwnerRestrictionDisplayMode === 'Hidden' && t('security_settings.hidden')}
+                        {adminGeneralSecurityContainer.state.currentOwnerRestrictionDisplayMode === 'Displayed' && t('security_settings.always_displayed')}
+                        {adminGeneralSecurityContainer.state.currentOwnerRestrictionDisplayMode === 'Hidden' && t('security_settings.always_hidden')}
                       </span>
                     </button>
                     <div className="dropdown-menu" aria-labelledby="ownerRestrictionDropdownButton">
@@ -403,14 +402,14 @@ class SecuritySetting extends React.Component {
                         type="button"
                         onClick={() => { adminGeneralSecurityContainer.changeOwnerRestrictionDisplayMode('Displayed') }}
                       >
-                        {t('security_settings.displayed')}
+                        {t('security_settings.always_displayed')}
                       </button>
                       <button
                         className="dropdown-item"
                         type="button"
                         onClick={() => { adminGeneralSecurityContainer.changeOwnerRestrictionDisplayMode('Hidden') }}
                       >
-                        {t('security_settings.hidden')}
+                        {t('security_settings.always_hidden')}
                       </button>
                     </div>
                   </div>
@@ -428,8 +427,8 @@ class SecuritySetting extends React.Component {
                       aria-expanded="true"
                     >
                       <span className="float-start">
-                        {adminGeneralSecurityContainer.state.currentGroupRestrictionDisplayMode === 'Displayed' && t('security_settings.displayed')}
-                        {adminGeneralSecurityContainer.state.currentGroupRestrictionDisplayMode === 'Hidden' && t('security_settings.hidden')}
+                        {adminGeneralSecurityContainer.state.currentGroupRestrictionDisplayMode === 'Displayed' && t('security_settings.always_displayed')}
+                        {adminGeneralSecurityContainer.state.currentGroupRestrictionDisplayMode === 'Hidden' && t('security_settings.always_hidden')}
                       </span>
                     </button>
                     <div className="dropdown-menu" aria-labelledby="groupRestrictionDropdownButton">
@@ -438,14 +437,14 @@ class SecuritySetting extends React.Component {
                         type="button"
                         onClick={() => { adminGeneralSecurityContainer.changeGroupRestrictionDisplayMode('Displayed') }}
                       >
-                        {t('security_settings.displayed')}
+                        {t('security_settings.always_displayed')}
                       </button>
                       <button
                         className="dropdown-item"
                         type="button"
                         onClick={() => { adminGeneralSecurityContainer.changeGroupRestrictionDisplayMode('Hidden') }}
                       >
-                        {t('security_settings.hidden')}
+                        {t('security_settings.always_hidden')}
                       </button>
                     </div>
                   </div>
