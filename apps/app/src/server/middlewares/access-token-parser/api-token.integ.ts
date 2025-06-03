@@ -183,7 +183,7 @@ describe('access-token-parser middleware', () => {
     // assert
     expect(reqMock.user).toBeUndefined();
     expect(serializeUserSecurely).not.toHaveBeenCalled();
-    expect(nextMock).toHaveBeenCalled();
+    expect(nextMock).not.toHaveBeenCalled();
   });
 
 });
