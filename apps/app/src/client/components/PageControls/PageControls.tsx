@@ -140,7 +140,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const { data: isUsersHomepageDeletionEnabled } = useIsUsersHomepageDeletionEnabled();
   const { data: currentPagePath } = useCurrentPagePath();
 
-  const isUsersHomepage = pagePathUtils.isUsersHomepage(currentPagePath ?? 'false');
+  const isUsersHomepage = currentPagePath == null ? false : pagePathUtils.isUsersHomepage(currentPagePath);
 
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
 
