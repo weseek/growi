@@ -234,7 +234,7 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  pageId:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                    $ref: '#/components/schemas/ObjectId'
    *                  path:
    *                    $ref: '#/components/schemas/Page/properties/path'
    *                  revisionId:
@@ -360,7 +360,7 @@ module.exports = (crowi) => {
     *              schema:
     *                properties:
     *                  pageId:
-    *                    $ref: '#/components/schemas/Page/properties/_id'
+    *                    $ref: '#/components/schemas/ObjectId'
     *                required:
     *                  - pageId
     *        responses:
@@ -576,7 +576,7 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  pageId:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                    $ref: '#/components/schemas/ObjectId'
    *                  pageNameInput:
    *                    $ref: '#/components/schemas/Page/properties/path'
    *                  isRecursively:

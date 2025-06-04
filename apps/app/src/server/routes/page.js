@@ -149,7 +149,7 @@ module.exports = function(crowi, app) {
    *          - in: query
    *            name: pageId
    *            schema:
-   *              $ref: '#/components/schemas/Page/properties/_id'
+   *              $ref: '#/components/schemas/ObjectId'
    *        responses:
    *          200:
    *            description: Succeeded to get page tags.

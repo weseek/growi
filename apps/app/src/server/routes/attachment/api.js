@@ -110,7 +110,7 @@ const ApiResponse = require('../../util/apiResponse');
  *            description: original file name
  *            example: profile.png
  *          creator:
- *            $ref: '#/components/schemas/User/properties/_id'
+ *            $ref: '#/components/schemas/ObjectId'
  *          page:
  *            type: string
  *            description: page ID attached at
@@ -289,7 +289,7 @@ export const routesFactory = (crowi) => {
    *              schema:
    *                properties:
    *                  attachment_id:
-   *                    $ref: '#/components/schemas/Attachment/properties/_id'
+   *                    $ref: '#/components/schemas/ObjectId'
    *                required:
    *                  - attachment_id
    *        responses:

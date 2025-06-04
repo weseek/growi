@@ -8,9 +8,7 @@
  *        type: object
  *        properties:
  *          _id:
- *            type: string
- *            description: page ID
- *            example: 5e07345972560e001761fa63
+ *            $ref: '#/components/schemas/ObjectId'
  *          __v:
  *            type: number
  *            description: DB record version

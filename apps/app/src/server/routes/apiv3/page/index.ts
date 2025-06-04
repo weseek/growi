@@ -197,7 +197,7 @@ module.exports = (crowi) => {
    *            in: query
    *            description: page id
    *            schema:
-   *              $ref: '#/components/schemas/Page/properties/_id'
+   *              $ref: '#/components/schemas/ObjectId'
    *          - name: path
    *            in: query
    *            description: page path
@@ -365,9 +365,9 @@ module.exports = (crowi) => {
    *                  body:
    *                    $ref: '#/components/schemas/Revision/properties/body'
    *                  pageId:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                    $ref: '#/components/schemas/ObjectId'
    *                  revisionId:
-   *                    $ref: '#/components/schemas/Revision/properties/_id'
+   *                    $ref: '#/components/schemas/ObjectId'
    *                  grant:
    *                    $ref: '#/components/schemas/Page/properties/grant'
    *                  userRelatedGrantUserGroupIds:
@@ -538,7 +538,7 @@ module.exports = (crowi) => {
    *            in: query
    *            description: page id
    *            schema:
-   *              $ref: '#/components/schemas/Page/properties/_id'
+   *              $ref: '#/components/schemas/ObjectId'
    *        responses:
    *          200:
    *            description: Successfully retrieved current grant data.
@@ -1011,7 +1011,7 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  pageId:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                    $ref: '#/components/schemas/ObjectId'
    *        responses:
    *          200:
    *            description: Succeeded to update subscription status.

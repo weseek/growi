@@ -26,19 +26,17 @@ import { preNotifyService } from '../service/pre-notify';
  *        type: object
  *        properties:
  *          _id:
- *            type: string
- *            description: revision ID
- *            example: 5e079a0a0afa6700170a75fb
+ *            $ref: '#/components/schemas/ObjectId'
  *          __v:
  *            type: number
  *            description: DB record version
  *            example: 0
  *          page:
- *            $ref: '#/components/schemas/Page/properties/_id'
+ *            $ref: '#/components/schemas/ObjectId'
  *          creator:
- *            $ref: '#/components/schemas/User/properties/_id'
+ *            $ref: '#/components/schemas/ObjectId'
  *          revision:
- *            $ref: '#/components/schemas/Revision/properties/_id'
+ *            $ref: '#/components/schemas/ObjectId'
  *          comment:
  *            type: string
  *            description: comment
@@ -88,11 +86,11 @@ module.exports = function(crowi, app) {
    *          - in: query
    *            name: page_id
    *            schema:
-   *              $ref: '#/components/schemas/Page/properties/_id'
+   *              $ref: '#/components/schemas/ObjectId'
    *          - in: query
    *            name: revision_id
    *            schema:
-   *              $ref: '#/components/schemas/Revision/properties/_id'
+   *              $ref: '#/components/schemas/ObjectId'
    *        responses:
    *          200:
    *            description: Succeeded to get comments of the page of the revision.
@@ -190,9 +188,9 @@ module.exports = function(crowi, app) {
    *                    type: object
    *                    properties:
    *                      page_id:
-   *                        $ref: '#/components/schemas/Page/properties/_id'
+   *                        $ref: '#/components/schemas/ObjectId'
    *                      revision_id:
-   *                        $ref: '#/components/schemas/Revision/properties/_id'
+   *                        $ref: '#/components/schemas/ObjectId'
    *                      comment:
    *                        $ref: '#/components/schemas/Comment/properties/comment'
    *                      comment_position:
@@ -336,11 +334,11 @@ module.exports = function(crowi, app) {
    *                        type: object
    *                        properties:
    *                          page_id:
-   *                            $ref: '#/components/schemas/Page/properties/_id'
+   *                            $ref: '#/components/schemas/ObjectId'
    *                          revision_id:
-   *                            $ref: '#/components/schemas/Revision/properties/_id'
+   *                            $ref: '#/components/schemas/ObjectId'
    *                          comment_id:
-   *                            $ref: '#/components/schemas/Comment/properties/_id'
+   *                            $ref: '#/components/schemas/ObjectId'
    *                          comment:
    *                            $ref: '#/components/schemas/Comment/properties/comment'
    *                required:
