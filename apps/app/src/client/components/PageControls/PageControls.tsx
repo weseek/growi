@@ -261,6 +261,10 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
       return false;
     }
 
+    if (currentPagePath == null) {
+      return false;
+    }
+
     if (isUsersHomepage && !isUsersHomepageDeletionEnabled) {
       return false;
     }
