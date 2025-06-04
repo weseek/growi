@@ -6,7 +6,7 @@ import { parserForAccessToken } from './access-token';
 import { parserForApiToken } from './api-token';
 import type { AccessTokenParserReq } from './interfaces';
 
-export const accessTokenParser = (scopes?: Scope[], isLegacyAccessTokenEnabled = false) => {
+export const accessTokenParser = (scopes?: Scope[], opts?: {acceptLegacy: boolean}) => {
   return async(req: AccessTokenParserReq, res: Response, next: NextFunction): Promise<void> => {
     // TODO: comply HTTP header of RFC6750 / Authorization: Bearer
     if (scopes == null || scopes.length === 0) {
@@ -15,7 +15,7 @@ export const accessTokenParser = (scopes?: Scope[], isLegacyAccessTokenEnabled =
 
     await parserForAccessToken(scopes)(req, res, next);
 
-    if (isLegacyAccessTokenEnabled) {
+    if (opts?.acceptLegacy) {
       await parserForApiToken(req, res, next);
     }
 
