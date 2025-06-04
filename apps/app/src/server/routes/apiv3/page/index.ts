@@ -202,7 +202,7 @@ module.exports = (crowi) => {
    *            in: query
    *            description: page path
    *            schema:
-   *              $ref: '#/components/schemas/Page/properties/path'
+   *              $ref: '#/components/schemas/PagePath'
    *        responses:
    *          200:
    *            description: Page data
@@ -313,9 +313,9 @@ module.exports = (crowi) => {
    *                    type: string
    *                    description: Text of page
    *                  path:
-   *                    $ref: '#/components/schemas/Page/properties/path'
+   *                    $ref: '#/components/schemas/PagePath'
    *                  grant:
-   *                    $ref: '#/components/schemas/Page/properties/grant'
+   *                    $ref: '#/components/schemas/PageGrant'
    *                  grantUserGroupIds:
    *                    type: string
    *                    description: UserGroup ID
@@ -363,13 +363,13 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  body:
-   *                    $ref: '#/components/schemas/Revision/properties/body'
+   *                    $ref: '#/components/schemas/RevisionBody'
    *                  pageId:
    *                    $ref: '#/components/schemas/ObjectId'
    *                  revisionId:
    *                    $ref: '#/components/schemas/ObjectId'
    *                  grant:
-   *                    $ref: '#/components/schemas/Page/properties/grant'
+   *                    $ref: '#/components/schemas/PageGrant'
    *                  userRelatedGrantUserGroupIds:
    *                    type: array
    *                    items:
