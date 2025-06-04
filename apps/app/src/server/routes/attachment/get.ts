@@ -173,7 +173,6 @@ export const getRouterFactory = (crowi: Crowi): Router => {
   const router = express.Router();
 
   // note: retrieveAttachmentFromIdParam requires `req.params.id`
-  // TODO: https://redmine.weseek.co.jp/issues/166911
   router.get<{ id: string }>('/:id([0-9a-z]{24})',
     certifySharedPageAttachmentMiddleware,
     loginRequired,
