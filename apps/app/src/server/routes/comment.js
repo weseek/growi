@@ -21,6 +21,14 @@ import { preNotifyService } from '../service/pre-notify';
  *
  *  components:
  *    schemas:
+ *      CommentBody:
+ *        description: The type for Comment.comment
+ *        type: string
+ *        example: good
+ *      CommentPosition:
+ *        description: comment position
+ *        type: number
+ *        example: 0
  *      Comment:
  *        description: Comment
  *        type: object
@@ -38,13 +46,9 @@ import { preNotifyService } from '../service/pre-notify';
  *          revision:
  *            $ref: '#/components/schemas/ObjectId'
  *          comment:
- *            type: string
- *            description: comment
- *            example: good
+ *            $ref: '#/components/schemas/CommentBody'
  *          commentPosition:
- *            type: number
- *            description: comment position
- *            example: 0
+ *            $ref: '#/components/schemas/CommentPosition'
  *          createdAt:
  *            type: string
  *            description: date created at
@@ -192,9 +196,9 @@ module.exports = function(crowi, app) {
    *                      revision_id:
    *                        $ref: '#/components/schemas/ObjectId'
    *                      comment:
-   *                        $ref: '#/components/schemas/Comment/properties/comment'
+   *                        $ref: '#/components/schemas/CommentBody'
    *                      comment_position:
-   *                        $ref: '#/components/schemas/Comment/properties/commentPosition'
+   *                        $ref: '#/components/schemas/CommentPosition'
    *                required:
    *                  - commentForm
    *        responses:
@@ -340,7 +344,7 @@ module.exports = function(crowi, app) {
    *                          comment_id:
    *                            $ref: '#/components/schemas/ObjectId'
    *                          comment:
-   *                            $ref: '#/components/schemas/Comment/properties/comment'
+   *                            $ref: '#/components/schemas/CommentBody'
    *                required:
    *                  - form
    *        responses:
@@ -431,7 +435,7 @@ module.exports = function(crowi, app) {
    *              schema:
    *                properties:
    *                  comment_id:
-   *                    $ref: '#/components/schemas/Comment/properties/_id'
+   *                    $ref: '#/components/schemas/ObjectId'
    *                required:
    *                  - comment_id
    *        responses:

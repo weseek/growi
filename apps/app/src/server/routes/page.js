@@ -197,7 +197,7 @@ module.exports = function(crowi, app) {
    *          - in: query
    *            name: path
    *            schema:
-   *              $ref: '#/components/schemas/Page/properties/path'
+   *              $ref: '#/components/schemas/PagePath'
    *        responses:
    *          200:
    *            description: Succeeded to get UpdatePost setting list.

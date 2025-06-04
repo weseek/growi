@@ -62,7 +62,7 @@ module.exports = function(crowi: Crowi, app) {
    *         - in: query
    *           name: path
    *           schema:
-   *             $ref: '#/components/schemas/Page/properties/path'
+   *             $ref: '#/components/schemas/PagePath'
    *         - in: query
    *           name: offset
    *           schema:

@@ -3,6 +3,14 @@
  *
  *  components:
  *    schemas:
+ *      PagePath:
+ *        description: Page path
+ *        type: string
+ *        example: /path/to/page
+ *      PageGrant:
+ *        description: Grant for page
+ *        type: number
+ *        example: 1
  *      Page:
  *        description: Page
  *        type: object
@@ -28,9 +36,7 @@
  *            description: extend data
  *            example: {}
  *          grant:
- *            type: number
- *            description: grant
- *            example: 1
+ *            $ref: '#/components/schemas/PageGrant'
  *          grantedUsers:
  *            type: array
  *            description: granted users
@@ -48,9 +54,7 @@
  *              description: user ID
  *            example: []
  *          path:
- *            type: string
- *            description: page path
- *            example: /
+ *            $ref: '#/components/schemas/PagePath'
  *          revision:
  *            type: string
  *            description: page revision
