@@ -24,6 +24,6 @@ export const main = async(): Promise<void> => {
   }
 };
 
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   main();
 }
