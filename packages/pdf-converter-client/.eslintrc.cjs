@@ -4,10 +4,8 @@
 module.exports = {
   extends: '../../.eslintrc.js',
   ignorePatterns: [
-    'dist/**',
+    'src/index.ts',
+    'dist/index.d.ts',
+    'dist/index.js',
   ],
-  rules: {
-    'no-useless-constructor': 'off',
-    '@typescript-eslint/consistent-type-imports': 'off',
-  },
 };
