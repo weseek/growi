@@ -157,7 +157,8 @@ module.exports = (crowi) => {
    *          200:
    *            description: Return pages recently updated
    */
-  router.get('/recent', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, validator.recent, apiV3FormValidator, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.get('/recent', accessTokenParser([SCOPE.READ.FEATURES.PAGE], { acceptLegacy: true }), loginRequired, validator.recent, apiV3FormValidator, async(req, res) => {
     const limit = parseInt(req.query.limit) || 20;
     const offset = parseInt(req.query.offset) || 0;
     const includeWipPage = req.query.includeWipPage === 'true'; // Need validation using express-validator
@@ -275,7 +276,7 @@ module.exports = (crowi) => {
    */
   router.put(
     '/rename',
-    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequiredStrictly,
     excludeReadOnlyUser,
     validator.renamePage,
@@ -384,7 +385,7 @@ module.exports = (crowi) => {
     */
   router.post(
     '/resume-rename',
-    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequiredStrictly,
     validator.resumeRenamePage,
     apiV3FormValidator,
@@ -440,7 +441,7 @@ module.exports = (crowi) => {
    */
   router.delete(
     '/empty-trash',
-    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequired,
     excludeReadOnlyUser,
     addActivity,
@@ -552,7 +553,8 @@ module.exports = (crowi) => {
     *                              lastUpdateUser:
     *                                $ref: '#/components/schemas/User'
     */
-  router.get('/list', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, validator.list, apiV3FormValidator, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.get('/list', accessTokenParser([SCOPE.READ.FEATURES.PAGE], { acceptLegacy: true }), loginRequired, validator.list, apiV3FormValidator, async(req, res) => {
 
     const path = normalizePath(req.query.path ?? '/');
     const limit = parseInt(req.query.limit ?? configManager.getConfig('customize:showPageLimitationS'));
@@ -630,7 +632,7 @@ module.exports = (crowi) => {
    */
   router.post(
     '/duplicate',
-    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequiredStrictly,
     excludeReadOnlyUser,
     addActivity,
@@ -735,7 +737,7 @@ module.exports = (crowi) => {
    */
   router.get(
     '/subordinated-list',
-    accessTokenParser([SCOPE.READ.FEATURES.PAGE]),
+    accessTokenParser([SCOPE.READ.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequired,
     async(req, res) => {
       const { path } = req.query;
@@ -799,7 +801,7 @@ module.exports = (crowi) => {
     */
   router.post(
     '/delete',
-    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequiredStrictly,
     excludeReadOnlyUser,
     validator.deletePages,
@@ -888,7 +890,7 @@ module.exports = (crowi) => {
   // eslint-disable-next-line max-len
   router.post(
     '/convert-pages-by-path',
-    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequiredStrictly,
     excludeReadOnlyUser,
     adminRequired,
@@ -949,7 +951,7 @@ module.exports = (crowi) => {
   // eslint-disable-next-line max-len
   router.post(
     '/legacy-pages-migration',
-    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequired,
     excludeReadOnlyUser,
     validator.legacyPagesMigration,
@@ -1004,7 +1006,7 @@ module.exports = (crowi) => {
    *                      type: number
    *                      description: Number of pages that can be migrated
    */
-  router.get('/v5-migration-status', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, async(req, res) => {
+  router.get('/v5-migration-status', accessTokenParser([SCOPE.READ.FEATURES.PAGE], { acceptLegacy: true }), loginRequired, async(req, res) => {
     try {
       const isV5Compatible = configManager.getConfig('app:isV5Compatible');
       const migratablePagesCount = req.user != null ? await crowi.pageService.countPagesCanNormalizeParentByUser(req.user) : null; // null check since not using loginRequiredStrictly

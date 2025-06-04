@@ -199,7 +199,8 @@ module.exports = (crowi) => {
    *                  type: object
    *                  $ref: '#/components/schemas/AttachmentPaginateResult'
    */
-  router.get('/list', accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT]), loginRequired, validator.retrieveAttachments, apiV3FormValidator,
+  // eslint-disable-next-line max-len
+  router.get('/list', accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT], { acceptLegacy: true }), loginRequired, validator.retrieveAttachments, apiV3FormValidator,
     async(req, res) => {
 
       const limit = req.query.limit || await crowi.configManager.getConfig('customize:showPageLimitationS') || 10;
@@ -274,7 +275,8 @@ module.exports = (crowi) => {
    *          500:
    *            $ref: '#/components/responses/500'
    */
-  router.get('/limit', accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT]), loginRequiredStrictly, validator.retrieveFileLimit, apiV3FormValidator,
+  // eslint-disable-next-line max-len
+  router.get('/limit', accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT], { acceptLegacy: true }), loginRequiredStrictly, validator.retrieveFileLimit, apiV3FormValidator,
     async(req, res) => {
       const { fileUploadService } = crowi;
       const fileSize = Number(req.query.fileSize);
@@ -342,8 +344,8 @@ module.exports = (crowi) => {
    *          500:
    *            $ref: '#/components/responses/500'
    */
-  router.post('/', uploads.single('file'), accessTokenParser([SCOPE.WRITE.FEATURES.ATTACHMENT]), loginRequiredStrictly, excludeReadOnlyUser,
-    validator.retrieveAddAttachment, apiV3FormValidator, addActivity,
+  router.post('/', uploads.single('file'), accessTokenParser([SCOPE.WRITE.FEATURES.ATTACHMENT], { acceptLegacy: true }),
+    loginRequiredStrictly, excludeReadOnlyUser, validator.retrieveAddAttachment, apiV3FormValidator, addActivity,
     // Removed autoReap middleware to use file data in asynchronous processes. Instead, implemented file deletion after asynchronous processes complete
     async(req, res) => {
 
@@ -407,7 +409,7 @@ module.exports = (crowi) => {
    *            schema:
    *              type: string
    */
-  router.get('/:id', accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT]), certifySharedPageAttachmentMiddleware, loginRequired,
+  router.get('/:id', accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT], { acceptLegacy: true }), certifySharedPageAttachmentMiddleware, loginRequired,
     validator.retrieveAttachment, apiV3FormValidator,
     async(req, res) => {
       try {

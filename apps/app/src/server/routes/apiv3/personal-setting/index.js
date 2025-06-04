@@ -154,7 +154,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: personal params
    */
-  router.get('/', accessTokenParser([SCOPE.READ.USER_SETTINGS.INFO]), loginRequiredStrictly, async(req, res) => {
+  router.get('/', accessTokenParser([SCOPE.READ.USER_SETTINGS.INFO], { acceptLegacy: true }), loginRequiredStrictly, async(req, res) => {
     const { username } = req.user;
     try {
       const user = await User.findUserByUsername(username);
@@ -196,7 +196,7 @@ module.exports = (crowi) => {
    *                      type: number
    *                      description: Minimum password length
    */
-  router.get('/is-password-set', accessTokenParser([SCOPE.READ.USER_SETTINGS.PASSWORD]), loginRequiredStrictly, async(req, res) => {
+  router.get('/is-password-set', accessTokenParser([SCOPE.READ.USER_SETTINGS.PASSWORD], { acceptLegacy: true }), loginRequiredStrictly, async(req, res) => {
     const { username } = req.user;
 
     try {
@@ -238,7 +238,8 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: personal params
    */
-  router.put('/', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.INFO]), loginRequiredStrictly, addActivity, validator.personal, apiV3FormValidator,
+  // eslint-disable-next-line max-len
+  router.put('/', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.INFO], { acceptLegacy: true }), loginRequiredStrictly, addActivity, validator.personal, apiV3FormValidator,
     async(req, res) => {
 
       try {
@@ -299,7 +300,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: user data
    */
-  router.put('/image-type', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.INFO]), loginRequiredStrictly, addActivity,
+  router.put('/image-type', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.INFO], { acceptLegacy: true }), loginRequiredStrictly, addActivity,
     validator.imageType, apiV3FormValidator,
     async(req, res) => {
       const { isGravatarEnabled } = req.body;
@@ -338,7 +339,8 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: array of external accounts
    */
-  router.get('/external-accounts', accessTokenParser([SCOPE.READ.USER_SETTINGS.EXTERNAL_ACCOUNT]), loginRequiredStrictly, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.get('/external-accounts', accessTokenParser([SCOPE.READ.USER_SETTINGS.EXTERNAL_ACCOUNT], { acceptLegacy: true }), loginRequiredStrictly, async(req, res) => {
     const userData = req.user;
 
     try {
@@ -383,7 +385,8 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: user data updated
    */
-  router.put('/password', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.PASSWORD]), loginRequiredStrictly, addActivity, validator.password, apiV3FormValidator,
+  // eslint-disable-next-line max-len
+  router.put('/password', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.PASSWORD], { acceptLegacy: true }), loginRequiredStrictly, addActivity, validator.password, apiV3FormValidator,
     async(req, res) => {
       const { body, user } = req;
       const { oldPassword, newPassword } = body;

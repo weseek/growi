@@ -40,7 +40,7 @@ export const checkPageExistenceHandlersFactory: CreatePageHandlersFactory = (cro
   ];
 
   return [
-    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), loginRequired,
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }), loginRequired,
     validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
       const { path } = req.query;

@@ -134,7 +134,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
   const addActivity = generateAddActivityMiddleware();
 
   return [
-    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), loginRequiredStrictly, excludeReadOnlyUser, addActivity,
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }), loginRequiredStrictly, excludeReadOnlyUser, addActivity,
     validator, apiV3FormValidator,
     async(req: UpdatePageRequest, res: ApiV3Response) => {
       const {

@@ -36,7 +36,7 @@ export const deleteThreadFactory: DeleteThreadFactory = (crowi) => {
   ];
 
   return [
-    accessTokenParser([SCOPE.WRITE.FEATURES.AI_ASSISTANT]), loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
+    accessTokenParser([SCOPE.WRITE.FEATURES.AI_ASSISTANT], { acceptLegacy: true }), loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
       const { aiAssistantId, threadRelationId } = req.params;
       const { user } = req;

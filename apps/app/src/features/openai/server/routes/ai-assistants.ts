@@ -26,7 +26,7 @@ export const getAiAssistantsFactory: GetAiAssistantsFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
   return [
-    accessTokenParser([SCOPE.READ.FEATURES.AI_ASSISTANT]), loginRequiredStrictly, certifyAiService,
+    accessTokenParser([SCOPE.READ.FEATURES.AI_ASSISTANT], { acceptLegacy: true }), loginRequiredStrictly, certifyAiService,
     async(req: Req, res: ApiV3Response) => {
       const openaiService = getOpenaiService();
       if (openaiService == null) {

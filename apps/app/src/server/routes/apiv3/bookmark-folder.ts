@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { ErrorV3 } from '@growi/core/dist/models';
 import { body } from 'express-validator';
 import type { Types } from 'mongoose';
@@ -158,7 +159,8 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/BookmarkFolder'
    */
-  router.post('/', accessTokenParser([SCOPE.WRITE.FEATURES.BOOKMARK]), loginRequiredStrictly, validator.bookmarkFolder, apiV3FormValidator, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.post('/', accessTokenParser([SCOPE.WRITE.FEATURES.BOOKMARK], { acceptLegacy: true }), loginRequiredStrictly, validator.bookmarkFolder, apiV3FormValidator, async(req, res) => {
     const owner = req.user?._id;
     const { name, parent } = req.body;
     const params = {
@@ -211,7 +213,7 @@ module.exports = (crowi) => {
    *                        type: object
    *                        $ref: '#/components/schemas/BookmarkFolder'
    */
-  router.get('/list/:userId', accessTokenParser([SCOPE.READ.FEATURES.BOOKMARK]), loginRequiredStrictly, async(req, res) => {
+  router.get('/list/:userId', accessTokenParser([SCOPE.READ.FEATURES.BOOKMARK], { acceptLegacy: true }), loginRequiredStrictly, async(req, res) => {
     const { userId } = req.params;
 
     const getBookmarkFolders = async(
@@ -300,7 +302,7 @@ module.exports = (crowi) => {
    *                      description: Number of deleted folders
    *                      example: 1
    */
-  router.delete('/:id', accessTokenParser([SCOPE.WRITE.FEATURES.BOOKMARK]), loginRequiredStrictly, async(req, res) => {
+  router.delete('/:id', accessTokenParser([SCOPE.WRITE.FEATURES.BOOKMARK], { acceptLegacy: true }), loginRequiredStrictly, async(req, res) => {
     const { id } = req.params;
     try {
       const result = await BookmarkFolder.deleteFolderAndChildren(id);
@@ -357,7 +359,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/BookmarkFolder'
    */
-  router.put('/', accessTokenParser([SCOPE.WRITE.FEATURES.BOOKMARK]), loginRequiredStrictly, validator.bookmarkFolder, async(req, res) => {
+  router.put('/', accessTokenParser([SCOPE.WRITE.FEATURES.BOOKMARK], { acceptLegacy: true }), loginRequiredStrictly, validator.bookmarkFolder, async(req, res) => {
     const {
       bookmarkFolderId, name, parent, childFolder,
     } = req.body;
@@ -407,7 +409,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/BookmarkFolder'
    */
-  router.post('/add-bookmark-to-folder', accessTokenParser([SCOPE.WRITE.FEATURES.BOOKMARK]), loginRequiredStrictly, validator.bookmarkPage, apiV3FormValidator,
+  router.post('/add-bookmark-to-folder', accessTokenParser([SCOPE.WRITE.FEATURES.BOOKMARK], { acceptLegacy: true }), loginRequiredStrictly, validator.bookmarkPage, apiV3FormValidator,
     async(req, res) => {
       const userId = req.user?._id;
       const { pageId, folderId } = req.body;
@@ -458,7 +460,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/BookmarkFolder'
    */
-  router.put('/update-bookmark', accessTokenParser([SCOPE.WRITE.FEATURES.BOOKMARK]), loginRequiredStrictly, validator.bookmark, async(req, res) => {
+  router.put('/update-bookmark', accessTokenParser([SCOPE.WRITE.FEATURES.BOOKMARK], { acceptLegacy: true }), loginRequiredStrictly, validator.bookmark, async(req, res) => {
     const { pageId, status } = req.body;
     const userId = req.user?._id;
     try {

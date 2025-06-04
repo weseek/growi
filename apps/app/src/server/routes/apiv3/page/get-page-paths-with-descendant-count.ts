@@ -57,7 +57,7 @@ export const getPagePathsWithDescendantCountFactory: GetPagePathsWithDescendantC
   ];
 
   return [
-    accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequiredStrictly,
+    accessTokenParser([SCOPE.READ.FEATURES.PAGE], { acceptLegacy: true }), loginRequiredStrictly,
     validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
       const {

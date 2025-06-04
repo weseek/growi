@@ -213,7 +213,8 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.get('/', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), certifySharedPage, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.get('/', accessTokenParser([SCOPE.READ.FEATURES.PAGE], { acceptLegacy: true }), certifySharedPage, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
     const { user, isSharedPage } = req;
     const {
       pageId, path, findAll, revisionId, shareLinkId, includeEmpty,
@@ -441,7 +442,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.put('/likes', accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), loginRequiredStrictly, addActivity,
+  router.put('/likes', accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }), loginRequiredStrictly, addActivity,
     validator.likes, apiV3FormValidator, async(req, res) => {
       const { pageId, bool: isLiked } = req.body;
 
@@ -1037,7 +1038,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.put('/subscribe', accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), loginRequiredStrictly, addActivity,
+  router.put('/subscribe', accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }), loginRequiredStrictly, addActivity,
     validator.subscribe, apiV3FormValidator,
     async(req, res) => {
       const { pageId, status } = req.body;
@@ -1099,7 +1100,7 @@ module.exports = (crowi) => {
    *                   page:
    *                     $ref: '#/components/schemas/Page'
    */
-  router.put('/:pageId/content-width', accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), loginRequiredStrictly, excludeReadOnlyUser,
+  router.put('/:pageId/content-width', accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }), loginRequiredStrictly, excludeReadOnlyUser,
     validator.contentWidth, apiV3FormValidator, async(req, res) => {
       const { pageId } = req.params;
       const { expandContentWidth } = req.body;

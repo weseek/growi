@@ -199,7 +199,7 @@ module.exports = (crowi) => {
    *                    errorCode:
    *                      type: string
    */
-  router.get('/', accessTokenParser([SCOPE.READ.ADMIN.SLACK_INTEGRATION]), loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', accessTokenParser([SCOPE.READ.ADMIN.SLACK_INTEGRATION], { acceptLegacy: true }), loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const { configManager, slackIntegrationService } = crowi;
     const currentBotType = configManager.getConfig('slackbot:currentBotType');
@@ -335,7 +335,7 @@ module.exports = (crowi) => {
    *             description: Succeeded to put botType setting.
    */
   // eslint-disable-next-line max-len
-  router.put('/bot-type', accessTokenParser([SCOPE.WRITE.ADMIN.SLACK_INTEGRATION]), loginRequiredStrictly, adminRequired, addActivity, validator.botType, apiV3FormValidator, async(req, res) => {
+  router.put('/bot-type', accessTokenParser([SCOPE.WRITE.ADMIN.SLACK_INTEGRATION], { acceptLegacy: true }), loginRequiredStrictly, adminRequired, addActivity, validator.botType, apiV3FormValidator, async(req, res) => {
     const { currentBotType } = req.body;
 
     if (currentBotType == null) {
@@ -372,7 +372,8 @@ module.exports = (crowi) => {
    *           200:
    *             description: Succeeded to delete botType setting.
    */
-  router.delete('/bot-type', accessTokenParser([SCOPE.WRITE.ADMIN.SLACK_INTEGRATION]), loginRequiredStrictly, adminRequired, addActivity, apiV3FormValidator,
+  // eslint-disable-next-line max-len
+  router.delete('/bot-type', accessTokenParser([SCOPE.WRITE.ADMIN.SLACK_INTEGRATION], { acceptLegacy: true }), loginRequiredStrictly, adminRequired, addActivity, apiV3FormValidator,
     async(req, res) => {
       try {
         await handleBotTypeChanging(req, res, null);

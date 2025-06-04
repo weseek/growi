@@ -213,7 +213,7 @@ module.exports = (crowi: Crowi): Router => {
    *               $ref: '#/components/schemas/ActivityResponse'
    */
   // eslint-disable-next-line max-len
-  router.get('/', accessTokenParser([SCOPE.READ.ADMIN.AUDIT_LOG]), loginRequiredStrictly, adminRequired, validator.list, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
+  router.get('/', accessTokenParser([SCOPE.READ.ADMIN.AUDIT_LOG], { acceptLegacy: true }), loginRequiredStrictly, adminRequired, validator.list, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
     const auditLogEnabled = configManager.getConfig('app:auditLogEnabled');
     if (!auditLogEnabled) {
       const msg = 'AuditLog is not enabled';

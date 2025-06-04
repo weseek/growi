@@ -89,7 +89,8 @@ const routerFactory = (crowi: Crowi): Router => {
    *                 rootPage:
    *                   $ref: '#/components/schemas/Page'
    */
-  router.get('/root', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  // eslint-disable-next-line max-len
+  router.get('/root', accessTokenParser([SCOPE.READ.FEATURES.PAGE], { acceptLegacy: true }), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const Page = mongoose.model<IPage, PageModel>('Page');
 
     let rootPage;
@@ -154,7 +155,7 @@ const routerFactory = (crowi: Crowi): Router => {
    *                         description: Revision ID (nullable)
    */
   // eslint-disable-next-line max-len
-  router.get('/ancestors-children', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, ...validator.pagePathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
+  router.get('/ancestors-children', accessTokenParser([SCOPE.READ.FEATURES.PAGE], { acceptLegacy: true }), loginRequired, ...validator.pagePathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
     const { path } = req.query;
 
     const pageService = crowi.pageService;
@@ -206,7 +207,7 @@ const routerFactory = (crowi: Crowi): Router => {
    * In most cases, using id should be prioritized
    */
   // eslint-disable-next-line max-len
-  router.get('/children', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, validator.pageIdOrPathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/children', accessTokenParser([SCOPE.READ.FEATURES.PAGE], { acceptLegacy: true }), loginRequired, validator.pageIdOrPathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const { id, path } = req.query;
 
     const pageService = crowi.pageService;
@@ -301,7 +302,7 @@ const routerFactory = (crowi: Crowi): Router => {
    *                         type: integer
    */
   // eslint-disable-next-line max-len
-  router.get('/info', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, validator.pageIdsOrPathRequired, validator.infoParams, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/info', accessTokenParser([SCOPE.READ.FEATURES.PAGE], { acceptLegacy: true }), loginRequired, validator.pageIdsOrPathRequired, validator.infoParams, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const {
       pageIds, path, attachBookmarkCount: attachBookmarkCountParam, attachShortBody: attachShortBodyParam,
     } = req.query;

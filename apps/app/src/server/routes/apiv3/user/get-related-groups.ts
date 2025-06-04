@@ -21,7 +21,7 @@ export const getRelatedGroupsHandlerFactory: GetRelatedGroupsHandlerFactory = (c
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
   return [
-    accessTokenParser([SCOPE.READ.USER_SETTINGS.INFO]), loginRequiredStrictly,
+    accessTokenParser([SCOPE.READ.USER_SETTINGS.INFO], { acceptLegacy: true }), loginRequiredStrictly,
     async(req: Req, res: ApiV3Response) => {
       try {
         const relatedGroups = await crowi.pageGrantService?.getUserRelatedGroups(req.user);

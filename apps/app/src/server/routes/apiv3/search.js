@@ -126,7 +126,8 @@ module.exports = (crowi) => {
    *                    description: Status of indices
    *                    $ref: '#/components/schemas/Indices'
    */
-  router.get('/indices', noCache(), accessTokenParser([SCOPE.READ.ADMIN.FULL_TEXT_SEARCH]), loginRequired, adminRequired, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.get('/indices', noCache(), accessTokenParser([SCOPE.READ.ADMIN.FULL_TEXT_SEARCH], { acceptLegacy: true }), loginRequired, adminRequired, async(req, res) => {
     const { searchService } = crowi;
 
     if (!searchService.isConfigured) {
@@ -154,7 +155,8 @@ module.exports = (crowi) => {
    *        200:
    *          description: Successfully connected
    */
-  router.post('/connection', accessTokenParser([SCOPE.WRITE.ADMIN.FULL_TEXT_SEARCH]), loginRequired, adminRequired, addActivity, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.post('/connection', accessTokenParser([SCOPE.WRITE.ADMIN.FULL_TEXT_SEARCH], { acceptLegacy: true }), loginRequired, adminRequired, addActivity, async(req, res) => {
     const { searchService } = crowi;
 
     if (!searchService.isConfigured) {
@@ -208,7 +210,7 @@ module.exports = (crowi) => {
    *                    type: string
    *                    description: Operation is successfully processed, or requested
    */
-  router.put('/indices', accessTokenParser([SCOPE.WRITE.ADMIN.FULL_TEXT_SEARCH]), loginRequired, adminRequired, addActivity,
+  router.put('/indices', accessTokenParser([SCOPE.WRITE.ADMIN.FULL_TEXT_SEARCH], { acceptLegacy: true }), loginRequired, adminRequired, addActivity,
     validatorForPutIndices, apiV3FormValidator,
     async(req, res) => {
       const operation = req.body.operation;

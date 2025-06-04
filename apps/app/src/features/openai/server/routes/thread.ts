@@ -38,7 +38,7 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
   ];
 
   return [
-    accessTokenParser([SCOPE.WRITE.FEATURES.AI_ASSISTANT]), loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
+    accessTokenParser([SCOPE.WRITE.FEATURES.AI_ASSISTANT], { acceptLegacy: true }), loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: CreateThreadReq, res: ApiV3Response) => {
 
       const openaiService = getOpenaiService();
