@@ -8,15 +8,13 @@
  *        type: object
  *        properties:
  *          _id:
- *            type: string
- *            description: revision ID
- *            example: 5e0734e472560e001761fa68
+ *            $ref: '#/components/schemas/ObjectId'
  *          __v:
  *            type: number
  *            description: DB record version
  *            example: 0
  *          author:
- *            $ref: '#/components/schemas/User/properties/_id'
+ *            $ref: '#/components/schemas/ObjectId'
  *          body:
  *            type: string
  *            description: content body
