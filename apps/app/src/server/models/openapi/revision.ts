@@ -3,6 +3,15 @@
  *
  *  components:
  *    schemas:
+ *      RevisionBody:
+ *        description: Revision content body
+ *        type: string
+ *        example: |
+ *          # Header
+ *
+ *          - foo
+ *          - bar
+ *
  *      Revision:
  *        description: Revision
  *        type: object
@@ -16,12 +25,7 @@
  *          author:
  *            $ref: '#/components/schemas/ObjectId'
  *          body:
- *            type: string
- *            description: content body
- *            example: |
- *              # test
- *
- *              test
+ *            $ref: '#/components/schemas/RevisionBody'
  *          format:
  *            type: string
  *            description: format

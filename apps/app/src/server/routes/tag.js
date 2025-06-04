@@ -14,8 +14,13 @@ import ApiResponse from '../util/apiResponse';
  *        description: Tags
  *        type: array
  *        items:
- *          $ref: '#/components/schemas/Tag/properties/name'
+ *          $ref: '#/components/schemas/TagName'
  *        example: ['daily', 'report', 'tips']
+ *
+ *      TagName:
+ *        description: Tag name
+ *        type: string
+ *        example: daily
  *
  *      Tag:
  *        description: Tag
@@ -26,9 +31,7 @@ import ApiResponse from '../util/apiResponse';
  *            description: tag ID
  *            example: 5e2d6aede35da4004ef7e0b7
  *          name:
- *            type: string
- *            description: tag name
- *            example: daily
+ *            $ref: '#/components/schemas/TagName'
  *          count:
  *            type: number
  *            description: Count of tagged pages
