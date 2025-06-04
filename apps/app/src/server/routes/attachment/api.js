@@ -222,7 +222,7 @@ export const routesFactory = (crowi) => {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                      $ref: '#/components/schemas/V1ResponseOK'
    *                    attachment:
    *                      $ref: '#/components/schemas/AttachmentProfile'
    *          403:
@@ -300,7 +300,7 @@ export const routesFactory = (crowi) => {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                      $ref: '#/components/schemas/V1ResponseOK'
    *          403:
    *            $ref: '#/components/responses/403'
    *          500:
@@ -365,7 +365,7 @@ export const routesFactory = (crowi) => {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                      $ref: '#/components/schemas/V1ResponseOK'
    *          403:
    *            $ref: '#/components/responses/403'
    *          500:

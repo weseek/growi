@@ -79,7 +79,7 @@ module.exports = function(crowi: Crowi, app) {
    *               schema:
    *                 properties:
    *                   ok:
-   *                     $ref: '#/components/schemas/V1Response/properties/ok'
+   *                     $ref: '#/components/schemas/V1ResponseOK'
    *                   meta:
    *                     $ref: '#/components/schemas/ElasticsearchResult/properties/meta'
    *                   totalCount:

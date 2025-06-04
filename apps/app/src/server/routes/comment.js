@@ -99,7 +99,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                      $ref: '#/components/schemas/V1ResponseOK'
    *                    comments:
    *                      type: array
    *                      items:
@@ -205,7 +205,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                      $ref: '#/components/schemas/V1ResponseOK'
    *                    comment:
    *                      $ref: '#/components/schemas/Comment'
    *          403:
@@ -351,7 +351,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                      $ref: '#/components/schemas/V1ResponseOK'
    *                    comment:
    *                      $ref: '#/components/schemas/Comment'
    *          403:
@@ -442,7 +442,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                      $ref: '#/components/schemas/V1ResponseOK'
    *                    comment:
    *                      $ref: '#/components/schemas/Comment'
    *          403:

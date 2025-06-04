@@ -158,7 +158,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                      $ref: '#/components/schemas/V1ResponseOK'
    *                    tags:
    *                      $ref: '#/components/schemas/Tags'
    *          403:
@@ -206,7 +206,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                      $ref: '#/components/schemas/V1ResponseOK'
    *                    updatePost:
    *                      $ref: '#/components/schemas/UpdatePost'
    *          403:
