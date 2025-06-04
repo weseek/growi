@@ -13,10 +13,10 @@ export const accessTokenParser = (scopes?: Scope[], opts?: {acceptLegacy: boolea
       return next();
     }
 
-    await parserForAccessToken(scopes)(req, res, next);
+    await parserForAccessToken(scopes)(req, res);
 
     if (opts?.acceptLegacy) {
-      await parserForApiToken(req, res, next);
+      await parserForApiToken(req, res);
     }
 
     return next();

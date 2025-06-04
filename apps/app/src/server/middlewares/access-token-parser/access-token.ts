@@ -1,6 +1,6 @@
 import type { IUserHasId } from '@growi/core/dist/interfaces';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
-import type { NextFunction, Response } from 'express';
+import type { Response } from 'express';
 
 import type { Scope } from '~/interfaces/scope';
 import { AccessToken } from '~/server/models/access-token';
@@ -11,7 +11,7 @@ import type { AccessTokenParserReq } from './interfaces';
 const logger = loggerFactory('growi:middleware:access-token-parser:access-token');
 
 export const parserForAccessToken = (scopes: Scope[]) => {
-  return async(req: AccessTokenParserReq, res: Response, next: NextFunction): Promise<void> => {
+  return async(req: AccessTokenParserReq, res: Response): Promise<void> => {
 
     const accessToken = req.query.access_token ?? req.body.access_token;
     if (accessToken == null || typeof accessToken !== 'string') {

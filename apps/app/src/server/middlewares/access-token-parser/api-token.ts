@@ -23,7 +23,7 @@ const extractBearerToken = (authHeader: string | undefined): string | null => {
 };
 
 
-export const parserForApiToken = async(req: AccessTokenParserReq, res: Response, next: NextFunction): Promise<void> => {
+export const parserForApiToken = async(req: AccessTokenParserReq, res: Response): Promise<void> => {
   // Extract token from Authorization header first
   const bearerToken = extractBearerToken(req.headers.authorization);
 
