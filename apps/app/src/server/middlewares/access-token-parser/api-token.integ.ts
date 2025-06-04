@@ -38,12 +38,11 @@ describe('access-token-parser middleware', () => {
       user: undefined,
     });
     const resMock = mock<Response>();
-    const nextMock = vi.fn();
 
     expect(reqMock.user).toBeUndefined();
 
     // act
-    await parserForApiToken(reqMock, resMock, nextMock);
+    await parserForApiToken(reqMock, resMock);
 
     // assert
     expect(reqMock.user).toBeUndefined();
@@ -56,13 +55,12 @@ describe('access-token-parser middleware', () => {
       user: undefined,
     });
     const resMock = mock<Response>();
-    const nextMock = vi.fn();
 
     expect(reqMock.user).toBeUndefined();
 
     // act
     reqMock.query.access_token = 'invalidToken';
-    await parserForApiToken(reqMock, resMock, nextMock);
+    await parserForApiToken(reqMock, resMock);
 
     // assert
     expect(reqMock.user).toBeUndefined();
@@ -90,7 +88,7 @@ describe('access-token-parser middleware', () => {
 
     // act
     reqMock.query.access_token = targetUser.apiToken;
-    await parserForApiToken(reqMock, resMock, nextMock);
+    await parserForApiToken(reqMock, resMock);
 
     // assert
     expect(reqMock.user).toBeDefined();
@@ -104,7 +102,6 @@ describe('access-token-parser middleware', () => {
       user: undefined,
     });
     const resMock = mock<Response>();
-    const nextMock = vi.fn();
 
     expect(reqMock.user).toBeUndefined();
 
@@ -119,7 +116,7 @@ describe('access-token-parser middleware', () => {
 
     // act
     reqMock.body.access_token = targetUser.apiToken;
-    await parserForApiToken(reqMock, resMock, nextMock);
+    await parserForApiToken(reqMock, resMock);
 
     // assert
     expect(reqMock.user).toBeDefined();
@@ -136,7 +133,6 @@ describe('access-token-parser middleware', () => {
       },
     });
     const resMock = mock<Response>();
-    const nextMock = vi.fn();
 
     expect(reqMock.user).toBeUndefined();
 
@@ -151,13 +147,12 @@ describe('access-token-parser middleware', () => {
 
     // act
     reqMock.headers.authorization = `Bearer ${targetUser.apiToken}`;
-    await accessTokenParser(reqMock, resMock, nextMock);
+    await parserForApiToken(reqMock, resMock);
 
     // assert
     expect(reqMock.user).toBeDefined();
     expect(reqMock.user?._id).toStrictEqual(targetUser._id);
     expect(serializeUserSecurely).toHaveBeenCalledOnce();
-    expect(nextMock).toHaveBeenCalled();
   });
 
   it('should ignore non-Bearer Authorization header', async() => {
@@ -169,7 +164,6 @@ describe('access-token-parser middleware', () => {
       },
     });
     const resMock = mock<Response>();
-    const nextMock = vi.fn();
 
     expect(reqMock.user).toBeUndefined();
 
@@ -178,12 +172,11 @@ describe('access-token-parser middleware', () => {
 
     // act
     reqMock.headers.authorization = `Basic ${randomString}`; // Basic auth header with random string
-    await accessTokenParser(reqMock, resMock, nextMock);
+    await parserForApiToken(reqMock, resMock);
 
     // assert
     expect(reqMock.user).toBeUndefined();
     expect(serializeUserSecurely).not.toHaveBeenCalled();
-    expect(nextMock).toHaveBeenCalled();
   });
 
 });

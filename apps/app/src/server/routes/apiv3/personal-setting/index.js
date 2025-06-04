@@ -458,12 +458,12 @@ module.exports = (crowi) => {
    *         200:
    *           description: succded to get access token
    *           content:
-   *           application/json:
-   *             schema:
-   *               properties:
-   *                 accessTokens:
-   *                   type: objet
-   *                   description: array of access tokens
+   *             application/json:
+   *               schema:
+   *                 properties:
+   *                   accessTokens:
+   *                     type: object
+   *                     description: array of access tokens
    */
   router.get('/access-token', accessTokenParser([SCOPE.READ.USER_SETTINGS.API.ACCESS_TOKEN]), getAccessTokenHandlerFactory(crowi));
 
@@ -489,14 +489,16 @@ module.exports = (crowi) => {
    *                     type: string
    *                     description: access token
    *                   expiredAt:
-   *                     type: Date
+   *                     type: string
    *                     description: expired date
    *                   description:
    *                     type: string
    *                     description: description of access token
    *                   scope:
-   *                     type: string[]
+   *                     type: array
    *                     description: scope of access token
+   *                     items:
+   *                      type: string
    */
   router.post('/access-token', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.API.ACCESS_TOKEN]), generateAccessTokenHandlerFactory(crowi));
 
@@ -504,13 +506,13 @@ module.exports = (crowi) => {
    * @swagger
    *   /personal-setting/access-token/:
    *     delete:
-   *     tags: [GeneralSetting]
-   *     operationId: deleteAccessToken
-   *     summary: /personal-setting/access-token
-   *     description: Delete access token
-   *     responses:
-   *       200:
-   *         description: succeded to delete access token
+   *       tags: [GeneralSetting]
+   *       operationId: deleteAccessToken
+   *       summary: /personal-setting/access-token
+   *       description: Delete access token
+   *       responses:
+   *         200:
+   *           description: succeded to delete access token
    *
    */
   router.delete('/access-token', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.API.ACCESS_TOKEN]), deleteAccessTokenHandlersFactory(crowi));
