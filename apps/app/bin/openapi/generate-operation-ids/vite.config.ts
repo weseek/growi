@@ -24,7 +24,7 @@ export default defineConfig({
         entryFileNames: 'cli.mjs',
       },
     },
-    outDir: __dirname,
+    outDir: `${__dirname}/dist`,
     emptyOutDir: false,
     copyPublicDir: false,
   },
