@@ -19,6 +19,6 @@ swagger-jsdoc \
   "${APP_PATH}/src/server/models/openapi/**/*.{js,ts}"
 
 if [ $? -eq 0 ]; then
-  ts-node "${APP_PATH}/bin/openapi/generate-operation-ids/cli.ts" "${OUT}" --out "${OUT}" --overwrite-existing
+  node "${APP_PATH}/bin/openapi/generate-operation-ids/dist/cli.mjs" "${OUT}" --out "${OUT}" --overwrite-existing
   echo "OpenAPI spec generated and transformed: ${OUT}"
 fi

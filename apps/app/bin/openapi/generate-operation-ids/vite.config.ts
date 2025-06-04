@@ -11,10 +11,13 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [
+        /^node:/,
         'fs',
         'path',
-        '@apidevtools/swagger-parser',
-        'commander',
+        'util',
+        'child_process',
+        'process',
+        'events',
       ],
       output: {
         banner: '#!/usr/bin/env node',
@@ -22,7 +25,6 @@ export default defineConfig({
       },
     },
     outDir: __dirname,
-    minify: false,
     emptyOutDir: false,
     copyPublicDir: false,
   },
