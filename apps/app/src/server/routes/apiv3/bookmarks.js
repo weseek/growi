@@ -42,7 +42,7 @@ const router = express.Router();
  *          page:
  *            $ref: '#/components/schemas/Page'
  *          user:
- *            $ref: '#/components/schemas/User/properties/_id'
+ *            $ref: '#/components/schemas/ObjectId'
  *      Bookmarks:
  *        description: User Root Bookmarks
  *        type: object
