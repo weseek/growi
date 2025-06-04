@@ -5,38 +5,6 @@ import PageTagRelation from '../models/page-tag-relation';
 import { Revision } from '../models/revision';
 import ApiResponse from '../util/apiResponse';
 
-/**
- * @swagger
- *
- *  components:
- *    schemas:
- *      Tags:
- *        description: Tags
- *        type: array
- *        items:
- *          $ref: '#/components/schemas/TagName'
- *        example: ['daily', 'report', 'tips']
- *
- *      TagName:
- *        description: Tag name
- *        type: string
- *        example: daily
- *
- *      Tag:
- *        description: Tag
- *        type: object
- *        properties:
- *          _id:
- *            type: string
- *            description: tag ID
- *            example: 5e2d6aede35da4004ef7e0b7
- *          name:
- *            $ref: '#/components/schemas/TagName'
- *          count:
- *            type: number
- *            description: Count of tagged pages
- *            example: 3
- */
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = function(crowi, app) {
 

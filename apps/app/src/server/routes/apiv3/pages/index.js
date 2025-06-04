@@ -29,35 +29,6 @@ const router = express.Router();
 const LIMIT_FOR_LIST = 10;
 const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
 
-/**
- * @swagger
- *
- *  components:
- *    schemas:
- *      Tags:
- *        description: Tags
- *        type: array
- *        items:
- *          $ref: '#/components/schemas/Tag/properties/name'
- *        example: ['daily', 'report', 'tips']
- *
- *      Tag:
- *        description: Tag
- *        type: object
- *        properties:
- *          _id:
- *            type: string
- *            description: tag ID
- *            example: 5e2d6aede35da4004ef7e0b7
- *          name:
- *            type: string
- *            description: tag name
- *            example: daily
- *          count:
- *            type: number
- *            description: Count of tagged pages
- *            example: 3
- */
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequired = require('../../../middlewares/login-required')(crowi, true);
@@ -236,7 +207,7 @@ module.exports = (crowi) => {
    *                  pageId:
    *                    $ref: '#/components/schemas/ObjectId'
    *                  path:
-   *                    $ref: '#/components/schemas/Page/properties/path'
+   *                    $ref: '#/components/schemas/PagePath'
    *                  revisionId:
    *                    type: string
    *                    description: revision ID
@@ -578,7 +549,7 @@ module.exports = (crowi) => {
    *                  pageId:
    *                    $ref: '#/components/schemas/ObjectId'
    *                  pageNameInput:
-   *                    $ref: '#/components/schemas/Page/properties/path'
+   *                    $ref: '#/components/schemas/PagePath'
    *                  isRecursively:
    *                    type: boolean
    *                    description: whether duplicate page with descendants
