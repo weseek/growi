@@ -186,11 +186,11 @@ module.exports = function(crowi, app) {
    *          - in: query
    *            name: limit
    *            schema:
-   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/limit'
+   *              $ref: '#/components/schemas/Limit'
    *          - in: query
    *            name: offset
    *            schema:
-   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/offset'
+   *              $ref: '#/components/schemas/Offset'
    *        responses:
    *          200:
    *            description: Succeeded to tag list.
