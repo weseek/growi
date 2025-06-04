@@ -3,14 +3,20 @@
  *
  *  components:
  *    schemas:
+ *      PagePath:
+ *        description: Page path
+ *        type: string
+ *        example: /path/to/page
+ *      PageGrant:
+ *        description: Grant for page
+ *        type: number
+ *        example: 1
  *      Page:
  *        description: Page
  *        type: object
  *        properties:
  *          _id:
- *            type: string
- *            description: page ID
- *            example: 5e07345972560e001761fa63
+ *            $ref: '#/components/schemas/ObjectId'
  *          __v:
  *            type: number
  *            description: DB record version
@@ -30,9 +36,7 @@
  *            description: extend data
  *            example: {}
  *          grant:
- *            type: number
- *            description: grant
- *            example: 1
+ *            $ref: '#/components/schemas/PageGrant'
  *          grantedUsers:
  *            type: array
  *            description: granted users
@@ -50,9 +54,7 @@
  *              description: user ID
  *            example: []
  *          path:
- *            type: string
- *            description: page path
- *            example: /
+ *            $ref: '#/components/schemas/PagePath'
  *          revision:
  *            type: string
  *            description: page revision
