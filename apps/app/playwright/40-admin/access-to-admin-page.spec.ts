@@ -21,8 +21,8 @@ test('admin/security is successfully loaded', async({ page }) => {
   await page.goto('/admin/security');
 
   await expect(page.getByTestId('admin-security')).toBeVisible();
-  await expect(page.locator('#isShowRestrictedByOwner')).not.toBeChecked();
-  await expect(page.locator('#isShowRestrictedByGroup')).not.toBeChecked();
+  await expect(page.locator('#isShowRestrictedByOwner')).toHaveText('Hidden');
+  await expect(page.locator('#isShowRestrictedByGroup')).toHaveText('Hidden');
 });
 
 test('admin/markdown is successfully loaded', async({ page }) => {
