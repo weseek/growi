@@ -985,6 +985,7 @@ module.exports = (crowi) => {
    *               type: object
    *               properties:
    *                 file:
+   *                   type: string
    *                   format: binary
    *        responses:
    *          200:
