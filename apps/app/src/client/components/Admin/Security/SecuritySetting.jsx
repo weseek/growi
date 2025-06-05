@@ -386,7 +386,7 @@ class SecuritySetting extends React.Component {
                     <button
                       className="btn btn-outline-secondary dropdown-toggle text-end col-12 col-md-auto"
                       type="button"
-                      id="ownerRestrictionDropdownButton"
+                      id="isShowRestrictedByOwner"
                       data-bs-toggle="dropdown"
                       aria-haspopup="true"
                       aria-expanded="true"
@@ -396,7 +396,7 @@ class SecuritySetting extends React.Component {
                         {adminGeneralSecurityContainer.state.currentOwnerRestrictionDisplayMode === 'Hidden' && t('security_settings.always_hidden')}
                       </span>
                     </button>
-                    <div className="dropdown-menu" aria-labelledby="ownerRestrictionDropdownButton">
+                    <div className="dropdown-menu" aria-labelledby="isShowRestrictedByOwner">
                       <button
                         className="dropdown-item"
                         type="button"
@@ -421,7 +421,7 @@ class SecuritySetting extends React.Component {
                     <button
                       className="btn btn-outline-secondary dropdown-toggle text-end col-12 col-md-auto"
                       type="button"
-                      id="groupRestrictionDropdownButton"
+                      id="isShowRestrictedByGroup"
                       data-bs-toggle="dropdown"
                       aria-haspopup="true"
                       aria-expanded="true"
@@ -431,7 +431,7 @@ class SecuritySetting extends React.Component {
                         {adminGeneralSecurityContainer.state.currentGroupRestrictionDisplayMode === 'Hidden' && t('security_settings.always_hidden')}
                       </span>
                     </button>
-                    <div className="dropdown-menu" aria-labelledby="groupRestrictionDropdownButton">
+                    <div className="dropdown-menu" aria-labelledby="isShowRestrictedByGroup">
                       <button
                         className="dropdown-item"
                         type="button"
