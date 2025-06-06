@@ -840,11 +840,11 @@ export const CONFIG_DEFINITIONS = {
   }),
 
   // GCS Settings
-  'gcs:apiKeyJsonPath': defineConfig<string | undefined>({
+  'gcs:apiKeyJsonPath': defineConfig<NonBlankString | undefined>({
     envVarName: 'GCS_API_KEY_JSON_PATH',
     defaultValue: undefined,
   }),
-  'gcs:bucket': defineConfig<string | undefined>({
+  'gcs:bucket': defineConfig<NonBlankString | undefined>({
     envVarName: 'GCS_BUCKET',
     defaultValue: undefined,
   }),
@@ -870,15 +870,15 @@ export const CONFIG_DEFINITIONS = {
     envVarName: 'AZURE_REFERENCE_FILE_WITH_RELAY_MODE',
     defaultValue: false,
   }),
-  'azure:tenantId': defineConfig<string | undefined>({
+  'azure:tenantId': defineConfig<NonBlankString | undefined>({
     envVarName: 'AZURE_TENANT_ID',
     defaultValue: undefined,
   }),
-  'azure:clientId': defineConfig<string | undefined>({
+  'azure:clientId': defineConfig<NonBlankString | undefined>({
     envVarName: 'AZURE_CLIENT_ID',
     defaultValue: undefined,
   }),
-  'azure:clientSecret': defineConfig<string | undefined>({
+  'azure:clientSecret': defineConfig<NonBlankString | undefined>({
     envVarName: 'AZURE_CLIENT_SECRET',
     defaultValue: undefined,
     isSecret: true,
