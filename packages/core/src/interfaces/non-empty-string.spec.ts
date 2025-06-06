@@ -3,107 +3,51 @@ import { describe, expect, it } from 'vitest';
 import { isNonEmptyString, toNonEmptyStringOrUndefined } from './non-empty-string';
 
 describe('isNonEmptyString', () => {
-  it('should return true for non-empty strings', () => {
-    // Arrange
-    const validStrings = ['hello', 'world', 'a', '1', ' ', '   '];
-
-    // Act & Assert
-    validStrings.forEach((str) => {
-      expect(isNonEmptyString(str)).toBe(true);
-    });
-  });
-
-  it('should return false for empty string', () => {
-    // Arrange
-    const emptyString = '';
-
-    // Act
-    const result = isNonEmptyString(emptyString);
-
-    // Assert
-    expect(result).toBe(false);
-  });
-
-  it('should return false for null', () => {
-    // Arrange
-    const nullValue = null;
-
-    // Act
-    const result = isNonEmptyString(nullValue);
-
-    // Assert
-    expect(result).toBe(false);
-  });
-
-  it('should return false for undefined', () => {
-    // Arrange
-    const undefinedValue = undefined;
-
-    // Act
-    const result = isNonEmptyString(undefinedValue);
-
-    // Assert
-    expect(result).toBe(false);
+  /* eslint-disable indent */
+  it.each`
+    input         | expected      | description
+    ${'hello'}    | ${true}       | ${'non-empty string'}
+    ${'world'}    | ${true}       | ${'non-empty string'}
+    ${'a'}        | ${true}       | ${'single character'}
+    ${'1'}        | ${true}       | ${'numeric string'}
+    ${' '}        | ${true}       | ${'space character'}
+    ${'   '}      | ${true}       | ${'multiple spaces'}
+    ${''}         | ${false}      | ${'empty string'}
+    ${null}       | ${false}      | ${'null'}
+    ${undefined}  | ${false}      | ${'undefined'}
+  `('should return $expected for $description: $input', ({ input, expected }) => {
+  /* eslint-enable indent */
+    expect(isNonEmptyString(input)).toBe(expected);
   });
 });
 
 describe('toNonEmptyStringOrUndefined', () => {
-  it('should return the string when it is non-empty', () => {
-    // Arrange
-    const validStrings = ['hello', 'world', 'a', '1', ' ', '   '];
-
-    // Act & Assert
-    validStrings.forEach((str) => {
-      const result = toNonEmptyStringOrUndefined(str);
-      expect(result).toBe(str);
-    });
+  /* eslint-disable indent */
+  it.each`
+    input         | expected      | description
+    ${'hello'}    | ${'hello'}    | ${'non-empty string'}
+    ${'world'}    | ${'world'}    | ${'non-empty string'}
+    ${'a'}        | ${'a'}        | ${'single character'}
+    ${'1'}        | ${'1'}        | ${'numeric string'}
+    ${' '}        | ${' '}        | ${'space character'}
+    ${'   '}      | ${'   '}      | ${'multiple spaces'}
+    ${''}         | ${undefined}  | ${'empty string'}
+    ${null}       | ${undefined}  | ${'null'}
+    ${undefined}  | ${undefined}  | ${'undefined'}
+  `('should return $expected for $description: $input', ({ input, expected }) => {
+  /* eslint-enable indent */
+    expect(toNonEmptyStringOrUndefined(input)).toBe(expected);
   });
+});
 
-  it('should return undefined for empty string', () => {
-    // Arrange
-    const emptyString = '';
-
-    // Act
-    const result = toNonEmptyStringOrUndefined(emptyString);
-
-    // Assert
-    expect(result).toBeUndefined();
-  });
-
-  it('should return undefined for null', () => {
-    // Arrange
-    const nullValue = null;
-
-    // Act
-    const result = toNonEmptyStringOrUndefined(nullValue);
-
-    // Assert
-    expect(result).toBeUndefined();
-  });
-
-  it('should return undefined for undefined', () => {
-    // Arrange
-    const undefinedValue = undefined;
-
-    // Act
-    const result = toNonEmptyStringOrUndefined(undefinedValue);
-
-    // Assert
-    expect(result).toBeUndefined();
-  });
-
+describe('toNonEmptyStringOrUndefined type safety', () => {
   it('should maintain type safety with NonEmptyString brand', () => {
-    // Arrange
     const validString = 'test';
-
-    // Act
     const result = toNonEmptyStringOrUndefined(validString);
 
-    // Assert
     expect(result).toBe(validString);
-    // Type assertion to verify the result is typed as NonEmptyString
     if (result !== undefined) {
-      const _typedResult: typeof result = validString as any;
+      const _typedResult: typeof result = validString as typeof result;
       expect(_typedResult).toBe(validString);
     }
   });
