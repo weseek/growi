@@ -13,6 +13,8 @@ import {
   AbortMultipartUploadCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import type { NonBlankString } from '@growi/core/dist/interfaces';
+import { toNonBlankStringOrUndefined } from '@growi/core/dist/interfaces';
 import urljoin from 'url-join';
 
 import type Crowi from '~/server/crowi';
@@ -79,14 +81,15 @@ const getS3PutObjectCannedAcl = (): ObjectCannedACL | undefined => {
   return undefined;
 };
 
-const getS3Bucket = (): string | undefined => {
-  return configManager.getConfig('aws:s3Bucket') ?? undefined; // return undefined when getConfig() returns null
+const getS3Bucket = (): NonBlankString | undefined => {
+  return toNonBlankStringOrUndefined(configManager.getConfig('aws:s3Bucket')); // Blank strings may remain in the DB, so convert with toNonBlankStringOrUndefined for safety
 };
 
 const S3Factory = (): S3Client => {
   const accessKeyId = configManager.getConfig('aws:s3AccessKeyId');
   const secretAccessKey = configManager.getConfig('aws:s3SecretAccessKey');
-  const s3CustomEndpoint = configManager.getConfig('aws:s3CustomEndpoint') || undefined;
+  const s3Region = toNonBlankStringOrUndefined(configManager.getConfig('aws:s3Region')); // Blank strings may remain in the DB, so convert with toNonBlankStringOrUndefined for safety
+  const s3CustomEndpoint = toNonBlankStringOrUndefined(configManager.getConfig('aws:s3CustomEndpoint'));
 
   return new S3Client({
     credentials: accessKeyId != null && secretAccessKey != null
@@ -95,9 +98,9 @@ const S3Factory = (): S3Client => {
         secretAccessKey,
       }
       : undefined,
-    region: configManager.getConfig('aws:s3Region'),
+    region: s3Region,
     endpoint: s3CustomEndpoint,
-    forcePathStyle: !!s3CustomEndpoint, // s3ForcePathStyle renamed to forcePathStyle in v3
+    forcePathStyle: s3CustomEndpoint != null, // s3ForcePathStyle renamed to forcePathStyle in v3
   });
 };
 
