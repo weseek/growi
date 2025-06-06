@@ -912,6 +912,7 @@ module.exports = (crowi) => {
 
       requestParams['aws:s3CustomEndpoint'] = toNonBlankStringOrUndefined(req.body.s3CustomEndpoint);
       requestParams['aws:s3AccessKeyId'] = toNonBlankStringOrUndefined(req.body.s3AccessKeyId);
+      requestParams['aws:s3SecretAccessKey'] = toNonBlankStringOrUndefined(req.body.s3SecretAccessKey);
       requestParams['aws:referenceFileWithRelayMode'] = req.body.s3ReferenceFileWithRelayMode;
     }
 
@@ -925,12 +926,7 @@ module.exports = (crowi) => {
     }
 
     try {
-      await configManager.updateConfigs(requestParams, { skipPubsub: true });
-
-      const s3SecretAccessKey = req.body.s3SecretAccessKey;
-      if (fileUploadType === 'aws' && s3SecretAccessKey != null && s3SecretAccessKey.trim() !== '') {
-        await configManager.updateConfigs({ 'aws:s3SecretAccessKey': s3SecretAccessKey }, { skipPubsub: true });
-      }
+      await configManager.updateConfigs(requestParams, { skipPubsub: true, removeIfUndefined: true });
 
       await crowi.setUpFileUpload(true);
       crowi.fileUploaderSwitchService.publishUpdatedMessage();
