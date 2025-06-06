@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest';
 
 import {
   isNonEmptyString,
+  toNonEmptyString,
   toNonEmptyStringOrUndefined,
   isNonBlankString,
+  toNonBlankString,
   toNonBlankStringOrUndefined,
 } from './string';
 
@@ -84,6 +86,62 @@ describe('toNonBlankStringOrUndefined', () => {
   `('should return $expected for $description: $input', ({ input, expected }) => {
   /* eslint-enable indent */
     expect(toNonBlankStringOrUndefined(input)).toBe(expected);
+  });
+});
+
+describe('toNonEmptyString', () => {
+  /* eslint-disable indent */
+  it.each`
+    input         | expected      | description
+    ${'hello'}    | ${'hello'}    | ${'non-empty string'}
+    ${'world'}    | ${'world'}    | ${'non-empty string'}
+    ${'a'}        | ${'a'}        | ${'single character'}
+    ${'1'}        | ${'1'}        | ${'numeric string'}
+    ${' '}        | ${' '}        | ${'space character'}
+    ${'   '}      | ${'   '}      | ${'multiple spaces'}
+  `('should return $expected for valid $description: $input', ({ input, expected }) => {
+  /* eslint-enable indent */
+    expect(toNonEmptyString(input)).toBe(expected);
+  });
+
+  /* eslint-disable indent */
+  it.each`
+    input         | description
+    ${''}         | ${'empty string'}
+    ${null}       | ${'null'}
+    ${undefined}  | ${'undefined'}
+  `('should throw error for invalid $description: $input', ({ input }) => {
+  /* eslint-enable indent */
+    expect(() => toNonEmptyString(input)).toThrow('Expected a non-empty string, but received:');
+  });
+});
+
+describe('toNonBlankString', () => {
+  /* eslint-disable indent */
+  it.each`
+    input         | expected      | description
+    ${'hello'}    | ${'hello'}    | ${'non-blank string'}
+    ${'world'}    | ${'world'}    | ${'non-blank string'}
+    ${'a'}        | ${'a'}        | ${'single character'}
+    ${'1'}        | ${'1'}        | ${'numeric string'}
+  `('should return $expected for valid $description: $input', ({ input, expected }) => {
+  /* eslint-enable indent */
+    expect(toNonBlankString(input)).toBe(expected);
+  });
+
+  /* eslint-disable indent */
+  it.each`
+    input         | description
+    ${' '}        | ${'space character'}
+    ${'   '}      | ${'multiple spaces'}
+    ${'\t'}       | ${'tab character'}
+    ${'\n'}       | ${'newline character'}
+    ${''}         | ${'empty string'}
+    ${null}       | ${'null'}
+    ${undefined}  | ${'undefined'}
+  `('should throw error for invalid $description: $input', ({ input }) => {
+  /* eslint-enable indent */
+    expect(() => toNonBlankString(input)).toThrow('Expected a non-blank string, but received:');
   });
 });
 
