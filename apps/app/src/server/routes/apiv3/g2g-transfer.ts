@@ -198,7 +198,6 @@ module.exports = (crowi: Crowi): Router => {
    *                          type: number
    *                          description: The size of the file
    */
-  // eslint-disable-next-line max-len
   receiveRouter.get('/files', validateTransferKey, async(req: Request, res: ApiV3Response) => {
     const files = await crowi.fileUploadService.listFiles();
     return res.apiv3({ files });
@@ -249,7 +248,6 @@ module.exports = (crowi: Crowi): Router => {
    *                    type: string
    *                    description: The message of the result
    */
-  // eslint-disable-next-line max-len
   receiveRouter.post('/', validateTransferKey, uploads.single('transferDataZipFile'), async(req: Request & { file: any; }, res: ApiV3Response) => {
     const { file } = req;
     const {
@@ -466,31 +464,32 @@ module.exports = (crowi: Crowi): Router => {
    *                    type: string
    *                    description: The transfer key
    */
-  // eslint-disable-next-line max-len
-  receiveRouter.post('/generate-key', accessTokenParser([SCOPE.WRITE.ADMIN.EXPORET_DATA], { acceptLegacy: true }), adminRequiredIfInstalled, appSiteUrlRequiredIfNotInstalled, async(req: Request, res: ApiV3Response) => {
-    const appSiteUrl = req.body.appSiteUrl ?? configManager.getConfig('app:siteUrl');
+  receiveRouter.post('/generate-key',
+    accessTokenParser([SCOPE.WRITE.ADMIN.EXPORET_DATA], { acceptLegacy: true }),
+    adminRequiredIfInstalled, appSiteUrlRequiredIfNotInstalled, async(req: Request, res: ApiV3Response) => {
+      const appSiteUrl = req.body.appSiteUrl ?? configManager.getConfig('app:siteUrl');
 
-    let appSiteUrlOrigin: string;
-    try {
-      appSiteUrlOrigin = new URL(appSiteUrl).origin;
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(new ErrorV3('appSiteUrl may be wrong', 'failed_to_generate_key_string'));
-    }
+      let appSiteUrlOrigin: string;
+      try {
+        appSiteUrlOrigin = new URL(appSiteUrl).origin;
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(new ErrorV3('appSiteUrl may be wrong', 'failed_to_generate_key_string'));
+      }
 
-    // Save TransferKey document
-    let transferKeyString: string;
-    try {
-      transferKeyString = await g2gTransferReceiverService.createTransferKey(appSiteUrlOrigin);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(new ErrorV3('Error occurred while generating transfer key.', 'failed_to_generate_key'));
-    }
+      // Save TransferKey document
+      let transferKeyString: string;
+      try {
+        transferKeyString = await g2gTransferReceiverService.createTransferKey(appSiteUrlOrigin);
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(new ErrorV3('Error occurred while generating transfer key.', 'failed_to_generate_key'));
+      }
 
-    return res.apiv3({ transferKey: transferKeyString });
-  });
+      return res.apiv3({ transferKey: transferKeyString });
+    });
 
   /**
    * @swagger
@@ -532,43 +531,44 @@ module.exports = (crowi: Crowi): Router => {
    *                    type: string
    *                    description: The message of the result
    */
-  // eslint-disable-next-line max-len
-  pushRouter.post('/transfer', accessTokenParser([SCOPE.WRITE.ADMIN.EXPORET_DATA], { acceptLegacy: true }), loginRequiredStrictly, adminRequired, validator.transfer, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const { transferKey, collections, optionsMap } = req.body;
+  pushRouter.post('/transfer',
+    accessTokenParser([SCOPE.WRITE.ADMIN.EXPORET_DATA], { acceptLegacy: true }),
+    loginRequiredStrictly, adminRequired, validator.transfer, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
+      const { transferKey, collections, optionsMap } = req.body;
 
-    // Parse transfer key
-    let tk: TransferKey;
-    try {
-      tk = TransferKey.parse(transferKey);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(new ErrorV3('Transfer key is invalid', 'transfer_key_invalid'), 400);
-    }
+      // Parse transfer key
+      let tk: TransferKey;
+      try {
+        tk = TransferKey.parse(transferKey);
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(new ErrorV3('Transfer key is invalid', 'transfer_key_invalid'), 400);
+      }
 
-    // get growi info
-    let destGROWIInfo: IDataGROWIInfo;
-    try {
-      destGROWIInfo = await g2gTransferPusherService.askGROWIInfo(tk);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(new ErrorV3('Error occurred while asking GROWI info.', 'failed_to_ask_growi_info'));
-    }
+      // get growi info
+      let destGROWIInfo: IDataGROWIInfo;
+      try {
+        destGROWIInfo = await g2gTransferPusherService.askGROWIInfo(tk);
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(new ErrorV3('Error occurred while asking GROWI info.', 'failed_to_ask_growi_info'));
+      }
 
-    // Check if can transfer
-    const transferability = await g2gTransferPusherService.getTransferability(destGROWIInfo);
-    if (!transferability.canTransfer) {
-      return res.apiv3Err(new ErrorV3(transferability.reason, 'growi_incompatible_to_transfer'));
-    }
+      // Check if can transfer
+      const transferability = await g2gTransferPusherService.getTransferability(destGROWIInfo);
+      if (!transferability.canTransfer) {
+        return res.apiv3Err(new ErrorV3(transferability.reason, 'growi_incompatible_to_transfer'));
+      }
 
-    // Start transfer
-    // DO NOT "await". Let it run in the background.
-    // Errors should be emitted through websocket.
-    g2gTransferPusherService.startTransfer(tk, req.user, collections, optionsMap, destGROWIInfo);
+      // Start transfer
+      // DO NOT "await". Let it run in the background.
+      // Errors should be emitted through websocket.
+      g2gTransferPusherService.startTransfer(tk, req.user, collections, optionsMap, destGROWIInfo);
 
-    return res.apiv3({ message: 'Successfully requested auto transfer.' });
-  });
+      return res.apiv3({ message: 'Successfully requested auto transfer.' });
+    });
 
   // Merge receiveRouter and pushRouter
   router.use(receiveRouter, pushRouter);

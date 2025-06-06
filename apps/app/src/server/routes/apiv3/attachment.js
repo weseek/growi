@@ -199,8 +199,8 @@ module.exports = (crowi) => {
    *                  type: object
    *                  $ref: '#/components/schemas/AttachmentPaginateResult'
    */
-  // eslint-disable-next-line max-len
-  router.get('/list', accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT], { acceptLegacy: true }), loginRequired, validator.retrieveAttachments, apiV3FormValidator,
+  router.get('/list',
+    accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT], { acceptLegacy: true }), loginRequired, validator.retrieveAttachments, apiV3FormValidator,
     async(req, res) => {
 
       const limit = req.query.limit || await crowi.configManager.getConfig('customize:showPageLimitationS') || 10;
@@ -275,8 +275,8 @@ module.exports = (crowi) => {
    *          500:
    *            $ref: '#/components/responses/500'
    */
-  // eslint-disable-next-line max-len
-  router.get('/limit', accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT], { acceptLegacy: true }), loginRequiredStrictly, validator.retrieveFileLimit, apiV3FormValidator,
+  router.get('/limit',
+    accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT], { acceptLegacy: true }), loginRequiredStrictly, validator.retrieveFileLimit, apiV3FormValidator,
     async(req, res) => {
       const { fileUploadService } = crowi;
       const fileSize = Number(req.query.fileSize);

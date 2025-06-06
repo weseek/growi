@@ -409,8 +409,8 @@ export default function route(crowi) {
    *              schema:
    *                $ref: '#/components/schemas/FileImportResponse'
    */
-  // eslint-disable-next-line max-len
-  router.post('/upload', accessTokenParser([SCOPE.WRITE.ADMIN.IMPORT_DATA], { acceptLegacy: true }), loginRequired, adminRequired, uploads.single('file'), addActivity,
+  router.post('/upload',
+    accessTokenParser([SCOPE.WRITE.ADMIN.IMPORT_DATA], { acceptLegacy: true }), loginRequired, adminRequired, uploads.single('file'), addActivity,
     async(req, res) => {
       const { file } = req;
       const zipFile = importService.getFile(file.filename);

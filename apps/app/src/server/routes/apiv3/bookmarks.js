@@ -126,44 +126,44 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/BookmarkInfo'
    */
-  // eslint-disable-next-line max-len
-  router.get('/info', accessTokenParser([SCOPE.READ.FEATURES.BOOKMARK], { acceptLegacy: true }), loginRequired, validator.bookmarkInfo, apiV3FormValidator, async(req, res) => {
-    const { user } = req;
-    const { pageId } = req.query;
+  router.get('/info',
+    accessTokenParser([SCOPE.READ.FEATURES.BOOKMARK], { acceptLegacy: true }), loginRequired, validator.bookmarkInfo, apiV3FormValidator, async(req, res) => {
+      const { user } = req;
+      const { pageId } = req.query;
 
-    const responsesParams = {};
+      const responsesParams = {};
 
-    try {
-      const bookmarks = await Bookmark.find({ page: pageId }).populate('user');
-      let users = [];
-      if (bookmarks.length > 0) {
-        users = bookmarks.map(bookmark => serializeUserSecurely(bookmark.user));
+      try {
+        const bookmarks = await Bookmark.find({ page: pageId }).populate('user');
+        let users = [];
+        if (bookmarks.length > 0) {
+          users = bookmarks.map(bookmark => serializeUserSecurely(bookmark.user));
+        }
+        responsesParams.sumOfBookmarks = bookmarks.length;
+        responsesParams.bookmarkedUsers = users;
+        responsesParams.pageId = pageId;
       }
-      responsesParams.sumOfBookmarks = bookmarks.length;
-      responsesParams.bookmarkedUsers = users;
-      responsesParams.pageId = pageId;
-    }
-    catch (err) {
-      logger.error('get-bookmark-document-failed', err);
-      return res.apiv3Err(err, 500);
-    }
+      catch (err) {
+        logger.error('get-bookmark-document-failed', err);
+        return res.apiv3Err(err, 500);
+      }
 
-    // guest user only get bookmark count
-    if (user == null) {
-      return res.apiv3(responsesParams);
-    }
+      // guest user only get bookmark count
+      if (user == null) {
+        return res.apiv3(responsesParams);
+      }
 
-    try {
-      const bookmark = await Bookmark.findByPageIdAndUserId(pageId, user._id);
-      responsesParams.isBookmarked = (bookmark != null);
-      return res.apiv3(responsesParams);
-    }
-    catch (err) {
-      logger.error('get-bookmark-state-failed', err);
-      return res.apiv3Err(err, 500);
-    }
+      try {
+        const bookmark = await Bookmark.findByPageIdAndUserId(pageId, user._id);
+        responsesParams.isBookmarked = (bookmark != null);
+        return res.apiv3(responsesParams);
+      }
+      catch (err) {
+        logger.error('get-bookmark-state-failed', err);
+        return res.apiv3Err(err, 500);
+      }
 
-  });
+    });
 
   // select page from bookmark where userid = userid
   /**
@@ -194,37 +194,38 @@ module.exports = (crowi) => {
     param('userId').isMongoId().withMessage('userId is required'),
   ];
 
-  // eslint-disable-next-line max-len
-  router.get('/:userId', accessTokenParser([SCOPE.READ.FEATURES.BOOKMARK], { acceptLegacy: true }), loginRequired, validator.userBookmarkList, apiV3FormValidator, async(req, res) => {
-    const { userId } = req.params;
+  router.get('/:userId',
+    accessTokenParser([SCOPE.READ.FEATURES.BOOKMARK], { acceptLegacy: true }),
+    loginRequired, validator.userBookmarkList, apiV3FormValidator, async(req, res) => {
+      const { userId } = req.params;
 
-    if (userId == null) {
-      return res.apiv3Err('User id is not found or forbidden', 400);
-    }
-    try {
-      const bookmarkIdsInFolders = await BookmarkFolder.distinct('bookmarks', { owner: userId });
-      const userRootBookmarks = await Bookmark.find({
-        _id: { $nin: bookmarkIdsInFolders },
-        user: userId,
-      }).populate({
-        path: 'page',
-        model: 'Page',
-        populate: {
-          path: 'lastUpdateUser',
-          model: 'User',
-        },
-      }).exec();
+      if (userId == null) {
+        return res.apiv3Err('User id is not found or forbidden', 400);
+      }
+      try {
+        const bookmarkIdsInFolders = await BookmarkFolder.distinct('bookmarks', { owner: userId });
+        const userRootBookmarks = await Bookmark.find({
+          _id: { $nin: bookmarkIdsInFolders },
+          user: userId,
+        }).populate({
+          path: 'page',
+          model: 'Page',
+          populate: {
+            path: 'lastUpdateUser',
+            model: 'User',
+          },
+        }).exec();
 
-      // serialize Bookmark
-      const serializedUserRootBookmarks = userRootBookmarks.map(bookmark => serializeBookmarkSecurely(bookmark));
+        // serialize Bookmark
+        const serializedUserRootBookmarks = userRootBookmarks.map(bookmark => serializeBookmarkSecurely(bookmark));
 
-      return res.apiv3({ userRootBookmarks: serializedUserRootBookmarks });
-    }
-    catch (err) {
-      logger.error('get-bookmark-failed', err);
-      return res.apiv3Err(err, 500);
-    }
-  });
+        return res.apiv3({ userRootBookmarks: serializedUserRootBookmarks });
+      }
+      catch (err) {
+        logger.error('get-bookmark-failed', err);
+        return res.apiv3Err(err, 500);
+      }
+    });
 
 
   /**
@@ -252,8 +253,8 @@ module.exports = (crowi) => {
    *                    bookmark:
    *                      $ref: '#/components/schemas/Bookmark'
    */
-  // eslint-disable-next-line max-len
-  router.put('/', accessTokenParser([SCOPE.WRITE.FEATURES.BOOKMARK], { acceptLegacy: true }), loginRequiredStrictly, addActivity, validator.bookmarks, apiV3FormValidator,
+  router.put('/',
+    accessTokenParser([SCOPE.WRITE.FEATURES.BOOKMARK], { acceptLegacy: true }), loginRequiredStrictly, addActivity, validator.bookmarks, apiV3FormValidator,
     async(req, res) => {
       const { pageId, bool } = req.body;
       const userId = req.user?._id;

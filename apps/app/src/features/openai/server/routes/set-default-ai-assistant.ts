@@ -39,8 +39,8 @@ export const setDefaultAiAssistantFactory: setDefaultAiAssistantFactory = (crowi
   ];
 
   return [
-    // eslint-disable-next-line max-len
-    accessTokenParser([SCOPE.WRITE.FEATURES.AI_ASSISTANT], { acceptLegacy: true }), loginRequiredStrictly, adminRequired, certifyAiService, validator, apiV3FormValidator,
+    accessTokenParser([SCOPE.WRITE.FEATURES.AI_ASSISTANT], { acceptLegacy: true }),
+    loginRequiredStrictly, adminRequired, certifyAiService, validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
       const openaiService = getOpenaiService();
       if (openaiService == null) {

@@ -293,8 +293,8 @@ module.exports = (crowi) => {
    *        200:
    *          description: All notifications opened successfully
    */
-  // eslint-disable-next-line max-len
-  router.put('/all-statuses-open', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.IN_APP_NOTIFICATION], { acceptLegacy: true }), loginRequiredStrictly, addActivity,
+  router.put('/all-statuses-open',
+    accessTokenParser([SCOPE.WRITE.USER_SETTINGS.IN_APP_NOTIFICATION], { acceptLegacy: true }), loginRequiredStrictly, addActivity,
     async(req: CrowiRequest, res: ApiV3Response) => {
     // user must be set by loginRequiredStrictly
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

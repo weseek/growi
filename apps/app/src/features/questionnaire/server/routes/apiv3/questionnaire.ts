@@ -86,21 +86,22 @@ module.exports = (crowi: Crowi): Router => {
    *                   items:
    *                     type: object
    */
-  // eslint-disable-next-line max-len
-  router.get('/orders', accessTokenParser([SCOPE.READ.FEATURES.QUESTIONNAIRE], { acceptLegacy: true }), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const growiInfo = await growiInfoService.getGrowiInfo(true);
-    const userInfo = crowi.questionnaireService.getUserInfo(req.user ?? null, getSiteUrlHashed(growiInfo.appSiteUrl));
+  router.get('/orders',
+    accessTokenParser([SCOPE.READ.FEATURES.QUESTIONNAIRE], { acceptLegacy: true }),
+    loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+      const growiInfo = await growiInfoService.getGrowiInfo(true);
+      const userInfo = crowi.questionnaireService.getUserInfo(req.user ?? null, getSiteUrlHashed(growiInfo.appSiteUrl));
 
-    try {
-      const questionnaireOrders = await crowi.questionnaireService!.getQuestionnaireOrdersToShow(userInfo, growiInfo, req.user?._id ?? null);
+      try {
+        const questionnaireOrders = await crowi.questionnaireService!.getQuestionnaireOrdersToShow(userInfo, growiInfo, req.user?._id ?? null);
 
-      return res.apiv3({ questionnaireOrders });
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(err, 500);
-    }
-  });
+        return res.apiv3({ questionnaireOrders });
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(err, 500);
+      }
+    });
 
   /**
    * @swagger
@@ -124,11 +125,11 @@ module.exports = (crowi: Crowi): Router => {
    *                 isEnabled:
    *                   type: boolean
    */
-  // eslint-disable-next-line max-len
-  router.get('/is-enabled', accessTokenParser([SCOPE.READ.FEATURES.QUESTIONNAIRE], { acceptLegacy: true }), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const isEnabled = configManager.getConfig('questionnaire:isQuestionnaireEnabled');
-    return res.apiv3({ isEnabled });
-  });
+  router.get('/is-enabled',
+    accessTokenParser([SCOPE.READ.FEATURES.QUESTIONNAIRE], { acceptLegacy: true }), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+      const isEnabled = configManager.getConfig('questionnaire:isQuestionnaireEnabled');
+      return res.apiv3({ isEnabled });
+    });
 
 
   /**
