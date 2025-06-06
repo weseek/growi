@@ -49,7 +49,7 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
     // the threshold for omitting body
     const OMIT_BODY_THRES = 400;
 
-    const commentDate = format(new Date(comment.createdAt), 'yyyy/MM/dd HH:mm');
+    const commentDate = format(comment.createdAt, 'yyyy/MM/dd HH:mm');
 
     const creator = isPopulated(comment.creator) ? comment.creator : undefined;
 
