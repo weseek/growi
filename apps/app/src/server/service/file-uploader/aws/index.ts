@@ -86,6 +86,7 @@ const getS3Bucket = (): string | undefined => {
 const S3Factory = (): S3Client => {
   const accessKeyId = configManager.getConfig('aws:s3AccessKeyId');
   const secretAccessKey = configManager.getConfig('aws:s3SecretAccessKey');
+  const s3CustomEndpoint = configManager.getConfig('aws:s3CustomEndpoint') || undefined;
 
   return new S3Client({
     credentials: accessKeyId != null && secretAccessKey != null
@@ -95,8 +96,8 @@ const S3Factory = (): S3Client => {
       }
       : undefined,
     region: configManager.getConfig('aws:s3Region'),
-    endpoint: configManager.getConfig('aws:s3CustomEndpoint'),
-    forcePathStyle: configManager.getConfig('aws:s3CustomEndpoint') != null, // s3ForcePathStyle renamed to forcePathStyle in v3
+    endpoint: s3CustomEndpoint,
+    forcePathStyle: !!s3CustomEndpoint, // s3ForcePathStyle renamed to forcePathStyle in v3
   });
 };
 

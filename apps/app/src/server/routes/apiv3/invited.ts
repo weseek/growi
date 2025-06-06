@@ -26,7 +26,6 @@ module.exports = (crowi: Crowi): Router => {
    *      tags: [Users]
    *      security:
    *        - cookieAuth: []
-   *      operationId: activateInvitedUser
    *      summary: /invited
    *      description: Activate invited user
    *      requestBody:

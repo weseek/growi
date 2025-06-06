@@ -107,6 +107,55 @@ describe('ConfigManager', () => {
     });
   });
 
+  describe('updateConfig', () => {
+    beforeEach(async() => {
+      await Config.deleteMany({ key: /app.*/ }).exec();
+      await Config.create({ key: 'app:siteUrl', value: JSON.stringify('initial value') });
+    });
+
+    test('updates a single config', async() => {
+      // arrange
+      await configManager.loadConfigs();
+      const config = await Config.findOne({ key: 'app:siteUrl' }).exec();
+      expect(config?.value).toEqual(JSON.stringify('initial value'));
+
+      // act
+      await configManager.updateConfig('app:siteUrl', 'updated value');
+
+      // assert
+      const updatedConfig = await Config.findOne({ key: 'app:siteUrl' }).exec();
+      expect(updatedConfig?.value).toEqual(JSON.stringify('updated value'));
+    });
+
+    test('removes config when value is undefined and removeIfUndefined is true', async() => {
+      // arrange
+      await configManager.loadConfigs();
+      const config = await Config.findOne({ key: 'app:siteUrl' }).exec();
+      expect(config?.value).toEqual(JSON.stringify('initial value'));
+
+      // act
+      await configManager.updateConfig('app:siteUrl', undefined, { removeIfUndefined: true });
+
+      // assert
+      const updatedConfig = await Config.findOne({ key: 'app:siteUrl' }).exec();
+      expect(updatedConfig).toBeNull(); // should be removed
+    });
+
+    test('does not update config when value is undefined and removeIfUndefined is false', async() => {
+      // arrange
+      await configManager.loadConfigs();
+      const config = await Config.findOne({ key: 'app:siteUrl' }).exec();
+      expect(config?.value).toEqual(JSON.stringify('initial value'));
+
+      // act
+      await configManager.updateConfig('app:siteUrl', undefined);
+
+      // assert
+      const updatedConfig = await Config.findOne({ key: 'app:siteUrl' }).exec();
+      expect(updatedConfig?.value).toEqual(JSON.stringify('initial value')); // should remain unchanged
+    });
+  });
+
   describe('updateConfigs', () => {
     beforeEach(async() => {
       await Config.deleteMany({ key: /app.*/ }).exec();
@@ -131,6 +180,44 @@ describe('ConfigManager', () => {
 
       // assert
       expect(updatedConfig1?.value).toEqual(JSON.stringify('new value1'));
+      expect(updatedConfig2?.value).toEqual(JSON.stringify('aws'));
+    });
+
+    test('removes config when value is undefined and removeIfUndefined is true', async() => {
+      // arrange
+      await configManager.loadConfigs();
+      const config1 = await Config.findOne({ key: 'app:siteUrl' }).exec();
+      expect(config1?.value).toEqual(JSON.stringify('value1'));
+
+      // act
+      await configManager.updateConfigs({
+        'app:siteUrl': undefined,
+        'app:fileUploadType': 'aws',
+      }, { removeIfUndefined: true });
+
+      // assert
+      const updatedConfig1 = await Config.findOne({ key: 'app:siteUrl' }).exec();
+      const updatedConfig2 = await Config.findOne({ key: 'app:fileUploadType' }).exec();
+      expect(updatedConfig1).toBeNull(); // should be removed
+      expect(updatedConfig2?.value).toEqual(JSON.stringify('aws'));
+    });
+
+    test('does not update config when value is undefined and removeIfUndefined is false', async() => {
+      // arrange
+      await configManager.loadConfigs();
+      const config1 = await Config.findOne({ key: 'app:siteUrl' }).exec();
+      expect(config1?.value).toEqual(JSON.stringify('value1'));
+
+      // act
+      await configManager.updateConfigs({
+        'app:siteUrl': undefined,
+        'app:fileUploadType': 'aws',
+      });
+
+      // assert
+      const updatedConfig1 = await Config.findOne({ key: 'app:siteUrl' }).exec();
+      const updatedConfig2 = await Config.findOne({ key: 'app:fileUploadType' }).exec();
+      expect(updatedConfig1?.value).toEqual(JSON.stringify('value1')); // should remain unchanged
       expect(updatedConfig2?.value).toEqual(JSON.stringify('aws'));
     });
   });

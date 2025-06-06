@@ -47,7 +47,7 @@ export async function requestPdfConverter(pageBulkExportJob: PageBulkExportJobDo
     }
 
     const res = await pdfCtrlSyncJobStatus({
-      appId: appId?.toString(),
+      appId,
       jobId: pageBulkExportJob._id.toString(),
       expirationDate: bulkExportJobExpirationDate.toISOString(),
       status: pdfConvertStatus,

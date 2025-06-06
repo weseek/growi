@@ -14,26 +14,28 @@ const logger = loggerFactory('growi:routes:search');
  *
  *   components:
  *     schemas:
+ *       ElasticsearchResultMeta:
+ *         type: object
+ *         properties:
+ *           took:
+ *             type: number
+ *             description: Time Elasticsearch took to execute a search(milliseconds)
+ *             example: 34
+ *           total:
+ *             type: number
+ *             description: Number of documents matching search criteria
+ *             example: 2
+ *           results:
+ *             type: number
+ *             description: Actual array length of search results
+ *             example: 2
+ *
  *       ElasticsearchResult:
  *         description: Elasticsearch result v1
  *         type: object
  *         properties:
  *           meta:
- *             type: object
- *             properties:
- *               took:
- *                 type: number
- *                 description: Time Elasticsearch took to execute a search(milliseconds)
- *                 example: 34
- *               total:
- *                 type: number
- *                 description: Number of documents matching search criteria
- *                 example: 2
- *               results:
- *                 type: number
- *                 description: Actual array length of search results
- *                 example: 2
- *
+ *             $ref: '#/components/schemas/ElasticsearchResultMeta'
  */
 module.exports = function(crowi: Crowi, app) {
   const ApiResponse = require('../util/apiResponse');
@@ -62,15 +64,15 @@ module.exports = function(crowi: Crowi, app) {
    *         - in: query
    *           name: path
    *           schema:
-   *             $ref: '#/components/schemas/Page/properties/path'
+   *             $ref: '#/components/schemas/PagePath'
    *         - in: query
    *           name: offset
    *           schema:
-   *             $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/offset'
+   *             $ref: '#/components/schemas/Offset'
    *         - in: query
    *           name: limit
    *           schema:
-   *             $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/limit'
+   *             $ref: '#/components/schemas/Limit'
    *       responses:
    *         200:
    *           description: Succeeded to get list of pages.
@@ -79,9 +81,9 @@ module.exports = function(crowi: Crowi, app) {
    *               schema:
    *                 properties:
    *                   ok:
-   *                     $ref: '#/components/schemas/V1Response/properties/ok'
+   *                     $ref: '#/components/schemas/V1ResponseOK'
    *                   meta:
-   *                     $ref: '#/components/schemas/ElasticsearchResult/properties/meta'
+   *                     $ref: '#/components/schemas/ElasticsearchResultMeta'
    *                   totalCount:
    *                     type: integer
    *                     description: total count of pages

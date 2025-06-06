@@ -78,7 +78,6 @@ async function sendEmailToAllAdmins(userData, admins, appTitle, mailService, tem
  *     summary: /complete-registration
  *     tags: [Users]
  *     security: []
- *     operationId: completeRegistration
  *     requestBody:
  *       required: true
  *       content:

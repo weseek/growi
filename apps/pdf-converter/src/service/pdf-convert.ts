@@ -68,7 +68,7 @@ class PdfConvertService implements OnInit {
       jobId: string,
       expirationDate: Date,
       status: JobStatusSharedWithGrowi,
-      appId?: string,
+      appId?: number,
   ): Promise<void> {
     const isJobNew = !(jobId in this.jobList);
 
@@ -143,7 +143,7 @@ class PdfConvertService implements OnInit {
    * @param jobId PageBulkExportJob ID
    * @param appId application ID for GROWI.cloud
    */
-  private async readHtmlAndConvertToPdfUntilFinish(jobId: string, appId?: string): Promise<void> {
+  private async readHtmlAndConvertToPdfUntilFinish(jobId: string, appId?: number): Promise<void> {
     while (!this.isJobCompleted(jobId)) {
       // eslint-disable-next-line no-await-in-loop
       await new Promise(resolve => setTimeout(resolve, 10 * 1000));
@@ -176,8 +176,8 @@ class PdfConvertService implements OnInit {
    * @param appId application ID for GROWI.cloud
    * @returns readable stream
    */
-  private getHtmlReadable(jobId: string, appId?: string): Readable {
-    const jobHtmlDir = path.join(this.tmpHtmlDir, appId ?? '', jobId);
+  private getHtmlReadable(jobId: string, appId?: number): Readable {
+    const jobHtmlDir = path.join(this.tmpHtmlDir, appId?.toString() ?? '', jobId);
     const htmlFileEntries = fs.readdirSync(jobHtmlDir, { recursive: true, withFileTypes: true }).filter(entry => entry.isFile());
     let index = 0;
 
@@ -262,8 +262,7 @@ class PdfConvertService implements OnInit {
    * Initialize puppeteer cluster
    */
   private async initPuppeteerCluster(): Promise<void> {
-    // puppeteer is unnecessary for swagger schema generation
-    if (process.env.SWAGGER_GENERATION === 'true') return;
+    if (process.env.SKIP_PUPPETEER_INIT === 'true') return;
 
     this.puppeteerCluster = await Cluster.launch({
       concurrency: Cluster.CONCURRENCY_PAGE,

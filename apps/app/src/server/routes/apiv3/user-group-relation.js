@@ -31,7 +31,6 @@ module.exports = (crowi) => {
    *        tags: [UserGroupRelations]
    *        security:
    *          - cookieAuth: []
-   *        operationId: listUserGroupRelations
    *        summary: /user-group-relations
    *        description: Gets the user group relations
    *        responses:

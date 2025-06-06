@@ -4,6 +4,14 @@
  *
  *  components:
  *    schemas:
+ *      Offset:
+ *        description: Offset for pagination
+ *        type: integer
+ *        example: 0
+ *      Limit:
+ *        description: Limit for pagination
+ *        type: integer
+ *        example: 10
  *      PaginateResult:
  *        description: PaginateResult
  *        type: object
@@ -17,8 +25,7 @@
  *            type: number
  *            description: Total number of documents in collection that match a query
  *          limit:
- *            type: number
- *            description: Limit that was used
+ *            $ref: '#/components/schemas/Limit'
  *          hasPrevPage:
  *            type: number
  *            description: Availability of prev page.
@@ -32,8 +39,8 @@
  *            type: number
  *            description: Total number of pages.
  *          offset:
- *            type: number
  *            description: Only if specified or default page/offset values were used
+ *            $ref: '#/components/schemas/Offset'
  *          prefPage:
  *            type: number
  *            description: Previous page number if available or NULL
@@ -66,13 +73,10 @@
  *                description: Total number of documents in collection that match a query
  *                example: 35
  *              limit:
- *                type: integer
- *                description: Limit that was used
- *                example: 10
+ *                $ref: '#/components/schemas/Limit'
  *              offset:
- *                type: integer
  *                description: Only if specified or default page/offset values were used
- *                example: 20
+ *                $ref: '#/components/schemas/Offset'
  *          data:
  *            type: object
  *            description: Object of pagination meta data.

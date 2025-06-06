@@ -136,7 +136,6 @@ module.exports = (crowi) => {
    *        tags: [MarkDownSetting]
    *        security:
    *          - cookieAuth: []
-   *        operationId: getMarkdownSetting
    *        summary: Get markdown parameters
    *        responses:
    *          200:
@@ -173,7 +172,6 @@ module.exports = (crowi) => {
    *        tags: [MarkDownSetting]
    *        security:
    *          - cookieAuth: []
-   *        operationId: updateLineBreakMarkdownSetting
    *        summary: Update lineBreak setting
    *        requestBody:
    *          required: true
@@ -228,7 +226,6 @@ module.exports = (crowi) => {
    *        tags: [MarkDownSetting]
    *        security:
    *          - cookieAuth: []
-   *        operationId: updateIndentMarkdownSetting
    *        summary: Update indent setting
    *        requestBody:
    *          required: true
@@ -284,7 +281,6 @@ module.exports = (crowi) => {
    *        tags: [MarkDownSetting]
    *        security:
    *          - cookieAuth: []
-   *        operationId: updateXssMarkdownSetting
    *        summary: Update XSS setting
    *        description: Update xss
    *        requestBody:

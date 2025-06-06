@@ -515,6 +515,7 @@
     "accept": "Accept",
     "use_assistant": "Use Assistant",
     "remove_assistant": "Deselect the selected assistant",
+    "text_generation_by_editor_assistant_label": "Editor Assistant is generating text",
     "preset_menu": {
       "summarize": {
         "title": "Summarize this article",

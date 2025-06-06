@@ -13,6 +13,7 @@ const mocks = vi.hoisted(() => ({
   ConfigMock: {
     updateOne: vi.fn(),
     bulkWrite: vi.fn(),
+    deleteOne: vi.fn(),
   },
 }));
 vi.mock('../../models/config', () => ({
@@ -40,6 +41,9 @@ describe('ConfigManager test', () => {
     let loadConfigsSpy;
     beforeEach(async() => {
       loadConfigsSpy = vi.spyOn(configManager, 'loadConfigs');
+      // Reset mocks
+      mocks.ConfigMock.updateOne.mockClear();
+      mocks.ConfigMock.deleteOne.mockClear();
     });
 
     test('invoke publishUpdateMessage()', async() => {
@@ -70,6 +74,42 @@ describe('ConfigManager test', () => {
       expect(configManager.publishUpdateMessage).not.toHaveBeenCalled();
     });
 
+    test('remove config when value is undefined and removeIfUndefined is true', async() => {
+      // arrange
+      configManager.publishUpdateMessage = vi.fn();
+      vi.spyOn((configManager as unknown as ConfigManagerToGetLoader).configLoader, 'loadFromDB').mockImplementation(vi.fn());
+
+      // act
+      await configManager.updateConfig('app:siteUrl', undefined, { removeIfUndefined: true });
+
+      // assert
+      expect(mocks.ConfigMock.deleteOne).toHaveBeenCalledTimes(1);
+      expect(mocks.ConfigMock.deleteOne).toHaveBeenCalledWith({ key: 'app:siteUrl' });
+      expect(mocks.ConfigMock.updateOne).not.toHaveBeenCalled();
+      expect(loadConfigsSpy).toHaveBeenCalledTimes(1);
+      expect(configManager.publishUpdateMessage).toHaveBeenCalledTimes(1);
+    });
+
+    test('update config with undefined value when removeIfUndefined is false', async() => {
+      // arrange
+      configManager.publishUpdateMessage = vi.fn();
+      vi.spyOn((configManager as unknown as ConfigManagerToGetLoader).configLoader, 'loadFromDB').mockImplementation(vi.fn());
+
+      // act
+      await configManager.updateConfig('app:siteUrl', undefined);
+
+      // assert
+      expect(mocks.ConfigMock.updateOne).toHaveBeenCalledTimes(1);
+      expect(mocks.ConfigMock.updateOne).toHaveBeenCalledWith(
+        { key: 'app:siteUrl' },
+        { value: JSON.stringify(undefined) },
+        { upsert: true },
+      );
+      expect(mocks.ConfigMock.deleteOne).not.toHaveBeenCalled();
+      expect(loadConfigsSpy).toHaveBeenCalledTimes(1);
+      expect(configManager.publishUpdateMessage).toHaveBeenCalledTimes(1);
+    });
+
   });
 
   describe('updateConfigs()', () => {
@@ -77,18 +117,20 @@ describe('ConfigManager test', () => {
     let loadConfigsSpy;
     beforeEach(async() => {
       loadConfigsSpy = vi.spyOn(configManager, 'loadConfigs');
+      // Reset mocks
+      mocks.ConfigMock.bulkWrite.mockClear();
     });
 
     test('invoke publishUpdateMessage()', async() => {
-      // arrenge
+      // arrange
       configManager.publishUpdateMessage = vi.fn();
       vi.spyOn((configManager as unknown as ConfigManagerToGetLoader).configLoader, 'loadFromDB').mockImplementation(vi.fn());
 
       // act
-      await configManager.updateConfig('app:siteUrl', '');
+      await configManager.updateConfigs({ 'app:siteUrl': 'https://example.com' });
 
       // assert
-      // expect(Config.bulkWrite).toHaveBeenCalledTimes(1);
+      expect(mocks.ConfigMock.bulkWrite).toHaveBeenCalledTimes(1);
       expect(loadConfigsSpy).toHaveBeenCalledTimes(1);
       expect(configManager.publishUpdateMessage).toHaveBeenCalledTimes(1);
     });
@@ -102,10 +144,68 @@ describe('ConfigManager test', () => {
       await configManager.updateConfigs({ 'app:siteUrl': '' }, { skipPubsub: true });
 
       // assert
-      // expect(Config.bulkWrite).toHaveBeenCalledTimes(1);
+      expect(mocks.ConfigMock.bulkWrite).toHaveBeenCalledTimes(1);
       expect(loadConfigsSpy).toHaveBeenCalledTimes(1);
       expect(configManager.publishUpdateMessage).not.toHaveBeenCalled();
     });
+
+    test('remove configs when values are undefined and removeIfUndefined is true', async() => {
+      // arrange
+      configManager.publishUpdateMessage = vi.fn();
+      vi.spyOn((configManager as unknown as ConfigManagerToGetLoader).configLoader, 'loadFromDB').mockImplementation(vi.fn());
+
+      // act
+      await configManager.updateConfigs(
+        { 'app:siteUrl': undefined, 'app:title': 'GROWI' },
+        { removeIfUndefined: true },
+      );
+
+      // assert
+      expect(mocks.ConfigMock.bulkWrite).toHaveBeenCalledTimes(1);
+      const operations = mocks.ConfigMock.bulkWrite.mock.calls[0][0];
+      expect(operations).toHaveLength(2);
+      expect(operations[0]).toEqual({ deleteOne: { filter: { key: 'app:siteUrl' } } });
+      expect(operations[1]).toEqual({
+        updateOne: {
+          filter: { key: 'app:title' },
+          update: { value: JSON.stringify('GROWI') },
+          upsert: true,
+        },
+      });
+      expect(loadConfigsSpy).toHaveBeenCalledTimes(1);
+      expect(configManager.publishUpdateMessage).toHaveBeenCalledTimes(1);
+    });
+
+    test('update configs including undefined values when removeIfUndefined is false', async() => {
+      // arrange
+      configManager.publishUpdateMessage = vi.fn();
+      vi.spyOn((configManager as unknown as ConfigManagerToGetLoader).configLoader, 'loadFromDB').mockImplementation(vi.fn());
+
+      // act
+      await configManager.updateConfigs({ 'app:siteUrl': undefined, 'app:title': 'GROWI' });
+
+      // assert
+      expect(mocks.ConfigMock.bulkWrite).toHaveBeenCalledTimes(1);
+      const operations = mocks.ConfigMock.bulkWrite.mock.calls[0][0];
+      expect(operations).toHaveLength(2); // both operations should be included
+      expect(operations[0]).toEqual({
+        updateOne: {
+          filter: { key: 'app:siteUrl' },
+          update: { value: JSON.stringify(undefined) },
+          upsert: true,
+        },
+      });
+      expect(operations[1]).toEqual({
+        updateOne: {
+          filter: { key: 'app:title' },
+          update: { value: JSON.stringify('GROWI') },
+          upsert: true,
+        },
+      });
+      expect(loadConfigsSpy).toHaveBeenCalledTimes(1);
+      expect(configManager.publishUpdateMessage).toHaveBeenCalledTimes(1);
+    });
+
   });
 
   describe('getManagedEnvVars()', () => {

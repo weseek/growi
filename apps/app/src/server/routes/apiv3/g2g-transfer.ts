@@ -220,6 +220,7 @@ module.exports = (crowi: Crowi): Router => {
    *              type: object
    *              properties:
    *                file:
+   *                  type: string
    *                  format: binary
    *                  description: The zip file of the data to be transferred
    *                collections:
@@ -349,6 +350,7 @@ module.exports = (crowi: Crowi): Router => {
    *              type: object
    *              properties:
    *                file:
+   *                  type: string
    *                  format: binary
    *                  description: The zip file of the data to be transferred
    *                attachmentMetadata:

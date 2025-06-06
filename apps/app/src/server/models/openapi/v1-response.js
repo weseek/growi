@@ -3,14 +3,15 @@
  *
  *  components:
  *    schemas:
+ *      V1ResponseOK:
+ *        description: API is succeeded
+ *        type: boolean
  *      V1Response:
  *        description: Response v1
  *        type: object
  *        properties:
  *          ok:
- *            type: boolean
- *            description: API is succeeded
- *            example: true
+ *            $ref: '#/components/schemas/V1ResponseOK'
  *    responses:
  *      403:
  *        description: 'Forbidden'

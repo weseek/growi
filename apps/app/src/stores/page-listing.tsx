@@ -7,7 +7,6 @@ import type {
 import useSWR, {
   mutate, type SWRConfiguration, type SWRResponse, type Arguments,
 } from 'swr';
-import { cache } from 'swr/_internal';
 import useSWRImmutable from 'swr/immutable';
 import type { SWRInfiniteResponse } from 'swr/infinite';
 import useSWRInfinite, { unstable_serialize } from 'swr/infinite'; // eslint-disable-line camelcase
@@ -16,7 +15,7 @@ import type { IPagingResult } from '~/interfaces/paging-result';
 
 import { apiv3Get } from '../client/util/apiv3-client';
 import type {
-  AncestorsChildrenResult, ChildrenResult, V5MigrationStatus, RootPageResult,
+  ChildrenResult, V5MigrationStatus, RootPageResult,
 } from '../interfaces/page-listing-results';
 
 

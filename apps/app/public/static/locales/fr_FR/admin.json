@@ -19,7 +19,6 @@
     "readonly_users_access": "Accès des utilisateurs lecture seule",
     "always_hidden": "Toujours caché",
     "always_displayed": "Toujours affiché",
-    "displayed_or_hidden": "Caché / Affiché",
     "Fixed by env var": "Configuré par la variable d'environnement <code>{{key}}={{value}}</code>.",
     "register_limitation": "Paramètres d'inscription",
     "register_limitation_desc": "Restreindre l'inscription de nouveaux utilisateurs",

@@ -15,7 +15,7 @@ const configShared = defineConfig({
       'test/**',
       'test-with-vite/**',
       'playwright/**',
-    ]
+    ],
   },
 });
 
