@@ -86,20 +86,22 @@ module.exports = (crowi: Crowi): Router => {
    *                   items:
    *                     type: object
    */
-  router.get('/orders', accessTokenParser([SCOPE.READ.FEATURES.QUESTIONNAIRE]), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const growiInfo = await growiInfoService.getGrowiInfo(true);
-    const userInfo = crowi.questionnaireService.getUserInfo(req.user ?? null, getSiteUrlHashed(growiInfo.appSiteUrl));
+  router.get('/orders',
+    accessTokenParser([SCOPE.READ.FEATURES.QUESTIONNAIRE], { acceptLegacy: true }),
+    loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+      const growiInfo = await growiInfoService.getGrowiInfo(true);
+      const userInfo = crowi.questionnaireService.getUserInfo(req.user ?? null, getSiteUrlHashed(growiInfo.appSiteUrl));
 
-    try {
-      const questionnaireOrders = await crowi.questionnaireService!.getQuestionnaireOrdersToShow(userInfo, growiInfo, req.user?._id ?? null);
+      try {
+        const questionnaireOrders = await crowi.questionnaireService!.getQuestionnaireOrdersToShow(userInfo, growiInfo, req.user?._id ?? null);
 
-      return res.apiv3({ questionnaireOrders });
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(err, 500);
-    }
-  });
+        return res.apiv3({ questionnaireOrders });
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(err, 500);
+      }
+    });
 
   /**
    * @swagger
@@ -123,10 +125,11 @@ module.exports = (crowi: Crowi): Router => {
    *                 isEnabled:
    *                   type: boolean
    */
-  router.get('/is-enabled', accessTokenParser([SCOPE.READ.FEATURES.QUESTIONNAIRE]), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const isEnabled = configManager.getConfig('questionnaire:isQuestionnaireEnabled');
-    return res.apiv3({ isEnabled });
-  });
+  router.get('/is-enabled',
+    accessTokenParser([SCOPE.READ.FEATURES.QUESTIONNAIRE], { acceptLegacy: true }), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+      const isEnabled = configManager.getConfig('questionnaire:isQuestionnaireEnabled');
+      return res.apiv3({ isEnabled });
+    });
 
 
   /**
@@ -154,7 +157,7 @@ module.exports = (crowi: Crowi): Router => {
    *             schema:
    *               type: object
    */
-  router.post('/proactive/answer', accessTokenParser([SCOPE.WRITE.FEATURES.QUESTIONNAIRE]), loginRequired,
+  router.post('/proactive/answer', accessTokenParser([SCOPE.WRITE.FEATURES.QUESTIONNAIRE], { acceptLegacy: true }), loginRequired,
     validators.proactiveAnswer, async(req: AuthorizedRequest, res: ApiV3Response) => {
       const sendQuestionnaireAnswer = async() => {
         const questionnaireServerOrigin = configManager.getConfig('app:questionnaireServerOrigin');
@@ -238,7 +241,7 @@ module.exports = (crowi: Crowi): Router => {
    *       404:
    *         description: Not Found
    */
-  router.put('/answer', accessTokenParser([SCOPE.WRITE.FEATURES.QUESTIONNAIRE]), loginRequired,
+  router.put('/answer', accessTokenParser([SCOPE.WRITE.FEATURES.QUESTIONNAIRE], { acceptLegacy: true }), loginRequired,
     validators.answer, async(req: AuthorizedRequest, res: ApiV3Response) => {
       const sendQuestionnaireAnswer = async(user: IUserHasId, answers: IAnswer[]) => {
         const questionnaireServerOrigin = crowi.configManager.getConfig('app:questionnaireServerOrigin');
@@ -320,7 +323,7 @@ module.exports = (crowi: Crowi): Router => {
    *       404:
    *         description: Not Found
    */
-  router.put('/skip', accessTokenParser([SCOPE.WRITE.FEATURES.QUESTIONNAIRE]), loginRequired,
+  router.put('/skip', accessTokenParser([SCOPE.WRITE.FEATURES.QUESTIONNAIRE], { acceptLegacy: true }), loginRequired,
     validators.skipDeny, async(req: AuthorizedRequest, res: ApiV3Response) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -370,7 +373,7 @@ module.exports = (crowi: Crowi): Router => {
    *       404:
    *         description: Not Found
    */
-  router.put('/deny', accessTokenParser([SCOPE.WRITE.FEATURES.QUESTIONNAIRE]), loginRequired,
+  router.put('/deny', accessTokenParser([SCOPE.WRITE.FEATURES.QUESTIONNAIRE], { acceptLegacy: true }), loginRequired,
     validators.skipDeny, async(req: AuthorizedRequest, res: ApiV3Response) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {

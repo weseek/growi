@@ -287,89 +287,90 @@ module.exports = (crowi) => {
    *                      $ref: '#/components/schemas/PaginateResult'
    */
 
-  router.get('/', accessTokenParser([SCOPE.READ.USER_SETTINGS.INFO]), loginRequired, validator.statusList, apiV3FormValidator, async(req, res) => {
+  router.get('/',
+    accessTokenParser([SCOPE.READ.USER_SETTINGS.INFO], { acceptLegacy: true }), loginRequired, validator.statusList, apiV3FormValidator, async(req, res) => {
 
-    const page = parseInt(req.query.page) || 1;
+      const page = parseInt(req.query.page) || 1;
 
-    // status
-    const forceIncludeAttributes = Array.isArray(req.query.forceIncludeAttributes)
-      ? req.query.forceIncludeAttributes
-      : [];
-    const selectedStatusList = Array.isArray(req.query.selectedStatusList)
-      ? req.query.selectedStatusList
-      : ['active'];
+      // status
+      const forceIncludeAttributes = Array.isArray(req.query.forceIncludeAttributes)
+        ? req.query.forceIncludeAttributes
+        : [];
+      const selectedStatusList = Array.isArray(req.query.selectedStatusList)
+        ? req.query.selectedStatusList
+        : ['active'];
 
-    const statusNoList = (selectedStatusList.includes('all')) ? Object.values(statusNo) : selectedStatusList.map(element => statusNo[element]);
+      const statusNoList = (selectedStatusList.includes('all')) ? Object.values(statusNo) : selectedStatusList.map(element => statusNo[element]);
 
-    // Search from input
-    const searchText = req.query.searchText || '';
-    const searchWord = new RegExp(escapeStringRegexp(searchText));
-    // Sort
-    const { sort, sortOrder } = req.query;
-    const sortOutput = {
-      [sort]: (sortOrder === 'desc') ? -1 : 1,
-    };
+      // Search from input
+      const searchText = req.query.searchText || '';
+      const searchWord = new RegExp(escapeStringRegexp(searchText));
+      // Sort
+      const { sort, sortOrder } = req.query;
+      const sortOutput = {
+        [sort]: (sortOrder === 'desc') ? -1 : 1,
+      };
 
-    //  For more information about the external specification of the User API, see here (https://dev.growi.org/5fd7466a31d89500488248e3)
+      //  For more information about the external specification of the User API, see here (https://dev.growi.org/5fd7466a31d89500488248e3)
 
-    const orConditions = [
-      { name: { $in: searchWord } },
-      { username: { $in: searchWord } },
-    ];
+      const orConditions = [
+        { name: { $in: searchWord } },
+        { username: { $in: searchWord } },
+      ];
 
-    const query = {
-      $and: [
-        { status: { $in: statusNoList } },
-        {
-          $or: orConditions,
-        },
-      ],
-    };
-
-    try {
-      if (req.user != null) {
-        orConditions.push(
+      const query = {
+        $and: [
+          { status: { $in: statusNoList } },
           {
-            $and: [
-              { isEmailPublished: true },
-              { email: { $in: searchWord } },
-            ],
+            $or: orConditions,
           },
-        );
-      }
-      if (forceIncludeAttributes.includes('email')) {
-        orConditions.push({ email: { $in: searchWord } });
-      }
+        ],
+      };
 
-      const paginateResult = await User.paginate(
-        query,
-        {
-          sort: sortOutput,
-          page,
-          limit: PAGE_ITEMS,
-        },
-      );
-
-      paginateResult.docs = paginateResult.docs.map((doc) => {
-
-        // return email only when specified by query
-        const { email } = doc;
-        const user = serializeUserSecurely(doc);
+      try {
+        if (req.user != null) {
+          orConditions.push(
+            {
+              $and: [
+                { isEmailPublished: true },
+                { email: { $in: searchWord } },
+              ],
+            },
+          );
+        }
         if (forceIncludeAttributes.includes('email')) {
-          user.email = email;
+          orConditions.push({ email: { $in: searchWord } });
         }
 
-        return user;
-      });
+        const paginateResult = await User.paginate(
+          query,
+          {
+            sort: sortOutput,
+            page,
+            limit: PAGE_ITEMS,
+          },
+        );
 
-      return res.apiv3({ paginateResult });
-    }
-    catch (err) {
-      const msg = 'Error occurred in fetching user group list';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'user-group-list-fetch-failed'), 500);
-    }
-  });
+        paginateResult.docs = paginateResult.docs.map((doc) => {
+
+          // return email only when specified by query
+          const { email } = doc;
+          const user = serializeUserSecurely(doc);
+          if (forceIncludeAttributes.includes('email')) {
+            user.email = email;
+          }
+
+          return user;
+        });
+
+        return res.apiv3({ paginateResult });
+      }
+      catch (err) {
+        const msg = 'Error occurred in fetching user group list';
+        logger.error('Error', err);
+        return res.apiv3Err(new ErrorV3(msg, 'user-group-list-fetch-failed'), 500);
+      }
+    });
 
   /**
    * @swagger
@@ -397,7 +398,7 @@ module.exports = (crowi) => {
    *                    paginateResult:
    *                      $ref: '#/components/schemas/PaginateResult'
    */
-  router.get('/:id/recent', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired,
+  router.get('/:id/recent', accessTokenParser([SCOPE.READ.FEATURES.PAGE], { acceptLegacy: true }), loginRequired,
     validator.recentCreatedByUser, apiV3FormValidator, async(req, res) => {
       const { id } = req.params;
 
@@ -1249,7 +1250,7 @@ module.exports = (crowi) => {
    *            500:
    *              $ref: '#/components/responses/500'
    */
-  router.get('/list', accessTokenParser([SCOPE.READ.USER_SETTINGS.INFO]), loginRequired, async(req, res) => {
+  router.get('/list', accessTokenParser([SCOPE.READ.USER_SETTINGS.INFO], { acceptLegacy: true }), loginRequired, async(req, res) => {
     const userIds = req.query.userIds ?? null;
 
     let userFetcher;
@@ -1353,48 +1354,49 @@ module.exports = (crowi) => {
     *                        items:
     *                          type: string
     */
-  router.get('/usernames', accessTokenParser([SCOPE.READ.USER_SETTINGS.INFO]), loginRequired, validator.usernames, apiV3FormValidator, async(req, res) => {
-    const q = req.query.q;
-    const offset = +req.query.offset || 0;
-    const limit = +req.query.limit || 10;
+  router.get('/usernames',
+    accessTokenParser([SCOPE.READ.USER_SETTINGS.INFO], { acceptLegacy: true }), loginRequired, validator.usernames, apiV3FormValidator, async(req, res) => {
+      const q = req.query.q;
+      const offset = +req.query.offset || 0;
+      const limit = +req.query.limit || 10;
 
-    try {
-      const options = JSON.parse(req.query.options || '{}');
-      const data = {};
+      try {
+        const options = JSON.parse(req.query.options || '{}');
+        const data = {};
 
-      if (options.isIncludeActiveUser == null || options.isIncludeActiveUser) {
-        const activeUserData = await User.findUserByUsernameRegexWithTotalCount(q, [User.STATUS_ACTIVE], { offset, limit });
-        const activeUsernames = activeUserData.users.map(user => user.username);
-        Object.assign(data, { activeUser: { usernames: activeUsernames, totalCount: activeUserData.totalCount } });
+        if (options.isIncludeActiveUser == null || options.isIncludeActiveUser) {
+          const activeUserData = await User.findUserByUsernameRegexWithTotalCount(q, [User.STATUS_ACTIVE], { offset, limit });
+          const activeUsernames = activeUserData.users.map(user => user.username);
+          Object.assign(data, { activeUser: { usernames: activeUsernames, totalCount: activeUserData.totalCount } });
+        }
+
+        if (options.isIncludeInactiveUser) {
+          const inactiveUserStates = [User.STATUS_REGISTERED, User.STATUS_SUSPENDED, User.STATUS_INVITED];
+          const inactiveUserData = await User.findUserByUsernameRegexWithTotalCount(q, inactiveUserStates, { offset, limit });
+          const inactiveUsernames = inactiveUserData.users.map(user => user.username);
+          Object.assign(data, { inactiveUser: { usernames: inactiveUsernames, totalCount: inactiveUserData.totalCount } });
+        }
+
+        if (options.isIncludeActivitySnapshotUser && req.user.admin) {
+          const activitySnapshotUserData = await Activity.findSnapshotUsernamesByUsernameRegexWithTotalCount(q, { offset, limit });
+          Object.assign(data, { activitySnapshotUser: activitySnapshotUserData });
+        }
+
+        // eslint-disable-next-line max-len
+        const canIncludeMixedUsernames = (options.isIncludeMixedUsernames && req.user.admin) || (options.isIncludeMixedUsernames && !options.isIncludeActivitySnapshotUser);
+        if (canIncludeMixedUsernames) {
+          const allUsernames = [...data.activeUser?.usernames || [], ...data.inactiveUser?.usernames || [], ...data?.activitySnapshotUser?.usernames || []];
+          const distinctUsernames = Array.from(new Set(allUsernames));
+          Object.assign(data, { mixedUsernames: distinctUsernames });
+        }
+
+        return res.apiv3(data);
       }
-
-      if (options.isIncludeInactiveUser) {
-        const inactiveUserStates = [User.STATUS_REGISTERED, User.STATUS_SUSPENDED, User.STATUS_INVITED];
-        const inactiveUserData = await User.findUserByUsernameRegexWithTotalCount(q, inactiveUserStates, { offset, limit });
-        const inactiveUsernames = inactiveUserData.users.map(user => user.username);
-        Object.assign(data, { inactiveUser: { usernames: inactiveUsernames, totalCount: inactiveUserData.totalCount } });
+      catch (err) {
+        logger.error('Failed to get usernames', err);
+        return res.apiv3Err(err);
       }
-
-      if (options.isIncludeActivitySnapshotUser && req.user.admin) {
-        const activitySnapshotUserData = await Activity.findSnapshotUsernamesByUsernameRegexWithTotalCount(q, { offset, limit });
-        Object.assign(data, { activitySnapshotUser: activitySnapshotUserData });
-      }
-
-      // eslint-disable-next-line max-len
-      const canIncludeMixedUsernames = (options.isIncludeMixedUsernames && req.user.admin) || (options.isIncludeMixedUsernames && !options.isIncludeActivitySnapshotUser);
-      if (canIncludeMixedUsernames) {
-        const allUsernames = [...data.activeUser?.usernames || [], ...data.inactiveUser?.usernames || [], ...data?.activitySnapshotUser?.usernames || []];
-        const distinctUsernames = Array.from(new Set(allUsernames));
-        Object.assign(data, { mixedUsernames: distinctUsernames });
-      }
-
-      return res.apiv3(data);
-    }
-    catch (err) {
-      logger.error('Failed to get usernames', err);
-      return res.apiv3Err(err);
-    }
-  });
+    });
 
   return router;
 };

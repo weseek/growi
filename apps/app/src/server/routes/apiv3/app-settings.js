@@ -436,7 +436,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/AppSettingParams'
    */
-  router.get('/', accessTokenParser([SCOPE.READ.ADMIN.APP]), loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', accessTokenParser([SCOPE.READ.ADMIN.APP], { acceptLegacy: true }), loginRequiredStrictly, adminRequired, async(req, res) => {
     const appSettingsParams = {
       title: configManager.getConfig('app:title'),
       confidential: configManager.getConfig('app:confidential'),
@@ -899,87 +899,88 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/FileUploadSettingParams'
    */
-  //  eslint-disable-next-line max-len
-  router.put('/file-upload-setting', accessTokenParser([SCOPE.WRITE.ADMIN.APP]), loginRequiredStrictly, adminRequired, addActivity, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
-    const { fileUploadType } = req.body;
+  router.put('/file-upload-setting',
+    accessTokenParser([SCOPE.WRITE.ADMIN.APP]), loginRequiredStrictly, adminRequired,
+    addActivity, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
+      const { fileUploadType } = req.body;
 
-    const requestParams = {
-      'app:fileUploadType': fileUploadType,
-    };
-
-    if (fileUploadType === 'gcs') {
-      requestParams['gcs:apiKeyJsonPath'] = req.body.gcsApiKeyJsonPath;
-      requestParams['gcs:bucket'] = req.body.gcsBucket;
-      requestParams['gcs:uploadNamespace'] = req.body.gcsUploadNamespace;
-      requestParams['gcs:referenceFileWithRelayMode'] = req.body.gcsReferenceFileWithRelayMode;
-    }
-
-    if (fileUploadType === 'aws') {
-      requestParams['aws:s3Region'] = req.body.s3Region;
-      requestParams['aws:s3CustomEndpoint'] = req.body.s3CustomEndpoint;
-      requestParams['aws:s3Bucket'] = req.body.s3Bucket;
-      requestParams['aws:s3AccessKeyId'] = req.body.s3AccessKeyId;
-      requestParams['aws:referenceFileWithRelayMode'] = req.body.s3ReferenceFileWithRelayMode;
-    }
-
-    if (fileUploadType === 'azure') {
-      requestParams['azure:tenantId'] = req.body.azureTenantId;
-      requestParams['azure:clientId'] = req.body.azureClientId;
-      requestParams['azure:clientSecret'] = req.body.azureClientSecret;
-      requestParams['azure:storageAccountName'] = req.body.azureStorageAccountName;
-      requestParams['azure:storageContainerName'] = req.body.azureStorageContainerName;
-      requestParams['azure:referenceFileWithRelayMode'] = req.body.azureReferenceFileWithRelayMode;
-    }
-
-    try {
-      await configManager.updateConfigs(requestParams, { skipPubsub: true });
-
-      const s3SecretAccessKey = req.body.s3SecretAccessKey;
-      if (fileUploadType === 'aws' && s3SecretAccessKey != null && s3SecretAccessKey.trim() !== '') {
-        await configManager.updateConfigs({ 'aws:s3SecretAccessKey': s3SecretAccessKey }, { skipPubsub: true });
-      }
-
-      await crowi.setUpFileUpload(true);
-      crowi.fileUploaderSwitchService.publishUpdatedMessage();
-
-      const responseParams = {
-        fileUploadType: configManager.getConfig('app:fileUploadType'),
+      const requestParams = {
+        'app:fileUploadType': fileUploadType,
       };
 
       if (fileUploadType === 'gcs') {
-        responseParams.gcsApiKeyJsonPath = configManager.getConfig('gcs:apiKeyJsonPath');
-        responseParams.gcsBucket = configManager.getConfig('gcs:bucket');
-        responseParams.gcsUploadNamespace = configManager.getConfig('gcs:uploadNamespace');
-        responseParams.gcsReferenceFileWithRelayMode = configManager.getConfig('gcs:referenceFileWithRelayMode ');
+        requestParams['gcs:apiKeyJsonPath'] = req.body.gcsApiKeyJsonPath;
+        requestParams['gcs:bucket'] = req.body.gcsBucket;
+        requestParams['gcs:uploadNamespace'] = req.body.gcsUploadNamespace;
+        requestParams['gcs:referenceFileWithRelayMode'] = req.body.gcsReferenceFileWithRelayMode;
       }
 
       if (fileUploadType === 'aws') {
-        responseParams.s3Region = configManager.getConfig('aws:s3Region');
-        responseParams.s3CustomEndpoint = configManager.getConfig('aws:s3CustomEndpoint');
-        responseParams.s3Bucket = configManager.getConfig('aws:s3Bucket');
-        responseParams.s3AccessKeyId = configManager.getConfig('aws:s3AccessKeyId');
-        responseParams.s3ReferenceFileWithRelayMode = configManager.getConfig('aws:referenceFileWithRelayMode');
+        requestParams['aws:s3Region'] = req.body.s3Region;
+        requestParams['aws:s3CustomEndpoint'] = req.body.s3CustomEndpoint;
+        requestParams['aws:s3Bucket'] = req.body.s3Bucket;
+        requestParams['aws:s3AccessKeyId'] = req.body.s3AccessKeyId;
+        requestParams['aws:referenceFileWithRelayMode'] = req.body.s3ReferenceFileWithRelayMode;
       }
 
       if (fileUploadType === 'azure') {
-        responseParams.azureTenantId = configManager.getConfig('azure:tenantId');
-        responseParams.azureClientId = configManager.getConfig('azure:clientId');
-        responseParams.azureClientSecret = configManager.getConfig('azure:clientSecret');
-        responseParams.azureStorageAccountName = configManager.getConfig('azure:storageAccountName');
-        responseParams.azureStorageContainerName = configManager.getConfig('azure:storageContainerName');
-        responseParams.azureReferenceFileWithRelayMode = configManager.getConfig('azure:referenceFileWithRelayMode');
+        requestParams['azure:tenantId'] = req.body.azureTenantId;
+        requestParams['azure:clientId'] = req.body.azureClientId;
+        requestParams['azure:clientSecret'] = req.body.azureClientSecret;
+        requestParams['azure:storageAccountName'] = req.body.azureStorageAccountName;
+        requestParams['azure:storageContainerName'] = req.body.azureStorageContainerName;
+        requestParams['azure:referenceFileWithRelayMode'] = req.body.azureReferenceFileWithRelayMode;
       }
-      const parameters = { action: SupportedAction.ACTION_ADMIN_FILE_UPLOAD_CONFIG_UPDATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-      return res.apiv3({ responseParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating fileUploadType';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-fileUploadType-failed'));
-    }
 
-  });
+      try {
+        await configManager.updateConfigs(requestParams, { skipPubsub: true });
+
+        const s3SecretAccessKey = req.body.s3SecretAccessKey;
+        if (fileUploadType === 'aws' && s3SecretAccessKey != null && s3SecretAccessKey.trim() !== '') {
+          await configManager.updateConfigs({ 'aws:s3SecretAccessKey': s3SecretAccessKey }, { skipPubsub: true });
+        }
+
+        await crowi.setUpFileUpload(true);
+        crowi.fileUploaderSwitchService.publishUpdatedMessage();
+
+        const responseParams = {
+          fileUploadType: configManager.getConfig('app:fileUploadType'),
+        };
+
+        if (fileUploadType === 'gcs') {
+          responseParams.gcsApiKeyJsonPath = configManager.getConfig('gcs:apiKeyJsonPath');
+          responseParams.gcsBucket = configManager.getConfig('gcs:bucket');
+          responseParams.gcsUploadNamespace = configManager.getConfig('gcs:uploadNamespace');
+          responseParams.gcsReferenceFileWithRelayMode = configManager.getConfig('gcs:referenceFileWithRelayMode ');
+        }
+
+        if (fileUploadType === 'aws') {
+          responseParams.s3Region = configManager.getConfig('aws:s3Region');
+          responseParams.s3CustomEndpoint = configManager.getConfig('aws:s3CustomEndpoint');
+          responseParams.s3Bucket = configManager.getConfig('aws:s3Bucket');
+          responseParams.s3AccessKeyId = configManager.getConfig('aws:s3AccessKeyId');
+          responseParams.s3ReferenceFileWithRelayMode = configManager.getConfig('aws:referenceFileWithRelayMode');
+        }
+
+        if (fileUploadType === 'azure') {
+          responseParams.azureTenantId = configManager.getConfig('azure:tenantId');
+          responseParams.azureClientId = configManager.getConfig('azure:clientId');
+          responseParams.azureClientSecret = configManager.getConfig('azure:clientSecret');
+          responseParams.azureStorageAccountName = configManager.getConfig('azure:storageAccountName');
+          responseParams.azureStorageContainerName = configManager.getConfig('azure:storageContainerName');
+          responseParams.azureReferenceFileWithRelayMode = configManager.getConfig('azure:referenceFileWithRelayMode');
+        }
+        const parameters = { action: SupportedAction.ACTION_ADMIN_FILE_UPLOAD_CONFIG_UPDATE };
+        activityEvent.emit('update', res.locals.activity._id, parameters);
+        return res.apiv3({ responseParams });
+      }
+      catch (err) {
+        const msg = 'Error occurred in updating fileUploadType';
+        logger.error('Error', err);
+        return res.apiv3Err(new ErrorV3(msg, 'update-fileUploadType-failed'));
+      }
+
+    });
 
   /**
    * @swagger
@@ -1010,36 +1011,38 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/QuestionnaireSettingParams'
    */
-  // eslint-disable-next-line max-len
-  router.put('/questionnaire-settings', accessTokenParser([SCOPE.WRITE.ADMIN.APP]), loginRequiredStrictly, adminRequired, addActivity, validator.questionnaireSettings, apiV3FormValidator, async(req, res) => {
-    const { isQuestionnaireEnabled, isAppSiteUrlHashed } = req.body;
+  router.put('/questionnaire-settings',
+    accessTokenParser([SCOPE.WRITE.ADMIN.APP]), loginRequiredStrictly, adminRequired, addActivity,
+    validator.questionnaireSettings, apiV3FormValidator, async(req, res) => {
+      const { isQuestionnaireEnabled, isAppSiteUrlHashed } = req.body;
 
-    const requestParams = {
-      'questionnaire:isQuestionnaireEnabled': isQuestionnaireEnabled,
-      'questionnaire:isAppSiteUrlHashed': isAppSiteUrlHashed,
-    };
-
-    try {
-      await configManager.updateConfigs(requestParams, { skipPubsub: true });
-
-      const responseParams = {
-        isQuestionnaireEnabled: configManager.getConfig('questionnaire:isQuestionnaireEnabled'),
-        isAppSiteUrlHashed: configManager.getConfig('questionnaire:isAppSiteUrlHashed'),
+      const requestParams = {
+        'questionnaire:isQuestionnaireEnabled': isQuestionnaireEnabled,
+        'questionnaire:isAppSiteUrlHashed': isAppSiteUrlHashed,
       };
 
-      const parameters = { action: SupportedAction.ACTION_ADMIN_QUESTIONNAIRE_SETTINGS_UPDATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-      return res.apiv3({ responseParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating questionnaire settings';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-questionnaire-settings-failed'));
-    }
+      try {
+        await configManager.updateConfigs(requestParams, { skipPubsub: true });
 
-  });
+        const responseParams = {
+          isQuestionnaireEnabled: configManager.getConfig('questionnaire:isQuestionnaireEnabled'),
+          isAppSiteUrlHashed: configManager.getConfig('questionnaire:isAppSiteUrlHashed'),
+        };
 
-  router.put('/page-bulk-export-settings', loginRequiredStrictly, adminRequired, addActivity, validator.pageBulkExportSettings, apiV3FormValidator,
+        const parameters = { action: SupportedAction.ACTION_ADMIN_QUESTIONNAIRE_SETTINGS_UPDATE };
+        activityEvent.emit('update', res.locals.activity._id, parameters);
+        return res.apiv3({ responseParams });
+      }
+      catch (err) {
+        const msg = 'Error occurred in updating questionnaire settings';
+        logger.error('Error', err);
+        return res.apiv3Err(new ErrorV3(msg, 'update-questionnaire-settings-failed'));
+      }
+
+    });
+
+  router.put('/page-bulk-export-settings',
+    accessTokenParser([SCOPE.WRITE.ADMIN.APP]), loginRequiredStrictly, adminRequired, addActivity, validator.pageBulkExportSettings, apiV3FormValidator,
     async(req, res) => {
       const requestParams = {
         'app:isBulkExportPagesEnabled': req.body.isBulkExportPagesEnabled,
@@ -1091,26 +1094,27 @@ module.exports = (crowi) => {
    *                      description: is V5 compatible, or not
    *                      example: true
    */
-  router.post('/v5-schema-migration', accessTokenParser([SCOPE.WRITE.ADMIN.APP]), loginRequiredStrictly, adminRequired, async(req, res) => {
-    const isMaintenanceMode = crowi.appService.isMaintenanceMode();
-    if (!isMaintenanceMode) {
-      return res.apiv3Err(new ErrorV3('GROWI is not maintenance mode. To import data, please activate the maintenance mode first.', 'not_maintenance_mode'));
-    }
-
-    const isV5Compatible = configManager.getConfig('app:isV5Compatible');
-
-    try {
-      if (!isV5Compatible) {
-        // This method throws and emit socketIo event when error occurs
-        crowi.pageService.normalizeAllPublicPages();
+  router.post('/v5-schema-migration',
+    accessTokenParser([SCOPE.WRITE.ADMIN.APP], { acceptLegacy: true }), loginRequiredStrictly, adminRequired, async(req, res) => {
+      const isMaintenanceMode = crowi.appService.isMaintenanceMode();
+      if (!isMaintenanceMode) {
+        return res.apiv3Err(new ErrorV3('GROWI is not maintenance mode. To import data, please activate the maintenance mode first.', 'not_maintenance_mode'));
       }
-    }
-    catch (err) {
-      return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
-    }
 
-    return res.apiv3({ isV5Compatible });
-  });
+      const isV5Compatible = configManager.getConfig('app:isV5Compatible');
+
+      try {
+        if (!isV5Compatible) {
+        // This method throws and emit socketIo event when error occurs
+          crowi.pageService.normalizeAllPublicPages();
+        }
+      }
+      catch (err) {
+        return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
+      }
+
+      return res.apiv3({ isV5Compatible });
+    });
 
   /**
    * @swagger
@@ -1146,36 +1150,37 @@ module.exports = (crowi) => {
    *                      description: true if maintenance mode is enabled
    *                      example: true
    */
-  // eslint-disable-next-line max-len
-  router.post('/maintenance-mode', accessTokenParser([SCOPE.WRITE.ADMIN.APP]), loginRequiredStrictly, adminRequired, addActivity, validator.maintenanceMode, apiV3FormValidator, async(req, res) => {
-    const { flag } = req.body;
-    const parameters = {};
-    try {
-      if (flag) {
-        await crowi.appService.startMaintenanceMode();
-        Object.assign(parameters, { action: SupportedAction.ACTION_ADMIN_MAINTENANCEMODE_ENABLED });
+  router.post('/maintenance-mode',
+    accessTokenParser([SCOPE.WRITE.ADMIN.APP], { acceptLegacy: true }),
+    loginRequiredStrictly, adminRequired, addActivity, validator.maintenanceMode, apiV3FormValidator, async(req, res) => {
+      const { flag } = req.body;
+      const parameters = {};
+      try {
+        if (flag) {
+          await crowi.appService.startMaintenanceMode();
+          Object.assign(parameters, { action: SupportedAction.ACTION_ADMIN_MAINTENANCEMODE_ENABLED });
+        }
+        else {
+          await crowi.appService.endMaintenanceMode();
+          Object.assign(parameters, { action: SupportedAction.ACTION_ADMIN_MAINTENANCEMODE_DISABLED });
+        }
       }
-      else {
-        await crowi.appService.endMaintenanceMode();
-        Object.assign(parameters, { action: SupportedAction.ACTION_ADMIN_MAINTENANCEMODE_DISABLED });
+      catch (err) {
+        logger.error(err);
+        if (flag) {
+          res.apiv3Err(new ErrorV3('Failed to start maintenance mode', 'failed_to_start_maintenance_mode'), 500);
+        }
+        else {
+          res.apiv3Err(new ErrorV3('Failed to end maintenance mode', 'failed_to_end_maintenance_mode'), 500);
+        }
       }
-    }
-    catch (err) {
-      logger.error(err);
-      if (flag) {
-        res.apiv3Err(new ErrorV3('Failed to start maintenance mode', 'failed_to_start_maintenance_mode'), 500);
-      }
-      else {
-        res.apiv3Err(new ErrorV3('Failed to end maintenance mode', 'failed_to_end_maintenance_mode'), 500);
-      }
-    }
 
-    if ('action' in parameters) {
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-    }
+      if ('action' in parameters) {
+        activityEvent.emit('update', res.locals.activity._id, parameters);
+      }
 
-    res.apiv3({ flag });
-  });
+      res.apiv3({ flag });
+    });
 
   return router;
 };

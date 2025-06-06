@@ -39,7 +39,7 @@ export const unpublishPageHandlersFactory: UnpublishPageHandlersFactory = (crowi
   ];
 
   return [
-    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), loginRequiredStrictly,
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }), loginRequiredStrictly,
     validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
       const { pageId } = req.params;

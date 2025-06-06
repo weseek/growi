@@ -199,7 +199,7 @@ export default function route(crowi) {
    *                        type: string
    *                        description: the access token of qiita.com
    */
-  router.get('/', accessTokenParser([SCOPE.READ.ADMIN.IMPORT_DATA]), loginRequired, adminRequired, async(req, res) => {
+  router.get('/', accessTokenParser([SCOPE.READ.ADMIN.IMPORT_DATA], { acceptLegacy: true }), loginRequired, adminRequired, async(req, res) => {
     try {
       const importSettingsParams = {
         esaTeamName: await crowi.configManager.getConfig('importer:esa:team_name'),
@@ -238,7 +238,7 @@ export default function route(crowi) {
    *                  status:
    *                    $ref: '#/components/schemas/ImportStatus'
    */
-  router.get('/status', accessTokenParser([SCOPE.READ.ADMIN.IMPORT_DATA]), loginRequired, adminRequired, async(req, res) => {
+  router.get('/status', accessTokenParser([SCOPE.READ.ADMIN.IMPORT_DATA], { acceptLegacy: true }), loginRequired, adminRequired, async(req, res) => {
     try {
       const status = await importService.getStatus();
       return res.apiv3(status);
@@ -286,7 +286,7 @@ export default function route(crowi) {
    *        200:
    *          description: Import process has requested
    */
-  router.post('/', accessTokenParser([SCOPE.WRITE.ADMIN.IMPORT_DATA]), loginRequired, adminRequired, addActivity, async(req, res) => {
+  router.post('/', accessTokenParser([SCOPE.WRITE.ADMIN.IMPORT_DATA], { acceptLegacy: true }), loginRequired, adminRequired, addActivity, async(req, res) => {
     // TODO: add express validator
     const { fileName, collections, options } = req.body;
 
@@ -409,7 +409,8 @@ export default function route(crowi) {
    *              schema:
    *                $ref: '#/components/schemas/FileImportResponse'
    */
-  router.post('/upload', accessTokenParser([SCOPE.WRITE.ADMIN.IMPORT_DATA]), loginRequired, adminRequired, uploads.single('file'), addActivity,
+  router.post('/upload',
+    accessTokenParser([SCOPE.WRITE.ADMIN.IMPORT_DATA], { acceptLegacy: true }), loginRequired, adminRequired, uploads.single('file'), addActivity,
     async(req, res) => {
       const { file } = req;
       const zipFile = importService.getFile(file.filename);
@@ -455,7 +456,7 @@ export default function route(crowi) {
    *        200:
    *          description: all files are deleted
    */
-  router.delete('/all', accessTokenParser([SCOPE.WRITE.ADMIN.IMPORT_DATA]), loginRequired, adminRequired, async(req, res) => {
+  router.delete('/all', accessTokenParser([SCOPE.WRITE.ADMIN.IMPORT_DATA], { acceptLegacy: true }), loginRequired, adminRequired, async(req, res) => {
     try {
       importService.deleteAllZipFiles();
 

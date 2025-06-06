@@ -154,7 +154,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: personal params
    */
-  router.get('/', accessTokenParser([SCOPE.READ.USER_SETTINGS.INFO]), loginRequiredStrictly, async(req, res) => {
+  router.get('/', accessTokenParser([SCOPE.READ.USER_SETTINGS.INFO], { acceptLegacy: true }), loginRequiredStrictly, async(req, res) => {
     const { username } = req.user;
     try {
       const user = await User.findUserByUsername(username);
@@ -196,7 +196,7 @@ module.exports = (crowi) => {
    *                      type: number
    *                      description: Minimum password length
    */
-  router.get('/is-password-set', accessTokenParser([SCOPE.READ.USER_SETTINGS.PASSWORD]), loginRequiredStrictly, async(req, res) => {
+  router.get('/is-password-set', accessTokenParser([SCOPE.READ.USER_SETTINGS.PASSWORD], { acceptLegacy: true }), loginRequiredStrictly, async(req, res) => {
     const { username } = req.user;
 
     try {
@@ -238,7 +238,8 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: personal params
    */
-  router.put('/', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.INFO]), loginRequiredStrictly, addActivity, validator.personal, apiV3FormValidator,
+  router.put('/',
+    accessTokenParser([SCOPE.WRITE.USER_SETTINGS.INFO], { acceptLegacy: true }), loginRequiredStrictly, addActivity, validator.personal, apiV3FormValidator,
     async(req, res) => {
 
       try {
@@ -299,7 +300,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: user data
    */
-  router.put('/image-type', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.INFO]), loginRequiredStrictly, addActivity,
+  router.put('/image-type', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.INFO], { acceptLegacy: true }), loginRequiredStrictly, addActivity,
     validator.imageType, apiV3FormValidator,
     async(req, res) => {
       const { isGravatarEnabled } = req.body;
@@ -338,19 +339,20 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: array of external accounts
    */
-  router.get('/external-accounts', accessTokenParser([SCOPE.READ.USER_SETTINGS.EXTERNAL_ACCOUNT]), loginRequiredStrictly, async(req, res) => {
-    const userData = req.user;
+  router.get('/external-accounts',
+    accessTokenParser([SCOPE.READ.USER_SETTINGS.EXTERNAL_ACCOUNT], { acceptLegacy: true }), loginRequiredStrictly, async(req, res) => {
+      const userData = req.user;
 
-    try {
-      const externalAccounts = await ExternalAccount.find({ user: userData });
-      return res.apiv3({ externalAccounts });
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err('get-external-accounts-failed');
-    }
+      try {
+        const externalAccounts = await ExternalAccount.find({ user: userData });
+        return res.apiv3({ externalAccounts });
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err('get-external-accounts-failed');
+      }
 
-  });
+    });
 
   /**
    * @swagger
@@ -383,7 +385,8 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: user data updated
    */
-  router.put('/password', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.PASSWORD]), loginRequiredStrictly, addActivity, validator.password, apiV3FormValidator,
+  router.put('/password',
+    accessTokenParser([SCOPE.WRITE.USER_SETTINGS.PASSWORD], { acceptLegacy: true }), loginRequiredStrictly, addActivity, validator.password, apiV3FormValidator,
     async(req, res) => {
       const { body, user } = req;
       const { oldPassword, newPassword } = body;
@@ -614,8 +617,8 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: Ldap account disassociate to me
    */
-  // eslint-disable-next-line max-len
-  router.put('/disassociate-ldap', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.EXTERNAL_ACCOUNT]), loginRequiredStrictly, addActivity, validator.disassociateLdap, apiV3FormValidator,
+  router.put('/disassociate-ldap',
+    accessTokenParser([SCOPE.WRITE.USER_SETTINGS.EXTERNAL_ACCOUNT]), loginRequiredStrictly, addActivity, validator.disassociateLdap, apiV3FormValidator,
     async(req, res) => {
       const { user, body } = req;
       const { providerType, accountId } = body;
@@ -770,29 +773,30 @@ module.exports = (crowi) => {
    *                schema:
    *                 type: object
    */
-  // eslint-disable-next-line max-len
-  router.put('/in-app-notification-settings', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.IN_APP_NOTIFICATION]), loginRequiredStrictly, addActivity, validator.inAppNotificationSettings, apiV3FormValidator, async(req, res) => {
-    const query = { userId: req.user.id };
-    const subscribeRules = req.body.subscribeRules;
+  router.put('/in-app-notification-settings',
+    accessTokenParser([SCOPE.WRITE.USER_SETTINGS.IN_APP_NOTIFICATION]),
+    loginRequiredStrictly, addActivity, validator.inAppNotificationSettings, apiV3FormValidator, async(req, res) => {
+      const query = { userId: req.user.id };
+      const subscribeRules = req.body.subscribeRules;
 
-    if (subscribeRules == null) {
-      return res.apiv3Err('no-rules-found');
-    }
+      if (subscribeRules == null) {
+        return res.apiv3Err('no-rules-found');
+      }
 
-    const options = { upsert: true, new: true, runValidators: true };
-    try {
-      const response = await InAppNotificationSettings.findOneAndUpdate(query, { $set: { subscribeRules } }, options);
+      const options = { upsert: true, new: true, runValidators: true };
+      try {
+        const response = await InAppNotificationSettings.findOneAndUpdate(query, { $set: { subscribeRules } }, options);
 
-      const parameters = { action: SupportedAction.ACTION_USER_IN_APP_NOTIFICATION_SETTINGS_UPDATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
+        const parameters = { action: SupportedAction.ACTION_USER_IN_APP_NOTIFICATION_SETTINGS_UPDATE };
+        activityEvent.emit('update', res.locals.activity._id, parameters);
 
-      return res.apiv3(response);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err('updating-in-app-notification-settings-failed');
-    }
-  });
+        return res.apiv3(response);
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err('updating-in-app-notification-settings-failed');
+      }
+    });
 
   /**
    * @swagger
@@ -854,20 +858,20 @@ module.exports = (crowi) => {
    *                   isQuestionnaireEnabled:
    *                     type: boolean
    */
-  // eslint-disable-next-line max-len
-  router.put('/questionnaire-settings', accessTokenParser([SCOPE.WRITE.FEATURES.QUESTIONNAIRE]), loginRequiredStrictly, validator.questionnaireSettings, apiV3FormValidator, async(req, res) => {
-    const { isQuestionnaireEnabled } = req.body;
-    const { user } = req;
-    try {
-      await user.updateIsQuestionnaireEnabled(isQuestionnaireEnabled);
+  router.put('/questionnaire-settings',
+    accessTokenParser([SCOPE.WRITE.FEATURES.QUESTIONNAIRE]), loginRequiredStrictly, validator.questionnaireSettings, apiV3FormValidator, async(req, res) => {
+      const { isQuestionnaireEnabled } = req.body;
+      const { user } = req;
+      try {
+        await user.updateIsQuestionnaireEnabled(isQuestionnaireEnabled);
 
-      return res.apiv3({ message: 'Successfully updated questionnaire settings.', isQuestionnaireEnabled });
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err({ error: 'Failed to update questionnaire settings.' });
-    }
-  });
+        return res.apiv3({ message: 'Successfully updated questionnaire settings.', isQuestionnaireEnabled });
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err({ error: 'Failed to update questionnaire settings.' });
+      }
+    });
 
 
   return router;

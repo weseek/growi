@@ -59,7 +59,7 @@ const middleware = (crowi: any, app: any): void => {
 
   app.get(
     '/_api/lsx',
-    accessTokenParser(),
+    accessTokenParser(), // TODO: https://redmine.weseek.co.jp/issues/166911
     loginRequired,
     lsxValidator,
     paramValidator,

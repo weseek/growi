@@ -134,7 +134,7 @@ module.exports = (crowi) => {
    *              schema:
    *                $ref: '#/components/schemas/InAppNotificationListResponse'
    */
-  router.get('/list', accessTokenParser([SCOPE.READ.USER_SETTINGS.IN_APP_NOTIFICATION]), loginRequiredStrictly,
+  router.get('/list', accessTokenParser([SCOPE.READ.USER_SETTINGS.IN_APP_NOTIFICATION], { acceptLegacy: true }), loginRequiredStrictly,
     async(req: CrowiRequest, res: ApiV3Response) => {
     // user must be set by loginRequiredStrictly
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -214,7 +214,7 @@ module.exports = (crowi) => {
    *                    type: integer
    *                    description: Count of unread notifications
    */
-  router.get('/status', accessTokenParser([SCOPE.READ.USER_SETTINGS.IN_APP_NOTIFICATION]), loginRequiredStrictly,
+  router.get('/status', accessTokenParser([SCOPE.READ.USER_SETTINGS.IN_APP_NOTIFICATION], { acceptLegacy: true }), loginRequiredStrictly,
     async(req: CrowiRequest, res: ApiV3Response) => {
     // user must be set by loginRequiredStrictly
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -259,7 +259,7 @@ module.exports = (crowi) => {
    *              schema:
    *                type: object
    */
-  router.post('/open', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.IN_APP_NOTIFICATION]), loginRequiredStrictly,
+  router.post('/open', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.IN_APP_NOTIFICATION], { acceptLegacy: true }), loginRequiredStrictly,
     async(req: CrowiRequest, res: ApiV3Response) => {
     // user must be set by loginRequiredStrictly
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -293,7 +293,8 @@ module.exports = (crowi) => {
    *        200:
    *          description: All notifications opened successfully
    */
-  router.put('/all-statuses-open', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.IN_APP_NOTIFICATION]), loginRequiredStrictly, addActivity,
+  router.put('/all-statuses-open',
+    accessTokenParser([SCOPE.WRITE.USER_SETTINGS.IN_APP_NOTIFICATION], { acceptLegacy: true }), loginRequiredStrictly, addActivity,
     async(req: CrowiRequest, res: ApiV3Response) => {
     // user must be set by loginRequiredStrictly
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

@@ -34,7 +34,7 @@ export const getThreadsFactory: GetThreadsFactory = (crowi) => {
   ];
 
   return [
-    accessTokenParser([SCOPE.READ.FEATURES.AI_ASSISTANT]), loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
+    accessTokenParser([SCOPE.READ.FEATURES.AI_ASSISTANT], { acceptLegacy: true }), loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
       const openaiService = getOpenaiService();
       if (openaiService == null) {

@@ -126,21 +126,22 @@ module.exports = (crowi) => {
    *                    description: Status of indices
    *                    $ref: '#/components/schemas/Indices'
    */
-  router.get('/indices', noCache(), accessTokenParser([SCOPE.READ.ADMIN.FULL_TEXT_SEARCH]), loginRequired, adminRequired, async(req, res) => {
-    const { searchService } = crowi;
+  router.get('/indices',
+    noCache(), accessTokenParser([SCOPE.READ.ADMIN.FULL_TEXT_SEARCH], { acceptLegacy: true }), loginRequired, adminRequired, async(req, res) => {
+      const { searchService } = crowi;
 
-    if (!searchService.isConfigured) {
-      return res.apiv3Err(new ErrorV3('SearchService is not configured', 'search-service-unconfigured'), 503);
-    }
+      if (!searchService.isConfigured) {
+        return res.apiv3Err(new ErrorV3('SearchService is not configured', 'search-service-unconfigured'), 503);
+      }
 
-    try {
-      const info = await searchService.getInfoForAdmin();
-      return res.status(200).send({ info });
-    }
-    catch (err) {
-      return res.apiv3Err(err, 503);
-    }
-  });
+      try {
+        const info = await searchService.getInfoForAdmin();
+        return res.status(200).send({ info });
+      }
+      catch (err) {
+        return res.apiv3Err(err, 503);
+      }
+    });
 
   /**
    * @swagger
@@ -154,24 +155,25 @@ module.exports = (crowi) => {
    *        200:
    *          description: Successfully connected
    */
-  router.post('/connection', accessTokenParser([SCOPE.WRITE.ADMIN.FULL_TEXT_SEARCH]), loginRequired, adminRequired, addActivity, async(req, res) => {
-    const { searchService } = crowi;
+  router.post('/connection',
+    accessTokenParser([SCOPE.WRITE.ADMIN.FULL_TEXT_SEARCH], { acceptLegacy: true }), loginRequired, adminRequired, addActivity, async(req, res) => {
+      const { searchService } = crowi;
 
-    if (!searchService.isConfigured) {
-      return res.apiv3Err(new ErrorV3('SearchService is not configured', 'search-service-unconfigured'));
-    }
+      if (!searchService.isConfigured) {
+        return res.apiv3Err(new ErrorV3('SearchService is not configured', 'search-service-unconfigured'));
+      }
 
-    try {
-      await searchService.reconnectClient();
+      try {
+        await searchService.reconnectClient();
 
-      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SEARCH_CONNECTION });
+        activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SEARCH_CONNECTION });
 
-      return res.status(200).send();
-    }
-    catch (err) {
-      return res.apiv3Err(err, 503);
-    }
-  });
+        return res.status(200).send();
+      }
+      catch (err) {
+        return res.apiv3Err(err, 503);
+      }
+    });
 
   const validatorForPutIndices = [
     body('operation').isString().isIn(['rebuild', 'normalize']),
@@ -208,7 +210,7 @@ module.exports = (crowi) => {
    *                    type: string
    *                    description: Operation is successfully processed, or requested
    */
-  router.put('/indices', accessTokenParser([SCOPE.WRITE.ADMIN.FULL_TEXT_SEARCH]), loginRequired, adminRequired, addActivity,
+  router.put('/indices', accessTokenParser([SCOPE.WRITE.ADMIN.FULL_TEXT_SEARCH], { acceptLegacy: true }), loginRequired, adminRequired, addActivity,
     validatorForPutIndices, apiV3FormValidator,
     async(req, res) => {
       const operation = req.body.operation;

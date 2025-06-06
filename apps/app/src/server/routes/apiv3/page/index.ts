@@ -213,61 +213,63 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.get('/', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), certifySharedPage, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
-    const { user, isSharedPage } = req;
-    const {
-      pageId, path, findAll, revisionId, shareLinkId, includeEmpty,
-    } = req.query;
+  router.get('/',
+    accessTokenParser([SCOPE.READ.FEATURES.PAGE], { acceptLegacy: true }),
+    certifySharedPage, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
+      const { user, isSharedPage } = req;
+      const {
+        pageId, path, findAll, revisionId, shareLinkId, includeEmpty,
+      } = req.query;
 
-    const isValid = (shareLinkId != null && pageId != null && path == null) || (shareLinkId == null && (pageId != null || path != null));
-    if (!isValid) {
-      return res.apiv3Err(new Error('Either parameter of (pageId or path) or (pageId and shareLinkId) is required.'), 400);
-    }
+      const isValid = (shareLinkId != null && pageId != null && path == null) || (shareLinkId == null && (pageId != null || path != null));
+      if (!isValid) {
+        return res.apiv3Err(new Error('Either parameter of (pageId or path) or (pageId and shareLinkId) is required.'), 400);
+      }
 
-    let page;
-    let pages;
-    try {
-      if (isSharedPage) {
-        const shareLink = await ShareLink.findOne({ _id: shareLinkId });
-        if (shareLink == null) {
-          throw new Error('ShareLink is not found');
-        }
-        page = await Page.findOne({ _id: getIdForRef(shareLink.relatedPage) });
-      }
-      else if (pageId != null) { // prioritized
-        page = await Page.findByIdAndViewer(pageId, user);
-      }
-      else if (!findAll) {
-        page = await Page.findByPathAndViewer(path, user, null, true, false);
-      }
-      else {
-        pages = await Page.findByPathAndViewer(path, user, null, false, includeEmpty);
-      }
-    }
-    catch (err) {
-      logger.error('get-page-failed', err);
-      return res.apiv3Err(err, 500);
-    }
-
-    if (page == null && (pages == null || pages.length === 0)) {
-      return res.apiv3Err('Page is not found', 404);
-    }
-
-    if (page != null) {
+      let page;
+      let pages;
       try {
-        page.initLatestRevisionField(revisionId);
-
-        // populate
-        page = await page.populateDataToShowRevision();
+        if (isSharedPage) {
+          const shareLink = await ShareLink.findOne({ _id: shareLinkId });
+          if (shareLink == null) {
+            throw new Error('ShareLink is not found');
+          }
+          page = await Page.findOne({ _id: getIdForRef(shareLink.relatedPage) });
+        }
+        else if (pageId != null) { // prioritized
+          page = await Page.findByIdAndViewer(pageId, user);
+        }
+        else if (!findAll) {
+          page = await Page.findByPathAndViewer(path, user, null, true, false);
+        }
+        else {
+          pages = await Page.findByPathAndViewer(path, user, null, false, includeEmpty);
+        }
       }
       catch (err) {
-        logger.error('populate-page-failed', err);
+        logger.error('get-page-failed', err);
         return res.apiv3Err(err, 500);
       }
-    }
 
-    return res.apiv3({ page, pages });
-  });
+      if (page == null && (pages == null || pages.length === 0)) {
+        return res.apiv3Err('Page is not found', 404);
+      }
+
+      if (page != null) {
+        try {
+          page.initLatestRevisionField(revisionId);
+
+          // populate
+          page = await page.populateDataToShowRevision();
+        }
+        catch (err) {
+          logger.error('populate-page-failed', err);
+          return res.apiv3Err(err, 500);
+        }
+      }
+
+      return res.apiv3({ page, pages });
+    });
 
   router.get('/page-paths-with-descendant-count', getPagePathsWithDescendantCountFactory(crowi));
 
@@ -441,7 +443,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.put('/likes', accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), loginRequiredStrictly, addActivity,
+  router.put('/likes', accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }), loginRequiredStrictly, addActivity,
     validator.likes, apiV3FormValidator, async(req, res) => {
       const { pageId, bool: isLiked } = req.body;
 
@@ -1037,7 +1039,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.put('/subscribe', accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), loginRequiredStrictly, addActivity,
+  router.put('/subscribe', accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }), loginRequiredStrictly, addActivity,
     validator.subscribe, apiV3FormValidator,
     async(req, res) => {
       const { pageId, status } = req.body;
@@ -1099,7 +1101,7 @@ module.exports = (crowi) => {
    *                   page:
    *                     $ref: '#/components/schemas/Page'
    */
-  router.put('/:pageId/content-width', accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), loginRequiredStrictly, excludeReadOnlyUser,
+  router.put('/:pageId/content-width', accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }), loginRequiredStrictly, excludeReadOnlyUser,
     validator.contentWidth, apiV3FormValidator, async(req, res) => {
       const { pageId } = req.params;
       const { expandContentWidth } = req.body;

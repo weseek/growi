@@ -157,69 +157,70 @@ module.exports = (crowi) => {
    *          200:
    *            description: Return pages recently updated
    */
-  router.get('/recent', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, validator.recent, apiV3FormValidator, async(req, res) => {
-    const limit = parseInt(req.query.limit) || 20;
-    const offset = parseInt(req.query.offset) || 0;
-    const includeWipPage = req.query.includeWipPage === 'true'; // Need validation using express-validator
+  router.get('/recent', accessTokenParser([SCOPE.READ.FEATURES.PAGE], { acceptLegacy: true }),
+    loginRequired, validator.recent, apiV3FormValidator, async(req, res) => {
+      const limit = parseInt(req.query.limit) || 20;
+      const offset = parseInt(req.query.offset) || 0;
+      const includeWipPage = req.query.includeWipPage === 'true'; // Need validation using express-validator
 
-    const hideRestrictedByOwner = configManager.getConfig('security:list-policy:hideRestrictedByOwner');
-    const hideRestrictedByGroup = configManager.getConfig('security:list-policy:hideRestrictedByGroup');
+      const hideRestrictedByOwner = configManager.getConfig('security:list-policy:hideRestrictedByOwner');
+      const hideRestrictedByGroup = configManager.getConfig('security:list-policy:hideRestrictedByGroup');
 
-    /**
+      /**
     * @type {import('~/server/models/page').FindRecentUpdatedPagesOption}
     */
-    const queryOptions = {
-      offset,
-      limit,
-      includeWipPage,
-      includeTrashed: false,
-      isRegExpEscapedFromPath: true,
-      sort: 'updatedAt',
-      desc: -1,
-      hideRestrictedByOwner,
-      hideRestrictedByGroup,
-    };
+      const queryOptions = {
+        offset,
+        limit,
+        includeWipPage,
+        includeTrashed: false,
+        isRegExpEscapedFromPath: true,
+        sort: 'updatedAt',
+        desc: -1,
+        hideRestrictedByOwner,
+        hideRestrictedByGroup,
+      };
 
-    try {
-      const result = await Page.findRecentUpdatedPages('/', req.user, queryOptions);
-      if (result.pages.length > limit) {
-        result.pages.pop();
+      try {
+        const result = await Page.findRecentUpdatedPages('/', req.user, queryOptions);
+        if (result.pages.length > limit) {
+          result.pages.pop();
+        }
+
+        result.pages.forEach((page) => {
+          if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
+            page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
+          }
+        });
+
+        const ids = result.pages.map((page) => { return page._id });
+        const relations = await PageTagRelation.find({ relatedPage: { $in: ids } }).populate('relatedTag');
+
+        // { pageId: [{ tag }, ...] }
+        const relationsMap = new Map();
+        // increment relationsMap
+        relations.forEach((relation) => {
+          const pageId = relation.relatedPage.toString();
+          if (!relationsMap.has(pageId)) {
+            relationsMap.set(pageId, []);
+          }
+          if (relation.relatedTag != null) {
+            relationsMap.get(pageId).push(relation.relatedTag);
+          }
+        });
+        // add tags to each page
+        result.pages.forEach((page) => {
+          const pageId = page._id.toString();
+          page.tags = relationsMap.has(pageId) ? relationsMap.get(pageId) : [];
+        });
+
+        return res.apiv3(result);
       }
-
-      result.pages.forEach((page) => {
-        if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
-          page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
-        }
-      });
-
-      const ids = result.pages.map((page) => { return page._id });
-      const relations = await PageTagRelation.find({ relatedPage: { $in: ids } }).populate('relatedTag');
-
-      // { pageId: [{ tag }, ...] }
-      const relationsMap = new Map();
-      // increment relationsMap
-      relations.forEach((relation) => {
-        const pageId = relation.relatedPage.toString();
-        if (!relationsMap.has(pageId)) {
-          relationsMap.set(pageId, []);
-        }
-        if (relation.relatedTag != null) {
-          relationsMap.get(pageId).push(relation.relatedTag);
-        }
-      });
-      // add tags to each page
-      result.pages.forEach((page) => {
-        const pageId = page._id.toString();
-        page.tags = relationsMap.has(pageId) ? relationsMap.get(pageId) : [];
-      });
-
-      return res.apiv3(result);
-    }
-    catch (err) {
-      logger.error('Failed to get recent pages', err);
-      return res.apiv3Err(new ErrorV3('Failed to get recent pages', 'unknown'), 500);
-    }
-  });
+      catch (err) {
+        logger.error('Failed to get recent pages', err);
+        return res.apiv3Err(new ErrorV3('Failed to get recent pages', 'unknown'), 500);
+      }
+    });
 
   /**
    * @swagger
@@ -275,7 +276,7 @@ module.exports = (crowi) => {
    */
   router.put(
     '/rename',
-    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequiredStrictly,
     excludeReadOnlyUser,
     validator.renamePage,
@@ -384,7 +385,7 @@ module.exports = (crowi) => {
     */
   router.post(
     '/resume-rename',
-    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequiredStrictly,
     validator.resumeRenamePage,
     apiV3FormValidator,
@@ -440,7 +441,7 @@ module.exports = (crowi) => {
    */
   router.delete(
     '/empty-trash',
-    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequired,
     excludeReadOnlyUser,
     addActivity,
@@ -552,40 +553,41 @@ module.exports = (crowi) => {
     *                              lastUpdateUser:
     *                                $ref: '#/components/schemas/User'
     */
-  router.get('/list', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, validator.list, apiV3FormValidator, async(req, res) => {
+  router.get('/list', accessTokenParser([SCOPE.READ.FEATURES.PAGE], { acceptLegacy: true }),
+    loginRequired, validator.list, apiV3FormValidator, async(req, res) => {
 
-    const path = normalizePath(req.query.path ?? '/');
-    const limit = parseInt(req.query.limit ?? configManager.getConfig('customize:showPageLimitationS'));
-    const page = req.query.page || 1;
-    const offset = (page - 1) * limit;
-    let includeTrashed = false;
+      const path = normalizePath(req.query.path ?? '/');
+      const limit = parseInt(req.query.limit ?? configManager.getConfig('customize:showPageLimitationS'));
+      const page = req.query.page || 1;
+      const offset = (page - 1) * limit;
+      let includeTrashed = false;
 
-    if (isTrashPage(path)) {
-      includeTrashed = true;
-    }
+      if (isTrashPage(path)) {
+        includeTrashed = true;
+      }
 
-    const queryOptions = {
-      offset,
-      limit,
-      includeTrashed,
-    };
+      const queryOptions = {
+        offset,
+        limit,
+        includeTrashed,
+      };
 
-    try {
-      const result = await Page.findListWithDescendants(path, req.user, queryOptions);
+      try {
+        const result = await Page.findListWithDescendants(path, req.user, queryOptions);
 
-      result.pages.forEach((page) => {
-        if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
-          page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
-        }
-      });
+        result.pages.forEach((page) => {
+          if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
+            page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
+          }
+        });
 
-      return res.apiv3(result);
-    }
-    catch (err) {
-      logger.error('Failed to get Descendants Pages', err);
-      return res.apiv3Err(err, 500);
-    }
-  });
+        return res.apiv3(result);
+      }
+      catch (err) {
+        logger.error('Failed to get Descendants Pages', err);
+        return res.apiv3Err(err, 500);
+      }
+    });
 
   /**
    * @swagger
@@ -630,7 +632,7 @@ module.exports = (crowi) => {
    */
   router.post(
     '/duplicate',
-    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequiredStrictly,
     excludeReadOnlyUser,
     addActivity,
@@ -735,7 +737,7 @@ module.exports = (crowi) => {
    */
   router.get(
     '/subordinated-list',
-    accessTokenParser([SCOPE.READ.FEATURES.PAGE]),
+    accessTokenParser([SCOPE.READ.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequired,
     async(req, res) => {
       const { path } = req.query;
@@ -799,7 +801,7 @@ module.exports = (crowi) => {
     */
   router.post(
     '/delete',
-    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequiredStrictly,
     excludeReadOnlyUser,
     validator.deletePages,
@@ -885,10 +887,9 @@ module.exports = (crowi) => {
    *                  type: object
    *                  description: Empty object
    */
-  // eslint-disable-next-line max-len
   router.post(
     '/convert-pages-by-path',
-    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequiredStrictly,
     excludeReadOnlyUser,
     adminRequired,
@@ -946,10 +947,9 @@ module.exports = (crowi) => {
    *                  type: object
    *                  description: Empty object
   */
-  // eslint-disable-next-line max-len
   router.post(
     '/legacy-pages-migration',
-    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequired,
     excludeReadOnlyUser,
     validator.legacyPagesMigration,
@@ -1004,7 +1004,7 @@ module.exports = (crowi) => {
    *                      type: number
    *                      description: Number of pages that can be migrated
    */
-  router.get('/v5-migration-status', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, async(req, res) => {
+  router.get('/v5-migration-status', accessTokenParser([SCOPE.READ.FEATURES.PAGE], { acceptLegacy: true }), loginRequired, async(req, res) => {
     try {
       const isV5Compatible = configManager.getConfig('app:isV5Compatible');
       const migratablePagesCount = req.user != null ? await crowi.pageService.countPagesCanNormalizeParentByUser(req.user) : null; // null check since not using loginRequiredStrictly
