@@ -83,7 +83,8 @@ export const routesFactory = (crowi): any => {
   /**
    * return an Attachment model
    */
-  router.get('/ref', accessTokenParser, loginRequired, async(req: RequestWithUser, res) => {
+  // TODO: https://redmine.weseek.co.jp/issues/166911
+  router.get('/ref', accessTokenParser(), loginRequired, async(req: RequestWithUser, res) => {
     const user = req.user;
     const { pagePath, fileNameOrId } = req.query;
     const filterXSS = new FilterXSS();
@@ -138,7 +139,8 @@ export const routesFactory = (crowi): any => {
   /**
    * return a list of Attachment
    */
-  router.get('/refs', accessTokenParser, loginRequired, async(req: RequestWithUser, res) => {
+  // TODO: https://redmine.weseek.co.jp/issues/166911
+  router.get('/refs', accessTokenParser(), loginRequired, async(req: RequestWithUser, res) => {
     const user = req.user;
     const { prefix, pagePath } = req.query;
     const options: Record<string, string | undefined> = JSON.parse(req.query.options?.toString() ?? '');

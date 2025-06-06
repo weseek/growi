@@ -8,6 +8,7 @@ import { zodResponseFormat } from 'openai/helpers/zod';
 import type { MessageDelta } from 'openai/resources/beta/threads/messages.mjs';
 import { z } from 'zod';
 
+import { SCOPE } from '~/interfaces/scope';
 // Necessary imports
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
@@ -116,7 +117,7 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
   ];
 
   return [
-    accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
+    accessTokenParser([SCOPE.WRITE.FEATURES.AI_ASSISTANT], { acceptLegacy: true }), loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
       const {
         userMessage, markdown, threadId,
