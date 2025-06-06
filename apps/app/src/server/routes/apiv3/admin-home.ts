@@ -70,7 +70,6 @@ module.exports = (crowi) => {
    *    /admin-home/:
    *      get:
    *        tags: [AdminHome]
-   *        operationId: getAdminHome
    *        summary: /admin-home
    *        security:
    *          - cookieAuth: []

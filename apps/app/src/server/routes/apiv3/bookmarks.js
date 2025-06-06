@@ -43,7 +43,7 @@ const router = express.Router();
  *          page:
  *            $ref: '#/components/schemas/Page'
  *          user:
- *            $ref: '#/components/schemas/User/properties/_id'
+ *            $ref: '#/components/schemas/ObjectId'
  *      Bookmarks:
  *        description: User Root Bookmarks
  *        type: object
@@ -111,7 +111,6 @@ module.exports = (crowi) => {
    *        tags: [Bookmarks]
    *        summary: /bookmarks/info
    *        description: Get bookmarked info
-   *        operationId: getBookmarkedInfo
    *        parameters:
    *          - name: pageId
    *            in: query
@@ -174,7 +173,6 @@ module.exports = (crowi) => {
    *        tags: [Bookmarks]
    *        summary: /bookmarks/{userId}
    *        description: Get my bookmarked status
-   *        operationId: getMyBookmarkedStatus
    *        parameters:
    *          - name: userId
    *            in: path
@@ -236,7 +234,6 @@ module.exports = (crowi) => {
    *        tags: [Bookmarks]
    *        summary: /bookmarks
    *        description: Update bookmarked status
-   *        operationId: updateBookmarkedStatus
    *        requestBody:
    *          content:
    *            application/json:

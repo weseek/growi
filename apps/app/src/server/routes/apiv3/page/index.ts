@@ -191,7 +191,6 @@ module.exports = (crowi) => {
    *    /page:
    *      get:
    *        tags: [Page]
-   *        operationId: getPage
    *        summary: Get page
    *        description: get page by pagePath or pageId
    *        parameters:
@@ -199,12 +198,12 @@ module.exports = (crowi) => {
    *            in: query
    *            description: page id
    *            schema:
-   *              $ref: '#/components/schemas/Page/properties/_id'
+   *              $ref: '#/components/schemas/ObjectId'
    *          - name: path
    *            in: query
    *            description: page path
    *            schema:
-   *              $ref: '#/components/schemas/Page/properties/path'
+   *              $ref: '#/components/schemas/PagePath'
    *        responses:
    *          200:
    *            description: Page data
@@ -307,7 +306,6 @@ module.exports = (crowi) => {
    *      post:
    *        tags: [Page]
    *        summary: Create page
-   *        operationId: createPage
    *        description: Create page
    *        requestBody:
    *          content:
@@ -318,9 +316,9 @@ module.exports = (crowi) => {
    *                    type: string
    *                    description: Text of page
    *                  path:
-   *                    $ref: '#/components/schemas/Page/properties/path'
+   *                    $ref: '#/components/schemas/PagePath'
    *                  grant:
-   *                    $ref: '#/components/schemas/Page/properties/grant'
+   *                    $ref: '#/components/schemas/PageGrant'
    *                  grantUserGroupIds:
    *                    type: string
    *                    description: UserGroup ID
@@ -361,7 +359,6 @@ module.exports = (crowi) => {
    *    /page:
    *      put:
    *        tags: [Page]
-   *        operationId: updatePage
    *        description: Update page
    *        requestBody:
    *          content:
@@ -369,13 +366,13 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  body:
-   *                    $ref: '#/components/schemas/Revision/properties/body'
+   *                    $ref: '#/components/schemas/RevisionBody'
    *                  pageId:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                    $ref: '#/components/schemas/ObjectId'
    *                  revisionId:
-   *                    $ref: '#/components/schemas/Revision/properties/_id'
+   *                    $ref: '#/components/schemas/ObjectId'
    *                  grant:
-   *                    $ref: '#/components/schemas/Page/properties/grant'
+   *                    $ref: '#/components/schemas/PageGrant'
    *                  userRelatedGrantUserGroupIds:
    *                    type: array
    *                    items:
@@ -429,7 +426,6 @@ module.exports = (crowi) => {
    *        tags: [Page]
    *        summary: Get page likes
    *        description: Update liked status
-   *        operationId: updateLikedStatus
    *        requestBody:
    *          content:
    *            application/json:
@@ -498,7 +494,6 @@ module.exports = (crowi) => {
    *        tags: [Page]
    *        summary: Get page info
    *        description: Retrieve current page info
-   *        operationId: getPageInfo
    *        requestBody:
    *          content:
    *            application/json:
@@ -542,13 +537,12 @@ module.exports = (crowi) => {
    *        tags: [Page]
    *        summary: Get page grant data
    *        description: Retrieve current page's grant data
-   *        operationId: getPageGrantData
    *        parameters:
    *          - name: pageId
    *            in: query
    *            description: page id
    *            schema:
-   *              $ref: '#/components/schemas/Page/properties/_id'
+   *              $ref: '#/components/schemas/ObjectId'
    *        responses:
    *          200:
    *            description: Successfully retrieved current grant data.
@@ -960,7 +954,6 @@ module.exports = (crowi) => {
    *          - cookieAuth: []
    *        summary: Get already exist paths
    *        description: Get already exist paths
-   *        operationId: getAlreadyExistPaths
    *        parameters:
    *          - name: fromPath
    *            in: query
@@ -1021,14 +1014,13 @@ module.exports = (crowi) => {
    *        tags: [Page]
    *        summary: Update subscription status
    *        description: Update subscription status
-   *        operationId: updateSubscriptionStatus
    *        requestBody:
    *          content:
    *            application/json:
    *              schema:
    *                properties:
    *                  pageId:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                    $ref: '#/components/schemas/ObjectId'
    *        responses:
    *          200:
    *            description: Succeeded to update subscription status.

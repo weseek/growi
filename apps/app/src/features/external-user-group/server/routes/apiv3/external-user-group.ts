@@ -104,7 +104,6 @@ module.exports = (crowi: Crowi): Router => {
    *         tags: [ExternalUserGroups]
    *         security:
    *           - cookieAuth: []
-   *         operationId: listExternalUserGroups
    *         summary: /external-user-groups
    *         parameters:
    *           - name: page
@@ -175,7 +174,6 @@ module.exports = (crowi: Crowi): Router => {
    *         tags: [ExternalUserGroups]
    *         security:
    *           - cookieAuth: []
-   *         operationId: getAncestors
    *         summary: /external-user-groups/ancestors
    *         parameters:
    *           - name: groupId
@@ -222,7 +220,6 @@ module.exports = (crowi: Crowi): Router => {
    *         tags: [ExternalUserGroups]
    *         security:
    *           - cookieAuth: []
-   *         operationId: listChildren
    *         summary: /external-user-groups/children
    *         parameters:
    *           - name: parentIds
@@ -280,7 +277,6 @@ module.exports = (crowi: Crowi): Router => {
    *         tags: [ExternalUserGroups]
    *         security:
    *           - cookieAuth: []
-   *         operationId: getExternalUserGroup
    *         summary: /external-user-groups/{id}
    *         parameters:
    *           - name: id
@@ -323,7 +319,6 @@ module.exports = (crowi: Crowi): Router => {
    *         tags: [ExternalUserGroups]
    *         security:
    *           - cookieAuth: []
-   *         operationId: deleteExternalUserGroup
    *         summary: /external-user-groups/{id}
    *         parameters:
    *           - name: id
@@ -399,7 +394,6 @@ module.exports = (crowi: Crowi): Router => {
    *         tags: [ExternalUserGroups]
    *         security:
    *           - cookieAuth: []
-   *         operationId: updateExternalUserGroup
    *         summary: /external-user-groups/{id}
    *         parameters:
    *           - name: id
@@ -459,7 +453,6 @@ module.exports = (crowi: Crowi): Router => {
    *         tags: [ExternalUserGroups]
    *         security:
    *           - cookieAuth: []
-   *         operationId: getExternalUserGroupRelations
    *         summary: /external-user-groups/{id}/external-user-group-relations
    *         parameters:
    *           - name: id
@@ -508,7 +501,6 @@ module.exports = (crowi: Crowi): Router => {
    *         tags: [ExternalUserGroups]
    *         security:
    *           - cookieAuth: []
-   *         operationId: getLdapSyncSettings
    *         summary: Get LDAP sync settings
    *         responses:
    *           200:
@@ -559,7 +551,6 @@ module.exports = (crowi: Crowi): Router => {
    *         tags: [ExternalUserGroups]
    *         security:
    *           - cookieAuth: []
-   *         operationId: getKeycloakSyncSettings
    *         summary: Get Keycloak sync settings
    *         responses:
    *           200:
@@ -610,7 +601,6 @@ module.exports = (crowi: Crowi): Router => {
    *         tags: [ExternalUserGroups]
    *         security:
    *           - cookieAuth: []
-   *         operationId: updateLdapSyncSettings
    *         summary: Update LDAP sync settings
    *         requestBody:
    *           required: true
@@ -689,7 +679,6 @@ module.exports = (crowi: Crowi): Router => {
    *         tags: [ExternalUserGroups]
    *         security:
    *           - cookieAuth: []
-   *         operationId: updateKeycloakSyncSettings
    *         summary: /external-user-groups/keycloak/sync-settings
    *         requestBody:
    *           required: true
@@ -763,7 +752,6 @@ module.exports = (crowi: Crowi): Router => {
    *         tags: [ExternalUserGroups]
    *         security:
    *           - cookieAuth: []
-   *         operationId: syncExternalUserGroupsLdap
    *         summary: Start LDAP sync process
    *         responses:
    *           202:
@@ -811,7 +799,6 @@ module.exports = (crowi: Crowi): Router => {
    *         tags: [ExternalUserGroups]
    *         security:
    *           - cookieAuth: []
-   *         operationId: syncExternalUserGroupsKeycloak
    *         summary: /external-user-groups/keycloak/sync
    *         responses:
    *           202:
@@ -875,7 +862,6 @@ module.exports = (crowi: Crowi): Router => {
    *         tags: [ExternalUserGroups]
    *         security:
    *           - cookieAuth: []
-   *         operationId: getExternalUserGroupsLdapSyncStatus
    *         summary: Get LDAP sync status
    *         responses:
    *           200:
@@ -899,7 +885,6 @@ module.exports = (crowi: Crowi): Router => {
    *         tags: [ExternalUserGroups]
    *         security:
    *           - cookieAuth: []
-   *         operationId: getExternalUserGroupsLdapSyncStatus
    *         summary: /external-user-groups/ldap/sync-status
    *         responses:
    *           200:

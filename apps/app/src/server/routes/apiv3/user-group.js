@@ -93,7 +93,6 @@ module.exports = (crowi) => {
    *        tags: [UserGroups]
    *        security:
    *          - cookieAuth: []
-   *        operationId: getUserGroup
    *        summary: /user-groups
    *        description: Get usergroups
    *        parameters:
@@ -169,7 +168,6 @@ module.exports = (crowi) => {
    *        tags: [UserGroups]
    *        security:
    *          - cookieAuth: []
-   *        operationId: getAncestorUserGroups
    *        summary: /user-groups/ancestors
    *        description: Get ancestor user groups.
    *        parameters:
@@ -218,7 +216,6 @@ module.exports = (crowi) => {
    *          tags: [UserGroups]
    *          security:
    *            - cookieAuth: []
-   *          operationId: getUserGroupChildren
    *          summary: /user-groups/children
    *          description: Get child user groups
    *          parameters:
@@ -284,7 +281,6 @@ module.exports = (crowi) => {
    *        tags: [UserGroups]
    *        security:
    *          - cookieAuth: []
-   *        operationId: createUserGroup
    *        summary: /user-groups
    *        description: Adds userGroup
    *        requestBody:
@@ -345,7 +341,6 @@ module.exports = (crowi) => {
    *        tags: [UserGroups]
    *        security:
    *          - cookieAuth: []
-   *        operationId: getSelectableParentGroups
    *        summary: /selectable-parent-groups
    *        description: Get selectable parent UserGroups
    *        parameters:
@@ -399,7 +394,6 @@ module.exports = (crowi) => {
    *        tags: [UserGroups]
    *        security:
    *          - cookieAuth: []
-   *        operationId: getSelectableChildGroups
    *        summary: /selectable-child-groups
    *        description: Get selectable child UserGroups
    *        parameters:
@@ -456,7 +450,6 @@ module.exports = (crowi) => {
    *        tags: [UserGroups]
    *        security:
    *          - cookieAuth: []
-   *        operationId: getUserGroupFromGroupId
    *        summary: /user-groups/{id}
    *        description: Get UserGroup from Group ID
    *        parameters:
@@ -503,7 +496,6 @@ module.exports = (crowi) => {
    *        tags: [UserGroups]
    *        security:
    *          - cookieAuth: []
-   *        operationId: deleteUserGroup
    *        summary: /user-groups/{id}
    *        description: Deletes userGroup
    *        parameters:
@@ -577,7 +569,6 @@ module.exports = (crowi) => {
    *        tags: [UserGroups]
    *        security:
    *          - cookieAuth: []
-   *        operationId: updateUserGroups
    *        summary: /user-groups/{id}
    *        description: Update userGroup
    *        parameters:
@@ -650,7 +641,6 @@ module.exports = (crowi) => {
    *        tags: [UserGroups]
    *        security:
    *          - cookieAuth: []
-   *        operationId: getUsersUserGroups
    *        summary: /user-groups/{id}/users
    *        description: Get users related to the userGroup
    *        parameters:
@@ -705,7 +695,6 @@ module.exports = (crowi) => {
    *        tags: [UserGroups]
    *        security:
    *          - cookieAuth: []
-   *        operationId: getUnrelatedUsersUserGroups
    *        summary: /user-groups/{id}/unrelated-users
    *        description: Get users unrelated to the userGroup
    *        parameters:
@@ -790,7 +779,6 @@ module.exports = (crowi) => {
    *        tags: [UserGroups]
    *        security:
    *          - cookieAuth: []
-   *        operationId: addUserUserGroups
    *        summary: /user-groups/{id}/users/{username}
    *        description: Add a user to the userGroup
    *        parameters:
@@ -865,7 +853,6 @@ module.exports = (crowi) => {
    *        tags: [UserGroups]
    *        security:
    *          - cookieAuth: []
-   *        operationId: deleteUsersUserGroups
    *        summary: /user-groups/{id}/users/{username}
    *        description: remove a user from the userGroup
    *        parameters:
@@ -926,7 +913,6 @@ module.exports = (crowi) => {
    *        tags: [UserGroups]
    *        security:
    *          - cookieAuth: []
-   *        operationId: getUserGroupRelationsUserGroups
    *        summary: /user-groups/{id}/user-group-relations
    *        description: Get the user group relations for the userGroup
    *        parameters:
@@ -977,7 +963,6 @@ module.exports = (crowi) => {
    *        tags: [UserGroups]
    *        security:
    *          - cookieAuth: []
-   *        operationId: getPagesUserGroups
    *        summary: /user-groups/{id}/pages
    *        description: Get closed pages for the userGroup
    *        parameters:

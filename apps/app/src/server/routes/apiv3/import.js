@@ -172,7 +172,6 @@ export default function route(crowi) {
    *      security:
    *        - bearer: []
    *        - accessTokenInQuery: []
-   *      operationId: getImportSettingsParams
    *      summary: /import
    *      description: Get import settings params
    *      responses:
@@ -225,7 +224,6 @@ export default function route(crowi) {
    *      security:
    *        - bearer: []
    *        - accessTokenInQuery: []
-   *      operationId: getImportStatus
    *      summary: /import/status
    *      description: Get properties of stored zip files for import
    *      responses:
@@ -257,7 +255,6 @@ export default function route(crowi) {
    *      security:
    *        - bearer: []
    *        - accessTokenInQuery: []
-   *      operationId: executeImport
    *      summary: /import
    *      description: import a collection from a zipped json
    *      requestBody:
@@ -390,7 +387,6 @@ export default function route(crowi) {
    *      security:
    *        - bearer: []
    *        - accessTokenInQuery: []
-   *      operationId: uploadImport
    *      summary: /import/upload
    *      description: upload a zip file
    *      requestBody:
@@ -400,6 +396,7 @@ export default function route(crowi) {
    *              type: object
    *              properties:
    *                file:
+   *                  type: string
    *                  format: binary
    *      responses:
    *        200:
@@ -449,7 +446,6 @@ export default function route(crowi) {
    *      security:
    *        - bearer: []
    *        - accessTokenInQuery: []
-   *      operationId: deleteImportAll
    *      summary: /import/all
    *      description: Delete all zip files
    *      responses:

@@ -261,7 +261,6 @@ module.exports = (crowi) => {
    *        tags: [CustomizeSetting]
    *        security:
    *          - cookieAuth: []
-   *        operationId: getCustomizeSetting
    *        summary: /customize-setting
    *        description: Get customize parameters
    *        responses:
@@ -308,7 +307,6 @@ module.exports = (crowi) => {
    *        tags: [CustomizeSetting]
    *        security:
    *          - cookieAuth: []
-   *        operationId: getLayoutCustomizeSetting
    *        summary: /customize-setting/layout
    *        description: Get layout
    *        responses:
@@ -337,7 +335,6 @@ module.exports = (crowi) => {
    *    /customize-setting/layout:
    *      put:
    *        tags: [CustomizeSetting]
-   *        operationId: updateLayoutCustomizeSetting
    *        summary: /customize-setting/layout
    *        description: Update layout
    *        requestBody:
@@ -392,7 +389,6 @@ module.exports = (crowi) => {
    *        tags: [CustomizeSetting]
    *        security:
    *          - cookieAuth: []
-   *        operationId: getThemeCustomizeSetting
    *        summary: /customize-setting/theme
    *        description: Get theme
    *        responses:
@@ -441,7 +437,6 @@ module.exports = (crowi) => {
    *        tags: [CustomizeSetting]
    *        security:
    *          - cookieAuth: []
-   *        operationId: updateThemeCustomizeSetting
    *        summary: /customize-setting/theme
    *        description: Update theme
    *        requestBody:
@@ -492,7 +487,6 @@ module.exports = (crowi) => {
    *        tags: [CustomizeSetting]
    *        security:
    *          - cookieAuth: []
-   *        operationId: getCustomeSettingSidebar
    *        summary: /customize-setting/sidebar
    *        description: Get sidebar
    *        responses:
@@ -525,7 +519,6 @@ module.exports = (crowi) => {
    *        tags: [CustomizeSetting]
    *        security:
    *          - cookieAuth: []
-   *        operationId: updateCustomizeSettingSidebar
    *        summary: /customize-setting/sidebar
    *        description: Update sidebar
    *        requestBody:
@@ -579,7 +572,6 @@ module.exports = (crowi) => {
    *        tags: [CustomizeSetting]
    *        security:
    *         - cookieAuth: []
-   *        operationId: updateFunctionCustomizeSetting
    *        summary: /customize-setting/function
    *        description: Update function
    *        requestBody:
@@ -649,7 +641,6 @@ module.exports = (crowi) => {
    *        tags: [CustomizeSetting]
    *        security:
    *         - cookieAuth: []
-   *        operationId: updatePresentationCustomizeSetting
    *        summary: /customize-setting/presentation
    *        description: Update presentation
    *        requestBody:
@@ -700,7 +691,6 @@ module.exports = (crowi) => {
    *        tags: [CustomizeSetting]
    *        security:
    *          - cookieAuth: []
-   *        operationId: updateHighlightCustomizeSetting
    *        summary: /customize-setting/highlight
    *        description: Update highlight
    *        requestBody:
@@ -753,7 +743,6 @@ module.exports = (crowi) => {
    *        tags: [CustomizeSetting]
    *        security:
    *          - cookieAuth: []
-   *        operationId: updateCustomizeTitleCustomizeSetting
    *        summary: /customize-setting/customizeTitle
    *        description: Update title
    *        requestBody:
@@ -807,7 +796,6 @@ module.exports = (crowi) => {
    *        tags: [CustomizeSetting]
    *        security:
    *          - cookieAuth: []
-   *        operationId: updateCustomizeNoscriptCustomizeSetting
    *        summary: /customize-setting/customize-noscript
    *        description: Update noscript
    *        requestBody:
@@ -857,7 +845,6 @@ module.exports = (crowi) => {
    *        tags: [CustomizeSetting]
    *        security:
    *          - cookieAuth: []
-   *        operationId: updateCustomizeCssCustomizeSetting
    *        summary: /customize-setting/customize-css
    *        description: Update customize css
    *        requestBody:
@@ -910,7 +897,6 @@ module.exports = (crowi) => {
    *        tags: [CustomizeSetting]
    *        security:
    *          - cookieAuth: []
-   *        operationId: updateCustomizeScriptCustomizeSetting
    *        summary: /customize-setting/customize-script
    *        description: Update customize script
    *        requestBody:
@@ -960,7 +946,6 @@ module.exports = (crowi) => {
    *        tags: [CustomizeSetting]
    *        security:
    *          - cookieAuth: []
-   *        operationId: updateCustomizeLogoCustomizeSetting
    *        summary: /customize-setting/customize-logo
    *        description: Update customize logo
    *        requestBody:
@@ -1012,7 +997,6 @@ module.exports = (crowi) => {
    *        tags: [CustomizeSetting]
    *        security:
    *          - cookieAuth: []
-   *        operationId: uploadBrandLogoCustomizeSetting
    *        summary: /customize-setting/upload-brand-logo
    *        description: Upload brand logo
    *        requestBody:
@@ -1023,6 +1007,7 @@ module.exports = (crowi) => {
    *               type: object
    *               properties:
    *                 file:
+   *                   type: string
    *                   format: binary
    *        responses:
    *          200:
@@ -1089,7 +1074,6 @@ module.exports = (crowi) => {
    *        tags: [CustomizeSetting]
    *        security:
    *          - cookieAuth: []
-   *        operationId: deleteBrandLogoCustomizeSetting
    *        summary: /customize-setting/delete-brand-logo
    *        description: Delete brand logo
    *        responses:

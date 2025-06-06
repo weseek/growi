@@ -157,7 +157,6 @@ module.exports = (crowi) => {
    *  /export/status:
    *    get:
    *      tags: [Export]
-   *      operationId: getExportStatus
    *      summary: /export/status
    *      description: get properties of stored zip files for export
    *      responses:
@@ -189,7 +188,6 @@ module.exports = (crowi) => {
    *  /export:
    *    post:
    *      tags: [Export]
-   *      operationId: createExport
    *      summary: /export
    *      description: generate zipped jsons for collections
    *      requestBody:
@@ -242,7 +240,6 @@ module.exports = (crowi) => {
    *  /export/{fileName}:
    *    delete:
    *      tags: [Export]
-   *      operationId: deleteExport
    *      summary: /export/{fileName}
    *      description: delete the file
    *      parameters:

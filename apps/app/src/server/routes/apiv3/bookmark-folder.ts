@@ -129,7 +129,6 @@ module.exports = (crowi) => {
    *    /bookmark-folder:
    *      post:
    *        tags: [BookmarkFolders]
-   *        operationId: createBookmarkFolder
    *        security:
    *          - bearer: []
    *          - accessTokenInQuery: []
@@ -187,7 +186,6 @@ module.exports = (crowi) => {
    *    /bookmark-folder/list/{userId}:
    *      get:
    *        tags: [BookmarkFolders]
-   *        operationId: listBookmarkFolders
    *        security:
    *          - bearer: []
    *          - accessTokenInQuery: []
@@ -277,7 +275,6 @@ module.exports = (crowi) => {
    *    /bookmark-folder/{id}:
    *      delete:
    *        tags: [BookmarkFolders]
-   *        operationId: deleteBookmarkFolder
    *        security:
    *          - bearer: []
    *          - accessTokenInQuery: []
@@ -321,7 +318,6 @@ module.exports = (crowi) => {
    *    /bookmark-folder:
    *      put:
    *        tags: [BookmarkFolders]
-   *        operationId: updateBookmarkFolder
    *        security:
    *          - bearer: []
    *          - accessTokenInQuery: []
@@ -380,7 +376,6 @@ module.exports = (crowi) => {
    *    /bookmark-folder/add-bookmark-to-folder:
    *      post:
    *        tags: [BookmarkFolders]
-   *        operationId: addBookmarkToFolder
    *        security:
    *          - bearer: []
    *          - accessTokenInQuery: []
@@ -433,7 +428,6 @@ module.exports = (crowi) => {
    *    /bookmark-folder/update-bookmark:
    *      put:
    *        tags: [BookmarkFolders]
-   *        operationId: updateBookmarkInFolder
    *        security:
    *          - bearer: []
    *          - accessTokenInQuery: []
