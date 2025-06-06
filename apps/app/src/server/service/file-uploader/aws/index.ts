@@ -86,7 +86,7 @@ const getS3Bucket = (): string | undefined => {
 const S3Factory = (): S3Client => {
   const accessKeyId = configManager.getConfig('aws:s3AccessKeyId');
   const secretAccessKey = configManager.getConfig('aws:s3SecretAccessKey');
-  const s3CustomEndpoint = configManager.getConfig('aws:s3CustomEndpoint') || undefined
+  const s3CustomEndpoint = configManager.getConfig('aws:s3CustomEndpoint') || undefined;
 
   return new S3Client({
     credentials: accessKeyId != null && secretAccessKey != null
