@@ -1,4 +1,6 @@
-import { ConfigSource } from '@growi/core/dist/interfaces';
+import {
+  ConfigSource, toNonBlankString, toNonBlankStringOrUndefined,
+} from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { body } from 'express-validator';
 
@@ -900,10 +902,16 @@ module.exports = (crowi) => {
     }
 
     if (fileUploadType === 'aws') {
-      requestParams['aws:s3Region'] = req.body.s3Region;
-      requestParams['aws:s3CustomEndpoint'] = req.body.s3CustomEndpoint;
-      requestParams['aws:s3Bucket'] = req.body.s3Bucket;
-      requestParams['aws:s3AccessKeyId'] = req.body.s3AccessKeyId;
+      try {
+        requestParams['aws:s3Region'] = toNonBlankString(req.body.s3Region);
+        requestParams['aws:s3Bucket'] = toNonBlankString(req.body.s3Bucket);
+      }
+      catch (err) {
+        logger.warn('AWS S3 region or bucket name is not updated because of invalid value', err);
+      }
+
+      requestParams['aws:s3CustomEndpoint'] = toNonBlankStringOrUndefined(req.body.s3CustomEndpoint);
+      requestParams['aws:s3AccessKeyId'] = toNonBlankStringOrUndefined(req.body.s3AccessKeyId);
       requestParams['aws:referenceFileWithRelayMode'] = req.body.s3ReferenceFileWithRelayMode;
     }
 
