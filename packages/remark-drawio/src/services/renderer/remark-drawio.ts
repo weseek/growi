@@ -1,16 +1,14 @@
 import type { Properties } from 'hast';
 import type { Schema as SanitizeOption } from 'hast-util-sanitize';
-import type {
-  Code, Node, Paragraph,
-} from 'mdast';
+import type { Code, Node, Paragraph } from 'mdast';
 import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
 const SUPPORTED_ATTRIBUTES = ['diagramIndex', 'bol', 'eol'];
 
 interface Data {
-  hName?: string,
-  hProperties?: Properties,
+  hName?: string;
+  hProperties?: Properties;
 }
 
 type Lang = 'drawio';
@@ -20,9 +18,10 @@ function isDrawioBlock(lang?: string | null): lang is Lang {
 }
 
 function rewriteNode(node: Node, index: number) {
-
   node.type = 'paragraph';
-  (node as Paragraph).children = [{ type: 'text', value: (node as Code).value }];
+  (node as Paragraph).children = [
+    { type: 'text', value: (node as Code).value },
+  ];
 
   const data: Data = node.data ?? (node.data = {});
   data.hName = 'drawio';
@@ -34,14 +33,12 @@ function rewriteNode(node: Node, index: number) {
   };
 }
 
-export const remarkPlugin: Plugin = function() {
-  return (tree) => {
-    visit(tree, 'code', (node: Code, index) => {
-      if (isDrawioBlock(node.lang)) {
-        rewriteNode(node, index ?? 0);
-      }
-    });
-  };
+export const remarkPlugin: Plugin = () => (tree) => {
+  visit(tree, 'code', (node: Code, index) => {
+    if (isDrawioBlock(node.lang)) {
+      rewriteNode(node, index ?? 0);
+    }
+  });
 };
 
 export const sanitizeOption: SanitizeOption = {
