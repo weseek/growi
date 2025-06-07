@@ -23,7 +23,10 @@ function rewriteNode(node: Node, index: number) {
     { type: 'text', value: (node as Code).value },
   ];
 
-  const data: Data = node.data ?? (node.data = {});
+  if (node.data == null) {
+    node.data = {};
+  }
+  const data: Data = node.data;
   data.hName = 'drawio';
   data.hProperties = {
     diagramIndex: index,
