@@ -4,6 +4,8 @@
 
 // If you want to add a new scope, you only need to add a new key to the SCOPE_SEED object.
 
+// Change translation file contents (accesstoken_scopes_desc) when scope structure is modified
+
 const SCOPE_SEED_ADMIN = {
   admin: {
     top: {},
