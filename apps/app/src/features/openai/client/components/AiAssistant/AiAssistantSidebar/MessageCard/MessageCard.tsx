@@ -46,12 +46,12 @@ const AssistantMessageCard = ({
               <>
                 <ReactMarkdown components={{
                   a: NextLinkWrapper,
-                  h1: ({ children }) => <Header level={1}>{children}</Header>,
-                  h2: ({ children }) => <Header level={2}>{children}</Header>,
-                  h3: ({ children }) => <Header level={3}>{children}</Header>,
-                  h4: ({ children }) => <Header level={4}>{children}</Header>,
-                  h5: ({ children }) => <Header level={5}>{children}</Header>,
-                  h6: ({ children }) => <Header level={6}>{children}</Header>,
+                  ...Object.fromEntries(
+                    Array.from({ length: 6 }, (_, i) => [
+                      `h${i + 1}`,
+                      ({ children }) => <Header level={i + 1}>{children}</Header>,
+                    ])
+                  ),
                 }}
                 >{children}
                 </ReactMarkdown>
