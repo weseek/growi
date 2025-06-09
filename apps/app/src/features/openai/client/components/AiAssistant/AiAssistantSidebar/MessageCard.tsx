@@ -32,6 +32,30 @@ const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): J
   );
 };
 
+const CustomHeader = ({ children, level }: { children: React.ReactNode, level: 1 | 2 | 3 | 4 | 5 | 6 }): JSX.Element => {
+  const fontSizes: Record<number, string> = {
+    1: '1.5rem',
+    2: '1.25rem',
+    3: '1rem',
+    4: '0.875rem',
+    5: '0.75rem',
+    6: '0.625rem',
+  };
+
+  const Tag = `h${level}` as keyof JSX.IntrinsicElements;
+
+  return (
+    <Tag
+      style={{
+        fontSize: fontSizes[level],
+        lineHeight: 1.4,
+      }}
+    >
+      {children}
+    </Tag>
+  );
+};
+
 const AssistantMessageCard = ({
   children,
   additionalItem,
@@ -51,7 +75,17 @@ const AssistantMessageCard = ({
           { children.length > 0
             ? (
               <>
-                <ReactMarkdown components={{ a: NextLinkWrapper }}>{children}</ReactMarkdown>
+                <ReactMarkdown components={{
+                  a: NextLinkWrapper,
+                  h1: ({ children }) => <CustomHeader level={1}>{children}</CustomHeader>,
+                  h2: ({ children }) => <CustomHeader level={2}>{children}</CustomHeader>,
+                  h3: ({ children }) => <CustomHeader level={3}>{children}</CustomHeader>,
+                  h4: ({ children }) => <CustomHeader level={4}>{children}</CustomHeader>,
+                  h5: ({ children }) => <CustomHeader level={5}>{children}</CustomHeader>,
+                  h6: ({ children }) => <CustomHeader level={6}>{children}</CustomHeader>,
+                }}
+                >{children}
+                </ReactMarkdown>
                 { additionalItem }
               </>
             )
