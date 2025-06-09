@@ -1,10 +1,10 @@
 import { type JSX } from 'react';
 
-import type { LinkProps } from 'next/link';
 import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
 
-import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
+import { Header } from './MessageCardComponents/Header';
+import { NextLinkWrapper } from './MessageCardComponents/NextLinkWrapper';
 
 import styles from './MessageCard.module.scss';
 
@@ -24,37 +24,6 @@ const UserMessageCard = ({ children }: { children: string }): JSX.Element => (
 
 const assistantMessageCardModuleClass = styles['assistant-message-card'] ?? '';
 
-const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): JSX.Element => {
-  return (
-    <NextLink href={props.href} className="link-primary">
-      {props.children}
-    </NextLink>
-  );
-};
-
-const fontSizes: Record<number, string> = {
-  1: '1.5rem',
-  2: '1.25rem',
-  3: '1rem',
-  4: '0.875rem',
-  5: '0.75rem',
-  6: '0.625rem',
-};
-
-const CustomHeader = ({ children, level }: { children: React.ReactNode, level: 1 | 2 | 3 | 4 | 5 | 6 }): JSX.Element => {
-  const Tag = `h${level}` as keyof JSX.IntrinsicElements;
-
-  return (
-    <Tag
-      style={{
-        fontSize: fontSizes[level],
-        lineHeight: 1.4,
-      }}
-    >
-      {children}
-    </Tag>
-  );
-};
 
 const AssistantMessageCard = ({
   children,
@@ -77,12 +46,12 @@ const AssistantMessageCard = ({
               <>
                 <ReactMarkdown components={{
                   a: NextLinkWrapper,
-                  h1: ({ children }) => <CustomHeader level={1}>{children}</CustomHeader>,
-                  h2: ({ children }) => <CustomHeader level={2}>{children}</CustomHeader>,
-                  h3: ({ children }) => <CustomHeader level={3}>{children}</CustomHeader>,
-                  h4: ({ children }) => <CustomHeader level={4}>{children}</CustomHeader>,
-                  h5: ({ children }) => <CustomHeader level={5}>{children}</CustomHeader>,
-                  h6: ({ children }) => <CustomHeader level={6}>{children}</CustomHeader>,
+                  h1: ({ children }) => <Header level={1}>{children}</Header>,
+                  h2: ({ children }) => <Header level={2}>{children}</Header>,
+                  h3: ({ children }) => <Header level={3}>{children}</Header>,
+                  h4: ({ children }) => <Header level={4}>{children}</Header>,
+                  h5: ({ children }) => <Header level={5}>{children}</Header>,
+                  h6: ({ children }) => <Header level={6}>{children}</Header>,
                 }}
                 >{children}
                 </ReactMarkdown>
