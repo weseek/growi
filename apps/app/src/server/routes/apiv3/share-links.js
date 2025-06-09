@@ -156,7 +156,7 @@ module.exports = (crowi) => {
       }
 
       try {
-        const shareLinksResult = await ShareLink.find({ relatedPage }).populate({ path: 'relatedPage', select: 'path' });
+        const shareLinksResult = await ShareLink.find({ relatedPage: { $eq: relatedPage } }).populate({ path: 'relatedPage', select: 'path' });
         return res.apiv3({ shareLinksResult });
       }
       catch (err) {
@@ -292,7 +292,8 @@ module.exports = (crowi) => {
       }
 
       try {
-        const deletedShareLink = await ShareLink.remove({ relatedPage });
+        console.log('ああああ', relatedPage);
+        const deletedShareLink = await ShareLink.remove({ relatedPage: { $eq: relatedPage } });
 
         activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_SHARE_LINK_DELETE_BY_PAGE });
 
