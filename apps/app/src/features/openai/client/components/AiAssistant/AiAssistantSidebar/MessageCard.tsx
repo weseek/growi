@@ -32,16 +32,16 @@ const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): J
   );
 };
 
-const CustomHeader = ({ children, level }: { children: React.ReactNode, level: 1 | 2 | 3 | 4 | 5 | 6 }): JSX.Element => {
-  const fontSizes: Record<number, string> = {
-    1: '1.5rem',
-    2: '1.25rem',
-    3: '1rem',
-    4: '0.875rem',
-    5: '0.75rem',
-    6: '0.625rem',
-  };
+const fontSizes: Record<number, string> = {
+  1: '1.5rem',
+  2: '1.25rem',
+  3: '1rem',
+  4: '0.875rem',
+  5: '0.75rem',
+  6: '0.625rem',
+};
 
+const CustomHeader = ({ children, level }: { children: React.ReactNode, level: 1 | 2 | 3 | 4 | 5 | 6 }): JSX.Element => {
   const Tag = `h${level}` as keyof JSX.IntrinsicElements;
 
   return (
