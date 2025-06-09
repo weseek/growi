@@ -12,7 +12,7 @@ const SCOPE_SEED_ADMIN = {
     markdown: {},
     customize: {},
     import_data: {},
-    exporet_data: {},
+    export_data: {},
     data_transfer: {},
     external_notification: {},
     slack_integration: {},
