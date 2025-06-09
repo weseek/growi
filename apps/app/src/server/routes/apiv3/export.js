@@ -172,7 +172,7 @@ module.exports = (crowi) => {
    *                  status:
    *                    $ref: '#/components/schemas/ExportStatus'
    */
-  router.get('/status', accessTokenParser([SCOPE.READ.ADMIN.EXPORET_DATA], { acceptLegacy: true }), loginRequired, adminRequired, async(req, res) => {
+  router.get('/status', accessTokenParser([SCOPE.READ.ADMIN.EXPORT_DATA], { acceptLegacy: true }), loginRequired, adminRequired, async(req, res) => {
     const status = await exportService.getStatus();
 
     // TODO: use res.apiv3
@@ -212,7 +212,7 @@ module.exports = (crowi) => {
    *                    type: boolean
    *                    description: whether the request is succeeded
    */
-  router.post('/', accessTokenParser([SCOPE.WRITE.ADMIN.EXPORET_DATA], { acceptLegacy: true }), loginRequired, adminRequired, addActivity, async(req, res) => {
+  router.post('/', accessTokenParser([SCOPE.WRITE.ADMIN.EXPORT_DATA], { acceptLegacy: true }), loginRequired, adminRequired, addActivity, async(req, res) => {
     // TODO: add express validator
     try {
       const { collections } = req.body;
@@ -261,7 +261,7 @@ module.exports = (crowi) => {
    *                    type: boolean
    *                    description: whether the request is succeeded
    */
-  router.delete('/:fileName', accessTokenParser([SCOPE.WRITE.ADMIN.EXPORET_DATA], { acceptLegacy: true }), loginRequired, adminRequired,
+  router.delete('/:fileName', accessTokenParser([SCOPE.WRITE.ADMIN.EXPORT_DATA], { acceptLegacy: true }), loginRequired, adminRequired,
     validator.deleteFile, apiV3FormValidator, addActivity,
     async(req, res) => {
     // TODO: add express validator
