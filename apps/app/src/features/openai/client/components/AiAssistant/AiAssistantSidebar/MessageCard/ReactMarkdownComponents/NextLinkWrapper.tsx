@@ -1,6 +1,6 @@
+import React from 'react';
 
 import type { LinkProps } from 'next/link';
-import React from 'react';
 
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 
