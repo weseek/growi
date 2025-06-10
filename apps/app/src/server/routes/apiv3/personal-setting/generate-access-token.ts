@@ -1,12 +1,11 @@
 import type {
-  IUserHasId,
+  IUserHasId, Scope,
 } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler } from 'express';
 import { body } from 'express-validator';
 
 import { SupportedAction } from '~/interfaces/activity';
-import type { Scope } from '~/interfaces/scope';
 import type Crowi from '~/server/crowi';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { AccessToken } from '~/server/models/access-token';

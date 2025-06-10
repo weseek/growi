@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useMemo } from 'react';
 
+import type { Scope } from '@growi/core/dist/interfaces';
+import { SCOPE } from '@growi/core/dist/interfaces';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
 import { extractScopes, getDisabledScopes, parseScopes } from '~/client/util/scope-util';
 import { useIsAdmin } from '~/stores-universal/context';
-
-import type { Scope } from '../../../interfaces/scope';
-import { SCOPE } from '../../../interfaces/scope';
 
 import { AccessTokenScopeList } from './AccessTokenScopeList';
 

@@ -1,6 +1,6 @@
 import {
   ACTION, ALL_SIGN, SCOPE, type Scope,
-} from '../../interfaces/scope';
+} from '@growi/core/dist/interfaces';
 
 export const isValidScope = (scope: Scope): boolean => {
   const scopeParts = scope.split(':').map(x => (x === ALL_SIGN ? 'ALL' : x.toUpperCase()));

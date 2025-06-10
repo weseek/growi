@@ -4,7 +4,7 @@ import type {
 } from 'express';
 
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import { SCOPE } from '~/interfaces/scope';
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import loggerFactory from '~/utils/logger';
 

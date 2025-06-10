@@ -1,6 +1,5 @@
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { describe, it, expect } from 'vitest';
-
-import { ALL_SIGN } from '../../interfaces/scope';
 
 import { parseScopes, getDisabledScopes, extractScopes } from './scope-util';
 
@@ -60,34 +59,39 @@ describe('scope-util', () => {
   });
 
   it('should disable specific scopes when a wildcard is selected', () => {
-    const selectedScopes = [`read:${ALL_SIGN}`];
-    const availableScopes = ['read:user', 'read:admin', 'write:user', `read:${ALL_SIGN}`];
+    const selectedScopes = [SCOPE.READ.ALL];
+    const availableScopes = [
+      SCOPE.READ.FEATURES.PAGE,
+      SCOPE.READ.FEATURES.ATTACHMENT,
+      SCOPE.WRITE.FEATURES.PAGE,
+      SCOPE.READ.ALL,
+    ];
 
     const result = getDisabledScopes(selectedScopes, availableScopes);
 
     // Should disable all read: scopes except the wildcard itself
-    expect(result.has('read:user')).toBe(true);
-    expect(result.has('read:admin')).toBe(true);
-    expect(result.has(`read:${ALL_SIGN}`)).toBe(false);
-    expect(result.has('write:user')).toBe(false);
+    expect(result.has(SCOPE.READ.FEATURES.PAGE)).toBe(true);
+    expect(result.has(SCOPE.READ.FEATURES.ATTACHMENT)).toBe(true);
+    expect(result.has(SCOPE.WRITE.FEATURES.PAGE)).toBe(false);
+    expect(result.has(SCOPE.READ.ALL)).toBe(false);
   });
 
   it('should handle multiple wildcard selections', () => {
-    const selectedScopes = [`read:${ALL_SIGN}`, `write:${ALL_SIGN}`];
+    const selectedScopes = [SCOPE.READ.ALL, SCOPE.WRITE.ALL];
     const availableScopes = [
-      'read:user', 'read:admin', `read:${ALL_SIGN}`,
-      'write:user', 'write:admin', `write:${ALL_SIGN}`,
+      SCOPE.READ.FEATURES.PAGE, SCOPE.READ.FEATURES.ATTACHMENT, SCOPE.READ.ALL,
+      SCOPE.WRITE.FEATURES.PAGE, SCOPE.WRITE.FEATURES.ATTACHMENT, SCOPE.WRITE.ALL,
     ];
 
     const result = getDisabledScopes(selectedScopes, availableScopes);
 
     // Should disable all specific scopes under both wildcards
-    expect(result.has('read:user')).toBe(true);
-    expect(result.has('read:admin')).toBe(true);
-    expect(result.has('write:user')).toBe(true);
-    expect(result.has('write:admin')).toBe(true);
-    expect(result.has(`read:${ALL_SIGN}`)).toBe(false);
-    expect(result.has(`write:${ALL_SIGN}`)).toBe(false);
+    expect(result.has(SCOPE.READ.FEATURES.PAGE)).toBe(true);
+    expect(result.has(SCOPE.READ.FEATURES.ATTACHMENT)).toBe(true);
+    expect(result.has(SCOPE.WRITE.FEATURES.PAGE)).toBe(true);
+    expect(result.has(SCOPE.WRITE.FEATURES.ATTACHMENT)).toBe(true);
+    expect(result.has(SCOPE.READ.ALL)).toBe(false);
+    expect(result.has(SCOPE.WRITE.ALL)).toBe(false);
   });
 
   it('should extract all scope strings from a nested object', () => {

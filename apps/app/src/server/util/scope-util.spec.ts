@@ -1,6 +1,6 @@
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { describe, it, expect } from 'vitest';
 
-import { SCOPE } from '../../interfaces/scope';
 
 import {
   isValidScope, hasAllScope, extractAllScope, extractScopes,

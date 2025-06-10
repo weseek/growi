@@ -8,7 +8,7 @@ import { zodResponseFormat } from 'openai/helpers/zod';
 import type { MessageDelta } from 'openai/resources/beta/threads/messages.mjs';
 import { z } from 'zod';
 
-import { SCOPE } from '~/interfaces/scope';
+import { SCOPE } from '@growi/core/dist/interfaces';
 // Necessary imports
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';

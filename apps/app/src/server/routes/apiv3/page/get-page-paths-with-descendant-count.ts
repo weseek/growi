@@ -4,7 +4,7 @@ import type { ValidationChain } from 'express-validator';
 import { query } from 'express-validator';
 import mongoose from 'mongoose';
 
-import { SCOPE } from '~/interfaces/scope';
+import { SCOPE } from '@growi/core/dist/interfaces';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import type { PageModel } from '~/server/models/page';
