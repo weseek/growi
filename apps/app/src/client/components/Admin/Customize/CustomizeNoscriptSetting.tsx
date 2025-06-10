@@ -50,7 +50,7 @@ const CustomizeNoscriptSetting = (props: Props): JSX.Element => {
               className="form-control mb-2"
               name="customizeNoscript"
               rows={8}
-              defaultValue={adminCustomizeContainer.state.currentCustomizeNoscript || ''}
+              value={adminCustomizeContainer.state.currentCustomizeNoscript || ''}
               onChange={(e) => { adminCustomizeContainer.changeCustomizeNoscript(e.target.value) }}
             />
           </div>
