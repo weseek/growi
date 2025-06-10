@@ -1,4 +1,4 @@
-import type { Scope } from './scope';
+import type { Scope } from '@growi/core/dist/interfaces';
 
 export type IAccessTokenInfo = {
   expiredAt: Date,
