@@ -35,13 +35,13 @@ export const SidebarContents = memo(() => {
       case SidebarContentsType.BOOKMARKS:
         return Bookmarks;
       case SidebarContentsType.NOTIFICATION:
-        if (isGuestUser == null) return <></>; // wait for isGuestUser to be determined
+        if (isGuestUser == null) return () => <></>; // wait for isGuestUser to be determined
         if (!isGuestUser) {
           return InAppNotification;
         }
         return PageTree;
       case SidebarContentsType.AI_ASSISTANT:
-        if (isAiEnabled == null) return <></>; // wait for isAiEnabled to be determined
+        if (isAiEnabled == null) return () => <></>; // wait for isAiEnabled to be determined
         if (isAiEnabled) {
           return AiAssistant;
         }
