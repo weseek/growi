@@ -108,7 +108,7 @@ export const GcsSettingMolecule = (props: GcsSettingMoleculeProps): JSX.Element 
                 type="text"
                 name="gcsApiKeyJsonPath"
                 readOnly={gcsUseOnlyEnvVars}
-                defaultValue={gcsApiKeyJsonPath}
+                value={gcsApiKeyJsonPath}
                 onChange={e => props?.onChangeGcsApiKeyJsonPath(e.target.value)}
               />
             </td>
@@ -128,7 +128,7 @@ export const GcsSettingMolecule = (props: GcsSettingMoleculeProps): JSX.Element 
                 type="text"
                 name="gcsBucket"
                 readOnly={gcsUseOnlyEnvVars}
-                defaultValue={gcsBucket}
+                value={gcsBucket}
                 onChange={e => props?.onChangeGcsBucket(e.target.value)}
               />
             </td>
@@ -148,7 +148,7 @@ export const GcsSettingMolecule = (props: GcsSettingMoleculeProps): JSX.Element 
                 type="text"
                 name="gcsUploadNamespace"
                 readOnly={gcsUseOnlyEnvVars}
-                defaultValue={gcsUploadNamespace}
+                value={gcsUploadNamespace}
                 onChange={e => props?.onChangeGcsUploadNamespace(e.target.value)}
               />
             </td>
