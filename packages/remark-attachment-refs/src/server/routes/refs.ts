@@ -6,8 +6,6 @@ import { Router } from 'express';
 import type { Model, HydratedDocument } from 'mongoose';
 import mongoose, { model, Types } from 'mongoose';
 import { FilterXSS } from 'xss';
-import {} from '';
-import { SCOPE } from '@growi/core/dist/interfaces';
 
 import loggerFactory from '../../utils/logger';
 
