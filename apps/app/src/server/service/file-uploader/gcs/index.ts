@@ -2,6 +2,7 @@ import type { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
 
 import { Storage } from '@google-cloud/storage';
+import { toNonBlankStringOrUndefined } from '@growi/core/dist/interfaces';
 import axios from 'axios';
 import urljoin from 'url-join';
 
@@ -24,7 +25,7 @@ const logger = loggerFactory('growi:service:fileUploaderGcs');
 
 
 function getGcsBucket(): string {
-  const gcsBucket = configManager.getConfig('gcs:bucket');
+  const gcsBucket = toNonBlankStringOrUndefined(configManager.getConfig('gcs:bucket')); // Blank strings may remain in the DB, so convert with toNonBlankStringOrUndefined for safety
   if (gcsBucket == null) {
     throw new Error('GCS bucket is not configured.');
   }
@@ -34,7 +35,7 @@ function getGcsBucket(): string {
 let storage: Storage;
 function getGcsInstance() {
   if (storage == null) {
-    const keyFilename = configManager.getConfig('gcs:apiKeyJsonPath');
+    const keyFilename = toNonBlankStringOrUndefined(configManager.getConfig('gcs:apiKeyJsonPath')); // Blank strings may remain in the DB, so convert with toNonBlankStringOrUndefined for safety
     // see https://googleapis.dev/nodejs/storage/latest/Storage.html
     storage = keyFilename != null
       ? new Storage({ keyFilename }) // Create a client with explicit credentials
