@@ -57,7 +57,10 @@ export const remarkPlugin: Plugin = () => (tree) => {
       if (typeof node.name !== 'string') {
         return;
       }
-      const data = node.data ?? (node.data = {});
+      if (node.data == null) {
+        node.data = {};
+      }
+      const data = node.data;
       const attributes = (node.attributes as DirectiveAttributes) || {};
       const attrEntries = Object.entries(attributes);
 
@@ -166,9 +169,9 @@ export const rehypePlugin: Plugin<[RefRehypePluginParams]> = (options = {}) => {
       tree as HastNode,
     );
 
-    elements.forEach((refElem) => {
+    for (const refElem of elements) {
       if (refElem.properties == null) {
-        return;
+        continue;
       }
 
       const prefix = refElem.properties.prefix;
@@ -183,17 +186,17 @@ export const rehypePlugin: Plugin<[RefRehypePluginParams]> = (options = {}) => {
       // set basePagePath when pagePath is undefined or invalid
       if (pagePath == null || typeof pagePath !== 'string') {
         refElem.properties.pagePath = basePagePath;
-        return;
+        continue;
       }
 
-      // return when page is already determined and aboslute path
+      // return when page is already determined and absolute path
       if (pathUtils.hasHeadingSlash(pagePath)) {
-        return;
+        continue;
       }
 
       // resolve relative path
       refElem.properties.pagePath = getAbsolutePathFor(pagePath, basePagePath);
-    });
+    }
   };
 };
 

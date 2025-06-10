@@ -35,9 +35,11 @@ export class RefsContext {
     this.pagePath = pagePath;
 
     // remove undefined keys
-    Object.keys(options).forEach(
-      (key) => options[key] === undefined && delete options[key],
-    );
+    for (const key of Object.keys(options)) {
+      if (options[key] === undefined) {
+        delete options[key];
+      }
+    }
 
     this.options = options;
   }
@@ -78,7 +80,7 @@ export class RefsContext {
 
   isOptGridColumnEnabled(): boolean {
     const optGrid = this.getOptGrid();
-    return optGrid != null && optGrid.startsWith('col-');
+    return optGrid?.startsWith('col-') ?? false;
   }
 
   /**

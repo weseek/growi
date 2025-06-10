@@ -65,7 +65,7 @@ const loginRequiredFallback = (req, res) => {
   return res.status(403).send('login required');
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+// biome-ignore lint/suspicious/noExplicitAny: ignore
 export const routesFactory = (crowi): any => {
   const loginRequired = crowi.require('../middlewares/login-required')(
     crowi,
@@ -78,11 +78,12 @@ export const routesFactory = (crowi): any => {
 
   const ObjectId = Types.ObjectId;
 
+  // biome-ignore lint/suspicious/noExplicitAny: ignore
   const Page = mongoose.model<HydratedDocument<IPage>, Model<any> & any>(
     'Page',
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: ignore
   const { PageQueryBuilder } = Page as any;
 
   /**
@@ -122,7 +123,7 @@ export const routesFactory = (crowi): any => {
       }
 
       // convert ObjectId
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // biome-ignore lint/suspicious/noExplicitAny: ignore
       const orConditions: any[] = [{ originalName: fileNameOrId }];
       if (fileNameOrId != null && ObjectId.isValid(fileNameOrId.toString())) {
         orConditions.push({ _id: new ObjectId(fileNameOrId.toString()) });
@@ -155,7 +156,7 @@ export const routesFactory = (crowi): any => {
       );
       if (!isAccessible) {
         logger.debug(
-          `attachment '${attachment.id}' is forbidden for user '${user && user.username}'`,
+          `attachment '${attachment.id}' is forbidden for user '${user?.username}'`,
         );
         res.status(403).send(`page '${attachment.page}' is forbidden.`);
         return;
@@ -207,6 +208,7 @@ export const routesFactory = (crowi): any => {
         }
       }
 
+      // biome-ignore lint/suspicious/noImplicitAnyLet: ignore
       let builder;
 
       // builder to retrieve descendance
@@ -251,13 +253,11 @@ export const routesFactory = (crowi): any => {
 
       const attachments = await query.populate('creator').exec();
 
-      res
-        .status(200)
-        .send({
-          attachments: attachments.map((attachment) =>
-            serializeAttachmentSecurely(attachment),
-          ),
-        });
+      res.status(200).send({
+        attachments: attachments.map((attachment) =>
+          serializeAttachmentSecurely(attachment),
+        ),
+      });
     },
   );
 
