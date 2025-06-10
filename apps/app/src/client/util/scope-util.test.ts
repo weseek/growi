@@ -1,6 +1,5 @@
+import { ALL_SIGN } from '@growi/core/dist/interfaces';
 import { describe, it, expect } from 'vitest';
-
-import { ALL_SIGN } from '../../interfaces/scope';
 
 import { parseScopes, getDisabledScopes, extractScopes } from './scope-util';
 
