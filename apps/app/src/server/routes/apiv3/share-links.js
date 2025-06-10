@@ -292,7 +292,6 @@ module.exports = (crowi) => {
       }
 
       try {
-        console.log('ああああ', relatedPage);
         const deletedShareLink = await ShareLink.remove({ relatedPage: { $eq: relatedPage } });
 
         activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_SHARE_LINK_DELETE_BY_PAGE });
