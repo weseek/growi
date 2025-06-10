@@ -36,6 +36,11 @@ export const parserForAccessToken = (scopes: Scope[]) => {
       return;
     }
 
+    if (userByAccessToken.readOnly) {
+      logger.debug('The access token\'s associated user is read-only');
+      return;
+    }
+
     // transforming attributes
     req.user = serializeUserSecurely(userByAccessToken);
     if (req.user == null) {
