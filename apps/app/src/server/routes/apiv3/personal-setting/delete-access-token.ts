@@ -8,6 +8,7 @@ import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
+import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user';
 import { AccessToken } from '~/server/models/access-token';
 import loggerFactory from '~/utils/logger';
 
@@ -40,6 +41,7 @@ export const deleteAccessTokenHandlersFactory: DeleteAccessTokenHandlersFactory 
   return [
     accessTokenParser([SCOPE.WRITE.USER_SETTINGS.API.ACCESS_TOKEN]),
     loginRequiredStrictly,
+    excludeReadOnlyUser,
     addActivity,
     validator,
     apiV3FormValidator,
