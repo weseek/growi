@@ -467,7 +467,7 @@ module.exports = (crowi: Crowi): Router => {
    *                    description: The transfer key
    */
   receiveRouter.post('/generate-key',
-    accessTokenParser([SCOPE.WRITE.ADMIN.EXPORET_DATA], { acceptLegacy: true }),
+    accessTokenParser([SCOPE.WRITE.ADMIN.EXPORT_DATA], { acceptLegacy: true }),
     adminRequiredIfInstalled, appSiteUrlRequiredIfNotInstalled, async(req: Request, res: ApiV3Response) => {
       const appSiteUrl = req.body.appSiteUrl ?? configManager.getConfig('app:siteUrl');
 
@@ -534,7 +534,7 @@ module.exports = (crowi: Crowi): Router => {
    *                    description: The message of the result
    */
   pushRouter.post('/transfer',
-    accessTokenParser([SCOPE.WRITE.ADMIN.EXPORET_DATA], { acceptLegacy: true }),
+    accessTokenParser([SCOPE.WRITE.ADMIN.EXPORT_DATA], { acceptLegacy: true }),
     loginRequiredStrictly, adminRequired, validator.transfer, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
       const { transferKey, collections, optionsMap } = req.body;
 

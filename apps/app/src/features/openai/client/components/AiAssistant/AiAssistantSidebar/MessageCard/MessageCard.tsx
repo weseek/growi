@@ -1,10 +1,10 @@
 import { type JSX } from 'react';
 
-import type { LinkProps } from 'next/link';
 import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
 
-import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
+import { Header } from './ReactMarkdownComponents/Header';
+import { NextLinkWrapper } from './ReactMarkdownComponents/NextLinkWrapper';
 
 import styles from './MessageCard.module.scss';
 
@@ -24,13 +24,6 @@ const UserMessageCard = ({ children }: { children: string }): JSX.Element => (
 
 const assistantMessageCardModuleClass = styles['assistant-message-card'] ?? '';
 
-const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): JSX.Element => {
-  return (
-    <NextLink href={props.href} className="link-primary">
-      {props.children}
-    </NextLink>
-  );
-};
 
 const AssistantMessageCard = ({
   children,
@@ -51,7 +44,17 @@ const AssistantMessageCard = ({
           { children.length > 0
             ? (
               <>
-                <ReactMarkdown components={{ a: NextLinkWrapper }}>{children}</ReactMarkdown>
+                <ReactMarkdown components={{
+                  a: NextLinkWrapper,
+                  h1: ({ children }) => <Header level={1}>{children}</Header>,
+                  h2: ({ children }) => <Header level={2}>{children}</Header>,
+                  h3: ({ children }) => <Header level={3}>{children}</Header>,
+                  h4: ({ children }) => <Header level={4}>{children}</Header>,
+                  h5: ({ children }) => <Header level={5}>{children}</Header>,
+                  h6: ({ children }) => <Header level={6}>{children}</Header>,
+                }}
+                >{children}
+                </ReactMarkdown>
                 { additionalItem }
               </>
             )
