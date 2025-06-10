@@ -1,3 +1,4 @@
+export * from './primitive/string';
 export * from './attachment';
 export * from './color-scheme';
 export * from './color-scheme';

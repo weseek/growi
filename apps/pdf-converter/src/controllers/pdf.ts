@@ -1,9 +1,9 @@
 import { BodyParams } from '@tsed/common';
 import { Controller } from '@tsed/di';
-import { InternalServerError } from '@tsed/exceptions';
+import { InternalServerError, BadRequest } from '@tsed/exceptions';
 import { Logger } from '@tsed/logger';
 import {
-  Post, Returns, Enum, Description, Required,
+  Post, Returns, Enum, Description, Required, Integer,
 } from '@tsed/schema';
 
 import PdfConvertService, { JobStatusSharedWithGrowi, JobStatus } from '../service/pdf-convert.js';
@@ -31,8 +31,13 @@ class PdfCtrl {
     @Required() @BodyParams('jobId') jobId: string,
     @Required() @BodyParams('expirationDate') expirationDateStr: string,
     @Required() @BodyParams('status') @Enum(Object.values(JobStatusSharedWithGrowi)) growiJobStatus: JobStatusSharedWithGrowi,
-    @BodyParams('appId') appId?: string,
+    @Integer() @BodyParams('appId') appId?: number, // prevent path traversal attack
   ): Promise<{ status: JobStatus } | undefined> {
+    // prevent path traversal attack
+    if (!/^[a-f\d]{24}$/i.test(jobId)) {
+      throw new BadRequest('jobId must be a valid MongoDB ObjectId');
+    }
+
     const expirationDate = new Date(expirationDateStr);
     try {
       await this.pdfConvertService.registerOrUpdateJob(jobId, expirationDate, growiJobStatus, appId);

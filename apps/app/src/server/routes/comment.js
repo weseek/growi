@@ -21,32 +21,34 @@ import { preNotifyService } from '../service/pre-notify';
  *
  *  components:
  *    schemas:
+ *      CommentBody:
+ *        description: The type for Comment.comment
+ *        type: string
+ *        example: good
+ *      CommentPosition:
+ *        description: comment position
+ *        type: number
+ *        example: 0
  *      Comment:
  *        description: Comment
  *        type: object
  *        properties:
  *          _id:
- *            type: string
- *            description: revision ID
- *            example: 5e079a0a0afa6700170a75fb
+ *            $ref: '#/components/schemas/ObjectId'
  *          __v:
  *            type: number
  *            description: DB record version
  *            example: 0
  *          page:
- *            $ref: '#/components/schemas/Page/properties/_id'
+ *            $ref: '#/components/schemas/ObjectId'
  *          creator:
- *            $ref: '#/components/schemas/User/properties/_id'
+ *            $ref: '#/components/schemas/ObjectId'
  *          revision:
- *            $ref: '#/components/schemas/Revision/properties/_id'
+ *            $ref: '#/components/schemas/ObjectId'
  *          comment:
- *            type: string
- *            description: comment
- *            example: good
+ *            $ref: '#/components/schemas/CommentBody'
  *          commentPosition:
- *            type: number
- *            description: comment position
- *            example: 0
+ *            $ref: '#/components/schemas/CommentPosition'
  *          createdAt:
  *            type: string
  *            description: date created at
@@ -88,11 +90,11 @@ module.exports = function(crowi, app) {
    *          - in: query
    *            name: page_id
    *            schema:
-   *              $ref: '#/components/schemas/Page/properties/_id'
+   *              $ref: '#/components/schemas/ObjectId'
    *          - in: query
    *            name: revision_id
    *            schema:
-   *              $ref: '#/components/schemas/Revision/properties/_id'
+   *              $ref: '#/components/schemas/ObjectId'
    *        responses:
    *          200:
    *            description: Succeeded to get comments of the page of the revision.
@@ -101,7 +103,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                      $ref: '#/components/schemas/V1ResponseOK'
    *                    comments:
    *                      type: array
    *                      items:
@@ -190,13 +192,13 @@ module.exports = function(crowi, app) {
    *                    type: object
    *                    properties:
    *                      page_id:
-   *                        $ref: '#/components/schemas/Page/properties/_id'
+   *                        $ref: '#/components/schemas/ObjectId'
    *                      revision_id:
-   *                        $ref: '#/components/schemas/Revision/properties/_id'
+   *                        $ref: '#/components/schemas/ObjectId'
    *                      comment:
-   *                        $ref: '#/components/schemas/Comment/properties/comment'
+   *                        $ref: '#/components/schemas/CommentBody'
    *                      comment_position:
-   *                        $ref: '#/components/schemas/Comment/properties/commentPosition'
+   *                        $ref: '#/components/schemas/CommentPosition'
    *                required:
    *                  - commentForm
    *        responses:
@@ -207,7 +209,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                      $ref: '#/components/schemas/V1ResponseOK'
    *                    comment:
    *                      $ref: '#/components/schemas/Comment'
    *          403:
@@ -336,13 +338,13 @@ module.exports = function(crowi, app) {
    *                        type: object
    *                        properties:
    *                          page_id:
-   *                            $ref: '#/components/schemas/Page/properties/_id'
+   *                            $ref: '#/components/schemas/ObjectId'
    *                          revision_id:
-   *                            $ref: '#/components/schemas/Revision/properties/_id'
+   *                            $ref: '#/components/schemas/ObjectId'
    *                          comment_id:
-   *                            $ref: '#/components/schemas/Comment/properties/_id'
+   *                            $ref: '#/components/schemas/ObjectId'
    *                          comment:
-   *                            $ref: '#/components/schemas/Comment/properties/comment'
+   *                            $ref: '#/components/schemas/CommentBody'
    *                required:
    *                  - form
    *        responses:
@@ -353,7 +355,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                      $ref: '#/components/schemas/V1ResponseOK'
    *                    comment:
    *                      $ref: '#/components/schemas/Comment'
    *          403:
@@ -433,7 +435,7 @@ module.exports = function(crowi, app) {
    *              schema:
    *                properties:
    *                  comment_id:
-   *                    $ref: '#/components/schemas/Comment/properties/_id'
+   *                    $ref: '#/components/schemas/ObjectId'
    *                required:
    *                  - comment_id
    *        responses:
@@ -444,7 +446,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                      $ref: '#/components/schemas/V1ResponseOK'
    *                    comment:
    *                      $ref: '#/components/schemas/Comment'
    *          403:
