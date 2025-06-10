@@ -1,8 +1,38 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.2.5...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.2.6...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.2.6](https://github.com/weseek/growi/compare/v7.2.5...v7.2.6) - 2025-06-10
+
+### 💎 Features
+
+* feat(ai): Display spinner while creating diff (#9991) @miya
+
+### 🚀 Improvement
+
+* imprv: Message card markdown header size (#10038) @miya
+* imprv: Type safe configuration for file uploading (#10032) @yuki-takei
+* imprv: EditorAssistant instruction (#10030) @miya
+* imprv: Add NonEmptyString type (#10031) @yuki-takei
+* imprv: Security settings search results redesign (#9992) @arvid-e
+* imprv: OpenAPI spec properties ref (#10023) @yuki-takei
+* imprv(ai): Make input form position sticky (#10002) @miya
+* imprv: Prevent path traversal attack in pdf converter (#9993) @arafubeatbox
+* imprv: Discard when form is submitted without Accept/Discard after showing diff (#9980) @miya
+
+### 🐛 Bug Fixes
+
+* imprv:  The delete button on the user home page is now hidden for unauthorized users. (#9915) @taikou-m
+* fix: OpenAI threads can be retrieved regardless of assistant's public permissions (#9994) @miya
+* fix: Editor assistant button is being displayed when ai functionality is not enabled (#9985) @miya
+* fix: Improve attribute handling in Lsx (#9989) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: OpenAPI operationId generation (#10009) @yuki-takei
+* support: Configure biome for remark-growi-directive (#9999) @arafubeatbox
 
 ## [v7.2.5](https://github.com/weseek/growi/compare/v7.2.4...v7.2.5) - 2025-05-28
 
