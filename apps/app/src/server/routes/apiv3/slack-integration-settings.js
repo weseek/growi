@@ -1,4 +1,4 @@
-import { ConfigSource } from '@growi/core/dist/interfaces';
+import { ConfigSource, SCOPE } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import {
   SlackbotType, REQUEST_TIMEOUT_FOR_GTOP,
@@ -10,7 +10,6 @@ import {
 } from '@growi/slack/dist/utils/check-communicable';
 
 import { SupportedAction } from '~/interfaces/activity';
-import { SCOPE } from '@growi/core/dist/interfaces';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import loggerFactory from '~/utils/logger';
 

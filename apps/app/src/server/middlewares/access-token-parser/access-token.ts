@@ -1,8 +1,7 @@
-import type { IUserHasId } from '@growi/core/dist/interfaces';
+import type { IUserHasId, Scope } from '@growi/core/dist/interfaces';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import type { Response } from 'express';
 
-import type { Scope } from '@growi/core/dist/interfaces';
 import { AccessToken } from '~/server/models/access-token';
 import loggerFactory from '~/utils/logger';
 

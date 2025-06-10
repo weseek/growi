@@ -28,6 +28,9 @@ export const AccessTokenScopeSelect: React.FC<AccessTokenScopeSelectProps> = ({ 
   const ScopesMap = useMemo(() => parseScopes({ scopes: SCOPE, isAdmin }), [isAdmin]);
   const extractedScopes = useMemo(() => extractScopes(ScopesMap), [ScopesMap]);
 
+  console.log('extractedScopes', extractedScopes);
+  console.log('disabledScopes', disabledScopes);
+
   useEffect(() => {
     const disabledSet = getDisabledScopes(selectedScopes, extractedScopes);
     setDisabledScopes(disabledSet);
