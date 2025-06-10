@@ -27,7 +27,6 @@
       "./packages/pluginkit/**",
       "./packages/presentation/**",
       "./packages/preset-templates/**",
-      "./packages/preset-themes/**",
       "./packages/remark-attachment-refs/**",
       "./packages/remark-drawio/**"
     ]
