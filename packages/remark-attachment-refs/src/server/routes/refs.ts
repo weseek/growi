@@ -219,7 +219,7 @@ export const routesFactory = (crowi): any => {
       }
       // builder to get single page
       else {
-        builder = new PageQueryBuilder(Page.find({ path: pagePath }));
+        builder = new PageQueryBuilder(Page.find({ path: { $eq: pagePath } }));
       }
 
       Page.addConditionToFilteringByViewerForList(builder, user, false);
