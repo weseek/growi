@@ -9,7 +9,7 @@ import { body, query } from 'express-validator';
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
-import { SCOPE } from '~/interfaces/scope';
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import PageTagRelation from '~/server/models/page-tag-relation';

@@ -5,7 +5,7 @@ import xss from 'xss';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
-import { SCOPE } from '~/interfaces/scope';
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';

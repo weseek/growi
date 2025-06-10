@@ -3,7 +3,7 @@ import { body } from 'express-validator';
 import type { Types } from 'mongoose';
 
 import type { BookmarkFolderItems } from '~/interfaces/bookmark-info';
-import { SCOPE } from '~/interfaces/scope';
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { InvalidParentBookmarkFolderError } from '~/server/models/errors';

@@ -8,7 +8,7 @@ import { Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
-import type { Scope } from '~/interfaces/scope';
+import type { Scope } from '@growi/core/dist/interfaces';
 import loggerFactory from '~/utils/logger';
 
 import { getOrCreateModel } from '../util/mongoose-utils';

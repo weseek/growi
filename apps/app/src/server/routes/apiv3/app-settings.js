@@ -7,7 +7,7 @@ import { body } from 'express-validator';
 import { i18n } from '^/config/next-i18next.config';
 
 import { SupportedAction } from '~/interfaces/activity';
-import { SCOPE } from '~/interfaces/scope';
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { configManager } from '~/server/service/config-manager';
 import { getTranslation } from '~/server/service/i18next';

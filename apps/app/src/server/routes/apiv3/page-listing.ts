@@ -9,7 +9,7 @@ import { query, oneOf } from 'express-validator';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
-import { SCOPE } from '~/interfaces/scope';
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { configManager } from '~/server/service/config-manager';
 import type { IPageGrantService } from '~/server/service/page-grant';

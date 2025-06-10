@@ -2,7 +2,7 @@ import csrf from 'csurf';
 import express from 'express';
 
 import { middlewareFactory as rateLimiterFactory } from '~/features/rate-limiter';
-import { SCOPE } from '~/interfaces/scope';
+import { SCOPE } from '@growi/core/dist/interfaces';
 
 import { accessTokenParser } from '../middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '../middlewares/add-activity';

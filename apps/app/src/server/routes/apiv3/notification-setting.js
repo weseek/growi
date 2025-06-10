@@ -2,7 +2,7 @@ import { ErrorV3 } from '@growi/core/dist/models';
 import express from 'express';
 
 import { SupportedAction } from '~/interfaces/activity';
-import { SCOPE } from '~/interfaces/scope';
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { GlobalNotificationSettingType } from '~/server/models/GlobalNotificationSetting';
 import { configManager } from '~/server/service/config-manager';

@@ -10,7 +10,7 @@ import {
 } from '@growi/slack/dist/utils/check-communicable';
 
 import { SupportedAction } from '~/interfaces/activity';
-import { SCOPE } from '~/interfaces/scope';
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import loggerFactory from '~/utils/logger';
 

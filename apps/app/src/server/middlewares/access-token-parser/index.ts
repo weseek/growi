@@ -1,6 +1,6 @@
 import type { NextFunction, Response } from 'express';
 
-import type { Scope } from '~/interfaces/scope';
+import type { Scope } from '@growi/core/dist/interfaces';
 
 import { parserForAccessToken } from './access-token';
 import { parserForApiToken } from './api-token';
