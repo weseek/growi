@@ -37,7 +37,7 @@ export const PrimaryItems = memo((props: Props) => {
       <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.RECENT} label="Recent Changes" iconName="update" onHover={onItemHover} />
       <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.BOOKMARKS} label="Bookmarks" iconName="bookmarks" onHover={onItemHover} />
       <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.TAG} label="Tags" iconName="local_offer" onHover={onItemHover} />
-      {!isGuestUser && <PrimaryItemForNotification sidebarMode={sidebarMode} onHover={onItemHover} />}
+      {isGuestUser === false && <PrimaryItemForNotification sidebarMode={sidebarMode} onHover={onItemHover} />}
       {isAiEnabled && (
         <PrimaryItem
           sidebarMode={sidebarMode}
