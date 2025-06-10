@@ -245,7 +245,6 @@ module.exports = (crowi) => {
    *    /attachment/limit:
    *      get:
    *        tags: [Attachment]
-   *        operationId: getAttachmentLimit
    *        summary: /attachment/limit
    *        description: Get available capacity of uploaded file with GridFS
    *        parameters:
@@ -290,7 +289,6 @@ module.exports = (crowi) => {
    *    /attachment:
    *      post:
    *        tags: [Attachment]
-   *        operationId: addAttachment
    *        summary: /attachment
    *        description: Add attachment to the page
    *        requestBody:

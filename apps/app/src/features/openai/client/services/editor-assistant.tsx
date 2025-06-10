@@ -1,5 +1,5 @@
 import {
-  useCallback, useEffect, useState, useRef, useMemo,
+  useCallback, useEffect, useState, useRef, useMemo, type FC,
 } from 'react';
 
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
@@ -18,16 +18,12 @@ import {
   SseDetectedDiffSchema,
   SseFinalizedSchema,
   isReplaceDiff,
-  // isInsertDiff,
-  // isDeleteDiff,
-  // isRetainDiff,
   type SseMessage,
   type SseDetectedDiff,
   type SseFinalized,
 } from '~/features/openai/interfaces/editor-assistant/sse-schemas';
 import { handleIfSuccessfullyParsed } from '~/features/openai/utils/handle-if-successfully-parsed';
 import { useIsEnableUnifiedMergeView } from '~/stores-universal/context';
-import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useCurrentPageId } from '~/stores/page';
 
 import type { AiAssistantHasId } from '../../interfaces/ai-assistant';
@@ -35,8 +31,6 @@ import type { MessageLog } from '../../interfaces/message';
 import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
 import { ThreadType } from '../../interfaces/thread-relation';
 import { AiAssistantDropdown } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantDropdown';
-// import { type FormData } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantSidebar';
-import { MessageCard, type MessageCardRole } from '../components/AiAssistant/AiAssistantSidebar/MessageCard';
 import { QuickMenuList } from '../components/AiAssistant/AiAssistantSidebar/QuickMenuList';
 import { useAiAssistantSidebar } from '../stores/ai-assistant';
 
@@ -57,8 +51,8 @@ interface ProcessMessage {
 interface GenerateInitialView {
   (onSubmit: (data: FormData) => Promise<void>): JSX.Element;
 }
-interface GenerateMessageCard {
-  (role: MessageCardRole, children: string, messageId: string, messageLogs: MessageLog[], generatingAnswerMessage?: MessageLog): JSX.Element;
+interface GenerateActionButtons {
+  (messageId: string, messageLogs: MessageLog[], generatingAnswerMessage?: MessageLog): JSX.Element;
 }
 export interface FormData {
   input: string,
@@ -78,10 +72,12 @@ type UseEditorAssistant = () => {
   form: UseFormReturn<FormData>
   resetForm: () => void
   isTextSelected: boolean,
+  isGeneratingEditorText: boolean,
 
   // Views
   generateInitialView: GenerateInitialView,
-  generateMessageCard: GenerateMessageCard,
+  generatingEditorTextLabel?: JSX.Element,
+  generateActionButtons: GenerateActionButtons,
   headerIcon: JSX.Element,
   headerText: JSX.Element,
   placeHolder: string,
@@ -142,13 +138,14 @@ const getLineInfo = (yText: YText, lineNumber: number): { text: string, startInd
 
 export const useEditorAssistant: UseEditorAssistant = () => {
   // Refs
-  // const positionRef = useRef<number>(0);
   const lineRef = useRef<number>(0);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // States
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
   const [selectedAiAssistant, setSelectedAiAssistant] = useState<AiAssistantHasId>();
   const [selectedText, setSelectedText] = useState<string>();
+  const [isGeneratingEditorText, setIsGeneratingEditorText] = useState<boolean>(false);
 
   const isTextSelected = useMemo(() => selectedText != null && selectedText.length !== 0, [selectedText]);
 
@@ -194,6 +191,9 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       }
     };
 
+    // Disable UnifiedMergeView when a Form is submitted with UnifiedMergeView enabled
+    mutateIsEnableUnifiedMergeView(false);
+
     const response = await fetch('/_api/v3/openai/edit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -205,13 +205,33 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     });
 
     return response;
-  }, [codeMirrorEditor, selectedText]);
+  }, [codeMirrorEditor, mutateIsEnableUnifiedMergeView, selectedText]);
 
   const processMessage: ProcessMessage = useCallback((data, handler) => {
+    // Reset timer whenever data is received
+    const handleDataReceived = () => {
+    // Clear existing timer
+      if (timerRef.current != null) {
+        clearTimeout(timerRef.current);
+      }
+
+      // Hide spinner since data is flowing
+      if (isGeneratingEditorText) {
+        setIsGeneratingEditorText(false);
+      }
+
+      // Set new timer
+      timerRef.current = setTimeout(() => {
+        setIsGeneratingEditorText(true);
+      }, 500);
+    };
+
     handleIfSuccessfullyParsed(data, SseMessageSchema, (data: SseMessage) => {
+      handleDataReceived();
       handler.onMessage(data);
     });
     handleIfSuccessfullyParsed(data, SseDetectedDiffSchema, (data: SseDetectedDiff) => {
+      handleDataReceived();
       mutateIsEnableUnifiedMergeView(true);
       setDetectedDiff((prev) => {
         const newData = { data, applied: false, id: crypto.randomUUID() };
@@ -225,12 +245,13 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     handleIfSuccessfullyParsed(data, SseFinalizedSchema, (data: SseFinalized) => {
       handler.onFinalized(data);
     });
-  }, [mutateIsEnableUnifiedMergeView]);
+  }, [isGeneratingEditorText, mutateIsEnableUnifiedMergeView]);
 
   const selectTextHandler = useCallback((selectedText: string, selectedTextFirstLineNumber: number) => {
     setSelectedText(selectedText);
     lineRef.current = selectedTextFirstLineNumber;
   }, []);
+
 
   // Effects
   useTextSelectionEffect(codeMirrorEditor, selectTextHandler);
@@ -238,26 +259,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   useEffect(() => {
     const pendingDetectedDiff: DetectedDiff | undefined = detectedDiff?.filter(diff => diff.applied === false);
     if (yDocs?.secondaryDoc != null && pendingDetectedDiff != null && pendingDetectedDiff.length > 0) {
-
-      // For debug
-      // const testDetectedDiff = [
-      //   {
-      //     data: { diff: { retain: 9 } },
-      //     applied: false,
-      //     id: crypto.randomUUID(),
-      //   },
-      //   {
-      //     data: { diff: { delete: 5 } },
-      //     applied: false,
-      //     id: crypto.randomUUID(),
-      //   },
-      //   {
-      //     data: { diff: { insert: 'growi' } },
-      //     applied: false,
-      //     id: crypto.randomUUID(),
-      //   },
-      // ];
-
       const yText = yDocs.secondaryDoc.getText('codemirror');
       yDocs.secondaryDoc.transact(() => {
         pendingDetectedDiff.forEach((detectedDiff) => {
@@ -276,15 +277,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
               appendTextLastLine(yText, detectedDiff.data.diff.replace);
             }
           }
-          // if (isInsertDiff(detectedDiff.data)) {
-          //   yText.insert(positionRef.current, detectedDiff.data.diff.insert);
-          // }
-          // if (isDeleteDiff(detectedDiff.data)) {
-          //   yText.delete(positionRef.current, detectedDiff.data.diff.delete);
-          // }
-          // if (isRetainDiff(detectedDiff.data)) {
-          //   positionRef.current += detectedDiff.data.diff.retain;
-          // }
         });
       });
 
@@ -308,9 +300,17 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       setSelectedText(undefined);
       setDetectedDiff(undefined);
       lineRef.current = 0;
-      // positionRef.current = 0;
     }
   }, [detectedDiff]);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current != null) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, []);
 
 
   // Views
@@ -348,10 +348,13 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     );
   }, [selectedAiAssistant]);
 
-
-  const generateMessageCard: GenerateMessageCard = useCallback((role, children, messageId, messageLogs, generatingAnswerMessage) => {
+  const generateActionButtons: GenerateActionButtons = useCallback((messageId, messageLogs, generatingAnswerMessage) => {
     const isActionButtonShown = (() => {
       if (!aiAssistantSidebarData?.isEditorAssistant) {
+        return false;
+      }
+
+      if (!isEnableUnifiedMergeView) {
         return false;
       }
 
@@ -370,7 +373,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       return false;
     })();
 
-
     const accept = () => {
       if (codeMirrorEditor?.view == null) {
         return;
@@ -384,17 +386,41 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       mutateIsEnableUnifiedMergeView(false);
     };
 
+    if (!isActionButtonShown) {
+      return <></>;
+    }
+
     return (
-      <MessageCard
-        role={role}
-        showActionButtons={isActionButtonShown}
-        onAccept={accept}
-        onDiscard={reject}
-      >
-        {children}
-      </MessageCard>
+      <div className="d-flex mt-2 justify-content-start">
+        <button
+          type="button"
+          className="btn btn-outline-secondary me-2"
+          onClick={reject}
+        >
+          {t('sidebar_ai_assistant.discard')}
+        </button>
+        <button
+          type="button"
+          className="btn btn-success"
+          onClick={accept}
+        >
+          {t('sidebar_ai_assistant.accept')}
+        </button>
+      </div>
     );
-  }, [aiAssistantSidebarData?.isEditorAssistant, codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
+  }, [aiAssistantSidebarData?.isEditorAssistant, codeMirrorEditor?.view, isEnableUnifiedMergeView, mutateIsEnableUnifiedMergeView, t]);
+
+  const generatingEditorTextLabel = useMemo(() => {
+    return (
+      <>
+        {isGeneratingEditorText && (
+          <span className="text-thinking">
+            {t('sidebar_ai_assistant.text_generation_by_editor_assistant_label')}
+          </span>
+        )}
+      </>
+    );
+  }, [isGeneratingEditorText, t]);
 
   return {
     createThread,
@@ -403,10 +429,12 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     form,
     resetForm,
     isTextSelected,
+    isGeneratingEditorText,
 
     // Views
     generateInitialView,
-    generateMessageCard,
+    generatingEditorTextLabel,
+    generateActionButtons,
     headerIcon,
     headerText,
     placeHolder,

@@ -82,7 +82,7 @@ export * from './page-service';
 const logger = loggerFactory('growi:services:page');
 const {
   isTrashPage, isTopPage, omitDuplicateAreaPageFromPages, getUsernameByPath,
-  canMoveByPath, isUsersTopPage, isMovablePage, isUsersHomepage, hasSlash, generateChildrenRegExp,
+  isUsersTopPage, isMovablePage, isUsersHomepage, hasSlash, generateChildrenRegExp,
 } = pagePathUtils;
 
 const { addTrailingSlash } = pathUtils;
@@ -549,16 +549,6 @@ class PageService implements IPageService {
     const isShouldUseV4Process = shouldUseV4Process(page);
     if (isShouldUseV4Process) {
       return this.renamePageV4(page, newPagePath, user, options);
-    }
-
-    if (options.isMoveMode) {
-      const fromPath = page.path;
-      const toPath = newPagePath;
-      const canMove = canMoveByPath(fromPath, toPath) && await Page.exists({ path: newPagePath });
-
-      if (!canMove) {
-        throw Error('Cannot move to this path.');
-      }
     }
 
     const canOperate = await this.crowi.pageOperationService.canOperate(true, page.path, newPagePath);

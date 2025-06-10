@@ -45,6 +45,7 @@ export const remarkPlugin: Plugin = () => (tree) => {
 
       const data = node.data ?? {};
       node.data = data;
+      // Create a new object for attributes to avoid mutation issues
       const attributes = (node.attributes as DirectiveAttributes) || {};
 
       // set 'prefix' attribute if the first attribute is only value
@@ -60,7 +61,7 @@ export const remarkPlugin: Plugin = () => (tree) => {
 
           if (
             firstAttrValue === '' &&
-            !SUPPORTED_ATTRIBUTES.includes(firstAttrValue)
+            !SUPPORTED_ATTRIBUTES.includes(firstAttrKey)
           ) {
             attributes.prefix = firstAttrKey;
           }
@@ -107,7 +108,8 @@ export const rehypePlugin: Plugin<[LsxRehypePluginParams]> = (options = {}) => {
 
     for (const lsxElem of elements) {
       if (lsxElem.properties == null) {
-        return;
+        // Initialize properties if null to avoid errors down the line
+        lsxElem.properties = {};
       }
 
       const isSharedPage = lsxElem.properties.isSharedPage;
@@ -120,12 +122,12 @@ export const rehypePlugin: Plugin<[LsxRehypePluginParams]> = (options = {}) => {
       // set basePagePath when prefix is undefined or invalid
       if (prefix == null || typeof prefix !== 'string') {
         lsxElem.properties.prefix = basePagePath;
-        return;
+        continue;
       }
 
-      // return when prefix is already determined and aboslute path
+      // continue when prefix is already determined and aboslute path
       if (hasHeadingSlash(prefix)) {
-        return;
+        continue;
       }
 
       // resolve relative path

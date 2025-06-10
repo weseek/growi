@@ -43,7 +43,10 @@ export type RawConfigData<K extends string, V extends Record<K, any>> = Record<K
   definition?: ConfigDefinition<V[K]>;
 }>;
 
-export type UpdateConfigOptions = { skipPubsub?: boolean };
+export type UpdateConfigOptions = {
+  skipPubsub?: boolean;
+  removeIfUndefined?: boolean;
+};
 
 /**
  * Interface for managing configuration values

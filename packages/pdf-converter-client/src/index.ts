@@ -38,7 +38,7 @@ export const PdfCtrlSyncJobStatusBodyStatus = {
 } as const;
 
 export type PdfCtrlSyncJobStatusBody = {
-  appId?: string;
+  appId?: number;
   /** @minLength 1 */
   expirationDate: string;
   /** @minLength 1 */
