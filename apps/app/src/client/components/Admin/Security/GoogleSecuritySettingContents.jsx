@@ -122,7 +122,7 @@ class GoogleSecurityManagementContents extends React.Component {
               <div className="col-6">
                 <input
                   className="form-control"
-                  type="text"
+                  type="password"
                   name="googleClientSecret"
                   defaultValue={adminGoogleSecurityContainer.state.googleClientSecret || ''}
                   onChange={e => adminGoogleSecurityContainer.changeGoogleClientSecret(e.target.value)}
