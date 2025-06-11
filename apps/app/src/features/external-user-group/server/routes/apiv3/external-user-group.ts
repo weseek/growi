@@ -1,4 +1,5 @@
 import { GroupType } from '@growi/core';
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request } from 'express';
 import { Router } from 'express';
@@ -9,7 +10,6 @@ import {
 import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedAction } from '~/interfaces/activity';
-import { SCOPE } from '@growi/core/dist/interfaces';
 import type { PageActionOnGroupDelete } from '~/interfaces/user-group';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
@@ -474,9 +474,8 @@ module.exports = (crowi: Crowi): Router => {
    *                       items:
    *                         type: object
    */
-  // TODO: add accessTokenParser([SCOPE.READ.ADMIN.USER_GROUP_MANAGEMENT]) before loginRequiredStrictly
-  router.get('/:id/external-user-group-relations', loginRequiredStrictly, adminRequired,
-    async(req, res: ApiV3Response) => {
+  router.get('/:id/external-user-group-relations', accessTokenParser([SCOPE.READ.ADMIN.USER_GROUP_MANAGEMENT]), loginRequiredStrictly, adminRequired,
+    async(req: Request<{id: string}, Response, undefined>, res: ApiV3Response) => {
       const { id } = req.params;
 
       try {
