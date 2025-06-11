@@ -8,8 +8,11 @@ export * from 'axios';
 
 const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/;
 
-function convertDateStringsToDates(data: any): any {
+export function convertDateStringsToDates(data: any): any {
   if (typeof data !== 'object' || data === null) {
+    if (typeof data === 'string' && isoDateRegex.test(data)) {
+      return new Date(data);
+    }
     return data;
   }
 
