@@ -197,7 +197,7 @@ module.exports = (crowi) => {
       const { groupId } = req.query;
 
       try {
-        const userGroup = await UserGroup.findById(groupId);
+        const userGroup = await UserGroup.findOne({ _id: { $eq: groupId } });
         const ancestorUserGroups = await UserGroup.findGroupsWithAncestorsRecursively(userGroup);
         return res.apiv3({ ancestorUserGroups });
       }
@@ -370,7 +370,7 @@ module.exports = (crowi) => {
       const { groupId } = req.query;
 
       try {
-        const userGroup = await UserGroup.findById(groupId);
+        const userGroup = await UserGroup.findOne({ _id: { $eq: groupId } });
 
         const descendantGroups = await UserGroup.findGroupsWithDescendantsRecursively([userGroup], []);
         const descendantGroupIds = descendantGroups.map(userGroups => userGroups._id.toString());
@@ -423,7 +423,7 @@ module.exports = (crowi) => {
       const { groupId } = req.query;
 
       try {
-        const userGroup = await UserGroup.findById(groupId);
+        const userGroup = await UserGroup.findOne({ _id: { $eq: groupId } });
 
         const [ancestorGroups, descendantGroups] = await Promise.all([
           UserGroup.findGroupsWithAncestorsRecursively(userGroup, []),
