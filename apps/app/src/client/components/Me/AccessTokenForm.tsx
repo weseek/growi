@@ -1,10 +1,10 @@
 import React from 'react';
 
+import type { Scope } from '@growi/core/dist/interfaces';
 import { useTranslation } from 'next-i18next';
 import { useForm } from 'react-hook-form';
 
 import type { IAccessTokenInfo } from '~/interfaces/access-token';
-import type { Scope } from '~/interfaces/scope';
 
 import { AccessTokenScopeSelect } from './AccessTokenScopeSelect';
 

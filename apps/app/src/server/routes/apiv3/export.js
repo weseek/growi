@@ -1,7 +1,7 @@
 import sanitize from 'sanitize-filename';
 
 import { SupportedAction } from '~/interfaces/activity';
-import { SCOPE } from '~/interfaces/scope';
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { exportService } from '~/server/service/export';
 import loggerFactory from '~/utils/logger';

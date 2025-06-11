@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-import type { Ref, IUserHasId } from '@growi/core/dist/interfaces';
+import type { Ref, IUserHasId, Scope } from '@growi/core/dist/interfaces';
 import type {
   Document, Model, Types, HydratedDocument,
 } from 'mongoose';
@@ -8,7 +8,6 @@ import { Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
-import type { Scope } from '~/interfaces/scope';
 import loggerFactory from '~/utils/logger';
 
 import { getOrCreateModel } from '../util/mongoose-utils';

@@ -2,10 +2,11 @@ import type { IUserHasId } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler } from 'express';
 
-import { SCOPE } from '~/interfaces/scope';
+import { SCOPE } from '@growi/core/dist/interfaces';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
+import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user';
 import { AccessToken } from '~/server/models/access-token';
 import loggerFactory from '~/utils/logger';
 
@@ -27,6 +28,7 @@ export const getAccessTokenHandlerFactory: GetAccessTokenHandlerFactory = (crowi
   return [
     accessTokenParser([SCOPE.READ.USER_SETTINGS.API.ACCESS_TOKEN]),
     loginRequiredStrictly,
+    excludeReadOnlyUser,
     addActivity,
     async(req: GetAccessTokenRequest, res: ApiV3Response) => {
       const { user } = req;

@@ -3,7 +3,7 @@ import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import express from 'express';
 import { connection } from 'mongoose';
 
-import { SCOPE } from '~/interfaces/scope';
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { Revision } from '~/server/models/revision';
 import { normalizeLatestRevisionIfBroken } from '~/server/service/revision/normalize-latest-revision-if-broken';

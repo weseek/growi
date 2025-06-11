@@ -1,5 +1,5 @@
-import type { Scope } from '~/interfaces/scope';
-import { ALL_SIGN } from '~/interfaces/scope';
+import { ALL_SIGN, type Scope } from '@growi/core/dist/interfaces';
+
 
 // Data structure for the final merged scopes
 interface ScopeMap {

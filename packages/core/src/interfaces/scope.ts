@@ -47,6 +47,7 @@ const SCOPE_SEED_USER = {
     bookmark: {},
     questionnaire: {},
     attachment: {},
+    page_bulk_export: {},
   },
 } as const;
 

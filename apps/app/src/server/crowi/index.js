@@ -62,7 +62,7 @@ class Crowi {
 
   /**
    * For retrieving other packages
-   * @type {(req: import('express').Request, res: import('express').Response, next: import('express').NextFunction) => Promise<void>}
+   * @type {import('~/server/middlewares/access-token-parser').AccessTokenParser}
    */
   accessTokenParser;
 

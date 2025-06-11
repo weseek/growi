@@ -731,10 +731,10 @@ export const CONFIG_DEFINITIONS = {
   'security:passport-google:isEnabled': defineConfig<boolean>({
     defaultValue: false,
   }),
-  'security:passport-google:clientId': defineConfig<string | undefined>({
+  'security:passport-google:clientId': defineConfig<NonBlankString | undefined>({
     defaultValue: undefined,
   }),
-  'security:passport-google:clientSecret': defineConfig<string | undefined>({
+  'security:passport-google:clientSecret': defineConfig<NonBlankString | undefined>({
     defaultValue: undefined,
   }),
   'security:passport-google:isSameUsernameTreatedAsIdenticalUser': defineConfig<boolean>({

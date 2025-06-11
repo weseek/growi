@@ -1,7 +1,7 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 import express from 'express';
 
-import { SCOPE } from '~/interfaces/scope';
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { serializeUserGroupRelationSecurely } from '~/server/models/serializers';
 import UserGroupRelation from '~/server/models/user-group-relation';
