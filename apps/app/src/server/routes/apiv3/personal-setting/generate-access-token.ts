@@ -8,6 +8,7 @@ import { body } from 'express-validator';
 import { SupportedAction } from '~/interfaces/activity';
 import type Crowi from '~/server/crowi';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
+import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user';
 import { AccessToken } from '~/server/models/access-token';
 import { isValidScope } from '~/server/util/scope-utils';
 import loggerFactory from '~/utils/logger';
@@ -81,6 +82,7 @@ export const generateAccessTokenHandlerFactory: GenerateAccessTokenHandlerFactor
 
   return [
     loginRequiredStrictly,
+    excludeReadOnlyUser,
     addActivity,
     validator,
     apiV3FormValidator,

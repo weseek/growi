@@ -44,4 +44,5 @@ module.exports = {
   // 'growi:cli:ItemsTree': 'debug',
   'growi:searchResultList': 'debug',
   'growi:service:openai': 'debug',
+  'growi:middleware:access-token-parser:access-token': 'debug',
 };
