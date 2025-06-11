@@ -26,8 +26,7 @@
       "./packages/pdf-converter-client/**",
       "./packages/pluginkit/**",
       "./packages/presentation/**",
-      "./packages/remark-attachment-refs/**",
-      "./packages/remark-drawio/**"
+      "./packages/remark-attachment-refs/**"
     ]
   },
   "formatter": {
