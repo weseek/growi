@@ -27,8 +27,7 @@
       "./packages/pluginkit/**",
       "./packages/presentation/**",
       "./packages/preset-templates/**",
-      "./packages/remark-attachment-refs/**",
-      "./packages/remark-drawio/**"
+      "./packages/remark-attachment-refs/**"
     ]
   },
   "formatter": {
