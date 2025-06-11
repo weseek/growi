@@ -591,7 +591,7 @@ class SecuritySetting extends React.Component {
             <input
               className="form-control col-md-4"
               type="text"
-              defaultValue={adminGeneralSecurityContainer.state.sessionMaxAge || ''}
+              value={adminGeneralSecurityContainer.state.sessionMaxAge || ''}
               onChange={(e) => {
                 adminGeneralSecurityContainer.setSessionMaxAge(e.target.value);
               }}

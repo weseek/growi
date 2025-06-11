@@ -5,6 +5,7 @@ import { SubscriptionStatusType } from '@growi/core';
 import urljoin from 'url-join';
 
 import type { SyncLatestRevisionBody } from '~/interfaces/yjs';
+import { useIsGuestUser } from '~/stores-universal/context';
 import { useEditingMarkdown, usePageTagsForEditors } from '~/stores/editor';
 import {
   useCurrentPageId, useSWRMUTxCurrentPage, useSWRxApplicableGrant, useSWRxTagsInfo,
@@ -103,8 +104,9 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
-  const { mutate: mutateCurrentGrantData } = useSWRxCurrentGrantData(pageId);
-  const { mutate: mutateApplicableGrant } = useSWRxApplicableGrant(pageId);
+  const { data: isGuestUser } = useIsGuestUser();
+  const { mutate: mutateCurrentGrantData } = useSWRxCurrentGrantData(isGuestUser ? null : pageId);
+  const { mutate: mutateApplicableGrant } = useSWRxApplicableGrant(isGuestUser ? null : pageId);
 
   // update swr 'currentPageId', 'currentPage', remote states
   return useCallback(async() => {
