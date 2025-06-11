@@ -1,8 +1,23 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.2.6...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.2.7...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.2.7](https://github.com/weseek/growi/compare/v7.2.6...v7.2.7) - 2025-06-11
+
+### 🐛 Bug Fixes
+
+* fix: Input values ​​in the admin settings form are sometimes not reflected (#10051) @yuki-takei
+* fix: Hide Google OAuth client secret field (#10049) @yuki-takei
+* fix: Prevent unnecessary API request when the user is guest (#10046) @yuki-takei
+* fix(ai): Prevent unnecessary API request when GROWI AI is disabled (#10044) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Configure biome for preset-templates package (#10058) @arafubeatbox
+* support: Configure biome for preset-themes package (#10055) @arafubeatbox
+* support: Configure biome for remark-drawio package (#10033) @arafubeatbox
 
 ## [v7.2.6](https://github.com/weseek/growi/compare/v7.2.5...v7.2.6) - 2025-06-10
 
