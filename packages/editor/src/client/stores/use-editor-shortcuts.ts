@@ -142,7 +142,7 @@ const makeCodeBlockExtension: Extension = EditorView.domEventHandlers({
 
     const isModKey = event.ctrlKey || event.metaKey;
 
-    if (event.key.toLowerCase() === 'c' && event.shiftKey && event.altKey && isModKey) {
+    if (event.code === 'KeyC' && event.shiftKey && event.altKey && isModKey) {
       event.preventDefault();
       makeTextCodeBlock(view);
       return true;
