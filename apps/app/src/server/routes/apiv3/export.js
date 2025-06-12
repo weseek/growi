@@ -1,3 +1,5 @@
+import sanitize from 'sanitize-filename';
+
 import { SupportedAction } from '~/interfaces/activity';
 import { SCOPE } from '@growi/core/dist/interfaces';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
@@ -268,7 +270,8 @@ module.exports = (crowi) => {
       const { fileName } = req.params;
 
       try {
-        const zipFile = exportService.getFile(fileName);
+        const sanitizedFileName = sanitize(fileName);
+        const zipFile = exportService.getFile(sanitizedFileName);
         fs.unlinkSync(zipFile);
         const parameters = { action: SupportedAction.ACTION_ADMIN_ARCHIVE_DATA_DELETE };
         activityEvent.emit('update', res.locals.activity._id, parameters);

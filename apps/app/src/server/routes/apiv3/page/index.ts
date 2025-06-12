@@ -229,7 +229,7 @@ module.exports = (crowi) => {
       let pages;
       try {
         if (isSharedPage) {
-          const shareLink = await ShareLink.findOne({ _id: shareLinkId });
+          const shareLink = await ShareLink.findOne({ _id: { $eq: shareLinkId } });
           if (shareLink == null) {
             throw new Error('ShareLink is not found');
           }

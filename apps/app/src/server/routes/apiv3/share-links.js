@@ -1,10 +1,10 @@
 // TODO remove this setting after implemented all
 /* eslint-disable no-unused-vars */
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import express from 'express';
 
 import { SupportedAction } from '~/interfaces/activity';
-import { SCOPE } from '@growi/core/dist/interfaces';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
@@ -156,7 +156,7 @@ module.exports = (crowi) => {
       }
 
       try {
-        const shareLinksResult = await ShareLink.find({ relatedPage }).populate({ path: 'relatedPage', select: 'path' });
+        const shareLinksResult = await ShareLink.find({ relatedPage: { $eq: relatedPage } }).populate({ path: 'relatedPage', select: 'path' });
         return res.apiv3({ shareLinksResult });
       }
       catch (err) {
@@ -292,7 +292,7 @@ module.exports = (crowi) => {
       }
 
       try {
-        const deletedShareLink = await ShareLink.remove({ relatedPage });
+        const deletedShareLink = await ShareLink.deleteMany({ relatedPage: { $eq: relatedPage } });
 
         activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_SHARE_LINK_DELETE_BY_PAGE });
 
