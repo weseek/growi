@@ -19,6 +19,7 @@ import instanciatePageBulkExportJobCleanUpCronService, {
 import instanciatePageBulkExportJobCronService from '~/features/page-bulk-export/server/service/page-bulk-export-job-cron';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import questionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
+import { startCron as startAccessTokenCron } from '~/server/service/access-token';
 import { getGrowiVersion } from '~/utils/growi-version';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
@@ -61,7 +62,7 @@ class Crowi {
 
   /**
    * For retrieving other packages
-   * @type {(req: import('express').Request, res: import('express').Response, next: import('express').NextFunction) => Promise<void>}
+   * @type {import('~/server/middlewares/access-token-parser').AccessTokenParser}
    */
   accessTokenParser;
 
@@ -371,6 +372,7 @@ Crowi.prototype.setupCron = function() {
   pageBulkExportJobCleanUpCronService.startCron();
 
   startOpenaiCronIfEnabled();
+  startAccessTokenCron();
 };
 
 Crowi.prototype.setupQuestionnaireService = function() {
