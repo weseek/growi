@@ -147,8 +147,7 @@ export const useEditorSettings = (
     if (themeExtension == null) {
       return;
     }
-    // React CodeMirror has default theme which is default prec
-    // and extension have to be higher prec here than default theme.
+
     const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.high(themeExtension));
     return cleanupFunction;
   }, [codeMirrorEditor, themeExtension]);
@@ -168,7 +167,6 @@ export const useEditorSettings = (
       return;
     }
 
-    // Prevent these Keybind from overwriting the originally defined keymap.
     const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.low(keymapExtension));
     return cleanupFunction;
 
