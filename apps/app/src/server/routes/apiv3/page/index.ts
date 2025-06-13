@@ -412,9 +412,9 @@ module.exports = (crowi) => {
    *                        revision:
    *                          $ref: '#/components/schemas/Revision'
    *          403:
-   *            $ref: '#/components/responses/403'
+   *            $ref: '#/components/responses/Forbidden'
    *          500:
-   *            $ref: '#/components/responses/500'
+   *            $ref: '#/components/responses/InternalServerError'
    */
   router.put('/', updatePageHandlersFactory(crowi));
 

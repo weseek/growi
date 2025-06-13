@@ -893,9 +893,8 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/FileUploadSettingParams'
    */
-  router.put('/file-upload-setting',
-    accessTokenParser([SCOPE.WRITE.ADMIN.APP]), loginRequiredStrictly, adminRequired,
-    addActivity, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/file-upload-setting', accessTokenParser([SCOPE.WRITE.ADMIN.APP]),
+    loginRequiredStrictly, adminRequired, addActivity, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
       const { fileUploadType } = req.body;
 
       if (fileUploadType === 'aws') {
@@ -920,7 +919,7 @@ module.exports = (crowi) => {
           },
           { skipPubsub: true });
           await configManager.updateConfigs({
-            'app:s3CustomEndpoint': toNonBlankStringOrUndefined(req.body.s3CustomEndpoint),
+            'aws:s3CustomEndpoint': toNonBlankStringOrUndefined(req.body.s3CustomEndpoint),
             'aws:s3AccessKeyId': toNonBlankStringOrUndefined(req.body.s3AccessKeyId),
             'aws:s3SecretAccessKey': toNonBlankStringOrUndefined(req.body.s3SecretAccessKey),
           },
@@ -1019,6 +1018,7 @@ module.exports = (crowi) => {
         logger.error('Error', err);
         return res.apiv3Err(new ErrorV3(msg, 'update-fileUploadType-failed'));
       }
+
     });
 
   /**

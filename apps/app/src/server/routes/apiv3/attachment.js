@@ -270,9 +270,9 @@ module.exports = (crowi) => {
    *                      description: uploadable
    *                      example: true
    *          403:
-   *            $ref: '#/components/responses/403'
+   *            $ref: '#/components/responses/Forbidden'
    *          500:
-   *            $ref: '#/components/responses/500'
+   *            $ref: '#/components/responses/InternalServerError'
    */
   router.get('/limit',
     accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT], { acceptLegacy: true }), loginRequiredStrictly, validator.retrieveFileLimit, apiV3FormValidator,
@@ -338,9 +338,9 @@ module.exports = (crowi) => {
    *                    revision:
    *                      type: string
    *          403:
-   *            $ref: '#/components/responses/403'
+   *            $ref: '#/components/responses/Forbidden'
    *          500:
-   *            $ref: '#/components/responses/500'
+   *            $ref: '#/components/responses/InternalServerError'
    */
   router.post('/', uploads.single('file'), accessTokenParser([SCOPE.WRITE.FEATURES.ATTACHMENT], { acceptLegacy: true }),
     loginRequiredStrictly, excludeReadOnlyUser, validator.retrieveAddAttachment, apiV3FormValidator, addActivity,

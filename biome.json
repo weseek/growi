@@ -26,8 +26,6 @@
       "./packages/pdf-converter-client/**",
       "./packages/pluginkit/**",
       "./packages/presentation/**",
-      "./packages/preset-templates/**",
-      "./packages/preset-themes/**",
       "./packages/remark-attachment-refs/**"
     ]
   },
