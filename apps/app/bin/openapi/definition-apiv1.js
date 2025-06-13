@@ -8,6 +8,15 @@ module.exports = {
   },
   servers: [
     {
+      url: '{server}/_api',
+      variables: {
+        server: {
+          default: 'https://demo.growi.org',
+          description: 'The base URL for the GROWI API except for the version path (/_api). This can be set to your GROWI instance URL.',
+        },
+      },
+    },
+    {
       url: 'https://demo.growi.org/_api',
     },
   ],

@@ -67,7 +67,7 @@ export const CustomizeTitle: FC = () => {
         <div className="col-12">
           <input
             className="form-control"
-            defaultValue={currentCustomizeTitle}
+            value={currentCustomizeTitle}
             onChange={(e) => { setCrrentCustomizeTitle(e.target.value) }}
           />
         </div>

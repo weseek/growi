@@ -241,7 +241,6 @@ module.exports = (crowi) => {
    *    /users:
    *      get:
    *        tags: [Users]
-   *        operationId: listUsers
    *        summary: /users
    *        description: Select selected columns from users order by asc or desc
    *        parameters:
@@ -377,7 +376,6 @@ module.exports = (crowi) => {
    *    /{id}/recent:
    *      get:
    *        tags: [Users]
-   *        operationId: recent created page of user id
    *        summary: /usersIdReacent
    *        parameters:
    *          - name: id
@@ -453,7 +451,6 @@ module.exports = (crowi) => {
    *        tags: [Users Management]
    *        security:
    *          - cookieAuth: []
-   *        operationId: inviteUser
    *        summary: /users/invite
    *        description: Create new users and send Emails
    *        parameters:
@@ -532,7 +529,6 @@ module.exports = (crowi) => {
    *        tags: [Users Management]
    *        security:
    *          - cookieAuth: []
-   *        operationId: grantAdminUser
    *        summary: /users/{id}/grant-admin
    *        description: Grant user admin
    *        parameters:
@@ -581,7 +577,6 @@ module.exports = (crowi) => {
    *        tags: [Users Management]
    *        security:
    *          - cookieAuth: []
-   *        operationId: revokeAdminUser
    *        summary: /users/{id}/revoke-admin
    *        description: Revoke user admin
    *        parameters:
@@ -630,7 +625,6 @@ module.exports = (crowi) => {
    *        tags: [Users Management]
    *        security:
    *          - cookieAuth: []
-   *        operationId: ReadOnly
    *        summary: /users/{id}/grant-read-only
    *        description: Grant user read only access
    *        parameters:
@@ -684,7 +678,6 @@ module.exports = (crowi) => {
    *        tags: [Users Management]
    *        security:
    *          - cookieAuth: []
-   *        operationId: revokeReadOnly
    *        summary: /users/{id}/revoke-read-only
    *        description: Revoke user read only access
    *        parameters:
@@ -738,7 +731,6 @@ module.exports = (crowi) => {
    *        tags: [Users Management]
    *        security:
    *          - cookieAuth: []
-   *        operationId: activateUser
    *        summary: /users/{id}/activate
    *        description: Activate user
    *        parameters:
@@ -794,7 +786,6 @@ module.exports = (crowi) => {
    *        tags: [Users Management]
    *        security:
    *          - cookieAuth: []
-   *        operationId: deactivateUser
    *        summary: /users/{id}/deactivate
    *        description: Deactivate user
    *        parameters:
@@ -843,7 +834,6 @@ module.exports = (crowi) => {
    *        tags: [Users Management]
    *        security:
    *          - cookieAuth: []
-   *        operationId: removeUser
    *        summary: /users/{id}/remove
    *        description: Delete user
    *        parameters:
@@ -907,7 +897,6 @@ module.exports = (crowi) => {
    *        tags: [Users Management]
    *        security:
    *          - cookieAuth: []
-   *        operationId: listExternalAccountsUsers
    *        summary: /users/external-accounts
    *        description: Get external-account
    *        parameters:
@@ -948,7 +937,6 @@ module.exports = (crowi) => {
    *        tags: [Users Management]
    *        security:
    *          - cookieAuth: []
-   *        operationId: removeExternalAccountUser
    *        summary: /users/external-accounts/{id}/remove
    *        description: Delete ExternalAccount
    *        parameters:
@@ -993,7 +981,6 @@ module.exports = (crowi) => {
    *        tags: [Users Management]
    *        security:
    *          - cookieAuth: []
-   *        operationId: update.imageUrlCache
    *        summary: /users/update.imageUrlCache
    *        description: update imageUrlCache
    *        requestBody:
@@ -1049,7 +1036,6 @@ module.exports = (crowi) => {
    *        tags: [Users Management]
    *        security:
    *          - cookieAuth: []
-   *        operationId: resetPassword
    *        summary: /users/reset-password
    *        description: update imageUrlCache
    *        requestBody:
@@ -1099,7 +1085,6 @@ module.exports = (crowi) => {
    *        tags: [Users Management]
    *        security:
    *          - cookieAuth: []
-   *        operationId: resetPasswordEmail
    *        summary: /users/reset-password-email
    *        description: send new password email
    *        requestBody:
@@ -1148,7 +1133,6 @@ module.exports = (crowi) => {
    *        tags: [Users Management]
    *        security:
    *          - cookieAuth: []
-   *        operationId: sendInvitationEmail
    *        summary: /users/send-invitation-email
    *        description: send invitation email
    *        requestBody:
@@ -1207,7 +1191,6 @@ module.exports = (crowi) => {
    *        get:
    *          tags: [Users]
    *          summary: /users/list
-   *          operationId: getUsersList
    *          description: Get list of users
    *          parameters:
    *            - in: query
@@ -1229,9 +1212,9 @@ module.exports = (crowi) => {
    *                          $ref: '#/components/schemas/User'
    *                        description: user list
    *            403:
-   *              $ref: '#/components/responses/403'
+   *              $ref: '#/components/responses/Forbidden'
    *            500:
-   *              $ref: '#/components/responses/500'
+   *              $ref: '#/components/responses/InternalServerError'
    */
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
     const userIds = req.query.userIds ?? null;
@@ -1270,7 +1253,6 @@ module.exports = (crowi) => {
     *        get:
     *          tags: [Users]
     *          summary: /users/usernames
-    *          operationId: getUsernames
     *          description: Get list of usernames
     *          parameters:
     *            - in: query

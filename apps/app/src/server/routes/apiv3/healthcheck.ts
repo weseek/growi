@@ -111,7 +111,6 @@ module.exports = (crowi) => {
    *    get:
    *      tags: [Healthcheck]
    *      security: []
-   *      operationId: getHealthcheck
    *      summary: /healthcheck
    *      description: Check whether the server is healthy or not
    *      parameters:

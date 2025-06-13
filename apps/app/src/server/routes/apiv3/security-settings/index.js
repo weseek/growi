@@ -1,4 +1,4 @@
-import { ConfigSource } from '@growi/core/dist/interfaces';
+import { ConfigSource, toNonBlankStringOrUndefined } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import xss from 'xss';
 
@@ -407,11 +407,11 @@ module.exports = (crowi) => {
 
   const activityEvent = crowi.event('activity');
 
-  async function updateAndReloadStrategySettings(authId, params) {
+  async function updateAndReloadStrategySettings(authId, params, opts = { removeIfUndefined: false }) {
     const { passportService } = crowi;
 
     // update config without publishing S2sMessage
-    await configManager.updateConfigs(params, { skipPubsub: true });
+    await configManager.updateConfigs(params, { skipPubsub: true, removeIfUndefined: opts.removeIfUndefined });
 
     await passportService.setupStrategyById(authId);
     passportService.publishUpdatedMessage(authId);
@@ -1262,15 +1262,15 @@ module.exports = (crowi) => {
    *                      $ref: '#/components/schemas/GoogleOAuthSetting'
    */
   router.put('/google-oauth', loginRequiredStrictly, adminRequired, addActivity, validator.googleOAuth, apiV3FormValidator, async(req, res) => {
-    const requestParams = {
-      'security:passport-google:clientId': req.body.googleClientId,
-      'security:passport-google:clientSecret': req.body.googleClientSecret,
-      'security:passport-google:isSameEmailTreatedAsIdenticalUser': req.body.isSameEmailTreatedAsIdenticalUser,
-    };
-
 
     try {
-      await updateAndReloadStrategySettings('google', requestParams);
+      await updateAndReloadStrategySettings('google', {
+        'security:passport-google:isSameEmailTreatedAsIdenticalUser': req.body.isSameEmailTreatedAsIdenticalUser,
+      });
+      await updateAndReloadStrategySettings('google', {
+        'security:passport-google:clientId': toNonBlankStringOrUndefined(req.body.googleClientId),
+        'security:passport-google:clientSecret': toNonBlankStringOrUndefined(req.body.googleClientSecret),
+      }, { removeIfUndefined: true });
 
       const securitySettingParams = {
         googleClientId: await configManager.getConfig('security:passport-google:clientId'),

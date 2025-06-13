@@ -1,6 +1,9 @@
 import { GrowiDeploymentType, GrowiServiceType } from '@growi/core/dist/consts';
-import type { ConfigDefinition, Lang } from '@growi/core/dist/interfaces';
-import { defineConfig } from '@growi/core/dist/interfaces';
+import type { ConfigDefinition, Lang, NonBlankString } from '@growi/core/dist/interfaces';
+import {
+  toNonBlankString,
+  defineConfig,
+} from '@growi/core/dist/interfaces';
 import type OpenAI from 'openai';
 
 import { ActionGroupSize } from '~/interfaces/activity';
@@ -726,10 +729,10 @@ export const CONFIG_DEFINITIONS = {
   'security:passport-google:isEnabled': defineConfig<boolean>({
     defaultValue: false,
   }),
-  'security:passport-google:clientId': defineConfig<string | undefined>({
+  'security:passport-google:clientId': defineConfig<NonBlankString | undefined>({
     defaultValue: undefined,
   }),
-  'security:passport-google:clientSecret': defineConfig<string | undefined>({
+  'security:passport-google:clientSecret': defineConfig<NonBlankString | undefined>({
     defaultValue: undefined,
   }),
   'security:passport-google:isSameUsernameTreatedAsIdenticalUser': defineConfig<boolean>({
@@ -819,28 +822,29 @@ export const CONFIG_DEFINITIONS = {
     envVarName: 'S3_OBJECT_ACL',
     defaultValue: undefined,
   }),
-  'aws:s3Bucket': defineConfig<string>({
-    defaultValue: 'growi',
+  'aws:s3Bucket': defineConfig<NonBlankString>({
+    defaultValue: toNonBlankString('growi'),
   }),
-  'aws:s3Region': defineConfig<string>({
-    defaultValue: 'ap-northeast-1',
+  'aws:s3Region': defineConfig<NonBlankString>({
+    defaultValue: toNonBlankString('ap-northeast-1'),
   }),
-  'aws:s3AccessKeyId': defineConfig<string | undefined>({
+  'aws:s3AccessKeyId': defineConfig<NonBlankString | undefined>({
     defaultValue: undefined,
   }),
-  'aws:s3SecretAccessKey': defineConfig<string | undefined>({
+  'aws:s3SecretAccessKey': defineConfig<NonBlankString | undefined>({
     defaultValue: undefined,
+    isSecret: true,
   }),
-  'aws:s3CustomEndpoint': defineConfig<string | undefined>({
+  'aws:s3CustomEndpoint': defineConfig<NonBlankString | undefined>({
     defaultValue: undefined,
   }),
 
   // GCS Settings
-  'gcs:apiKeyJsonPath': defineConfig<string | undefined>({
+  'gcs:apiKeyJsonPath': defineConfig<NonBlankString | undefined>({
     envVarName: 'GCS_API_KEY_JSON_PATH',
     defaultValue: undefined,
   }),
-  'gcs:bucket': defineConfig<string | undefined>({
+  'gcs:bucket': defineConfig<NonBlankString | undefined>({
     envVarName: 'GCS_BUCKET',
     defaultValue: undefined,
   }),
@@ -866,15 +870,15 @@ export const CONFIG_DEFINITIONS = {
     envVarName: 'AZURE_REFERENCE_FILE_WITH_RELAY_MODE',
     defaultValue: false,
   }),
-  'azure:tenantId': defineConfig<string | undefined>({
+  'azure:tenantId': defineConfig<NonBlankString | undefined>({
     envVarName: 'AZURE_TENANT_ID',
     defaultValue: undefined,
   }),
-  'azure:clientId': defineConfig<string | undefined>({
+  'azure:clientId': defineConfig<NonBlankString | undefined>({
     envVarName: 'AZURE_CLIENT_ID',
     defaultValue: undefined,
   }),
-  'azure:clientSecret': defineConfig<string | undefined>({
+  'azure:clientSecret': defineConfig<NonBlankString | undefined>({
     envVarName: 'AZURE_CLIENT_SECRET',
     defaultValue: undefined,
     isSecret: true,

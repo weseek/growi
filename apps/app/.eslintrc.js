@@ -1,9 +1,21 @@
+/**
+ * @type {import('eslint').Linter.Config}
+ */
 module.exports = {
   extends: [
     'next/core-web-vitals',
     'weseek/react',
   ],
   plugins: [
+  ],
+  ignorePatterns: [
+    'dist/**',
+    '**/dist/**',
+    'transpiled/**',
+    'public/**',
+    'src/linter-checker/**',
+    'tmp/**',
+    'next-env.d.ts',
   ],
   settings: {
     // resolve path aliases by eslint-import-resolver-typescript
@@ -25,7 +37,7 @@ module.exports = {
   overrides: [
     {
       // enable the rule specifically for JavaScript files
-      files: ['*.js', '*.jsx'],
+      files: ['*.js', '*.mjs', '*.jsx'],
       rules: {
         // set 'warn' temporarily -- 2023.08.14 Yuki Takei
         'react/prop-types': 'warn',
@@ -35,7 +47,7 @@ module.exports = {
     },
     {
       // enable the rule specifically for TypeScript files
-      files: ['*.ts', '*.tsx'],
+      files: ['*.ts', '*.mts', '*.tsx'],
       rules: {
         'no-unused-vars': 'off',
         // set 'warn' temporarily -- 2023.08.14 Yuki Takei

@@ -1,6 +1,6 @@
 import type { KeyboardEvent, JSX } from 'react';
 import {
-  type FC, memo, useRef, useEffect, useState, useCallback, useMemo,
+  type FC, memo, useEffect, useState, useCallback, useMemo,
 } from 'react';
 
 import { Controller } from 'react-hook-form';
@@ -29,7 +29,7 @@ import {
 import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
 import { useSWRxThreads } from '../../../stores/thread';
 
-import { MessageCard } from './MessageCard';
+import { MessageCard } from './MessageCard/MessageCard';
 import { ResizableTextarea } from './ResizableTextArea';
 
 import styles from './AiAssistantSidebar.module.scss';
@@ -390,105 +390,112 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
             <span className="material-symbols-outlined">close</span>
           </button>
         </div>
-        <div className="p-4 d-flex flex-column gap-4 vh-100">
 
-          { threadData != null
-            ? (
-              <div className="vstack gap-4 pb-2">
-                { messageLogs.map(message => (
-                  <>
-                    <MessageCard
-                      role={message.isUserMessage ? 'user' : 'assistant'}
-                      additionalItem={messageCardAdditionalItemForGeneratedMessage(message.id)}
-                    >
-                      {message.content}
-                    </MessageCard>
-                  </>
-                )) }
-                { generatingAnswerMessage != null && (
-                  <MessageCard
-                    role="assistant"
-                    additionalItem={messageCardAdditionalItemForGeneratingMessage}
-                  >
-                    {generatingAnswerMessage.content}
-                  </MessageCard>
-                )}
-                { messageLogs.length > 0 && (
-                  <div className="d-flex justify-content-center">
-                    <span className="bg-body-tertiary text-body-secondary rounded-pill px-3 py-1" style={{ fontSize: 'smaller' }}>
-                      {t('sidebar_ai_assistant.caution_against_hallucination')}
-                    </span>
-                  </div>
-                )}
-              </div>
-            )
-            : (
-              <>{ initialView }</>
-            )
-          }
-
-          <div className="mt-auto">
-            <form onSubmit={form.handleSubmit(submit)} className="flex-fill vstack gap-1">
-              <Controller
-                name="input"
-                control={form.control}
-                render={({ field }) => (
-                  <ResizableTextarea
-                    {...field}
-                    required
-                    className="form-control textarea-ask"
-                    style={{ resize: 'none' }}
-                    rows={1}
-                    placeholder={placeHolder}
-                    onKeyDown={keyDownHandler}
-                    disabled={form.formState.isSubmitting}
-                  />
-                )}
-              />
-              <div className="flex-fill hstack gap-2 justify-content-between m-0">
-                { !isEditorAssistant && generateModeSwitchesDropdownForKnowledgeAssistant(isGenerating) }
-                { isEditorAssistant && <div /> }
-                <button
-                  type="submit"
-                  className="btn btn-submit no-border"
-                  disabled={form.formState.isSubmitting || isGenerating}
-                >
-                  <span className="material-symbols-outlined">send</span>
-                </button>
-              </div>
-            </form>
-
-            {form.formState.errors.input != null && (
-              <div className="mt-4 bg-danger bg-opacity-10 rounded-3 p-2 w-100">
-                <div>
-                  <span className="material-symbols-outlined text-danger me-2">error</span>
-                  <span className="text-danger">{ errorMessage != null ? t(errorMessage) : t('sidebar_ai_assistant.error_message') }</span>
-                </div>
-
-                <button
-                  type="button"
-                  className="btn btn-link text-body-secondary p-0"
-                  aria-expanded={isErrorDetailCollapsed}
-                  onClick={() => setIsErrorDetailCollapsed(!isErrorDetailCollapsed)}
-                >
-                  <span className={`material-symbols-outlined mt-2 me-1 ${isErrorDetailCollapsed ? 'rotate-90' : ''}`}>
-                    chevron_right
-                  </span>
-                  <span className="small">{t('sidebar_ai_assistant.show_error_detail')}</span>
-                </button>
-
-                <Collapse isOpen={isErrorDetailCollapsed}>
-                  <div className="ms-2">
-                    <div className="">
-                      <div className="text-body-secondary small">
-                        {form.formState.errors.input?.message}
+        <div className="flex-grow-1 overflow-hidden">
+          <SimpleBar
+            className="h-100"
+            autoHide
+          >
+            <div className="p-4 d-flex flex-column gap-4 flex-grow-1">
+              { threadData != null
+                ? (
+                  <div className="vstack gap-4 pb-2">
+                    { messageLogs.map(message => (
+                      <>
+                        <MessageCard
+                          role={message.isUserMessage ? 'user' : 'assistant'}
+                          additionalItem={messageCardAdditionalItemForGeneratedMessage(message.id)}
+                        >
+                          {message.content}
+                        </MessageCard>
+                      </>
+                    )) }
+                    { generatingAnswerMessage != null && (
+                      <MessageCard
+                        role="assistant"
+                        additionalItem={messageCardAdditionalItemForGeneratingMessage}
+                      >
+                        {generatingAnswerMessage.content}
+                      </MessageCard>
+                    )}
+                    { messageLogs.length > 0 && (
+                      <div className="d-flex justify-content-center">
+                        <span className="bg-body-tertiary text-body-secondary rounded-pill px-3 py-1" style={{ fontSize: 'smaller' }}>
+                          {t('sidebar_ai_assistant.caution_against_hallucination')}
+                        </span>
                       </div>
+                    )}
+                  </div>
+                )
+                : (
+                  <>{ initialView }</>
+                )
+              }
+            </div>
+          </SimpleBar>
+        </div>
+
+        <div className="position-sticky bottom-0 bg-body z-2 p-3 border-top">
+          <form onSubmit={form.handleSubmit(submit)} className="flex-fill vstack gap-1">
+            <Controller
+              name="input"
+              control={form.control}
+              render={({ field }) => (
+                <ResizableTextarea
+                  {...field}
+                  required
+                  className="form-control textarea-ask"
+                  style={{ resize: 'none' }}
+                  rows={1}
+                  placeholder={placeHolder}
+                  onKeyDown={keyDownHandler}
+                  disabled={form.formState.isSubmitting}
+                />
+              )}
+            />
+            <div className="flex-fill hstack gap-2 justify-content-between m-0">
+              { !isEditorAssistant && generateModeSwitchesDropdownForKnowledgeAssistant(isGenerating) }
+              { isEditorAssistant && <div /> }
+              <button
+                type="submit"
+                className="btn btn-submit no-border"
+                disabled={form.formState.isSubmitting || isGenerating}
+              >
+                <span className="material-symbols-outlined">send</span>
+              </button>
+            </div>
+          </form>
+
+          {form.formState.errors.input != null && (
+            <div className="mt-4 bg-danger bg-opacity-10 rounded-3 p-2 w-100">
+              <div>
+                <span className="material-symbols-outlined text-danger me-2">error</span>
+                <span className="text-danger">{ errorMessage != null ? t(errorMessage) : t('sidebar_ai_assistant.error_message') }</span>
+              </div>
+
+              <button
+                type="button"
+                className="btn btn-link text-body-secondary p-0"
+                aria-expanded={isErrorDetailCollapsed}
+                onClick={() => setIsErrorDetailCollapsed(!isErrorDetailCollapsed)}
+              >
+                <span className={`material-symbols-outlined mt-2 me-1 ${isErrorDetailCollapsed ? 'rotate-90' : ''}`}>
+                  chevron_right
+                </span>
+                <span className="small">{t('sidebar_ai_assistant.show_error_detail')}</span>
+              </button>
+
+              <Collapse isOpen={isErrorDetailCollapsed}>
+                <div className="ms-2">
+                  <div className="">
+                    <div className="text-body-secondary small">
+                      {form.formState.errors.input?.message}
                     </div>
                   </div>
-                </Collapse>
-              </div>
-            )}
-          </div>
+                </div>
+              </Collapse>
+            </div>
+          )}
         </div>
       </div>
     </>
@@ -497,9 +504,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
 
 export const AiAssistantSidebar: FC = memo((): JSX.Element => {
-  const sidebarRef = useRef<HTMLDivElement>(null);
-  const sidebarScrollerRef = useRef<HTMLDivElement>(null);
-
   const { data: aiAssistantSidebarData, close: closeAiAssistantSidebar, refreshThreadData } = useAiAssistantSidebar();
   const { mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
 
@@ -538,24 +542,17 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
 
   return (
     <div
-      ref={sidebarRef}
       className={`position-fixed top-0 end-0 h-100 border-start bg-body shadow-sm overflow-hidden ${moduleClass}`}
       data-testid="grw-right-sidebar"
     >
-      <SimpleBar
-        scrollableNodeProps={{ ref: sidebarScrollerRef }}
-        className="h-100 position-relative"
-        autoHide
-      >
-        <AiAssistantSidebarSubstance
-          isEditorAssistant={isEditorAssistant}
-          threadData={threadData}
-          aiAssistantData={aiAssistantData}
-          onMessageReceived={mutateThreads}
-          onNewThreadCreated={newThreadCreatedHandler}
-          onCloseButtonClicked={closeAiAssistantSidebar}
-        />
-      </SimpleBar>
+      <AiAssistantSidebarSubstance
+        isEditorAssistant={isEditorAssistant}
+        threadData={threadData}
+        aiAssistantData={aiAssistantData}
+        onMessageReceived={mutateThreads}
+        onNewThreadCreated={newThreadCreatedHandler}
+        onCloseButtonClicked={closeAiAssistantSidebar}
+      />
     </div>
   );
 });
