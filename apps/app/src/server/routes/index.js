@@ -1,8 +1,8 @@
+import { SCOPE } from '@growi/core/dist/interfaces';
 import csrf from 'csurf';
 import express from 'express';
 
 import { middlewareFactory as rateLimiterFactory } from '~/features/rate-limiter';
-import { SCOPE } from '@growi/core/dist/interfaces';
 
 import { accessTokenParser } from '../middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '../middlewares/add-activity';
@@ -101,7 +101,7 @@ module.exports = function(crowi, app) {
   app.get('/passport/oidc/callback'               , loginPassport.injectRedirectTo, loginPassport.loginPassportOidcCallback     , loginPassport.loginFailureForExternalAccount);
   app.post('/passport/saml/callback'              , addActivity, loginPassport.injectRedirectTo, loginPassport.loginPassportSamlCallback, loginPassport.loginFailureForExternalAccount);
 
-  app.post('/_api/login/testLdap'    , loginRequiredStrictly , loginFormValidator.loginRules() , loginFormValidator.loginValidation , loginPassport.testLdapCredentials);
+  app.post('/_api/login/testLdap'    ,  accessTokenParser([SCOPE.WRITE.USER_SETTINGS.EXTERNAL_ACCOUNT]), loginRequiredStrictly , loginFormValidator.loginRules() , loginFormValidator.loginValidation , loginPassport.testLdapCredentials);
 
   // importer management for admin
   app.post('/_api/admin/settings/importerEsa'   , accessTokenParser([SCOPE.WRITE.ADMIN.IMPORT_DATA]), loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.importer.api.validators.importer.esa(),admin.api.importerSettingEsa);
@@ -149,13 +149,13 @@ module.exports = function(crowi, app) {
 
   app.use(unavailableWhenMaintenanceMode);
 
-  app.get('/me'                                   , accessTokenParser([SCOPE.READ.USER_SETTINGS.INFO]), loginRequiredStrictly, next.delegateToNext);
-  app.get('/me/*'                                 , accessTokenParser([SCOPE.READ.USER_SETTINGS.INFO]), loginRequiredStrictly, next.delegateToNext);
+  app.get('/me'                                   , loginRequiredStrictly, next.delegateToNext);
+  app.get('/me/*'                                 , loginRequiredStrictly, next.delegateToNext);
 
   app.use('/attachment', accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT]), attachment.getRouterFactory(crowi));
   app.use('/download', accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT]), attachment.downloadRouterFactory(crowi));
 
-  app.get('/_search'                            , accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, next.delegateToNext);
+  app.get('/_search'                              , loginRequired, next.delegateToNext);
 
   app.use('/forgot-password', express.Router()
     .use(forgotPassword.checkForgotPasswordEnabledMiddlewareFactory(crowi))
@@ -174,7 +174,7 @@ module.exports = function(crowi, app) {
 
   app.use('/ogp', express.Router().get('/:pageId([0-9a-z]{0,})', loginRequired, ogp.pageIdRequired, ogp.ogpValidator, ogp.renderOgp));
 
-  app.get('/*/$'                   , accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, next.delegateToNext);
-  app.get('/*'                     , accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, autoReconnectToSearch, next.delegateToNext);
+  app.get('/*/$'                   , loginRequired, next.delegateToNext);
+  app.get('/*'                     , loginRequired, autoReconnectToSearch, next.delegateToNext);
 
 };
