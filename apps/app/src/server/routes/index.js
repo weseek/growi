@@ -149,13 +149,13 @@ module.exports = function(crowi, app) {
 
   app.use(unavailableWhenMaintenanceMode);
 
-  app.get('/me'                                   , accessTokenParser([SCOPE.READ.USER_SETTINGS.INFO]), loginRequiredStrictly, next.delegateToNext); // TODO: 167279
-  app.get('/me/*'                                 , accessTokenParser([SCOPE.READ.USER_SETTINGS.INFO]), loginRequiredStrictly, next.delegateToNext); // TODO: 167279
+  app.get('/me'                                   , loginRequiredStrictly, next.delegateToNext);
+  app.get('/me/*'                                 , loginRequiredStrictly, next.delegateToNext);
 
   app.use('/attachment', accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT]), attachment.getRouterFactory(crowi));
   app.use('/download', accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT]), attachment.downloadRouterFactory(crowi));
 
-  app.get('/_search'                            , accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, next.delegateToNext); // TODO: 167279
+  app.get('/_search'                              , loginRequired, next.delegateToNext);
 
   app.use('/forgot-password', express.Router()
     .use(forgotPassword.checkForgotPasswordEnabledMiddlewareFactory(crowi))
@@ -174,7 +174,7 @@ module.exports = function(crowi, app) {
 
   app.use('/ogp', express.Router().get('/:pageId([0-9a-z]{0,})', loginRequired, ogp.pageIdRequired, ogp.ogpValidator, ogp.renderOgp));
 
-  app.get('/*/$'                   , accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, next.delegateToNext); // TODO: 167279
-  app.get('/*'                     , accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, autoReconnectToSearch, next.delegateToNext); // TODO: 167279
+  app.get('/*/$'                   , loginRequired, next.delegateToNext);
+  app.get('/*'                     , loginRequired, autoReconnectToSearch, next.delegateToNext);
 
 };
