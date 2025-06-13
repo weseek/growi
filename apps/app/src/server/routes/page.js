@@ -258,10 +258,11 @@ module.exports = function(crowi, app) {
    *   schemas:
    *     PageRemoveData:
    *       type: object
+   *       required:
+   *         - path
    *       properties:
    *         path:
    *           type: string
-   *           required: true
    *           description: Path of the deleted page
    *           example: "/user/example"
    *         isRecursively:
