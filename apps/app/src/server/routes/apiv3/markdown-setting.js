@@ -149,6 +149,7 @@ module.exports = (crowi) => {
    *                      description: markdown params
    *                      $ref: '#/components/schemas/MarkdownParams'
    */
+  // TODO: 167279
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const markdownParams = {
       isEnabledLinebreaks: await crowi.configManager.getConfig('markdown:isEnabledLinebreaks'),
@@ -191,6 +192,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/LineBreakParams'
    */
+  // TODO: 167279
   router.put('/lineBreak', loginRequiredStrictly, adminRequired, addActivity, validator.lineBreak, apiV3FormValidator, async(req, res) => {
 
     const requestLineBreakParams = {
@@ -246,6 +248,7 @@ module.exports = (crowi) => {
    *                      description: indent params
    *                      $ref: '#/components/schemas/IndentParams'
    */
+  // TODO: 167279
   router.put('/indent', loginRequiredStrictly, adminRequired, addActivity, validator.indent, apiV3FormValidator, async(req, res) => {
 
     const requestIndentParams = {
@@ -297,6 +300,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/XssParams'
    */
+  // TODO: 167279
   router.put('/xss', loginRequiredStrictly, adminRequired, addActivity, validator.xssSetting, apiV3FormValidator, async(req, res) => {
     if (req.body.isEnabledXss && req.body.xssOption == null) {
       return res.apiv3Err(new ErrorV3('xss option is required'));

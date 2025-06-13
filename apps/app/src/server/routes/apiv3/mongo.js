@@ -35,6 +35,7 @@ module.exports = (crowi) => {
    *                    items:
    *                      type: string
    */
+  // TODO: 167279
   router.get('/collections', loginRequiredStrictly, adminRequired, async(req, res) => {
     const listCollectionsResult = await mongoose.connection.db.listCollections().toArray();
     const collections = listCollectionsResult.map(collectionObj => collectionObj.name);

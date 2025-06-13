@@ -79,7 +79,7 @@ export const generateAccessTokenHandlerFactory: GenerateAccessTokenHandlerFactor
   const activityEvent = crowi.event('activity');
   const addActivity = generateAddActivityMiddleware();
 
-
+  // TODO: 167279
   return [
     loginRequiredStrictly,
     excludeReadOnlyUser,
