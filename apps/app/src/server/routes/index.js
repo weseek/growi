@@ -101,7 +101,7 @@ module.exports = function(crowi, app) {
   app.get('/passport/oidc/callback'               , loginPassport.injectRedirectTo, loginPassport.loginPassportOidcCallback     , loginPassport.loginFailureForExternalAccount);
   app.post('/passport/saml/callback'              , addActivity, loginPassport.injectRedirectTo, loginPassport.loginPassportSamlCallback, loginPassport.loginFailureForExternalAccount);
 
-  app.post('/_api/login/testLdap'    ,  accessTokenParser([SCOPE.WRITE.ADMIN.SECURITY]), loginRequiredStrictly , adminRequired, loginFormValidator.loginRules() , loginFormValidator.loginValidation , loginPassport.testLdapCredentials);
+  app.post('/_api/login/testLdap'    ,  accessTokenParser([SCOPE.WRITE.USER_SETTINGS.EXTERNAL_ACCOUNT]), loginRequiredStrictly , loginFormValidator.loginRules() , loginFormValidator.loginValidation , loginPassport.testLdapCredentials);
 
   // importer management for admin
   app.post('/_api/admin/settings/importerEsa'   , accessTokenParser([SCOPE.WRITE.ADMIN.IMPORT_DATA]), loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.importer.api.validators.importer.esa(),admin.api.importerSettingEsa);
