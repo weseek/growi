@@ -1212,9 +1212,9 @@ module.exports = (crowi) => {
    *                          $ref: '#/components/schemas/User'
    *                        description: user list
    *            403:
-   *              $ref: '#/components/responses/403'
+   *              $ref: '#/components/responses/Forbidden'
    *            500:
-   *              $ref: '#/components/responses/500'
+   *              $ref: '#/components/responses/InternalServerError'
    */
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
     const userIds = req.query.userIds ?? null;

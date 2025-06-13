@@ -912,7 +912,7 @@ module.exports = (crowi) => {
         },
         { skipPubsub: true });
         await configManager.updateConfigs({
-          'app:s3CustomEndpoint': toNonBlankStringOrUndefined(req.body.s3CustomEndpoint),
+          'aws:s3CustomEndpoint': toNonBlankStringOrUndefined(req.body.s3CustomEndpoint),
           'aws:s3AccessKeyId': toNonBlankStringOrUndefined(req.body.s3AccessKeyId),
           'aws:s3SecretAccessKey': toNonBlankStringOrUndefined(req.body.s3SecretAccessKey),
         },
