@@ -13,8 +13,9 @@ const OriginalRichSlideSection = React.memo(
     return (
       <section className={presentation ? 'm-2' : 'shadow rounded m-2'}>
         <svg data-marpit-svg="" viewBox="0 0 1280 720">
+          <title>Rich Slide Section</title>
           <foreignObject width="1280" height="720">
-            <section>{children ?? <></>}</section>
+            <section>{children}</section>
           </foreignObject>
         </svg>
       </section>

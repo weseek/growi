@@ -26,7 +26,9 @@ const baseRevealOptions: Reveal.Options = {
  */
 const removeAllHiddenElements = () => {
   const sections = document.querySelectorAll(`${moduleClass} section`);
-  sections.forEach((section) => section.removeAttribute('hidden'));
+  for (const section of sections) {
+    section.removeAttribute('hidden');
+  }
 };
 
 export type PresentationProps = {

@@ -20,7 +20,7 @@ export const MarpSlides = (props: Props): JSX.Element => {
         <style>{css}</style>
       </Head>
       <div
-        // eslint-disable-next-line react/no-danger
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: ignore
         dangerouslySetInnerHTML={{
           // DOMpurify.sanitize delete elements in <svg> so sanitize is not used here.
           __html: html,

@@ -9,11 +9,12 @@ type ParseResult = {
 };
 
 const parseSlideFrontmatter = (frontmatter: string): ParseResult => {
-  let marp;
-  let slide;
+  let marp: boolean | undefined;
+  let slide: boolean | undefined;
 
   const lines = frontmatter.split('\n');
-  lines.forEach((line) => {
+
+  for (const line of lines) {
     const [key, value] = line.split(':').map((part) => part.trim());
     if (key === 'marp' && value === 'true') {
       marp = true;
@@ -21,7 +22,7 @@ const parseSlideFrontmatter = (frontmatter: string): ParseResult => {
     if (key === 'slide' && value === 'true') {
       slide = true;
     }
-  });
+  }
 
   return { marp, slide };
 };
