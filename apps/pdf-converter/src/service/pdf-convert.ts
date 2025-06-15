@@ -1,7 +1,7 @@
-import fs from 'fs';
-import path from 'path';
-import { Readable, Writable } from 'stream';
-import { pipeline as pipelinePromise } from 'stream/promises';
+import fs from 'node:fs';
+import path from 'node:path';
+import { Readable, Writable } from 'node:stream';
+import { pipeline as pipelinePromise } from 'node:stream/promises';
 
 import type { OnInit } from '@tsed/common';
 import { Service } from '@tsed/di';
