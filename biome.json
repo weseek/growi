@@ -18,7 +18,8 @@
       ".eslintrc.js",
       ".stylelintrc.json",
       "package.json",
-      "./apps/**",
+      "./apps/app/**",
+      "./apps/slackbot-proxy/**",
       "./packages/core/**",
       "./packages/core-styles/**",
       "./packages/custom-icons/**",
@@ -45,6 +46,9 @@
   "javascript": {
     "formatter": {
       "quoteStyle": "single"
+    },
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
     }
   }
 }
