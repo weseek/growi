@@ -5,9 +5,9 @@ import Head from 'next/head';
 import { presentationMarpit, slideMarpit } from '../services/growi-marpit';
 
 type Props = {
-  children?: string,
-  presentation?: boolean,
-}
+  children?: string;
+  presentation?: boolean;
+};
 
 export const MarpSlides = (props: Props): JSX.Element => {
   const { children, presentation } = props;

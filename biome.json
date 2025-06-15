@@ -25,7 +25,6 @@
       "./packages/editor/**",
       "./packages/pdf-converter-client/**",
       "./packages/pluginkit/**",
-      "./packages/presentation/**",
       "./packages/remark-attachment-refs/**"
     ]
   },
