@@ -1,4 +1,4 @@
-import { PlatformApplication } from '@tsed/common';
+import type { PlatformApplication } from '@tsed/common';
 import { Configuration, Inject } from '@tsed/di';
 import express from 'express';
 import '@tsed/swagger';
@@ -32,10 +32,8 @@ const PORT = Number(process.env.PORT || 3010);
   },
 })
 class Server {
-
   @Inject()
-    app: PlatformApplication | undefined;
-
+  app: PlatformApplication | undefined;
 }
 
 export default Server;
