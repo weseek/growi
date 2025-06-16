@@ -29,7 +29,7 @@ import {
 import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
 import { useSWRxThreads } from '../../../stores/thread';
 
-import { MessageCard } from './MessageCard';
+import { MessageCard } from './MessageCard/MessageCard';
 import { ResizableTextarea } from './ResizableTextArea';
 
 import styles from './AiAssistantSidebar.module.scss';

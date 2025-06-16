@@ -17,6 +17,7 @@ import {
   type BlockBlobUploadResponse,
   type BlockBlobParallelUploadOptions,
 } from '@azure/storage-blob';
+import { toNonBlankStringOrUndefined } from '@growi/core/dist/interfaces';
 
 import type Crowi from '~/server/crowi';
 import { FilePathOnStoragePrefix, ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
@@ -60,9 +61,9 @@ function getAzureConfig(): AzureConfig {
 }
 
 function getCredential(): TokenCredential {
-  const tenantId = configManager.getConfig('azure:tenantId');
-  const clientId = configManager.getConfig('azure:clientId');
-  const clientSecret = configManager.getConfig('azure:clientSecret');
+  const tenantId = toNonBlankStringOrUndefined(configManager.getConfig('azure:tenantId'));
+  const clientId = toNonBlankStringOrUndefined(configManager.getConfig('azure:clientId'));
+  const clientSecret = toNonBlankStringOrUndefined(configManager.getConfig('azure:clientSecret'));
 
   if (tenantId == null || clientId == null || clientSecret == null) {
     throw new Error(`Azure Blob Storage missing required configuration: tenantId=${tenantId}, clientId=${clientId}, clientSecret=${clientSecret}`);

@@ -69,29 +69,63 @@ const withMarkdownCaution = `# IMPORTANT:
 `;
 
 function instruction(withMarkdown: boolean): string {
-  return `# RESPONSE FORMAT:
-You must respond with a JSON object in the following format example:
-{
-  "contents": [
-    { "message": "Your brief message about the upcoming change or proposal.\n\n" },
-    { "replace": "New text 1" },
-    { "message": "Additional explanation if needed" },
-    { "replace": "New text 2" },
-    ...more items if needed
-    { "message": "Your friendly message explaining what changes were made or suggested." }
-  ]
-}
+  return `
+  # USER INTENT DETECTION:
+  First, analyze the user's message to determine their intent:
+  - **Consultation Type**: Questions, discussions, explanations, or advice seeking WITHOUT explicit request to edit/modify/generate text
+  - **Edit Type**: Clear requests to edit, modify, fix, generate, create, or write content
 
-The array should contain:
-- [At the beginning of the list] A "message" object that has your brief message about the upcoming change or proposal. Be sure to add two consecutive line feeds ('\n\n') at the end.
-- Objects with a "message" key for explanatory text to the user if needed.
-- Edit markdown according to user instructions and include it line by line in the 'replace' object. ${withMarkdown ? 'Return original text for lines that do not need editing.' : ''}
-- [At the end of the list] A "message" object that contains your friendly message explaining that the operation was completed and what changes were made.
+  ## EXAMPLES OF USER INTENT:
+  ### Consultation Type Examples:
+  - "What do you think about this code?"
+  - "Please give me advice on this text structure"
+  - "Why is this error occurring?"
+  - "Is there a better approach?"
+  - "Can you explain how this works?"
+  - "What are the pros and cons of this method?"
+  - "How should I organize this document?"
 
-${withMarkdown ? withMarkdownCaution : ''}
+  ### Edit Type Examples:
+  - "Please fix the following"
+  - "Add a function that..."
+  - "Rewrite this section to..."
+  - "Correct the errors in this code"
+  - "Generate a new paragraph about..."
+  - "Modify this to include..."
+  - "Create a template for..."
 
-# Multilingual Support:
-Always provide messages in the same language as the user's request.`;
+  # RESPONSE FORMAT:
+  ## For Consultation Type (discussion/advice only):
+  Respond with a JSON object containing ONLY message objects:
+  {
+    "contents": [
+      { "message": "Your thoughtful response to the user's question or consultation.\n\nYou can use multiple paragraphs as needed." }
+    ]
+  }
+
+  ## For Edit Type (explicit editing request):
+  Respond with a JSON object in the following format:
+  {
+    "contents": [
+      { "message": "Your brief message about the upcoming change or proposal.\n\n" },
+      { "replace": "New text 1" },
+      { "message": "Additional explanation if needed" },
+      { "replace": "New text 2" },
+      ...more items if needed
+      { "message": "Your friendly message explaining what changes were made or suggested." }
+    ]
+  }
+
+  The array should contain:
+  - [At the beginning of the list] A "message" object that has your brief message about the upcoming change or proposal. Be sure to add two consecutive line feeds ('\n\n') at the end.
+  - Objects with a "message" key for explanatory text to the user if needed.
+  - Edit markdown according to user instructions and include it line by line in the 'replace' object. ${withMarkdown ? 'Return original text for lines that do not need editing.' : ''}
+  - [At the end of the list] A "message" object that contains your friendly message explaining that the operation was completed and what changes were made.
+
+  ${withMarkdown ? withMarkdownCaution : ''}
+
+  # Multilingual Support:
+  Always provide messages in the same language as the user's request.`;
 }
 /* eslint-disable max-len */
 

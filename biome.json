@@ -25,9 +25,7 @@
       "./packages/editor/**",
       "./packages/pdf-converter-client/**",
       "./packages/pluginkit/**",
-      "./packages/presentation/**",
-      "./packages/preset-templates/**",
-      "./packages/preset-themes/**"
+      "./packages/presentation/**"
     ]
   },
   "formatter": {

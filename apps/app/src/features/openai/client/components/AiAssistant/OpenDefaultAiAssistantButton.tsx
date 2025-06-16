@@ -10,9 +10,8 @@ import { useAiAssistantSidebar, useSWRxAiAssistants } from '../../stores/ai-assi
 
 import styles from './OpenDefaultAiAssistantButton.module.scss';
 
-const OpenDefaultAiAssistantButton = (): JSX.Element => {
+const OpenDefaultAiAssistantButtonSubstance = (): JSX.Element => {
   const { t } = useTranslation();
-  const { data: isAiEnabled } = useIsAiEnabled();
   const { data: aiAssistantData } = useSWRxAiAssistants();
   const { openChat } = useAiAssistantSidebar();
 
@@ -33,10 +32,6 @@ const OpenDefaultAiAssistantButton = (): JSX.Element => {
     openChat(defaultAiAssistant);
   }, [defaultAiAssistant, openChat]);
 
-  if (!isAiEnabled) {
-    return <></>;
-  }
-
   return (
     <NotAvailableForGuest>
       <NotAvailable isDisabled={defaultAiAssistant == null} title={t('default_ai_assistant.not_set')}>
@@ -50,6 +45,16 @@ const OpenDefaultAiAssistantButton = (): JSX.Element => {
       </NotAvailable>
     </NotAvailableForGuest>
   );
+};
+
+const OpenDefaultAiAssistantButton = (): JSX.Element => {
+  const { data: isAiEnabled } = useIsAiEnabled();
+
+  if (!isAiEnabled) {
+    return <></>;
+  }
+
+  return <OpenDefaultAiAssistantButtonSubstance />;
 };
 
 export default OpenDefaultAiAssistantButton;
