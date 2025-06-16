@@ -19,8 +19,6 @@
       ".stylelintrc.json",
       "package.json",
       "./apps/**",
-      "./packages/core/src/utils/**",
-      "./packages/core/src/models/**",
       "./packages/editor/**",
       "./packages/pdf-converter-client/**"
     ]
