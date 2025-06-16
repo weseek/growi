@@ -1,19 +1,22 @@
 export declare class MarkdownTable {
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  // biome-ignore lint/suspicious/noExplicitAny: ignore
   static fromHTMLTableTag(str: any): MarkdownTable;
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  // biome-ignore lint/suspicious/noExplicitAny: ignore
   static fromDSV(str: any, delimiter: any): MarkdownTable;
 
   static fromMarkdownString(str: string): MarkdownTable;
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  // biome-ignore lint/suspicious/noExplicitAny: ignore
   constructor(table: any, options: any);
 
+  // biome-ignore lint/suspicious/noExplicitAny: ignore
   table: any;
 
+  // biome-ignore lint/suspicious/noExplicitAny: ignore
   options: any;
 
+  // biome-ignore lint/suspicious/noExplicitAny: ignore
   toString(): any;
 
   clone(): MarkdownTable;

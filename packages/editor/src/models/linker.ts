@@ -59,33 +59,34 @@ export class Linker {
     // if str doesn't mean a linker, create a link whose label is str
     let label = str;
     let link = '';
-    let type = this.types.markdownLink;
+    let type = Linker.types.markdownLink;
 
     // pukiwiki with separator ">".
-    if (str.match(this.patterns.pukiwikiLinkWithLabel)) {
-      type = this.types.pukiwikiLink;
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      ({ label, link } = str.match(this.patterns.pukiwikiLinkWithLabel)!
+    if (str.match(Linker.patterns.pukiwikiLinkWithLabel)) {
+      type = Linker.types.pukiwikiLink;
+      // biome-ignore lint/style/noNonNullAssertion: ignore
+      ({ label, link } = str.match(Linker.patterns.pukiwikiLinkWithLabel)!
         .groups!);
     }
     // pukiwiki without separator ">".
-    else if (str.match(this.patterns.pukiwikiLinkWithoutLabel)) {
-      type = this.types.pukiwikiLink;
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      ({ label } = str.match(this.patterns.pukiwikiLinkWithoutLabel)!.groups!);
+    else if (str.match(Linker.patterns.pukiwikiLinkWithoutLabel)) {
+      type = Linker.types.pukiwikiLink;
+      // biome-ignore lint/style/noNonNullAssertion: ignore
+      ({ label } = str.match(Linker.patterns.pukiwikiLinkWithoutLabel)!
+        .groups!);
       link = label;
     }
     // markdown
-    else if (str.match(this.patterns.markdownLink)) {
-      type = this.types.markdownLink;
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      ({ label, link } = str.match(this.patterns.markdownLink)!.groups!);
+    else if (str.match(Linker.patterns.markdownLink)) {
+      type = Linker.types.markdownLink;
+      // biome-ignore lint/style/noNonNullAssertion: ignore
+      ({ label, link } = str.match(Linker.patterns.markdownLink)!.groups!);
     }
     // growi
-    else if (str.match(this.patterns.growiLink)) {
-      type = this.types.growiLink;
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      ({ label } = str.match(this.patterns.growiLink)!.groups!);
+    else if (str.match(Linker.patterns.growiLink)) {
+      type = Linker.types.growiLink;
+      // biome-ignore lint/style/noNonNullAssertion: ignore
+      ({ label } = str.match(Linker.patterns.growiLink)!.groups!);
       link = label;
     }
 
@@ -94,7 +95,7 @@ export class Linker {
 
   // create an instance of Linker from text with index
   static fromLineWithIndex(line: string, index: number): Linker {
-    const { beginningOfLink, endOfLink } = this.getBeginningAndEndIndexOfLink(
+    const { beginningOfLink, endOfLink } = Linker.getBeginningAndEndIndexOfLink(
       line,
       index,
     );
@@ -103,7 +104,7 @@ export class Linker {
     if (beginningOfLink >= 0 && endOfLink >= 0) {
       linkStr = line.substring(beginningOfLink, endOfLink);
     }
-    return this.fromMarkdownString(linkStr);
+    return Linker.fromMarkdownString(linkStr);
   }
 
   // return beginning and end indices of link
@@ -117,7 +118,12 @@ export class Linker {
 
     // pukiwiki link ('[[link]]')
     [beginningOfLink, endOfLink] =
-      this.getBeginningAndEndIndexWithPrefixAndSuffix(line, index, '[[', ']]');
+      Linker.getBeginningAndEndIndexWithPrefixAndSuffix(
+        line,
+        index,
+        '[[',
+        ']]',
+      );
 
     // markdown link ('[label](link)')
     if (
@@ -127,7 +133,7 @@ export class Linker {
       endOfLink < index
     ) {
       [beginningOfLink, endOfLink] =
-        this.getBeginningAndEndIndexWithPrefixAndSuffix(
+        Linker.getBeginningAndEndIndexWithPrefixAndSuffix(
           line,
           index,
           '[',
@@ -144,7 +150,12 @@ export class Linker {
       endOfLink < index
     ) {
       [beginningOfLink, endOfLink] =
-        this.getBeginningAndEndIndexWithPrefixAndSuffix(line, index, '[/', ']');
+        Linker.getBeginningAndEndIndexWithPrefixAndSuffix(
+          line,
+          index,
+          '[/',
+          ']',
+        );
     }
 
     // return { beginningOfLink: -1, endOfLink: -1 }
