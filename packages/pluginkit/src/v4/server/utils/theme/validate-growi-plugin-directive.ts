@@ -32,13 +32,13 @@ export const validateThemePluginGrowiDirective = (
 
   const validMetadatas: GrowiThemeMetadata[] = [];
   const invalidObjects: unknown[] = [];
-  growiPlugin.themes.forEach((theme: unknown) => {
+  for (const theme of growiPlugin.themes) {
     if (isGrowiThemeMetadata(theme)) {
       validMetadatas.push(theme);
     } else {
       invalidObjects.push(theme);
     }
-  });
+  }
 
   if (invalidObjects.length > 0) {
     throw new GrowiPluginValidationError<GrowiPluginValidationData>(

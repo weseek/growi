@@ -19,11 +19,11 @@ export const validateAllTemplateLocales = async (
   // key: id
   // value: isValid properties
   const idValidMap: { [id: string]: boolean[] } = {};
-  results.forEach((summary) => {
+  for (const summary of results) {
     idValidMap[summary.default.id] = Object.values(summary).map(
       (s) => s?.isValid ?? false,
     );
-  });
+  }
 
   for (const [id, validMap] of Object.entries(idValidMap)) {
     // warn

@@ -1,6 +1,6 @@
-import fs, { readFileSync } from 'fs';
-import path from 'path';
-import { promisify } from 'util';
+import fs, { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { promisify } from 'node:util';
 
 const statAsync = promisify(fs.stat);
 

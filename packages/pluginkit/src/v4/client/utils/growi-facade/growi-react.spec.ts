@@ -8,7 +8,8 @@ describe('growiReact()', () => {
 
   afterEach(() => {
     process.env.NODE_ENV = originalNodeEnv;
-    delete (global as any).window.growiFacade;
+    // biome-ignore lint/suspicious/noExplicitAny: ignore
+    (global as any).window.growiFacade = undefined;
   });
 
   it('returns window.growiFacade.react in production mode', () => {
@@ -18,6 +19,7 @@ describe('growiReact()', () => {
       useEffect: () => {},
     } as unknown as typeof React;
 
+    // biome-ignore lint/suspicious/noExplicitAny: ignore
     (global as any).window = {
       growiFacade: {
         react: mockProductionReact,
