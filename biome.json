@@ -23,7 +23,7 @@
       "./packages/core-styles/**",
       "./packages/custom-icons/**",
       "./packages/editor/**",
-      "./packages/pdf-converter-client/**",
+      "./packages/pdf-converter-client/src/index.ts",
       "./packages/pluginkit/**",
       "./packages/remark-attachment-refs/**"
     ]
