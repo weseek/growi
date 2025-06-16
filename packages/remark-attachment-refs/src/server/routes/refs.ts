@@ -1,4 +1,5 @@
 import type { IPage, IUser, IAttachment } from '@growi/core';
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { serializeAttachmentSecurely } from '@growi/core/dist/models/serializers';
 import { OptionParser } from '@growi/core/dist/remark-plugins';
 import type { Request } from 'express';
@@ -83,7 +84,7 @@ export const routesFactory = (crowi): any => {
   /**
    * return an Attachment model
    */
-  router.get('/ref', accessTokenParser, loginRequired, async(req: RequestWithUser, res) => {
+  router.get('/ref', accessTokenParser([SCOPE.READ.FEATURES.PAGE], { acceptLegacy: true }), loginRequired, async(req: RequestWithUser, res) => {
     const user = req.user;
     const { pagePath, fileNameOrId } = req.query;
     const filterXSS = new FilterXSS();
@@ -138,7 +139,7 @@ export const routesFactory = (crowi): any => {
   /**
    * return a list of Attachment
    */
-  router.get('/refs', accessTokenParser, loginRequired, async(req: RequestWithUser, res) => {
+  router.get('/refs', accessTokenParser([SCOPE.READ.FEATURES.PAGE], { acceptLegacy: true }), loginRequired, async(req: RequestWithUser, res) => {
     const user = req.user;
     const { prefix, pagePath } = req.query;
     const options: Record<string, string | undefined> = JSON.parse(req.query.options?.toString() ?? '');

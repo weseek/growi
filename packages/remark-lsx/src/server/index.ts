@@ -4,6 +4,7 @@ import { FilterXSS } from 'xss';
 
 import type { LsxApiOptions } from '../interfaces/api';
 
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { listPages } from './routes/list-pages';
 
 const loginRequiredFallback = (req: Request, res: Response) => {
@@ -59,7 +60,7 @@ const middleware = (crowi: any, app: any): void => {
 
   app.get(
     '/_api/lsx',
-    accessTokenParser,
+    accessTokenParser([SCOPE.READ.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequired,
     lsxValidator,
     paramValidator,
