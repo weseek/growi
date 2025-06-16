@@ -14,7 +14,9 @@ describe('growiReact()', () => {
   it('returns window.growiFacade.react in production mode', () => {
     // given
     process.env.NODE_ENV = 'production';
-    const mockProductionReact = { useEffect: () => {} } as unknown as typeof React;
+    const mockProductionReact = {
+      useEffect: () => {},
+    } as unknown as typeof React;
 
     (global as any).window = {
       growiFacade: {

@@ -2,14 +2,12 @@ import fs, { readFileSync } from 'fs';
 import path from 'path';
 import { promisify } from 'util';
 
-
 const statAsync = promisify(fs.stat);
 
-
 type TemplateDirStatus = {
-  isTemplateExists: boolean,
-  meta?: { [key: string]: string },
-}
+  isTemplateExists: boolean;
+  meta?: { [key: string]: string };
+};
 
 export async function getStatus(tplDir: string): Promise<TemplateDirStatus> {
   const markdownPath = path.resolve(tplDir, 'template.md');
@@ -22,7 +20,9 @@ export async function getStatus(tplDir: string): Promise<TemplateDirStatus> {
 
   const result: TemplateDirStatus = {
     isTemplateExists,
-    meta: isMetaDataFileExists ? JSON.parse(readFileSync(metaDataPath, 'utf-8')) : undefined,
+    meta: isMetaDataFileExists
+      ? JSON.parse(readFileSync(metaDataPath, 'utf-8'))
+      : undefined,
   };
 
   return result;
