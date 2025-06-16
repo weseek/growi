@@ -1,2 +1,6 @@
 /dist/**
 vite-env.d.ts
+/src/consts/**
+/src/interfaces/**
+/src/models/**
+/src/utils/**
