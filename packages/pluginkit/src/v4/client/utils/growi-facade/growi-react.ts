@@ -2,10 +2,9 @@ import type React from 'react';
 
 import type { GrowiFacade } from '@growi/core';
 
-
 declare global {
   interface Window {
-    growiFacade: GrowiFacade
+    growiFacade: GrowiFacade;
   }
 }
 
