@@ -6,7 +6,7 @@ import qs from 'qs';
 // eslint-disable-next-line no-restricted-imports
 export * from 'axios';
 
-const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/;
+const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?(Z|[+-]\d{2}:\d{2})$/;
 
 export function convertDateStringsToDates(data: any): any {
   if (typeof data !== 'object' || data === null) {
