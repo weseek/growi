@@ -212,6 +212,7 @@ export const omitDuplicateAreaPathFromPaths = (paths: string[]): string[] => {
  * @param paths paths to be tested
  * @returns omitted paths
  */
+// biome-ignore lint/suspicious/noExplicitAny: ignore
 export const omitDuplicateAreaPageFromPages = (pages: any[]): any[] => {
   return pages.filter((page) => {
     const isDuplicate = pages.some((p) =>
