@@ -22,7 +22,7 @@
       "./packages/core/**",
       "./packages/core-styles/**",
       "./packages/custom-icons/**",
-      "./packages/editor/**",
+      "./packages/editor/src/client/**",
       "./packages/pdf-converter-client/**",
       "./packages/pluginkit/**",
       "./packages/presentation/**",

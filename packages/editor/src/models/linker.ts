@@ -1,7 +1,6 @@
 import { encodeSpaces } from '@growi/core/dist/utils/page-path-utils';
 
 export class Linker {
-
   type: string;
 
   label: string | undefined;
@@ -66,7 +65,8 @@ export class Linker {
     if (str.match(this.patterns.pukiwikiLinkWithLabel)) {
       type = this.types.pukiwikiLink;
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      ({ label, link } = str.match(this.patterns.pukiwikiLinkWithLabel)!.groups!);
+      ({ label, link } = str.match(this.patterns.pukiwikiLinkWithLabel)!
+        .groups!);
     }
     // pukiwiki without separator ">".
     else if (str.match(this.patterns.pukiwikiLinkWithoutLabel)) {
@@ -89,16 +89,15 @@ export class Linker {
       link = label;
     }
 
-    return new Linker(
-      type,
-      label,
-      link,
-    );
+    return new Linker(type, label, link);
   }
 
   // create an instance of Linker from text with index
   static fromLineWithIndex(line: string, index: number): Linker {
-    const { beginningOfLink, endOfLink } = this.getBeginningAndEndIndexOfLink(line, index);
+    const { beginningOfLink, endOfLink } = this.getBeginningAndEndIndexOfLink(
+      line,
+      index,
+    );
     // if index is in a link, extract it from line
     let linkStr = '';
     if (beginningOfLink >= 0 && endOfLink >= 0) {
@@ -109,25 +108,52 @@ export class Linker {
 
   // return beginning and end indices of link
   // if index is not in a link, return { beginningOfLink: -1, endOfLink: -1 }
-  static getBeginningAndEndIndexOfLink(line: string, index: number): { beginningOfLink: number; endOfLink: number } {
+  static getBeginningAndEndIndexOfLink(
+    line: string,
+    index: number,
+  ): { beginningOfLink: number; endOfLink: number } {
     let beginningOfLink: number;
     let endOfLink: number;
 
     // pukiwiki link ('[[link]]')
-    [beginningOfLink, endOfLink] = this.getBeginningAndEndIndexWithPrefixAndSuffix(line, index, '[[', ']]');
+    [beginningOfLink, endOfLink] =
+      this.getBeginningAndEndIndexWithPrefixAndSuffix(line, index, '[[', ']]');
 
     // markdown link ('[label](link)')
-    if (beginningOfLink < 0 || endOfLink < 0 || beginningOfLink > index || endOfLink < index) {
-      [beginningOfLink, endOfLink] = this.getBeginningAndEndIndexWithPrefixAndSuffix(line, index, '[', ')', '](');
+    if (
+      beginningOfLink < 0 ||
+      endOfLink < 0 ||
+      beginningOfLink > index ||
+      endOfLink < index
+    ) {
+      [beginningOfLink, endOfLink] =
+        this.getBeginningAndEndIndexWithPrefixAndSuffix(
+          line,
+          index,
+          '[',
+          ')',
+          '](',
+        );
     }
 
     // growi link ('[/link]')
-    if (beginningOfLink < 0 || endOfLink < 0 || beginningOfLink > index || endOfLink < index) {
-      [beginningOfLink, endOfLink] = this.getBeginningAndEndIndexWithPrefixAndSuffix(line, index, '[/', ']');
+    if (
+      beginningOfLink < 0 ||
+      endOfLink < 0 ||
+      beginningOfLink > index ||
+      endOfLink < index
+    ) {
+      [beginningOfLink, endOfLink] =
+        this.getBeginningAndEndIndexWithPrefixAndSuffix(line, index, '[/', ']');
     }
 
     // return { beginningOfLink: -1, endOfLink: -1 }
-    if (beginningOfLink < 0 || endOfLink < 0 || beginningOfLink > index || endOfLink < index) {
+    if (
+      beginningOfLink < 0 ||
+      endOfLink < 0 ||
+      beginningOfLink > index ||
+      endOfLink < index
+    ) {
       [beginningOfLink, endOfLink] = [-1, -1];
     }
 
@@ -135,15 +161,26 @@ export class Linker {
   }
 
   // return begin and end indices as an array only when index is between prefix and suffix and link contains containText.
-  static getBeginningAndEndIndexWithPrefixAndSuffix(line: string, index: number, prefix: string, suffix: string, containText = ''): [number, number] {
+  static getBeginningAndEndIndexWithPrefixAndSuffix(
+    line: string,
+    index: number,
+    prefix: string,
+    suffix: string,
+    containText = '',
+  ): [number, number] {
     const beginningIndex = line.lastIndexOf(prefix, index);
-    const indexOfContainText = line.indexOf(containText, beginningIndex + prefix.length);
-    const endIndex = line.indexOf(suffix, indexOfContainText + containText.length);
+    const indexOfContainText = line.indexOf(
+      containText,
+      beginningIndex + prefix.length,
+    );
+    const endIndex = line.indexOf(
+      suffix,
+      indexOfContainText + containText.length,
+    );
 
     if (beginningIndex < 0 || indexOfContainText < 0 || endIndex < 0) {
       return [-1, -1];
     }
     return [beginningIndex, endIndex + suffix.length];
   }
-
 }
