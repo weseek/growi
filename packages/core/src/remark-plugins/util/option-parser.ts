@@ -3,7 +3,7 @@ import type { ParseRangeResult } from '../interfaces/option-parser';
 /**
  * Options parser for custom tag
  */
-export class OptionParser {
+export const OptionParser = {
   /**
    * Parse range expression
    *
@@ -22,7 +22,7 @@ export class OptionParser {
    * @param {string} str
    * @returns {ParseRangeResult}
    */
-  static parseRange(str: string): ParseRangeResult | null {
+  parseRange(str: string): ParseRangeResult | null {
     if (str == null) {
       return null;
     }
@@ -34,7 +34,7 @@ export class OptionParser {
     }
 
     // determine start
-    let start;
+    let start: number;
     let end = -1;
 
     // has operator
@@ -57,5 +57,5 @@ export class OptionParser {
     }
 
     return { start, end };
-  }
-}
+  },
+};

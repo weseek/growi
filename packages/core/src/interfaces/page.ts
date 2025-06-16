@@ -117,8 +117,8 @@ export type IPageInfoAll =
   | IPageInfoForOperation
   | IPageInfoForListing;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isIPageInfo = (
+  // biome-ignore lint/suspicious/noExplicitAny: ignore
   pageInfo: any | undefined,
 ): pageInfo is IPageInfo => {
   return (
@@ -126,15 +126,15 @@ export const isIPageInfo = (
   );
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isIPageInfoForEntity = (
+  // biome-ignore lint/suspicious/noExplicitAny: ignore
   pageInfo: any | undefined,
 ): pageInfo is IPageInfoForEntity => {
   return isIPageInfo(pageInfo) && pageInfo.isEmpty === false;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isIPageInfoForOperation = (
+  // biome-ignore lint/suspicious/noExplicitAny: ignore
   pageInfo: any | undefined,
 ): pageInfo is IPageInfoForOperation => {
   return (
@@ -145,8 +145,8 @@ export const isIPageInfoForOperation = (
   );
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isIPageInfoForListing = (
+  // biome-ignore lint/suspicious/noExplicitAny: ignore
   pageInfo: any | undefined,
 ): pageInfo is IPageInfoForListing => {
   return isIPageInfoForEntity(pageInfo) && 'revisionShortBody' in pageInfo;

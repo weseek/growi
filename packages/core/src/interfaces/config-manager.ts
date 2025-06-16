@@ -26,7 +26,7 @@ export const defineConfig = <T>(
 /**
  * Interface for loading configuration values
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: ignore
 export interface IConfigLoader<K extends string, V extends Record<K, any>> {
   /**
    * Load configurations from environment variables
@@ -39,7 +39,7 @@ export interface IConfigLoader<K extends string, V extends Record<K, any>> {
   loadFromDB(): Promise<RawConfigData<K, V>>;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: ignore
 export type RawConfigData<K extends string, V extends Record<K, any>> = Record<
   K,
   {
@@ -56,7 +56,7 @@ export type UpdateConfigOptions = {
 /**
  * Interface for managing configuration values
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: ignore
 export interface IConfigManager<K extends string, V extends Record<K, any>> {
   /**
    * Load configurations

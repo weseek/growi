@@ -24,6 +24,7 @@ export type GrowiThemeMetadata = {
 export const isGrowiThemeMetadata = (
   obj: unknown,
 ): obj is GrowiThemeMetadata => {
+  // biome-ignore lint/suspicious/noExplicitAny: ignore
   const objAny = obj as any;
 
   return (
