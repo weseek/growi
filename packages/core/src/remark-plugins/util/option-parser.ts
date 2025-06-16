@@ -4,7 +4,6 @@ import type { ParseRangeResult } from '../interfaces/option-parser';
  * Options parser for custom tag
  */
 export class OptionParser {
-
   /**
    * Parse range expression
    *
@@ -46,8 +45,7 @@ export class OptionParser {
       // determine end
       if (operator === ':') {
         end = +match[4] || -1; // set last(-1) if undefined
-      }
-      else if (operator === '+') {
+      } else if (operator === '+') {
         end = +match[4] || 0; // plus zero if undefined
         end += start;
       }
@@ -60,5 +58,4 @@ export class OptionParser {
 
     return { start, end };
   }
-
 }

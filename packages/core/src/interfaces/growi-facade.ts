@@ -5,8 +5,8 @@ export type GrowiFacade = {
       customGenerateViewOptions?: any;
       generatePreviewOptions?: any;
       customGeneratePreviewOptions?: any;
-    },
-    optionsMutators?: any,
-  },
-  react?: any,
+    };
+    optionsMutators?: any;
+  };
+  react?: any;
 };
