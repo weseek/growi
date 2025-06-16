@@ -161,4 +161,125 @@ describe('convertDateStringsToDates', () => {
     expect(result).toEqual(expected);
   });
 
+  // Test case 10: Date string with UTC offset (e.g., +09:00)
+  test('should convert ISO date strings with UTC offset to Date objects', () => {
+    const dateStringWithOffset = '2025-06-12T14:00:00+09:00';
+    const input = {
+      id: 2,
+      eventTime: dateStringWithOffset,
+      details: {
+        lastActivity: '2025-06-12T05:00:00-04:00',
+      },
+    };
+    const expected = {
+      id: 2,
+      eventTime: new Date(dateStringWithOffset),
+      details: {
+        lastActivity: new Date('2025-06-12T05:00:00-04:00'),
+      },
+    };
+
+    const result = convertDateStringsToDates(input);
+
+    expect(result.eventTime).toBeInstanceOf(Date);
+    expect(result.eventTime.toISOString()).toEqual(new Date(dateStringWithOffset).toISOString());
+    expect(result.details.lastActivity).toBeInstanceOf(Date);
+    expect(result.details.lastActivity.toISOString()).toEqual(new Date('2025-06-12T05:00:00-04:00').toISOString());
+
+    expect(result).toEqual(expected);
+  });
+
+  // Test case 11: Date string with negative UTC offset
+  test('should convert ISO date strings with negative UTC offset (-05:00) to Date objects', () => {
+    const dateStringWithNegativeOffset = '2025-01-01T10:00:00-05:00';
+    const input = {
+      startTime: dateStringWithNegativeOffset,
+    };
+    const expected = {
+      startTime: new Date(dateStringWithNegativeOffset),
+    };
+
+    const result = convertDateStringsToDates(input);
+
+    expect(result.startTime).toBeInstanceOf(Date);
+    expect(result.startTime.toISOString()).toEqual(new Date(dateStringWithNegativeOffset).toISOString());
+    expect(result).toEqual(expected);
+  });
+
+  // Test case 12: Date string with zero UTC offset (+00:00)
+  test('should convert ISO date strings with explicit zero UTC offset (+00:00) to Date objects', () => {
+    const dateStringWithZeroOffset = '2025-03-15T12:00:00+00:00';
+    const input = {
+      zeroOffsetDate: dateStringWithZeroOffset,
+    };
+    const expected = {
+      zeroOffsetDate: new Date(dateStringWithZeroOffset),
+    };
+
+    const result = convertDateStringsToDates(input);
+
+    expect(result.zeroOffsetDate).toBeInstanceOf(Date);
+    expect(result.zeroOffsetDate.toISOString()).toEqual(new Date(dateStringWithZeroOffset).toISOString());
+    expect(result).toEqual(expected);
+  });
+
+  // Test case 13: Date string with milliseconds and UTC offset
+  test('should convert ISO date strings with milliseconds and UTC offset to Date objects', () => {
+    const dateStringWithMsAndOffset = '2025-10-20T23:59:59.999-07:00';
+    const input = {
+      detailedTime: dateStringWithMsAndOffset,
+    };
+    const expected = {
+      detailedTime: new Date(dateStringWithMsAndOffset),
+    };
+
+    const result = convertDateStringsToDates(input);
+
+    expect(result.detailedTime).toBeInstanceOf(Date);
+    expect(result.detailedTime.toISOString()).toEqual(new Date(dateStringWithMsAndOffset).toISOString());
+    expect(result).toEqual(expected);
+  });
+
+  // Test case 14: Should NOT convert strings that look like dates but are NOT ISO 8601 or missing timezone
+  test('should NOT convert non-ISO 8601 date-like strings or strings missing timezone', () => {
+    const nonIsoDate1 = '2025/06/12 14:00:00Z'; // Wrong separator
+    const nonIsoDate2 = '2025-06-12T14:00:00'; // Missing timezone
+    const nonIsoDate3 = 'June 12, 2025 14:00:00 GMT'; // Different format
+    const nonIsoDate4 = '2025-06-12T14:00:00+0900'; // Missing colon in offset
+    const nonIsoDate5 = '2025-06-12'; // Date only
+
+    const input = {
+      date1: nonIsoDate1,
+      date2: nonIsoDate2,
+      date3: nonIsoDate3,
+      date4: nonIsoDate4,
+      date5: nonIsoDate5,
+      someOtherString: 'hello world',
+    };
+
+    // Deep copy to ensure comparison is accurate since the function modifies in place
+    const expected = JSON.parse(JSON.stringify(input));
+
+    const result = convertDateStringsToDates(input);
+
+    // Assert that they remain strings (or whatever their original type was)
+    expect(typeof result.date1).toBe('string');
+    expect(typeof result.date2).toBe('string');
+    expect(typeof result.date3).toBe('string');
+    expect(typeof result.date4).toBe('string');
+    expect(typeof result.date5).toBe('string');
+    expect(typeof result.someOtherString).toBe('string');
+
+    // Ensure the entire object is unchanged for these properties
+    expect(result.date1).toEqual(nonIsoDate1);
+    expect(result.date2).toEqual(nonIsoDate2);
+    expect(result.date3).toEqual(nonIsoDate3);
+    expect(result.date4).toEqual(nonIsoDate4);
+    expect(result.date5).toEqual(nonIsoDate5);
+    expect(result.someOtherString).toEqual('hello world');
+
+    // Finally, assert that the overall result is identical to the input for these non-matching strings
+    expect(result).toEqual(expected);
+  });
+
 });
