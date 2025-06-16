@@ -20,11 +20,8 @@
       "package.json",
       "./apps/**",
       "./packages/core/**",
-      "./packages/core-styles/**",
-      "./packages/custom-icons/**",
       "./packages/editor/**",
-      "./packages/pdf-converter-client/**",
-      "./packages/pluginkit/**"
+      "./packages/pdf-converter-client/**"
     ]
   },
   "formatter": {
