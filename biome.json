@@ -20,12 +20,8 @@
       "package.json",
       "./apps/**",
       "./packages/core/**",
-      "./packages/core-styles/**",
-      "./packages/custom-icons/**",
       "./packages/editor/**",
-      "./packages/pdf-converter-client/src/index.ts",
-      "./packages/pluginkit/**",
-      "./packages/remark-attachment-refs/**"
+      "./packages/pdf-converter-client/src/index.ts"
     ]
   },
   "formatter": {
