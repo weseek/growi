@@ -21,8 +21,8 @@ export class ContentHeaders implements IContentHeaders {
   constructor(attachment: IAttachmentDocument, opts?: {
     inline?: boolean,
   }) {
-    const attachmentContentType = attachment.fileFormat; // Stored Content-Type
-    const filename = attachment.originalName; // Original filename
+    const attachmentContentType = attachment.fileFormat;
+    const filename = attachment.originalName;
 
     // Define the final content type value in a local variable.
     const actualContentTypeString: string = attachmentContentType || 'application/octet-stream';
@@ -35,14 +35,11 @@ export class ContentHeaders implements IContentHeaders {
     // Determine Content-Disposition based on allowlist and the 'inline' request flag
     const requestedInline = opts?.inline ?? false;
 
-    // Content should be inline ONLY IF:
-    // a) It was requested as inline AND
-    // b) Its MIME type (using the *guaranteed string* local variable) is explicitly in our security allowlist.
+    // Should only be inline if it was requested and MIME type is explicitly in the security allowlist.
     const shouldBeInline = requestedInline && INLINE_ALLOWLIST_MIME_TYPES.has(actualContentTypeString);
 
     this.contentDisposition = {
       field: 'Content-Disposition',
-      // If actuallyShouldBeInline is true, set to inline; otherwise, force attachment with filename
       value: shouldBeInline
         ? 'inline'
         : `attachment;filename*=UTF-8''${encodeURIComponent(filename)}`,
@@ -54,7 +51,6 @@ export class ContentHeaders implements IContentHeaders {
       value: "script-src 'unsafe-hashes'; style-src 'self' 'unsafe-inline'; object-src 'none'; require-trusted-types-for 'script'; media-src 'self'; default-src 'none';",
     };
 
-    // Always set X-Content-Type-Options: nosniff
     this.xContentTypeOptions = {
       field: 'X-Content-Type-Options',
       value: 'nosniff',
