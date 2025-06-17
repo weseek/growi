@@ -3,6 +3,7 @@ import assert from 'node:assert';
 import { Readable, Transform, Writable } from 'stream';
 import { pipeline } from 'stream/promises';
 
+
 import type {
   IUser, Ref, Lang, IPage, Nullable,
 } from '@growi/core';
@@ -15,6 +16,7 @@ import escapeStringRegexp from 'escape-string-regexp';
 import createError from 'http-errors';
 import mongoose, { type HydratedDocument, type Types } from 'mongoose';
 import { type OpenAI, toFile } from 'openai';
+import { type Stream } from 'openai/streaming';
 
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import ThreadRelationModel, { type ThreadRelationDocument } from '~/features/openai/server/models/thread-relation';
@@ -72,6 +74,7 @@ const convertPathPatternsToRegExp = (pagePathPatterns: string[]): Array<string |
 };
 
 export interface IOpenaiService {
+  generatePreMessage(message: string): Promise<Nullable<Stream<OpenAI.Chat.Completions.ChatCompletionChunk>>>;
   createThread(userId: string, type: ThreadType, aiAssistantId?: string, initialUserMessage?: string): Promise<ThreadRelationDocument>;
   getThreadsByAiAssistantId(aiAssistantId: string): Promise<ThreadRelationDocument[]>
   deleteThread(threadRelationId: string): Promise<ThreadRelationDocument>;
@@ -106,6 +109,33 @@ class OpenaiService implements IOpenaiService {
   private get client() {
     const openaiServiceType = configManager.getConfig('openai:serviceType');
     return getClient({ openaiServiceType });
+  }
+
+
+  async generatePreMessage(message: string): Promise<Nullable<Stream<OpenAI.Chat.Completions.ChatCompletionChunk>>> {
+    const systemMessage = [
+      "Generate a message briefly confirming the user's question.",
+      'Please generate up to 20 characters',
+    ].join('');
+
+    const preMessageCompletion = await this.client.chatCompletion({
+      stream: true,
+      model: 'gpt-4.1-nano',
+      messages: [
+        {
+          role: 'system',
+          content: systemMessage,
+        },
+        {
+          role: 'user',
+          content: message,
+        },
+      ],
+    });
+
+    if (isStreamResponse(preMessageCompletion)) {
+      return preMessageCompletion;
+    }
   }
 
   private async generateThreadTitle(message: string): Promise<Nullable<string>> {
