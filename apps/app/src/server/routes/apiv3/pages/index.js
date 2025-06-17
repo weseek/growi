@@ -198,7 +198,7 @@ module.exports = (crowi) => {
    *
    *
    *    /pages/rename:
-   *      post:
+   *      put:
    *        tags: [Pages]
    *        description: Rename page
    *        requestBody:

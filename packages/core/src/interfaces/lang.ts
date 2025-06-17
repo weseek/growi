@@ -5,4 +5,4 @@ export const Lang = {
   fr_FR: 'fr_FR',
 } as const;
 export const AllLang = Object.values(Lang);
-export type Lang = typeof Lang[keyof typeof Lang];
+export type Lang = (typeof Lang)[keyof typeof Lang];
