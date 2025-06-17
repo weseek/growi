@@ -5,6 +5,7 @@ import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
 import type { AssistantStream } from 'openai/lib/AssistantStream';
 import type { MessageDelta } from 'openai/resources/beta/threads/messages.mjs';
+import { type ChatCompletionChunk } from 'openai/resources/chat/completions';
 
 import { getOrCreateChatAssistant } from '~/features/openai/server/services/assistant';
 import type Crowi from '~/server/crowi';
@@ -119,6 +120,14 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
         'Content-Type': 'text/event-stream;charset=utf-8',
         'Cache-Control': 'no-cache, no-transform',
       });
+
+      const preMessageDeltaHandler = (delta: ChatCompletionChunk.Choice.Delta) => {
+        const content = { text: delta.content };
+        res.write(`data: ${JSON.stringify(content)}\n\n`);
+      };
+
+      // Don't add await since SSE is performed asynchronously with main message
+      openaiService.generateAndProcessPreMessage(req.body.userMessage, preMessageDeltaHandler);
 
       const messageDeltaHandler = async(delta: MessageDelta) => {
         const content = delta.content?.[0];
