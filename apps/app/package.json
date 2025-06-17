@@ -301,6 +301,7 @@
     "downshift": "^8.2.3",
     "eazy-logger": "^3.1.0",
     "eslint-plugin-jest": "^26.5.3",
+    "fastest-levenshtein": "^1.0.16",
     "fslightbox-react": "^1.7.6",
     "handsontable": "=6.2.2",
     "happy-dom": "^15.7.4",
