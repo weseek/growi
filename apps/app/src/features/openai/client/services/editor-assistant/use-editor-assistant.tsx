@@ -25,16 +25,14 @@ import { handleIfSuccessfullyParsed } from '~/features/openai/utils/handle-if-su
 import { useIsEnableUnifiedMergeView } from '~/stores-universal/context';
 import { useCurrentPageId } from '~/stores/page';
 
-import type { AiAssistantHasId } from '../../interfaces/ai-assistant';
-import type { MessageLog } from '../../interfaces/message';
-import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
-import { ThreadType } from '../../interfaces/thread-relation';
-import { AiAssistantDropdown } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantDropdown';
-import { QuickMenuList } from '../components/AiAssistant/AiAssistantSidebar/QuickMenuList';
-import { useAiAssistantSidebar } from '../stores/ai-assistant';
-
-// Client Engine Integration
-import useClientEngineIntegration, { shouldUseClientProcessing } from './client-engine-integration';
+import type { AiAssistantHasId } from '../../../interfaces/ai-assistant';
+import type { MessageLog } from '../../../interfaces/message';
+import type { IThreadRelationHasId } from '../../../interfaces/thread-relation';
+import { ThreadType } from '../../../interfaces/thread-relation';
+import { AiAssistantDropdown } from '../../components/AiAssistant/AiAssistantSidebar/AiAssistantDropdown';
+import { QuickMenuList } from '../../components/AiAssistant/AiAssistantSidebar/QuickMenuList';
+import { useAiAssistantSidebar } from '../../stores/ai-assistant';
+import { useClientEngineIntegration, shouldUseClientProcessing } from '../client-engine-integration';
 
 interface CreateThread {
   (): Promise<IThreadRelationHasId>;
@@ -216,7 +214,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
 
 
   // Enhanced processMessage with client engine support (保持)
-  const processMessageWithClientEngine = useCallback(async(data: unknown, handler: {
+  const processMessage = useCallback(async(data: unknown, handler: {
     onMessage: (data: SseMessage) => void;
     onDetectedDiff: (data: SseDetectedDiff) => void;
     onFinalized: (data: SseFinalized) => void;
@@ -478,7 +476,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   return {
     createThread,
     postMessage,
-    processMessage: processMessageWithClientEngine,
+    processMessage,
     form,
     resetForm,
     isTextSelected,
