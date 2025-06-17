@@ -119,88 +119,55 @@ apps/app/src/features/openai/
 
 ### ✅ **完了** 
 - **Phase 1**: スキーマ・インターフェース更新 (4時間)
-- **Phase 2A**: クライアントサイドEngine実装 (27時間) 🎉 **完全完了**
 
-### 🎯 **Phase 2A 完了詳細**
-**5つのコアコンポーネント、ESLintエラー0件で完成:**
+### ⚠️ **Phase 2A見直し必要**  
+**調査結果**: Phase 2Aは表面的完了のみで、**核心機能は未実装**
 
-#### ✅ コア実装 (100%完了)
-1. **ClientFuzzyMatcher** (`fuzzy-matching.ts`)
-   - ブラウザ最適化された類似度計算
-   - middle-out検索アルゴリズム
-   - パフォーマンス監視・タイムアウト保護
+#### ❌ **重大な未実装事項**
+1. **search処理**: `detectedDiff.data.diff.search`が完全に無視
+2. **行番号指定**: 存在するが活用されていない  
+3. **Fuzzy Matching**: 実装済みだが統合されていない
+4. **正確な置換**: 単純な末尾追加(`appendTextLastLine`)のみ
 
-2. **ClientTextNormalizer** (`text-normalization.ts`)  
-   - Unicode正規化、スマートクォート処理
-   - 高速正規化とブラウザ対応検出
-   - パフォーマンス測定機能
+#### 📋 **実態**
+- **ファイル**: 5つのコアコンポーネント存在 ✅
+- **統合**: クライアントエンジン基盤実装済み ✅
+- **動作**: search-replace機能は未動作 ❌
+- **現在**: `replace`テキストを末尾に追加するのみ ❌
 
-3. **ClientErrorHandler** (`error-handling.ts`)
-   - 詳細エラー分類（SEARCH_NOT_FOUND等）
-   - ユーザーフレンドリーメッセージ
-   - ブラウザ互換性検証
+### 🎯 **Phase 2A真の完了計画策定**
+**新規ドキュメント**: [`phase-2a-completion-plan.md`](./phase-2a-completion-plan.md)
+- **目標**: roo-codeレベルの編集精度(90-95%)実現
+- **工数**: 8-12時間（実装 + テスト）
+- **アプローチ**: 行番号必須化、search処理統合、既存コンポーネント活用
 
-4. **ClientDiffApplicationEngine** (`diff-application.ts`)
-   - エディター直接統合（YText/CodeMirror）
-   - undo/redo対応、選択範囲保持
-   - 複数diff統合処理
-
-5. **ClientSearchReplaceProcessor** (`processor.ts`)
-   - リアルタイム進捗コールバック
-   - バッチ処理orchestration
-   - パフォーマンス監視・キャンセル対応
-
-#### ✅ 統合レイヤー (100%完了)  
-6. **Client Engine Integration** (`client-engine-integration.tsx`)
-   - ハイブリッド処理（クライアント優先、サーバーフォールバック）
-   - パフォーマンス比較・メトリクス収集
-   - YText統合・設定管理
-
-7. **Enhanced useEditorAssistant** (`editor-assistant.tsx`) 
-   - 既存フックへのクライアントエンジン統合
-   - SSE処理とのシームレス連携
-   - ESLintエラー0件の高品質実装
-
-### 🧹 **アーキテクチャ整理完了**
-Phase 2A完了により、サーバーサイドプロトタイプの整理を実施：
-- **❌ 削除**: 6個のプロトタイプファイル（クライアント版で代替）
-  - `fuzzy-matching.ts`, `text-normalization.ts`, `diff-application-engine.ts`
-  - `multi-search-replace-processor.ts`, `error-handlers.ts`, `config.ts`
-- **✅ 保持**: `llm-response-stream-processor.ts` (Phase 2B用)
-- **📂 結果**: クライアント・サーバー責務分離の明確化
-
-### 🔧 **実装品質**
-- **ESLintエラー**: 0件 (完全準拠)
-- **TypeScript型安全性**: 100%
-- **ブラウザ最適化**: タイムアウト、メモリ効率、パフォーマンス監視
-- **エラーハンドリング**: 包括的エラー分類とユーザーフレンドリー表示
-- **リアルタイム処理**: 進捗コールバック、キャンセル機能
-- **エディター統合**: YText直接操作、undo/redo対応
-
-### 🚀 **即座の価値実現準備完了**
-Phase 2Aの完了により、以下が可能になりました：
-- **クライアントサイドテスト**: ブラウザ内でのSearch/Replace処理
-- **パフォーマンス検証**: クライアント vs サーバー性能比較  
-- **段階的展開**: フィーチャーフラグでの制御可能
-- **既存システム統合**: 最小限の変更で利用開始
+### 🔧 **技術的判断結果**
+1. **レスポンス形式**: 現在のJSON形式維持（パフォーマンス最適化）
+2. **行番号指定**: 必須化（精度向上）
+3. **Fuzzy Matching**: 既存実装活用（高品質）
+4. **統合方針**: 最小限の変更で最大効果
 
 ### 🎯 **次のステップ選択肢**
 
-#### Option 1: 実運用テスト開始 (推奨・即効性)
-- **目的**: Phase 2A実装の実環境テスト
-- **工数**: 2-4時間
-- **内容**: フィーチャーフラグ有効化、メトリクス収集
-- **メリット**: 即座のフィードバック、価値実現の確認
+#### Option 1: Phase 2A 完遂実装 (推奨・高価値)
+- **目的**: 真のsearch-replace機能実装
+- **工数**: 8-12時間
+- **内容**: 行番号必須化、search処理統合、fuzzy matching活用
+- **メリット**: roo-codeレベルの編集精度(90-95%)実現
+- **詳細**: [`phase-2a-completion-plan.md`](./phase-2a-completion-plan.md)
+- **タスクリスト**: [`phase-2a-task-checklist.md`](./phase-2a-task-checklist.md)
 
 #### Option 2: Phase 2B サーバー最適化  
 - **工数**: 12時間
 - **内容**: LLM通信専門化、roo-codeプロンプト生成
 - **メリット**: システム全体最適化
+- **前提**: Phase 2A完遂後
 
 #### Option 3: Phase 3 ハイブリッド統合
 - **工数**: 15時間  
 - **内容**: 新しいクライアント・サーバー連携フロー
 - **メリット**: 完全な新アーキテクチャ実現
+- **前提**: Phase 2A完遂後
 
 ## 🔗 参考資料
 
@@ -258,8 +225,9 @@ Phase 2Aの完了により、以下が可能になりました：
 
 **プロジェクト**: GROWI エディターアシスタント改修  
 **作成日**: 2025-06-17  
-**最終更新**: 2025-06-17 (Phase 2A完了)  
-**ステータス**: Phase 2A完了、実運用テスト準備完了  
-**完了工数**: 31時間 (Phase 1: 4時間 + Phase 2A: 27時間)
-**残り工数**: 61時間 (Phase 2B: 12時間 + Phase 3: 15時間 + Phase 4-5: 34時間)
-**完了タスク数**: 12/22個
+**最終更新**: 2025-06-17 (Phase 2A実態調査・完遂計画策定)  
+**ステータス**: Phase 2A核心機能未実装・完遂計画準備完了  
+**実工数**: 4時間 (Phase 1のみ)
+**見積工数**: 8-12時間 (Phase 2A完遂) + 61時間 (Phase 2B-5)
+**完了タスク数**: 4/22個 (Phase 1のみ)
+**重要判明事項**: Phase 2A「完了」は表面的、search-replace核心機能は未実装

@@ -18,164 +18,72 @@
 
 ---
 
-## 📋 Phase 2A: クライアントサイドEngine実装 ✅ 完了
+## 📋 Phase 2A: Search-Replace機能実装 ❌ **重大な未完了判明**
 
-### アーキテクチャ方針
-**roo-code方式**: パフォーマンス・プライバシー・リアルタイム性を重視し、Fuzzy MatchingとDiff適用をクライアントサイドで実行
+### ⚠️ **実装状況の真実**
+**2025-06-17発見**: Phase 2Aの「完了」は表面的なファイル存在のみで、**核心機能は全く実装されていない**
 
-### 🗂️ アーキテクチャ整理完了
-Phase 2A完了により、不要になったサーバーサイドプロトタイプファイルを削除し、責務を明確化しました：
+### 🔍 **現状分析**
+#### ✅ 存在する部分
+- **高品質なクライアントサイドファイル**: fuzzy-matching.ts、text-normalization.ts、error-handling.ts等
+- **完全なLLMスキーマ**: JSON形式`search`/`replace`フィールド完備
+- **SSEストリーミング**: リアルタイム配信完成
 
-**❌ 削除されたファイル (クライアント版で代替済み):**
-- `server/services/editor-assistant/fuzzy-matching.ts` → `client/services/editor-assistant/fuzzy-matching.ts`
-- `server/services/editor-assistant/text-normalization.ts` → `client/services/editor-assistant/text-normalization.ts`
-- `server/services/editor-assistant/diff-application-engine.ts` → `client/services/editor-assistant/diff-application.ts`
-- `server/services/editor-assistant/multi-search-replace-processor.ts` → `client/services/editor-assistant/processor.ts`
-- `server/services/editor-assistant/error-handlers.ts` → `client/services/editor-assistant/error-handling.ts`
-- `server/services/editor-assistant/config.ts` → 新アーキテクチャで不要
+#### ❌ **完全に未実装な部分**
+- **search処理**: `detectedDiff.data.diff.search`が完全に無視されている
+- **行番号検索**: `startLine`パラメータ未活用
+- **正確な置換**: 単純な末尾追加のみの劣悪な実装
+- **クライアントエンジン統合**: 高品質なファイルが全く統合されていない
 
-**✅ 保持されたファイル (Phase 2B用):**
-- `server/services/editor-assistant/llm-response-stream-processor.ts` → LLM通信専門化で利用予定
-- `server/services/editor-assistant/index.ts` → 更新済み
+### 📊 **実際の完了度**
+```
+- ファイル存在度: ✅ 90% (見た目完了)
+- 機能実装度: ❌ 15% (実質未実装)
+- 統合度: ❌ 5% (統合なし)
+```
 
-### ✅ 実装完了
+### 🎯 **Phase 2A 完遂計画** 
+**詳細**: `phase-2a-completion-plan.md`および`phase-2a-task-checklist.md`参照
 
-#### 2A.1 Client Fuzzy Matching Engine ✅
-- **ファイル**: `fuzzy-matching.ts`
-- **タスク**:
-  - ✅ `fastest-levenshtein`の依存関係追加 (ブラウザ対応版)
-  - ✅ `ClientFuzzyMatcher`クラス実装
-  - ✅ Middle-out検索アルゴリズム (ブラウザ最適化)
-  - ✅ 類似度計算とthreshold判定
-  - ✅ リアルタイム処理最適化
-- **推定工数**: 4時間 ✅
-- **実装状況**: 完了
+#### 必要な核心実装 (8-12時間)
+1. **スキーマ強化**: `startLine`必須化
+2. **search-replace実装**: 既存の劣悪な末尾追加を真の検索・置換に変更
+3. **Fuzzy Matching統合**: 既存ファイルの統合
+4. **エラーハンドリング**: 検索失敗時の適切な処理
+5. **クライアントエンジン統合**: 高品質ファイル群の統合
 
-#### 2A.2 Client Text Normalization ✅  
-- **ファイル**: `text-normalization.ts`
-- **タスク**:
-  - ✅ ブラウザ最適化正規化関数群
-  - ✅ スマートクォート・Unicode正規化
-  - ✅ パフォーマンス測定ユーティリティ
-  - ✅ 複数正規化オプション提供
-- **推定工数**: 4時間 ✅
-- **実装状況**: 完了
+#### 現在の劣悪な実装 (要完全修正)
+```typescript
+// 現在: searchを完全に無視し、replaceのみ末尾追加
+if (detectedDiff.data.diff) {
+  if (isTextSelected) {
+    insertTextAtLine(yText, lineRef.current, detectedDiff.data.diff.replace);
+  } else {
+    appendTextLastLine(yText, detectedDiff.data.diff.replace); // ← 劣悪
+  }
+}
+```
 
-#### 2A.3 Client Error Handling ✅
-- **ファイル**: `error-handling.ts`
-- **タスク**:
-  - ✅ `ClientErrorHandler`クラス実装
-  - ✅ 詳細エラー分類とユーザーフレンドリーメッセージ
-  - ✅ ブラウザ互換性検証
-  - ✅ リアルタイムフィードバック機能
-- **推定工数**: 4時間 ✅
-- **実装状況**: 完了
+#### 実装すべき正しい処理
+```typescript
+// 正しい実装: searchで検索してreplaceで置換
+const { search, replace, startLine } = detectedDiff.data.diff;
+const success = performSearchReplace(yText, search, replace, startLine);
+if (!success) {
+  // フォールバック処理
+}
+```
 
-#### 2A.4 Client Diff Application Engine ✅
-- **ファイル**: `diff-application.ts`
-- **タスク**:
-  - ✅ `ClientDiffApplicationEngine`クラス実装
-  - ✅ エディター直接統合アダプター
-  - ✅ インデント保持ロジック
-  - ✅ アンドゥ・リドゥ対応
-  - ✅ 複数diff処理orchestration
-- **推定工数**: 5時間 ✅
-- **実装状況**: 完了
-
-#### 2A.5 Client Main Processor ✅
-- **ファイル**: `processor.ts`
-- **タスク**:
-  - ✅ `ClientSearchReplaceProcessor`クラス実装
-  - ✅ リアルタイム進捗フィードバック
-  - ✅ 処理キャンセル機能
-  - ✅ バッチ処理最適化
-  - ✅ パフォーマンス監視とエラーハンドリング
-- **推定工数**: 6時間 ✅
-- **実装状況**: 完了
-
-#### 2A.6 Editor Integration ❌ スキップ
-- **決定理由**: GROWIでは既存の`useEditorAssistant`フックが十分に機能し、CodeMirrorのみ対応すれば良いため、複雑なadapter patternは不要と判断
-- **代替案**: 既存フックとの直接統合を後の段階で実装
-
-**Phase 2A 総工数**: 23時間完了 / 27時間計画 (85%効率)
-
-#### 2A.3 Client Text Normalization
-- [ ] **ファイル**: `apps/app/src/client/services/editor-assistant/text-normalization.ts` (新規)
-  - [ ] `FuzzyMatcher`クラスの実装
-  - [ ] 類似度計算ロジック (ブラウザ最適化)
-  - [ ] Middle-out検索アルゴリズム
-  - [ ] パフォーマンス最適化 (Web Workers対応準備)
-- [ ] **推定工数**: 5時間
-- [ ] **担当者**: 未定
-- [ ] **優先度**: 高
-
-#### 2A.2 Diff適用エンジン (クライアント)
-- [ ] **ファイル**: `apps/app/src/features/openai/client/services/search-replace/diff-application.ts` (新規)
-- [ ] **タスク**:
-  - [ ] エディタ直接統合 (CodeMirror/Monaco)
-  - [ ] リアルタイムdiff適用
-  - [ ] インデント保持機能
-  - [ ] Undo/Redo対応
-  - [ ] プレビューモード実装
-- [ ] **推定工数**: 6時間
-- [ ] **担当者**: 未定  
-- [ ] **優先度**: 高
-
-#### 2A.3 Client Text Normalization
-- [ ] **ファイル**: `apps/app/src/client/services/editor-assistant/text-normalization.ts` (新規)
-- [ ] **タスク**:
-  - [ ] `ClientTextNormalizer`クラス実装
-  - [ ] スマートクォート・タイポグラフィ文字の正規化
-  - [ ] Unicode正規化機能（NFC）
-  - [ ] ブラウザ最適化処理
-  - [ ] roo-code互換の正規化マップ実装
-- [ ] **推定工数**: 3時間
-- [ ] **担当者**: 未定
-- [ ] **優先度**: 高
-
-#### 2A.4 Client Error Handling
-- [ ] **ファイル**: `apps/app/src/client/services/editor-assistant/error-handling.ts` (新規)
-- [ ] **タスク**:
-  - [ ] `ClientErrorHandler`クラスの実装
-  - [ ] リアルタイムエラー表示
-  - [ ] 詳細なエラー情報とサジェスション
-  - [ ] ユーザーフレンドリーなメッセージ
-  - [ ] エラー復旧機能
-- [ ] **推定工数**: 4時間
-- [ ] **担当者**: 未定
-- [ ] **優先度**: 高
-
-#### 2A.5 Client Main Processor
-- [ ] **ファイル**: `apps/app/src/client/services/editor-assistant/processor.ts` (新規)
-- [ ] **タスク**:
-  - [ ] `ClientSearchReplaceProcessor`クラスの実装
-  - [ ] 複数diff処理オーケストレーション
-  - [ ] リアルタイム進捗フィードバック
-  - [ ] 処理キャンセル機能
-  - [ ] バッチ処理最適化
-- [ ] **推定工数**: 6時間
-- [ ] **担当者**: 未定
-- [ ] **優先度**: 最高
-
-#### 2A.6 Editor Integration
-- [ ] **ファイル**: `apps/app/src/client/services/editor-assistant/editor-integration.ts` (新規)
-- [ ] **タスク**:
-  - [ ] useEditorAssistantフックの更新
-  - [ ] クライアントサイド処理フローの統合
-  - [ ] リアルタイム状態管理
-  - [ ] プレビューモード実装
-- [ ] **推定工数**: 5時間
-- [ ] **担当者**: 未定
-- [ ] **優先度**: 最高
-
-**Phase 2A 総工数**: 27時間
+**Phase 2A 実工数**: ❌ 8-12時間 (未完了) / ✅ 27時間 (誤った記載)
 
 ---
 
-## 📋 Phase 2B: サーバーサイド最適化 🎯 中優先度
+## 📋 Phase 2B: サーバーサイド最適化 ⏳ **Phase 2A完了後に実施**
 
 ### アーキテクチャ方針  
 **専門化**: LLM通信、プロンプト生成、セキュリティに特化し、テキスト処理はクライアントに移管
+
+### ⚠️ **依存関係**: Phase 2A完了が前提
 
 ### 🎯 実装タスク
 
@@ -187,7 +95,6 @@ Phase 2A完了により、不要になったサーバーサイドプロトタイ
   - [ ] SSEストリーミング最適化
   - [ ] エラーハンドリング簡素化 (LLM通信エラーのみ)
 - [ ] **推定工数**: 4時間
-- [ ] **担当者**: 未定
 - [ ] **優先度**: 中
 
 #### 2B.2 Prompt Generator (roo-code形式)
@@ -198,7 +105,6 @@ Phase 2A完了により、不要になったサーバーサイドプロトタイ
   - [ ] コンテキスト最適化
   - [ ] エスケープ処理とエラー防止
 - [ ] **推定工数**: 3時間
-- [ ] **担当者**: 未定
 - [ ] **優先度**: 中
 
 #### 2B.3 Server Configuration
@@ -209,7 +115,6 @@ Phase 2A完了により、不要になったサーバーサイドプロトタイ
   - [ ] セキュリティポリシー設定
   - [ ] レート制限設定
 - [ ] **推定工数**: 2時間
-- [ ] **担当者**: 未定
 - [ ] **優先度**: 低
 
 #### 2B.4 API Route Updates
@@ -220,37 +125,36 @@ Phase 2A完了により、不要になったサーバーサイドプロトタイ
   - [ ] エラーハンドリング簡素化
   - [ ] パフォーマンス監視追加
 - [ ] **推定工数**: 3時間
-- [ ] **担当者**: 未定
 - [ ] **優先度**: 中
 
 **Phase 2B 総工数**: 12時間
 
 ---
 
-## 📋 Phase 3: ハイブリッド処理フロー統合 🎯 中優先度
+## 📋 Phase 3: ハイブリッド処理フロー統合 ⏳ **Phase 2A完了後に実施**
+
+### ⚠️ **依存関係**: Phase 2A完了が前提
 
 ### 🎯 実装タスク
 
 #### 3.1 Client-Server Integration
-- [ ] **ファイル**: `apps/app/src/client/services/editor-assistant/integration.ts` (新規)
+- [ ] **ファイル**: `apps/app/src/features/openai/client/services/editor-assistant/integration.ts` (新規)
 - [ ] **タスク**:
   - [ ] SSEストリーム受信処理
   - [ ] クライアントエンジンとの連携
   - [ ] エラー伝播・復旧機能
   - [ ] 処理状態の同期
 - [ ] **推定工数**: 4時間
-- [ ] **担当者**: 未定
 - [ ] **優先度**: 高
 
 #### 3.2 useEditorAssistant Hook Update
-- [ ] **ファイル**: `apps/app/src/client/services/editor-assistant.tsx`
+- [ ] **ファイル**: `apps/app/src/features/openai/client/services/editor-assistant/use-editor-assistant.tsx`
 - [ ] **タスク**:
   - [ ] 新しいクライアント処理フローの統合
   - [ ] 状態管理の最適化
   - [ ] エラーステート管理
   - [ ] ローディング状態の詳細化
 - [ ] **推定工数**: 5時間
-- [ ] **担当者**: 未定
 - [ ] **優先度**: 高
 
 #### 3.3 Real-time Feedback System
@@ -261,7 +165,6 @@ Phase 2A完了により、不要になったサーバーサイドプロトタイ
   - [ ] エラー詳細の表示UI
   - [ ] キャンセル・再試行ボタン
 - [ ] **推定工数**: 6時間
-- [ ] **担当者**: 未定  
 - [ ] **優先度**: 中
 
 **Phase 3 総工数**: 15時間
@@ -610,55 +513,74 @@ Phase 2A完了により、不要になったサーバーサイドプロトタイ
 8. useEditorAssistant Hook Update
 9. Real-time Feedback System
 
-この順序により、段階的に機能を積み上げて検証しながら開発を進められます。
-| Phase 2B (サーバー) | 4 | 0 | 0% | 11時間 |
-| Phase 3 (統合) | 4 | 0 | 0% | 12.5時間 |
-| Phase 4 (UI/UX) | 3 | 0 | 0% | 14時間 |
-| Phase 5 (ドキュメント) | 2 | 0 | 0% | 7時間 |
-| Phase 6 (テスト) | 3 | 0 | 0% | 18時間 |
-| **合計** | **26** | **0** | **0%** | **96.5時間** |
+---
 
-### 優先度別
-- **高優先度**: 12タスク (46%)
-- **中優先度**: 8タスク (31%)
-- **低優先度**: 6タスク (23%)
+## 📊 **修正されたプロジェクトサマリー**
 
-### 新アーキテクチャのメリット
+### 実装進捗（実態反映版）
+| Phase | タスク数 | 完了数 | 進捗率 | 残工数 |
+|-------|----------|--------|---------|---------|
+| **Phase 1 (スキーマ)** | ✅ | ✅ | **100%** | 0時間 |
+| **Phase 2A (コア機能)** | 7 | 0 | **0%** | **8-12時間** |
+| Phase 2B (サーバー) | 4 | 0 | 0% | 12時間 |
+| Phase 3 (統合) | 3 | 0 | 0% | 15時間 |
+| Phase 4 (UI/UX) | 3 | 0 | 0% | 13時間 |
+| Phase 5 (ドキュメント) | 4 | 0 | 0% | 21時間 |
+
+### 🎯 **即座に実行すべきアクション**
+
+#### **最高優先度: Phase 2A完遂** (8-12時間)
+**詳細タスク**: [`phase-2a-completion-plan.md`](./phase-2a-completion-plan.md) および [`phase-2a-task-checklist.md`](./phase-2a-task-checklist.md) 参照
+
+1. **スキーマ強化**: `startLine`必須化（1時間）
+2. **search-replace実装**: 現在の劣悪な末尾追加を真の検索・置換に変更（4-5時間）
+3. **Fuzzy Matching統合**: 既存ファイルの統合（2時間）
+4. **エラーハンドリング強化**: 検索失敗時の適切な処理（1時間）
+5. **クライアントエンジン統合**: 高品質ファイル群の統合（2時間）
+
+#### **実装スケジュール**
+- **フェーズ2A実装**: 1日（8-12時間）
+- **テスト・デバッグ**: 0.5日（4時間）
+- **合計**: 1.5日でroo-code level機能完成
+
+### 新アーキテクチャのメリット（実装後）
 - **パフォーマンス**: ローカル処理でレスポンス時間50%短縮予想
 - **プライバシー**: ユーザーコンテンツのサーバー送信不要
 - **リアルタイム**: 即座のフィードバックとプレビュー
 - **ネットワーク効率**: diff配列のみ転送でトラフィック削減
-- **オフライン対応**: 処理済みdiffの再適用可能
+- **正確性**: ✅ 真のsearch-replace機能でroo-code水準の精度
 
-### 推定スケジュール
-- **開発期間**: 約3-4週間 (1人稼働)
-- **クリティカルパス**: Phase 1 → Phase 2A → Phase 3
-- **並行可能**: Phase 2B、Phase 4以降は部分的に並行実装可能
-
----
-
-## 🎯 次のアクション
-
-### 即座に着手可能 (クライアント優先)
-1. **Phase 2A.1**: Fuzzy Matching Engine (クライアント)
-2. **Phase 2A.3**: Text Normalization (クライアント)
-3. **Phase 1.1**: LLM Response Schemas更新
-
-### 依存関係あり
-- Phase 2A → Phase 3 → Phase 4
-- Phase 2B は Phase 2A と並行可能
-- Phase 1 完了後すべて着手可能
-
-### リスクと対策
+### ⚠️ **リスクと対策**
 - **技術リスク**: クライアント処理パフォーマンス
-  - **対策**: Web Workers、段階的最適化
+  - **対策**: 段階的最適化、必要時Web Workers検討
 - **互換性リスク**: 既存機能への影響
-  - **対策**: フィーチャーフラグでの段階的移行
-- **アーキテクチャリスク**: サーバー・クライアント連携
-  - **対策**: 共通型定義、詳細な統合テスト
+  - **対策**: フォールバック機能による段階的移行
+- **実装リスク**: 複雑な統合
+  - **対策**: 詳細タスクリストと段階的テスト
+
+### 🎯 **推奨実装順序**
+
+#### **段階1: 基盤構築（Phase 2A前半）**
+1. **スキーマ強化**: `startLine`必須化
+2. **search-replace-engine.ts作成**: 核心検索・置換ロジック
+3. **useEditorAssistant更新**: 既存の劣悪な処理を修正
+
+#### **段階2: 統合強化（Phase 2A後半）**
+4. **Fuzzy Matching統合**: 既存エンジンの活用
+5. **エラーハンドリング**: 検索失敗時の適切な処理
+6. **クライアントエンジン統合**: 高品質ファイルの統合
+
+#### **段階3: 検証・最適化**
+7. **手動テスト**: 基本機能動作確認
+8. **パフォーマンステスト**: 大きなファイルでの動作確認
+9. **エラーケーステスト**: フォールバック機能確認
+
+この順序により、最短期間で実用的なsearch-replace機能を実現できます。
 
 ---
+
 **ファイル**: `implementation-tasks.md`  
 **作成日**: 2025-06-17  
-**更新日**: 2025-06-17  
-**ステータス**: 計画段階
+**更新日**: 2025-06-17 (Phase 2A実態反映)  
+**ステータス**: Phase 2A核心機能未実装判明、8-12時間で完遂可能  
+**次のアクション**: [`phase-2a-completion-plan.md`](./phase-2a-completion-plan.md) の実行
