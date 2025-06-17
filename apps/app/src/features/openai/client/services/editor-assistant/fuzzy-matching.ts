@@ -1,0 +1,334 @@
+/**
+ * Client-side Fuzzy Matching Engine for GROWI Editor Assistant
+ * Optimized for browser environment with real-time processing
+ * Compatible with roo-code's matching algorithms
+ */
+
+import { distance } from 'fastest-levenshtein';
+
+import type { MatchResult, SearchContext } from '../../../interfaces/editor-assistant/types';
+
+import { normalizeForBrowserFuzzyMatch } from './text-normalization';
+
+// -----------------------------------------------------------------------------
+// Browser-Optimized Similarity Calculation
+// -----------------------------------------------------------------------------
+
+/**
+ * Calculate similarity between two strings using Levenshtein distance
+ * Optimized for browser performance with early exit strategies
+ */
+export function calculateSimilarity(original: string, search: string): number {
+  // Empty searches are not supported
+  if (search === '') {
+    return 0;
+  }
+
+  // Exact match check first (fastest)
+  if (original === search) {
+    return 1;
+  }
+
+  // Length-based early filtering for performance
+  const lengthRatio = Math.min(original.length, search.length) / Math.max(original.length, search.length);
+  if (lengthRatio < 0.3) {
+    return 0; // Too different in length
+  }
+
+  // Normalize both strings for comparison
+  const normalizedOriginal = normalizeForBrowserFuzzyMatch(original);
+  const normalizedSearch = normalizeForBrowserFuzzyMatch(search);
+
+  // Exact match after normalization
+  if (normalizedOriginal === normalizedSearch) {
+    return 1;
+  }
+
+  // Calculate Levenshtein distance
+  const dist = distance(normalizedOriginal, normalizedSearch);
+  const maxLength = Math.max(normalizedOriginal.length, normalizedSearch.length);
+
+  // Convert distance to similarity ratio
+  return Math.max(0, 1 - (dist / maxLength));
+}
+
+// -----------------------------------------------------------------------------
+// Client Fuzzy Matcher Class
+// -----------------------------------------------------------------------------
+
+export class ClientFuzzyMatcher {
+
+  private threshold: number;
+
+  private readonly maxSearchTime: number; // Browser performance limit
+
+  constructor(threshold = 0.8, maxSearchTimeMs = 1000) {
+    this.threshold = threshold;
+    this.maxSearchTime = maxSearchTimeMs;
+  }
+
+  /**
+   * Find the best fuzzy match using middle-out search strategy
+   * Optimized for browser environment with timeout protection
+   */
+  findBestMatch(
+      content: string,
+      searchText: string,
+      context: SearchContext = {},
+  ): MatchResult {
+    const startTime = performance.now();
+
+    // Early validation
+    if (!searchText || searchText.trim() === '') {
+      return this.createNoMatchResult('Empty search text');
+    }
+
+    const lines = this.splitLines(content);
+    const searchLines = this.splitLines(searchText);
+    const searchLength = searchLines.length;
+
+    if (searchLength === 0) {
+      return this.createNoMatchResult('Invalid search content');
+    }
+
+    // Calculate search bounds with buffer
+    const bounds = this.calculateSearchBounds(lines.length, context);
+
+    // Middle-out search with browser timeout protection
+    return this.performMiddleOutSearch(
+      lines,
+      searchLines,
+      bounds,
+      startTime,
+    );
+  }
+
+  /**
+   * Middle-out search algorithm optimized for browser performance
+   */
+  private performMiddleOutSearch(
+      lines: string[],
+      searchLines: string[],
+      bounds: { startIndex: number; endIndex: number },
+      startTime: number,
+  ): MatchResult {
+    const { startIndex, endIndex } = bounds;
+    const searchLength = searchLines.length;
+    const searchChunk = searchLines.join('\n');
+
+    // Early bounds checking
+    if (endIndex - startIndex < searchLength) {
+      return this.createNoMatchResult('Search area too small');
+    }
+
+    const actualEndIndex = endIndex - searchLength + 1;
+    const centerIndex = Math.floor((startIndex + actualEndIndex) / 2);
+
+    let bestScore = 0;
+    let bestMatchIndex = -1;
+    let bestMatchContent = '';
+
+    // Start from center and expand outward
+    let leftIndex = centerIndex;
+    let rightIndex = centerIndex + 1;
+
+    while (leftIndex >= startIndex || rightIndex <= actualEndIndex) {
+      // Browser timeout protection
+      if (performance.now() - startTime > this.maxSearchTime) {
+        // eslint-disable-next-line no-console
+        console.warn('Fuzzy matching timeout, returning best result found');
+        break;
+      }
+
+      // Search left side
+      if (leftIndex >= startIndex) {
+        const result = this.checkMatch(lines, leftIndex, searchLength, searchChunk);
+        if (result.score > bestScore) {
+          bestScore = result.score;
+          bestMatchIndex = leftIndex;
+          bestMatchContent = result.content;
+
+          // Early exit for exact matches
+          if (bestScore === 1.0) {
+            break;
+          }
+        }
+        leftIndex--;
+      }
+
+      // Search right side
+      if (rightIndex <= actualEndIndex) {
+        const result = this.checkMatch(lines, rightIndex, searchLength, searchChunk);
+        if (result.score > bestScore) {
+          bestScore = result.score;
+          bestMatchIndex = rightIndex;
+          bestMatchContent = result.content;
+
+          // Early exit for exact matches
+          if (bestScore === 1.0) {
+            break;
+          }
+        }
+        rightIndex++;
+      }
+    }
+
+    return {
+      found: bestScore >= this.threshold,
+      score: bestScore,
+      index: bestMatchIndex,
+      content: bestMatchContent,
+      threshold: this.threshold,
+      searchTime: performance.now() - startTime,
+    };
+  }
+
+  /**
+   * Check similarity at a specific position with performance optimization
+   */
+  private checkMatch(
+      lines: string[],
+      startIndex: number,
+      length: number,
+      searchChunk: string,
+  ): { score: number; content: string } {
+    const chunk = lines.slice(startIndex, startIndex + length).join('\n');
+    const similarity = calculateSimilarity(chunk, searchChunk);
+
+    return {
+      score: similarity,
+      content: chunk,
+    };
+  }
+
+  /**
+   * Calculate search bounds considering buffer lines and browser limitations
+   */
+  private calculateSearchBounds(
+      totalLines: number,
+      context: SearchContext,
+  ): { startIndex: number; endIndex: number } {
+    const bufferLines = context.bufferLines ?? 40; // Default browser-optimized buffer
+
+    let startIndex = 0;
+    let endIndex = totalLines;
+
+    // Apply user-specified line range (convert from 1-based to 0-based)
+    if (context.startLine !== undefined) {
+      startIndex = Math.max(0, context.startLine - 1);
+    }
+
+    if (context.endLine !== undefined) {
+      endIndex = Math.min(totalLines, context.endLine);
+    }
+
+    // Apply buffer lines for expanded search context
+    const bufferStart = Math.max(0, startIndex - bufferLines);
+    const bufferEnd = Math.min(totalLines, endIndex + bufferLines);
+
+    return {
+      startIndex: bufferStart,
+      endIndex: bufferEnd,
+    };
+  }
+
+  /**
+   * Create a "no match found" result with reason
+   */
+  private createNoMatchResult(reason = 'No match found'): MatchResult {
+    return {
+      found: false,
+      score: 0,
+      index: -1,
+      content: '',
+      threshold: this.threshold,
+      searchTime: 0,
+      error: reason,
+    };
+  }
+
+  /**
+   * Split content into lines (browser-optimized)
+   */
+  private splitLines(content: string): string[] {
+    return content.split(/\r?\n/);
+  }
+
+  // -----------------------------------------------------------------------------
+  // Configuration Methods
+  // -----------------------------------------------------------------------------
+
+  /**
+   * Update the similarity threshold
+   */
+  setThreshold(threshold: number): void {
+    if (threshold < 0 || threshold > 1) {
+      throw new Error('Threshold must be between 0.0 and 1.0');
+    }
+    this.threshold = threshold;
+  }
+
+  /**
+   * Get current threshold
+   */
+  getThreshold(): number {
+    return this.threshold;
+  }
+
+  /**
+   * Get maximum search time limit
+   */
+  getMaxSearchTime(): number {
+    return this.maxSearchTime;
+  }
+
+}
+
+// -----------------------------------------------------------------------------
+// Browser Utility Functions
+// -----------------------------------------------------------------------------
+
+/**
+ * Split content into lines while preserving line endings (browser-optimized)
+ */
+export function splitLines(content: string): string[] {
+  return content.split(/\r?\n/);
+}
+
+/**
+ * Join lines with appropriate line ending (browser-optimized)
+ */
+export function joinLines(lines: string[], originalContent?: string): string {
+  // Detect line ending from original content or default to \n
+  const lineEnding = originalContent?.includes('\r\n') ? '\r\n' : '\n';
+  return lines.join(lineEnding);
+}
+
+/**
+ * Browser performance measurement helper
+ */
+export function measurePerformance<T>(
+    operation: () => T,
+    label = 'Fuzzy matching operation',
+): { result: T; duration: number } {
+  const start = performance.now();
+  const result = operation();
+  const duration = performance.now() - start;
+
+  if (duration > 100) {
+    // eslint-disable-next-line no-console
+    console.warn(`${label} took ${duration.toFixed(2)}ms (slow)`);
+  }
+
+  return { result, duration };
+}
+
+// -----------------------------------------------------------------------------
+// Export Default Instance
+// -----------------------------------------------------------------------------
+
+/**
+ * Default client fuzzy matcher instance
+ * Pre-configured for typical browser usage
+ */
+export const defaultClientFuzzyMatcher = new ClientFuzzyMatcher(0.8, 1000);

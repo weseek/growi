@@ -88,6 +88,10 @@ export interface MatchResult {
   content: string;
   /** Threshold used for matching */
   threshold: number;
+  /** Time taken for search in milliseconds (client-side) */
+  searchTime?: number;
+  /** Error message if search failed */
+  error?: string;
 }
 
 export interface SearchContext {
@@ -96,7 +100,7 @@ export interface SearchContext {
   /** Ending line number for search (1-based) */
   endLine?: number;
   /** Additional context lines around the search area */
-  bufferLines: number;
+  bufferLines?: number;
 }
 
 // -----------------------------------------------------------------------------
@@ -113,6 +117,80 @@ export interface ValidationResult {
   /** Suggested fixes */
   suggestions?: string[];
 }
+
+// -----------------------------------------------------------------------------
+// Editor Integration Types
+// -----------------------------------------------------------------------------
+
+export interface EditorAdapter {
+  getContent(): EditorContent;
+  setContent(content: string): void;
+  getValue(): string;
+  setValue(value: string): void;
+  getSelection(): EditorSelection;
+  setSelection(start: number, end: number): void;
+  getSelectedText(): string;
+  getPosition(): EditorPosition;
+  focus(): void;
+  blur(): void;
+  insertText(text: string, position?: EditorPosition): void;
+  replaceText(text: string, start?: number, end?: number): void;
+  onChange(handler: () => void): () => void;
+}
+
+export interface EditorAdapterConfig {
+  preserveSelection?: boolean;
+  autoFocus?: boolean;
+  enableUndo?: boolean;
+}
+
+export interface EditorContent {
+  text: string;
+  lines: string[];
+  lineCount: number;
+  charCount: number;
+}
+
+export interface EditorPosition {
+  line: number;
+  column: number;
+  offset: number;
+}
+
+export interface EditorSelection {
+  start: number;
+  end: number;
+  text: string;
+}
+
+// -----------------------------------------------------------------------------
+// Processing Types
+// -----------------------------------------------------------------------------
+
+export interface ProcessingOptions {
+  preserveSelection?: boolean;
+  enableProgressCallback?: boolean;
+  batchSize?: number;
+  timeout?: number;
+}
+
+export interface ProcessingResult {
+  success: boolean;
+  error?: DiffError;
+  matches: MatchResult[];
+  appliedCount: number;
+  skippedCount: number;
+  modifiedText: string;
+  originalText: string;
+  processingTime: number;
+}
+
+export type ProgressCallback = (progress: {
+  current: number;
+  total: number;
+  message: string;
+  percentage: number;
+}) => void;
 
 // -----------------------------------------------------------------------------
 // Legacy Compatibility
