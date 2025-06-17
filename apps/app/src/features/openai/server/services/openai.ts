@@ -4,7 +4,7 @@ import { Readable, Transform, Writable } from 'stream';
 import { pipeline } from 'stream/promises';
 
 import type {
-  IUser, Ref, Lang, IPage,
+  IUser, Ref, Lang, IPage, Nullable,
 } from '@growi/core';
 import {
   PageGrant, getIdForRef, getIdStringForRef, isPopulated, type IUserHasId,
@@ -45,7 +45,7 @@ import { convertMarkdownToHtml } from '../utils/convert-markdown-to-html';
 import { generateGlobPatterns } from '../utils/generate-glob-patterns';
 import { isVectorStoreCompatible } from '../utils/is-vector-store-compatible';
 
-import { getClient } from './client-delegator';
+import { getClient, isStreamResponse } from './client-delegator';
 import { openaiApiErrorHandler } from './openai-api-error-handler';
 import { replaceAnnotationWithPageLink } from './replace-annotation-with-page-link';
 
@@ -108,7 +108,7 @@ class OpenaiService implements IOpenaiService {
     return getClient({ openaiServiceType });
   }
 
-  private async generateThreadTitle(message: string): Promise<string | null> {
+  private async generateThreadTitle(message: string): Promise<Nullable<string>> {
     const systemMessage = [
       'Create a brief title (max 5 words) from your message.',
       'Respond in the same language the user uses in their input.',
@@ -129,8 +129,10 @@ class OpenaiService implements IOpenaiService {
       ],
     });
 
-    const threadTitle = threadTitleCompletion.choices[0].message.content;
-    return threadTitle;
+    if (!isStreamResponse(threadTitleCompletion)) {
+      const threadTitle = threadTitleCompletion.choices[0].message.content;
+      return threadTitle;
+    }
   }
 
   async createThread(userId: string, type: ThreadType, aiAssistantId?: string, initialUserMessage?: string): Promise<ThreadRelationDocument> {
