@@ -61,7 +61,7 @@ export const ACTION = {
   WRITE: 'write',
 } as const;
 
-type ACTION_TYPE = typeof ACTION[keyof typeof ACTION];
+type ACTION_TYPE = (typeof ACTION)[keyof typeof ACTION];
 export const ALL_SIGN = '*';
 
 const SCOPE_SEED_WITH_ACTION = Object.values(ACTION).reduce(
@@ -74,16 +74,15 @@ const SCOPE_SEED_WITH_ACTION = Object.values(ACTION).reduce(
 
 type FlattenObject<T> = {
   [K in keyof T]: T[K] extends object
-    ? (keyof T[K] extends never
+    ? keyof T[K] extends never
       ? K
-      : `${K & string}:${FlattenObject<T[K]> & string}`)
-    : K
+      : `${K & string}:${FlattenObject<T[K]> & string}`
+    : K;
 }[keyof T];
 
-type AddAllToScope<S extends string> =
-  S extends `${infer X}:${infer Y}`
-    ? `${X}:${typeof ALL_SIGN}` | `${X}:${AddAllToScope<Y>}` | S
-    : S;
+type AddAllToScope<S extends string> = S extends `${infer X}:${infer Y}`
+  ? `${X}:${typeof ALL_SIGN}` | `${X}:${AddAllToScope<Y>}` | S
+  : S;
 
 type ScopeOnly = FlattenObject<typeof SCOPE_SEED_WITH_ACTION>;
 type ScopeWithAll = AddAllToScope<ScopeOnly>;
@@ -94,41 +93,48 @@ type ScopeConstantLeaf = Scope;
 
 type ScopeConstantNode<T> = {
   [K in keyof T as Uppercase<string & K>]: T[K] extends object
-    ? (keyof T[K] extends never
+    ? keyof T[K] extends never
       ? ScopeConstantLeaf
-      : ScopeConstantNode<T[K]> & { ALL: Scope })
-    : ScopeConstantLeaf
+      : ScopeConstantNode<T[K]> & { ALL: Scope }
+    : ScopeConstantLeaf;
 };
 
 type ScopeConstantType = {
-  [A in keyof typeof SCOPE_SEED_WITH_ACTION as Uppercase<string & A>]:
-    ScopeConstantNode<typeof SCOPE_SEED> & { ALL: Scope }
+  [A in keyof typeof SCOPE_SEED_WITH_ACTION as Uppercase<
+    string & A
+  >]: ScopeConstantNode<typeof SCOPE_SEED> & { ALL: Scope };
 };
 
 const buildScopeConstants = (): ScopeConstantType => {
   const result = {} as Partial<ScopeConstantType>;
 
-  const processObject = (obj: Record<string, any>, path: string[] = [], resultObj: Record<string, any>) => {
-    Object.entries(obj).forEach(([key, value]) => {
+  const processObject = (
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    obj: Record<string, any>,
+    // biome-ignore lint/style/useDefaultParameterLast: <explanation>
+    path: string[] = [],
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    resultObj: Record<string, any>,
+  ) => {
+    for (const [key, value] of Object.entries(obj)) {
       const upperKey = key.toUpperCase();
       const currentPath = [...path, key];
       const scopePath = currentPath.join(':');
 
       if (value == null) {
-        return;
+        continue; // Changed from 'return' to 'continue' to match the loop behavior
       }
 
       if (typeof value === 'object' && Object.keys(value).length === 0) {
         resultObj[upperKey] = `${scopePath}` as Scope;
-      }
-      else if (typeof value === 'object') {
+      } else if (typeof value === 'object') {
         resultObj[upperKey] = {
           ALL: `${scopePath}:${ALL_SIGN}` as Scope,
         };
 
         processObject(value, currentPath, resultObj[upperKey]);
       }
-    });
+    }
   };
   processObject(SCOPE_SEED_WITH_ACTION, [], result);
 
