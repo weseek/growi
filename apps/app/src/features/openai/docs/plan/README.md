@@ -1,54 +1,59 @@
-# GROWI エディターアシスタント改修計画 - Plan Directory
+# GROWI エディターアシスタント改修計画 - クライアント・サーバー分離アーキテクチャ
 
-このディレクトリには、現在のGROWIエディターアシスタントをroo-codeの方式に倣って再実装するための包括的な改修計画が含まれています。
+このディレクトリには、現在のGROWIエディターアシスタントをroo-codeの方式に倣って**クライアント・サーバー分離アーキテクチャ**で再実装するための包括的な改修計画が含まれています。
 
 ## 📁 ファイル構成
 
 ### 📋 計画ドキュメント
 
 #### [`editor-assistant-refactoring-plan.md`](./editor-assistant-refactoring-plan.md)
-**メイン計画書** - 改修プロジェクト全体の概要
-- 📊 現状分析と課題の特定
-- 🎯 改修目標とroo-code方式の採用理由
-- 📝 5段階の実装計画
-- 📈 期待効果と品質指標
-- 🧪 検証計画
+**メイン計画書** - クライアント・サーバー分離による改修プロジェクト全体の概要
+- 📊 現状分析（全サーバーサイド処理）と課題の特定
+- 🎯 新アーキテクチャ目標とroo-code方式の適用
+- 🔄 段階別実装計画（Phase 2A/2B分離）
+- 📈 期待効果（パフォーマンス50%向上、ネットワーク80%削減）
+- ✅ 進捗状況（Phase 1完了、Phase 2A実装中）
 
 #### [`technical-implementation-details.md`](./technical-implementation-details.md)
-**技術実装詳細** - アーキテクチャと具体的な実装方法
-- 🏗️ アーキテクチャ変更のフロー図
-- 📦 ファイル構成と新規作成対象
-- 🔍 核心技術（MultiSearchReplaceProcessor、FuzzyMatcher等）
-- 🎛️ 設定とカスタマイズ方法
-- 🧪 テスト戦略
-- 📈 パフォーマンス考慮事項
+**技術実装詳細** - ハイブリッドアーキテクチャと具体的な実装方法
+- 🏗️ クライアント・サーバー責務分離のフロー図
+- 📦 新ファイル構成（client/server分離）
+- 🔍 核心技術の配置（ClientFuzzyMatcher、EditorDiffApplicator等）
+- 🎛️ ハイブリッド設定管理
+- 🧪 分散テスト戦略
+- 📈 ネットワーク・メモリ最適化
 
 #### [`implementation-tasks.md`](./implementation-tasks.md)
-**実装タスクリスト** - 具体的なタスクと進捗管理
-- ✅ Phase別の詳細タスク分解
-- ⏱️ 推定工数と優先度
-- 👥 担当者アサイン欄
-- 📊 進捗管理表
-- 🎯 次のアクション項目
+**実装タスクリスト** - クライアント・サーバー分離に基づく具体的なタスク
+- ✅ Phase 1: スキーマ更新（完了済み）
+- 🎯 Phase 2A: クライアントサイドエンジン実装（最優先・27時間）
+- 🔄 Phase 2B: サーバーサイド最適化（12時間）
+- 🔗 Phase 3: ハイブリッド統合（15時間）
+- 📊 総工数92時間、22タスクの詳細管理
 
 #### [`roo-code-investigation-supplement.md`](./roo-code-investigation-supplement.md)
-**roo-code調査レポート** - 詳細調査結果と計画への反映
-- 🧪 テスト戦略の分析（1186行のテストファイル調査）
-- 🛡️ エラーハンドリングパターン
-- 🎛️ 設定管理とカスタマイズ方法
-- 📝 文字正規化とパフォーマンス最適化
-- 📈 計画への反映事項と工数調整
+**roo-code調査レポート** - VSCode拡張アーキテクチャの詳細分析
+- 🧪 クライアントサイド処理パターンの調査
+- 🛡️ ブラウザ環境でのエラーハンドリング
+- 🎛️ リアルタイム設定管理とパフォーマンス
+- 📝 文字正規化のブラウザ実装
+- 📈 アーキテクチャ変更への反映（+11.5時間）
 
-## 🚀 改修概要
+## 🚀 改修概要 - 新アーキテクチャ
 
 ### 現在の課題
+- **全サーバーサイド処理**: パフォーマンス・プライバシー・拡張性の制約
 - **精度不足**: 単純な`replace`のみで誤った箇所を変更するリスク
-- **機能限界**: 複数変更の一括処理が困難
-- **エラー情報不足**: 失敗時の原因特定が困難
+- **ネットワーク負荷**: 全コンテンツのサーバー送信
+- **リアルタイム性欠如**: 処理中のフィードバック不足
 
-### 改修後の実現機能
-- **Search/Replace方式**: 正確な検索条件による安全な置換
-- **Fuzzy Matching**: Levenshtein距離による柔軟な類似度判定
+### 改修後の実現機能（ハイブリッドアーキテクチャ）
+
+#### 🖥️ **クライアントサイド処理**
+- **Search/Replace Engine**: ブラウザ内での高速Fuzzy Matching
+- **リアルタイム適用**: エディターへの即座diff適用
+- **プレビュー機能**: 変更前確認とキャンセル機能
+- **プライバシー強化**: ユーザーコンテンツの非送信
 - **複数diff処理**: 一つのリクエストで複数箇所の変更
 - **詳細エラー報告**: 失敗原因と解決策の具体的な提示
 
@@ -63,36 +68,68 @@ apps/app/src/features/openai/
 └── client/services/                # クライアント対応
 ```
 
-### 新規実装コンポーネント
-- **MultiSearchReplaceProcessor**: メイン処理エンジン
-- **FuzzyMatcher**: 類似度計算・検索機能
-- **DiffApplicationEngine**: 差分適用ロジック
-- **ErrorHandler**: 強化されたエラーハンドリング
+#### 🔧 **サーバーサイド専門化**
+- **LLM通信管理**: OpenAI APIとの効率的ストリーミング
+- **プロンプト最適化**: roo-code形式の指示生成
+- **セキュリティ**: 認証・認可・レート制限
+- **ネットワーク効率**: diff配列のみの転送
 
-## 🎯 実装優先順位
+### 新規実装コンポーネント（分散配置）
 
-### 🔴 高優先度 (Phase 1-2)
-1. スキーマ・インターフェース更新
-2. Search/Replace処理エンジン実装
-3. サーバーサイド統合
+#### クライアントサイド
+- **ClientFuzzyMatcher**: ブラウザ内類似度計算
+- **EditorDiffApplicator**: エディター直接統合
+- **ClientSearchReplaceProcessor**: ローカル処理エンジン  
+- **ClientErrorHandler**: リアルタイムエラー表示
 
-### 🟡 中優先度 (Phase 3-4)  
-4. クライアントサイド対応
-5. 統合テスト
-6. プロンプト更新
+#### サーバーサイド
+- **LlmResponseProcessor**: OpenAI専門パーサー
+- **PromptGenerator**: roo-code形式生成
+- **ServerConfig**: システム設定管理
 
-### 🟢 低優先度 (Phase 5-6)
-7. UI改善・最適化
-8. E2Eテスト
-9. ドキュメント整備
+## 🎯 実装優先順位 - 更新版
 
-## 📈 期待効果
+### 🔴 **最高優先度** (Phase 2A - 27時間)
+1. **Client Fuzzy Matching Engine** - ブラウザ内高速検索  
+2. **Client Diff Application Engine** - エディター直接統合
+3. **Client Main Processor** - ローカル処理統合
+4. **Editor Integration** - useEditorAssistantフック更新
+
+### 🟡 **中優先度** (Phase 2B, 3 - 27時間)
+5. **Server Optimization** - LLM専門化・軽量化
+6. **Hybrid Integration** - クライアント・サーバー連携
+7. **Real-time Feedback** - 処理状況の即座表示
+
+### 🟢 **低優先度** (Phase 4, 5 - 34時間)
+8. **UI Enhancement** - プレビュー・設定画面
+9. **Documentation** - アーキテクチャ図・API仕様
+10. **Testing** - 単体・統合・E2Eテスト
+
+## 📈 期待効果 - 新アーキテクチャ
 
 | 指標 | 現在 | 改修後 | 改善率 |
 |------|------|--------|--------|
 | **編集精度** | 60-70% | 90-95% | +30-35% |
-| **複雑変更対応** | 困難 | 対応可能 | - |
-| **エラー情報** | 限定的 | 詳細 | +200% |
+| **レスポンス時間** | 2-3秒 | 0.5-1秒 | **50-70%** |
+| **ネットワーク負荷** | 全コンテンツ | diff配列のみ | **80%** |
+| **サーバー負荷** | 高（全処理） | 低（LLMのみ） | **60%** |
+| **プライバシー** | 全送信 | 最小限 | **大幅改善** |
+
+## 📊 進捗状況
+
+### ✅ **完了** (Phase 1 - 4時間)
+- LlmEditorAssistantDiff スキーマ Search/Replace対応
+- SseFinalizedSchema エラー詳細拡張
+- 新型定義追加 (ProcessorConfig, DiffError等)
+
+### 🔄 **進行中** (アーキテクチャ見直し)
+- サーバーサイドプロトタイプ → クライアント実装への移行
+- 責務分離設計の確定
+
+### 📋 **次のアクション** (Phase 2A)
+- Client Fuzzy Matching Engine 実装開始
+- fastest-levenshtein ブラウザ対応確認
+- エディター統合テスト環境構築
 
 ## 🔗 参考資料
 
@@ -103,15 +140,36 @@ apps/app/src/features/openai/
 
 ## 📝 使用方法
 
-### 計画書の読み順
-1. **まず**: [`editor-assistant-refactoring-plan.md`](./editor-assistant-refactoring-plan.md) で全体概要を把握
-2. **次に**: [`technical-implementation-details.md`](./technical-implementation-details.md) で技術詳細を理解
-3. **最後に**: [`implementation-tasks.md`](./implementation-tasks.md) で具体的なタスクを確認
+### 計画書の読み順（新アーキテクチャ対応）
+1. **まず**: [`editor-assistant-refactoring-plan.md`](./editor-assistant-refactoring-plan.md) でクライアント・サーバー分離の全体概要を把握
+2. **次に**: [`implementation-tasks.md`](./implementation-tasks.md) でPhase 2A（クライアント実装）の具体的なタスクを確認
+3. **詳細**: [`technical-implementation-details.md`](./technical-implementation-details.md) でハイブリッドアーキテクチャの技術詳細を理解
+4. **背景**: [`roo-code-investigation-supplement.md`](./roo-code-investigation-supplement.md) でアーキテクチャ変更の根拠を確認
 
-### 実装開始時
-1. [`implementation-tasks.md`](./implementation-tasks.md) のPhase 1から着手
-2. 各フェーズ完了後、進捗を更新
-3. 技術的な詳細は [`technical-implementation-details.md`](./technical-implementation-details.md) を参照
+### 実装開始時（更新版）
+1. **Phase 2A**から着手: クライアントサイドエンジンの実装を最優先
+2. **段階的検証**: Fuzzy Matching → Diff Application → 統合の順序で進行
+3. **並行開発**: Phase 2Aと2Bを部分的に並行実装可能
+4. **進捗管理**: [`implementation-tasks.md`](./implementation-tasks.md) のチェックリストで管理
+
+## ⚠️ 重要な注意事項
+
+### アーキテクチャ変更による影響
+- **既存プロトタイプ**: サーバーサイドファイルは参考用（後で削除予定）
+- **依存関係**: `fastest-levenshtein`のブラウザ対応要確認
+- **テスト環境**: ブラウザ環境での単体テスト構築が必要
+- **パフォーマンス**: クライアント処理のメモリ使用量監視が重要
+
+### 開発時の注意点
+- **段階的移行**: 全機能を一度に移行せず、段階的な移行を推奨
+- **後方互換性**: 既存機能との共存を考慮した実装
+- **エラーハンドリング**: クライアントサイドエラーの適切な処理
+- **セキュリティ**: クライアント処理でもセキュリティ配慮が必要
+
+---
+
+**最終更新**: クライアント・サーバー分離アーキテクチャへの設計変更完了
+**次のマイルストーン**: Phase 2A クライアントサイドエンジン実装開始
 
 ## ⚠️ 重要な注意事項
 
