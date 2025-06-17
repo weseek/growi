@@ -1,5 +1,5 @@
 import {
-  useCallback, useEffect, useState, useRef, useMemo, type FC,
+  useCallback, useEffect, useState, useRef, useMemo,
 } from 'react';
 
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
@@ -17,7 +17,6 @@ import {
   SseMessageSchema,
   SseDetectedDiffSchema,
   SseFinalizedSchema,
-  isReplaceDiff,
   type SseMessage,
   type SseDetectedDiff,
   type SseFinalized,
@@ -33,6 +32,9 @@ import { ThreadType } from '../../interfaces/thread-relation';
 import { AiAssistantDropdown } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantDropdown';
 import { QuickMenuList } from '../components/AiAssistant/AiAssistantSidebar/QuickMenuList';
 import { useAiAssistantSidebar } from '../stores/ai-assistant';
+
+// Client Engine Integration
+import useClientEngineIntegration, { shouldUseClientProcessing } from './client-engine-integration';
 
 interface CreateThread {
   (): Promise<IThreadRelationHasId>;
@@ -156,6 +158,11 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
   const yDocs = useSecondaryYdocs(isEnableUnifiedMergeView ?? false, { pageId: currentPageId ?? undefined, useSecondary: isEnableUnifiedMergeView ?? false });
   const { data: aiAssistantSidebarData } = useAiAssistantSidebar();
+  const clientEngine = useClientEngineIntegration({
+    enableClientProcessing: shouldUseClientProcessing(),
+    enableServerFallback: true,
+    enablePerformanceMetrics: true,
+  });
 
   const form = useForm<FormData>({
     defaultValues: {
@@ -207,7 +214,13 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     return response;
   }, [codeMirrorEditor, mutateIsEnableUnifiedMergeView, selectedText]);
 
-  const processMessage: ProcessMessage = useCallback((data, handler) => {
+
+  // Enhanced processMessage with client engine support (保持)
+  const processMessageWithClientEngine = useCallback(async(data: unknown, handler: {
+    onMessage: (data: SseMessage) => void;
+    onDetectedDiff: (data: SseDetectedDiff) => void;
+    onFinalized: (data: SseFinalized) => void;
+  }) => {
     // Reset timer whenever data is received
     const handleDataReceived = () => {
     // Clear existing timer
@@ -230,22 +243,63 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       handleDataReceived();
       handler.onMessage(data);
     });
-    handleIfSuccessfullyParsed(data, SseDetectedDiffSchema, (data: SseDetectedDiff) => {
+
+    handleIfSuccessfullyParsed(data, SseDetectedDiffSchema, async(diffData: SseDetectedDiff) => {
       handleDataReceived();
       mutateIsEnableUnifiedMergeView(true);
+
+      // Check if client engine processing is enabled
+      if (clientEngine.isClientProcessingEnabled && yDocs?.secondaryDoc != null) {
+        try {
+          // Get current content
+          const yText = yDocs.secondaryDoc.getText('codemirror');
+          const currentContent = yText.toString();
+
+          // Process with client engine
+          const result = await clientEngine.processHybrid(
+            currentContent,
+            [diffData],
+            async() => {
+              // Fallback to original server-side processing
+              setDetectedDiff((prev) => {
+                const newData = { data: diffData, applied: false, id: crypto.randomUUID() };
+                if (prev == null) {
+                  return [newData];
+                }
+                return [...prev, newData];
+              });
+            },
+          );
+
+          // Apply result if client processing succeeded
+          if (result.success && result.method === 'client' && result.result?.modifiedText) {
+            const applied = clientEngine.applyToYText(yText, result.result.modifiedText);
+            if (applied) {
+              handler.onDetectedDiff(diffData);
+              return;
+            }
+          }
+        }
+        catch (error) {
+          // Fall through to server-side processing
+        }
+      }
+
+      // Original server-side processing (fallback or default)
       setDetectedDiff((prev) => {
-        const newData = { data, applied: false, id: crypto.randomUUID() };
+        const newData = { data: diffData, applied: false, id: crypto.randomUUID() };
         if (prev == null) {
           return [newData];
         }
         return [...prev, newData];
       });
-      handler.onDetectedDiff(data);
+      handler.onDetectedDiff(diffData);
     });
+
     handleIfSuccessfullyParsed(data, SseFinalizedSchema, (data: SseFinalized) => {
       handler.onFinalized(data);
     });
-  }, [isGeneratingEditorText, mutateIsEnableUnifiedMergeView]);
+  }, [isGeneratingEditorText, mutateIsEnableUnifiedMergeView, clientEngine, yDocs]);
 
   const selectTextHandler = useCallback((selectedText: string, selectedTextFirstLineNumber: number) => {
     setSelectedText(selectedText);
@@ -262,7 +316,8 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       const yText = yDocs.secondaryDoc.getText('codemirror');
       yDocs.secondaryDoc.transact(() => {
         pendingDetectedDiff.forEach((detectedDiff) => {
-          if (isReplaceDiff(detectedDiff.data)) {
+          // Note: isReplaceDiff was removed, using basic check instead
+          if (detectedDiff.data.diff) {
 
             if (isTextSelected) {
               const lineInfo = getLineInfo(yText, lineRef.current);
@@ -311,8 +366,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       }
     };
   }, []);
-
-
   // Views
   const headerIcon = useMemo(() => {
     return <span className="material-symbols-outlined growi-ai-chat-icon me-3 fs-4">support_agent</span>;
@@ -425,7 +478,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   return {
     createThread,
     postMessage,
-    processMessage,
+    processMessage: processMessageWithClientEngine,
     form,
     resetForm,
     isTextSelected,
@@ -442,6 +495,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
 };
 
 // type guard
-export const isEditorAssistantFormData = (formData): formData is FormData => {
-  return 'markdownType' in formData;
+export const isEditorAssistantFormData = (formData: unknown): formData is FormData => {
+  return typeof formData === 'object' && formData != null && 'markdownType' in formData;
 };
