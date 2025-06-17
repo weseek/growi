@@ -249,6 +249,9 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
             const data = JSON.parse(line.replace('data: ', ''));
 
             processMessageForKnowledgeAssistant(data, {
+              onPreMessage: (data) => {
+                textValues.push(data.text);
+              },
               onMessage: (data) => {
                 textValues.push(data.content[0].text.value);
               },
