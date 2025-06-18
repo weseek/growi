@@ -134,6 +134,20 @@ export function useClientEngineIntegration(config: Partial<ClientEngineConfig> =
         .map(d => d.diff)
         .filter((diff): diff is LlmEditorAssistantDiff => diff != null);
 
+      // Validate required fields for client processing
+      for (const diff of diffs) {
+        if (!diff.startLine) {
+          throw new Error(
+            `startLine is required for client processing but missing in diff: ${diff.search?.substring(0, 50)}...`,
+          );
+        }
+        if (!diff.search) {
+          throw new Error(
+            `search field is required for client processing but missing in diff at line ${diff.startLine}`,
+          );
+        }
+      }
+
       // Process with client engine
       const diffResult = await clientProcessor.current.processMultipleDiffs(content, diffs, {
         enableProgressCallbacks: true,
