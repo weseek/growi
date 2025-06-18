@@ -39,6 +39,18 @@
   "typescript.validate.enable": true,
   "typescript.surveys.enabled": false,
 
-  "vitest.filesWatcherInclude": "**/*"
+  "vitest.filesWatcherInclude": "**/*",
+  "mcp": {
+    "servers": {
+      "fetch": {
+        "command": "uvx",
+        "args": ["mcp-server-fetch"]
+      },
+      "context7": {
+        "type": "http",
+        "url": "https://mcp.context7.com/mcp"
+      }
+    }
+  }
 
 }
