@@ -241,7 +241,10 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
         const chunk = decoder.decode(value);
 
-        const textValues: string[] = [];
+        let isPreMessageGenerated = false;
+        let isMainMessageGenerationStarted = false;
+        const preMessages: string[] = [];
+        const mainMessages: string[] = [];
         const lines = chunk.split('\n\n');
         lines.forEach((line) => {
           const trimmedLine = line.trim();
@@ -250,16 +253,36 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
             processMessageForKnowledgeAssistant(data, {
               onPreMessage: (data) => {
-                textValues.push(data.text);
+                // When main message is sent while pre-message is being transmitted
+                if (isMainMessageGenerationStarted) {
+                  preMessages.length = 0;
+                  return;
+                }
+                if (data.finished) {
+                  isPreMessageGenerated = true;
+                  return;
+                }
+                if (data.text == null) {
+                  return;
+                }
+                preMessages.push(data.text);
               },
               onMessage: (data) => {
-                textValues.push(data.content[0].text.value);
+                if (!isMainMessageGenerationStarted) {
+                  isMainMessageGenerationStarted = true;
+                }
+
+                // When main message is sent while pre-message is being transmitted
+                if (!isPreMessageGenerated) {
+                  preMessages.length = 0;
+                }
+                mainMessages.push(data.content[0].text.value);
               },
             });
 
             processMessageForEditorAssistant(data, {
               onMessage: (data) => {
-                textValues.push(data.appendedMessage);
+                mainMessages.push(data.appendedMessage);
               },
               onDetectedDiff: (data) => {
                 logger.debug('sse diff', { data });
@@ -280,13 +303,12 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
           }
         });
 
-
         // append text values to the assistant message
         setGeneratingAnswerMessage((prevMessage) => {
           if (prevMessage == null) return;
           return {
             ...prevMessage,
-            content: prevMessage.content + textValues.join(''),
+            content: prevMessage.content + preMessages.join('') + mainMessages.join(''),
           };
         });
 
