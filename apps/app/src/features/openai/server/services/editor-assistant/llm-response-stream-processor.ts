@@ -232,16 +232,55 @@ export class LlmResponseStreamProcessor {
         }
       }
 
-      // Final notification
-      const fullMessage = Array.from(this.processedMessages.values()).join('');
-      this.options?.dataFinalizedCallback?.(fullMessage, this.replacements);
+      // Final notification - extract all messages from complete JSON
+      let finalMessage = '';
+
+      // Extract all messages from the final complete JSON
+      if (parsedJson?.contents && Array.isArray(parsedJson.contents)) {
+        const messageContents = parsedJson.contents
+          .filter(item => isMessageItem(item))
+          .map(item => item.message)
+          .join('');
+
+        finalMessage = messageContents;
+      }
+
+      // Fallback to processedMessages if final extraction fails
+      if (!finalMessage) {
+        finalMessage = Array.from(this.processedMessages.values()).join('');
+      }
+
+      this.options?.dataFinalizedCallback?.(finalMessage, this.replacements);
     }
     catch (e) {
       logger.debug('Failed to parse final JSON response:', e);
 
-      // Send final notification even on error
-      const fullMessage = Array.from(this.processedMessages.values()).join('');
-      this.options?.dataFinalizedCallback?.(fullMessage, this.replacements);
+      // Send final notification even on error - extract from complete JSON if possible
+      let finalMessage = '';
+
+      try {
+        const repairedJson = jsonrepair(rawBuffer);
+        const parsedJson = JSON.parse(repairedJson);
+
+        if (parsedJson?.contents && Array.isArray(parsedJson.contents)) {
+          const messageContents = parsedJson.contents
+            .filter(item => isMessageItem(item))
+            .map(item => item.message)
+            .join('');
+
+          finalMessage = messageContents;
+        }
+      }
+      catch (parseError) {
+        // Ignore parse errors in catch block
+      }
+
+      // Fallback to processedMessages
+      if (!finalMessage) {
+        finalMessage = Array.from(this.processedMessages.values()).join('');
+      }
+
+      this.options?.dataFinalizedCallback?.(finalMessage, this.replacements);
     }
   }
 
