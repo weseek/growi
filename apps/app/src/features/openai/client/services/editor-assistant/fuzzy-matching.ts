@@ -68,6 +68,133 @@ export class ClientFuzzyMatcher {
   }
 
   /**
+   * Try exact line match at the specified line
+   */
+  tryExactLineMatch(
+      content: string,
+      searchText: string,
+      startLine: number,
+  ): MatchResult {
+    const lines = content.split('\n');
+
+    if (startLine <= 0 || startLine > lines.length) {
+      return { success: false, similarity: 0, error: 'Invalid line number' };
+    }
+
+    // Get line range for multi-line search
+    const searchLines = searchText.split('\n');
+    const endLine = Math.min(startLine + searchLines.length - 1, lines.length);
+
+    if (endLine - startLine + 1 !== searchLines.length) {
+      return { success: false, similarity: 0, error: 'Not enough lines for search' };
+    }
+
+    // Extract content from specified lines
+    const targetContent = lines.slice(startLine - 1, endLine).join('\n');
+
+    // Check for exact match first
+    if (targetContent === searchText) {
+      const startIndex = lines.slice(0, startLine - 1).join('\n').length + (startLine > 1 ? 1 : 0);
+      const endIndex = startIndex + searchText.length;
+
+      return {
+        success: true,
+        similarity: 1.0,
+        matchedRange: {
+          startIndex,
+          endIndex,
+          startLine,
+          endLine,
+        },
+      };
+    }
+
+    // Check fuzzy match
+    const similarity = calculateSimilarity(targetContent, searchText);
+    if (similarity >= this.threshold) {
+      const startIndex = lines.slice(0, startLine - 1).join('\n').length + (startLine > 1 ? 1 : 0);
+      const endIndex = startIndex + targetContent.length;
+
+      return {
+        success: true,
+        similarity,
+        matchedRange: {
+          startIndex,
+          endIndex,
+          startLine,
+          endLine,
+        },
+      };
+    }
+
+    return { success: false, similarity, error: 'Similarity below threshold' };
+  }
+
+  /**
+   * Perform buffered search around the preferred line
+   */
+  performBufferedSearch(
+      content: string,
+      searchText: string,
+      preferredStartLine: number,
+      bufferLines = 40,
+  ): MatchResult {
+    const lines = content.split('\n');
+    const searchLines = searchText.split('\n');
+
+    // Calculate search bounds
+    const startBound = Math.max(1, preferredStartLine - bufferLines);
+    const endBound = Math.min(lines.length, preferredStartLine + bufferLines);
+
+    let bestMatch: MatchResult = { success: false, similarity: 0, error: 'No match found' };
+
+    // Search within the buffer area
+    for (let currentLine = startBound; currentLine <= endBound - searchLines.length + 1; currentLine++) {
+      const match = this.tryExactLineMatch(content, searchText, currentLine);
+
+      if (match.success && match.similarity > bestMatch.similarity) {
+        bestMatch = match;
+
+        // Early exit for exact matches
+        if (match.similarity === 1.0) {
+          break;
+        }
+      }
+    }
+
+    return bestMatch;
+  }
+
+  /**
+   * Perform full search across entire content
+   */
+  performFullSearch(
+      content: string,
+      searchText: string,
+  ): MatchResult {
+    const lines = content.split('\n');
+    const searchLines = searchText.split('\n');
+
+    let bestMatch: MatchResult = { success: false, similarity: 0, error: 'No match found' };
+
+    // Search entire content
+    for (let currentLine = 1; currentLine <= lines.length - searchLines.length + 1; currentLine++) {
+      const match = this.tryExactLineMatch(content, searchText, currentLine);
+
+      if (match.success && match.similarity > bestMatch.similarity) {
+        bestMatch = match;
+
+        // Early exit for exact matches
+        if (match.similarity === 1.0) {
+          break;
+        }
+      }
+    }
+
+    return bestMatch;
+  }
+
+  /**
    * Find the best fuzzy match using middle-out search strategy
    * Optimized for browser environment with timeout protection
    */
@@ -89,6 +216,17 @@ export class ClientFuzzyMatcher {
 
     if (searchLength === 0) {
       return this.createNoMatchResult('Invalid search content');
+    }
+
+    // 指定行から優先検索
+    if (context.preferredStartLine) {
+      const exactMatch = this.tryExactLineMatch(content, searchText, context.preferredStartLine);
+      if (exactMatch.success) {
+        return exactMatch;
+      }
+
+      // 指定行周辺でfuzzy検索
+      return this.performBufferedSearch(content, searchText, context.preferredStartLine, context.bufferLines || 40);
     }
 
     // Calculate search bounds with buffer
@@ -174,11 +312,10 @@ export class ClientFuzzyMatcher {
     }
 
     return {
-      found: bestScore >= this.threshold,
-      score: bestScore,
+      success: bestScore >= this.threshold,
+      similarity: bestScore,
       index: bestMatchIndex,
       content: bestMatchContent,
-      threshold: this.threshold,
       searchTime: performance.now() - startTime,
     };
   }
@@ -237,11 +374,10 @@ export class ClientFuzzyMatcher {
    */
   private createNoMatchResult(reason = 'No match found'): MatchResult {
     return {
-      found: false,
-      score: 0,
+      success: false,
+      similarity: 0,
       index: -1,
       content: '',
-      threshold: this.threshold,
       searchTime: 0,
       error: reason,
     };

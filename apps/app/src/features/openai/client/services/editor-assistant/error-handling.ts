@@ -84,8 +84,8 @@ export class ClientErrorHandler {
       startLine?: number,
   ): DiffError {
     const lineRange = startLine ? ` (starting at line ${startLine})` : '';
-    const similarityInfo = matchResult?.score
-      ? ` (closest match: ${Math.floor(matchResult.score * 100)}%)`
+    const similarityInfo = matchResult?.similarity
+      ? ` (closest match: ${Math.floor(matchResult.similarity * 100)}%)`
       : '';
 
     const error: DiffError = {
@@ -95,7 +95,7 @@ export class ClientErrorHandler {
       details: {
         searchContent,
         bestMatch: matchResult?.content,
-        similarity: matchResult?.score,
+        similarity: matchResult?.similarity,
         suggestions: [...CLIENT_SUGGESTIONS.SEARCH_NOT_FOUND],
         lineRange: startLine ? `starting at line ${startLine}` : 'entire document',
       },
@@ -145,7 +145,7 @@ export class ClientErrorHandler {
   ): DiffError {
     const matchInfo = matches
       .slice(0, 3) // Show only first 3 matches
-      .map((match, index) => `Match ${index + 1}: line ${match.index + 1} (${Math.floor(match.score * 100)}%)`)
+      .map((match, index) => `Match ${index + 1}: line ${match.index ? match.index + 1 : 'unknown'} (${Math.floor((match.similarity || 0) * 100)}%)`)
       .join(', ');
 
     const error: DiffError = {

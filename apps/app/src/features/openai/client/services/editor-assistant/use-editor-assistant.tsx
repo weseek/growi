@@ -34,6 +34,8 @@ import { QuickMenuList } from '../../components/AiAssistant/AiAssistantSidebar/Q
 import { useAiAssistantSidebar } from '../../stores/ai-assistant';
 import { useClientEngineIntegration, shouldUseClientProcessing } from '../client-engine-integration';
 
+import { performSearchReplace } from './search-replace-engine';
+
 interface CreateThread {
   (): Promise<IThreadRelationHasId>;
 }
@@ -106,34 +108,6 @@ const appendTextLastLine = (yText: YText, textToAppend: string) => {
   const content = yText.toString();
   const insertPosition = content.length;
   yText.insert(insertPosition, `\n\n${textToAppend}`);
-};
-
-const getLineInfo = (yText: YText, lineNumber: number): { text: string, startIndex: number } | null => {
-  // Get the entire text content
-  const content = yText.toString();
-
-  // Split by newlines to get all lines
-  const lines = content.split('\n');
-
-  // Check if the requested line exists
-  if (lineNumber < 0 || lineNumber >= lines.length) {
-    return null; // Line doesn't exist
-  }
-
-  // Get the text of the specified line
-  const text = lines[lineNumber];
-
-  // Calculate the start index of the line
-  let startIndex = 0;
-  for (let i = 0; i < lineNumber; i++) {
-    startIndex += lines[i].length + 1; // +1 for the newline character
-  }
-
-  // Return comprehensive line information
-  return {
-    text,
-    startIndex,
-  };
 };
 
 export const useEditorAssistant: UseEditorAssistant = () => {
@@ -314,20 +288,21 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       const yText = yDocs.secondaryDoc.getText('codemirror');
       yDocs.secondaryDoc.transact(() => {
         pendingDetectedDiff.forEach((detectedDiff) => {
-          // Note: isReplaceDiff was removed, using basic check instead
           if (detectedDiff.data.diff) {
+            const { search, replace, startLine } = detectedDiff.data.diff;
 
-            if (isTextSelected) {
-              const lineInfo = getLineInfo(yText, lineRef.current);
-              if (lineInfo != null && lineInfo.text !== detectedDiff.data.diff.replace) {
-                yText.delete(lineInfo.startIndex, lineInfo.text.length);
-                insertTextAtLine(yText, lineRef.current, detectedDiff.data.diff.replace);
+            // 新しい検索・置換処理
+            const success = performSearchReplace(yText, search, replace, startLine);
+
+            if (!success) {
+              // フォールバック: 既存の動作
+              if (isTextSelected) {
+                insertTextAtLine(yText, lineRef.current, replace);
+                lineRef.current += 1;
               }
-
-              lineRef.current += 1;
-            }
-            else {
-              appendTextLastLine(yText, detectedDiff.data.diff.replace);
+              else {
+                appendTextLastLine(yText, replace);
+              }
             }
           }
         });

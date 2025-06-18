@@ -92,7 +92,7 @@ export class ClientDiffApplicationEngine {
         searchContext,
       );
 
-      if (!matchResult.found) {
+      if (!matchResult.success) {
         return {
           success: false,
           error: this.errorHandler.createSearchNotFoundError(
@@ -106,7 +106,7 @@ export class ClientDiffApplicationEngine {
       // Apply the replacement with indentation preservation
       const replacementResult = this.applyReplacement(
         lines,
-        matchResult,
+        { index: matchResult.index || 0, content: matchResult.content || '' },
         diff.replace,
       );
 

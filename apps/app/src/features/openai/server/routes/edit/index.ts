@@ -104,13 +104,24 @@ function instruction(withMarkdown: boolean): string {
   }
 
   ## For Edit Type (explicit editing request):
+  The SEARCH field must contain exact content including whitespace and indentation.
+  The startLine field is REQUIRED and must specify the line number where search begins.
+
   Respond with a JSON object in the following format:
   {
     "contents": [
       { "message": "Your brief message about the upcoming change or proposal.\n\n" },
-      { "replace": "New text 1" },
+      {
+        "search": "exact existing content",
+        "replace": "new content",
+        "startLine": 42  // REQUIRED: line number (1-based) where search begins
+      },
       { "message": "Additional explanation if needed" },
-      { "replace": "New text 2" },
+      {
+        "search": "another exact content",
+        "replace": "replacement content",
+        "startLine": 58  // REQUIRED
+      },
       ...more items if needed
       { "message": "Your friendly message explaining what changes were made or suggested." }
     ]
@@ -119,7 +130,7 @@ function instruction(withMarkdown: boolean): string {
   The array should contain:
   - [At the beginning of the list] A "message" object that has your brief message about the upcoming change or proposal. Be sure to add two consecutive line feeds ('\n\n') at the end.
   - Objects with a "message" key for explanatory text to the user if needed.
-  - Edit markdown according to user instructions and include it line by line in the 'replace' object. ${withMarkdown ? 'Return original text for lines that do not need editing.' : ''}
+  - Edit objects with "search" (exact existing content), "replace" (new content), and "startLine" (1-based line number, REQUIRED) fields.
   - [At the end of the list] A "message" object that contains your friendly message explaining that the operation was completed and what changes were made.
 
   ${withMarkdown ? withMarkdownCaution : ''}

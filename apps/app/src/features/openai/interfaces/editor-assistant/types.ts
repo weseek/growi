@@ -79,15 +79,20 @@ export interface SingleDiffResult {
 
 export interface MatchResult {
   /** Whether a match was found above threshold */
-  found: boolean;
+  success: boolean;
   /** Similarity score (0.0 to 1.0) */
-  score: number;
+  similarity: number;
   /** Starting line index of the match */
-  index: number;
+  index?: number;
   /** Matched content */
-  content: string;
-  /** Threshold used for matching */
-  threshold: number;
+  content?: string;
+  /** Character range of the match */
+  matchedRange?: {
+    startIndex: number;
+    endIndex: number;
+    startLine: number;
+    endLine: number;
+  };
   /** Time taken for search in milliseconds (client-side) */
   searchTime?: number;
   /** Error message if search failed */
@@ -99,7 +104,9 @@ export interface SearchContext {
   startLine?: number;
   /** Ending line number for search (1-based) */
   endLine?: number;
-  /** Additional context lines around the search area */
+  /** Preferred starting line for search optimization (1-based) */
+  preferredStartLine?: number;
+  /** Number of buffer lines around search area (default: 40) */
   bufferLines?: number;
 }
 

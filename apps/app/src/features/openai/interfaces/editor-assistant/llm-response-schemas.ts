@@ -19,8 +19,7 @@ export const LlmEditorAssistantDiffSchema = z.object({
   startLine: z.number()
     .int()
     .positive()
-    .optional()
-    .describe('Starting line number for search (1-based, optional)'),
+    .describe('Starting line number for search (1-based, REQUIRED)'),
   endLine: z.number()
     .int()
     .positive()
