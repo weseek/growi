@@ -1,7 +1,3 @@
-import {
-  describe, test, expect, beforeEach,
-} from 'vitest';
-
 import type { SearchContext } from '../../../interfaces/editor-assistant/types';
 
 import {

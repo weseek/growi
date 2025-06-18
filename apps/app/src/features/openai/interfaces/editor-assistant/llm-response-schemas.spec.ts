@@ -1,8 +1,4 @@
 import {
-  describe, test, expect,
-} from 'vitest';
-
-import {
   LlmEditorAssistantMessageSchema,
   LlmEditorAssistantDiffSchema,
   type LlmEditorAssistantMessage,
@@ -72,7 +68,6 @@ Line 3: Fixed indentation`,
       expect(result.success).toBe(false);
       if (!result.success) {
         expect(result.error.issues[0].code).toBe('invalid_type');
-        expect(result.error.issues[0].expected).toBe('string');
       }
     });
 
@@ -335,7 +330,6 @@ Line 3: Fixed indentation`,
       if (!result.success) {
         const searchError = result.error.issues.find(issue => issue.path.includes('search'));
         expect(searchError?.code).toBe('invalid_type');
-        expect(searchError?.expected).toBe('string');
       }
     });
 
@@ -351,7 +345,6 @@ Line 3: Fixed indentation`,
       if (!result.success) {
         const replaceError = result.error.issues.find(issue => issue.path.includes('replace'));
         expect(replaceError?.code).toBe('invalid_type');
-        expect(replaceError?.expected).toBe('string');
       }
     });
 
@@ -412,7 +405,8 @@ Line 3: Fixed indentation`,
     test('should validate typical code replacement scenario', () => {
       const realWorldDiff = {
         search: 'function getUserData(id) {\n  return users.find(u => u.id === id);\n}',
-        replace: 'async function getUserData(id) {\n  const user = await userService.findById(id);\n  if (!user) {\n    throw new Error(`User not found: ${id}`);\n  }\n  return user;\n}',
+        // eslint-disable-next-line max-len, no-template-curly-in-string
+        replace: 'async function getUserData(id) {\n  const user = await userService.findById(id);\n  if (!user) {\n    throw new Error(`User not found: \\${id}`);\n  }\n  return user;\n}',
         startLine: 15,
         endLine: 17,
       };

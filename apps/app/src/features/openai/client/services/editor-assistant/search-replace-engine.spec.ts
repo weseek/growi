@@ -1,6 +1,3 @@
-import {
-  describe, test, expect,
-} from 'vitest';
 import { type Text as YText, Doc as YDoc } from 'yjs';
 
 import {
