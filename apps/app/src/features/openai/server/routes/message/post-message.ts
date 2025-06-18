@@ -126,9 +126,6 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
         res.write(`data: ${JSON.stringify(content)}\n\n`);
       };
 
-      // Don't add await since SSE is performed asynchronously with main message
-      openaiService.generateAndProcessPreMessage(req.body.userMessage, preMessageDeltaHandler);
-
       const messageDeltaHandler = async(delta: MessageDelta) => {
         const content = delta.content?.[0];
 
@@ -143,6 +140,9 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
       const sendError = (message: string, code?: StreamErrorCode) => {
         res.write(`error: ${JSON.stringify({ code, message })}\n\n`);
       };
+
+      // Don't add await since SSE is performed asynchronously with main message
+      openaiService.generateAndProcessPreMessage(req.body.userMessage, preMessageDeltaHandler);
 
       stream.on('event', (delta) => {
         if (delta.event === 'thread.run.failed') {
