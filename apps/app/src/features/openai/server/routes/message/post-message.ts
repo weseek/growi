@@ -124,22 +124,18 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
         'Cache-Control': 'no-cache, no-transform',
       });
 
-      let isMainMessageGenerating = false;
+      const preMessageChunkHandler = (chunk: ChatCompletionChunk) => {
+        const chunkChoice = chunk.choices[0];
 
-      const preMessageDeltaHandler = (delta: ChatCompletionChunk.Choice.Delta) => {
-        if (isMainMessageGenerating) {
-          return;
-        }
+        const content = {
+          text: chunkChoice.delta.content,
+          finished: chunkChoice.finish_reason != null,
+        };
 
-        const content = { text: delta.content };
         res.write(`data: ${JSON.stringify(content)}\n\n`);
       };
 
       const messageDeltaHandler = async(delta: MessageDelta) => {
-        if (!isMainMessageGenerating) {
-          isMainMessageGenerating = true;
-        }
-
         const content = delta.content?.[0];
 
         // If annotation is found
@@ -155,7 +151,7 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
       };
 
       // Don't add await since SSE is performed asynchronously with main message
-      openaiService.generateAndProcessPreMessage(req.body.userMessage, preMessageDeltaHandler);
+      openaiService.generateAndProcessPreMessage(req.body.userMessage, preMessageChunkHandler);
 
       stream.on('event', (delta) => {
         if (delta.event === 'thread.run.failed') {

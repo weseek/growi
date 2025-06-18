@@ -73,7 +73,7 @@ const convertPathPatternsToRegExp = (pagePathPatterns: string[]): Array<string |
 };
 
 export interface IOpenaiService {
-  generateAndProcessPreMessage(message: string, deltaProcessor: (delta: ChatCompletionChunk.Choice.Delta) => void): Promise<void>
+  generateAndProcessPreMessage(message: string, chunkProcessor: (chunk: ChatCompletionChunk) => void): Promise<void>
   createThread(userId: string, type: ThreadType, aiAssistantId?: string, initialUserMessage?: string): Promise<ThreadRelationDocument>;
   getThreadsByAiAssistantId(aiAssistantId: string): Promise<ThreadRelationDocument[]>
   deleteThread(threadRelationId: string): Promise<ThreadRelationDocument>;
@@ -110,7 +110,7 @@ class OpenaiService implements IOpenaiService {
     return getClient({ openaiServiceType });
   }
 
-  async generateAndProcessPreMessage(message: string, deltaProcessor: (delta: ChatCompletionChunk.Choice.Delta) => void): Promise<void> {
+  async generateAndProcessPreMessage(message: string, chunkProcessor: (delta: ChatCompletionChunk) => void): Promise<void> {
     const systemMessage = [
       "Generate a message briefly confirming the user's question.",
       'Please generate up to 20 characters',
@@ -136,8 +136,7 @@ class OpenaiService implements IOpenaiService {
     }
 
     for await (const chunk of preMessageCompletion) {
-      const delta = chunk.choices[0].delta;
-      deltaProcessor(delta);
+      chunkProcessor(chunk);
     }
   }
 
