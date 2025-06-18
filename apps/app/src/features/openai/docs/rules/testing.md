@@ -4,6 +4,8 @@
 
 - テストフレームワークは vitest
 - vitest の設定ファイルは `apps/app/vitest.workspace.mts`
+- テストモジュールはテスト対象モジュールと同じディレクトリに置く
+    - e.g. `mymodule.ts` の Unit Test なら、`mymodule.spec.ts` を `mymodule.ts` と同じディレクトリに置く
 - テスト実行は以下のコマンドで行う
     - `cd /workspace/growi/apps/app && pnpm vitest run {test file path}`
 - 実装優先、実装のためのテストを書くこと
