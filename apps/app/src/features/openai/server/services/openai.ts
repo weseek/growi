@@ -16,7 +16,6 @@ import createError from 'http-errors';
 import mongoose, { type HydratedDocument, type Types } from 'mongoose';
 import { type OpenAI, toFile } from 'openai';
 import { type ChatCompletionChunk } from 'openai/resources/chat/completions';
-import { type Stream } from 'openai/streaming';
 
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import ThreadRelationModel, { type ThreadRelationDocument } from '~/features/openai/server/models/thread-relation';
@@ -77,7 +76,7 @@ export interface IOpenaiService {
   generateAndProcessPreMessage(
       message: string,
       deltaProcessor: (delta: ChatCompletionChunk.Choice.Delta) => void,
-  ): Promise<Nullable<Stream<OpenAI.Chat.Completions.ChatCompletionChunk>>>
+  ): Promise<void>
   createThread(userId: string, type: ThreadType, aiAssistantId?: string, initialUserMessage?: string): Promise<ThreadRelationDocument>;
   getThreadsByAiAssistantId(aiAssistantId: string): Promise<ThreadRelationDocument[]>
   deleteThread(threadRelationId: string): Promise<ThreadRelationDocument>;
@@ -117,7 +116,7 @@ class OpenaiService implements IOpenaiService {
   async generateAndProcessPreMessage(
       message: string,
       deltaProcessor: (delta: ChatCompletionChunk.Choice.Delta) => void,
-  ): Promise<Nullable<Stream<OpenAI.Chat.Completions.ChatCompletionChunk>>> {
+  ): Promise<void> {
     const systemMessage = [
       "Generate a message briefly confirming the user's question.",
       'Please generate up to 20 characters',
