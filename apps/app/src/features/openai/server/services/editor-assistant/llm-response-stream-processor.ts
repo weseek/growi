@@ -18,12 +18,13 @@ const isMessageItem = (item: unknown): item is LlmEditorAssistantMessage => {
 };
 
 /**
- * Type guard: Check if item is a diff type
+ * Type guard: Check if item is a diff type with required startLine
  */
 const isDiffItem = (item: unknown): item is LlmEditorAssistantDiff => {
   return typeof item === 'object' && item !== null
-    // && ('insert' in item || 'delete' in item || 'retain' in item);
-    && ('replace' in item);
+    && ('replace' in item)
+    && ('search' in item)
+    && ('startLine' in item); // Phase 2B: Enforce startLine requirement
 };
 
 type Options = {
@@ -119,9 +120,29 @@ export class LlmResponseStreamProcessor {
           // Process diff items
           else if (isDiffItem(item)) {
             const validDiff = LlmEditorAssistantDiffSchema.safeParse(item);
-            if (!validDiff.success) continue;
+            if (!validDiff.success) {
+              // Phase 2B: Enhanced error logging for diff validation failures
+              logger.warn('Diff validation failed', {
+                errors: validDiff.error.errors,
+                item: JSON.stringify(item).substring(0, 200),
+                hasStartLine: 'startLine' in item,
+                hasSearch: 'search' in item,
+                hasReplace: 'replace' in item,
+              });
+              continue;
+            }
 
             const diff = validDiff.data;
+
+            // Phase 2B: Additional validation for required fields
+            if (!diff.startLine) {
+              logger.error('startLine is required but missing in diff', {
+                search: diff.search?.substring(0, 50),
+                replace: diff.replace?.substring(0, 50),
+              });
+              continue;
+            }
+
             const key = this.getDiffKey(diff, i);
 
             // Skip if already sent
@@ -173,14 +194,13 @@ export class LlmResponseStreamProcessor {
   }
 
   /**
-   * Generate unique key for a diff
+   * Generate unique key for a diff (Phase 2B enhanced)
    */
   private getDiffKey(diff: LlmEditorAssistantDiff, index: number): string {
-    // if ('insert' in diff) return `insert-${index}`;
-    // if ('delete' in diff) return `delete-${index}`;
-    // if ('retain' in diff) return `retain-${index}`;
-    if ('replace' in diff) return `replace-${index}`;
-    return '';
+    // Phase 2B: More precise key generation using search content and startLine
+    const searchHash = diff.search.substring(0, 20).replace(/\s+/g, '_');
+    const startLine = diff.startLine || 0;
+    return `replace-${index}-${startLine}-${searchHash}`;
   }
 
   /**
