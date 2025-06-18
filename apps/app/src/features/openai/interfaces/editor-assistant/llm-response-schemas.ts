@@ -23,6 +23,7 @@ export const LlmEditorAssistantDiffSchema = z.object({
   endLine: z.number()
     .int()
     .positive()
+    .nullable() // https://platform.openai.com/docs/guides/structured-outputs?api-mode=responses#all-fields-must-be-required
     .optional()
     .describe('Ending line number for search (1-based, optional)'),
 });
