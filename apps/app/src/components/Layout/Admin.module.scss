@@ -224,12 +224,14 @@ $slack-work-space-name-card-border: #efc1f6;
   // }
 
   .admin-audit-log {
-      display: inline-block;
+      display: block;
       width: 400px;
-      overflow-x: hidden;
+      overflow: hidden;
       text-overflow: ellipsis;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 1;
+      white-space: nowrap;
+
     .select-action-dropdown {
       max-height: 500px;
       overflow-y: auto;
