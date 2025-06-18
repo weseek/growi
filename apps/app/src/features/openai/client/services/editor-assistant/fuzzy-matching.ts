@@ -16,7 +16,7 @@ import { normalizeForBrowserFuzzyMatch } from './text-normalization';
 
 /**
  * Calculate similarity between two strings using Levenshtein distance
- * Optimized for browser performance with early exit strategies
+ * Compatible with roo-code's similarity calculation
  */
 export function calculateSimilarity(original: string, search: string): number {
   // Empty searches are not supported
@@ -44,12 +44,13 @@ export function calculateSimilarity(original: string, search: string): number {
     return 1;
   }
 
-  // Calculate Levenshtein distance
+  // Calculate Levenshtein distance using fastest-levenshtein's distance function
   const dist = distance(normalizedOriginal, normalizedSearch);
-  const maxLength = Math.max(normalizedOriginal.length, normalizedSearch.length);
 
-  // Convert distance to similarity ratio
-  return Math.max(0, 1 - (dist / maxLength));
+  // Calculate similarity ratio (0 to 1, where 1 is an exact match)
+  // This matches roo-code's calculation method
+  const maxLength = Math.max(normalizedOriginal.length, normalizedSearch.length);
+  return 1 - dist / maxLength;
 }
 
 // -----------------------------------------------------------------------------
@@ -62,7 +63,7 @@ export class ClientFuzzyMatcher {
 
   private readonly maxSearchTime: number; // Browser performance limit
 
-  constructor(threshold = 0.8, maxSearchTimeMs = 1000) {
+  constructor(threshold = 0.85, maxSearchTimeMs = 1000) {
     this.threshold = threshold;
     this.maxSearchTime = maxSearchTimeMs;
   }
@@ -458,13 +459,3 @@ export function measurePerformance<T>(
 
   return { result, duration };
 }
-
-// -----------------------------------------------------------------------------
-// Export Default Instance
-// -----------------------------------------------------------------------------
-
-/**
- * Default client fuzzy matcher instance
- * Pre-configured for typical browser usage
- */
-export const defaultClientFuzzyMatcher = new ClientFuzzyMatcher(0.8, 1000);

@@ -15,7 +15,7 @@ export function performSearchReplace(
   const content = yText.toString();
 
   // 1. Start search from the specified line
-  const fuzzyMatcher = new ClientFuzzyMatcher(0.8);
+  const fuzzyMatcher = new ClientFuzzyMatcher();
   const result = fuzzyMatcher.findBestMatch(
     content,
     searchText,
