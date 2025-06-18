@@ -116,6 +116,9 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
         return res.status(500).send(err.message);
       }
 
+      /**
+      * Create SSE (Server-Sent Events) Responses
+      */
       res.writeHead(200, {
         'Content-Type': 'text/event-stream;charset=utf-8',
         'Cache-Control': 'no-cache, no-transform',
