@@ -133,7 +133,6 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
       };
 
       const messageDeltaHandler = async(delta: MessageDelta) => {
-        console.log('isMainMessageGenerating', isMainMessageGenerating);
         if (!isMainMessageGenerating) {
           isMainMessageGenerating = true;
         }
