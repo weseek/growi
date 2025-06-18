@@ -121,12 +121,23 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
         'Cache-Control': 'no-cache, no-transform',
       });
 
+      let isMainMessageGenerating = false;
+
       const preMessageDeltaHandler = (delta: ChatCompletionChunk.Choice.Delta) => {
+        if (isMainMessageGenerating) {
+          return;
+        }
+
         const content = { text: delta.content };
         res.write(`data: ${JSON.stringify(content)}\n\n`);
       };
 
       const messageDeltaHandler = async(delta: MessageDelta) => {
+        console.log('isMainMessageGenerating', isMainMessageGenerating);
+        if (!isMainMessageGenerating) {
+          isMainMessageGenerating = true;
+        }
+
         const content = delta.content?.[0];
 
         // If annotation is found
