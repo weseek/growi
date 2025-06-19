@@ -316,6 +316,11 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   }, [isEditorAssistant, isTextSelected, submitSubstance]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    // Do nothing while composing
+    if (event.nativeEvent.isComposing) {
+      return;
+    }
+
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       form.handleSubmit(submit)();
