@@ -110,13 +110,13 @@ function instruction(withMarkdown: boolean): string {
   Respond with a JSON object in the following format:
   {
     "contents": [
-      { "message": "Your brief message about the upcoming change or proposal.\n\n" },
+      { "message": "Your brief message about the upcoming changes or proposals.\n\n" },
       {
         "search": "exact existing content",
         "replace": "new content",
         "startLine": 42  // REQUIRED: line number (1-based) where search begins
       },
-      { "message": "Additional explanation if needed" },
+      { "message": "Additional explanation if needed." },
       {
         "search": "another exact content",
         "replace": "replacement content",
@@ -128,7 +128,7 @@ function instruction(withMarkdown: boolean): string {
   }
 
   The array should contain:
-  - [At the beginning of the list] A "message" object that has your brief message about the upcoming change or proposal. Be sure to add two consecutive line feeds ('\n\n') at the end.
+  - [At the beginning of the list] A "message" object that has your brief message about the upcoming change or proposal. Be sure that should be written in the present or future tense and add two consecutive line feeds ('\n\n') at the end.
   - Objects with a "message" key for explanatory text to the user if needed.
   - Edit objects with "search" (exact existing content), "replace" (new content), and "startLine" (1-based line number, REQUIRED) fields.
   - [At the end of the list] A "message" object that contains your friendly message explaining that the operation was completed and what changes were made.
