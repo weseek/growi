@@ -50,7 +50,7 @@ const schema = new Schema<ThreadRelationDocument, ThreadRelationModel>({
     required: true,
   },
 }, {
-  timestamps: { createdAt: true, updatedAt: true },
+  timestamps: { createdAt: false, updatedAt: true },
 });
 
 schema.plugin(mongoosePaginate);
