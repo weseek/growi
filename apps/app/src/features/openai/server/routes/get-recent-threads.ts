@@ -55,12 +55,11 @@ export const getRecentThreadsFactory: GetRecentThreadsFactory = (crowi) => {
             limit: req.query.limit ?? 10,
           },
         );
-
         return res.apiv3({ paginateResult });
       }
       catch (err) {
         logger.error(err);
-        return res.apiv3Err(new ErrorV3('Failed to get threads'));
+        return res.apiv3Err(new ErrorV3('Failed to get recent threads'));
       }
     },
   ];
