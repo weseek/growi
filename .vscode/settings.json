@@ -52,6 +52,11 @@
       }
     }
   },
+  "github.copilot.chat.codeGeneration.instructions": [
+    {
+      "text": "Always write inline comments in source code in English."
+    }
+  ],
   "github.copilot.chat.testGeneration.instructions": [
     {
       "text": "Use vitest as the test framework"
@@ -80,7 +85,7 @@
   ],
   "github.copilot.chat.commitMessageGeneration.instructions": [
     {
-      "text": "Write commit messages in English always."
+      "text": "Always write commit messages in English."
     }
   ]
 
