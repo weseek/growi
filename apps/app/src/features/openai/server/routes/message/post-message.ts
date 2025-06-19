@@ -151,7 +151,10 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
       };
 
       // Don't add await since SSE is performed asynchronously with main message
-      openaiService.generateAndProcessPreMessage(req.body.userMessage, preMessageChunkHandler);
+      openaiService.generateAndProcessPreMessage(req.body.userMessage, preMessageChunkHandler)
+        .catch((err) => {
+          logger.error(err);
+        });
 
       stream.on('event', (delta) => {
         if (delta.event === 'thread.run.failed') {
