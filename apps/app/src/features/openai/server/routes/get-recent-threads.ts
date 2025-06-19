@@ -2,7 +2,7 @@ import { type IUserHasId } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler } from 'express';
 import { type ValidationChain, query } from 'express-validator';
-
+import type { PaginateResult } from 'mongoose';
 
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
@@ -10,6 +10,7 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
+import type { ThreadRelationDocument } from '../models/thread-relation';
 import ThreadRelationModel from '../models/thread-relation';
 import { getOpenaiService } from '../services/openai';
 
@@ -49,7 +50,7 @@ export const getRecentThreadsFactory: GetRecentThreadsFactory = (crowi) => {
       }
 
       try {
-        const paginateResult = await (ThreadRelationModel as any).paginate(
+        const paginateResult: PaginateResult<ThreadRelationDocument> = await ThreadRelationModel.paginate(
           { userId: req.user._id },
           {
             page: req.query.page ?? 1,

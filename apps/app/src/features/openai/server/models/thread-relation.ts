@@ -1,5 +1,5 @@
 import { addDays } from 'date-fns';
-import { type Model, type Document, Schema } from 'mongoose';
+import { type Document, Schema, type PaginateModel } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
@@ -17,7 +17,7 @@ export interface ThreadRelationDocument extends IThreadRelation, Document {
   updateThreadExpiration(): Promise<void>;
 }
 
-interface ThreadRelationModel extends Model<ThreadRelationDocument> {
+interface ThreadRelationModel extends PaginateModel<ThreadRelationDocument> {
   getExpiredThreadRelations(limit?: number): Promise<ThreadRelationDocument[] | undefined>;
 }
 
