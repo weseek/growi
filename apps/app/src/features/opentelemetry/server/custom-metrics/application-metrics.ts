@@ -7,17 +7,17 @@ const loggerDiag = diag.createComponentLogger({ namespace: 'growi:custom-metrics
 
 
 export function addApplicationMetrics(): void {
-  logger.info('Starting application info metrics collection');
+  logger.info('Starting application config metrics collection');
 
   const meter = metrics.getMeter('growi-application-metrics', '1.0.0');
 
-  // Info metrics: GROWI instance information (Prometheus info pattern)
-  const growiInfoGauge = meter.createObservableGauge('growi.info', {
+  // Config metrics: GROWI instance information (Prometheus info pattern)
+  const growiInfoGauge = meter.createObservableGauge('growi.configs', {
     description: 'GROWI instance information (always 1)',
     unit: '1',
   });
 
-  // Info metrics collection callback
+  // Config metrics collection callback
   meter.addBatchObservableCallback(
     async(result) => {
       try {
@@ -26,21 +26,20 @@ export function addApplicationMetrics(): void {
 
         const growiInfo = await growiInfoService.getGrowiInfo(true);
 
-        // Info metrics always have value 1, with information stored in labels
+        // Config metrics always have value 1, with information stored in labels
         result.observe(growiInfoGauge, 1, {
           // Dynamic information that can change through configuration
-          service_instance_id: growiInfo.serviceInstanceId || '',
           site_url: growiInfo.appSiteUrl,
           wiki_type: growiInfo.wikiType,
           external_auth_types: growiInfo.additionalInfo?.activeExternalAccountTypes?.join(',') || '',
         });
       }
       catch (error) {
-        loggerDiag.error('Failed to collect application info metrics', { error });
+        loggerDiag.error('Failed to collect application config metrics', { error });
       }
     },
     [growiInfoGauge],
   );
 
-  logger.info('Application info metrics collection started successfully');
+  logger.info('Application config metrics collection started successfully');
 }
