@@ -35,9 +35,15 @@
 3. **OTLP Exporter** が外部Collectorに送信
 
 ## 制限事項
-- カスタムメトリクス（CPU・メモリ等）未実装
 - 機密データの匿名化未実装
 - GROWIアプリ固有の情報未送信
+
+## 参考情報
+- [OpenTelemetry Node.js SDK](https://open-telemetry.github.io/opentelemetry-js/)
+- [Custom Metrics Documentation](https://opentelemetry.io/docs/instrumentation/js/manual/#creating-metrics)
+- [HTTP Instrumentation Configuration](https://github.com/open-telemetry/opentelemetry-js/tree/main/experimental/packages/opentelemetry-instrumentation-http#configuration)
+- [Semantic Conventions for System Metrics](https://github.com/open-telemetry/semantic-conventions/blob/main/docs/system/system-metrics.md)
+- [Resource Semantic Conventions](https://github.com/open-telemetry/semantic-conventions/blob/main/docs/resource/README.md)
 
 ---
 *更新日: 2025-06-19*
