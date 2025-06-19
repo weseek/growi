@@ -23,7 +23,6 @@ type GetRecentThreadsFactory = (crowi: Crowi) => RequestHandler[];
 type ReqQuery = {
   page?: number,
   limit?: number,
-  sort?: string, // e.g. 'updatedAt', '-updatedAt'
 }
 
 type Req = Request<undefined, Response, undefined, ReqQuery> & {
@@ -38,7 +37,6 @@ export const getRecentThreadsFactory: GetRecentThreadsFactory = (crowi) => {
     query('page').toInt(),
     query('limit').optional().isInt({ min: 1, max: 10 }).withMessage('limit must be an integer between 1 and 10'),
     query('limit').toInt(),
-    query('sort').optional().isString().withMessage('sort must be a string'),
   ];
 
   return [
@@ -55,7 +53,6 @@ export const getRecentThreadsFactory: GetRecentThreadsFactory = (crowi) => {
           {
             page: req.query.page ?? 1,
             limit: req.query.limit ?? 10,
-            sort: req.query.sort ?? '-updatedAt',
           },
         );
 
