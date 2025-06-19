@@ -1,10 +1,12 @@
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-grpc';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
-import { Resource, type IResource } from '@opentelemetry/resources';
+import type { Resource } from '@opentelemetry/resources';
+import { resourceFromAttributes } from '@opentelemetry/resources';
 import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import type { NodeSDKConfiguration } from '@opentelemetry/sdk-node';
-import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION, SEMRESATTRS_SERVICE_INSTANCE_ID } from '@opentelemetry/semantic-conventions';
+import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
+import { ATTR_SERVICE_INSTANCE_ID } from '@opentelemetry/semantic-conventions/incubating';
 
 import { getGrowiVersion } from '~/utils/growi-version';
 
@@ -12,7 +14,7 @@ import { httpInstrumentationConfig as httpInstrumentationConfigForAnonymize } fr
 import { addApplicationMetrics, addSystemMetrics } from './custom-metrics';
 
 type Configuration = Partial<NodeSDKConfiguration> & {
-  resource: IResource;
+  resource: Resource;
 };
 
 let resource: Resource;
@@ -22,7 +24,7 @@ export const generateNodeSDKConfiguration = (serviceInstanceId?: string, enableA
   if (configuration == null) {
     const version = getGrowiVersion();
 
-    resource = new Resource({
+    resource = resourceFromAttributes({
       [ATTR_SERVICE_NAME]: 'growi',
       [ATTR_SERVICE_VERSION]: version,
     });
@@ -61,8 +63,8 @@ export const generateNodeSDKConfiguration = (serviceInstanceId?: string, enableA
   }
 
   if (serviceInstanceId != null) {
-    configuration.resource = resource.merge(new Resource({
-      [SEMRESATTRS_SERVICE_INSTANCE_ID]: serviceInstanceId,
+    configuration.resource = resource.merge(resourceFromAttributes({
+      [ATTR_SERVICE_INSTANCE_ID]: serviceInstanceId,
     }));
   }
 
