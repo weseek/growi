@@ -1,5 +1,6 @@
 import { ConfigSource } from '@growi/core/dist/interfaces';
 import type { NodeSDK } from '@opentelemetry/sdk-node';
+import { ATTR_SERVICE_INSTANCE_ID } from '@opentelemetry/semantic-conventions/incubating';
 
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
@@ -67,13 +68,14 @@ For more information, see https://docs.growi.org/en/admin-guide/admin-cookbook/t
     const { NodeSDK } = await import('@opentelemetry/sdk-node');
     const { generateNodeSDKConfiguration } = await import('./node-sdk-configuration');
     // get resource from configuration
-    const anonymizationEnabled = configManager.getConfig('otel:anonymizeInBestEffort', ConfigSource.env);
+    const enableAnonymization = configManager.getConfig('otel:anonymizeInBestEffort', ConfigSource.env);
 
-    sdkInstance = new NodeSDK(generateNodeSDKConfiguration(undefined, anonymizationEnabled));
+    const sdkConfig = generateNodeSDKConfiguration({ enableAnonymization });
+    sdkInstance = new NodeSDK(sdkConfig);
   }
 };
 
-export const detectServiceInstanceId = async(): Promise<void> => {
+export const setupAdditionalResourceAttributes = async(): Promise<void> => {
   const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
 
   if (instrumentationEnabled) {
@@ -81,17 +83,15 @@ export const detectServiceInstanceId = async(): Promise<void> => {
       throw new Error('OpenTelemetry instrumentation is not initialized');
     }
 
-    const { generateNodeSDKConfiguration } = await import('./node-sdk-configuration');
-
-    const serviceInstanceId = configManager.getConfig('otel:serviceInstanceId')
-      ?? configManager.getConfig('app:serviceInstanceId');
-
+    const { generateAdditionalResourceAttributes } = await import('./node-sdk-configuration');
     // get resource from configuration
-    const anonymizationEnabled = configManager.getConfig('otel:anonymizeInBestEffort', ConfigSource.env);
+    const enableAnonymization = configManager.getConfig('otel:anonymizeInBestEffort', ConfigSource.env);
 
-    // Update resource with new service instance id
-    const newConfig = generateNodeSDKConfiguration(serviceInstanceId, anonymizationEnabled);
-    setResource(sdkInstance, newConfig.resource);
+    // generate additional resource attributes
+    const updatedResource = await generateAdditionalResourceAttributes({ enableAnonymization });
+
+    // set resource to sdk instance
+    setResource(sdkInstance, updatedResource);
   }
 };
 

@@ -1,12 +1,10 @@
 import { ConfigSource } from '@growi/core/dist/interfaces';
-import { Resource } from '@opentelemetry/resources';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 
 import { configManager } from '~/server/service/config-manager';
 
-import { detectServiceInstanceId, initInstrumentation } from './node-sdk';
+import { setupAdditionalResourceAttributes, initInstrumentation } from './node-sdk';
 import { getResource } from './node-sdk-resource';
-import { getSdkInstance, resetSdkInstance } from './node-sdk.testing';
 
 // Only mock configManager as it's external to what we're testing
 vi.mock('~/server/service/config-manager', () => ({
@@ -16,29 +14,52 @@ vi.mock('~/server/service/config-manager', () => ({
   },
 }));
 
-describe('node-sdk', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    vi.resetModules();
-    resetSdkInstance();
+// Mock growi-info service to avoid database dependencies
+vi.mock('~/server/service/growi-info', () => ({
+  growiInfoService: {
+    getGrowiInfo: vi.fn().mockResolvedValue({
+      type: 'app',
+      deploymentType: 'standalone',
+      additionalInfo: {
+        attachmentType: 'local',
+        installedAt: new Date('2023-01-01T00:00:00.000Z'),
+        installedAtByOldestUser: new Date('2023-01-01T00:00:00.000Z'),
+      },
+    }),
+  },
+}));
 
-    // Reset configManager mock implementation
-    vi.mocked(configManager.getConfig).mockImplementation((key: string, source?: ConfigSource) => {
-      // For otel:enabled, always expect ConfigSource.env
-      if (key === 'otel:enabled') {
-        return source === ConfigSource.env ? true : undefined;
-      }
-      return undefined;
-    });
+describe('node-sdk', () => {
+  beforeEach(async() => {
+    vi.clearAllMocks();
+
+    // Reset SDK instance using __testing__ export
+    const { __testing__ } = await import('./node-sdk');
+    __testing__.reset();
+
+    // Mock loadConfigs to resolve immediately
+    vi.mocked(configManager.loadConfigs).mockResolvedValue(undefined);
   });
 
-  describe('detectServiceInstanceId', () => {
+  describe('setupAdditionalResourceAttributes', () => {
     it('should update service.instance.id when app:serviceInstanceId is available', async() => {
+      // Set up mocks for this specific test
+      vi.mocked(configManager.getConfig).mockImplementation((key: string, source?: ConfigSource) => {
+        // For otel:enabled, always expect ConfigSource.env
+        if (key === 'otel:enabled') {
+          return source === ConfigSource.env ? true : undefined;
+        }
+        // For service instance IDs, only respond when no source is specified
+        if (key === 'app:serviceInstanceId') return 'test-instance-id';
+        return undefined;
+      });
+
       // Initialize SDK first
       await initInstrumentation();
 
       // Get instance for testing
-      const sdkInstance = getSdkInstance();
+      const { __testing__ } = await import('./node-sdk');
+      const sdkInstance = __testing__.getSdkInstance();
       expect(sdkInstance).toBeDefined();
       expect(sdkInstance).toBeInstanceOf(NodeSDK);
 
@@ -47,24 +68,12 @@ describe('node-sdk', () => {
         throw new Error('SDK instance should be defined');
       }
 
-      // Mock app:serviceInstanceId is available
-      vi.mocked(configManager.getConfig).mockImplementation((key: string, source?: ConfigSource) => {
-        // For otel:enabled, always expect ConfigSource.env
-        if (key === 'otel:enabled') {
-          return source === ConfigSource.env ? true : undefined;
-        }
-
-        // For service instance IDs, only respond when no source is specified
-        if (key === 'app:serviceInstanceId') return 'test-instance-id';
-        return undefined;
-      });
-
       const resource = getResource(sdkInstance);
-      expect(resource).toBeInstanceOf(Resource);
+      expect(resource).toBeDefined();
       expect(resource.attributes['service.instance.id']).toBeUndefined();
 
-      // Call detectServiceInstanceId
-      await detectServiceInstanceId();
+      // Call setupAdditionalResourceAttributes
+      await setupAdditionalResourceAttributes();
 
       // Verify that resource was updated with app:serviceInstanceId
       const updatedResource = getResource(sdkInstance);
@@ -72,18 +81,7 @@ describe('node-sdk', () => {
     });
 
     it('should update service.instance.id with otel:serviceInstanceId if available', async() => {
-      // Initialize SDK
-      await initInstrumentation();
-
-      // Get instance and verify initial state
-      const sdkInstance = getSdkInstance();
-      if (sdkInstance == null) {
-        throw new Error('SDK instance should be defined');
-      }
-      const resource = getResource(sdkInstance);
-      expect(resource.attributes['service.instance.id']).toBeUndefined();
-
-      // Mock otel:serviceInstanceId is available
+      // Set up mocks for this specific test
       vi.mocked(configManager.getConfig).mockImplementation((key: string, source?: ConfigSource) => {
         // For otel:enabled, always expect ConfigSource.env
         if (key === 'otel:enabled') {
@@ -99,8 +97,20 @@ describe('node-sdk', () => {
         return undefined;
       });
 
-      // Call detectServiceInstanceId
-      await detectServiceInstanceId();
+      // Initialize SDK
+      await initInstrumentation();
+
+      // Get instance and verify initial state
+      const { __testing__ } = await import('./node-sdk');
+      const sdkInstance = __testing__.getSdkInstance();
+      if (sdkInstance == null) {
+        throw new Error('SDK instance should be defined');
+      }
+      const resource = getResource(sdkInstance);
+      expect(resource.attributes['service.instance.id']).toBeUndefined();
+
+      // Call setupAdditionalResourceAttributes
+      await setupAdditionalResourceAttributes();
 
       // Verify that otel:serviceInstanceId was used
       const updatedResource = getResource(sdkInstance);
@@ -121,14 +131,15 @@ describe('node-sdk', () => {
       await initInstrumentation();
 
       // Verify that no SDK instance was created
-      const sdkInstance = getSdkInstance();
+      const { __testing__ } = await import('./node-sdk');
+      const sdkInstance = __testing__.getSdkInstance();
       expect(sdkInstance).toBeUndefined();
 
-      // Call detectServiceInstanceId
-      await detectServiceInstanceId();
+      // Call setupAdditionalResourceAttributes
+      await setupAdditionalResourceAttributes();
 
       // Verify that still no SDK instance exists
-      const updatedSdkInstance = getSdkInstance();
+      const updatedSdkInstance = __testing__.getSdkInstance();
       expect(updatedSdkInstance).toBeUndefined();
     });
   });
