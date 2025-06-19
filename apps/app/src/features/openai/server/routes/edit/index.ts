@@ -42,7 +42,8 @@ const LlmEditorAssistantResponseSchema = z.object({
 
 type ReqBody = {
   userMessage: string,
-  markdown?: string,
+  pageBody: string,
+  selectedText?: string,
   threadId?: string,
 }
 
@@ -153,10 +154,13 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
       .withMessage('userMessage must be string')
       .notEmpty()
       .withMessage('userMessage must be set'),
-    body('markdown')
+    body('pageBody')
+      .isString()
+      .withMessage('pageBody must be string and not empty'),
+    body('selectedText')
       .optional()
       .isString()
-      .withMessage('markdown must be string'),
+      .withMessage('selectedText must be string'),
     body('threadId').optional().isString().withMessage('threadId must be string'),
   ];
 
@@ -164,7 +168,7 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
     accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
       const {
-        userMessage, markdown, threadId,
+        userMessage, pageBody, selectedText, threadId,
       } = req.body;
 
       // Parameter check
@@ -225,11 +229,19 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
           additional_messages: [
             {
               role: 'assistant',
-              content: instruction(markdown != null),
+              content: instruction(pageBody != null),
             },
             {
               role: 'user',
-              content: `Current markdown content:\n\`\`\`markdown\n${markdown}\n\`\`\`\n\nUser request: ${userMessage}`,
+              content: `Current markdown content:
+\`\`\`markdown
+${pageBody}
+\`\`\`
+${selectedText != null
+    ? `Current selected text by user:\`\`\`markdown\n${selectedText}\n\`\`\``
+    : ''
+}
+User request: ${userMessage}`,
             },
           ],
           response_format: zodResponseFormat(LlmEditorAssistantResponseSchema, 'editor_assistant_response'),

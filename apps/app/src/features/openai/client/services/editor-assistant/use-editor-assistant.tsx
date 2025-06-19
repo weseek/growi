@@ -156,18 +156,10 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   }, [selectedAiAssistant?._id]);
 
   const postMessage: PostMessage = useCallback(async(threadId, formData) => {
-    const getMarkdown = (): string | undefined => {
-      if (formData.markdownType === 'none') {
-        return undefined;
-      }
-
-      if (formData.markdownType === 'selected') {
-        return selectedText;
-      }
-
-      if (formData.markdownType === 'full') {
-        return codeMirrorEditor?.getDoc();
-      }
+    const getPageBody = (): string | undefined => {
+      // TODO: Reduce to character limit
+      // refs: https://redmine.weseek.co.jp/issues/167688
+      return codeMirrorEditor?.getDoc();
     };
 
     // Disable UnifiedMergeView when a Form is submitted with UnifiedMergeView enabled
@@ -179,7 +171,8 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       body: JSON.stringify({
         threadId,
         userMessage: formData.input,
-        markdown: getMarkdown(),
+        selectedText,
+        pageBody: getPageBody(),
       }),
     });
 
