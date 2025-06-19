@@ -1,3 +1,5 @@
+import path from 'path';
+
 import { themesRootPath as presetThemesRootPath } from '@growi/preset-themes';
 import csrf from 'csurf';
 import qs from 'qs';
@@ -6,6 +8,7 @@ import { PLUGIN_EXPRESS_STATIC_DIR, PLUGIN_STORING_PATH } from '~/features/growi
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
+import { FilePathOnStoragePrefix } from '../interfaces/attachment';
 import registerSafeRedirectFactory from '../middlewares/safe-redirect';
 
 const logger = loggerFactory('growi:crowi:express-init');
@@ -82,8 +85,15 @@ module.exports = function(crowi, app) {
 
   app.set('port', crowi.port);
 
+  // prevents reading `/public/uploads`, which is allowed by express.static afterwards
+  // ref: https://github.com/weseek/growi/pull/9804
+  app.use(path.join('/uploads', FilePathOnStoragePrefix.attachment), (req, res) => {
+    res.status(403).send('Access Forbidden');
+  });
+  
   const staticOption = (crowi.node_env === 'production') ? { maxAge: '30d' } : {};
   app.use(express.static(crowi.publicDir, staticOption));
+  
   app.use('/static/preset-themes', express.static(
     resolveFromRoot(`node_modules/@growi/preset-themes/${presetThemesRootPath}`),
   ));
