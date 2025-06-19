@@ -11,7 +11,7 @@ import { ATTR_SERVICE_INSTANCE_ID } from '@opentelemetry/semantic-conventions/in
 import { getGrowiVersion } from '~/utils/growi-version';
 
 import { httpInstrumentationConfig as httpInstrumentationConfigForAnonymize } from './anonymization';
-import { addApplicationMetrics, addSystemMetrics } from './custom-metrics';
+import { addApplicationMetrics } from './custom-metrics';
 
 type Configuration = Partial<NodeSDKConfiguration> & {
   resource: Resource;
@@ -57,9 +57,6 @@ export const generateNodeSDKConfiguration = (serviceInstanceId?: string, enableA
 
     // add custom metrics
     addApplicationMetrics();
-    addSystemMetrics({
-      collectionInterval: 15000, // 15sec
-    });
   }
 
   if (serviceInstanceId != null) {
