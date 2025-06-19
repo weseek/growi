@@ -1,9 +1,11 @@
 import { addDays } from 'date-fns';
-import { type Model, type Document, Schema } from 'mongoose';
+import { type Document, Schema, type PaginateModel } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
 import { type IThreadRelation, ThreadType } from '../../interfaces/thread-relation';
+
 
 const DAYS_UNTIL_EXPIRATION = 3;
 
@@ -15,7 +17,7 @@ export interface ThreadRelationDocument extends IThreadRelation, Document {
   updateThreadExpiration(): Promise<void>;
 }
 
-interface ThreadRelationModel extends Model<ThreadRelationDocument> {
+interface ThreadRelationModel extends PaginateModel<ThreadRelationDocument> {
   getExpiredThreadRelations(limit?: number): Promise<ThreadRelationDocument[] | undefined>;
 }
 
@@ -47,7 +49,11 @@ const schema = new Schema<ThreadRelationDocument, ThreadRelationModel>({
     default: generateExpirationDate,
     required: true,
   },
+}, {
+  timestamps: { createdAt: false, updatedAt: true },
 });
+
+schema.plugin(mongoosePaginate);
 
 schema.statics.getExpiredThreadRelations = async function(limit?: number): Promise<ThreadRelationDocument[] | undefined> {
   const currentDate = new Date();
