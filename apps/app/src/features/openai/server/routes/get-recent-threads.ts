@@ -1,7 +1,8 @@
 import { type IUserHasId } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler } from 'express';
-import { type ValidationChain, param } from 'express-validator';
+import { type ValidationChain, query } from 'express-validator';
+
 
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
@@ -9,6 +10,7 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
+import ThreadRelationModel from '../models/thread-relation';
 import { getOpenaiService } from '../services/openai';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
@@ -17,11 +19,13 @@ const logger = loggerFactory('growi:routes:apiv3:openai:get-recent-threads');
 
 type GetRecentThreadsFactory = (crowi: Crowi) => RequestHandler[];
 
-type ReqParams = {
-  //
+type ReqQuery = {
+  page?: number,
+  limit?: number,
+  sort?: string, // e.g. 'updatedAt', '-updatedAt'
 }
 
-type Req = Request<ReqParams, Response, undefined> & {
+type Req = Request<undefined, Response, undefined, ReqQuery> & {
   user: IUserHasId,
 }
 
@@ -29,7 +33,11 @@ export const getRecentThreadsFactory: GetRecentThreadsFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
   const validator: ValidationChain[] = [
-    //
+    query('page').optional().isInt().withMessage('page must be a positive integer'),
+    query('page').toInt(),
+    query('limit').optional().isInt({ min: 1, max: 10 }).withMessage('limit must be an integer between 1 and 100'),
+    query('limit').toInt(),
+    query('sort').optional().isString().withMessage('sort must be a string'),
   ];
 
   return [
@@ -41,8 +49,16 @@ export const getRecentThreadsFactory: GetRecentThreadsFactory = (crowi) => {
       }
 
       try {
-        const threads = await openaiService.getRecentThreads(req.user);
-        return res.apiv3({ threads });
+        const paginateResult = await (ThreadRelationModel as any).paginate(
+          { userId: req.user._id },
+          {
+            page: req.query.page ?? 1,
+            limit: req.query.limit ?? 10,
+            sort: req.query.sort ?? '-updatedAt',
+          },
+        );
+
+        return res.apiv3({ paginateResult });
       }
       catch (err) {
         logger.error(err);
