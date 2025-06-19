@@ -7,31 +7,40 @@ const loggerDiag = diag.createComponentLogger({ namespace: 'growi:custom-metrics
 
 
 export function addApplicationMetrics(): void {
-  logger.info('Starting application metrics collection');
+  logger.info('Starting application info metrics collection');
 
   const meter = metrics.getMeter('growi-application-metrics', '1.0.0');
 
-  // Dummy metrics (for future application-specific metrics)
-  const dummyGauge = meter.createObservableGauge('growi.app.dummy.metric', {
-    description: 'Dummy metric for application metrics (placeholder)',
-    unit: 'count',
+  // Info metrics: GROWI instance information (Prometheus info pattern)
+  const growiInfoGauge = meter.createObservableGauge('growi.info', {
+    description: 'GROWI instance information (always 1)',
+    unit: '1',
   });
 
-  // Metrics collection callback
+  // Info metrics collection callback
   meter.addBatchObservableCallback(
-    (result) => {
+    async(result) => {
       try {
-        // Currently sending dummy values (actual metrics to be implemented later)
-        result.observe(dummyGauge, 1, {
-          'app.name': 'growi',
+        // Dynamic import to avoid circular dependencies
+        const { growiInfoService } = await import('~/server/service/growi-info');
+
+        const growiInfo = await growiInfoService.getGrowiInfo(true);
+
+        // Info metrics always have value 1, with information stored in labels
+        result.observe(growiInfoGauge, 1, {
+          // Dynamic information that can change through configuration
+          service_instance_id: growiInfo.serviceInstanceId || '',
+          site_url: growiInfo.appSiteUrl,
+          wiki_type: growiInfo.wikiType,
+          external_auth_types: growiInfo.additionalInfo?.activeExternalAccountTypes?.join(',') || '',
         });
       }
       catch (error) {
-        loggerDiag.error('Failed to collect application metrics', { error });
+        loggerDiag.error('Failed to collect application info metrics', { error });
       }
     },
-    [dummyGauge],
+    [growiInfoGauge],
   );
 
-  logger.info('Application metrics collection started successfully');
+  logger.info('Application info metrics collection started successfully');
 }
