@@ -8,6 +8,8 @@ import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION, SEMRESATTRS_SERVICE_INSTANCE_I
 
 import { getGrowiVersion } from '~/utils/growi-version';
 
+import { addApplicationMetrics, addSystemMetrics } from './custom-metrics';
+
 type Configuration = Partial<NodeSDKConfiguration> & {
   resource: IResource;
 };
@@ -41,6 +43,12 @@ export const generateNodeSDKConfiguration = (serviceInstanceId?: string): Config
         },
       })],
     };
+
+    // add custom metrics
+    addApplicationMetrics();
+    addSystemMetrics({
+      collectionInterval: 15000, // 15sec
+    });
   }
 
   if (serviceInstanceId != null) {

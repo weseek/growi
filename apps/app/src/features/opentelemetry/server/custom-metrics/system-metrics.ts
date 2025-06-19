@@ -3,10 +3,12 @@ import * as process from 'process';
 
 import { diag, metrics } from '@opentelemetry/api';
 
-const logger = diag.createComponentLogger({ namespace: 'growi:custom-metrics:system' });
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:opentelemetry:custom-metrics:system-metrics');
+const loggerDiag = diag.createComponentLogger({ namespace: 'growi:custom-metrics:system' });
 
 export interface SystemMetricsConfig {
-  enabled: boolean;
   collectionInterval: number;
 }
 
@@ -18,20 +20,21 @@ function calculateCpuUsage(intervalMs: number): number | null {
 
     if (lastCpuUsage === null) {
       lastCpuUsage = currentUsage;
-      return null; // 最初の計測では使用率を計算できない
+      return null; // Cannot calculate usage rate on first measurement
     }
+
 
     const userDiff = currentUsage.user - lastCpuUsage.user;
     const systemDiff = currentUsage.system - lastCpuUsage.system;
     const totalDiff = userDiff + systemDiff;
 
-    // マイクロ秒を秒に変換し、収集間隔で割って使用率を計算
-    const intervalUs = intervalMs * 1000; // マイクロ秒に変換
+    // Convert microseconds to seconds and divide by collection interval to calculate usage rate
+    const intervalUs = intervalMs * 1000; // Convert to microseconds
     const usage = (totalDiff / intervalUs) * 100;
 
     lastCpuUsage = currentUsage;
 
-    // 0-100%の範囲でクランプ
+    // Clamp to 0-100% range
     return Math.min(Math.max(usage, 0), 100);
   }
   catch (error) {
@@ -54,11 +57,6 @@ function getMemoryInfo(): { used: number; total: number; usagePercent: number } 
 }
 
 export function addSystemMetrics(config: SystemMetricsConfig): void {
-  if (!config.enabled) {
-    logger.debug('System metrics collection is disabled');
-    return;
-  }
-
   logger.info('Starting system metrics collection');
 
   const meter = metrics.getMeter('growi-system-metrics', '1.0.0');
@@ -121,7 +119,7 @@ export function addSystemMetrics(config: SystemMetricsConfig): void {
         });
       }
       catch (error) {
-        logger.error('Failed to collect system metrics', { error });
+        loggerDiag.error('Failed to collect system metrics', { error });
       }
     },
     [cpuUsageGauge, memoryUsageGauge, memoryUsagePercentGauge, processMemoryHeapGauge, processMemoryRssGauge],

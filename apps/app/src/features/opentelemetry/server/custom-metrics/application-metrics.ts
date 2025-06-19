@@ -1,17 +1,12 @@
 import { diag, metrics } from '@opentelemetry/api';
 
-const logger = diag.createComponentLogger({ namespace: 'growi:custom-metrics:application' });
+import loggerFactory from '~/utils/logger';
 
-export interface ApplicationMetricsConfig {
-  enabled: boolean;
-}
+const logger = loggerFactory('growi:opentelemetry:custom-metrics:application-metrics');
+const loggerDiag = diag.createComponentLogger({ namespace: 'growi:custom-metrics:application' });
 
-export function addApplicationMetrics(config: ApplicationMetricsConfig): void {
-  if (!config.enabled) {
-    logger.debug('Application metrics collection is disabled');
-    return;
-  }
 
+export function addApplicationMetrics(): void {
   logger.info('Starting application metrics collection');
 
   const meter = metrics.getMeter('growi-application-metrics', '1.0.0');
@@ -32,7 +27,7 @@ export function addApplicationMetrics(config: ApplicationMetricsConfig): void {
         });
       }
       catch (error) {
-        logger.error('Failed to collect application metrics', { error });
+        loggerDiag.error('Failed to collect application metrics', { error });
       }
     },
     [dummyGauge],

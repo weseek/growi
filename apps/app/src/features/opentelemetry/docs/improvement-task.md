@@ -7,15 +7,16 @@
 ## タスク一覧
 
 ### Phase 1: カスタムメトリクス
-- [ ] **Resource Attributes拡張**
-  - [ ] サーバーURL属性追加
-  - [ ] GROWI固有属性追加（インストールタイプ、DB種別等）
-  - [ ] 環境情報属性追加
-- [ ] **System Metrics実装**
-  - [ ] CPU使用率収集（計算ロジックの実装が必要）
-  - [ ] メモリ使用率収集（process.memoryUsage()使用）
-  - [ ] 収集間隔設定（デフォルト15秒）
-- [ ] **Application Metrics実装**
+- [x] **Resource Attributes拡張**
+  - [x] サーバーURL属性追加（環境変数から取得）
+  - [x] GROWI固有属性追加（基本情報）
+  - [x] 環境情報属性追加
+- [x] **System Metrics実装**
+  - [x] CPU使用率収集（計算ロジックの実装が必要）
+  - [x] メモリ使用率収集（process.memoryUsage()使用）
+  - [x] 収集間隔設定（デフォルト15秒）
+- [x] **Application Metrics実装**
+  - [x] ダミーメトリクス実装（将来の拡張用）
   - [ ] ユーザー数メトリクス
   - [ ] ページ数メトリクス
   - [ ] 検索回数カウンター
