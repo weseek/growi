@@ -66,8 +66,10 @@ For more information, see https://docs.growi.org/en/admin-guide/admin-cookbook/t
     // instanciate NodeSDK
     const { NodeSDK } = await import('@opentelemetry/sdk-node');
     const { generateNodeSDKConfiguration } = await import('./node-sdk-configuration');
+    // get resource from configuration
+    const anonymizationEnabled = configManager.getConfig('otel:anonymizeInBestEffort', ConfigSource.env);
 
-    sdkInstance = new NodeSDK(generateNodeSDKConfiguration());
+    sdkInstance = new NodeSDK(generateNodeSDKConfiguration(undefined, anonymizationEnabled));
   }
 };
 
@@ -84,8 +86,11 @@ export const detectServiceInstanceId = async(): Promise<void> => {
     const serviceInstanceId = configManager.getConfig('otel:serviceInstanceId')
       ?? configManager.getConfig('app:serviceInstanceId');
 
+    // get resource from configuration
+    const anonymizationEnabled = configManager.getConfig('otel:anonymizeInBestEffort', ConfigSource.env);
+
     // Update resource with new service instance id
-    const newConfig = generateNodeSDKConfiguration(serviceInstanceId);
+    const newConfig = generateNodeSDKConfiguration(serviceInstanceId, anonymizationEnabled);
     setResource(sdkInstance, newConfig.resource);
   }
 };

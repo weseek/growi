@@ -8,6 +8,7 @@ import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION, SEMRESATTRS_SERVICE_INSTANCE_I
 
 import { getGrowiVersion } from '~/utils/growi-version';
 
+import { httpInstrumentationConfig as httpInstrumentationConfigForAnonymize } from './anonymization';
 import { addApplicationMetrics, addSystemMetrics } from './custom-metrics';
 
 type Configuration = Partial<NodeSDKConfiguration> & {
@@ -17,7 +18,7 @@ type Configuration = Partial<NodeSDKConfiguration> & {
 let resource: Resource;
 let configuration: Configuration;
 
-export const generateNodeSDKConfiguration = (serviceInstanceId?: string): Configuration => {
+export const generateNodeSDKConfiguration = (serviceInstanceId?: string, enableAnonymization = false): Configuration => {
   if (configuration == null) {
     const version = getGrowiVersion();
 
@@ -25,6 +26,9 @@ export const generateNodeSDKConfiguration = (serviceInstanceId?: string): Config
       [ATTR_SERVICE_NAME]: 'growi',
       [ATTR_SERVICE_VERSION]: version,
     });
+
+    // Data anonymization configuration
+    const httpInstrumentationConfig = enableAnonymization ? httpInstrumentationConfigForAnonymize : {};
 
     configuration = {
       resource,
@@ -40,6 +44,11 @@ export const generateNodeSDKConfiguration = (serviceInstanceId?: string): Config
         // see: https://opentelemetry.io/docs/languages/js/libraries/#registration
         '@opentelemetry/instrumentation-fs': {
           enabled: false,
+        },
+        // HTTP instrumentation with anonymization
+        '@opentelemetry/instrumentation-http': {
+          enabled: true,
+          ...httpInstrumentationConfig,
         },
       })],
     };
