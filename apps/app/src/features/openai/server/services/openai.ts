@@ -74,6 +74,7 @@ const convertPathPatternsToRegExp = (pagePathPatterns: string[]): Array<string |
 export interface IOpenaiService {
   createThread(userId: string, type: ThreadType, aiAssistantId?: string, initialUserMessage?: string): Promise<ThreadRelationDocument>;
   getThreadsByAiAssistantId(aiAssistantId: string): Promise<ThreadRelationDocument[]>
+  getRecentThreads(user: IUserHasId): Promise<ThreadRelationDocument[]>;
   deleteThread(threadRelationId: string): Promise<ThreadRelationDocument>;
   deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   deleteObsoletedVectorStoreRelations(): Promise<void> // for CronJob
@@ -184,6 +185,11 @@ class OpenaiService implements IOpenaiService {
 
   async getThreadsByAiAssistantId(aiAssistantId: string, type: ThreadType = ThreadType.KNOWLEDGE): Promise<ThreadRelationDocument[]> {
     const threadRelations = await ThreadRelationModel.find({ aiAssistant: aiAssistantId, type });
+    return threadRelations;
+  }
+
+  async getRecentThreads(user: IUserHasId): Promise<ThreadRelationDocument[]> {
+    const threadRelations = await ThreadRelationModel.find({ userId: user._id });
     return threadRelations;
   }
 
