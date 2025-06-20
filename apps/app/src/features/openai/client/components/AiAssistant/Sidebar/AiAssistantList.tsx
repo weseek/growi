@@ -282,10 +282,11 @@ type AiAssistantListProps = {
   aiAssistants: AiAssistantHasId[];
   onUpdated?: () => void;
   onDeleted?: () => void;
+  onCollapsed?: () => void;
 };
 
 export const AiAssistantList: React.FC<AiAssistantListProps> = ({
-  isTeamAssistant, aiAssistants, onUpdated, onDeleted,
+  isTeamAssistant, aiAssistants, onUpdated, onDeleted, onCollapsed,
 }) => {
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
@@ -294,13 +295,18 @@ export const AiAssistantList: React.FC<AiAssistantListProps> = ({
 
   const [isCollapsed, setIsCollapsed] = useState(false);
 
+  const toggleCollapse = useCallback(() => {
+    setIsCollapsed(prev => !prev);
+    onCollapsed?.();
+  }, [onCollapsed]);
+
   return (
     <div className={`${moduleClass}`}>
       <button
         type="button"
         className="btn btn-link p-0 text-secondary d-flex align-items-center"
         aria-expanded="false"
-        onClick={() => setIsCollapsed(!isCollapsed)}
+        onClick={toggleCollapse}
       >
         <h3 className="fw-bold grw-ai-assistant-substance-header mb-0 me-1">
           {t(isTeamAssistant ? 'ai_assistant_list.team_assistants' : 'ai_assistant_list.my_assistants')}

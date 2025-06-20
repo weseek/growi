@@ -31,6 +31,7 @@ export const AiAssistantContent = (): JSX.Element => {
           <AiAssistantList
             onUpdated={mutateAiAssistants}
             onDeleted={mutateAiAssistants}
+            onCollapsed={mutateAiAssistants}
             aiAssistants={aiAssistants?.myAiAssistants ?? []}
           />
         </div>
@@ -39,6 +40,7 @@ export const AiAssistantContent = (): JSX.Element => {
           <AiAssistantList
             isTeamAssistant
             onUpdated={mutateAiAssistants}
+            onCollapsed={mutateAiAssistants}
             aiAssistants={aiAssistants?.teamAiAssistants ?? []}
           />
         </div>
