@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useAiAssistantManagementModal, useSWRxAiAssistants } from '../../../stores/ai-assistant';
 
-import { AiAssistantCollapse } from './AiAssistantCollapse';
+import { AiAssistantList } from './AiAssistantList';
 
 import styles from './AiAssistantSubstance.module.scss';
 
@@ -23,12 +23,12 @@ export const AiAssistantContent = (): JSX.Element => {
         onClick={() => open()}
       >
         <span className="material-symbols-outlined fs-5 me-2">add</span>
-        <span className="fw-normal">{t('ai_assistant_collapse .add_assistant')}</span>
+        <span className="fw-normal">{t('ai_assistant_list.add_assistant')}</span>
       </button>
 
       <div className="d-flex flex-column gap-4">
         <div>
-          <AiAssistantCollapse
+          <AiAssistantList
             onUpdated={mutateAiAssistants}
             onDeleted={mutateAiAssistants}
             aiAssistants={aiAssistants?.myAiAssistants ?? []}
@@ -36,7 +36,7 @@ export const AiAssistantContent = (): JSX.Element => {
         </div>
 
         <div>
-          <AiAssistantCollapse
+          <AiAssistantList
             isTeamAssistant
             onUpdated={mutateAiAssistants}
             aiAssistants={aiAssistants?.teamAiAssistants ?? []}

@@ -633,7 +633,7 @@
   "default_ai_assistant": {
     "not_set": "デフォルトアシスタントが設定されていません"
   },
-  "ai_assistant_collapse ": {
+  "ai_assistant_list": {
     "add_assistant": "アシスタントを追加する",
     "my_assistants": "マイアシスタント",
     "team_assistants": "チームアシスタント",
