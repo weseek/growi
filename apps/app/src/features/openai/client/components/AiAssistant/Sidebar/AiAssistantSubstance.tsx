@@ -28,23 +28,19 @@ export const AiAssistantContent = (): JSX.Element => {
 
       <div className="d-flex flex-column gap-4">
         <div>
-          {aiAssistants?.myAiAssistants != null && aiAssistants.myAiAssistants.length !== 0 && (
-            <AiAssistantTree
-              onUpdated={mutateAiAssistants}
-              onDeleted={mutateAiAssistants}
-              aiAssistants={aiAssistants.myAiAssistants}
-            />
-          )}
+          <AiAssistantTree
+            onUpdated={mutateAiAssistants}
+            onDeleted={mutateAiAssistants}
+            aiAssistants={aiAssistants?.myAiAssistants ?? []}
+          />
         </div>
 
         <div>
-          {aiAssistants?.teamAiAssistants != null && aiAssistants.teamAiAssistants.length !== 0 && (
-            <AiAssistantTree
-              isTeamAssistant
-              onUpdated={mutateAiAssistants}
-              aiAssistants={aiAssistants.teamAiAssistants}
-            />
-          )}
+          <AiAssistantTree
+            isTeamAssistant
+            onUpdated={mutateAiAssistants}
+            aiAssistants={aiAssistants?.teamAiAssistants ?? []}
+          />
         </div>
       </div>
     </div>

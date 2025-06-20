@@ -292,28 +292,26 @@ export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({
   const { openChat } = useAiAssistantSidebar();
   const { open: openAiAssistantManagementModal } = useAiAssistantManagementModal();
 
-  const [expandOtherOptions, setExpandOtherOptions] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
     <div className={`grw-ai-assistant-tree ${moduleClass}`}>
-
       <button
         type="button"
         className="btn btn-link p-0 text-secondary d-flex align-items-center"
         aria-expanded="false"
-        onClick={() => setExpandOtherOptions(!expandOtherOptions)}
+        onClick={() => setIsCollapsed(!isCollapsed)}
       >
         <h3 className="fw-bold grw-ai-assistant-substance-header2 mb-0 me-1">
           {t(isTeamAssistant ? 'ai_assistant_tree.team_assistants' : 'ai_assistant_tree.my_assistants')}
         </h3>
         <span
           className="material-symbols-outlined"
-        >{expandOtherOptions ? 'keyboard_arrow_down' : 'keyboard_arrow_up'}
+        >{isCollapsed ? 'keyboard_arrow_down' : 'keyboard_arrow_up'}
         </span>
       </button>
 
-
-      <Collapse isOpen={expandOtherOptions}>
+      <Collapse isOpen={isCollapsed}>
         <ul className={`list-group ${moduleClass}`}>
           {aiAssistants.map(assistant => (
             <AiAssistantItem
