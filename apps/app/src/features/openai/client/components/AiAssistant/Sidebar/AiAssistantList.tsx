@@ -177,13 +177,13 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
     try {
       await deleteAiAssistant(aiAssistant._id);
       onDeleted?.();
-      toastSuccess('ai_assistant_list.toaster.assistant_deleted_success');
+      toastSuccess(t('ai_assistant_list.toaster.ai_assistant_deleted_success'));
     }
     catch (err) {
       logger.error(err);
-      toastError('ai_assistant_list.toaster.assistant_deleted');
+      toastError(t('ai_assistant_list.toaster.ai_assistant_deleted_failed'));
     }
-  }, [aiAssistant._id, onDeleted]);
+  }, [aiAssistant._id, onDeleted, t]);
 
   const isOperable = currentUser?._id != null && getIdStringForRef(aiAssistant.owner) === currentUser._id;
   const isPublicAiAssistantOperable = currentUser?.admin
