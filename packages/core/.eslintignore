@@ -1,1 +1,5 @@
 /dist/**
+/src/consts/**
+/src/interfaces/**
+/src/remark-plugins/**
+/src/swr/**

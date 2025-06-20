@@ -107,9 +107,9 @@ function instruction(withMarkdown: boolean): string {
   Respond with a JSON object in the following format:
   {
     "contents": [
-      { "message": "Your brief message about the upcoming change or proposal.\n\n" },
+      { "message": "Your brief message about the upcoming changes or proposals.\n\n" },
       { "replace": "New text 1" },
-      { "message": "Additional explanation if needed" },
+      { "message": "Additional explanation if needed." },
       { "replace": "New text 2" },
       ...more items if needed
       { "message": "Your friendly message explaining what changes were made or suggested." }
@@ -117,7 +117,7 @@ function instruction(withMarkdown: boolean): string {
   }
 
   The array should contain:
-  - [At the beginning of the list] A "message" object that has your brief message about the upcoming change or proposal. Be sure to add two consecutive line feeds ('\n\n') at the end.
+  - [At the beginning of the list] A "message" object that has your brief message about the upcoming change or proposal. Be sure that should be written in the present or future tense and add two consecutive line feeds ('\n\n') at the end.
   - Objects with a "message" key for explanatory text to the user if needed.
   - Edit markdown according to user instructions and include it line by line in the 'replace' object. ${withMarkdown ? 'Return original text for lines that do not need editing.' : ''}
   - [At the end of the list] A "message" object that contains your friendly message explaining that the operation was completed and what changes were made.

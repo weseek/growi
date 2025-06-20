@@ -267,9 +267,9 @@ module.exports = (crowi) => {
    *                      description: uploadable
    *                      example: true
    *          403:
-   *            $ref: '#/components/responses/403'
+   *            $ref: '#/components/responses/Forbidden'
    *          500:
-   *            $ref: '#/components/responses/500'
+   *            $ref: '#/components/responses/InternalServerError'
    */
   router.get('/limit', accessTokenParser, loginRequiredStrictly, validator.retrieveFileLimit, apiV3FormValidator, async(req, res) => {
     const { fileUploadService } = crowi;
@@ -333,9 +333,9 @@ module.exports = (crowi) => {
    *                    revision:
    *                      type: string
    *          403:
-   *            $ref: '#/components/responses/403'
+   *            $ref: '#/components/responses/Forbidden'
    *          500:
-   *            $ref: '#/components/responses/500'
+   *            $ref: '#/components/responses/InternalServerError'
    */
   router.post('/', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, uploads.single('file'),
     validator.retrieveAddAttachment, apiV3FormValidator, addActivity,

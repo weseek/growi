@@ -1,5 +1,4 @@
 import { jsonrepair } from 'jsonrepair';
-import type { z } from 'zod';
 
 import loggerFactory from '~/utils/logger';
 

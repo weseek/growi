@@ -5,6 +5,7 @@ import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
 import type { AssistantStream } from 'openai/lib/AssistantStream';
 import type { MessageDelta } from 'openai/resources/beta/threads/messages.mjs';
+import { type ChatCompletionChunk } from 'openai/resources/chat/completions';
 
 import { getOrCreateChatAssistant } from '~/features/openai/server/services/assistant';
 import type Crowi from '~/server/crowi';
@@ -115,10 +116,24 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
         return res.status(500).send(err.message);
       }
 
+      /**
+      * Create SSE (Server-Sent Events) Responses
+      */
       res.writeHead(200, {
         'Content-Type': 'text/event-stream;charset=utf-8',
         'Cache-Control': 'no-cache, no-transform',
       });
+
+      const preMessageChunkHandler = (chunk: ChatCompletionChunk) => {
+        const chunkChoice = chunk.choices[0];
+
+        const content = {
+          text: chunkChoice.delta.content,
+          finished: chunkChoice.finish_reason != null,
+        };
+
+        res.write(`data: ${JSON.stringify(content)}\n\n`);
+      };
 
       const messageDeltaHandler = async(delta: MessageDelta) => {
         const content = delta.content?.[0];
@@ -134,6 +149,12 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
       const sendError = (message: string, code?: StreamErrorCode) => {
         res.write(`error: ${JSON.stringify({ code, message })}\n\n`);
       };
+
+      // Don't add await since SSE is performed asynchronously with main message
+      openaiService.generateAndProcessPreMessage(req.body.userMessage, preMessageChunkHandler)
+        .catch((err) => {
+          logger.error(err);
+        });
 
       stream.on('event', (delta) => {
         if (delta.event === 'thread.run.failed') {

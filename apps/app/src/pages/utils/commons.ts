@@ -88,7 +88,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     namespacesRequired: ['translation'],
     currentPathname,
     appTitle: appService.getAppTitle(),
-    siteUrl: configManager.getConfig('app:siteUrl'), // DON'T USE appService.getSiteUrl()
+    siteUrl: configManager.getConfig('app:siteUrl'), // DON'T USE growiInfoService.getSiteUrl()
     confidential: appService.getAppConfidential() || '',
     customTitleTemplate: customizeService.customTitleTemplate,
     csrfToken: req.csrfToken(),

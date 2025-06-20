@@ -39,6 +39,54 @@
   "typescript.validate.enable": true,
   "typescript.surveys.enabled": false,
 
-  "vitest.filesWatcherInclude": "**/*"
+  "vitest.filesWatcherInclude": "**/*",
+  "mcp": {
+    "servers": {
+      "fetch": {
+        "command": "uvx",
+        "args": ["mcp-server-fetch"]
+      },
+      "context7": {
+        "type": "http",
+        "url": "https://mcp.context7.com/mcp"
+      }
+    }
+  },
+  "github.copilot.chat.codeGeneration.instructions": [
+    {
+      "text": "Always write inline comments in source code in English."
+    }
+  ],
+  "github.copilot.chat.testGeneration.instructions": [
+    {
+      "text": "Use vitest as the test framework"
+    },
+    {
+      "text": "The vitest configuration file is `apps/app/vitest.workspace.mts`"
+    },
+    {
+      "text": "Place test modules in the same directory as the module being tested. For example, if testing `mymodule.ts`, place `mymodule.spec.ts` in the same directory as `mymodule.ts`"
+    },
+    {
+      "text": "Run tests with the command: `cd /growi/apps/app && pnpm vitest run {test file path}`"
+    },
+    {
+      "text": "When creating new test modules, start with small files. First write a small number of intentionally failing tests, then fix them to pass. After that, add more tests while maintaining a passing state and increase coverage."
+    },
+    {
+      "text": "Write essential tests. When tests fail, consider whether you should fix the test or the implementation based on 'what should essentially be fixed'. If you're not confident in your reasoning, ask the user for guidance."
+    },
+    {
+      "text": "After writing tests, make sure they pass before moving on. Do not proceed to write tests for module B without first ensuring that tests for module A are passing"
+    },
+    {
+      "text": "Don't worry about lint errors - fix them after tests are passing"
+    }
+  ],
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "text": "Always write commit messages in English."
+    }
+  ]
 
 }

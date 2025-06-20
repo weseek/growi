@@ -69,47 +69,6 @@ const router = express.Router();
  *            type: boolean
  *            description: boolean for like status
  *
- *      PageInfo:
- *        description: PageInfo
- *        type: object
- *        required:
- *          - sumOfLikers
- *          - likerIds
- *          - sumOfSeenUsers
- *          - seenUserIds
- *        properties:
- *          isLiked:
- *            type: boolean
- *            description: Whether the page is liked by the logged in user
- *          sumOfLikers:
- *            type: number
- *            description: Number of users who have liked the page
- *          likerIds:
- *            type: array
- *            items:
- *              type: string
- *            description: Ids of users who have liked the page
- *            example: ["5e07345972560e001761fa63"]
- *          sumOfSeenUsers:
- *            type: number
- *            description: Number of users who have seen the page
- *          seenUserIds:
- *            type: array
- *            items:
- *              type: string
- *            description: Ids of users who have seen the page
- *            example: ["5e07345972560e001761fa63"]
- *
- *      PageParams:
- *        description: PageParams
- *        type: object
- *        required:
- *          - pageId
- *        properties:
- *          pageId:
- *            type: string
- *            description: page ID
- *            example: 5e07345972560e001761fa63
  */
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
@@ -409,9 +368,9 @@ module.exports = (crowi) => {
    *                        revision:
    *                          $ref: '#/components/schemas/Revision'
    *          403:
-   *            $ref: '#/components/responses/403'
+   *            $ref: '#/components/responses/Forbidden'
    *          500:
-   *            $ref: '#/components/responses/500'
+   *            $ref: '#/components/responses/InternalServerError'
    */
   router.put('/', updatePageHandlersFactory(crowi));
 
@@ -488,20 +447,22 @@ module.exports = (crowi) => {
    *    /page/info:
    *      get:
    *        tags: [Page]
-   *        summary: Get page info
-   *        description: Retrieve current page info
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/PageParams'
+   *        summary: /page/info
+   *        description: Get summary informations for a page
+   *        parameters:
+   *          - name: pageId
+   *            in: query
+   *            required: true
+   *            description: page id
+   *            schema:
+   *              $ref: '#/components/schemas/ObjectId'
    *        responses:
    *          200:
    *            description: Successfully retrieved current page info.
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/PageInfo'
+   *                  $ref: '#/components/schemas/PageInfoAll'
    *          500:
    *            description: Internal server error.
    */

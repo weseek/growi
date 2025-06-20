@@ -10,7 +10,9 @@ import {
 } from 'reactstrap';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { SseMessageSchema, type SseMessage } from '~/features/openai/interfaces/knowledge-assistant/sse-schemas';
+import {
+  SseMessageSchema, type SseMessage, SsePreMessageSchema, type SsePreMessage,
+} from '~/features/openai/interfaces/knowledge-assistant/sse-schemas';
 import { handleIfSuccessfullyParsed } from '~/features/openai/utils/handle-if-successfully-parsed';
 
 import type { MessageLog, MessageWithCustomMetaData } from '../../interfaces/message';
@@ -31,7 +33,9 @@ interface PostMessage {
 
 interface ProcessMessage {
   (data: unknown, handler: {
-    onMessage: (data: SseMessage) => void}
+    onMessage: (data: SseMessage) => void
+    onPreMessage: (data: SsePreMessage) => void
+  }
   ): void;
 }
 
@@ -120,6 +124,10 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
   const processMessage: ProcessMessage = useCallback((data, handler) => {
     handleIfSuccessfullyParsed(data, SseMessageSchema, (data: SseMessage) => {
       handler.onMessage(data);
+    });
+
+    handleIfSuccessfullyParsed(data, SsePreMessageSchema, (data: SsePreMessage) => {
+      handler.onPreMessage(data);
     });
   }, []);
 
