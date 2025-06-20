@@ -18,11 +18,11 @@ import { useAiAssistantSidebar, useAiAssistantManagementModal } from '../../../s
 import { useSWRMUTxThreads, useSWRxThreads } from '../../../stores/thread';
 import { getShareScopeIcon } from '../../../utils/get-share-scope-Icon';
 
-import styles from './AiAssistantTree.module.scss';
+import styles from './AiAssistantCollapse.module.scss';
 
-const logger = loggerFactory('growi:openai:client:components:AiAssistantTree');
+const logger = loggerFactory('growi:openai:client:components:AiAssistantCollapse');
 
-const moduleClass = styles['ai-assistant-tree-item'] ?? '';
+const moduleClass = styles['ai-assistant-collapse'] ?? '';
 
 
 /*
@@ -43,12 +43,12 @@ const ThreadItem: React.FC<ThreadItemProps> = ({
   const deleteThreadHandler = useCallback(async() => {
     try {
       await deleteThread({ aiAssistantId: aiAssistantData._id, threadRelationId: threadData._id });
-      toastSuccess(t('ai_assistant_tree.toaster.thread_deleted_success'));
+      toastSuccess(t('ai_assistant_collapse .toaster.thread_deleted_success'));
       onThreadDelete();
     }
     catch (err) {
       logger.error(err);
-      toastError(t('ai_assistant_tree.toaster.thread_deleted_failed'));
+      toastError(t('ai_assistant_collapse .toaster.thread_deleted_failed'));
     }
   }, [aiAssistantData._id, onThreadDelete, t, threadData._id]);
 
@@ -104,7 +104,7 @@ const ThreadItems: React.FC<ThreadItemsProps> = ({ aiAssistantData, onThreadClic
   const { data: threads } = useSWRxThreads(aiAssistantData._id);
 
   if (threads == null || threads.length === 0) {
-    return <p className="text-secondary ms-5">{t('ai_assistant_tree.thread_does_not_exist')}</p>;
+    return <p className="text-secondary ms-5">{t('ai_assistant_collapse .thread_does_not_exist')}</p>;
   }
 
   return (
@@ -165,11 +165,11 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
     try {
       await setDefaultAiAssistant(aiAssistant._id, !aiAssistant.isDefault);
       onUpdated?.();
-      toastSuccess(t('ai_assistant_tree.toaster.ai_assistant_set_default_success'));
+      toastSuccess(t('ai_assistant_collapse .toaster.ai_assistant_set_default_success'));
     }
     catch (err) {
       logger.error(err);
-      toastError(t('ai_assistant_tree.toaster.ai_assistant_set_default_failed'));
+      toastError(t('ai_assistant_collapse .toaster.ai_assistant_set_default_failed'));
     }
   }, [aiAssistant._id, aiAssistant.isDefault, onUpdated, t]);
 
@@ -177,11 +177,11 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
     try {
       await deleteAiAssistant(aiAssistant._id);
       onDeleted?.();
-      toastSuccess('ai_assistant_tree.toaster.assistant_deleted_success');
+      toastSuccess('ai_assistant_collapse .toaster.assistant_deleted_success');
     }
     catch (err) {
       logger.error(err);
-      toastError('ai_assistant_tree.toaster.assistant_deleted');
+      toastError('ai_assistant_collapse .toaster.assistant_deleted');
     }
   }, [aiAssistant._id, onDeleted]);
 
@@ -275,16 +275,16 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
 
 
 /*
-*  AiAssistantTree
+*  AiAssistantCollapse
 */
-type AiAssistantTreeProps = {
+type AiAssistantCollapseProps = {
   isTeamAssistant?: boolean;
   aiAssistants: AiAssistantHasId[];
   onUpdated?: () => void;
   onDeleted?: () => void;
 };
 
-export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({
+export const AiAssistantCollapse: React.FC<AiAssistantCollapseProps> = ({
   isTeamAssistant, aiAssistants, onUpdated, onDeleted,
 }) => {
   const { t } = useTranslation();
@@ -295,15 +295,15 @@ export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <div className={`grw-ai-assistant-tree ${moduleClass}`}>
+    <div className={`${moduleClass}`}>
       <button
         type="button"
         className="btn btn-link p-0 text-secondary d-flex align-items-center"
         aria-expanded="false"
         onClick={() => setIsCollapsed(!isCollapsed)}
       >
-        <h3 className="fw-bold grw-ai-assistant-substance-header2 mb-0 me-1">
-          {t(isTeamAssistant ? 'ai_assistant_tree.team_assistants' : 'ai_assistant_tree.my_assistants')}
+        <h3 className="fw-bold grw-ai-assistant-substance-header mb-0 me-1">
+          {t(isTeamAssistant ? 'ai_assistant_collapse .team_assistants' : 'ai_assistant_collapse .my_assistants')}
         </h3>
         <span
           className="material-symbols-outlined"

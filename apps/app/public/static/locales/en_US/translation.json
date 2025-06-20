@@ -601,7 +601,7 @@
   "default_ai_assistant": {
     "not_set": "Default assistant is not set"
   },
-  "ai_assistant_tree": {
+  "ai_assistant_collapse ": {
     "add_assistant": "Add Assistant",
     "my_assistants": "My Assistants",
     "team_assistants": "Team Assistants",
