@@ -1,5 +1,6 @@
 import { ConfigSource } from '@growi/core/dist/interfaces';
 import type { NodeSDK } from '@opentelemetry/sdk-node';
+import { ATTR_SERVICE_INSTANCE_ID } from '@opentelemetry/semantic-conventions/incubating';
 
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
@@ -66,12 +67,15 @@ For more information, see https://docs.growi.org/en/admin-guide/admin-cookbook/t
     // instanciate NodeSDK
     const { NodeSDK } = await import('@opentelemetry/sdk-node');
     const { generateNodeSDKConfiguration } = await import('./node-sdk-configuration');
+    // get resource from configuration
+    const enableAnonymization = configManager.getConfig('otel:anonymizeInBestEffort', ConfigSource.env);
 
-    sdkInstance = new NodeSDK(generateNodeSDKConfiguration());
+    const sdkConfig = generateNodeSDKConfiguration({ enableAnonymization });
+    sdkInstance = new NodeSDK(sdkConfig);
   }
 };
 
-export const detectServiceInstanceId = async(): Promise<void> => {
+export const setupAdditionalResourceAttributes = async(): Promise<void> => {
   const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
 
   if (instrumentationEnabled) {
@@ -79,14 +83,15 @@ export const detectServiceInstanceId = async(): Promise<void> => {
       throw new Error('OpenTelemetry instrumentation is not initialized');
     }
 
-    const { generateNodeSDKConfiguration } = await import('./node-sdk-configuration');
+    const { generateAdditionalResourceAttributes } = await import('./node-sdk-configuration');
+    // get resource from configuration
+    const enableAnonymization = configManager.getConfig('otel:anonymizeInBestEffort', ConfigSource.env);
 
-    const serviceInstanceId = configManager.getConfig('otel:serviceInstanceId')
-      ?? configManager.getConfig('app:serviceInstanceId');
+    // generate additional resource attributes
+    const updatedResource = await generateAdditionalResourceAttributes({ enableAnonymization });
 
-    // Update resource with new service instance id
-    const newConfig = generateNodeSDKConfiguration(serviceInstanceId);
-    setResource(sdkInstance, newConfig.resource);
+    // set resource to sdk instance
+    setResource(sdkInstance, updatedResource);
   }
 };
 
