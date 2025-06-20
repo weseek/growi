@@ -1,10 +1,17 @@
-import { type SWRResponse } from 'swr';
+import type { PaginateResult } from 'mongoose';
+import { type SWRResponse, type SWRConfiguration } from 'swr';
 import useSWRImmutable from 'swr/immutable';
+import useSWRInfinite from 'swr/infinite'; // eslint-disable-line camelcase
+import type { SWRInfiniteResponse } from 'swr/infinite';
 import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
+import type { IThreadRelationHasId } from '~/features/openai/interfaces/thread-relation';
 
-import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
+
+type RecentThreadsApiResult = {
+  paginateResult: PaginateResult<IThreadRelationHasId>;
+};
 
 const getKey = (aiAssistantId?: string) => (aiAssistantId != null ? [`/openai/threads/${aiAssistantId}`] : null);
 
@@ -23,5 +30,39 @@ export const useSWRMUTxThreads = (aiAssistantId?: string): SWRMutationResponse<I
     key,
     ([endpoint]) => apiv3Get(endpoint).then(response => response.data.threads),
     { revalidate: true },
+  );
+};
+
+
+// Helper function to generate key for pagination
+const getRecentThreadsKey = (
+    pageIndex: number,
+    previousPageData: RecentThreadsApiResult | null,
+): [string, number, number] | null => {
+  // If no more data, return null to stop fetching
+  if (previousPageData && !previousPageData.paginateResult.hasNextPage) {
+    return null;
+  }
+
+  const PER_PAGE = 10; // Match the server's default limit
+  const page = pageIndex + 1; // Convert zero-based index to one-based page
+
+  return ['/openai/threads/recent', page, PER_PAGE];
+};
+
+
+export const useSWRINFxRecentThreads = (
+    includeWipPage?: boolean,
+    config?: SWRConfiguration,
+): SWRInfiniteResponse<RecentThreadsApiResult, Error> => {
+  const PER_PAGE = 20;
+  return useSWRInfinite(
+    (pageIndex, previousPageData) => getRecentThreadsKey(pageIndex, previousPageData),
+    ([endpoint, page, limit]) => apiv3Get<RecentThreadsApiResult>(endpoint, { page, limit }).then(response => response.data),
+    {
+      ...config,
+      revalidateFirstPage: false,
+      revalidateAll: true,
+    },
   );
 };
