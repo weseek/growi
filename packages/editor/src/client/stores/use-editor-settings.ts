@@ -14,7 +14,7 @@ import {
   getEditorTheme, getKeymap, insertNewlineContinueMarkup, insertNewRowToMarkdownTable, isInTable,
 } from '../services-internal';
 
-import { useKeyBindings, useKeyboardShortcuts, useCustomKeyBindings } from './use-editor-shortcuts';
+import { useKeyboardShortcuts } from './use-editor-shortcuts';
 
 const useStyleActiveLine = (
     codeMirrorEditor?: UseCodeMirrorEditor,
@@ -102,79 +102,7 @@ export const useEditorSettings = (
     editorSettings?: EditorSettings,
     onSave?: () => void,
 ): void => {
-
-  useEffect(() => {
-    if (editorSettings?.styleActiveLine == null) {
-      return;
-    }
-    const extensions = (editorSettings?.styleActiveLine) ? [[highlightActiveLine(), highlightActiveLineGutter()]] : [[]];
-
-    const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extensions);
-    return cleanupFunction;
-
-  }, [codeMirrorEditor, editorSettings?.styleActiveLine]);
-
-  const onPressEnter: Command = useCallback((editor) => {
-    if (isInTable(editor) && editorSettings?.autoFormatMarkdownTable) {
-      insertNewRowToMarkdownTable(editor);
-      return true;
-    }
-    insertNewlineContinueMarkup(editor);
-    return true;
-  }, [editorSettings?.autoFormatMarkdownTable]);
-
-
-  useEffect(() => {
-
-    const extension = keymap.of([
-      { key: 'Enter', run: onPressEnter },
-    ]);
-
-    const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extension);
-    return cleanupFunction;
-
-  }, [codeMirrorEditor, onPressEnter]);
-
-  const [themeExtension, setThemeExtension] = useState<Extension | undefined>(undefined);
-  useEffect(() => {
-    const settingTheme = async(name?: EditorTheme) => {
-      setThemeExtension(await getEditorTheme(name));
-    };
-    settingTheme(editorSettings?.theme);
-  }, [codeMirrorEditor, editorSettings?.theme, setThemeExtension]);
-
-  useEffect(() => {
-    if (themeExtension == null) {
-      return;
-    }
-
-    const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.high(themeExtension));
-    return cleanupFunction;
-  }, [codeMirrorEditor, themeExtension]);
-
-
-  const [keymapExtension, setKeymapExtension] = useState<Extension | undefined>(undefined);
-  useEffect(() => {
-    const settingKeyMap = async(name?: KeyMapMode) => {
-      setKeymapExtension(await getKeymap(name, onSave));
-    };
-    settingKeyMap(editorSettings?.keymapMode);
-
-  }, [codeMirrorEditor, editorSettings?.keymapMode, setKeymapExtension, onSave]);
-
-  useEffect(() => {
-    if (keymapExtension == null) {
-      return;
-    }
-
-    const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.low(keymapExtension));
-    return cleanupFunction;
-
-  }, [codeMirrorEditor, keymapExtension]);
-
-  const customKeyBindings = useCustomKeyBindings(codeMirrorEditor?.view, editorSettings?.keymapMode);
-  const keyBindings = useKeyBindings(codeMirrorEditor?.view, customKeyBindings);
-  useKeyboardShortcuts(codeMirrorEditor, keyBindings);
+  useKeyboardShortcuts(codeMirrorEditor, editorSettings?.keymapMode);
   useStyleActiveLine(codeMirrorEditor, editorSettings?.styleActiveLine);
   useEnterKeyHandler(codeMirrorEditor, editorSettings?.autoFormatMarkdownTable);
   useThemeExtension(codeMirrorEditor, editorSettings?.theme);
