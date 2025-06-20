@@ -49,7 +49,10 @@ export const getRecentThreadsFactory: GetRecentThreadsFactory = (crowi) => {
 
       try {
         const paginateResult: PaginateResult<ThreadRelationDocument> = await ThreadRelationModel.paginate(
-          { userId: req.user._id },
+          {
+            isActive: true,
+            userId: req.user._id,
+          },
           {
             page: req.query.page ?? 1,
             limit: req.query.limit ?? 10,
