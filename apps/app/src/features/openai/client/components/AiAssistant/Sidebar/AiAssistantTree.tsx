@@ -3,6 +3,7 @@ import React, { useCallback, useState } from 'react';
 import type { IUserHasId } from '@growi/core';
 import { getIdStringForRef } from '@growi/core';
 import { useTranslation } from 'react-i18next';
+import { Collapse } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import type { IThreadRelationHasId } from '~/features/openai/interfaces/thread-relation';
@@ -198,7 +199,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
         role="button"
         className="list-group-item list-group-item-action border-0 d-flex align-items-center rounded-1"
       >
-        <div className="d-flex justify-content-center">
+        {/* <div className="d-flex justify-content-center">
           <button
             type="button"
             onClick={(e) => {
@@ -211,7 +212,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
               <span className="material-symbols-outlined fs-5">arrow_right</span>
             </div>
           </button>
-        </div>
+        </div> */}
 
         <div className="d-flex justify-content-center">
           <span className="material-symbols-outlined fs-5">{getShareScopeIcon(aiAssistant.shareScope, aiAssistant.accessScope)}</span>
@@ -261,13 +262,13 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
         </div>
       </li>
 
-      { isThreadsOpened && (
+      {/* { isThreadsOpened && (
         <ThreadItems
           aiAssistantData={aiAssistant}
           onThreadClick={onItemClick}
           onThreadDelete={mutateThreadData}
         />
-      ) }
+      ) } */}
     </>
   );
 };
@@ -277,29 +278,56 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
 *  AiAssistantTree
 */
 type AiAssistantTreeProps = {
+  isTeamAssistant?: boolean;
   aiAssistants: AiAssistantHasId[];
   onUpdated?: () => void;
   onDeleted?: () => void;
 };
 
-export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, onUpdated, onDeleted }) => {
+export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({
+  isTeamAssistant, aiAssistants, onUpdated, onDeleted,
+}) => {
+  const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
   const { openChat } = useAiAssistantSidebar();
   const { open: openAiAssistantManagementModal } = useAiAssistantManagementModal();
 
+  const [expandOtherOptions, setExpandOtherOptions] = useState(false);
+
   return (
-    <ul className={`list-group ${moduleClass}`}>
-      {aiAssistants.map(assistant => (
-        <AiAssistantItem
-          key={assistant._id}
-          currentUser={currentUser}
-          aiAssistant={assistant}
-          onEditClick={openAiAssistantManagementModal}
-          onItemClick={openChat}
-          onUpdated={onUpdated}
-          onDeleted={onDeleted}
-        />
-      ))}
-    </ul>
+    <div className={`grw-ai-assistant-tree ${moduleClass}`}>
+
+      <button
+        type="button"
+        className="btn btn-link p-0 text-secondary d-flex align-items-center"
+        aria-expanded="false"
+        onClick={() => setExpandOtherOptions(!expandOtherOptions)}
+      >
+        <h3 className="fw-bold grw-ai-assistant-substance-header2 mb-0 me-1">
+          {t(isTeamAssistant ? 'ai_assistant_tree.team_assistants' : 'ai_assistant_tree.my_assistants')}
+        </h3>
+        <span
+          className="material-symbols-outlined"
+        >{expandOtherOptions ? 'keyboard_arrow_down' : 'keyboard_arrow_up'}
+        </span>
+      </button>
+
+
+      <Collapse isOpen={expandOtherOptions}>
+        <ul className={`list-group ${moduleClass}`}>
+          {aiAssistants.map(assistant => (
+            <AiAssistantItem
+              key={assistant._id}
+              currentUser={currentUser}
+              aiAssistant={assistant}
+              onEditClick={openAiAssistantManagementModal}
+              onItemClick={openChat}
+              onUpdated={onUpdated}
+              onDeleted={onDeleted}
+            />
+          ))}
+        </ul>
+      </Collapse>
+    </div>
   );
 };

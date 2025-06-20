@@ -28,9 +28,6 @@ export const AiAssistantContent = (): JSX.Element => {
 
       <div className="d-flex flex-column gap-4">
         <div>
-          <h3 className="fw-bold grw-ai-assistant-substance-header">
-            {t('ai_assistant_tree.my_assistants')}
-          </h3>
           {aiAssistants?.myAiAssistants != null && aiAssistants.myAiAssistants.length !== 0 && (
             <AiAssistantTree
               onUpdated={mutateAiAssistants}
@@ -41,11 +38,9 @@ export const AiAssistantContent = (): JSX.Element => {
         </div>
 
         <div>
-          <h3 className="fw-bold grw-ai-assistant-substance-header">
-            {t('ai_assistant_tree.team_assistants')}
-          </h3>
           {aiAssistants?.teamAiAssistants != null && aiAssistants.teamAiAssistants.length !== 0 && (
             <AiAssistantTree
+              isTeamAssistant
               onUpdated={mutateAiAssistants}
               aiAssistants={aiAssistants.teamAiAssistants}
             />
