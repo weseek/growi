@@ -3,8 +3,10 @@ import React, { type JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useAiAssistantManagementModal, useSWRxAiAssistants } from '../../../stores/ai-assistant';
+import { useSWRINFxRecentThreads } from '../../../stores/thread';
 
 import { AiAssistantTree } from './AiAssistantTree';
+import { ThreadList } from './ThreadList';
 
 import styles from './AiAssistantSubstance.module.scss';
 
@@ -14,6 +16,9 @@ export const AiAssistantContent = (): JSX.Element => {
   const { t } = useTranslation();
   const { open } = useAiAssistantManagementModal();
   const { data: aiAssistants, mutate: mutateAiAssistants } = useSWRxAiAssistants();
+  const { data: recentThreads } = useSWRINFxRecentThreads();
+
+  console.log('recentThreads', recentThreads);
 
   return (
     <div className={moduleClass}>
@@ -50,6 +55,13 @@ export const AiAssistantContent = (): JSX.Element => {
               aiAssistants={aiAssistants.teamAiAssistants}
             />
           )}
+        </div>
+
+        <div>
+          <h3 className="fw-bold grw-ai-assistant-substance-header">
+            最近の項目
+          </h3>
+          <ThreadList />
         </div>
       </div>
     </div>
