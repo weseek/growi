@@ -293,7 +293,7 @@ importers:
         specifier: ^2.0.1
         version: 2.0.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions':
-        specifier: ^1.29.0
+        specifier: ^1.34.0
         version: 1.34.0
       '@slack/web-api':
         specifier: ^6.2.4
