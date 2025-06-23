@@ -85,6 +85,8 @@ export const CONFIG_KEYS = [
   'security:trustProxyBool',
   'security:trustProxyCsv',
   'security:trustProxyHops',
+  'security:inlineAllowlistTypes',
+  'security:customInlineAllowlistTypes',
   'security:passport-local:isEnabled',
   'security:passport-local:isPasswordResetEnabled',
   'security:passport-local:isEmailAuthenticationEnabled',
@@ -566,6 +568,12 @@ export const CONFIG_DEFINITIONS = {
     envVarName: 'TRUST_PROXY_HOPS',
     defaultValue: undefined,
     isSecret: true,
+  }),
+  'security:inlineAllowlistTypes': defineConfig<string[]>({
+    defaultValue: [],
+  }),
+  'security:customInlineAllowlistTypes': defineConfig<string>({
+    defaultValue: '',
   }),
   'security:passport-local:isEnabled': defineConfig<boolean>({
     envVarName: 'LOCAL_STRATEGY_ENABLED',
