@@ -48,7 +48,7 @@ export const AiAssistantContent = (): JSX.Element => {
 
         <div>
           <h3 className="fw-bold grw-ai-assistant-substance-header">
-            {t('ai_assistant_list.recent_items')}
+            {t('ai_assistant_list.recent_threads')}
           </h3>
           <ThreadList />
         </div>

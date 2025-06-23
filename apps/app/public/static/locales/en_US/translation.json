@@ -606,7 +606,7 @@
     "my_assistants": "My Assistants",
     "team_assistants": "Team Assistants",
     "thread_does_not_exist": "No threads exist",
-    "recent_items": "Recent Items",
+    "recent_threads": "Recent Items",
     "toaster": {
       "ai_assistant_deleted_success": "Assistant deleted",
       "ai_assistant_deleted_failed": "Failed to delete assistant",
