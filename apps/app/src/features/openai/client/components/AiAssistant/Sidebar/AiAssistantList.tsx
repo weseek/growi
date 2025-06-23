@@ -305,7 +305,7 @@ export const AiAssistantList: React.FC<AiAssistantListProps> = ({
       <button
         type="button"
         className="btn btn-link p-0 text-secondary d-flex align-items-center"
-        aria-expanded="false"
+        aria-expanded={!isCollapsed}
         onClick={toggleCollapse}
       >
         <h3 className="fw-bold grw-assistant-section-title mb-0 me-1">
