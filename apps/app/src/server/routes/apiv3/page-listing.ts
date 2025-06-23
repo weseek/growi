@@ -234,16 +234,18 @@ const routerFactory = (crowi: Crowi): Router => {
    *       - bearer: []
    *       - accessTokenInQuery: []
    *     summary: /page-listing/info
-   *     description: Get the information of a page
+   *     description: Get summary information of pages
    *     parameters:
    *       - name: pageIds
    *         in: query
+   *         description: Array of page IDs to retrieve information for (One of pageIds or path is required)
    *         schema:
    *           type: array
    *           items:
    *             type: string
    *       - name: path
    *         in: query
+   *         description: Path of the page to retrieve information for (One of pageIds or path is required)
    *         schema:
    *           type: string
    *       - name: attachBookmarkCount
@@ -261,42 +263,8 @@ const routerFactory = (crowi: Crowi): Router => {
    *           application/json:
    *             schema:
    *               type: object
-   *               properties:
-   *                 idToPageInfoMap:
-   *                   type: object
-   *                   additionalProperties:
-   *                     type: object
-   *                     properties:
-   *                       commentCount:
-   *                         type: integer
-   *                       contentAge:
-   *                         type: integer
-   *                       descendantCount:
-   *                         type: integer
-   *                       isAbleToDeleteCompletely:
-   *                         type: boolean
-   *                       isDeletable:
-   *                         type: boolean
-   *                       isEmpty:
-   *                         type: boolean
-   *                       isMovable:
-   *                         type: boolean
-   *                       isRevertible:
-   *                         type: boolean
-   *                       isV5Compatible:
-   *                         type: boolean
-   *                       likerIds:
-   *                         type: array
-   *                         items:
-   *                           type: string
-   *                       seenUserIds:
-   *                         type: array
-   *                         items:
-   *                           type: string
-   *                       sumOfLikers:
-   *                         type: integer
-   *                       sumOfSeenUsers:
-   *                         type: integer
+   *               additionalProperties:
+   *                 $ref: '#/components/schemas/PageInfoAll'
    */
   // eslint-disable-next-line max-len
   router.get('/info', accessTokenParser, loginRequired, validator.pageIdsOrPathRequired, validator.infoParams, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
