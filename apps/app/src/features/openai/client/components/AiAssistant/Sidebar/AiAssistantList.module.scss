@@ -1,5 +1,5 @@
 // == Colors
-.ai-assistant-tree-item :global {
+.ai-assistant-list :global {
   .grw-ai-assistant-actions {
     .btn-link {
       &:hover {
@@ -9,8 +9,7 @@
   }
 }
 
-
-.ai-assistant-tree-item :global {
+.ai-assistant-list :global {
   .list-group-item {
     height: 40px;
     padding-left: 4px;

@@ -10,6 +10,7 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
+import { ThreadType } from '../../interfaces/thread-relation';
 import type { ThreadRelationDocument } from '../models/thread-relation';
 import ThreadRelationModel from '../models/thread-relation';
 import { getOpenaiService } from '../services/openai';
@@ -50,8 +51,9 @@ export const getRecentThreadsFactory: GetRecentThreadsFactory = (crowi) => {
       try {
         const paginateResult: PaginateResult<ThreadRelationDocument> = await ThreadRelationModel.paginate(
           {
-            isActive: true,
             userId: req.user._id,
+            type: ThreadType.KNOWLEDGE,
+            isActive: true,
           },
           {
             page: req.query.page ?? 1,
