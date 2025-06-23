@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import type { SelectionRange } from '@codemirror/state';
 import { EditorSelection } from '@codemirror/state';
-import type { EditorView, Command } from '@codemirror/view';
+import type { EditorView, Command, KeyBinding } from '@codemirror/view';
 
 
 const addMultiCursor = (view: EditorView, direction: 'up' | 'down') => {
@@ -40,10 +40,23 @@ const addMultiCursor = (view: EditorView, direction: 'up' | 'down') => {
   return true;
 };
 
-export const useAddMultiCursorCommand = (direction: 'up' | 'down'): Command => {
+const useAddMultiCursorCommand = (direction: 'up' | 'down'): Command => {
   return useCallback((view?: EditorView) => {
     if (view == null) return false;
     addMultiCursor(view, direction);
     return true;
   }, [direction]);
+};
+
+export const useAddMultiCursorKeyBindings = (): KeyBinding[] => {
+
+  const upMultiCursorCommand = useAddMultiCursorCommand('up');
+  const downMultiCursorCommand = useAddMultiCursorCommand('down');
+
+  const keyBindings = [
+    { key: 'mod-alt-ArrowUp', run: upMultiCursorCommand },
+    { key: 'mod-alt-ArrowDown', run: downMultiCursorCommand },
+  ];
+
+  return keyBindings;
 };
