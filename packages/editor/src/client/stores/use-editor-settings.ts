@@ -14,7 +14,7 @@ import {
   getEditorTheme, getKeymap, insertNewlineContinueMarkup, insertNewRowToMarkdownTable, isInTable,
 } from '../services-internal';
 
-import { useKeyboardShortcuts } from './use-editor-shortcuts';
+import { useEditorShortcuts } from './use-editor-shortcuts';
 
 const useStyleActiveLine = (
     codeMirrorEditor?: UseCodeMirrorEditor,
@@ -102,7 +102,7 @@ export const useEditorSettings = (
     editorSettings?: EditorSettings,
     onSave?: () => void,
 ): void => {
-  useKeyboardShortcuts(codeMirrorEditor, editorSettings?.keymapMode);
+  useEditorShortcuts(codeMirrorEditor, editorSettings?.keymapMode);
   useStyleActiveLine(codeMirrorEditor, editorSettings?.styleActiveLine);
   useEnterKeyHandler(codeMirrorEditor, editorSettings?.autoFormatMarkdownTable);
   useThemeExtension(codeMirrorEditor, editorSettings?.theme);
