@@ -59,6 +59,7 @@ export const getRecentThreadsFactory: GetRecentThreadsFactory = (crowi) => {
             page: req.query.page ?? 1,
             limit: req.query.limit ?? 10,
             sort: { updatedAt: -1 },
+            populate: 'aiAssistant',
           },
         );
         return res.apiv3({ paginateResult });
