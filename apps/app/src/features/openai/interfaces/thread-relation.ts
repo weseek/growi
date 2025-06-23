@@ -18,6 +18,7 @@ export interface IThreadRelation {
   title?: string;
   type: ThreadType;
   expiredAt: Date;
+  isActive: boolean;
 }
 
 export type IThreadRelationHasId = IThreadRelation & HasObjectId;

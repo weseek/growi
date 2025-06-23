@@ -590,7 +590,7 @@
   "default_ai_assistant": {
     "not_set": "未设置默认助手"
   },
-  "ai_assistant_tree": {
+  "ai_assistant_list": {
     "add_assistant": "添加助手",
     "my_assistants": "我的助手",
     "team_assistants": "团队助手",

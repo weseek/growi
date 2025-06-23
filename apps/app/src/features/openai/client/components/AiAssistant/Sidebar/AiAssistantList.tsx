@@ -1,8 +1,10 @@
+// TODO: https://redmine.weseek.co.jp/issues/167745
 import React, { useCallback, useState } from 'react';
 
 import type { IUserHasId } from '@growi/core';
 import { getIdStringForRef } from '@growi/core';
 import { useTranslation } from 'react-i18next';
+import { Collapse } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import type { IThreadRelationHasId } from '~/features/openai/interfaces/thread-relation';
@@ -17,11 +19,11 @@ import { useAiAssistantSidebar, useAiAssistantManagementModal } from '../../../s
 import { useSWRMUTxThreads, useSWRxThreads } from '../../../stores/thread';
 import { getShareScopeIcon } from '../../../utils/get-share-scope-Icon';
 
-import styles from './AiAssistantTree.module.scss';
+import styles from './AiAssistantList.module.scss';
 
-const logger = loggerFactory('growi:openai:client:components:AiAssistantTree');
+const logger = loggerFactory('growi:openai:client:components:AiAssistantList');
 
-const moduleClass = styles['ai-assistant-tree-item'] ?? '';
+const moduleClass = styles['ai-assistant-list'] ?? '';
 
 
 /*
@@ -42,12 +44,12 @@ const ThreadItem: React.FC<ThreadItemProps> = ({
   const deleteThreadHandler = useCallback(async() => {
     try {
       await deleteThread({ aiAssistantId: aiAssistantData._id, threadRelationId: threadData._id });
-      toastSuccess(t('ai_assistant_tree.toaster.thread_deleted_success'));
+      toastSuccess(t('ai_assistant_list.toaster.thread_deleted_success'));
       onThreadDelete();
     }
     catch (err) {
       logger.error(err);
-      toastError(t('ai_assistant_tree.toaster.thread_deleted_failed'));
+      toastError(t('ai_assistant_list.toaster.thread_deleted_failed'));
     }
   }, [aiAssistantData._id, onThreadDelete, t, threadData._id]);
 
@@ -103,7 +105,7 @@ const ThreadItems: React.FC<ThreadItemsProps> = ({ aiAssistantData, onThreadClic
   const { data: threads } = useSWRxThreads(aiAssistantData._id);
 
   if (threads == null || threads.length === 0) {
-    return <p className="text-secondary ms-5">{t('ai_assistant_tree.thread_does_not_exist')}</p>;
+    return <p className="text-secondary ms-5">{t('ai_assistant_list.thread_does_not_exist')}</p>;
   }
 
   return (
@@ -164,11 +166,11 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
     try {
       await setDefaultAiAssistant(aiAssistant._id, !aiAssistant.isDefault);
       onUpdated?.();
-      toastSuccess(t('ai_assistant_tree.toaster.ai_assistant_set_default_success'));
+      toastSuccess(t('ai_assistant_list.toaster.ai_assistant_set_default_success'));
     }
     catch (err) {
       logger.error(err);
-      toastError(t('ai_assistant_tree.toaster.ai_assistant_set_default_failed'));
+      toastError(t('ai_assistant_list.toaster.ai_assistant_set_default_failed'));
     }
   }, [aiAssistant._id, aiAssistant.isDefault, onUpdated, t]);
 
@@ -176,13 +178,13 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
     try {
       await deleteAiAssistant(aiAssistant._id);
       onDeleted?.();
-      toastSuccess('ai_assistant_tree.toaster.assistant_deleted_success');
+      toastSuccess(t('ai_assistant_list.toaster.ai_assistant_deleted_success'));
     }
     catch (err) {
       logger.error(err);
-      toastError('ai_assistant_tree.toaster.assistant_deleted');
+      toastError(t('ai_assistant_list.toaster.ai_assistant_deleted_failed'));
     }
-  }, [aiAssistant._id, onDeleted]);
+  }, [aiAssistant._id, onDeleted, t]);
 
   const isOperable = currentUser?._id != null && getIdStringForRef(aiAssistant.owner) === currentUser._id;
   const isPublicAiAssistantOperable = currentUser?.admin
@@ -198,7 +200,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
         role="button"
         className="list-group-item list-group-item-action border-0 d-flex align-items-center rounded-1"
       >
-        <div className="d-flex justify-content-center">
+        {/* <div className="d-flex justify-content-center">
           <button
             type="button"
             onClick={(e) => {
@@ -211,7 +213,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
               <span className="material-symbols-outlined fs-5">arrow_right</span>
             </div>
           </button>
-        </div>
+        </div> */}
 
         <div className="d-flex justify-content-center">
           <span className="material-symbols-outlined fs-5">{getShareScopeIcon(aiAssistant.shareScope, aiAssistant.accessScope)}</span>
@@ -261,45 +263,80 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
         </div>
       </li>
 
-      { isThreadsOpened && (
+      {/* { isThreadsOpened && (
         <ThreadItems
           aiAssistantData={aiAssistant}
           onThreadClick={onItemClick}
           onThreadDelete={mutateThreadData}
         />
-      ) }
+      ) } */}
     </>
   );
 };
 
 
 /*
-*  AiAssistantTree
+*  AiAssistantList
 */
-type AiAssistantTreeProps = {
+type AiAssistantListProps = {
+  isTeamAssistant?: boolean;
   aiAssistants: AiAssistantHasId[];
   onUpdated?: () => void;
   onDeleted?: () => void;
+  onCollapsed?: () => void;
 };
 
-export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, onUpdated, onDeleted }) => {
-  const { data: currentUser } = useCurrentUser();
+export const AiAssistantList: React.FC<AiAssistantListProps> = ({
+  isTeamAssistant, aiAssistants, onUpdated, onDeleted, onCollapsed,
+}) => {
+  const { t } = useTranslation();
   const { openChat } = useAiAssistantSidebar();
+  const { data: currentUser } = useCurrentUser();
   const { open: openAiAssistantManagementModal } = useAiAssistantManagementModal();
 
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const toggleCollapse = useCallback(() => {
+    setIsCollapsed((prev) => {
+      if (!prev) {
+        onCollapsed?.();
+      }
+      return !prev;
+    });
+  }, [onCollapsed]);
+
   return (
-    <ul className={`list-group ${moduleClass}`}>
-      {aiAssistants.map(assistant => (
-        <AiAssistantItem
-          key={assistant._id}
-          currentUser={currentUser}
-          aiAssistant={assistant}
-          onEditClick={openAiAssistantManagementModal}
-          onItemClick={openChat}
-          onUpdated={onUpdated}
-          onDeleted={onDeleted}
-        />
-      ))}
-    </ul>
+    <div className={`${moduleClass}`}>
+      <button
+        type="button"
+        className="btn btn-link p-0 text-secondary d-flex align-items-center"
+        aria-expanded={!isCollapsed}
+        onClick={toggleCollapse}
+      >
+        <h3 className="grw-ai-assistant-substance-header fw-bold mb-0 me-1">
+          {t(`ai_assistant_list.${isTeamAssistant ? 'team' : 'my'}_assistants`)}
+        </h3>
+        <span
+          className="material-symbols-outlined"
+        >{`keyboard_arrow_${isCollapsed ? 'up' : 'down'}`}
+        </span>
+      </button>
+
+      <Collapse isOpen={isCollapsed}>
+        <ul className="list-group">
+          {aiAssistants.map(assistant => (
+            <AiAssistantItem
+              key={assistant._id}
+              currentUser={currentUser}
+              aiAssistant={assistant}
+              onEditClick={openAiAssistantManagementModal}
+              onItemClick={openChat}
+              onUpdated={onUpdated}
+              onDeleted={onDeleted}
+            />
+          ))}
+        </ul>
+      </Collapse>
+    </div>
   );
 };

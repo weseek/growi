@@ -595,7 +595,7 @@
   "default_ai_assistant": {
     "not_set": "L'assistant par défaut n'est pas configuré"
   },
- "ai_assistant_tree": {
+ "ai_assistant_list": {
     "add_assistant": "Ajouter un assistant",
     "my_assistants": "Mes assistants",
     "team_assistants": "Assistants d'équipe",
