@@ -1,4 +1,4 @@
-import { type SWRResponse } from 'swr';
+import { type SWRResponse, type SWRConfiguration } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import useSWRInfinite from 'swr/infinite';
 import type { SWRInfiniteResponse } from 'swr/infinite';
@@ -41,11 +41,13 @@ const getRecentThreadsKey = (pageIndex: number, previousPageData: IThreadRelatio
 
 
 export const useSWRINFxRecentThreads = (
+    config?: SWRConfiguration,
 ): SWRInfiniteResponse<IThreadRelationPaginate, Error> => {
   return useSWRInfinite(
     (pageIndex, previousPageData) => getRecentThreadsKey(pageIndex, previousPageData),
     ([endpoint, page, limit]) => apiv3Get<IThreadRelationPaginate>(endpoint, { page, limit }).then(response => response.data),
     {
+      ...config,
       revalidateFirstPage: false,
       revalidateAll: true,
     },
