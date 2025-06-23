@@ -79,7 +79,10 @@ describe('addApplicationMetrics', () => {
     });
 
     it('should observe metrics with site_url when isAppSiteUrlHashed is false', async() => {
-      mockConfigManager.getConfig.mockReturnValue(false);
+      mockConfigManager.getConfig.mockImplementation((key) => {
+        if (key === 'otel:isAppSiteUrlHashed') return false;
+        return undefined;
+      });
       const mockResult = { observe: vi.fn() };
 
       addApplicationMetrics();
@@ -88,6 +91,7 @@ describe('addApplicationMetrics', () => {
       const callback = mockMeter.addBatchObservableCallback.mock.calls[0][0];
       await callback(mockResult);
 
+      expect(mockConfigManager.getConfig).toHaveBeenCalledWith('otel:isAppSiteUrlHashed');
       expect(mockResult.observe).toHaveBeenCalledWith(mockGauge, 1, {
         site_url: testSiteUrl,
         site_url_hashed: undefined,
@@ -97,7 +101,10 @@ describe('addApplicationMetrics', () => {
     });
 
     it('should observe metrics with site_url_hashed when isAppSiteUrlHashed is true', async() => {
-      mockConfigManager.getConfig.mockReturnValue(true);
+      mockConfigManager.getConfig.mockImplementation((key) => {
+        if (key === 'otel:isAppSiteUrlHashed') return true;
+        return undefined;
+      });
       const mockResult = { observe: vi.fn() };
 
       // Calculate expected hash
@@ -111,6 +118,7 @@ describe('addApplicationMetrics', () => {
       const callback = mockMeter.addBatchObservableCallback.mock.calls[0][0];
       await callback(mockResult);
 
+      expect(mockConfigManager.getConfig).toHaveBeenCalledWith('otel:isAppSiteUrlHashed');
       expect(mockResult.observe).toHaveBeenCalledWith(mockGauge, 1, {
         site_url: '[hashed]',
         site_url_hashed: expectedHash,
@@ -120,7 +128,10 @@ describe('addApplicationMetrics', () => {
     });
 
     it('should handle empty external auth types', async() => {
-      mockConfigManager.getConfig.mockReturnValue(false);
+      mockConfigManager.getConfig.mockImplementation((key) => {
+        if (key === 'otel:isAppSiteUrlHashed') return false;
+        return undefined;
+      });
       const mockResult = { observe: vi.fn() };
 
       const growiInfoWithoutAuth = {
@@ -145,7 +156,10 @@ describe('addApplicationMetrics', () => {
     });
 
     it('should handle errors in metrics collection gracefully', async() => {
-      mockConfigManager.getConfig.mockReturnValue(false);
+      mockConfigManager.getConfig.mockImplementation((key) => {
+        if (key === 'otel:isAppSiteUrlHashed') return false;
+        return undefined;
+      });
       mockGrowiInfoService.getGrowiInfo.mockRejectedValue(new Error('Service unavailable'));
       const mockResult = { observe: vi.fn() };
 
@@ -161,7 +175,10 @@ describe('addApplicationMetrics', () => {
     });
 
     it('should handle missing additionalInfo gracefully', async() => {
-      mockConfigManager.getConfig.mockReturnValue(false);
+      mockConfigManager.getConfig.mockImplementation((key) => {
+        if (key === 'otel:isAppSiteUrlHashed') return false;
+        return undefined;
+      });
       const mockResult = { observe: vi.fn() };
 
       const growiInfoWithoutAdditionalInfo = {
@@ -176,6 +193,7 @@ describe('addApplicationMetrics', () => {
       const callback = mockMeter.addBatchObservableCallback.mock.calls[0][0];
       await callback(mockResult);
 
+      expect(mockConfigManager.getConfig).toHaveBeenCalledWith('otel:isAppSiteUrlHashed');
       expect(mockResult.observe).toHaveBeenCalledWith(mockGauge, 1, {
         site_url: testSiteUrl,
         site_url_hashed: undefined,
