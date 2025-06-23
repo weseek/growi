@@ -24,7 +24,7 @@ export const AiAssistantContent = (): JSX.Element => {
         onClick={() => open()}
       >
         <span className="material-symbols-outlined fs-5 me-2">add</span>
-        <span className="fw-normal">{t('ai_assistant_list.add_assistant')}</span>
+        <span className="fw-normal">{t('ai_assistant_substance.add_assistant')}</span>
       </button>
 
       <div className="d-flex flex-column gap-4">
@@ -48,7 +48,7 @@ export const AiAssistantContent = (): JSX.Element => {
 
         <div>
           <h3 className="fw-bold grw-ai-assistant-substance-header">
-            {t('ai_assistant_list.recent_threads')}
+            {t('ai_assistant_substance.recent_threads')}
           </h3>
           <ThreadList />
         </div>

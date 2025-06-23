@@ -34,12 +34,12 @@ export const ThreadList: React.FC = () => {
   const deleteThreadHandler = useCallback(async(aiAssistantId: string, threadRelationId: string) => {
     try {
       await deleteThread({ aiAssistantId, threadRelationId });
-      toastSuccess(t('ai_assistant_list.toaster.thread_deleted_success'));
+      toastSuccess(t('ai_assistant_substance.toaster.thread_deleted_success'));
       mutate();
     }
     catch (err) {
       logger.error(err);
-      toastError(t('ai_assistant_list.toaster.thread_deleted_failed'));
+      toastError(t('ai_assistant_substance.toaster.thread_deleted_failed'));
     }
   }, [mutate, t]);
 
