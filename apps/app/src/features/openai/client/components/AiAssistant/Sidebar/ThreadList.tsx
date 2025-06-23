@@ -17,7 +17,7 @@ const logger = loggerFactory('growi:openai:client:components:ThreadList');
 export const ThreadList: React.FC = () => {
   const swrInifiniteThreads = useSWRINFxRecentThreads({ suspense: true });
   const { t } = useTranslation();
-  const { data } = swrInifiniteThreads;
+  const { data, mutate } = swrInifiniteThreads;
   console.debug('ThreadList data', data);
   const { openChat } = useAiAssistantSidebar();
 
@@ -34,13 +34,14 @@ export const ThreadList: React.FC = () => {
   const deleteThreadHandler = useCallback(async(aiAssistantId: string, threadRelationId: string) => {
     try {
       await deleteThread({ aiAssistantId, threadRelationId });
-      toastSuccess(t('ai_assistant_tree.toaster.thread_deleted_success'));
+      toastSuccess(t('ai_assistant_list.toaster.thread_deleted_success'));
+      mutate();
     }
     catch (err) {
       logger.error(err);
-      toastError(t('ai_assistant_tree.toaster.thread_deleted_failed'));
+      toastError(t('ai_assistant_list.toaster.thread_deleted_failed'));
     }
-  }, [t]);
+  }, [mutate, t]);
 
   return (
     <>
@@ -61,17 +62,17 @@ export const ThreadList: React.FC = () => {
                   <span className="material-symbols-outlined fs-5">chat</span>
                 </div>
 
-                <div className="grw-ai-assistant-title-anchor ps-1">
+                <div className="grw-item-title ps-1">
                   <p className="text-truncate m-auto">{thread.title ?? 'Untitled thread'}</p>
                 </div>
 
-                <div className="grw-ai-assistant-actions opacity-0 d-flex justify-content-center ">
+                <div className="grw-btn-actions opacity-0 d-flex justify-content-center ">
                   <button
                     type="button"
                     className="btn btn-link text-secondary p-0"
                     onClick={(e) => {
                       e.stopPropagation();
-                      // deleteThreadHandler(getIdStringForRef(thread.aiAssistant), thread._id);
+                      deleteThreadHandler(getIdStringForRef(thread.aiAssistant), thread._id);
                     }}
                   >
                     <span className="material-symbols-outlined fs-5">delete</span>

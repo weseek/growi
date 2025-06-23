@@ -19,11 +19,7 @@ import { useAiAssistantSidebar, useAiAssistantManagementModal } from '../../../s
 import { useSWRMUTxThreads, useSWRxThreads } from '../../../stores/thread';
 import { getShareScopeIcon } from '../../../utils/get-share-scope-Icon';
 
-import styles from './AiAssistantList.module.scss';
-
 const logger = loggerFactory('growi:openai:client:components:AiAssistantList');
-
-const moduleClass = styles['ai-assistant-list'] ?? '';
 
 
 /*
@@ -219,11 +215,11 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
           <span className="material-symbols-outlined fs-5">{getShareScopeIcon(aiAssistant.shareScope, aiAssistant.accessScope)}</span>
         </div>
 
-        <div className="grw-ai-assistant-title-anchor ps-1">
+        <div className="grw-item-title ps-1">
           <p className="text-truncate m-auto">{aiAssistant.name}</p>
         </div>
 
-        <div className="grw-ai-assistant-actions opacity-0 d-flex justify-content-center ">
+        <div className="grw-btn-actions opacity-0 d-flex justify-content-center ">
           {isPublicAiAssistantOperable && (
             <button
               type="button"
@@ -306,7 +302,7 @@ export const AiAssistantList: React.FC<AiAssistantListProps> = ({
   }, [onCollapsed]);
 
   return (
-    <div className={`${moduleClass}`}>
+    <>
       <button
         type="button"
         className="btn btn-link p-0 text-secondary d-flex align-items-center"
@@ -337,6 +333,6 @@ export const AiAssistantList: React.FC<AiAssistantListProps> = ({
           ))}
         </ul>
       </Collapse>
-    </div>
+    </>
   );
 };
