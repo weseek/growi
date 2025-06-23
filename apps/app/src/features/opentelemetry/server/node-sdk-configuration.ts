@@ -1,4 +1,3 @@
-import type { Attributes } from '@opentelemetry/api';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-grpc';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
@@ -7,7 +6,6 @@ import { resourceFromAttributes } from '@opentelemetry/resources';
 import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import type { NodeSDKConfiguration } from '@opentelemetry/sdk-node';
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
-import { ATTR_SERVICE_INSTANCE_ID } from '@opentelemetry/semantic-conventions/incubating';
 
 import { configManager } from '~/server/service/config-manager';
 import { getGrowiVersion } from '~/utils/growi-version';
@@ -16,6 +14,7 @@ import { httpInstrumentationConfig as httpInstrumentationConfigForAnonymize } fr
 import { addApplicationMetrics } from './custom-metrics';
 import { addUserCountsMetrics } from './custom-metrics/user-counts-metrics';
 import { getOsResourceAttributes } from './custom-resource-attributes';
+import { ATTR_SERVICE_INSTANCE_ID } from './semconv';
 
 type Option = {
   enableAnonymization?: boolean,

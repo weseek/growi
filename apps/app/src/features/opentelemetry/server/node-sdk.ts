@@ -1,6 +1,5 @@
 import { ConfigSource } from '@growi/core/dist/interfaces';
 import type { NodeSDK } from '@opentelemetry/sdk-node';
-import { ATTR_SERVICE_INSTANCE_ID } from '@opentelemetry/semantic-conventions/incubating';
 
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
