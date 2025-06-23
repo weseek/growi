@@ -289,15 +289,19 @@ export const AiAssistantList: React.FC<AiAssistantListProps> = ({
   isTeamAssistant, aiAssistants, onUpdated, onDeleted, onCollapsed,
 }) => {
   const { t } = useTranslation();
-  const { data: currentUser } = useCurrentUser();
   const { openChat } = useAiAssistantSidebar();
+  const { data: currentUser } = useCurrentUser();
   const { open: openAiAssistantManagementModal } = useAiAssistantManagementModal();
 
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const toggleCollapse = useCallback(() => {
-    setIsCollapsed(prev => !prev);
-    onCollapsed?.();
+    setIsCollapsed((prev) => {
+      if (!prev) {
+        onCollapsed?.();
+      }
+      return !prev;
+    });
   }, [onCollapsed]);
 
   return (
@@ -309,16 +313,16 @@ export const AiAssistantList: React.FC<AiAssistantListProps> = ({
         onClick={toggleCollapse}
       >
         <h3 className="fw-bold grw-assistant-section-title mb-0 me-1">
-          {t(isTeamAssistant ? 'ai_assistant_list.team_assistants' : 'ai_assistant_list.my_assistants')}
+          {t(`ai_assistant_list.${isTeamAssistant ? 'team' : 'my'}_assistants`)}
         </h3>
         <span
           className="material-symbols-outlined"
-        >{isCollapsed ? 'keyboard_arrow_down' : 'keyboard_arrow_up'}
+        >{`keyboard_arrow_${isCollapsed ? 'up' : 'down'}`}
         </span>
       </button>
 
       <Collapse isOpen={isCollapsed}>
-        <ul className={`list-group ${moduleClass}`}>
+        <ul className="list-group">
           {aiAssistants.map(assistant => (
             <AiAssistantItem
               key={assistant._id}
