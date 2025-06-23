@@ -36,4 +36,4 @@ span.setAttributes({
 Occasionally, one should review changes to `@opentelemetry/semantic-conventions` to see if any used unstable conventions have changed or been stabilized. However, an update to a newer minor version of the package will never be breaking.
 */
 
-export declare const ATTR_SERVICE_INSTANCE_ID: 'service.instance.id';
+export const ATTR_SERVICE_INSTANCE_ID = 'service.instance.id';
