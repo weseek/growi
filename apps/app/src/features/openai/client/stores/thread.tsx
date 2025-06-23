@@ -1,4 +1,4 @@
-import { type SWRResponse, type SWRConfiguration } from 'swr';
+import { type SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import useSWRInfinite from 'swr/infinite';
 import type { SWRInfiniteResponse } from 'swr/infinite';
@@ -28,32 +28,24 @@ export const useSWRMUTxThreads = (aiAssistantId?: string): SWRMutationResponse<I
 };
 
 
-// Helper function to generate key for pagination
-const getRecentThreadsKey = (
-    pageIndex: number,
-    previousPageData: IThreadRelationPaginate | null,
-): [string, number, number] | null => {
-  // If no more data, return null to stop fetching
+const getRecentThreadsKey = (pageIndex: number, previousPageData: IThreadRelationPaginate | null): [string, number, number] | null => {
   if (previousPageData && !previousPageData.paginateResult.hasNextPage) {
     return null;
   }
 
-  const PER_PAGE = 10; // Match the server's default limit
-  const page = pageIndex + 1; // Convert zero-based index to one-based page
+  const PER_PAGE = 20;
+  const page = pageIndex + 1;
 
   return ['/openai/threads/recent', page, PER_PAGE];
 };
 
 
 export const useSWRINFxRecentThreads = (
-    config?: SWRConfiguration,
 ): SWRInfiniteResponse<IThreadRelationPaginate, Error> => {
-  const PER_PAGE = 20;
   return useSWRInfinite(
     (pageIndex, previousPageData) => getRecentThreadsKey(pageIndex, previousPageData),
     ([endpoint, page, limit]) => apiv3Get<IThreadRelationPaginate>(endpoint, { page, limit }).then(response => response.data),
     {
-      ...config,
       revalidateFirstPage: false,
       revalidateAll: true,
     },

@@ -36,7 +36,7 @@ export const getRecentThreadsFactory: GetRecentThreadsFactory = (crowi) => {
   const validator: ValidationChain[] = [
     query('page').optional().isInt().withMessage('page must be a positive integer'),
     query('page').toInt(),
-    query('limit').optional().isInt({ min: 1, max: 10 }).withMessage('limit must be an integer between 1 and 10'),
+    query('limit').optional().isInt({ min: 1, max: 20 }).withMessage('limit must be an integer between 1 and 20'),
     query('limit').toInt(),
   ];
 
@@ -57,7 +57,7 @@ export const getRecentThreadsFactory: GetRecentThreadsFactory = (crowi) => {
           },
           {
             page: req.query.page ?? 1,
-            limit: req.query.limit ?? 10,
+            limit: req.query.limit ?? 20,
             sort: { updatedAt: -1 },
             populate: 'aiAssistant',
           },
