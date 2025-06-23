@@ -595,6 +595,7 @@
     "my_assistants": "我的助手",
     "team_assistants": "团队助手",
     "thread_does_not_exist": "暂无会话",
+    "recent_items": "最近的项目",
     "toaster": {
       "ai_assistant_deleted_success": "已删除助手",
       "ai_assistant_deleted_failed": "删除助手失败",

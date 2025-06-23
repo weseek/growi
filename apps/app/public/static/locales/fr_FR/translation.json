@@ -600,6 +600,7 @@
     "my_assistants": "Mes assistants",
     "team_assistants": "Assistants d'équipe",
     "thread_does_not_exist": "Aucune discussion",
+    "recent_items": "Éléments récents",
     "toaster": {
       "ai_assistant_deleted_success": "Assistant supprimé",
       "ai_assistant_deleted_failed": "Échec de la suppression de l'assistant",

@@ -48,7 +48,7 @@ export const AiAssistantContent = (): JSX.Element => {
 
         <div>
           <h3 className="fw-bold grw-ai-assistant-substance-header">
-            最近の項目
+            {t('ai_assistant_list.recent_items')}
           </h3>
           <ThreadList />
         </div>
