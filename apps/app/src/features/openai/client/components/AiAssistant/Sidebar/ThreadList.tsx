@@ -1,15 +1,46 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+
+import { getIdStringForRef, isPopulated } from '@growi/core';
+import { useTranslation } from 'react-i18next';
 
 import InfiniteScroll from '~/client/components/InfiniteScroll';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useSWRINFxRecentThreads } from '~/features/openai/client/stores/thread';
+import type { IThreadRelationHasId } from '~/features/openai/interfaces/thread-relation';
+import loggerFactory from '~/utils/logger';
+
+import { deleteThread } from '../../../services/thread';
+import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
+
+const logger = loggerFactory('growi:openai:client:components:ThreadList');
 
 export const ThreadList: React.FC = () => {
-
   const swrInifiniteThreads = useSWRINFxRecentThreads({ suspense: true });
+  const { t } = useTranslation();
   const { data } = swrInifiniteThreads;
+  console.debug('ThreadList data', data);
+  const { openChat } = useAiAssistantSidebar();
 
   const isEmpty = data?.[0]?.paginateResult.totalDocs === 0;
   const isReachingEnd = isEmpty || (data != null && (data[data.length - 1].paginateResult.hasNextPage === false));
+
+  const openChatHandler = useCallback((threadData: IThreadRelationHasId) => {
+    const aiAssistant = threadData.aiAssistant;
+    if (isPopulated(aiAssistant)) {
+      openChat({ ...aiAssistant, _id: getIdStringForRef(aiAssistant._id) }, threadData);
+    }
+  }, [openChat]);
+
+  const deleteThreadHandler = useCallback(async(aiAssistantId: string, threadRelationId: string) => {
+    try {
+      await deleteThread({ aiAssistantId, threadRelationId });
+      toastSuccess(t('ai_assistant_tree.toaster.thread_deleted_success'));
+    }
+    catch (err) {
+      logger.error(err);
+      toastError(t('ai_assistant_tree.toaster.thread_deleted_failed'));
+    }
+  }, [t]);
 
   return (
     <>
@@ -23,7 +54,7 @@ export const ThreadList: React.FC = () => {
                 className="list-group-item list-group-item-action border-0 d-flex align-items-center rounded-1"
                 onClick={(e) => {
                   e.stopPropagation();
-                  // openChatHandler();
+                  openChatHandler(thread);
                 }}
               >
                 <div>
@@ -40,7 +71,7 @@ export const ThreadList: React.FC = () => {
                     className="btn btn-link text-secondary p-0"
                     onClick={(e) => {
                       e.stopPropagation();
-                      // deleteThreadHandler();
+                      // deleteThreadHandler(getIdStringForRef(thread.aiAssistant), thread._id);
                     }}
                   >
                     <span className="material-symbols-outlined fs-5">delete</span>
