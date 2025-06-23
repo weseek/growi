@@ -3,7 +3,6 @@ import React, { type JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useAiAssistantManagementModal, useSWRxAiAssistants } from '../../../stores/ai-assistant';
-import { useSWRINFxRecentThreads } from '../../../stores/thread';
 
 import { AiAssistantTree } from './AiAssistantTree';
 import { ThreadList } from './ThreadList';
@@ -16,7 +15,6 @@ export const AiAssistantContent = (): JSX.Element => {
   const { t } = useTranslation();
   const { open } = useAiAssistantManagementModal();
   const { data: aiAssistants, mutate: mutateAiAssistants } = useSWRxAiAssistants();
-  const { data: recentThreads } = useSWRINFxRecentThreads();
 
   return (
     <div className={moduleClass}>
@@ -59,7 +57,7 @@ export const AiAssistantContent = (): JSX.Element => {
           <h3 className="fw-bold grw-ai-assistant-substance-header">
             最近の項目
           </h3>
-          <ThreadList threadRelations={recentThreads ?? []} />
+          <ThreadList />
         </div>
       </div>
     </div>
