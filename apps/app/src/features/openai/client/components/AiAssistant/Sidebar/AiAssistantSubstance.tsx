@@ -18,8 +18,6 @@ export const AiAssistantContent = (): JSX.Element => {
   const { data: aiAssistants, mutate: mutateAiAssistants } = useSWRxAiAssistants();
   const { data: recentThreads } = useSWRINFxRecentThreads();
 
-  console.log('recentThreads', recentThreads);
-
   return (
     <div className={moduleClass}>
       <button
@@ -61,7 +59,7 @@ export const AiAssistantContent = (): JSX.Element => {
           <h3 className="fw-bold grw-ai-assistant-substance-header">
             最近の項目
           </h3>
-          <ThreadList />
+          <ThreadList threadRelations={recentThreads ?? []} />
         </div>
       </div>
     </div>
