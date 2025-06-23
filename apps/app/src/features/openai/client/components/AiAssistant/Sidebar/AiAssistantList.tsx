@@ -312,7 +312,7 @@ export const AiAssistantList: React.FC<AiAssistantListProps> = ({
         aria-expanded={!isCollapsed}
         onClick={toggleCollapse}
       >
-        <h3 className="fw-bold grw-assistant-section-title mb-0 me-1">
+        <h3 className="grw-ai-assistant-substance-header fw-bold mb-0 me-1">
           {t(`ai_assistant_list.${isTeamAssistant ? 'team' : 'my'}_assistants`)}
         </h3>
         <span
