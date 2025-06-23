@@ -53,6 +53,7 @@ export const getRecentThreadsFactory: GetRecentThreadsFactory = (crowi) => {
           {
             userId: req.user._id,
             type: ThreadType.KNOWLEDGE,
+            isActive: true,
           },
           {
             page: req.query.page ?? 1,
