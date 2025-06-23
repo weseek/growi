@@ -1,4 +1,5 @@
 import type { IUser, Ref, HasObjectId } from '@growi/core';
+import type { PaginateResult } from 'mongoose';
 
 import type { AiAssistant } from './ai-assistant';
 
@@ -20,6 +21,10 @@ export interface IThreadRelation {
 }
 
 export type IThreadRelationHasId = IThreadRelation & HasObjectId;
+
+export type IThreadRelationPaginate = {
+  paginateResult: PaginateResult<IThreadRelationHasId>;
+};
 
 export type IApiv3DeleteThreadParams = {
   aiAssistantId: string

@@ -1,17 +1,11 @@
-import type { PaginateResult } from 'mongoose';
 import { type SWRResponse, type SWRConfiguration } from 'swr';
 import useSWRImmutable from 'swr/immutable';
-import useSWRInfinite from 'swr/infinite'; // eslint-disable-line camelcase
+import useSWRInfinite from 'swr/infinite';
 import type { SWRInfiniteResponse } from 'swr/infinite';
 import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
-import type { IThreadRelationHasId } from '~/features/openai/interfaces/thread-relation';
-
-
-type RecentThreadsApiResult = {
-  paginateResult: PaginateResult<IThreadRelationHasId>;
-};
+import type { IThreadRelationHasId, IThreadRelationPaginate } from '~/features/openai/interfaces/thread-relation';
 
 const getKey = (aiAssistantId?: string) => (aiAssistantId != null ? [`/openai/threads/${aiAssistantId}`] : null);
 
@@ -37,7 +31,7 @@ export const useSWRMUTxThreads = (aiAssistantId?: string): SWRMutationResponse<I
 // Helper function to generate key for pagination
 const getRecentThreadsKey = (
     pageIndex: number,
-    previousPageData: RecentThreadsApiResult | null,
+    previousPageData: IThreadRelationPaginate | null,
 ): [string, number, number] | null => {
   // If no more data, return null to stop fetching
   if (previousPageData && !previousPageData.paginateResult.hasNextPage) {
@@ -52,13 +46,12 @@ const getRecentThreadsKey = (
 
 
 export const useSWRINFxRecentThreads = (
-    includeWipPage?: boolean,
     config?: SWRConfiguration,
-): SWRInfiniteResponse<RecentThreadsApiResult, Error> => {
+): SWRInfiniteResponse<IThreadRelationPaginate, Error> => {
   const PER_PAGE = 20;
   return useSWRInfinite(
     (pageIndex, previousPageData) => getRecentThreadsKey(pageIndex, previousPageData),
-    ([endpoint, page, limit]) => apiv3Get<RecentThreadsApiResult>(endpoint, { page, limit }).then(response => response.data),
+    ([endpoint, page, limit]) => apiv3Get<IThreadRelationPaginate>(endpoint, { page, limit }).then(response => response.data),
     {
       ...config,
       revalidateFirstPage: false,
