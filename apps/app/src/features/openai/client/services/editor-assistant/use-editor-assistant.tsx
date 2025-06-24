@@ -157,9 +157,14 @@ export const useEditorAssistant: UseEditorAssistant = () => {
 
   const postMessage: PostMessage = useCallback(async(threadId, formData) => {
     const getPageBody = (): string | undefined => {
-      // TODO: Reduce to character limit
-      // refs: https://redmine.weseek.co.jp/issues/167688
-      return codeMirrorEditor?.getDoc();
+      const length = codeMirrorEditor?.getDoc().length ?? 0;
+
+      if (length > 10000) {
+        // TODO: カーソル位置を基準に、カーソル前2000文字、カーソル後8000文字を取得する
+        return codeMirrorEditor?.getDoc().slice(0, 10000).toString();
+      }
+
+      return codeMirrorEditor?.getDocString();
     };
 
     // Disable UnifiedMergeView when a Form is submitted with UnifiedMergeView enabled
