@@ -16,7 +16,9 @@ import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-respo
 import loggerFactory from '~/utils/logger';
 
 import { LlmEditorAssistantDiffSchema, LlmEditorAssistantMessageSchema } from '../../../interfaces/editor-assistant/llm-response-schemas';
-import type { SseDetectedDiff, SseFinalized, SseMessage } from '../../../interfaces/editor-assistant/sse-schemas';
+import type {
+  SseDetectedDiff, SseFinalized, SseMessage, EditRequestBody,
+} from '../../../interfaces/editor-assistant/sse-schemas';
 import { MessageErrorCode } from '../../../interfaces/message-error';
 import ThreadRelationModel from '../../models/thread-relation';
 import { getOrCreateEditorAssistant } from '../../services/assistant';
@@ -40,17 +42,7 @@ const LlmEditorAssistantResponseSchema = z.object({
 }).describe('The response format for the editor assistant');
 
 
-type ReqBody = {
-  userMessage: string,
-  pageBody: string,
-  isPageBodyPartial?: boolean, // Whether the page body is a partial content
-  partialPageBodyStartIndex?: number, // 0-based index for the start of the partial page body
-  selectedText?: string,
-  selectedPosition?: number,
-  threadId?: string,
-}
-
-type Req = Request<undefined, Response, ReqBody> & {
+type Req = Request<undefined, Response, EditRequestBody> & {
   user: IUserHasId,
 }
 
@@ -117,7 +109,7 @@ ${withMarkdown ? withMarkdownCaution : ''}`;
 }
 /* eslint-disable max-len */
 
-function instructionForContexts(args: Pick<ReqBody, 'pageBody' | 'isPageBodyPartial' | 'partialPageBodyStartIndex' | 'selectedText' | 'selectedPosition'>): string {
+function instructionForContexts(args: Pick<EditRequestBody, 'pageBody' | 'isPageBodyPartial' | 'partialPageBodyStartIndex' | 'selectedText' | 'selectedPosition'>): string {
   return `# Contexts:
 ## ${args.isPageBodyPartial ? 'pageBodyPartial' : 'pageBody'}:
 

@@ -6,6 +6,23 @@ import { LlmEditorAssistantDiffSchema } from './llm-response-schemas';
 // SSE Schemas for Streaming Editor Assistant
 // -----------------------------------------------------------------------------
 
+// Request schemas
+export const EditRequestBodySchema = z.object({
+  userMessage: z.string(),
+  pageBody: z.string(),
+  isPageBodyPartial: z.boolean().optional()
+    .describe('Whether the page body is a partial content'),
+  partialPageBodyStartIndex: z.number().optional()
+    .describe('0-based index for the start of the partial page body'),
+  selectedText: z.string().optional(),
+  selectedPosition: z.number().optional(),
+  threadId: z.string().optional(),
+});
+
+// Type definitions
+export type EditRequestBody = z.infer<typeof EditRequestBodySchema>;
+
+
 export const SseMessageSchema = z.object({
   appendedMessage: z.string()
     .describe('The message that should be appended to the chat window'),
