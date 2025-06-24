@@ -18,7 +18,6 @@ export const ThreadList: React.FC = () => {
   const swrInifiniteThreads = useSWRINFxRecentThreads({ suspense: true });
   const { t } = useTranslation();
   const { data, mutate } = swrInifiniteThreads;
-  console.debug('ThreadList data', data);
   const { openChat } = useAiAssistantSidebar();
 
   const isEmpty = data?.[0]?.paginateResult.totalDocs === 0;
