@@ -5,7 +5,7 @@
  */
 
 import type { LlmEditorAssistantDiff } from '../../../interfaces/editor-assistant/llm-response-schemas';
-import type { SingleDiffResult, ProcessorConfig, SearchContext } from '../../../interfaces/editor-assistant/types';
+import type { SingleDiffResult, ProcessorConfig, SearchContext } from '../../interfaces/types';
 
 import { ClientErrorHandler } from './error-handling';
 import { ClientFuzzyMatcher } from './fuzzy-matching';

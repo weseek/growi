@@ -1,4 +1,4 @@
-import type { SearchContext } from '../../../interfaces/editor-assistant/types';
+import type { SearchContext } from '../../interfaces/types';
 
 import {
   ClientFuzzyMatcher,

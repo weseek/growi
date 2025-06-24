@@ -10,7 +10,7 @@ import {
 import type { Text as YText } from 'yjs';
 
 import type { SseDetectedDiff } from '../../interfaces/editor-assistant/sse-schemas';
-import type { ProcessingResult } from '../../interfaces/editor-assistant/types';
+import type { ProcessingResult } from '../interfaces/types';
 
 import { ClientSearchReplaceProcessor } from './editor-assistant/processor';
 
