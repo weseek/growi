@@ -1,7 +1,7 @@
 @use '@growi/core-styles/scss/bootstrap/init' as bs;
 @use '@growi/ui/scss/atoms/btn-muted';
 
-.dropdown-menu :global {
+.copy-clipboard-dropdown-menu :global {
     min-width: 310px;
     max-width: 375px;
 

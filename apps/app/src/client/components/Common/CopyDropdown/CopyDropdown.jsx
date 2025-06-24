@@ -126,7 +126,7 @@ export const CopyDropdown = (props) => {
         </DropdownToggle>
 
         <DropdownMenu
-          className={`${styles['dropdown-menu']}`}
+          className={`${styles['copy-clipboard-dropdown-menu']}`}
           strategy="fixed"
           container="body"
         >
