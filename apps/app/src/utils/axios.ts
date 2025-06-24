@@ -8,7 +8,7 @@ export * from 'axios';
 
 const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?(Z|[+-]\d{2}:\d{2})$/;
 
-export function convertDateStringsToDates(data: any): any {
+function convertStringsToDatesRecursive(data: any, seen: Set<any>): any {
   if (typeof data !== 'object' || data === null) {
     if (typeof data === 'string' && isoDateRegex.test(data)) {
       return new Date(data);
@@ -16,8 +16,14 @@ export function convertDateStringsToDates(data: any): any {
     return data;
   }
 
+  // Check for circular reference
+  if (seen.has(data)) {
+    return data;
+  }
+  seen.add(data);
+
   if (Array.isArray(data)) {
-    return data.map(item => convertDateStringsToDates(item));
+    return data.map(array => convertStringsToDatesRecursive(array, seen));
   }
 
   for (const key of Object.keys(data)) {
@@ -27,10 +33,15 @@ export function convertDateStringsToDates(data: any): any {
     }
 
     else if (typeof value === 'object' && value !== null) {
-      data[key] = convertDateStringsToDates(value);
+      data[key] = convertStringsToDatesRecursive(value, seen);
     }
   }
+
   return data;
+}
+
+export function convertStringsToDates(data: any): any {
+  return convertStringsToDatesRecursive(data, new Set());
 }
 
 // Determine the base array of transformers
@@ -54,7 +65,7 @@ const customAxios = axios.create({
 
   transformResponse: baseTransformers.concat(
     (data) => {
-      return convertDateStringsToDates(data);
+      return convertStringsToDates(data);
     },
   ),
 });
