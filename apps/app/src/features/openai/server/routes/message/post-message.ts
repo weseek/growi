@@ -82,7 +82,7 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
         return res.apiv3Err(new ErrorV3('ThreadRelation not found'), 404);
       }
 
-      threadRelation.updateThreadExpiration();
+      await threadRelation.updateThreadExpiration();
 
       let stream: AssistantStream;
       const useSummaryMode = req.body.summaryMode ?? false;
