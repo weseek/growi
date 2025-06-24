@@ -4,7 +4,7 @@
  * Provides detailed error information and user-friendly suggestions
  */
 
-import type { DiffError, MatchResult } from '../../../interfaces/editor-assistant/types';
+import type { DiffError, MatchResult } from '../../interfaces/types';
 
 // -----------------------------------------------------------------------------
 // Client Error Types and Constants

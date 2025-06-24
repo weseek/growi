@@ -5,9 +5,9 @@
  */
 
 import type { LlmEditorAssistantDiff } from '../../../interfaces/editor-assistant/llm-response-schemas';
-import type { DiffApplicationResult, ProcessorConfig, DiffError } from '../../../interfaces/editor-assistant/types';
+import type { DiffApplicationResult, ProcessorConfig, DiffError } from '../../interfaces/types';
 
-import { ClientDiffApplicationEngine, type EditorAdapter } from './diff-application';
+import { ClientDiffApplicationEngine } from './diff-application';
 import { ClientErrorHandler } from './error-handling';
 import { ClientFuzzyMatcher } from './fuzzy-matching';
 // Note: measureNormalization import removed as it's not used in this file

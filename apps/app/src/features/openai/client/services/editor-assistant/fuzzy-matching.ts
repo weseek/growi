@@ -6,7 +6,7 @@
 
 import { distance } from 'fastest-levenshtein';
 
-import type { MatchResult, SearchContext } from '../../../interfaces/editor-assistant/types';
+import type { MatchResult, SearchContext } from '../../interfaces/types';
 
 import { normalizeForBrowserFuzzyMatch } from './text-normalization';
 
