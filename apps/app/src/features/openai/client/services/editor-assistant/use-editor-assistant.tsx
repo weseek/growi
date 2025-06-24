@@ -1,5 +1,5 @@
 import {
-  useCallback, useEffect, useState, useRef, useMemo, type FC,
+  useCallback, useEffect, useState, useRef, useMemo,
 } from 'react';
 
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
@@ -17,7 +17,6 @@ import {
   SseMessageSchema,
   SseDetectedDiffSchema,
   SseFinalizedSchema,
-  isReplaceDiff,
   type SseMessage,
   type SseDetectedDiff,
   type SseFinalized,
@@ -26,13 +25,16 @@ import { handleIfSuccessfullyParsed } from '~/features/openai/utils/handle-if-su
 import { useIsEnableUnifiedMergeView } from '~/stores-universal/context';
 import { useCurrentPageId } from '~/stores/page';
 
-import type { AiAssistantHasId } from '../../interfaces/ai-assistant';
-import type { MessageLog } from '../../interfaces/message';
-import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
-import { ThreadType } from '../../interfaces/thread-relation';
-import { AiAssistantDropdown } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantDropdown';
-import { QuickMenuList } from '../components/AiAssistant/AiAssistantSidebar/QuickMenuList';
-import { useAiAssistantSidebar } from '../stores/ai-assistant';
+import type { AiAssistantHasId } from '../../../interfaces/ai-assistant';
+import type { MessageLog } from '../../../interfaces/message';
+import type { IThreadRelationHasId } from '../../../interfaces/thread-relation';
+import { ThreadType } from '../../../interfaces/thread-relation';
+import { AiAssistantDropdown } from '../../components/AiAssistant/AiAssistantSidebar/AiAssistantDropdown';
+import { QuickMenuList } from '../../components/AiAssistant/AiAssistantSidebar/QuickMenuList';
+import { useAiAssistantSidebar } from '../../stores/ai-assistant';
+import { useClientEngineIntegration, shouldUseClientProcessing } from '../client-engine-integration';
+
+import { performSearchReplace } from './search-replace-engine';
 
 interface CreateThread {
   (): Promise<IThreadRelationHasId>;
@@ -108,34 +110,6 @@ const appendTextLastLine = (yText: YText, textToAppend: string) => {
   yText.insert(insertPosition, `\n\n${textToAppend}`);
 };
 
-const getLineInfo = (yText: YText, lineNumber: number): { text: string, startIndex: number } | null => {
-  // Get the entire text content
-  const content = yText.toString();
-
-  // Split by newlines to get all lines
-  const lines = content.split('\n');
-
-  // Check if the requested line exists
-  if (lineNumber < 0 || lineNumber >= lines.length) {
-    return null; // Line doesn't exist
-  }
-
-  // Get the text of the specified line
-  const text = lines[lineNumber];
-
-  // Calculate the start index of the line
-  let startIndex = 0;
-  for (let i = 0; i < lineNumber; i++) {
-    startIndex += lines[i].length + 1; // +1 for the newline character
-  }
-
-  // Return comprehensive line information
-  return {
-    text,
-    startIndex,
-  };
-};
-
 export const useEditorAssistant: UseEditorAssistant = () => {
   // Refs
   const lineRef = useRef<number>(0);
@@ -156,6 +130,11 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
   const yDocs = useSecondaryYdocs(isEnableUnifiedMergeView ?? false, { pageId: currentPageId ?? undefined, useSecondary: isEnableUnifiedMergeView ?? false });
   const { data: aiAssistantSidebarData } = useAiAssistantSidebar();
+  const clientEngine = useClientEngineIntegration({
+    enableClientProcessing: shouldUseClientProcessing(),
+    enableServerFallback: true,
+    enablePerformanceMetrics: true,
+  });
 
   const form = useForm<FormData>({
     defaultValues: {
@@ -177,18 +156,10 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   }, [selectedAiAssistant?._id]);
 
   const postMessage: PostMessage = useCallback(async(threadId, formData) => {
-    const getMarkdown = (): string | undefined => {
-      if (formData.markdownType === 'none') {
-        return undefined;
-      }
-
-      if (formData.markdownType === 'selected') {
-        return selectedText;
-      }
-
-      if (formData.markdownType === 'full') {
-        return codeMirrorEditor?.getDoc();
-      }
+    const getPageBody = (): string | undefined => {
+      // TODO: Reduce to character limit
+      // refs: https://redmine.weseek.co.jp/issues/167688
+      return codeMirrorEditor?.getDoc();
     };
 
     // Disable UnifiedMergeView when a Form is submitted with UnifiedMergeView enabled
@@ -200,14 +171,21 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       body: JSON.stringify({
         threadId,
         userMessage: formData.input,
-        markdown: getMarkdown(),
+        selectedText,
+        pageBody: getPageBody(),
       }),
     });
 
     return response;
   }, [codeMirrorEditor, mutateIsEnableUnifiedMergeView, selectedText]);
 
-  const processMessage: ProcessMessage = useCallback((data, handler) => {
+
+  // Enhanced processMessage with client engine support (保持)
+  const processMessage = useCallback(async(data: unknown, handler: {
+    onMessage: (data: SseMessage) => void;
+    onDetectedDiff: (data: SseDetectedDiff) => void;
+    onFinalized: (data: SseFinalized) => void;
+  }) => {
     // Reset timer whenever data is received
     const handleDataReceived = () => {
     // Clear existing timer
@@ -230,22 +208,63 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       handleDataReceived();
       handler.onMessage(data);
     });
-    handleIfSuccessfullyParsed(data, SseDetectedDiffSchema, (data: SseDetectedDiff) => {
+
+    handleIfSuccessfullyParsed(data, SseDetectedDiffSchema, async(diffData: SseDetectedDiff) => {
       handleDataReceived();
       mutateIsEnableUnifiedMergeView(true);
+
+      // Check if client engine processing is enabled
+      if (clientEngine.isClientProcessingEnabled && yDocs?.secondaryDoc != null) {
+        try {
+          // Get current content
+          const yText = yDocs.secondaryDoc.getText('codemirror');
+          const currentContent = yText.toString();
+
+          // Process with client engine
+          const result = await clientEngine.processHybrid(
+            currentContent,
+            [diffData],
+            async() => {
+              // Fallback to original server-side processing
+              setDetectedDiff((prev) => {
+                const newData = { data: diffData, applied: false, id: crypto.randomUUID() };
+                if (prev == null) {
+                  return [newData];
+                }
+                return [...prev, newData];
+              });
+            },
+          );
+
+          // Apply result if client processing succeeded
+          if (result.success && result.method === 'client' && result.result?.modifiedText) {
+            const applied = clientEngine.applyToYText(yText, result.result.modifiedText);
+            if (applied) {
+              handler.onDetectedDiff(diffData);
+              return;
+            }
+          }
+        }
+        catch (error) {
+          // Fall through to server-side processing
+        }
+      }
+
+      // Original server-side processing (fallback or default)
       setDetectedDiff((prev) => {
-        const newData = { data, applied: false, id: crypto.randomUUID() };
+        const newData = { data: diffData, applied: false, id: crypto.randomUUID() };
         if (prev == null) {
           return [newData];
         }
         return [...prev, newData];
       });
-      handler.onDetectedDiff(data);
+      handler.onDetectedDiff(diffData);
     });
+
     handleIfSuccessfullyParsed(data, SseFinalizedSchema, (data: SseFinalized) => {
       handler.onFinalized(data);
     });
-  }, [isGeneratingEditorText, mutateIsEnableUnifiedMergeView]);
+  }, [isGeneratingEditorText, mutateIsEnableUnifiedMergeView, clientEngine, yDocs]);
 
   const selectTextHandler = useCallback((selectedText: string, selectedTextFirstLineNumber: number) => {
     setSelectedText(selectedText);
@@ -262,19 +281,21 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       const yText = yDocs.secondaryDoc.getText('codemirror');
       yDocs.secondaryDoc.transact(() => {
         pendingDetectedDiff.forEach((detectedDiff) => {
-          if (isReplaceDiff(detectedDiff.data)) {
+          if (detectedDiff.data.diff) {
+            const { search, replace, startLine } = detectedDiff.data.diff;
 
-            if (isTextSelected) {
-              const lineInfo = getLineInfo(yText, lineRef.current);
-              if (lineInfo != null && lineInfo.text !== detectedDiff.data.diff.replace) {
-                yText.delete(lineInfo.startIndex, lineInfo.text.length);
-                insertTextAtLine(yText, lineRef.current, detectedDiff.data.diff.replace);
+            // 新しい検索・置換処理
+            const success = performSearchReplace(yText, search, replace, startLine);
+
+            if (!success) {
+              // フォールバック: 既存の動作
+              if (isTextSelected) {
+                insertTextAtLine(yText, lineRef.current, replace);
+                lineRef.current += 1;
               }
-
-              lineRef.current += 1;
-            }
-            else {
-              appendTextLastLine(yText, detectedDiff.data.diff.replace);
+              else {
+                appendTextLastLine(yText, replace);
+              }
             }
           }
         });
@@ -311,8 +332,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       }
     };
   }, []);
-
-
   // Views
   const headerIcon = useMemo(() => {
     return <span className="material-symbols-outlined growi-ai-chat-icon me-3 fs-4">support_agent</span>;
@@ -442,6 +461,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
 };
 
 // type guard
-export const isEditorAssistantFormData = (formData): formData is FormData => {
-  return 'markdownType' in formData;
+export const isEditorAssistantFormData = (formData: unknown): formData is FormData => {
+  return typeof formData === 'object' && formData != null && 'markdownType' in formData;
 };
