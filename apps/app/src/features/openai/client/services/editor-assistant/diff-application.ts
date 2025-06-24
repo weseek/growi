@@ -11,29 +11,6 @@ import { ClientErrorHandler } from './error-handling';
 import { ClientFuzzyMatcher } from './fuzzy-matching';
 
 // -----------------------------------------------------------------------------
-// Editor Integration Types
-// -----------------------------------------------------------------------------
-
-export interface EditorAdapter {
-  /** Get current content as string */
-  getContent(): string;
-  /** Set content (for full replacement) */
-  setContent(content: string): void;
-  /** Replace text in specific range */
-  replaceRange(startLine: number, endLine: number, newText: string): void;
-  /** Get line count */
-  getLineCount(): number;
-  /** Get specific line content */
-  getLine(lineNumber: number): string;
-  /** Insert text at position */
-  insertText(line: number, column: number, text: string): void;
-  /** Delete text range */
-  deleteRange(startLine: number, startCol: number, endLine: number, endCol: number): void;
-  /** Create undo checkpoint */
-  createUndoCheckpoint(): void;
-}
-
-// -----------------------------------------------------------------------------
 // Client Diff Application Engine
 // -----------------------------------------------------------------------------
 
