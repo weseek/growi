@@ -205,8 +205,9 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
         diffDetectedCallback: (detected) => {
           sseHelper.writeData<SseDetectedDiff>({ diff: detected });
         },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         dataFinalizedCallback: (message, replacements) => {
-          sseHelper.writeData<SseFinalized>({ finalized: { message: message ?? '', replacements } });
+          sseHelper.writeData<SseFinalized>({ success: true });
         },
       });
 
