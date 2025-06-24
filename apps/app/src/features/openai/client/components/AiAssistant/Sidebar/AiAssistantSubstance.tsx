@@ -1,8 +1,9 @@
-import React, { type JSX } from 'react';
+import React, { type JSX, useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { useAiAssistantManagementModal, useSWRxAiAssistants } from '../../../stores/ai-assistant';
+import { useSWRINFxRecentThreads } from '../../../stores/thread';
 
 import { AiAssistantList } from './AiAssistantList';
 import { ThreadList } from './ThreadList';
@@ -14,7 +15,13 @@ const moduleClass = styles['grw-ai-assistant-substance'] ?? '';
 export const AiAssistantContent = (): JSX.Element => {
   const { t } = useTranslation();
   const { open } = useAiAssistantManagementModal();
+  const { mutate: mutateRecentThreads } = useSWRINFxRecentThreads();
   const { data: aiAssistants, mutate: mutateAiAssistants } = useSWRxAiAssistants();
+
+  const deleteAiAssistantHandler = useCallback(async() => {
+    await mutateAiAssistants();
+    await mutateRecentThreads();
+  }, [mutateAiAssistants, mutateRecentThreads]);
 
   return (
     <div className={moduleClass}>
@@ -31,7 +38,7 @@ export const AiAssistantContent = (): JSX.Element => {
         <div>
           <AiAssistantList
             onUpdated={mutateAiAssistants}
-            onDeleted={mutateAiAssistants}
+            onDeleted={deleteAiAssistantHandler}
             onCollapsed={mutateAiAssistants}
             aiAssistants={aiAssistants?.myAiAssistants ?? []}
           />
