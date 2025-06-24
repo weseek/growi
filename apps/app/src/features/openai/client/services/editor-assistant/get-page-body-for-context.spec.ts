@@ -24,49 +24,182 @@ describe('getPageBodyForContext', () => {
     mockEditor = mockDeep<UseCodeMirrorEditor>();
   });
 
-  it('should return undefined when editor is undefined', () => {
-    const result = getPageBodyForContext(undefined, 10, 10);
-    expect(result).toBeUndefined();
+  describe('Error handling and edge cases', () => {
+    it('should return undefined when editor is undefined', () => {
+      const result = getPageBodyForContext(undefined, 10, 10);
+      expect(result).toBeUndefined();
+    });
+
+    it('should handle missing view state (defaults cursor to 0)', () => {
+      const longContent = createPositionalContent(1000);
+      const realDoc = Text.of([longContent]);
+
+      mockEditor.getDoc.mockReturnValue(realDoc);
+      mockEditor.view = undefined;
+
+      const result = getPageBodyForContext(mockEditor, 100, 200);
+
+      // Should default cursor position to 0 and take 200 chars after
+      const expectedContent = longContent.slice(0, 200);
+      expect(result).toBe(expectedContent);
+      expect(result).toHaveLength(200);
+    });
   });
 
-  it('should return getDocString when document is short', () => {
-    // Create a real Text instance with short content
-    const shortText = 'short';
-    const realDoc = Text.of([shortText]); // length: 5, shorter than maxTotalLength of 20
+  describe('Short document handling', () => {
+    it('should return getDocString when document is short', () => {
+      // Create a real Text instance with short content
+      const shortText = 'short';
+      const realDoc = Text.of([shortText]); // length: 5, shorter than maxTotalLength of 20
 
-    mockEditor.getDoc.mockReturnValue(realDoc);
-    mockEditor.getDocString.mockReturnValue(shortText);
+      mockEditor.getDoc.mockReturnValue(realDoc);
+      mockEditor.getDocString.mockReturnValue(shortText);
 
-    const result = getPageBodyForContext(mockEditor, 10, 10);
+      const result = getPageBodyForContext(mockEditor, 10, 10);
 
-    expect(result).toBe(shortText);
-    expect(mockEditor.getDocString).toHaveBeenCalled();
+      expect(result).toBe(shortText);
+      expect(mockEditor.getDocString).toHaveBeenCalled();
+    });
+
+    it('should return full document when length equals max total length', () => {
+      const exactLengthText = createPositionalContent(150); // exactly 150 chars
+      const realDoc = Text.of([exactLengthText]);
+
+      mockEditor.getDoc.mockReturnValue(realDoc);
+      mockEditor.getDocString.mockReturnValue(exactLengthText);
+
+      const result = getPageBodyForContext(mockEditor, 50, 100); // total: 150
+
+      expect(result).toBe(exactLengthText);
+      expect(mockEditor.getDocString).toHaveBeenCalled();
+    });
+
+    it('should return full document when length is less than max total length', () => {
+      const shortText = 'Short document'; // 14 chars
+      const realDoc = Text.of([shortText]);
+
+      mockEditor.getDoc.mockReturnValue(realDoc);
+      mockEditor.getDocString.mockReturnValue(shortText);
+
+      const result = getPageBodyForContext(mockEditor, 50, 100); // total: 150
+
+      expect(result).toBe(shortText);
+    });
   });
 
-  it('should extract text around cursor when document is long', () => {
-    // Create a real Text instance with identifiable content (each character shows its position)
-    const longContent = createPositionalContent(1000);
-    // Content: "0123456789012345678901234567890123456789..." (position-based)
-    const realDoc = Text.of([longContent]); // length: 1000, longer than maxTotalLength of 300
+  describe('Core shortfall compensation logic', () => {
+    it('should extract correct range when cursor is in middle (no shortfall)', () => {
+      const longContent = createPositionalContent(2000);
+      const realDoc = Text.of([longContent]);
+      const cursorPos = 1000;
 
-    mockEditor.getDoc.mockReturnValue(realDoc);
+      mockEditor.getDoc.mockReturnValue(realDoc);
 
-    // Mock view with cursor at position 500
-    if (mockEditor.view?.state?.selection?.main) {
-      Object.defineProperty(mockEditor.view.state.selection.main, 'head', { value: 500 });
-    }
+      // Mock view with cursor at position 1000
+      if (mockEditor.view?.state?.selection?.main) {
+        Object.defineProperty(mockEditor.view.state.selection.main, 'head', { value: cursorPos });
+      }
 
-    const result = getPageBodyForContext(mockEditor, 100, 200);
+      const result = getPageBodyForContext(mockEditor, 200, 300);
 
-    // Expected: slice(400, 700) should extract characters from position 400 to 699
-    // Position 400: '0' (400 % 10), Position 699: '9' (699 % 10)
-    const expectedContent = longContent.slice(400, 700);
-    expect(result).toBe(expectedContent);
-    expect(result).toHaveLength(300); // 700 - 400 = 300
-    expect(result).toBeDefined();
-    if (result) {
-      expect(result[0]).toBe('0'); // First character at position 400
-      expect(result[299]).toBe('9'); // Last character at position 699
-    }
+      // Expected: start=800, end=1300 (no shortfall needed)
+      const expectedContent = longContent.slice(800, 1300);
+      expect(result).toBe(expectedContent);
+      expect(result).toHaveLength(500); // 1300 - 800 = 500
+    });
+
+    it('should compensate shortfall when cursor is near document end', () => {
+      const longContent = createPositionalContent(1000);
+      const realDoc = Text.of([longContent]);
+      const cursorPos = 950; // Near end
+
+      mockEditor.getDoc.mockReturnValue(realDoc);
+
+      // Mock view with cursor at position 950
+      if (mockEditor.view?.state?.selection?.main) {
+        Object.defineProperty(mockEditor.view.state.selection.main, 'head', { value: cursorPos });
+      }
+
+      const result = getPageBodyForContext(mockEditor, 100, 200);
+
+      // Available after cursor: 1000 - 950 = 50
+      // Shortfall: 200 - 50 = 150
+      // Chars before: 100 + 150 = 250
+      // Expected: start=max(0, 950-250)=700, end=950+50=1000
+      const expectedContent = longContent.slice(700, 1000);
+      expect(result).toBe(expectedContent);
+      expect(result).toHaveLength(300); // 1000 - 700 = 300
+    });
+
+    it('should handle extreme case: cursor at document end', () => {
+      const longContent = createPositionalContent(1000);
+      const realDoc = Text.of([longContent]);
+      const cursorPos = 1000; // At very end
+
+      mockEditor.getDoc.mockReturnValue(realDoc);
+
+      // Mock view with cursor at position 1000
+      if (mockEditor.view?.state?.selection?.main) {
+        Object.defineProperty(mockEditor.view.state.selection.main, 'head', { value: cursorPos });
+      }
+
+      const result = getPageBodyForContext(mockEditor, 100, 200);
+
+      // Available after cursor: 0
+      // Shortfall: 200 - 0 = 200
+      // Chars before: 100 + 200 = 300
+      // Expected: start=max(0, 1000-300)=700, end=1000+0=1000
+      const expectedContent = longContent.slice(700, 1000);
+      expect(result).toBe(expectedContent);
+      expect(result).toHaveLength(300); // 1000 - 700 = 300
+    });
+
+    it('should handle cursor at document start with startPos boundary', () => {
+      const longContent = createPositionalContent(1000);
+      const realDoc = Text.of([longContent]);
+      const cursorPos = 0; // At start
+
+      mockEditor.getDoc.mockReturnValue(realDoc);
+
+      // Mock view with cursor at position 0
+      if (mockEditor.view?.state?.selection?.main) {
+        Object.defineProperty(mockEditor.view.state.selection.main, 'head', { value: cursorPos });
+      }
+
+      const result = getPageBodyForContext(mockEditor, 100, 200);
+
+      // Available after cursor: 1000
+      // Chars after: min(200, 1000) = 200
+      // Shortfall: 200 - 200 = 0
+      // Chars before: 100 + 0 = 100
+      // Expected: start=max(0, 0-100)=0, end=0+200=200
+      const expectedContent = longContent.slice(0, 200);
+      expect(result).toBe(expectedContent);
+      expect(result).toHaveLength(200);
+    });
+
+    it('should handle truly extreme shortfall with cursor very near end', () => {
+      const longContent = createPositionalContent(1000);
+      const realDoc = Text.of([longContent]);
+      const cursorPos = 995; // Very near end
+
+      mockEditor.getDoc.mockReturnValue(realDoc);
+
+      // Mock view with cursor at position 995
+      if (mockEditor.view?.state?.selection?.main) {
+        Object.defineProperty(mockEditor.view.state.selection.main, 'head', { value: cursorPos });
+      }
+
+      const result = getPageBodyForContext(mockEditor, 50, 500); // Total: 550 < 1000
+
+      // Available after cursor: 1000 - 995 = 5
+      // Shortfall: 500 - 5 = 495
+      // Chars before: 50 + 495 = 545
+      // Expected: start=max(0, 995-545)=450, end=995+5=1000
+      const expectedContent = longContent.slice(450, 1000);
+      expect(result).toBe(expectedContent);
+      expect(result).toHaveLength(550); // 1000 - 450 = 550
+    });
+
   });
 });
