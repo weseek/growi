@@ -15,7 +15,7 @@ import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
 const logger = loggerFactory('growi:openai:client:components:ThreadList');
 
 export const ThreadList: React.FC = () => {
-  const swrInifiniteThreads = useSWRINFxRecentThreads({ suspense: true });
+  const swrInifiniteThreads = useSWRINFxRecentThreads();
   const { t } = useTranslation();
   const { data, mutate } = swrInifiniteThreads;
   const { openChat } = useAiAssistantSidebar();
