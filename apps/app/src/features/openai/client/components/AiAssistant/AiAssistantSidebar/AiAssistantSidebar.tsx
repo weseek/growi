@@ -95,6 +95,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     // Views
     generateInitialView: generateInitialViewForEditorAssistant,
     generatingEditorTextLabel,
+    partialContentWarnLabel,
     generateActionButtons,
     headerIcon: headerIconForEditorAssistant,
     headerText: headerTextForEditorAssistant,
@@ -449,6 +450,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                         {generatingAnswerMessage.content}
                       </MessageCard>
                     )}
+                    { isEditorAssistant && partialContentWarnLabel }
                     { messageLogs.length > 0 && (
                       <div className="d-flex justify-content-center">
                         <span className="bg-body-tertiary text-body-secondary rounded-pill px-3 py-1" style={{ fontSize: 'smaller' }}>

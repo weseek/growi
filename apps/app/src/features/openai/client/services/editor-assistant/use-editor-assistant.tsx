@@ -81,6 +81,7 @@ type UseEditorAssistant = () => {
   // Views
   generateInitialView: GenerateInitialView,
   generatingEditorTextLabel?: JSX.Element,
+  partialContentWarnLabel?: JSX.Element,
   generateActionButtons: GenerateActionButtons,
   headerIcon: JSX.Element,
   headerText: JSX.Element,
@@ -122,6 +123,10 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   const [selectedAiAssistant, setSelectedAiAssistant] = useState<AiAssistantHasId>();
   const [selectedText, setSelectedText] = useState<string>();
   const [isGeneratingEditorText, setIsGeneratingEditorText] = useState<boolean>(false);
+  const [partialContentInfo, setPartialContentInfo] = useState<{
+    startIndex: number;
+    endIndex: number;
+  } | null>(null);
 
   const isTextSelected = useMemo(() => selectedText != null && selectedText.length !== 0, [selectedText]);
 
@@ -158,6 +163,9 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   }, [selectedAiAssistant?._id]);
 
   const postMessage: PostMessage = useCallback(async(threadId, formData) => {
+    // Clear partial content info on new request
+    setPartialContentInfo(null);
+
     // Disable UnifiedMergeView when a Form is submitted with UnifiedMergeView enabled
     mutateIsEnableUnifiedMergeView(false);
 
@@ -165,6 +173,14 @@ export const useEditorAssistant: UseEditorAssistant = () => {
 
     if (!pageBodyContext) {
       throw new Error('Unable to get page body context');
+    }
+
+    // Store partial content info if applicable
+    if (pageBodyContext.isPartial && pageBodyContext.startIndex != null && pageBodyContext.endIndex != null) {
+      setPartialContentInfo({
+        startIndex: pageBodyContext.startIndex,
+        endIndex: pageBodyContext.endIndex,
+      });
     }
 
     const requestBody = {
@@ -449,6 +465,41 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     );
   }, [isGeneratingEditorText, t]);
 
+  const partialContentWarnLabel = useMemo(() => {
+    if (!partialContentInfo) {
+      return undefined;
+    }
+
+    // Use CodeMirror's built-in posToLine method for efficient line calculation
+    let isLineMode = true;
+    const getPositionNumber = (index: number): number => {
+      const doc = codeMirrorEditor?.getDoc();
+      if (!doc) return 1;
+
+      try {
+        return doc.lineAt(index).number;
+      }
+      catch {
+        // Fallback: return character index and switch to character mode
+        isLineMode = false;
+        return index + 1;
+      }
+    };
+
+    const startPosition = getPositionNumber(partialContentInfo.startIndex);
+    const endPosition = getPositionNumber(partialContentInfo.endIndex);
+
+    const unit = isLineMode ? '行目' : '文字目';
+
+    return (
+      <div className="alert alert-warning py-2 px-3 mb-3" role="alert">
+        <small>
+          本文が長すぎるため、エディターアシスタントは {startPosition}{unit}から{endPosition}{unit}付近までを参照して回答します
+        </small>
+      </div>
+    );
+  }, [partialContentInfo, codeMirrorEditor]);
+
   return {
     createThread,
     postMessage,
@@ -461,6 +512,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     // Views
     generateInitialView,
     generatingEditorTextLabel,
+    partialContentWarnLabel,
     generateActionButtons,
     headerIcon,
     headerText,
