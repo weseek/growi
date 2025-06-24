@@ -34,6 +34,7 @@ import { QuickMenuList } from '../../components/AiAssistant/AiAssistantSidebar/Q
 import { useAiAssistantSidebar } from '../../stores/ai-assistant';
 import { useClientEngineIntegration, shouldUseClientProcessing } from '../client-engine-integration';
 
+import { getPageBodyForContext } from './get-page-body-for-context';
 import { performSearchReplace } from './search-replace-engine';
 
 interface CreateThread {
@@ -156,17 +157,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   }, [selectedAiAssistant?._id]);
 
   const postMessage: PostMessage = useCallback(async(threadId, formData) => {
-    const getPageBody = (): string | undefined => {
-      const length = codeMirrorEditor?.getDoc().length ?? 0;
-
-      if (length > 10000) {
-        // TODO: カーソル位置を基準に、カーソル前2000文字、カーソル後8000文字を取得する
-        return codeMirrorEditor?.getDoc().slice(0, 10000).toString();
-      }
-
-      return codeMirrorEditor?.getDocString();
-    };
-
     // Disable UnifiedMergeView when a Form is submitted with UnifiedMergeView enabled
     mutateIsEnableUnifiedMergeView(false);
 
@@ -177,7 +167,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
         threadId,
         userMessage: formData.input,
         selectedText,
-        pageBody: getPageBody(),
+        pageBody: getPageBodyForContext(codeMirrorEditor, 2000, 8000),
       }),
     });
 
