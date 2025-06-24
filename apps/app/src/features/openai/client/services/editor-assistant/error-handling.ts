@@ -12,12 +12,9 @@ import type { DiffError, MatchResult } from '../../../interfaces/editor-assistan
 
 export const CLIENT_ERROR_MESSAGES = {
   SEARCH_NOT_FOUND: 'Search content not found in the document',
-  SIMILARITY_TOO_LOW: 'Search content is too different from the closest match',
-  MULTIPLE_MATCHES: 'Multiple similar matches found - search is ambiguous',
   EMPTY_SEARCH: 'Search content cannot be empty',
   CONTENT_ERROR: 'Invalid or corrupted content',
   TIMEOUT_ERROR: 'Search operation timed out',
-  BROWSER_ERROR: 'Browser compatibility issue detected',
 } as const;
 
 export const CLIENT_SUGGESTIONS = {
@@ -26,18 +23,6 @@ export const CLIENT_SUGGESTIONS = {
     'Try a smaller, more specific search pattern',
     'Verify line endings match your content',
     'Use the browser\'s search function to locate content first',
-  ],
-  SIMILARITY_TOO_LOW: [
-    'Increase the similarity threshold in settings',
-    'Use a more exact search pattern',
-    'Check for typos or formatting differences',
-    'Try searching for a unique phrase within the target',
-  ],
-  MULTIPLE_MATCHES: [
-    'Add more context to make the search unique',
-    'Include surrounding lines in your search',
-    'Use line numbers to specify the exact location',
-    'Search for a more specific pattern',
   ],
   EMPTY_SEARCH: [
     'Provide valid search content',
@@ -52,11 +37,6 @@ export const CLIENT_SUGGESTIONS = {
     'Try searching in a smaller section',
     'Reduce the document size if possible',
     'Check browser performance and memory usage',
-  ],
-  BROWSER_ERROR: [
-    'Update to a modern browser version',
-    'Check browser compatibility settings',
-    'Try disabling browser extensions temporarily',
   ],
 } as const;
 
@@ -102,67 +82,6 @@ export class ClientErrorHandler {
     };
 
     this.logError(error, 'Search content not found');
-    return error;
-  }
-
-  /**
-   * Create a detailed error for similarity too low
-   */
-  createSimilarityTooLowError(
-      searchContent: string,
-      bestMatch: string,
-      similarity: number,
-      threshold: number,
-      startLine?: number,
-  ): DiffError {
-    const error: DiffError = {
-      type: 'SIMILARITY_TOO_LOW',
-      message: `${CLIENT_ERROR_MESSAGES.SIMILARITY_TOO_LOW} (${Math.floor(similarity * 100)}% < ${Math.floor(threshold * 100)}%)`,
-      line: startLine,
-      details: {
-        searchContent,
-        bestMatch,
-        similarity,
-        suggestions: [
-          `Current similarity: ${Math.floor(similarity * 100)}%, required: ${Math.floor(threshold * 100)}%`,
-          ...CLIENT_SUGGESTIONS.SIMILARITY_TOO_LOW,
-        ],
-        correctFormat: this.generateCorrectFormat(searchContent, bestMatch),
-      },
-    };
-
-    this.logError(error, 'Similarity too low');
-    return error;
-  }
-
-  /**
-   * Create a detailed error for multiple matches
-   */
-  createMultipleMatchesError(
-      searchContent: string,
-      matches: MatchResult[],
-      startLine?: number,
-  ): DiffError {
-    const matchInfo = matches
-      .slice(0, 3) // Show only first 3 matches
-      .map((match, index) => `Match ${index + 1}: line ${match.index ? match.index + 1 : 'unknown'} (${Math.floor((match.similarity || 0) * 100)}%)`)
-      .join(', ');
-
-    const error: DiffError = {
-      type: 'MULTIPLE_MATCHES',
-      message: `${CLIENT_ERROR_MESSAGES.MULTIPLE_MATCHES}: ${matchInfo}`,
-      line: startLine,
-      details: {
-        searchContent,
-        suggestions: [
-          `Found ${matches.length} similar matches`,
-          ...CLIENT_SUGGESTIONS.MULTIPLE_MATCHES,
-        ],
-        lineRange: `Multiple locations: ${matchInfo}`,
-      },
-    };
-
-    this.logError(error, 'Multiple matches found');
     return error;
   }
 
@@ -226,29 +145,6 @@ export class ClientErrorHandler {
     };
 
     this.logError(error, 'Search timeout');
-    return error;
-  }
-
-  /**
-   * Create an error for browser compatibility issues
-   */
-  createBrowserError(
-      feature: string,
-      fallbackAvailable = false,
-  ): DiffError {
-    const error: DiffError = {
-      type: 'CONTENT_ERROR',
-      message: `${CLIENT_ERROR_MESSAGES.BROWSER_ERROR}: ${feature} not supported`,
-      details: {
-        searchContent: `Browser feature: ${feature}`,
-        suggestions: [
-          fallbackAvailable ? 'Using fallback implementation' : 'No fallback available',
-          ...CLIENT_SUGGESTIONS.BROWSER_ERROR,
-        ],
-      },
-    };
-
-    this.logError(error, 'Browser compatibility issue');
     return error;
   }
 
@@ -334,87 +230,4 @@ export class ClientErrorHandler {
     return summary + errorList + moreErrors;
   }
 
-  // -----------------------------------------------------------------------------
-  // Configuration Methods
-  // -----------------------------------------------------------------------------
-
-  /**
-   * Check if console logging is enabled
-   */
-  isConsoleLoggingEnabled(): boolean {
-    return this.enableConsoleLogging;
-  }
-
-  /**
-   * Check if user feedback is enabled
-   */
-  isUserFeedbackEnabled(): boolean {
-    return this.enableUserFeedback;
-  }
-
 }
-
-// -----------------------------------------------------------------------------
-// Utility Functions
-// -----------------------------------------------------------------------------
-
-/**
- * Quick error creation for common scenarios
- */
-export function createQuickError(
-    type: keyof typeof CLIENT_ERROR_MESSAGES,
-    searchContent: string,
-    additionalInfo?: string,
-): DiffError {
-  return {
-    type: type as DiffError['type'],
-    message: CLIENT_ERROR_MESSAGES[type] + (additionalInfo ? `: ${additionalInfo}` : ''),
-    details: {
-      searchContent,
-      suggestions: [...(CLIENT_SUGGESTIONS[type] || ['Contact support for assistance'])],
-    },
-  };
-}
-
-/**
- * Validate browser support for required features
- */
-export function validateBrowserSupport(): {
-  supported: boolean;
-  missing: string[];
-  warnings: string[];
-  } {
-  const missing: string[] = [];
-  const warnings: string[] = [];
-
-  // Check for required APIs
-  if (typeof performance === 'undefined' || typeof performance.now !== 'function') {
-    missing.push('Performance API');
-  }
-
-  if (typeof String.prototype.normalize !== 'function') {
-    missing.push('Unicode normalization');
-  }
-
-  // Check for optional but recommended features
-  // eslint-disable-next-line no-console
-  if (typeof console === 'undefined' || typeof console.warn !== 'function') {
-    warnings.push('Console API limited');
-  }
-
-  return {
-    supported: missing.length === 0,
-    missing,
-    warnings,
-  };
-}
-
-// -----------------------------------------------------------------------------
-// Export Default Instance
-// -----------------------------------------------------------------------------
-
-/**
- * Default client error handler instance
- * Pre-configured for typical browser usage
- */
-export const defaultClientErrorHandler = new ClientErrorHandler(true, true);

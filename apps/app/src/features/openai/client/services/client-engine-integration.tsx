@@ -4,12 +4,11 @@
  */
 
 import {
-  useCallback, useRef, useState, useMemo,
+  useCallback, useRef, useMemo,
 } from 'react';
 
 import type { Text as YText } from 'yjs';
 
-import type { LlmEditorAssistantDiff } from '../../interfaces/editor-assistant/llm-response-schemas';
 import type { SseDetectedDiff } from '../../interfaces/editor-assistant/sse-schemas';
 import type { ProcessingResult } from '../../interfaces/editor-assistant/types';
 
@@ -61,30 +60,12 @@ export interface ProcessingProgress {
 // -----------------------------------------------------------------------------
 
 export function useClientEngineIntegration(config: Partial<ClientEngineConfig> = {}): {
-  processDetectedDiffsClient: (
-    content: string,
-    detectedDiffs: SseDetectedDiff[],
-  ) => Promise<ProcessingResult>;
-  applyToYText: (yText: YText, processedContent: string) => boolean;
   processHybrid: (
     content: string,
     detectedDiffs: SseDetectedDiff[],
     serverProcessingFn: () => Promise<void>,
   ) => Promise<{ success: boolean; method: 'client' | 'server'; result?: ProcessingResult }>;
-  isClientProcessing: boolean;
-  lastProcessingMethod: 'client' | 'server' | 'hybrid';
-  processingMetrics: ProcessingMetrics[];
-  getPerformanceComparison: () => {
-    clientAvgTime: number;
-    serverAvgTime: number;
-    timeImprovement: number;
-    clientSuccessRate: number;
-    serverSuccessRate: number;
-    totalClientProcessing: number;
-    totalServerProcessing: number;
-  } | null;
-  resetMetrics: () => void;
-  config: ClientEngineConfig;
+  applyToYText: (yText: YText, processedContent: string) => boolean;
   isClientProcessingEnabled: boolean;
 } {
   // Configuration with defaults
@@ -97,11 +78,6 @@ export function useClientEngineIntegration(config: Partial<ClientEngineConfig> =
     ...config,
   }), [config]);
 
-  // State
-  const [isClientProcessing, setIsClientProcessing] = useState(false);
-  const [processingMetrics, setProcessingMetrics] = useState<ProcessingMetrics[]>([]);
-  const [lastProcessingMethod, setLastProcessingMethod] = useState<'client' | 'server' | 'hybrid'>('server');
-
   // Client processor instance
   const clientProcessor = useRef<ClientSearchReplaceProcessor>();
 
@@ -113,82 +89,6 @@ export function useClientEngineIntegration(config: Partial<ClientEngineConfig> =
       maxDiffBlocks: 8,
     });
   }
-
-  /**
-   * Process detected diffs using client-side engine
-   */
-  const processDetectedDiffsClient = useCallback(async(
-      content: string,
-      detectedDiffs: SseDetectedDiff[],
-  ): Promise<ProcessingResult> => {
-    if (!clientProcessor.current) {
-      throw new Error('Client processor not initialized');
-    }
-
-    const startTime = performance.now();
-    setIsClientProcessing(true);
-
-    try {
-      // Convert SseDetectedDiff to LlmEditorAssistantDiff format
-      const diffs: LlmEditorAssistantDiff[] = detectedDiffs
-        .map(d => d.diff)
-        .filter((diff): diff is LlmEditorAssistantDiff => diff != null);
-
-      // Validate required fields for client processing
-      for (const diff of diffs) {
-        if (!diff.startLine) {
-          throw new Error(
-            `startLine is required for client processing but missing in diff: ${diff.search?.substring(0, 50)}...`,
-          );
-        }
-        if (!diff.search) {
-          throw new Error(
-            `search field is required for client processing but missing in diff at line ${diff.startLine}`,
-          );
-        }
-      }
-
-      // Process with client engine
-      const diffResult = await clientProcessor.current.processMultipleDiffs(content, diffs, {
-        enableProgressCallbacks: true,
-        batchSize: finalConfig.batchSize,
-        maxProcessingTime: finalConfig.maxProcessingTime,
-      });
-
-      // Convert DiffApplicationResult to ProcessingResult
-      const processingTime = performance.now() - startTime;
-      const result: ProcessingResult = {
-        success: diffResult.success,
-        error: diffResult.failedParts?.[0],
-        matches: [], // Client engine doesn't expose individual matches
-        appliedCount: diffResult.appliedCount,
-        skippedCount: Math.max(0, diffs.length - diffResult.appliedCount),
-        modifiedText: diffResult.content || content,
-        originalText: content,
-        processingTime,
-      };
-
-      // Record metrics
-      const metrics: ProcessingMetrics = {
-        method: 'client',
-        processingTime,
-        diffsCount: diffs.length,
-        appliedCount: result.appliedCount,
-        successRate: diffs.length > 0 ? (result.appliedCount / diffs.length) * 100 : 100,
-        error: result.success ? undefined : result.error?.message,
-      };
-
-      if (finalConfig.enablePerformanceMetrics) {
-        setProcessingMetrics(prev => [...prev, metrics]);
-      }
-
-      setLastProcessingMethod('client');
-      return result;
-    }
-    finally {
-      setIsClientProcessing(false);
-    }
-  }, [finalConfig]);
 
   /**
    * Apply processed content to YText (CodeMirror integration)
@@ -228,26 +128,52 @@ export function useClientEngineIntegration(config: Partial<ClientEngineConfig> =
       detectedDiffs: SseDetectedDiff[],
       serverProcessingFn: () => Promise<void>,
   ): Promise<{ success: boolean; method: 'client' | 'server'; result?: ProcessingResult }> => {
-    if (!finalConfig.enableClientProcessing) {
+    if (!finalConfig.enableClientProcessing || !clientProcessor.current) {
       // Client processing disabled, use server only
       await serverProcessingFn();
-      setLastProcessingMethod('server');
       return { success: true, method: 'server' };
     }
 
     try {
-      // Try client processing first
-      const result = await processDetectedDiffsClient(content, detectedDiffs);
+      // Convert SseDetectedDiff to LlmEditorAssistantDiff format
+      const diffs = detectedDiffs
+        .map(d => d.diff)
+        .filter((diff): diff is NonNullable<typeof diff> => diff != null);
+
+      // Validate required fields for client processing
+      for (const diff of diffs) {
+        if (!diff.startLine || !diff.search) {
+          throw new Error('Missing required fields for client processing');
+        }
+      }
+
+      // Process with client engine
+      const diffResult = await clientProcessor.current.processMultipleDiffs(content, diffs, {
+        enableProgressCallbacks: true,
+        batchSize: finalConfig.batchSize,
+        maxProcessingTime: finalConfig.maxProcessingTime,
+      });
+
+      // Convert DiffApplicationResult to ProcessingResult
+      const processingTime = performance.now();
+      const result: ProcessingResult = {
+        success: diffResult.success,
+        error: diffResult.failedParts?.[0],
+        matches: [],
+        appliedCount: diffResult.appliedCount,
+        skippedCount: Math.max(0, diffs.length - diffResult.appliedCount),
+        modifiedText: diffResult.content || content,
+        originalText: content,
+        processingTime,
+      };
 
       if (result.success) {
-        setLastProcessingMethod('client');
         return { success: true, method: 'client', result };
       }
 
       // Client processing failed, fallback to server if enabled
       if (finalConfig.enableServerFallback) {
         await serverProcessingFn();
-        setLastProcessingMethod('server');
         return { success: true, method: 'server' };
       }
 
@@ -258,65 +184,19 @@ export function useClientEngineIntegration(config: Partial<ClientEngineConfig> =
       // Fallback to server on error
       if (finalConfig.enableServerFallback) {
         await serverProcessingFn();
-        setLastProcessingMethod('server');
         return { success: true, method: 'server' };
       }
 
       return { success: false, method: 'client' };
     }
-  }, [finalConfig, processDetectedDiffsClient]);
-
-  /**
-   * Get performance comparison between client and server processing
-   */
-  const getPerformanceComparison = useCallback(() => {
-    const clientMetrics = processingMetrics.filter(m => m.method === 'client');
-    const serverMetrics = processingMetrics.filter(m => m.method === 'server');
-
-    if (clientMetrics.length === 0 || serverMetrics.length === 0) {
-      return null;
-    }
-
-    const avgClientTime = clientMetrics.reduce((sum, m) => sum + m.processingTime, 0) / clientMetrics.length;
-    const avgServerTime = serverMetrics.reduce((sum, m) => sum + m.processingTime, 0) / serverMetrics.length;
-    const avgClientSuccess = clientMetrics.reduce((sum, m) => sum + m.successRate, 0) / clientMetrics.length;
-    const avgServerSuccess = serverMetrics.reduce((sum, m) => sum + m.successRate, 0) / serverMetrics.length;
-
-    return {
-      clientAvgTime: avgClientTime,
-      serverAvgTime: avgServerTime,
-      timeImprovement: ((avgServerTime - avgClientTime) / avgServerTime) * 100,
-      clientSuccessRate: avgClientSuccess,
-      serverSuccessRate: avgServerSuccess,
-      totalClientProcessing: clientMetrics.length,
-      totalServerProcessing: serverMetrics.length,
-    };
-  }, [processingMetrics]);
-
-  /**
-   * Reset metrics for new comparison
-   */
-  const resetMetrics = useCallback(() => {
-    setProcessingMetrics([]);
-  }, []);
+  }, [finalConfig]);
 
   return {
     // Processing functions
-    processDetectedDiffsClient,
     applyToYText,
     processHybrid,
 
-    // State
-    isClientProcessing,
-    lastProcessingMethod,
-    processingMetrics,
-
-    // Metrics and comparison
-    getPerformanceComparison,
-    resetMetrics,
-
     // Configuration
-    config: finalConfig,
     isClientProcessingEnabled: finalConfig.enableClientProcessing,
   };
 }
@@ -324,18 +204,6 @@ export function useClientEngineIntegration(config: Partial<ClientEngineConfig> =
 // -----------------------------------------------------------------------------
 // Utility Functions
 // -----------------------------------------------------------------------------
-
-/**
- * Convert SseDetectedDiff to content string for processing
- */
-export function extractContentFromDetectedDiffs(detectedDiffs: SseDetectedDiff[]): string {
-  // This would need to be implemented based on how the current system
-  // extracts content from detected diffs
-  return detectedDiffs
-    .map(d => d.diff?.search || '')
-    .filter(Boolean)
-    .join('\n');
-}
 
 /**
  * Feature flag for enabling client processing
