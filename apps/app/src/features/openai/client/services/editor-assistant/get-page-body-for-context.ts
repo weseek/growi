@@ -1,19 +1,31 @@
 import type { UseCodeMirrorEditor } from '@growi/editor/dist/client/services/use-codemirror-editor';
 
+export type PageBodyContextResult = {
+  content: string;
+  isPartial: boolean;
+  startIndex?: number; // Only present when partial
+  endIndex?: number; // Only present when partial
+  totalLength: number; // Total length of the original document
+};
+
 /**
  * Get page body text for AI context processing
  * @param codeMirrorEditor - CodeMirror editor instance
  * @param maxLengthBeforeCursor - Maximum number of characters to include before cursor position
  * @param maxLengthAfterCursor - Maximum number of characters to include after cursor position
- * @returns Page body text optimized for AI context, or undefined if editor is not available
+ * @returns Page body context result with metadata, or undefined if editor is not available
  */
 export const getPageBodyForContext = (
     codeMirrorEditor: UseCodeMirrorEditor | undefined,
     maxLengthBeforeCursor: number,
     maxLengthAfterCursor: number,
-): string | undefined => {
+): PageBodyContextResult | undefined => {
   const doc = codeMirrorEditor?.getDoc();
   const length = doc?.length ?? 0;
+
+  if (length === 0 || !doc) {
+    return undefined;
+  }
 
   const maxTotalLength = maxLengthBeforeCursor + maxLengthAfterCursor;
 
@@ -21,22 +33,42 @@ export const getPageBodyForContext = (
     // Get cursor position
     const cursorPos = codeMirrorEditor?.view?.state.selection.main.head ?? 0;
 
-    // Calculate how many characters are available after cursor
+    // Calculate how many characters are available before and after cursor
+    const availableBeforeCursor = cursorPos;
     const availableAfterCursor = length - cursorPos;
+
+    // Calculate actual chars to take before and after cursor
+    const charsBeforeCursor = Math.min(maxLengthBeforeCursor, availableBeforeCursor);
     const charsAfterCursor = Math.min(maxLengthAfterCursor, availableAfterCursor);
 
-    // If chars after cursor is less than maxLengthAfterCursor, add the difference to chars before cursor
-    const shortfall = maxLengthAfterCursor - charsAfterCursor;
-    const charsBeforeCursor = maxLengthBeforeCursor + shortfall;
+    // Calculate shortfalls and redistribute
+    const shortfallBefore = maxLengthBeforeCursor - charsBeforeCursor;
+    const shortfallAfter = maxLengthAfterCursor - charsAfterCursor;
 
-    // Calculate start position (cursor - charsBeforeCursor, but not less than 0)
-    const startPos = Math.max(0, cursorPos - charsBeforeCursor);
+    // Redistribute shortfalls
+    const finalCharsAfterCursor = Math.min(charsAfterCursor + shortfallBefore, availableAfterCursor);
+    const finalCharsBeforeCursor = Math.min(charsBeforeCursor + shortfallAfter, availableBeforeCursor);
 
-    // Calculate end position
-    const endPos = cursorPos + charsAfterCursor;
+    // Calculate start and end positions
+    const startPos = cursorPos - finalCharsBeforeCursor;
+    const endPos = cursorPos + finalCharsAfterCursor;
 
-    return doc?.slice(startPos, endPos).toString();
+    const content = doc.slice(startPos, endPos).toString();
+
+    return {
+      content,
+      isPartial: true,
+      startIndex: startPos,
+      endIndex: endPos,
+      totalLength: length,
+    };
   }
 
-  return codeMirrorEditor?.getDocString();
+  const content = codeMirrorEditor?.getDocString() ?? '';
+
+  return {
+    content,
+    isPartial: false,
+    totalLength: length,
+  };
 };

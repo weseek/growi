@@ -13,6 +13,10 @@ import { useTranslation } from 'react-i18next';
 import { type Text as YText } from 'yjs';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { useIsEnableUnifiedMergeView } from '~/stores-universal/context';
+import { useCurrentPageId } from '~/stores/page';
+
+import type { AiAssistantHasId } from '../../../interfaces/ai-assistant';
 import {
   SseMessageSchema,
   SseDetectedDiffSchema,
@@ -20,15 +24,12 @@ import {
   type SseMessage,
   type SseDetectedDiff,
   type SseFinalized,
-} from '~/features/openai/interfaces/editor-assistant/sse-schemas';
-import { handleIfSuccessfullyParsed } from '~/features/openai/utils/handle-if-successfully-parsed';
-import { useIsEnableUnifiedMergeView } from '~/stores-universal/context';
-import { useCurrentPageId } from '~/stores/page';
-
-import type { AiAssistantHasId } from '../../../interfaces/ai-assistant';
+  type EditRequestBody,
+} from '../../../interfaces/editor-assistant/sse-schemas';
 import type { MessageLog } from '../../../interfaces/message';
 import type { IThreadRelationHasId } from '../../../interfaces/thread-relation';
 import { ThreadType } from '../../../interfaces/thread-relation';
+import { handleIfSuccessfullyParsed } from '../../../utils/handle-if-successfully-parsed';
 import { AiAssistantDropdown } from '../../components/AiAssistant/AiAssistantSidebar/AiAssistantDropdown';
 import { QuickMenuList } from '../../components/AiAssistant/AiAssistantSidebar/QuickMenuList';
 import { useAiAssistantSidebar } from '../../stores/ai-assistant';
@@ -160,15 +161,27 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     // Disable UnifiedMergeView when a Form is submitted with UnifiedMergeView enabled
     mutateIsEnableUnifiedMergeView(false);
 
+    const pageBodyContext = getPageBodyForContext(codeMirrorEditor, 2000, 8000);
+
+    if (!pageBodyContext) {
+      throw new Error('Unable to get page body context');
+    }
+
+    const requestBody = {
+      threadId,
+      userMessage: formData.input,
+      selectedText,
+      pageBody: pageBodyContext.content,
+      ...(pageBodyContext.isPartial && {
+        isPageBodyPartial: pageBodyContext.isPartial,
+        partialPageBodyStartIndex: pageBodyContext.startIndex,
+      }),
+    } satisfies EditRequestBody;
+
     const response = await fetch('/_api/v3/openai/edit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        threadId,
-        userMessage: formData.input,
-        selectedText,
-        pageBody: getPageBodyForContext(codeMirrorEditor, 2000, 8000),
-      }),
+      body: JSON.stringify(requestBody),
     });
 
     return response;
