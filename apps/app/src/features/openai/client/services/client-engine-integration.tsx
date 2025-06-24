@@ -163,7 +163,6 @@ export function useClientEngineIntegration(config: Partial<ClientEngineConfig> =
         appliedCount: diffResult.appliedCount,
         skippedCount: Math.max(0, diffs.length - diffResult.appliedCount),
         modifiedText: diffResult.content || content,
-        originalText: content,
         processingTime,
       };
 

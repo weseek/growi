@@ -27,10 +27,7 @@ export interface ProcessorConfig {
 
 export type DiffErrorType =
   | 'SEARCH_NOT_FOUND'
-  | 'SIMILARITY_TOO_LOW'
-  | 'MULTIPLE_MATCHES'
   | 'EMPTY_SEARCH'
-  | 'MARKER_SEQUENCE_ERROR'
   | 'CONTENT_ERROR';
 
 export interface DiffError {
@@ -111,66 +108,6 @@ export interface SearchContext {
 }
 
 // -----------------------------------------------------------------------------
-// Validation Types
-// -----------------------------------------------------------------------------
-
-export interface ValidationResult {
-  /** Whether validation passed */
-  success: boolean;
-  /** Error message if validation failed */
-  error?: string;
-  /** Line number where error occurred */
-  line?: number;
-  /** Suggested fixes */
-  suggestions?: string[];
-}
-
-// -----------------------------------------------------------------------------
-// Editor Integration Types
-// -----------------------------------------------------------------------------
-
-export interface EditorAdapter {
-  getContent(): EditorContent;
-  setContent(content: string): void;
-  getValue(): string;
-  setValue(value: string): void;
-  getSelection(): EditorSelection;
-  setSelection(start: number, end: number): void;
-  getSelectedText(): string;
-  getPosition(): EditorPosition;
-  focus(): void;
-  blur(): void;
-  insertText(text: string, position?: EditorPosition): void;
-  replaceText(text: string, start?: number, end?: number): void;
-  onChange(handler: () => void): () => void;
-}
-
-export interface EditorAdapterConfig {
-  preserveSelection?: boolean;
-  autoFocus?: boolean;
-  enableUndo?: boolean;
-}
-
-export interface EditorContent {
-  text: string;
-  lines: string[];
-  lineCount: number;
-  charCount: number;
-}
-
-export interface EditorPosition {
-  line: number;
-  column: number;
-  offset: number;
-}
-
-export interface EditorSelection {
-  start: number;
-  end: number;
-  text: string;
-}
-
-// -----------------------------------------------------------------------------
 // Processing Types
 // -----------------------------------------------------------------------------
 
@@ -188,25 +125,5 @@ export interface ProcessingResult {
   appliedCount: number;
   skippedCount: number;
   modifiedText: string;
-  originalText: string;
   processingTime: number;
-}
-
-export type ProgressCallback = (progress: {
-  current: number;
-  total: number;
-  message: string;
-  percentage: number;
-}) => void;
-
-// -----------------------------------------------------------------------------
-// Legacy Compatibility
-// -----------------------------------------------------------------------------
-
-/**
- * @deprecated Use the new Search/Replace format instead
- * Kept for backward compatibility during migration
- */
-export interface LegacyReplaceOperation {
-  replace: string;
 }
