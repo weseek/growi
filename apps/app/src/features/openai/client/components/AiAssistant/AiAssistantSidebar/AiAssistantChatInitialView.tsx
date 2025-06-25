@@ -1,4 +1,7 @@
+import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
+
+import { removeGlobPath } from '../../../../utils/remove-glob-path';
 
 import { ThreadList } from './ThreadList';
 
@@ -24,13 +27,13 @@ export const AiAssistantChatInitialView: React.FC<Props> = ({ description, pageP
         </p>
         <div className="d-flex flex-column gap-1">
           { pagePathPatterns.map(pagePathPattern => (
-            <a
+            <Link
               key={pagePathPattern}
-              href="#"
-              className="fs-6 text-body-secondary text-decoration-none"
+              href={removeGlobPath([pagePathPattern])[0]}
+              className="text-body-secondary text-decoration-underline link-underline-secondary"
             >
               {pagePathPattern}
-            </a>
+            </Link>
           ))}
         </div>
       </div>
