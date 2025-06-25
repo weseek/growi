@@ -7,7 +7,7 @@ export const createAiAssistant = async(body: UpsertAiAssistantData): Promise<voi
 };
 
 export const updateAiAssistant = async(id: string, body: UpsertAiAssistantData): Promise<AiAssistantHasId> => {
-  const res  = await apiv3Put<{updatedAiAssistant: AiAssistantHasId}>(`/openai/ai-assistant/${id}`, body);
+  const res = await apiv3Put<{updatedAiAssistant: AiAssistantHasId}>(`/openai/ai-assistant/${id}`, body);
   return res.data.updatedAiAssistant;
 };
 
