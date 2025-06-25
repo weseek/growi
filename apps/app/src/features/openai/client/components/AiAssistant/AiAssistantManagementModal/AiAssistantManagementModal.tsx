@@ -23,8 +23,8 @@ import {
   useSWRxAiAssistants,
   useAiAssistantSidebar,
   useAiAssistantManagementModal,
-  AiAssistantManagementModalPageMode
- } from '../../../stores/ai-assistant';
+  AiAssistantManagementModalPageMode,
+} from '../../../stores/ai-assistant';
 
 import { AiAssistantManagementEditInstruction } from './AiAssistantManagementEditInstruction';
 import { AiAssistantManagementEditPages } from './AiAssistantManagementEditPages';
