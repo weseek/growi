@@ -12,10 +12,11 @@ export const AiAssistantChatInitialView: React.FC<Props> = ({ description, pageP
 
   return (
     <>
-      <p className="fs-6 text-body-secondary mb-0">
-        {description}
-      </p>
-
+      {description.length !== 0 && (
+        <p className="fs-6 text-body-secondary mb-0">
+          {description}
+        </p>
+      )}
       <div>
         <div className="mb-3">
           <p className="text-body-secondary mb-0">{t('sidebar_ai_assistant.reference_pages_label')}</p>
