@@ -493,6 +493,7 @@
   "sidebar_ai_assistant": {
     "reference_pages_label": "Pages de référence",
     "recent_chat": "Chat récent",
+    "no_recent_chat": "Pas de chat récent",
     "knowledge_assistant_placeholder": "Demandez-moi n'importe quoi.",
     "editor_assistant_placeholder": "Puis-je vous aider ?",
     "summary_mode_label": "Mode résumé",

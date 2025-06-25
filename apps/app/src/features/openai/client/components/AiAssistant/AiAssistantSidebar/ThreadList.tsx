@@ -1,5 +1,7 @@
 import React, { useCallback } from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import type { IThreadRelationHasId } from '~/features/openai/interfaces/thread-relation';
 
 import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
@@ -11,6 +13,7 @@ const moduleClass = styles['thread-list'] ?? '';
 
 
 export const ThreadList: React.FC = () => {
+  const { t } = useTranslation();
   const { openChat, data: aiAssistantSidebarData } = useAiAssistantSidebar();
   const { data: threads } = useSWRxThreads(aiAssistantSidebarData?.aiAssistantData?._id);
 
@@ -23,10 +26,18 @@ export const ThreadList: React.FC = () => {
     openChat(aiAssistantData, threadData);
   }, [aiAssistantSidebarData?.aiAssistantData, openChat]);
 
+  if (threads == null || threads.length === 0) {
+    return (
+      <p className="text-body-secondary">
+        {t('sidebar_ai_assistant.no_recent_chat')}
+      </p>
+    );
+  }
+
   return (
     <>
       <ul className={`list-group ${moduleClass}`}>
-        {threads?.map(thread => (
+        {threads.map(thread => (
           <li
             onClick={() => { openChatHandler(thread) }}
             key={thread._id}

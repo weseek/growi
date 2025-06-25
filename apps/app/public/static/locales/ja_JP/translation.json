@@ -531,6 +531,7 @@
   "sidebar_ai_assistant": {
     "reference_pages_label": "参照するページ",
     "recent_chat": "最近のチャット",
+    "no_recent_chat": "チャットがありません",
     "knowledge_assistant_placeholder": "ききたいことを入力してください",
     "editor_assistant_placeholder": "お手伝いできることはありますか？",
     "summary_mode_label": "要約モード",
