@@ -1,4 +1,3 @@
-// TODO: https://redmine.weseek.co.jp/issues/167745
 import React, { useCallback, useState } from 'react';
 
 import type { IUserHasId } from '@growi/core';
@@ -14,111 +13,10 @@ import loggerFactory from '~/utils/logger';
 import { AiAssistantShareScope, type AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { determineShareScope } from '../../../../utils/determine-share-scope';
 import { deleteAiAssistant, setDefaultAiAssistant } from '../../../services/ai-assistant';
-import { deleteThread } from '../../../services/thread';
 import { useAiAssistantSidebar, useAiAssistantManagementModal } from '../../../stores/ai-assistant';
-import { useSWRMUTxThreads, useSWRxThreads } from '../../../stores/thread';
 import { getShareScopeIcon } from '../../../utils/get-share-scope-Icon';
 
 const logger = loggerFactory('growi:openai:client:components:AiAssistantList');
-
-
-/*
-*  ThreadItem
-*/
-type ThreadItemProps = {
-  threadData: IThreadRelationHasId
-  aiAssistantData: AiAssistantHasId;
-  onThreadClick: (aiAssistantData: AiAssistantHasId, threadData?: IThreadRelationHasId) => void;
-  onThreadDelete: () => void;
-};
-
-const ThreadItem: React.FC<ThreadItemProps> = ({
-  threadData, aiAssistantData, onThreadClick, onThreadDelete,
-}) => {
-  const { t } = useTranslation();
-
-  const deleteThreadHandler = useCallback(async() => {
-    try {
-      await deleteThread({ aiAssistantId: aiAssistantData._id, threadRelationId: threadData._id });
-      toastSuccess(t('ai_assistant_substance.toaster.thread_deleted_success'));
-      onThreadDelete();
-    }
-    catch (err) {
-      logger.error(err);
-      toastError(t('ai_assistant_substance.toaster.thread_deleted_failed'));
-    }
-  }, [aiAssistantData._id, onThreadDelete, t, threadData._id]);
-
-  const openChatHandler = useCallback(() => {
-    onThreadClick(aiAssistantData, threadData);
-  }, [aiAssistantData, onThreadClick, threadData]);
-
-  return (
-    <li
-      role="button"
-      className="list-group-item list-group-item-action border-0 d-flex align-items-center rounded-1 ps-5"
-      onClick={(e) => {
-        e.stopPropagation();
-        openChatHandler();
-      }}
-    >
-      <div>
-        <span className="material-symbols-outlined fs-5">chat</span>
-      </div>
-
-      <div className="grw-ai-assistant-title-anchor ps-1">
-        <p className="text-truncate m-auto">{threadData?.title ?? 'Untitled thread'}</p>
-      </div>
-
-      <div className="grw-ai-assistant-actions opacity-0 d-flex justify-content-center ">
-        <button
-          type="button"
-          className="btn btn-link text-secondary p-0"
-          onClick={(e) => {
-            e.stopPropagation();
-            deleteThreadHandler();
-          }}
-        >
-          <span className="material-symbols-outlined fs-5">delete</span>
-        </button>
-      </div>
-    </li>
-  );
-};
-
-
-/*
-*  ThreadItems
-*/
-type ThreadItemsProps = {
-  aiAssistantData: AiAssistantHasId;
-  onThreadClick: (aiAssistantData: AiAssistantHasId, threadData?: IThreadRelationHasId) => void;
-  onThreadDelete: () => void;
-};
-
-const ThreadItems: React.FC<ThreadItemsProps> = ({ aiAssistantData, onThreadClick, onThreadDelete }) => {
-  const { t } = useTranslation();
-  const { data: threads } = useSWRxThreads(aiAssistantData._id);
-
-  if (threads == null || threads.length === 0) {
-    return <p className="text-secondary ms-5">{t('ai_assistant_substance.thread_does_not_exist')}</p>;
-  }
-
-  return (
-    <div className="grw-ai-assistant-item-children">
-      {threads.map(thread => (
-        <ThreadItem
-          key={thread._id}
-          threadData={thread}
-          aiAssistantData={aiAssistantData}
-          onThreadClick={onThreadClick}
-          onThreadDelete={onThreadDelete}
-        />
-      ))}
-    </div>
-  );
-};
-
 
 /*
 *  AiAssistantItem
@@ -140,10 +38,8 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
   onUpdated,
   onDeleted,
 }) => {
-  const [isThreadsOpened, setIsThreadsOpened] = useState(false);
 
   const { t } = useTranslation();
-  const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistant._id);
 
   const openManagementModalHandler = useCallback((aiAssistantData: AiAssistantHasId) => {
     onEditClick(aiAssistantData);
@@ -153,10 +49,6 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
     onItemClick(aiAssistantData);
   }, [onItemClick]);
 
-  const openThreadsHandler = useCallback(async() => {
-    mutateThreadData();
-    setIsThreadsOpened(toggle => !toggle);
-  }, [mutateThreadData]);
 
   const setDefaultAiAssistantHandler = useCallback(async() => {
     try {
@@ -196,21 +88,6 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
         role="button"
         className="list-group-item list-group-item-action border-0 d-flex align-items-center rounded-1"
       >
-        {/* <div className="d-flex justify-content-center">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              openThreadsHandler();
-            }}
-            className={`grw-ai-assistant-triangle-btn btn px-0 ${isThreadsOpened ? 'grw-ai-assistant-open' : ''}`}
-          >
-            <div className="d-flex justify-content-center">
-              <span className="material-symbols-outlined fs-5">arrow_right</span>
-            </div>
-          </button>
-        </div> */}
-
         <div className="d-flex justify-content-center">
           <span className="material-symbols-outlined fs-5">{getShareScopeIcon(aiAssistant.shareScope, aiAssistant.accessScope)}</span>
         </div>
@@ -258,14 +135,6 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
           )}
         </div>
       </li>
-
-      {/* { isThreadsOpened && (
-        <ThreadItems
-          aiAssistantData={aiAssistant}
-          onThreadClick={onItemClick}
-          onThreadDelete={mutateThreadData}
-        />
-      ) } */}
     </>
   );
 };
