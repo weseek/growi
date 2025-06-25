@@ -5,6 +5,10 @@ import type { IThreadRelationHasId } from '~/features/openai/interfaces/thread-r
 import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
 import { useSWRxThreads } from '../../../stores/thread';
 
+import styles from './ThreadList.module.scss';
+
+const moduleClass = styles['thread-list'] ?? '';
+
 
 export const ThreadList: React.FC = () => {
   const { openChat, data: aiAssistantSidebarData } = useAiAssistantSidebar();
@@ -21,7 +25,7 @@ export const ThreadList: React.FC = () => {
 
   return (
     <>
-      <ul className="list-group">
+      <ul className={`list-group ${moduleClass}`}>
         {threads?.map(thread => (
           <li
             onClick={() => { openChatHandler(thread) }}
