@@ -477,6 +477,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       if (!doc) return 1;
 
       try {
+        // return line number if possible
         return doc.lineAt(index).number;
       }
       catch {
@@ -489,16 +490,18 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     const startPosition = getPositionNumber(partialContentInfo.startIndex);
     const endPosition = getPositionNumber(partialContentInfo.endIndex);
 
-    const unit = isLineMode ? '行目' : '文字目';
+    const translationKey = isLineMode
+      ? 'sidebar_ai_assistant.editor_assistant_long_context_warn_with_unit_line'
+      : 'sidebar_ai_assistant.editor_assistant_long_context_warn_with_unit_char';
 
     return (
       <div className="alert alert-warning py-2 px-3 mb-3" role="alert">
         <small>
-          本文が長すぎるため、エディターアシスタントは {startPosition}{unit}から{endPosition}{unit}付近までを参照して回答します
+          {t(translationKey, { startPosition, endPosition })}
         </small>
       </div>
     );
-  }, [partialContentInfo, codeMirrorEditor]);
+  }, [partialContentInfo, t, codeMirrorEditor]);
 
   return {
     createThread,
