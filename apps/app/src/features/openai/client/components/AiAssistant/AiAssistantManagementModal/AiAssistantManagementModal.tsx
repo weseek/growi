@@ -19,8 +19,12 @@ import loggerFactory from '~/utils/logger';
 import type { SelectedPage } from '../../../../interfaces/selected-page';
 import { removeGlobPath } from '../../../../utils/remove-glob-path';
 import { createAiAssistant, updateAiAssistant } from '../../../services/ai-assistant';
-import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode, useSWRxAiAssistants } from '../../../stores/ai-assistant';
-import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
+import {
+  useSWRxAiAssistants,
+  useAiAssistantSidebar,
+  useAiAssistantManagementModal,
+  AiAssistantManagementModalPageMode
+ } from '../../../stores/ai-assistant';
 
 import { AiAssistantManagementEditInstruction } from './AiAssistantManagementEditInstruction';
 import { AiAssistantManagementEditPages } from './AiAssistantManagementEditPages';
