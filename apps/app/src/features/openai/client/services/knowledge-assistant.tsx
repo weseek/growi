@@ -21,7 +21,7 @@ import { ThreadType } from '../../interfaces/thread-relation';
 import { AiAssistantChatInitialView } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantChatInitialView';
 import { useAiAssistantSidebar } from '../stores/ai-assistant';
 import { useSWRMUTxMessages } from '../stores/message';
-import { useSWRMUTxThreads } from '../stores/thread';
+import { useSWRMUTxThreads, useSWRINFxRecentThreads } from '../stores/thread';
 
 interface CreateThread {
   (aiAssistantId: string, initialUserMessage: string): Promise<IThreadRelationHasId>;
@@ -69,6 +69,7 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
   const { data: aiAssistantSidebarData } = useAiAssistantSidebar();
   const { aiAssistantData } = aiAssistantSidebarData ?? {};
   const { threadData } = aiAssistantSidebarData ?? {};
+  const { mutate: mutateRecentThreads } = useSWRINFxRecentThreads();
   const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistantData?._id);
   const { t } = useTranslation();
 
@@ -118,8 +119,11 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
         extendedThinkingMode: form.getValues('extendedThinkingMode'),
       }),
     });
+
+    mutateRecentThreads();
+
     return response;
-  }, [form]);
+  }, [form, mutateRecentThreads]);
 
   const processMessage: ProcessMessage = useCallback((data, handler) => {
     handleIfSuccessfullyParsed(data, SseMessageSchema, (data: SseMessage) => {

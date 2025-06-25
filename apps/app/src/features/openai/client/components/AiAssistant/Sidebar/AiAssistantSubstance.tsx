@@ -1,10 +1,12 @@
-import React, { type JSX } from 'react';
+import React, { type JSX, useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { useAiAssistantManagementModal, useSWRxAiAssistants } from '../../../stores/ai-assistant';
+import { useSWRINFxRecentThreads } from '../../../stores/thread';
 
 import { AiAssistantList } from './AiAssistantList';
+import { ThreadList } from './ThreadList';
 
 import styles from './AiAssistantSubstance.module.scss';
 
@@ -13,7 +15,13 @@ const moduleClass = styles['grw-ai-assistant-substance'] ?? '';
 export const AiAssistantContent = (): JSX.Element => {
   const { t } = useTranslation();
   const { open } = useAiAssistantManagementModal();
+  const { mutate: mutateRecentThreads } = useSWRINFxRecentThreads();
   const { data: aiAssistants, mutate: mutateAiAssistants } = useSWRxAiAssistants();
+
+  const deleteAiAssistantHandler = useCallback(async() => {
+    await mutateAiAssistants();
+    await mutateRecentThreads();
+  }, [mutateAiAssistants, mutateRecentThreads]);
 
   return (
     <div className={moduleClass}>
@@ -23,14 +31,14 @@ export const AiAssistantContent = (): JSX.Element => {
         onClick={() => open()}
       >
         <span className="material-symbols-outlined fs-5 me-2">add</span>
-        <span className="fw-normal">{t('ai_assistant_list.add_assistant')}</span>
+        <span className="fw-normal">{t('ai_assistant_substance.add_assistant')}</span>
       </button>
 
       <div className="d-flex flex-column gap-4">
         <div>
           <AiAssistantList
             onUpdated={mutateAiAssistants}
-            onDeleted={mutateAiAssistants}
+            onDeleted={deleteAiAssistantHandler}
             onCollapsed={mutateAiAssistants}
             aiAssistants={aiAssistants?.myAiAssistants ?? []}
           />
@@ -43,6 +51,13 @@ export const AiAssistantContent = (): JSX.Element => {
             onCollapsed={mutateAiAssistants}
             aiAssistants={aiAssistants?.teamAiAssistants ?? []}
           />
+        </div>
+
+        <div>
+          <h3 className="fw-bold grw-ai-assistant-substance-header">
+            {t('ai_assistant_substance.recent_threads')}
+          </h3>
+          <ThreadList />
         </div>
       </div>
     </div>

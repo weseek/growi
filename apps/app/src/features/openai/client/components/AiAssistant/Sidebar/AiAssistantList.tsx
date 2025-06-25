@@ -19,11 +19,7 @@ import { useAiAssistantSidebar, useAiAssistantManagementModal } from '../../../s
 import { useSWRMUTxThreads, useSWRxThreads } from '../../../stores/thread';
 import { getShareScopeIcon } from '../../../utils/get-share-scope-Icon';
 
-import styles from './AiAssistantList.module.scss';
-
 const logger = loggerFactory('growi:openai:client:components:AiAssistantList');
-
-const moduleClass = styles['ai-assistant-list'] ?? '';
 
 
 /*
@@ -44,12 +40,12 @@ const ThreadItem: React.FC<ThreadItemProps> = ({
   const deleteThreadHandler = useCallback(async() => {
     try {
       await deleteThread({ aiAssistantId: aiAssistantData._id, threadRelationId: threadData._id });
-      toastSuccess(t('ai_assistant_list.toaster.thread_deleted_success'));
+      toastSuccess(t('ai_assistant_substance.toaster.thread_deleted_success'));
       onThreadDelete();
     }
     catch (err) {
       logger.error(err);
-      toastError(t('ai_assistant_list.toaster.thread_deleted_failed'));
+      toastError(t('ai_assistant_substance.toaster.thread_deleted_failed'));
     }
   }, [aiAssistantData._id, onThreadDelete, t, threadData._id]);
 
@@ -105,7 +101,7 @@ const ThreadItems: React.FC<ThreadItemsProps> = ({ aiAssistantData, onThreadClic
   const { data: threads } = useSWRxThreads(aiAssistantData._id);
 
   if (threads == null || threads.length === 0) {
-    return <p className="text-secondary ms-5">{t('ai_assistant_list.thread_does_not_exist')}</p>;
+    return <p className="text-secondary ms-5">{t('ai_assistant_substance.thread_does_not_exist')}</p>;
   }
 
   return (
@@ -166,11 +162,11 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
     try {
       await setDefaultAiAssistant(aiAssistant._id, !aiAssistant.isDefault);
       onUpdated?.();
-      toastSuccess(t('ai_assistant_list.toaster.ai_assistant_set_default_success'));
+      toastSuccess(t('ai_assistant_substance.toaster.ai_assistant_set_default_success'));
     }
     catch (err) {
       logger.error(err);
-      toastError(t('ai_assistant_list.toaster.ai_assistant_set_default_failed'));
+      toastError(t('ai_assistant_substance.toaster.ai_assistant_set_default_failed'));
     }
   }, [aiAssistant._id, aiAssistant.isDefault, onUpdated, t]);
 
@@ -178,11 +174,11 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
     try {
       await deleteAiAssistant(aiAssistant._id);
       onDeleted?.();
-      toastSuccess(t('ai_assistant_list.toaster.ai_assistant_deleted_success'));
+      toastSuccess(t('ai_assistant_substance.toaster.ai_assistant_deleted_success'));
     }
     catch (err) {
       logger.error(err);
-      toastError(t('ai_assistant_list.toaster.ai_assistant_deleted_failed'));
+      toastError(t('ai_assistant_substance.toaster.ai_assistant_deleted_failed'));
     }
   }, [aiAssistant._id, onDeleted, t]);
 
@@ -219,11 +215,11 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
           <span className="material-symbols-outlined fs-5">{getShareScopeIcon(aiAssistant.shareScope, aiAssistant.accessScope)}</span>
         </div>
 
-        <div className="grw-ai-assistant-title-anchor ps-1">
+        <div className="grw-item-title ps-1">
           <p className="text-truncate m-auto">{aiAssistant.name}</p>
         </div>
 
-        <div className="grw-ai-assistant-actions opacity-0 d-flex justify-content-center ">
+        <div className="grw-btn-actions opacity-0 d-flex justify-content-center ">
           {isPublicAiAssistantOperable && (
             <button
               type="button"
@@ -306,15 +302,16 @@ export const AiAssistantList: React.FC<AiAssistantListProps> = ({
   }, [onCollapsed]);
 
   return (
-    <div className={`${moduleClass}`}>
+    <>
       <button
         type="button"
         className="btn btn-link p-0 text-secondary d-flex align-items-center"
         aria-expanded={!isCollapsed}
         onClick={toggleCollapse}
+        disabled={aiAssistants.length === 0}
       >
         <h3 className="grw-ai-assistant-substance-header fw-bold mb-0 me-1">
-          {t(`ai_assistant_list.${isTeamAssistant ? 'team' : 'my'}_assistants`)}
+          {t(`ai_assistant_substance.${isTeamAssistant ? 'team' : 'my'}_assistants`)}
         </h3>
         <span
           className="material-symbols-outlined"
@@ -337,6 +334,6 @@ export const AiAssistantList: React.FC<AiAssistantListProps> = ({
           ))}
         </ul>
       </Collapse>
-    </div>
+    </>
   );
 };

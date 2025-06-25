@@ -633,11 +633,12 @@
   "default_ai_assistant": {
     "not_set": "デフォルトアシスタントが設定されていません"
   },
-  "ai_assistant_list": {
+  "ai_assistant_substance": {
     "add_assistant": "アシスタントを追加する",
     "my_assistants": "マイアシスタント",
     "team_assistants": "チームアシスタント",
     "thread_does_not_exist": "スレッドが存在しません",
+    "recent_threads": "最近の項目",
     "toaster": {
       "ai_assistant_deleted_success": "アシスタントを削除しました",
       "ai_assistant_deleted_failed": "アシスタントの削除に失敗しました",
