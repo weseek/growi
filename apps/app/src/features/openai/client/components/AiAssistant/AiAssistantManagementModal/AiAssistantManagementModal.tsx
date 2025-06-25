@@ -20,6 +20,7 @@ import type { SelectedPage } from '../../../../interfaces/selected-page';
 import { removeGlobPath } from '../../../../utils/remove-glob-path';
 import { createAiAssistant, updateAiAssistant } from '../../../services/ai-assistant';
 import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode, useSWRxAiAssistants } from '../../../stores/ai-assistant';
+import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
 
 import { AiAssistantManagementEditInstruction } from './AiAssistantManagementEditInstruction';
 import { AiAssistantManagementEditPages } from './AiAssistantManagementEditPages';
@@ -63,6 +64,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   const { t } = useTranslation();
   const { mutate: mutateAiAssistants } = useSWRxAiAssistants();
   const { data: aiAssistantManagementModalData, close: closeAiAssistantManagementModal } = useAiAssistantManagementModal();
+  const { data: aiAssistantSidebarData, refreshAiAssistantData } = useAiAssistantSidebar();
   const { data: pagePathsWithDescendantCount } = useSWRxPagePathsWithDescendantCount(
     removeGlobPath(aiAssistantManagementModalData?.aiAssistantData?.pagePathPatterns) ?? null,
     undefined,
@@ -144,7 +146,10 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
       };
 
       if (shouldEdit) {
-        await updateAiAssistant(aiAssistant._id, reqBody);
+        const updatedAiAssistant = await updateAiAssistant(aiAssistant._id, reqBody);
+        if (aiAssistantSidebarData?.aiAssistantData?._id === updatedAiAssistant._id) {
+          refreshAiAssistantData(updatedAiAssistant);
+        }
       }
       else {
         await createAiAssistant(reqBody);
