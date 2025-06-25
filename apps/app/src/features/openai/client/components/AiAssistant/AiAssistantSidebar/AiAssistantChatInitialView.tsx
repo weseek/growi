@@ -34,7 +34,9 @@ export const AiAssistantChatInitialView: React.FC<Props> = ({ description, pageP
         </div>
 
         <div className="mt-3">
-          <p className="text-body-secondary mb-0">最近のチャット</p>
+          <p className="text-body-secondary mb-0">
+            {t('sidebar_ai_assistant.recent_chat')}
+          </p>
           <ThreadList />
         </div>
 
