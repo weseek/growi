@@ -42,6 +42,7 @@ export const ThreadList: React.FC = () => {
             onClick={() => { openChatHandler(thread) }}
             key={thread._id}
             role="button"
+            tabIndex={0}
             className="d-flex align-items-center list-group-item list-group-item-action border-0 rounded-1 bg-body-tertiary mb-2"
           >
             <div className="text-body-secondary">
