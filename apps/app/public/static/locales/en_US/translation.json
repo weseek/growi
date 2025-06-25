@@ -497,6 +497,8 @@
   },
   "sidebar_ai_assistant": {
     "reference_pages_label": "Reference pages",
+    "recent_chat": "Recent chat",
+    "no_recent_chat": "No recent chat",
     "placeholder": "Ask me anything.",
     "knowledge_assistant_placeholder": "Ask me anything.",
     "editor_assistant_placeholder": "Can I help you with anything?",
