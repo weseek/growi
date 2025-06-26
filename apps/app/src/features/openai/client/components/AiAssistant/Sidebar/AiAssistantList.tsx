@@ -27,7 +27,7 @@ type AiAssistantItemProps = {
   onEditClick: (aiAssistantData: AiAssistantHasId) => void;
   onItemClick: (aiAssistantData: AiAssistantHasId, threadData?: IThreadRelationHasId) => void;
   onUpdated?: () => void;
-  onDeleted?: () => void;
+  onDeleted?: (aiAssistantId: string) => void;
 };
 
 const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
@@ -65,7 +65,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
   const deleteAiAssistantHandler = useCallback(async() => {
     try {
       await deleteAiAssistant(aiAssistant._id);
-      onDeleted?.();
+      onDeleted?.(aiAssistant._id);
       toastSuccess(t('ai_assistant_substance.toaster.ai_assistant_deleted_success'));
     }
     catch (err) {
@@ -147,7 +147,7 @@ type AiAssistantListProps = {
   isTeamAssistant?: boolean;
   aiAssistants: AiAssistantHasId[];
   onUpdated?: () => void;
-  onDeleted?: () => void;
+  onDeleted?: (aiAssistantId: string) => void;
   onCollapsed?: () => void;
 };
 

@@ -2,7 +2,7 @@ import React, { type JSX, useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { useAiAssistantManagementModal, useSWRxAiAssistants } from '../../../stores/ai-assistant';
+import { useAiAssistantManagementModal, useSWRxAiAssistants, useAiAssistantSidebar } from '../../../stores/ai-assistant';
 import { useSWRINFxRecentThreads } from '../../../stores/thread';
 
 import { AiAssistantList } from './AiAssistantList';
@@ -15,13 +15,19 @@ const moduleClass = styles['grw-ai-assistant-substance'] ?? '';
 export const AiAssistantContent = (): JSX.Element => {
   const { t } = useTranslation();
   const { open } = useAiAssistantManagementModal();
+  const { data: aiAssistantSidebarData, close: closeAiAssistantSidebar } = useAiAssistantSidebar();
   const { mutate: mutateRecentThreads } = useSWRINFxRecentThreads();
   const { data: aiAssistants, mutate: mutateAiAssistants } = useSWRxAiAssistants();
 
-  const deleteAiAssistantHandler = useCallback(async() => {
+  const deleteAiAssistantHandler = useCallback(async(aiAssistantId: string) => {
     await mutateAiAssistants();
     await mutateRecentThreads();
-  }, [mutateAiAssistants, mutateRecentThreads]);
+
+    // If the sidebar is opened for the assistant being deleted, close it
+    if (aiAssistantSidebarData?.isOpened && aiAssistantSidebarData?.aiAssistantData?._id === aiAssistantId) {
+      closeAiAssistantSidebar();
+    }
+  }, [aiAssistantSidebarData?.aiAssistantData?._id, aiAssistantSidebarData?.isOpened, closeAiAssistantSidebar, mutateAiAssistants, mutateRecentThreads]);
 
   return (
     <div className={moduleClass}>

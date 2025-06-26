@@ -17,7 +17,7 @@ export const ThreadList: React.FC = () => {
   const swrInifiniteThreads = useSWRINFxRecentThreads();
   const { t } = useTranslation();
   const { data, mutate: mutateRecentThreads } = swrInifiniteThreads;
-  const { openChat, data: aiAssistantSidebarData } = useAiAssistantSidebar();
+  const { openChat, data: aiAssistantSidebarData, close: closeAiAssistantSidebar } = useAiAssistantSidebar();
   const { trigger: mutateAssistantThreadData } = useSWRMUTxThreads(aiAssistantSidebarData?.aiAssistantData?._id);
 
   const isEmpty = data?.[0]?.paginateResult.totalDocs === 0;
@@ -30,12 +30,24 @@ export const ThreadList: React.FC = () => {
 
       mutateAssistantThreadData();
       mutateRecentThreads();
+
+      // If the sidebar is opened for the assistant being deleted, close it
+      if (aiAssistantSidebarData?.isOpened && aiAssistantSidebarData?.aiAssistantData?._id === aiAssistantId) {
+        closeAiAssistantSidebar();
+      }
     }
     catch (err) {
       logger.error(err);
       toastError(t('ai_assistant_substance.toaster.thread_deleted_failed'));
     }
-  }, [mutateAssistantThreadData, mutateRecentThreads, t]);
+  }, [
+    aiAssistantSidebarData?.aiAssistantData?._id,
+    aiAssistantSidebarData?.isOpened,
+    closeAiAssistantSidebar,
+    mutateAssistantThreadData,
+    mutateRecentThreads,
+    t,
+  ]);
 
   return (
     <>
