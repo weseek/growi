@@ -1,5 +1,6 @@
 import type { AnonymizationModule } from '../interfaces/anonymization-module';
 
+import { pageApiModule } from './page-api-handler';
 import { pageListingApiModule } from './page-listing-api-handler';
 import { searchApiModule } from './search-api-handler';
 
@@ -9,4 +10,5 @@ import { searchApiModule } from './search-api-handler';
 export const anonymizationModules: AnonymizationModule[] = [
   searchApiModule,
   pageListingApiModule,
+  pageApiModule,
 ];
