@@ -38,7 +38,7 @@ export const pageListingApiModule: AnonymizationModule = {
       const anonymizedUrl = anonymizeQueryParams(url, ['path']);
       attributes[ATTR_HTTP_TARGET] = anonymizedUrl;
       hasAnonymization = true;
-      logger.debug(`Anonymized page-listing ancestors-children URL: ${url} -> ${anonymizedUrl}`);
+      logger.debug(`Anonymized page-listing URL: ${url} -> ${anonymizedUrl}`);
     }
 
     return hasAnonymization ? attributes : null;
