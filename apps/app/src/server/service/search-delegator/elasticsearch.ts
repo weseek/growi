@@ -73,7 +73,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     this.name = SearchDelegatorName.DEFAULT;
     this.socketIoService = socketIoService;
 
-    const elasticsearchVersion: number = configManager.getConfig('app:elasticsearchVersion');
+    const elasticsearchVersion = configManager.getConfig('app:elasticsearchVersion');
 
     if (elasticsearchVersion !== 7 && elasticsearchVersion !== 8) {
       throw new Error('Unsupported Elasticsearch version. Please specify a valid number to \'ELASTICSEARCH_VERSION\'');
