@@ -543,6 +543,8 @@
     "budget_exceeded_for_growi_cloud": "OpenAI の API の利用上限に達しました。ナレッジアシスタントを再度利用するには Hosted の場合は GROWI.cloud の管理画面から Owned の場合は OpenAI の請求ページからクレジットを追加してください。",
     "error_message": "エラーが発生しました",
     "show_error_detail": "詳細を表示",
+    "editor_assistant_long_context_warn_with_unit_line": "本文が長すぎるため、エディターアシスタントは {{startPosition}}行から{{endPosition}}行付近までを参照して回答します",
+    "editor_assistant_long_context_warn_with_unit_char": "本文が長すぎるため、エディターアシスタントは {{startPosition}}文字目から{{endPosition}}文字目までを参照して回答します",
     "discard": "破棄",
     "accept": "採用",
     "use_assistant": "アシスタントを使用する",
