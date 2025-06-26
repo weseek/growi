@@ -59,8 +59,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   isElasticsearchReindexOnBoot: boolean;
 
-  elasticsearch: any;
-
   client: ElasticsearchClient;
 
   queries: any;
