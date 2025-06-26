@@ -1,6 +1,6 @@
 {
   "name": "@growi/app",
-  "version": "7.2.8-RC.0",
+  "version": "7.2.9-RC.0",
   "license": "MIT",
   "private": "true",
   "scripts": {
@@ -260,6 +260,7 @@
   },
   "devDependencies": {
     "@apidevtools/swagger-parser": "^10.1.1",
+    "@codemirror/state": "^6.5.2",
     "@emoji-mart/data": "^1.2.1",
     "@growi/core-styles": "workspace:^",
     "@growi/custom-icons": "workspace:^",
@@ -301,6 +302,7 @@
     "downshift": "^8.2.3",
     "eazy-logger": "^3.1.0",
     "eslint-plugin-jest": "^26.5.3",
+    "fastest-levenshtein": "^1.0.16",
     "fslightbox-react": "^1.7.6",
     "handsontable": "=6.2.2",
     "happy-dom": "^15.7.4",

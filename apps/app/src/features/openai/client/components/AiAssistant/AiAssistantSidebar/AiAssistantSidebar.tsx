@@ -95,6 +95,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     // Views
     generateInitialView: generateInitialViewForEditorAssistant,
     generatingEditorTextLabel,
+    partialContentWarnLabel,
     generateActionButtons,
     headerIcon: headerIconForEditorAssistant,
     headerText: headerTextForEditorAssistant,
@@ -241,7 +242,10 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
         const chunk = decoder.decode(value);
 
-        const textValues: string[] = [];
+        let isPreMessageGenerated = false;
+        let isMainMessageGenerationStarted = false;
+        const preMessages: string[] = [];
+        const mainMessages: string[] = [];
         const lines = chunk.split('\n\n');
         lines.forEach((line) => {
           const trimmedLine = line.trim();
@@ -249,14 +253,37 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
             const data = JSON.parse(line.replace('data: ', ''));
 
             processMessageForKnowledgeAssistant(data, {
+              onPreMessage: (data) => {
+                // When main message is sent while pre-message is being transmitted
+                if (isMainMessageGenerationStarted) {
+                  preMessages.length = 0;
+                  return;
+                }
+                if (data.finished) {
+                  isPreMessageGenerated = true;
+                  return;
+                }
+                if (data.text == null) {
+                  return;
+                }
+                preMessages.push(data.text);
+              },
               onMessage: (data) => {
-                textValues.push(data.content[0].text.value);
+                if (!isMainMessageGenerationStarted) {
+                  isMainMessageGenerationStarted = true;
+                }
+
+                // When main message is sent while pre-message is being transmitted
+                if (!isPreMessageGenerated) {
+                  preMessages.length = 0;
+                }
+                mainMessages.push(data.content[0].text.value);
               },
             });
 
             processMessageForEditorAssistant(data, {
               onMessage: (data) => {
-                textValues.push(data.appendedMessage);
+                mainMessages.push(data.appendedMessage);
               },
               onDetectedDiff: (data) => {
                 logger.debug('sse diff', { data });
@@ -277,13 +304,12 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
           }
         });
 
-
         // append text values to the assistant message
         setGeneratingAnswerMessage((prevMessage) => {
           if (prevMessage == null) return;
           return {
             ...prevMessage,
-            content: prevMessage.content + textValues.join(''),
+            content: prevMessage.content + preMessages.join('') + mainMessages.join(''),
           };
         });
 
@@ -316,6 +342,11 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   }, [isEditorAssistant, isTextSelected, submitSubstance]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    // Do nothing while composing
+    if (event.nativeEvent.isComposing) {
+      return;
+    }
+
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       form.handleSubmit(submit)();
@@ -419,6 +450,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                         {generatingAnswerMessage.content}
                       </MessageCard>
                     )}
+                    { isEditorAssistant && partialContentWarnLabel }
                     { messageLogs.length > 0 && (
                       <div className="d-flex justify-content-center">
                         <span className="bg-body-tertiary text-body-secondary rounded-pill px-3 py-1" style={{ fontSize: 'smaller' }}>
