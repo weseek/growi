@@ -68,7 +68,7 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
   // Hooks
   const { data: aiAssistantSidebarData } = useAiAssistantSidebar();
   const { aiAssistantData } = aiAssistantSidebarData ?? {};
-  const { threadData } = aiAssistantSidebarData ?? {};
+  // const { threadData } = aiAssistantSidebarData ?? {};
   const { mutate: mutateRecentThreads } = useSWRINFxRecentThreads();
   const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistantData?._id);
   const { t } = useTranslation();
@@ -82,7 +82,7 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
   });
 
   // States
-  const [currentThreadTitle, setCurrentThreadId] = useState(threadData?.title);
+  const [currentThreadTitle, setCurrentThreadTitle] = useState<string | undefined>(undefined);
 
   // Functions
   const resetForm = useCallback(() => {
@@ -99,7 +99,7 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
     });
     const thread = response.data;
 
-    setCurrentThreadId(thread.title);
+    setCurrentThreadTitle(thread.title);
 
     // No need to await because data is not used
     mutateThreadData();
