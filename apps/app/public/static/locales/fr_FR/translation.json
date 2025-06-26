@@ -505,6 +505,8 @@
     "budget_exceeded_for_growi_cloud": "Vous avez atteint votre limite d'utilisation de l'API de l'OpenAI. Pour utiliser à nouveau l'assistant de connaissance, veuillez ajouter des crédits à partir de la page d'administration de GROWI.cloud pour les utilisateurs hébergés ou à partir de la page de facturation de l'OpenAI pour les utilisateurs propriétaires.",
     "error_message": "Erreur",
     "show_error_detail": "Détails de l'exposition",
+    "editor_assistant_long_context_warn_with_unit_line": "Le texte est trop long, l'Assistant de rédaction se référera approximativement aux lignes {{startPosition}} à {{endPosition}} pour sa réponse.",
+    "editor_assistant_long_context_warn_with_unit_char": "Le texte est trop long, l'Assistant de rédaction se référera aux caractères {{startPosition}} à {{endPosition}} pour sa réponse.",
     "discard": "Annuler",
     "accept": "Accepter",
     "use_assistant": "Utiliser l'assistant",
@@ -595,7 +597,7 @@
   "default_ai_assistant": {
     "not_set": "L'assistant par défaut n'est pas configuré"
   },
- "ai_assistant_tree": {
+  "ai_assistant_tree": {
     "add_assistant": "Ajouter un assistant",
     "my_assistants": "Mes assistants",
     "team_assistants": "Assistants d'équipe",
