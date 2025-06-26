@@ -1,20 +1,20 @@
 import { createHash } from 'crypto';
 import type { IncomingMessage } from 'http';
 
-import { isCreatablePage } from '@growi/core/dist/utils/page-path-utils';
+import {
+  isCreatablePage,
+  isUsersHomepage,
+  isUserPage,
+  isUsersTopPage,
+  isPermalink,
+  getUsernameByPath,
+} from '@growi/core/dist/utils/page-path-utils';
 import { diag } from '@opentelemetry/api';
 
 import { ATTR_HTTP_TARGET } from '../../semconv';
 import type { AnonymizationModule } from '../interfaces/anonymization-module';
 
 const logger = diag.createComponentLogger({ namespace: 'growi:anonymization:page-access-handler' });
-
-/**
- * Check if a string is a MongoDB ObjectId (24 hex characters)
- */
-function isObjectId(str: string): boolean {
-  return /^[0-9a-fA-F]{24}$/.test(str);
-}
 
 /**
  * Create a hash of the given string
@@ -30,16 +30,42 @@ function hashString(str: string): string {
  */
 function anonymizeUrlPath(urlPath: string): string {
   try {
-    // Remove leading/trailing slashes for processing
+    // If it's a permalink (ObjectId), don't anonymize
+    if (isPermalink(urlPath)) {
+      return urlPath;
+    }
+
+    // Handle user pages specially
+    if (isUserPage(urlPath)) {
+      const username = getUsernameByPath(urlPath);
+
+      if (isUsersHomepage(urlPath) && username) {
+        // For user homepage (/user/john), anonymize only the username
+        const hashedUsername = hashString(username);
+        return `/user/[USERNAME_HASHED:${hashedUsername}]`;
+      }
+
+      if (username) {
+        // For user sub-pages (/user/john/projects), anonymize username and remaining path separately
+        const hashedUsername = hashString(username);
+        const remainingPath = urlPath.replace(`/user/${username}`, '');
+
+        if (remainingPath) {
+          const cleanRemainingPath = remainingPath.replace(/^\/+|\/+$/g, '');
+          const hashedRemainingPath = hashString(cleanRemainingPath);
+          const leadingSlash = remainingPath.startsWith('/') ? '/' : '';
+          const trailingSlash = remainingPath.endsWith('/') && remainingPath.length > 1 ? '/' : '';
+
+          return `/user/[USERNAME_HASHED:${hashedUsername}]${leadingSlash}[HASHED:${hashedRemainingPath}]${trailingSlash}`;
+        }
+      }
+    }
+
+    // For regular pages, use the original logic
     const cleanPath = urlPath.replace(/^\/+|\/+$/g, '');
 
     // If empty path, return as-is
     if (!cleanPath) {
-      return urlPath;
-    }
-
-    // If it's an ObjectId, don't anonymize
-    if (isObjectId(cleanPath)) {
       return urlPath;
     }
 
@@ -79,6 +105,15 @@ export const pageAccessModule: AnonymizationModule = {
         || path.includes('.')) { // Exclude file extensions (images, css, js, etc.)
         return false;
       }
+
+      // Exclude users top page (/user)
+      if (isUsersTopPage(path)) return false;
+
+      // Exclude permalink (ObjectId) paths
+      if (isPermalink(path)) return false;
+
+      // Handle user pages (including homepage and sub-pages)
+      if (isUserPage(path)) return true;
 
       // Use GROWI's isCreatablePage logic to determine if this is a valid page path
       // This excludes API endpoints, system paths, etc.
