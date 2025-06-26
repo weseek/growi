@@ -68,7 +68,6 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
   // Hooks
   const { data: aiAssistantSidebarData } = useAiAssistantSidebar();
   const { aiAssistantData } = aiAssistantSidebarData ?? {};
-  // const { threadData } = aiAssistantSidebarData ?? {};
   const { mutate: mutateRecentThreads } = useSWRINFxRecentThreads();
   const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistantData?._id);
   const { t } = useTranslation();
