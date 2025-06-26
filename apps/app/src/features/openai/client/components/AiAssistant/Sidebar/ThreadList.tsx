@@ -31,8 +31,8 @@ export const ThreadList: React.FC = () => {
       mutateAssistantThreadData();
       mutateRecentThreads();
 
-      // If the sidebar is opened for the assistant being deleted, close it
-      if (aiAssistantSidebarData?.isOpened && aiAssistantSidebarData?.aiAssistantData?._id === aiAssistantId) {
+      // Close if the thread to be deleted is open in right sidebar
+      if (aiAssistantSidebarData?.isOpened && aiAssistantSidebarData?.threadData?._id === threadRelationId) {
         closeAiAssistantSidebar();
       }
     }
@@ -40,14 +40,7 @@ export const ThreadList: React.FC = () => {
       logger.error(err);
       toastError(t('ai_assistant_substance.toaster.thread_deleted_failed'));
     }
-  }, [
-    aiAssistantSidebarData?.aiAssistantData?._id,
-    aiAssistantSidebarData?.isOpened,
-    closeAiAssistantSidebar,
-    mutateAssistantThreadData,
-    mutateRecentThreads,
-    t,
-  ]);
+  }, [aiAssistantSidebarData?.isOpened, aiAssistantSidebarData?.threadData?._id, closeAiAssistantSidebar, mutateAssistantThreadData, mutateRecentThreads, t]);
 
   return (
     <>
