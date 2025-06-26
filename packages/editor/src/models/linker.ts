@@ -26,10 +26,10 @@ export class Linker {
   };
 
   static patterns = {
-    pukiwikiLinkWithLabel: /^\[\[(?<label>.+)>(?<link>.+)\]\]$/, // https://regex101.com/r/2fNmUN/2
+    pukiwikiLinkWithLabel: /^\[\[(?<label>[^\]>]+)>(?<link>[^\]]+)\]\]$/, // https://regex101.com/r/2fNmUN/3
     pukiwikiLinkWithoutLabel: /^\[\[(?<label>.+)\]\]$/, // https://regex101.com/r/S7w5Xu/1
     growiLink: /^\[(?<label>\/.+)\]$/, // https://regex101.com/r/DJfkYf/3
-    markdownLink: /^\[(?<label>.*)\]\((?<link>.*)\)$/, // https://regex101.com/r/DZCKP3/2
+    markdownLink: /^\[(?<label>[^\]]*)\]\((?<link>[^)]*)\)$/, // https://regex101.com/r/DZCKP3/3
   };
 
   initWhenMarkdownLink(): void {
