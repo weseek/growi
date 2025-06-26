@@ -50,7 +50,7 @@ export const getPageBodyForContext = (
     const finalCharsBeforeCursor = Math.min(charsBeforeCursor + shortfallAfter, availableBeforeCursor);
 
     // Calculate start and end positions
-    const startPos = cursorPos - finalCharsBeforeCursor;
+    const startPos = Math.max(cursorPos - finalCharsBeforeCursor, 0);
     const endPos = cursorPos + finalCharsAfterCursor;
 
     const content = doc.slice(startPos, endPos).toString();
