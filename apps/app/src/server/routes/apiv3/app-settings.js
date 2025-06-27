@@ -890,19 +890,6 @@ module.exports = (crowi) => {
   router.put('/file-upload-setting', loginRequiredStrictly, adminRequired, addActivity, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
     const { fileUploadType } = req.body;
 
-    if (fileUploadType === 'local' || fileUploadType === 'gridfs') {
-      try {
-        await configManager.updateConfigs({
-          'app:fileUploadType': fileUploadType,
-        }, { skipPubsub: true });
-      }
-      catch (err) {
-        const msg = `Error occurred in updating ${fileUploadType} settings: ${err.message}`;
-        logger.error('Error', err);
-        return res.apiv3Err(new ErrorV3(msg, 'update-fileUploadType-failed'));
-      }
-    }
-
     if (fileUploadType === 'aws') {
       try {
         try {
