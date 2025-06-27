@@ -4,6 +4,7 @@ import type { NodeSDK } from '@opentelemetry/sdk-node';
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
+import { setupCustomMetrics } from './custom-metrics';
 import { setResource } from './node-sdk-resource';
 
 const logger = loggerFactory('growi:opentelemetry:server');
@@ -70,6 +71,9 @@ For more information, see https://docs.growi.org/en/admin-guide/admin-cookbook/t
     const enableAnonymization = configManager.getConfig('otel:anonymizeInBestEffort', ConfigSource.env);
 
     const sdkConfig = generateNodeSDKConfiguration({ enableAnonymization });
+
+    setupCustomMetrics();
+
     sdkInstance = new NodeSDK(sdkConfig);
   }
 };

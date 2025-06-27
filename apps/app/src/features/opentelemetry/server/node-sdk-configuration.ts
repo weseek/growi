@@ -11,9 +11,6 @@ import { configManager } from '~/server/service/config-manager';
 import { getGrowiVersion } from '~/utils/growi-version';
 
 import { httpInstrumentationConfig as httpInstrumentationConfigForAnonymize } from './anonymization';
-import { addApplicationMetrics } from './custom-metrics';
-import { addUserCountsMetrics } from './custom-metrics/user-counts-metrics';
-import { getOsResourceAttributes } from './custom-resource-attributes';
 import { ATTR_SERVICE_INSTANCE_ID } from './semconv';
 
 type Option = {
@@ -31,14 +28,9 @@ export const generateNodeSDKConfiguration = (opts?: Option): Configuration => {
   if (configuration == null) {
     const version = getGrowiVersion();
 
-    // Collect OS resource attributes
-    const osAttributes = getOsResourceAttributes();
-
     resource = resourceFromAttributes({
       [ATTR_SERVICE_NAME]: 'growi',
       [ATTR_SERVICE_VERSION]: version,
-      // Add OS resource attributes
-      ...osAttributes,
     });
 
     // Data anonymization configuration
@@ -67,9 +59,6 @@ export const generateNodeSDKConfiguration = (opts?: Option): Configuration => {
       })],
     };
 
-    // add custom metrics
-    addApplicationMetrics();
-    addUserCountsMetrics();
   }
 
   return configuration;
@@ -87,10 +76,11 @@ export const generateAdditionalResourceAttributes = async(opts?: Option): Promis
   const serviceInstanceId = configManager.getConfig('otel:serviceInstanceId')
     ?? configManager.getConfig('app:serviceInstanceId');
 
-  const { getApplicationResourceAttributes } = await import('./custom-resource-attributes');
+  const { getApplicationResourceAttributes, getOsResourceAttributes } = await import('./custom-resource-attributes');
 
   return resource.merge(resourceFromAttributes({
     [ATTR_SERVICE_INSTANCE_ID]: serviceInstanceId,
     ...await getApplicationResourceAttributes(),
+    ...await getOsResourceAttributes(),
   }));
 };
