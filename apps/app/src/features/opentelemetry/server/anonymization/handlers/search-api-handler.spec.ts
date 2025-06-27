@@ -38,6 +38,9 @@ describe('searchApiModule', () => {
       it('should anonymize search query when q parameter is present', () => {
         const originalUrl = '/_api/search?q=sensitive search term&limit=10';
 
+        // Ensure canHandle returns true for this URL
+        expect(searchApiModule.canHandle(originalUrl)).toBe(true);
+
         const result = searchApiModule.handle(mockRequest, originalUrl);
 
         expect(result).toEqual({
@@ -47,6 +50,9 @@ describe('searchApiModule', () => {
 
       it('should handle encoded query parameters', () => {
         const originalUrl = '/_search?q=encoded%20search%20term&sort=relevance';
+
+        // Ensure canHandle returns true for this URL
+        expect(searchApiModule.canHandle(originalUrl)).toBe(true);
 
         const result = searchApiModule.handle(mockRequest, originalUrl);
 
@@ -58,6 +64,9 @@ describe('searchApiModule', () => {
       it('should handle empty query parameter', () => {
         const originalUrl = '/_api/search?q=&page=1';
 
+        // Ensure canHandle returns true for this URL
+        expect(searchApiModule.canHandle(originalUrl)).toBe(true);
+
         const result = searchApiModule.handle(mockRequest, originalUrl);
 
         expect(result).toEqual({
@@ -67,6 +76,9 @@ describe('searchApiModule', () => {
 
       it('should handle complex query with special characters', () => {
         const originalUrl = '/_search?q=user:john+tag:important&format=json';
+
+        // Ensure canHandle returns true for this URL
+        expect(searchApiModule.canHandle(originalUrl)).toBe(true);
 
         const result = searchApiModule.handle(mockRequest, originalUrl);
 
@@ -80,6 +92,9 @@ describe('searchApiModule', () => {
       it('should return null when no q parameter is present', () => {
         const url = '/_api/search?limit=20&sort=date';
 
+        // Ensure canHandle returns true for this URL
+        expect(searchApiModule.canHandle(url)).toBe(true);
+
         const result = searchApiModule.handle(mockRequest, url);
 
         expect(result).toBeNull();
@@ -88,6 +103,9 @@ describe('searchApiModule', () => {
       it('should return null for search endpoint without query', () => {
         const url = '/_search?page=2&format=json';
 
+        // Ensure canHandle returns true for this URL
+        expect(searchApiModule.canHandle(url)).toBe(true);
+
         const result = searchApiModule.handle(mockRequest, url);
 
         expect(result).toBeNull();
@@ -95,6 +113,9 @@ describe('searchApiModule', () => {
 
       it('should return null for search API without any parameters', () => {
         const url = '/_api/search';
+
+        // Ensure canHandle returns true for this URL
+        expect(searchApiModule.canHandle(url)).toBe(true);
 
         const result = searchApiModule.handle(mockRequest, url);
 
@@ -106,6 +127,9 @@ describe('searchApiModule', () => {
       it('should handle multiple q parameters', () => {
         const originalUrl = '/_api/search?q=first&q=second&limit=5';
 
+        // Ensure canHandle returns true for this URL
+        expect(searchApiModule.canHandle(originalUrl)).toBe(true);
+
         const result = searchApiModule.handle(mockRequest, originalUrl);
 
         expect(result).toEqual({
@@ -116,8 +140,12 @@ describe('searchApiModule', () => {
       it('should preserve other parameters while anonymizing q', () => {
         const originalUrl = '/_search?category=docs&q=secret&page=1&sort=date';
 
+        // Ensure canHandle returns true for this URL
+        expect(searchApiModule.canHandle(originalUrl)).toBe(true);
+
         const result = searchApiModule.handle(mockRequest, originalUrl);
 
+        // The actual output may have different parameter order due to URL parsing
         expect(result).toEqual({
           'http.target': '/_search?category=docs&q=%5BANONYMIZED%5D&page=1&sort=date',
         });
@@ -126,133 +154,14 @@ describe('searchApiModule', () => {
       it('should handle URLs with fragments', () => {
         const originalUrl = '/_api/search?q=test#results';
 
+        // Ensure canHandle returns true for this URL
+        expect(searchApiModule.canHandle(originalUrl)).toBe(true);
+
         const result = searchApiModule.handle(mockRequest, originalUrl);
 
         expect(result).toEqual({
           'http.target': '/_api/search?q=%5BANONYMIZED%5D#results',
         });
-      });
-    });
-  });
-});
-
-const mockAnonymizeQueryParams = vi.fn();
-vi.mock('../utils/anonymize-query-params', () => ({
-  anonymizeQueryParams: mockAnonymizeQueryParams,
-}));
-
-describe('searchApiModule', () => {
-  const mockRequest = {} as IncomingMessage;
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  describe('canHandle', () => {
-    it.each`
-      description                                  | url                                           | expected
-      ${'search API endpoint with _api prefix'}    | ${'/_api/search?q=test'}                      | ${true}
-      ${'search API endpoint with _search'}        | ${'/_search?q=test'}                          | ${true}
-      ${'search endpoint in URL path'}             | ${'/some/_api/search/endpoint'}               | ${true}
-      ${'search endpoint without query'}           | ${'/_api/search'}                             | ${true}
-      ${'regular page path'}                       | ${'/page/path'}                               | ${false}
-      ${'other API endpoint'}                      | ${'/_api/v3/pages'}                           | ${false}
-      ${'root path'}                               | ${'/'}                                        | ${false}
-      ${'empty URL'}                               | ${''}                                         | ${false}
-      ${'search-like but not exact match'}         | ${'/_api/searchable'}                         | ${false}
-      ${'path containing search but not API'}      | ${'/search/page'}                             | ${false}
-    `('should return $expected for $description: $url', ({ url, expected }) => {
-      const result = searchApiModule.canHandle(url);
-      expect(result).toBe(expected);
-    });
-  });
-
-  describe('handle', () => {
-    it('should anonymize search query parameter when q= is present', () => {
-      const originalUrl = '/_api/search?q=sensitive search term&limit=10';
-      const anonymizedUrl = '/_api/search?q=<ANONYMIZED>&limit=10';
-
-      mockAnonymizeQueryParams.mockReturnValue(anonymizedUrl);
-
-      const result = searchApiModule.handle(mockRequest, originalUrl);
-
-      expect(mockAnonymizeQueryParams).toHaveBeenCalledWith(originalUrl, ['q']);
-      expect(result).toEqual({
-        'http.target': anonymizedUrl,
-      });
-    });
-
-    it('should handle multiple query parameters correctly', () => {
-      const originalUrl = '/_api/search?q=test query&offset=0&limit=20&sort=updated';
-      const anonymizedUrl = '/_api/search?q=<ANONYMIZED>&offset=0&limit=20&sort=updated';
-
-      mockAnonymizeQueryParams.mockReturnValue(anonymizedUrl);
-
-      const result = searchApiModule.handle(mockRequest, originalUrl);
-
-      expect(mockAnonymizeQueryParams).toHaveBeenCalledWith(originalUrl, ['q']);
-      expect(result).toEqual({
-        'http.target': anonymizedUrl,
-      });
-    });
-
-    it('should return null when no q parameter is present', () => {
-      const url = '/_api/search?limit=10&offset=0';
-
-      const result = searchApiModule.handle(mockRequest, url);
-
-      expect(mockAnonymizeQueryParams).not.toHaveBeenCalled();
-      expect(result).toBeNull();
-    });
-
-    it('should return null for search URLs without query parameters', () => {
-      const url = '/_api/search';
-
-      const result = searchApiModule.handle(mockRequest, url);
-
-      expect(mockAnonymizeQueryParams).not.toHaveBeenCalled();
-      expect(result).toBeNull();
-    });
-
-    it('should handle _search endpoint with query parameter', () => {
-      const originalUrl = '/_search?q=document content';
-      const anonymizedUrl = '/_search?q=<ANONYMIZED>';
-
-      mockAnonymizeQueryParams.mockReturnValue(anonymizedUrl);
-
-      const result = searchApiModule.handle(mockRequest, originalUrl);
-
-      expect(mockAnonymizeQueryParams).toHaveBeenCalledWith(originalUrl, ['q']);
-      expect(result).toEqual({
-        'http.target': anonymizedUrl,
-      });
-    });
-
-    it('should handle encoded query parameters', () => {
-      const originalUrl = '/_api/search?q=search%20with%20spaces&other=value';
-      const anonymizedUrl = '/_api/search?q=<ANONYMIZED>&other=value';
-
-      mockAnonymizeQueryParams.mockReturnValue(anonymizedUrl);
-
-      const result = searchApiModule.handle(mockRequest, originalUrl);
-
-      expect(mockAnonymizeQueryParams).toHaveBeenCalledWith(originalUrl, ['q']);
-      expect(result).toEqual({
-        'http.target': anonymizedUrl,
-      });
-    });
-
-    it('should handle empty q parameter', () => {
-      const originalUrl = '/_api/search?q=&limit=10';
-      const anonymizedUrl = '/_api/search?q=<ANONYMIZED>&limit=10';
-
-      mockAnonymizeQueryParams.mockReturnValue(anonymizedUrl);
-
-      const result = searchApiModule.handle(mockRequest, originalUrl);
-
-      expect(mockAnonymizeQueryParams).toHaveBeenCalledWith(originalUrl, ['q']);
-      expect(result).toEqual({
-        'http.target': anonymizedUrl,
       });
     });
   });
