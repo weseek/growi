@@ -53,7 +53,7 @@ export function anonymizeQueryParams(target: string, paramNames: string[]): stri
       }
     }
 
-    return hasChange ? `${url.pathname}?${searchParams.toString()}` : target;
+    return hasChange ? `${url.pathname}?${searchParams.toString()}${url.hash}` : target;
   }
   catch (error) {
     logger.warn(`Failed to anonymize query parameters [${paramNames.join(', ')}]: ${error}`);
