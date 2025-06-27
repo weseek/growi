@@ -897,7 +897,7 @@ module.exports = (crowi) => {
         }, { skipPubsub: true });
       }
       catch (err) {
-        const msg = `Error occurred in updating file upload type to ${fileUploadType}: ${err.message}`;
+        const msg = `Error occurred in updating ${fileUploadType} settings: ${err.message}`;
         logger.error('Error', err);
         return res.apiv3Err(new ErrorV3(msg, 'update-fileUploadType-failed'));
       }
