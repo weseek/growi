@@ -11,9 +11,9 @@ import { Tooltip } from 'reactstrap';
 
 import type { IActivityHasId } from '~/interfaces/activity';
 
-type Props = {
-  activityList: IActivityHasId[]
-}
+ type Props = {
+   activityList: IActivityHasId[]
+ }
 
 const formatDate = (date: Date): string => {
   return format(new Date(date), 'yyyy/MM/dd HH:mm:ss');
@@ -31,55 +31,59 @@ export const ActivityTable : FC<Props> = (props: Props) => {
   }, [setTooltipOpen]);
 
   return (
-    <div className="table-responsive text-nowrap h-100">
-      <div className="text-truncate">
-        <table className="table table-default table-bordered table-user-list">
-          <thead>
-            <tr>
-              <th scope="col">{t('admin:audit_log_management.user')}</th>
-              <th scope="col">{t('admin:audit_log_management.date')}</th>
-              <th scope="col">{t('admin:audit_log_management.action')}</th>
-              <th scope="col">{t('admin:audit_log_management.ip')}</th>
-              <th scope="col">{t('admin:audit_log_management.url')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {props.activityList.map((activity) => {
-              return (
-                <tr data-testid="activity-table" key={activity._id}>
-                  <td>
-                    { activity.user != null && (
-                      <>
-                        <UserPicture user={activity.user} />
-                        <a
-                          className="ms-2"
-                          href={isPopulated(activity.user) ? pagePathUtils.userHomepagePath(activity.user) : undefined}
-                        >
-                          {activity.snapshot?.username}
-                        </a>
-                      </>
-                    )}
-                  </td>
-                  <td>{formatDate(activity.createdAt)}</td>
-                  <td>{t(`admin:audit_log_action.${activity.action}`)}</td>
-                  <td>{activity.ip}</td>
-                  <td>
-                    {activity.endpoint}
+
+    <div className="table-responsive h-100">
+      <table className="table table-default table-bordered table-user-list" style={{ tableLayout: 'fixed' }}>
+        <thead>
+          <tr>
+            <th scope="col">{t('admin:audit_log_management.user')}</th>
+            <th scope="col">{t('admin:audit_log_management.date')}</th>
+            <th scope="col">{t('admin:audit_log_management.action')}</th>
+            <th scope="col">{t('admin:audit_log_management.ip')}</th>
+            <th scope="col" style={{ width: '30%' }}>{t('admin:audit_log_management.url')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {props.activityList.map((activity) => {
+            return (
+              <tr data-testid="activity-table" key={activity._id}>
+                <td>
+                  { activity.user != null && (
+                    <>
+                      <UserPicture user={activity.user} />
+                      <a
+                        className="ms-2"
+                        href={isPopulated(activity.user) ? pagePathUtils.userHomepagePath(activity.user) : undefined}
+                      >
+                        {activity.snapshot?.username}
+                      </a>
+                    </>
+                  )}
+                </td>
+                <td>{formatDate(activity.createdAt)}</td>
+                <td>{t(`admin:audit_log_action.${activity.action}`)}</td>
+                <td>{activity.ip}</td>
+
+                <td style={{ overflow: 'hidden' }}>
+                  <div className="d-flex align-items-center">
+                    <span className="flex-grow-1 text-truncate">
+                      {activity.endpoint}
+                    </span>
                     <CopyToClipboard text={activity.endpoint} onCopy={showToolTip}>
-                      <button type="button" className="btn btn-outline-secondary border-0 pull-right" id="tooltipTarget">
+                      <button type="button" className="btn btn-outline-secondary border-0 ms-2" id={`tooltipTarget-${activity._id}`}>
                         <span className="material-symbols-outlined" aria-hidden="true">content_paste</span>
                       </button>
                     </CopyToClipboard>
-                    <Tooltip placement="top" isOpen={tooltopOpen} fade={false} target="tooltipTarget">
+                    <Tooltip placement="top" isOpen={tooltopOpen} fade={false} target={`tooltipTarget-${activity._id}`}>
                       copied!
                     </Tooltip>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 };
