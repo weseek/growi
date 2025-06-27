@@ -1135,7 +1135,7 @@ export const CONFIG_DEFINITIONS = {
     defaultValue: false,
   }),
   'otel:anonymizeInBestEffort': defineConfig<boolean>({
-    envVarName: 'OPENTELEMETRY_ANNONYMIZE_IN_BEST_EFFORT',
+    envVarName: 'OPENTELEMETRY_ANONYMIZE_IN_BEST_EFFORT',
     defaultValue: false,
   }),
   'otel:serviceInstanceId': defineConfig<string | undefined>({
