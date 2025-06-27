@@ -62,4 +62,60 @@ describe('isCreatablePage', () => {
       expect(isCreatablePage(path)).toBe(false);
     });
   });
+
+  describe('special characters restriction', () => {
+    it.each([
+      '/path^with^caret', // ^ character
+      '/path$with$dollar', // $ character
+      '/path*with*asterisk', // * character
+      '/path+with+plus', // + character
+    ])('should return false for "%s"', (path) => {
+      expect(isCreatablePage(path)).toBe(false);
+    });
+  });
+
+  describe('URL patterns restriction', () => {
+    it.each([
+      '/http://example.com/page', // HTTP URL
+      '/https://example.com/page', // HTTPS URL
+    ])('should return false for "%s"', (path) => {
+      expect(isCreatablePage(path)).toBe(false);
+    });
+  });
+
+  describe('relative path restriction', () => {
+    it.each([
+      '/..', // Parent directory reference
+      '/path/../other', // Relative path with parent reference
+    ])('should return false for "%s"', (path) => {
+      expect(isCreatablePage(path)).toBe(false);
+    });
+  });
+
+  describe('backslash restriction', () => {
+    it.each([
+      '/path\\with\\backslash', // Backslash in path
+      '/folder\\file', // Backslash separator
+    ])('should return false for "%s"', (path) => {
+      expect(isCreatablePage(path)).toBe(false);
+    });
+  });
+
+  describe('space and slash restriction', () => {
+    it.each([
+      '/ path / with / spaces', // Spaces around slashes
+      '/path / with / bad / formatting', // Mixed spacing
+    ])('should return false for "%s"', (path) => {
+      expect(isCreatablePage(path)).toBe(false);
+    });
+  });
+
+  describe('system path restriction', () => {
+    it.each([
+      '/_r/some/path', // _r system path
+      '/_private-legacy-pages/old', // Private legacy pages
+    ])('should return false for "%s"', (path) => {
+      expect(isCreatablePage(path)).toBe(false);
+    });
+  });
 });
