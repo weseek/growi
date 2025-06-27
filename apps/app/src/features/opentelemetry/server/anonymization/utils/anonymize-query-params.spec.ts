@@ -11,8 +11,8 @@ describe('anonymizeQueryParams', () => {
     ${'array-style parameters'}       | ${'/_api/v3/page/test?paths[]=/user/john&paths[]=/user/jane'}          | ${['paths']}       | ${'/_api/v3/page/test?paths%5B%5D=%5BANONYMIZED%5D'}
     ${'JSON array format'}            | ${'/_api/v3/test?paths=["/user/john","/user/jane"]'}                   | ${['paths']}       | ${'/_api/v3/test?paths=%5B%22%5BANONYMIZED%5D%22%5D'}
     ${'multiple parameters'}          | ${'/_api/v3/test?q=secret&path=/user/john&other=keep'}                 | ${['q', 'path']}   | ${'/_api/v3/test?q=%5BANONYMIZED%5D&path=%5BANONYMIZED%5D&other=keep'}
-    ${'empty parameter value'}        | ${'/_api/v3/test?q=&other=value'}                                      | ${['q']}           | ${'/_api/v3/test?q=&other=value'}
-    ${'parameter without value'}      | ${'/_api/v3/test?q&other=value'}                                       | ${['q']}           | ${'/_api/v3/test?q&other=value'}
+    ${'empty parameter value'}        | ${'/_api/v3/test?q=&other=value'}                                      | ${['q']}           | ${'/_api/v3/test?q=%5BANONYMIZED%5D&other=value'}
+    ${'parameter without value'}      | ${'/_api/v3/test?q&other=value'}                                       | ${['q']}           | ${'/_api/v3/test?q=%5BANONYMIZED%5D&other=value'}
     ${'mixed array and single'}       | ${'/_api/v3/test?q=search&paths[]=/user/john&paths[]=/user/jane'}      | ${['q', 'paths']}  | ${'/_api/v3/test?q=%5BANONYMIZED%5D&paths%5B%5D=%5BANONYMIZED%5D'}
     ${'with section'}                 | ${'/_api/v3/test?q=search#section'}                                    | ${['q']}           | ${'/_api/v3/test?q=%5BANONYMIZED%5D#section'}
     ${'malformed JSON array'}         | ${'/_api/v3/test?paths=["/user/john"'}                                 | ${['paths']}       | ${'/_api/v3/test?paths=%5BANONYMIZED%5D'}

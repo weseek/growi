@@ -31,7 +31,8 @@ export function anonymizeQueryParams(target: string, paramNames: string[]): stri
       // Handle regular parameter (including JSON arrays)
       if (searchParams.has(paramName)) {
         const value = searchParams.get(paramName);
-        if (value) {
+        // Anonymize parameter even if it's empty (null check only)
+        if (value !== null) {
           let replacement = '[ANONYMIZED]';
           if (value.startsWith('[') && value.endsWith(']')) {
             const jsonArray = tryParseJsonArray(value);
