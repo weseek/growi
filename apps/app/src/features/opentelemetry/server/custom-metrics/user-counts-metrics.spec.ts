@@ -1,4 +1,5 @@
-import { metrics } from '@opentelemetry/api';
+import { metrics, type Meter, type ObservableGauge } from '@opentelemetry/api';
+import { mock } from 'vitest-mock-extended';
 
 import { addUserCountsMetrics } from './user-counts-metrics';
 
@@ -29,16 +30,13 @@ vi.mock('~/server/service/growi-info', () => ({
 }));
 
 describe('addUserCountsMetrics', () => {
-  const mockMeter = {
-    createObservableGauge: vi.fn(),
-    addBatchObservableCallback: vi.fn(),
-  };
-  const mockUserCountGauge = Symbol('userCountGauge');
-  const mockActiveUserCountGauge = Symbol('activeUserCountGauge');
+  const mockMeter = mock<Meter>();
+  const mockUserCountGauge = mock<ObservableGauge>();
+  const mockActiveUserCountGauge = mock<ObservableGauge>();
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(metrics.getMeter).mockReturnValue(mockMeter as unknown as ReturnType<typeof metrics.getMeter>);
+    vi.mocked(metrics.getMeter).mockReturnValue(mockMeter);
     mockMeter.createObservableGauge
       .mockReturnValueOnce(mockUserCountGauge)
       .mockReturnValueOnce(mockActiveUserCountGauge);

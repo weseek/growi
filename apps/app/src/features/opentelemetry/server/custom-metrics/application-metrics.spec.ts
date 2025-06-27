@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 
-import { metrics } from '@opentelemetry/api';
+import { metrics, type Meter, type ObservableGauge } from '@opentelemetry/api';
+import { mock } from 'vitest-mock-extended';
 
 import { configManager } from '~/server/service/config-manager';
 
@@ -34,15 +35,12 @@ vi.mock('~/server/service/growi-info', () => ({
 }));
 
 describe('addApplicationMetrics', () => {
-  const mockMeter = {
-    createObservableGauge: vi.fn(),
-    addBatchObservableCallback: vi.fn(),
-  };
-  const mockGauge = Symbol('gauge');
+  const mockMeter = mock<Meter>();
+  const mockGauge = mock<ObservableGauge>();
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(metrics.getMeter).mockReturnValue(mockMeter as any);
+    vi.mocked(metrics.getMeter).mockReturnValue(mockMeter);
     mockMeter.createObservableGauge.mockReturnValue(mockGauge);
   });
 
