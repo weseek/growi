@@ -41,9 +41,9 @@ export const pageApiModule: AnonymizationModule = {
 
       // Determine endpoint type for logging
       let endpointType = 'page API';
-      if (url.includes('/_api/v3/pages/list')) endpointType = 'pages/list';
-      else if (url.includes('/_api/v3/pages/subordinated-list')) endpointType = 'pages/subordinated-list';
-      else if (url.includes('/_api/v3/page/check-page-existence')) endpointType = 'page/check-page-existence';
+      if (url.includes('/_api/v3/pages/list')) endpointType = '/pages/list';
+      else if (url.includes('/_api/v3/pages/subordinated-list')) endpointType = '/pages/subordinated-list';
+      else if (url.includes('/_api/v3/page/check-page-existence')) endpointType = '/page/check-page-existence';
 
       logger.debug(`Anonymized ${endpointType} URL: ${url} -> ${anonymizedUrl}`);
     }
