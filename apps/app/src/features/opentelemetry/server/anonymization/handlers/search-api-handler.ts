@@ -16,7 +16,9 @@ export const searchApiModule: AnonymizationModule = {
    * Check if this module can handle search API endpoints
    */
   canHandle(url: string): boolean {
-    return url.includes('/_api/search') || url.includes('/_search');
+    // More precise matching to avoid false positives
+    return url.match(/\/_api\/search(\?|$)/) !== null || url.match(/\/_search(\?|$)/) !== null
+           || url.includes('/_api/search/') || url.includes('/_search/');
   },
 
   /**
@@ -24,7 +26,8 @@ export const searchApiModule: AnonymizationModule = {
    */
   handle(request: IncomingMessage, url: string): Record<string, string> | null {
     // Check if this is a search request that needs anonymization
-    if (url.includes('?q=')) {
+    // Look for q parameter anywhere in the query string
+    if (url.includes('?q=') || url.includes('&q=')) {
       const anonymizedUrl = anonymizeQueryParams(url, ['q']);
 
       logger.debug(`Anonymized search API URL: ${url} -> ${anonymizedUrl}`);
