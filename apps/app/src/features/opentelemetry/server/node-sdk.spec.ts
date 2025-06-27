@@ -14,6 +14,11 @@ vi.mock('~/server/service/config-manager', () => ({
   },
 }));
 
+// Mock custom metrics setup
+vi.mock('./custom-metrics', () => ({
+  setupCustomMetrics: vi.fn(),
+}));
+
 // Mock growi-info service to avoid database dependencies
 vi.mock('~/server/service/growi-info', () => ({
   growiInfoService: {
@@ -30,6 +35,25 @@ vi.mock('~/server/service/growi-info', () => ({
 }));
 
 describe('node-sdk', () => {
+  // Helper functions to reduce duplication
+  const mockInstrumentationEnabled = () => {
+    vi.mocked(configManager.getConfig).mockImplementation((key: string, source?: ConfigSource) => {
+      if (key === 'otel:enabled') {
+        return source === ConfigSource.env ? true : undefined;
+      }
+      return undefined;
+    });
+  };
+
+  const mockInstrumentationDisabled = () => {
+    vi.mocked(configManager.getConfig).mockImplementation((key: string, source?: ConfigSource) => {
+      if (key === 'otel:enabled') {
+        return source === ConfigSource.env ? false : undefined;
+      }
+      return undefined;
+    });
+  };
+
   beforeEach(async() => {
     vi.clearAllMocks();
 
@@ -39,6 +63,57 @@ describe('node-sdk', () => {
 
     // Mock loadConfigs to resolve immediately
     vi.mocked(configManager.loadConfigs).mockResolvedValue(undefined);
+  });
+
+  describe('initInstrumentation', () => {
+    it('should call setupCustomMetrics when instrumentation is enabled', async() => {
+      const { setupCustomMetrics } = await import('./custom-metrics');
+
+      // Mock instrumentation as enabled
+      mockInstrumentationEnabled();
+
+      await initInstrumentation();
+
+      // Verify setupCustomMetrics was called
+      expect(setupCustomMetrics).toHaveBeenCalledOnce();
+    });
+
+    it('should not call setupCustomMetrics when instrumentation is disabled', async() => {
+      const { setupCustomMetrics } = await import('./custom-metrics');
+
+      // Mock instrumentation as disabled
+      mockInstrumentationDisabled();
+
+      await initInstrumentation();
+
+      // Verify setupCustomMetrics was not called
+      expect(setupCustomMetrics).not.toHaveBeenCalled();
+    });
+
+    it('should create SDK instance when instrumentation is enabled', async() => {
+      // Mock instrumentation as enabled
+      mockInstrumentationEnabled();
+
+      await initInstrumentation();
+
+      // Get instance for testing
+      const { __testing__ } = await import('./node-sdk');
+      const sdkInstance = __testing__.getSdkInstance();
+      expect(sdkInstance).toBeDefined();
+      expect(sdkInstance).toBeInstanceOf(NodeSDK);
+    });
+
+    it('should not create SDK instance when instrumentation is disabled', async() => {
+      // Mock instrumentation as disabled
+      mockInstrumentationDisabled();
+
+      await initInstrumentation();
+
+      // Verify that no SDK instance was created
+      const { __testing__ } = await import('./node-sdk');
+      const sdkInstance = __testing__.getSdkInstance();
+      expect(sdkInstance).toBeUndefined();
+    });
   });
 
   describe('setupAdditionalResourceAttributes', () => {
@@ -117,30 +192,15 @@ describe('node-sdk', () => {
       expect(updatedResource.attributes['service.instance.id']).toBe('otel-instance-id');
     });
 
-    it('should not create SDK instance if instrumentation is disabled', async() => {
+    it('should handle gracefully when instrumentation is disabled', async() => {
       // Mock instrumentation as disabled
-      vi.mocked(configManager.getConfig).mockImplementation((key: string, source?: ConfigSource) => {
-        // For otel:enabled, always expect ConfigSource.env and return false
-        if (key === 'otel:enabled') {
-          return source === ConfigSource.env ? false : undefined;
-        }
-        return undefined;
-      });
+      mockInstrumentationDisabled();
 
-      // Initialize SDK
+      // Initialize SDK (should not create instance)
       await initInstrumentation();
 
-      // Verify that no SDK instance was created
-      const { __testing__ } = await import('./node-sdk');
-      const sdkInstance = __testing__.getSdkInstance();
-      expect(sdkInstance).toBeUndefined();
-
-      // Call setupAdditionalResourceAttributes
-      await setupAdditionalResourceAttributes();
-
-      // Verify that still no SDK instance exists
-      const updatedSdkInstance = __testing__.getSdkInstance();
-      expect(updatedSdkInstance).toBeUndefined();
+      // Call setupAdditionalResourceAttributes should not throw error
+      await expect(setupAdditionalResourceAttributes()).resolves.toBeUndefined();
     });
   });
 });
