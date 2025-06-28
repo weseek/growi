@@ -3,10 +3,10 @@ import { markdownTable } from 'markdown-table';
 import stringWidth from 'string-width';
 
 // https://github.com/markdown-it/markdown-it/blob/d29f421927e93e88daf75f22089a3e732e195bd2/lib/rules_block/table.js#L83
-// https://regex101.com/r/7BN2fR/7
+// https://regex101.com/r/7BN2fR/12
 const tableAlignmentLineRE = /^[-:|][-:|\s]*$/;
 const tableAlignmentLineNegRE = /^[^-:]*$/; // it is need to check to ignore empty row which is matched above RE
-const linePartOfTableRE = /^\|[^\r\n]*|[^\r\n]*\|$|(?:[^|\r\n]+\|[^|\r\n]*)+/; // own idea
+const linePartOfTableRE = /^\|[^\r\n]*|[^\r\n]*\|$|(?:[^|\r\n]+\|[^|\r\n]+)+/; // own idea
 
 const defaultOptions = { stringLength: stringWidth };
 
