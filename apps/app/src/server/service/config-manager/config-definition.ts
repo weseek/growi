@@ -1128,7 +1128,7 @@ export const CONFIG_DEFINITIONS = {
   // OpenTelemetry Settings
   'otel:enabled': defineConfig<boolean>({
     envVarName: 'OPENTELEMETRY_ENABLED',
-    defaultValue: false,
+    defaultValue: true,
   }),
   'otel:isAppSiteUrlHashed': defineConfig<boolean>({
     envVarName: 'OPENTELEMETRY_IS_APP_SITE_URL_HASHED',
