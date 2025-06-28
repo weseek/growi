@@ -6,8 +6,7 @@ import stringWidth from 'string-width';
 // https://regex101.com/r/7BN2fR/13
 const tableAlignmentLineRE = /^[-:|][-:|\s]*$/;
 const tableAlignmentLineNegRE = /^[^-:]*$/; // it is need to check to ignore empty row which is matched above RE
-const linePartOfTableRE =
-  /^(?:\|[^\r\n]*|[^\r\n]*\|)$|(?:[^|\r\n]+\|[^|\r\n]+)+/; // own idea
+const linePartOfTableRE = /^\|[^\r\n]*|[^\r\n]*\|$|(?:[^|\r\n]+\|[^|\r\n]+)+/; // own idea
 
 const defaultOptions = { stringLength: stringWidth };
 
