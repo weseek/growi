@@ -204,7 +204,7 @@ describe('pageApiModule', () => {
         const result = pageApiModule.handle(mockRequest, originalUrl);
 
         expect(result).toEqual({
-          'http.target': '/_api/v3/pages/list?path=&limit=5',
+          'http.target': '/_api/v3/pages/list?path=%5BANONYMIZED%5D&limit=5',
         });
       });
 
