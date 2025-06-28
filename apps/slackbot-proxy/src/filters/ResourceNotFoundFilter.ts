@@ -1,11 +1,17 @@
 import {
-  Catch, ExceptionFilterMethods, PlatformContext, PlatformResponse, ResourceNotFound,
+  Catch,
+  type ExceptionFilterMethods,
+  type PlatformContext,
+  type PlatformResponse,
+  ResourceNotFound,
 } from '@tsed/common';
 
 @Catch(ResourceNotFound)
 export class ResourceNotFoundFilter implements ExceptionFilterMethods {
-
-  async catch(exception: ResourceNotFound, ctx: PlatformContext): Promise<PlatformResponse<any>> {
+  async catch(
+    exception: ResourceNotFound,
+    ctx: PlatformContext,
+  ): Promise<PlatformResponse<any>> {
     const { response } = ctx;
 
     const obj = {
@@ -14,9 +20,6 @@ export class ResourceNotFoundFilter implements ExceptionFilterMethods {
       url: exception.url,
     };
 
-    return response
-      .status(exception.status)
-      .body(obj);
+    return response.status(exception.status).body(obj);
   }
-
 }

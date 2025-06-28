@@ -18,7 +18,10 @@
       ".eslintrc.js",
       ".stylelintrc.json",
       "package.json",
-      "./apps/**",
+      "./apps/app/**",
+      "./apps/pdf-converter/**",
+      "./apps/slackbot-proxy/src/public/bootstrap/**",
+      "./apps/slackbot-proxy/src/services/**",
       "./packages/editor/**",
       "./packages/pdf-converter-client/src/index.ts"
     ]
@@ -39,6 +42,9 @@
   "javascript": {
     "formatter": {
       "quoteStyle": "single"
+    },
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
     }
   }
 }

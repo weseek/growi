@@ -1,4 +1,4 @@
-import { UniversalBunyanConfig } from 'universal-bunyan';
+import type { UniversalBunyanConfig } from 'universal-bunyan';
 
 const config: UniversalBunyanConfig = {
   default: 'info',
@@ -10,7 +10,6 @@ const config: UniversalBunyanConfig = {
    */
   // 'express:*': 'debug',
   // 'slackbot-proxy:*': 'debug',
-
 };
 
 export default config;

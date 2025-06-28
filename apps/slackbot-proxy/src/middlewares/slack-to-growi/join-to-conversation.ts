@@ -1,21 +1,19 @@
 import { generateWebClient } from '@growi/slack/dist/utils/webclient-factory';
-import {
-  IMiddleware, Middleware, Req,
-} from '@tsed/common';
-import Logger from 'bunyan';
+import { type IMiddleware, Middleware, Req } from '@tsed/common';
+import type Logger from 'bunyan';
 
-import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
+import type { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
 import loggerFactory from '~/utils/logger';
 
-const logger: Logger = loggerFactory('slackbot-proxy:middlewares:JoinToConversationsMiddleware');
-
+const logger: Logger = loggerFactory(
+  'slackbot-proxy:middlewares:JoinToConversationsMiddleware',
+);
 
 /**
  * This middleware should be processed after AuthorizeCommandMiddleware or AuthorizeInteractionMiddleware
  */
 @Middleware()
 export class JoinToConversationMiddleware implements IMiddleware {
-
   async use(@Req() req: SlackOauthReq): Promise<void> {
     const { body, authorizeResult } = req;
 
@@ -24,10 +22,8 @@ export class JoinToConversationMiddleware implements IMiddleware {
 
     try {
       await client.conversations.join({ channel: body.channel_id });
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
     }
   }
-
 }

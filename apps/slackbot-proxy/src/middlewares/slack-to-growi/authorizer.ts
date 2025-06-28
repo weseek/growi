@@ -1,21 +1,32 @@
-import { AuthorizeResult, InstallationQuery } from '@slack/oauth';
+import type { AuthorizeResult, InstallationQuery } from '@slack/oauth';
 import {
-  IMiddleware, Inject, Middleware, Next, Req, Res,
+  type IMiddleware,
+  Inject,
+  Middleware,
+  Next,
+  Req,
+  Res,
 } from '@tsed/common';
-import Logger from 'bunyan';
+import type Logger from 'bunyan';
 import createError from 'http-errors';
 
-import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
-import { InstallerService } from '~/services/InstallerService';
+import type { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
+import type { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('@growi/slackbot-proxy:middlewares:authorizer');
 
-
-const getCommonMiddleware = (query:InstallationQuery<boolean>, installerService:InstallerService, logger:Logger) => {
-  return async(req: SlackOauthReq, res: Res, next: Next): Promise<void|Res> => {
-
+const getCommonMiddleware = (
+  query: InstallationQuery<boolean>,
+  installerService: InstallerService,
+  logger: Logger,
+) => {
+  return async (
+    req: SlackOauthReq,
+    res: Res,
+    next: Next,
+  ): Promise<void | Res> => {
     if (query.teamId == null && query.enterpriseId == null) {
       return next(createError(400, 'No installation found'));
     }
@@ -25,10 +36,14 @@ const getCommonMiddleware = (query:InstallationQuery<boolean>, installerService:
       result = await installerService.installer.authorize(query);
 
       if (result.botToken == null) {
-        return next(createError(403, `The installation for the team(${query.teamId || query.enterpriseId}) has no botToken`));
+        return next(
+          createError(
+            403,
+            `The installation for the team(${query.teamId || query.enterpriseId}) has no botToken`,
+          ),
+        );
       }
-    }
-    catch (e) {
+    } catch (e) {
       logger.error(e.message);
 
       return next(createError(500, e.message));
@@ -41,17 +56,22 @@ const getCommonMiddleware = (query:InstallationQuery<boolean>, installerService:
 };
 @Middleware()
 export class AuthorizeCommandMiddleware implements IMiddleware {
-
   private logger: Logger;
 
   constructor() {
-    this.logger = loggerFactory('slackbot-proxy:middlewares:AuthorizeCommandMiddleware');
+    this.logger = loggerFactory(
+      'slackbot-proxy:middlewares:AuthorizeCommandMiddleware',
+    );
   }
 
   @Inject()
   installerService: InstallerService;
 
-  async use(@Req() req: SlackOauthReq, @Res() res: Res, @Next() next: Next): Promise<void|Res> {
+  async use(
+    @Req() req: SlackOauthReq,
+    @Res() res: Res,
+    @Next() next: Next,
+  ): Promise<void | Res> {
     const { body } = req;
     const teamId = body.team_id;
     const enterpriseId = body.enterprise_id;
@@ -62,26 +82,33 @@ export class AuthorizeCommandMiddleware implements IMiddleware {
       isEnterpriseInstall,
     };
 
-    const commonMiddleware = getCommonMiddleware(query, this.installerService, this.logger);
+    const commonMiddleware = getCommonMiddleware(
+      query,
+      this.installerService,
+      this.logger,
+    );
     await commonMiddleware(req, res, next);
   }
-
 }
 
 @Middleware()
 export class AuthorizeInteractionMiddleware implements IMiddleware {
-
   private logger: Logger;
 
   constructor() {
-    this.logger = loggerFactory('slackbot-proxy:middlewares:AuthorizeInteractionMiddleware');
+    this.logger = loggerFactory(
+      'slackbot-proxy:middlewares:AuthorizeInteractionMiddleware',
+    );
   }
 
   @Inject()
-    installerService: InstallerService;
+  installerService: InstallerService;
 
-  async use(@Req() req: SlackOauthReq, @Res() res:Res, @Next() next: Next): Promise<void|Res> {
-
+  async use(
+    @Req() req: SlackOauthReq,
+    @Res() res: Res,
+    @Next() next: Next,
+  ): Promise<void | Res> {
     if (req.interactionPayload == null) {
       return next(createError(400, 'The request has no payload.'));
     }
@@ -99,24 +126,32 @@ export class AuthorizeInteractionMiddleware implements IMiddleware {
       isEnterpriseInstall,
     };
 
-    const commonMiddleware = getCommonMiddleware(query, this.installerService, this.logger);
+    const commonMiddleware = getCommonMiddleware(
+      query,
+      this.installerService,
+      this.logger,
+    );
     await commonMiddleware(req, res, next);
   }
-
 }
 @Middleware()
 export class AuthorizeEventsMiddleware implements IMiddleware {
-
   private logger: Logger;
 
   constructor() {
-    this.logger = loggerFactory('slackbot-proxy:middlewares:AuthorizeEventsMiddleware');
+    this.logger = loggerFactory(
+      'slackbot-proxy:middlewares:AuthorizeEventsMiddleware',
+    );
   }
 
   @Inject()
   installerService: InstallerService;
 
-  async use(@Req() req: SlackOauthReq, @Res() res: Res, @Next() next: Next): Promise<void|Res> {
+  async use(
+    @Req() req: SlackOauthReq,
+    @Res() res: Res,
+    @Next() next: Next,
+  ): Promise<void | Res> {
     const { body } = req;
     const teamId = body.team_id;
     const enterpriseId = body.enterprise_id;
@@ -127,8 +162,11 @@ export class AuthorizeEventsMiddleware implements IMiddleware {
       isEnterpriseInstall,
     };
 
-    const commonMiddleware = getCommonMiddleware(query, this.installerService, this.logger);
+    const commonMiddleware = getCommonMiddleware(
+      query,
+      this.installerService,
+      this.logger,
+    );
     await commonMiddleware(req, res, next);
   }
-
 }
