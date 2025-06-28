@@ -28,8 +28,7 @@ export const ThreadList: React.FC = () => {
       await deleteThread({ aiAssistantId, threadRelationId });
       toastSuccess(t('ai_assistant_substance.toaster.thread_deleted_success'));
 
-      mutateAssistantThreadData();
-      mutateRecentThreads();
+      await Promise.all([mutateAssistantThreadData(), mutateRecentThreads()]);
 
       // Close if the thread to be deleted is open in right sidebar
       if (aiAssistantSidebarData?.isOpened && aiAssistantSidebarData?.threadData?._id === threadRelationId) {
