@@ -67,8 +67,7 @@ type UseKnowledgeAssistant = () => {
 export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
   // Hooks
   const { data: aiAssistantSidebarData } = useAiAssistantSidebar();
-  const { aiAssistantData } = aiAssistantSidebarData ?? {};
-  const { threadData } = aiAssistantSidebarData ?? {};
+  const { aiAssistantData, threadData } = aiAssistantSidebarData ?? {};
   const { mutate: mutateRecentThreads } = useSWRINFxRecentThreads();
   const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistantData?._id);
   const { t } = useTranslation();
@@ -80,9 +79,6 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
       extendedThinkingMode: false,
     },
   });
-
-  // States
-  const [currentThreadTitle, setCurrentThreadId] = useState(threadData?.title);
 
   // Functions
   const resetForm = useCallback(() => {
@@ -98,8 +94,6 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
       initialUserMessage,
     });
     const thread = response.data;
-
-    setCurrentThreadId(thread.title);
 
     // No need to await because data is not used
     mutateThreadData();
@@ -141,8 +135,8 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
   }, []);
 
   const headerText = useMemo(() => {
-    return <>{currentThreadTitle ?? aiAssistantData?.name}</>;
-  }, [aiAssistantData?.name, currentThreadTitle]);
+    return <>{threadData?.title ?? aiAssistantData?.name}</>;
+  }, [aiAssistantData?.name, threadData?.title]);
 
   const placeHolder = useMemo(() => { return 'sidebar_ai_assistant.knowledge_assistant_placeholder' }, []);
 

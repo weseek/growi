@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import { Collapse } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import type { IThreadRelationHasId } from '~/features/openai/interfaces/thread-relation';
 import { useCurrentUser } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
@@ -25,7 +24,7 @@ type AiAssistantItemProps = {
   currentUser?: IUserHasId | null;
   aiAssistant: AiAssistantHasId;
   onEditClick: (aiAssistantData: AiAssistantHasId) => void;
-  onItemClick: (aiAssistantData: AiAssistantHasId, threadData?: IThreadRelationHasId) => void;
+  onItemClick: (aiAssistantData: AiAssistantHasId) => void;
   onUpdated?: () => void;
   onDeleted?: () => void;
 };
