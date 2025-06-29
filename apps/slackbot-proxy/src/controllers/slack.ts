@@ -1,4 +1,4 @@
-import { ServerResponse } from 'http';
+import { ServerResponse } from 'node:http';
 
 import {
   type GrowiCommand,
@@ -64,9 +64,7 @@ const postNotAllowedMessage = async (
   commandName: string,
 ): Promise<void> => {
   const linkUrlList = Array.from(disallowedGrowiUrls).map((growiUrl) => {
-    return (
-      '\n' + `• ${new URL('/admin/slack-integration', growiUrl).toString()}`
-    );
+    return `\n• ${new URL('/admin/slack-integration', growiUrl).toString()}`;
   });
 
   const growiDocsLink =
@@ -127,6 +125,7 @@ export class SlackCtrl {
   private async sendCommand(
     growiCommand: GrowiCommand,
     relations: Relation[],
+    // biome-ignore lint/suspicious/noExplicitAny: ignore
     body: any,
   ) {
     if (relations.length === 0) {
@@ -176,6 +175,7 @@ export class SlackCtrl {
   async handleCommand(
     @Req() req: SlackOauthReq,
     @Res() res: Res,
+    // biome-ignore lint/suspicious/noConfusingVoidType: TODO: fix in https://redmine.weseek.co.jp/issues/168174
   ): Promise<void | string | Res | WebAPICallResult> {
     const { body, authorizeResult } = req;
 
@@ -236,9 +236,9 @@ export class SlackCtrl {
     // get relations
     const installationId =
       authorizeResult.enterpriseId || authorizeResult.teamId;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation =
       await this.installationRepository.findByTeamIdOrEnterpriseId(
+        // biome-ignore lint/style/noNonNullAssertion: ignore
         installationId!,
       );
     const relations = await this.relationRepository
@@ -329,9 +329,7 @@ export class SlackCtrl {
     // when all of GROWI disallowed
     if (relations.length === disallowedGrowiUrls.size) {
       const linkUrlList = Array.from(disallowedGrowiUrls).map((growiUrl) => {
-        return (
-          '\n' + `• ${new URL('/admin/slack-integration', growiUrl).toString()}`
-        );
+        return `\n• ${new URL('/admin/slack-integration', growiUrl).toString()}`;
       });
 
       const growiDocsLink =
@@ -387,6 +385,7 @@ export class SlackCtrl {
   async handleInteraction(
     @Req() req: SlackOauthReq,
     @Res() res: Res,
+    // biome-ignore lint/suspicious/noConfusingVoidType: TODO: fix in https://redmine.weseek.co.jp/issues/168174
   ): Promise<void | string | Res | WebAPICallResult> {
     logger.info('receive interaction', req.authorizeResult);
     logger.debug('receive interaction', req.body);
@@ -443,9 +442,9 @@ export class SlackCtrl {
     // check permission
     const installationId =
       authorizeResult.enterpriseId || authorizeResult.teamId;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation =
       await this.installationRepository.findByTeamIdOrEnterpriseId(
+        // biome-ignore lint/style/noNonNullAssertion: ignore
         installationId!,
       );
     const relations = await this.relationRepository
@@ -568,7 +567,7 @@ export class SlackCtrl {
     @Req() req: Req,
     @Res() serverRes: ServerResponse,
     @Res() platformRes: PlatformResponse,
-  ): Promise<void | string> {
+  ): Promise<string> {
     // create 'Add to Slack' url
     const addToSlackUrl =
       await this.installerService.installer.generateInstallUrl({
@@ -596,7 +595,7 @@ export class SlackCtrl {
     });
 
     let httpStatus = 200;
-    let httpBody;
+    let httpBody: string | undefined;
     try {
       const installation = await installPromise;
 

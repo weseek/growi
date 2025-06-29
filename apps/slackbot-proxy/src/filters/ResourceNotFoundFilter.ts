@@ -11,6 +11,7 @@ export class ResourceNotFoundFilter implements ExceptionFilterMethods {
   async catch(
     exception: ResourceNotFound,
     ctx: PlatformContext,
+    // biome-ignore lint/suspicious/noExplicitAny: ignore
   ): Promise<PlatformResponse<any>> {
     const { response } = ctx;
 

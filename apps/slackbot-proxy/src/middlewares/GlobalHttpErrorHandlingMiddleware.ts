@@ -16,7 +16,7 @@ export class GlobalHttpErrorHandlingMiddleware {
     @Err() err: unknown,
     @Next() next: Next,
     ctx: PlatformContext,
-  ): PlatformResponse | void {
+  ): PlatformResponse | undefined {
     // handle if the err is a HttpError instance
     if (isHttpError(err)) {
       const httpError = err as HttpError;

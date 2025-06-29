@@ -13,7 +13,7 @@ export class TermCtrl {
     }
   }
 
-  getTerm(req: Request, res: Response): string | void {
+  getTerm(req: Request, res: Response): void {
     res.render('term.ejs');
   }
 }

@@ -95,7 +95,7 @@ export class GrowiToSlackCtrl {
   async getConnectionStatuses(
     @Req() req: GrowiReq,
     @Res() res: Res,
-  ): Promise<void | string | Res | WebAPICallResult> {
+  ): Promise<undefined | string | Res | WebAPICallResult> {
     // asserted (tokenGtoPs.length > 0) by verifyGrowiToSlackRequest
     const { tokenGtoPs } = req;
 
@@ -111,12 +111,12 @@ export class GrowiToSlackCtrl {
     // key: tokenGtoP, value: botToken
     const botTokenResolverMapping: { [tokenGtoP: string]: string } = {};
 
-    relations.forEach((relation) => {
+    for (const relation of relations) {
       const botToken = relation.installation?.data?.bot?.token;
       if (botToken != null) {
         botTokenResolverMapping[relation.tokenGtoP] = botToken;
       }
-    });
+    }
 
     const connectionStatuses = await getConnectionStatuses(
       Object.keys(botTokenResolverMapping),
@@ -130,7 +130,7 @@ export class GrowiToSlackCtrl {
   async putSupportedCommands(
     @Req() req: GrowiReq,
     @Res() res: Res,
-  ): Promise<void | string | Res | WebAPICallResult> {
+  ): Promise<undefined | string | Res | WebAPICallResult> {
     // asserted (tokenGtoPs.length > 0) by verifyGrowiToSlackRequest
     const { tokenGtoPs } = req;
 
@@ -158,7 +158,7 @@ export class GrowiToSlackCtrl {
   async postRelation(
     @Req() req: GrowiReq,
     @Res() res: Res,
-  ): Promise<void | string | Res | WebAPICallResult> {
+  ): Promise<undefined | string | Res | WebAPICallResult> {
     const { tokenGtoPs } = req;
 
     if (tokenGtoPs.length !== 1) {

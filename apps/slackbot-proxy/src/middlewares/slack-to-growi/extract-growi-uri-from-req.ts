@@ -15,7 +15,8 @@ export class ExtractGrowiUriFromReq implements IMiddleware {
   use(@Req() req: SlackOauthReq, @Res() res: Res, @Next() next: Next): void {
     // There is no payload in the request from slack
     if (req.interactionPayload == null) {
-      return next();
+      next();
+      return;
     }
 
     const payload = req.interactionPayload;
@@ -30,6 +31,6 @@ export class ExtractGrowiUriFromReq implements IMiddleware {
       req.growiUri = data.growiUri;
     }
 
-    return next();
+    next();
   }
 }
