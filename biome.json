@@ -18,7 +18,8 @@
       ".eslintrc.js",
       ".stylelintrc.json",
       "package.json",
-      "./apps/**",
+      "./apps/app/**",
+      "./apps/slackbot-proxy/**",
       "./packages/editor/**",
       "./packages/pdf-converter-client/src/index.ts"
     ]
@@ -39,6 +40,21 @@
   "javascript": {
     "formatter": {
       "quoteStyle": "single"
+    },
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
     }
-  }
+  },
+  "overrides": [
+    {
+      "include": ["./apps/slackbot-proxy/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useImportType": "error"
+          }
+        }
+      }
+    }
+  ]
 }
