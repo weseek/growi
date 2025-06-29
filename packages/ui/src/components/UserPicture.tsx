@@ -1,16 +1,15 @@
-import {
-  type JSX,
-  type ReactNode,
-  forwardRef,
-  memo,
-  useCallback,
-  useRef,
-} from 'react';
-
 import type { IUser, Ref } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
+import {
+  forwardRef,
+  type JSX,
+  memo,
+  type ReactNode,
+  useCallback,
+  useRef,
+} from 'react';
 import type { UncontrolledTooltipProps } from 'reactstrap';
 
 import styles from './UserPicture.module.scss';

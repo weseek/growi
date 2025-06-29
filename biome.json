@@ -1,39 +1,50 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "ignore": [
-      "dist/**",
-      "node_modules/**",
-      "coverage/**",
-      "vite.config.ts.timestamp-*",
-      "vite.server.config.ts.timestamp-*",
-      "vite.client.config.ts.timestamp-*",
-      ".pnpm-store/**",
-      ".turbo/**",
-      ".vscode/**",
-      "turbo.json",
-      "./bin/**",
-      "./tsconfig.base.json",
-      ".devcontainer/**",
-      ".eslintrc.js",
-      ".stylelintrc.json",
-      "package.json",
-      "./apps/**",
-      "./packages/editor/**",
-      "./packages/pdf-converter-client/src/index.ts"
+    "includes": [
+      "**",
+      "!**/dist/**",
+      "!**/node_modules/**",
+      "!**/coverage/**",
+      "!**/vite.config.ts.timestamp-*",
+      "!**/vite.server.config.ts.timestamp-*",
+      "!**/vite.client.config.ts.timestamp-*",
+      "!**/.pnpm-store/**",
+      "!**/.turbo/**",
+      "!**/.vscode/**",
+      "!**/turbo.json",
+      "!bin/**",
+      "!tsconfig.base.json",
+      "!**/.devcontainer/**",
+      "!**/.eslintrc.js",
+      "!**/.stylelintrc.json",
+      "!**/package.json",
+      "!apps/**",
+      "!packages/editor/**",
+      "!packages/pdf-converter-client/src/index.ts"
     ]
   },
   "formatter": {
     "enabled": true,
     "indentStyle": "space"
   },
-  "organizeImports": {
-    "enabled": true
-  },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "style": {
+        "noParameterAssign": "error",
+        "useAsConstAssertion": "error",
+        "useDefaultParameterLast": "error",
+        "useEnumInitializers": "error",
+        "useSelfClosingElements": "error",
+        "useSingleVarDeclarator": "error",
+        "noUnusedTemplateLiteral": "error",
+        "useNumberNamespace": "error",
+        "noInferrableTypes": "error",
+        "noUselessElse": "error"
+      }
     }
   },
   "javascript": {
