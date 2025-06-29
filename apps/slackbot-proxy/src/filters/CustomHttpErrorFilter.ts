@@ -12,6 +12,7 @@ export class CustomHttpErrorFilter implements ExceptionFilterMethods {
   async catch(
     exception: CustomHttpError,
     ctx: PlatformContext,
+    // biome-ignore lint/suspicious/noExplicitAny: ignore
   ): Promise<PlatformResponse<any>> {
     const { httpError } = exception;
     const { response } = ctx;

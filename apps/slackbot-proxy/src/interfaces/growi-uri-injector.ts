@@ -12,17 +12,19 @@ export type TypedBlock = {
  * @param data
  * @returns
  */
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const isGrowiUriWithOriginalData = (
+  // biome-ignore lint/suspicious/noExplicitAny: ignore
   data: any,
 ): data is GrowiUriWithOriginalData => {
   return data.growiUri != null && data.originalData != null;
 };
 
 export interface GrowiUriInjector<ISDATA, IDATA, ESDATA, EDATA> {
+  // biome-ignore lint/suspicious/noExplicitAny: ignore
   shouldHandleToInject(data: ISDATA & any): data is IDATA;
   inject(data: IDATA, growiUri: string): void;
 
+  // biome-ignore lint/suspicious/noExplicitAny: ignore
   shouldHandleToExtract(data: ESDATA & any): data is EDATA;
   extract(data: EDATA): GrowiUriWithOriginalData;
 }

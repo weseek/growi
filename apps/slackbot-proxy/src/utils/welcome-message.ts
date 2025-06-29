@@ -4,7 +4,7 @@ import type { ChatPostMessageResponse, WebClient } from '@slack/web-api';
 export const postWelcomeMessageOnce = async (
   client: WebClient,
   channel: string,
-): Promise<void | ChatPostMessageResponse> => {
+): Promise<undefined | ChatPostMessageResponse> => {
   const history = await client.conversations.history({
     channel,
     limit: 1,

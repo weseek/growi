@@ -15,6 +15,7 @@ export class TopCtrl {
 
   @Get('/')
   @View('top.ejs')
+  // biome-ignore lint/suspicious/noExplicitAny: ignore
   async getTopPage(): Promise<any> {
     const url = await this.installerService.installer.generateInstallUrl({
       // Add the scopes your app needs

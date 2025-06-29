@@ -17,7 +17,7 @@ export class JoinToConversationMiddleware implements IMiddleware {
   async use(@Req() req: SlackOauthReq): Promise<void> {
     const { body, authorizeResult } = req;
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    // biome-ignore lint/style/noNonNullAssertion: ignore
     const client = generateWebClient(authorizeResult.botToken!);
 
     try {

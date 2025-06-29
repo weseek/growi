@@ -11,7 +11,7 @@ export class PrivacyCtrl {
     }
   }
 
-  getPrivacy(req: Request, res: Response): string | void {
+  getPrivacy(req: Request, res: Response): void {
     res.render('privacy.ejs');
   }
 }

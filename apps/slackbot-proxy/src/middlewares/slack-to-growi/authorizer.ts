@@ -22,13 +22,10 @@ const getCommonMiddleware = (
   installerService: InstallerService,
   logger: Logger,
 ) => {
-  return async (
-    req: SlackOauthReq,
-    res: Res,
-    next: Next,
-  ): Promise<void | Res> => {
+  return async (req: SlackOauthReq, res: Res, next: Next): Promise<void> => {
     if (query.teamId == null && query.enterpriseId == null) {
-      return next(createError(400, 'No installation found'));
+      next(createError(400, 'No installation found'));
+      return;
     }
 
     let result: AuthorizeResult;
@@ -36,17 +33,19 @@ const getCommonMiddleware = (
       result = await installerService.installer.authorize(query);
 
       if (result.botToken == null) {
-        return next(
+        next(
           createError(
             403,
             `The installation for the team(${query.teamId || query.enterpriseId}) has no botToken`,
           ),
         );
+        return;
       }
     } catch (e) {
       logger.error(e.message);
 
-      return next(createError(500, e.message));
+      next(createError(500, e.message));
+      return;
     }
 
     // set authorized data
@@ -71,7 +70,7 @@ export class AuthorizeCommandMiddleware implements IMiddleware {
     @Req() req: SlackOauthReq,
     @Res() res: Res,
     @Next() next: Next,
-  ): Promise<void | Res> {
+  ): Promise<void> {
     const { body } = req;
     const teamId = body.team_id;
     const enterpriseId = body.enterprise_id;
@@ -108,9 +107,10 @@ export class AuthorizeInteractionMiddleware implements IMiddleware {
     @Req() req: SlackOauthReq,
     @Res() res: Res,
     @Next() next: Next,
-  ): Promise<void | Res> {
+  ): Promise<void> {
     if (req.interactionPayload == null) {
-      return next(createError(400, 'The request has no payload.'));
+      next(createError(400, 'The request has no payload.'));
+      return;
     }
 
     const payload = req.interactionPayload;
@@ -151,7 +151,7 @@ export class AuthorizeEventsMiddleware implements IMiddleware {
     @Req() req: SlackOauthReq,
     @Res() res: Res,
     @Next() next: Next,
-  ): Promise<void | Res> {
+  ): Promise<void> {
     const { body } = req;
     const teamId = body.team_id;
     const enterpriseId = body.enterprise_id;
