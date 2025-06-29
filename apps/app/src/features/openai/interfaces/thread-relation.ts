@@ -1,6 +1,7 @@
 import type { IUser, Ref, HasObjectId } from '@growi/core';
+import type { PaginateResult } from 'mongoose';
 
-import type { AiAssistant } from './ai-assistant';
+import type { AiAssistant, AiAssistantHasId } from './ai-assistant';
 
 
 export const ThreadType = {
@@ -17,9 +18,16 @@ export interface IThreadRelation {
   title?: string;
   type: ThreadType;
   expiredAt: Date;
+  isActive: boolean;
 }
 
 export type IThreadRelationHasId = IThreadRelation & HasObjectId;
+
+export type IThreadRelationPopulated = Omit<IThreadRelationHasId, 'aiAssistant'> & { aiAssistant: AiAssistantHasId }
+
+export type IThreadRelationPaginate = {
+  paginateResult: PaginateResult<IThreadRelationPopulated>;
+};
 
 export type IApiv3DeleteThreadParams = {
   aiAssistantId: string

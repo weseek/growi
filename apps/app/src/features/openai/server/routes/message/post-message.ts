@@ -82,13 +82,13 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
         return res.apiv3Err(new ErrorV3('ThreadRelation not found'), 404);
       }
 
-      threadRelation.updateThreadExpiration();
-
       let stream: AssistantStream;
       const useSummaryMode = req.body.summaryMode ?? false;
       const useExtendedThinkingMode = req.body.extendedThinkingMode ?? false;
 
       try {
+        await threadRelation.updateThreadExpiration();
+
         const assistant = await getOrCreateChatAssistant();
 
         const thread = await openaiClient.beta.threads.retrieve(threadId);
