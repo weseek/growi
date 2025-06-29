@@ -513,6 +513,8 @@
     "budget_exceeded_for_growi_cloud": "You have reached your OpenAI API usage limit. To use the Knowledge Assistant again, please add credits from the GROWI.cloud admin page for Hosted users or from the OpenAI billing page for Owned users.",
     "error_message": "An error has occurred",
     "show_error_detail": "Show error details",
+    "editor_assistant_long_context_warn_with_unit_line": "The text is too long, so the Editor Assistant will reference approximately lines {{startPosition}} to {{endPosition}} for its response.",
+    "editor_assistant_long_context_warn_with_unit_char": "The text is too long, so the Editor Assistant will reference characters {{startPosition}} to {{endPosition}} for its response.",
     "discard": "Discard",
     "accept": "Accept",
     "use_assistant": "Use Assistant",

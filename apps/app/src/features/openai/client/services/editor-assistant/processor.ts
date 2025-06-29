@@ -5,9 +5,9 @@
  */
 
 import type { LlmEditorAssistantDiff } from '../../../interfaces/editor-assistant/llm-response-schemas';
-import type { DiffApplicationResult, ProcessorConfig, DiffError } from '../../../interfaces/editor-assistant/types';
+import type { DiffApplicationResult, ProcessorConfig, DiffError } from '../../interfaces/types';
 
-import { ClientDiffApplicationEngine, type EditorAdapter } from './diff-application';
+import { ClientDiffApplicationEngine } from './diff-application';
 import { ClientErrorHandler } from './error-handling';
 import { ClientFuzzyMatcher } from './fuzzy-matching';
 // Note: measureNormalization import removed as it's not used in this file
@@ -241,71 +241,6 @@ export class ClientSearchReplaceProcessor {
     }
   }
 
-  /**
-   * Process diffs with direct editor integration
-   */
-  async processWithEditor(
-      editor: EditorAdapter,
-      diffs: LlmEditorAssistantDiff[],
-      options: ProcessingOptions = {},
-  ): Promise<DiffApplicationResult> {
-    const content = editor.getContent();
-
-    if (options.previewMode) {
-      // Preview mode: don't modify editor
-      return this.processMultipleDiffs(content, diffs, options);
-    }
-
-    // Create undo checkpoint before starting
-    editor.createUndoCheckpoint();
-
-    const result = await this.processMultipleDiffs(content, diffs, options);
-
-    if (result.success && result.content) {
-      editor.setContent(result.content);
-    }
-
-    return result;
-  }
-
-  /**
-   * Quick single diff processing for real-time applications
-   */
-  async processSingleDiffQuick(
-      content: string,
-      diff: LlmEditorAssistantDiff,
-  ): Promise<DiffApplicationResult> {
-    try {
-      const result = this.diffEngine.applySingleDiff(content, diff);
-
-      if (result.success && result.updatedLines) {
-        return {
-          success: true,
-          appliedCount: 1,
-          content: result.updatedLines.join('\n'),
-        };
-      }
-      return {
-        success: false,
-        appliedCount: 0,
-        failedParts: result.error ? [result.error] : [],
-      };
-
-    }
-    catch (error) {
-      const processingError = this.errorHandler.createContentError(
-        error as Error,
-        'Quick processing error',
-      );
-
-      return {
-        success: false,
-        appliedCount: 0,
-        failedParts: [processingError],
-      };
-    }
-  }
-
   // -----------------------------------------------------------------------------
   // Private Helper Methods
   // -----------------------------------------------------------------------------
@@ -386,13 +321,6 @@ export class ClientSearchReplaceProcessor {
       batches.push(array.slice(i, i + batchSize));
     }
     return batches;
-  }
-
-  /**
-   * Yield control to browser event loop
-   */
-  private async yieldToBrowser(): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, 0));
   }
 
   /**
@@ -482,77 +410,4 @@ export class ClientSearchReplaceProcessor {
     }
   }
 
-  /**
-   * Validate processor configuration
-   */
-  validateConfig(): { valid: boolean; issues: string[] } {
-    const issues: string[] = [];
-
-    if (this.config.fuzzyThreshold < 0 || this.config.fuzzyThreshold > 1) {
-      issues.push('Fuzzy threshold must be between 0 and 1');
-    }
-
-    if (this.config.bufferLines < 0) {
-      issues.push('Buffer lines must be non-negative');
-    }
-
-    if (this.config.maxDiffBlocks <= 0) {
-      issues.push('Max diff blocks must be positive');
-    }
-
-    return {
-      valid: issues.length === 0,
-      issues,
-    };
-  }
-
-  /**
-   * Get processor performance statistics
-   */
-  getPerformanceStats(): {
-    lastProcessingTime?: number;
-    averageProcessingTime?: number;
-    successRate?: number;
-    } {
-    // This would be enhanced with persistent statistics tracking
-    return {
-      lastProcessingTime: this.currentStatus
-        ? performance.now() - this.currentStatus.startTime
-        : undefined,
-    };
-  }
-
 }
-
-// -----------------------------------------------------------------------------
-// Utility Functions
-// -----------------------------------------------------------------------------
-
-/**
- * Create a processor with browser-optimized defaults
- */
-export function createBrowserOptimizedProcessor(
-    overrides: Partial<ProcessorConfig> = {},
-): ClientSearchReplaceProcessor {
-  const browserConfig: Partial<ProcessorConfig> = {
-    fuzzyThreshold: 0.8,
-    bufferLines: 30, // Smaller buffer for browser performance
-    preserveIndentation: true,
-    stripLineNumbers: true,
-    enableAggressiveMatching: false,
-    maxDiffBlocks: 8, // Conservative limit for browser
-    ...overrides,
-  };
-
-  return new ClientSearchReplaceProcessor(browserConfig);
-}
-
-// -----------------------------------------------------------------------------
-// Export Default Instance
-// -----------------------------------------------------------------------------
-
-/**
- * Default client search/replace processor instance
- * Pre-configured for typical browser usage
- */
-export const defaultClientProcessor = createBrowserOptimizedProcessor();

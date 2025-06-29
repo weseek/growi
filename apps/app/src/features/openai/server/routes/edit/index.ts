@@ -16,7 +16,9 @@ import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-respo
 import loggerFactory from '~/utils/logger';
 
 import { LlmEditorAssistantDiffSchema, LlmEditorAssistantMessageSchema } from '../../../interfaces/editor-assistant/llm-response-schemas';
-import type { SseDetectedDiff, SseFinalized, SseMessage } from '../../../interfaces/editor-assistant/sse-schemas';
+import type {
+  SseDetectedDiff, SseFinalized, SseMessage, EditRequestBody,
+} from '../../../interfaces/editor-assistant/sse-schemas';
 import { MessageErrorCode } from '../../../interfaces/message-error';
 import ThreadRelationModel from '../../models/thread-relation';
 import { getOrCreateEditorAssistant } from '../../services/assistant';
@@ -40,14 +42,7 @@ const LlmEditorAssistantResponseSchema = z.object({
 }).describe('The response format for the editor assistant');
 
 
-type ReqBody = {
-  userMessage: string,
-  pageBody: string,
-  selectedText?: string,
-  threadId?: string,
-}
-
-type Req = Request<undefined, Response, ReqBody> & {
+type Req = Request<undefined, Response, EditRequestBody> & {
   user: IUserHasId,
 }
 
@@ -70,76 +65,74 @@ const withMarkdownCaution = `# IMPORTANT:
 `;
 
 function instruction(withMarkdown: boolean): string {
-  return `
-  # USER INTENT DETECTION:
-  First, analyze the user's message to determine their intent:
-  - **Consultation Type**: Questions, discussions, explanations, or advice seeking WITHOUT explicit request to edit/modify/generate text
-  - **Edit Type**: Clear requests to edit, modify, fix, generate, create, or write content
+  return `# RESPONSE FORMAT:
 
-  ## EXAMPLES OF USER INTENT:
-  ### Consultation Type Examples:
-  - "What do you think about this code?"
-  - "Please give me advice on this text structure"
-  - "Why is this error occurring?"
-  - "Is there a better approach?"
-  - "Can you explain how this works?"
-  - "What are the pros and cons of this method?"
-  - "How should I organize this document?"
+## For Consultation Type (discussion/advice only):
+Respond with a JSON object containing ONLY message objects:
+{
+  "contents": [
+    { "message": "Your thoughtful response to the user's question or consultation.\n\nYou can use multiple paragraphs as needed." }
+  ]
+}
 
-  ### Edit Type Examples:
-  - "Please fix the following"
-  - "Add a function that..."
-  - "Rewrite this section to..."
-  - "Correct the errors in this code"
-  - "Generate a new paragraph about..."
-  - "Modify this to include..."
-  - "Create a template for..."
+## For Edit Type (explicit editing request):
+The SEARCH field must contain exact content including whitespace and indentation.
+The startLine field is REQUIRED and must specify the line number where search begins.
 
-  # RESPONSE FORMAT:
-  ## For Consultation Type (discussion/advice only):
-  Respond with a JSON object containing ONLY message objects:
-  {
-    "contents": [
-      { "message": "Your thoughtful response to the user's question or consultation.\n\nYou can use multiple paragraphs as needed." }
-    ]
-  }
+Respond with a JSON object in the following format:
+{
+  "contents": [
+    { "message": "Your brief message about the upcoming changes or proposals.\n\n" },
+    {
+      "search": "exact existing content",
+      "replace": "new content",
+      "startLine": 42  // REQUIRED: line number (1-based) where search begins
+    },
+    { "message": "Additional explanation if needed." },
+    {
+      "search": "another exact content",
+      "replace": "replacement content",
+      "startLine": 58  // REQUIRED
+    },
+    ...more items if needed
+    { "message": "Your friendly message explaining what changes were made or suggested." }
+  ]
+}
 
-  ## For Edit Type (explicit editing request):
-  The SEARCH field must contain exact content including whitespace and indentation.
-  The startLine field is REQUIRED and must specify the line number where search begins.
+The array should contain:
+- [At the beginning of the list] A "message" object that has your brief message about the upcoming change or proposal. Be sure that should be written in the present or future tense and add two consecutive line feeds ('\n\n') at the end.
+- Objects with a "message" key for explanatory text to the user if needed.
+- Edit objects with "search" (exact existing content), "replace" (new content), and "startLine" (1-based line number, REQUIRED) fields.
+- [At the end of the list] A "message" object that contains your friendly message explaining that the operation was completed and what changes were made.
 
-  Respond with a JSON object in the following format:
-  {
-    "contents": [
-      { "message": "Your brief message about the upcoming changes or proposals.\n\n" },
-      {
-        "search": "exact existing content",
-        "replace": "new content",
-        "startLine": 42  // REQUIRED: line number (1-based) where search begins
-      },
-      { "message": "Additional explanation if needed." },
-      {
-        "search": "another exact content",
-        "replace": "replacement content",
-        "startLine": 58  // REQUIRED
-      },
-      ...more items if needed
-      { "message": "Your friendly message explaining what changes were made or suggested." }
-    ]
-  }
-
-  The array should contain:
-  - [At the beginning of the list] A "message" object that has your brief message about the upcoming change or proposal. Be sure that should be written in the present or future tense and add two consecutive line feeds ('\n\n') at the end.
-  - Objects with a "message" key for explanatory text to the user if needed.
-  - Edit objects with "search" (exact existing content), "replace" (new content), and "startLine" (1-based line number, REQUIRED) fields.
-  - [At the end of the list] A "message" object that contains your friendly message explaining that the operation was completed and what changes were made.
-
-  ${withMarkdown ? withMarkdownCaution : ''}
-
-  # Multilingual Support:
-  Always provide messages in the same language as the user's request.`;
+${withMarkdown ? withMarkdownCaution : ''}`;
 }
 /* eslint-disable max-len */
+
+function instructionForContexts(args: Pick<EditRequestBody, 'pageBody' | 'isPageBodyPartial' | 'partialPageBodyStartIndex' | 'selectedText' | 'selectedPosition'>): string {
+  return `# Contexts:
+## ${args.isPageBodyPartial ? 'pageBodyPartial' : 'pageBody'}:
+
+\`\`\`markdown
+${args.pageBody}
+\`\`\`
+
+${args.isPageBodyPartial && args.partialPageBodyStartIndex != null
+    ? `- **partialPageBodyStartIndex**: ${args.partialPageBodyStartIndex ?? 0}`
+    : ''
+}
+
+${args.selectedText != null
+    ? `## selectedText: \n\n\`\`\`markdown\n${args.selectedText}\n\`\`\``
+    : ''
+}
+
+${args.selectedPosition != null
+    ? `- **selectedPosition**: ${args.selectedPosition}`
+    : ''
+}
+`;
+}
 
 /**
  * Create endpoint handlers for editor assistant
@@ -157,10 +150,18 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
     body('pageBody')
       .isString()
       .withMessage('pageBody must be string and not empty'),
+    body('isPageBodyPartial')
+      .optional()
+      .isBoolean()
+      .withMessage('isPageBodyPartial must be boolean'),
     body('selectedText')
       .optional()
       .isString()
       .withMessage('selectedText must be string'),
+    body('selectedPosition')
+      .optional()
+      .isNumeric()
+      .withMessage('selectedPosition must be number'),
     body('threadId').optional().isString().withMessage('threadId must be string'),
   ];
 
@@ -168,7 +169,10 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
     accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
       const {
-        userMessage, pageBody, selectedText, threadId,
+        userMessage,
+        pageBody, isPageBodyPartial, partialPageBodyStartIndex,
+        selectedText, selectedPosition,
+        threadId,
       } = req.body;
 
       // Parameter check
@@ -205,8 +209,9 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
         diffDetectedCallback: (detected) => {
           sseHelper.writeData<SseDetectedDiff>({ diff: detected });
         },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         dataFinalizedCallback: (message, replacements) => {
-          sseHelper.writeData<SseFinalized>({ finalized: { message: message ?? '', replacements } });
+          sseHelper.writeData<SseFinalized>({ success: true });
         },
       });
 
@@ -226,22 +231,20 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
         // Create stream
         const stream = openaiClient.beta.threads.runs.stream(thread.id, {
           assistant_id: assistant.id,
+          additional_instructions: [
+            instruction(pageBody != null),
+            instructionForContexts({
+              pageBody,
+              isPageBodyPartial,
+              partialPageBodyStartIndex,
+              selectedText,
+              selectedPosition,
+            }),
+          ].join('\n'),
           additional_messages: [
             {
-              role: 'assistant',
-              content: instruction(pageBody != null),
-            },
-            {
               role: 'user',
-              content: `Current markdown content:
-\`\`\`markdown
-${pageBody}
-\`\`\`
-${selectedText != null
-    ? `Current selected text by user:\`\`\`markdown\n${selectedText}\n\`\`\``
-    : ''
-}
-User request: ${userMessage}`,
+              content: `User request: ${userMessage}`,
             },
           ],
           response_format: zodResponseFormat(LlmEditorAssistantResponseSchema, 'editor_assistant_response'),
