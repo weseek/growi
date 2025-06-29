@@ -1,4 +1,4 @@
-import type { PlatformApplication } from '@tsed/common';
+import { PlatformApplication } from '@tsed/common';
 import { Configuration, Inject } from '@tsed/di';
 import express from 'express';
 import '@tsed/swagger';

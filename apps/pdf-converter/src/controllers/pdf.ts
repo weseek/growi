@@ -1,7 +1,7 @@
 import { BodyParams } from '@tsed/common';
 import { Controller } from '@tsed/di';
 import { BadRequest, InternalServerError } from '@tsed/exceptions';
-import type { Logger } from '@tsed/logger';
+import { Logger } from '@tsed/logger';
 import {
   Description,
   Enum,
@@ -11,7 +11,7 @@ import {
   Returns,
 } from '@tsed/schema';
 
-import type PdfConvertService from '../service/pdf-convert.js';
+import PdfConvertService from '../service/pdf-convert.js';
 import { JobStatus, JobStatusSharedWithGrowi } from '../service/pdf-convert.js';
 
 @Controller('/pdf')

@@ -47,11 +47,11 @@
   },
   "overrides": [
     {
-      "include": ["./apps/slackbot-proxy/**"],
+      "include": ["./apps/pdf-converter/**"],
       "linter": {
         "rules": {
           "style": {
-            "useImportType": "error"
+            "useImportType": "off"
           }
         }
       }
