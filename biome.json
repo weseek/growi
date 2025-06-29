@@ -19,7 +19,8 @@
       ".stylelintrc.json",
       "package.json",
       "./apps/app/**",
-      "./apps/slackbot-proxy/**",
+      "./apps/slackbot-proxy/src/public/bootstrap/**",
+      "./apps/slackbot-proxy/src/services/**",
       "./packages/editor/**",
       "./packages/pdf-converter-client/src/index.ts"
     ]
@@ -47,7 +48,7 @@
   },
   "overrides": [
     {
-      "include": ["./apps/pdf-converter/**"],
+      "include": ["./apps/pdf-converter/**", "./apps/slackbot-proxy/**"],
       "linter": {
         "rules": {
           "style": {
