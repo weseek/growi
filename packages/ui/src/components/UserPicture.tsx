@@ -67,12 +67,15 @@ const UserPictureRootWithLink = forwardRef<
   // Nested anchor tags causes a warning.
   // https://stackoverflow.com/questions/13052598/creating-anchor-tag-inside-anchor-taga
   return (
+    // biome-ignore lint/a11y/useSemanticElements: ignore
     <span
       ref={ref}
       className={props.className}
       onClick={clickHandler}
       onKeyDown={() => {}}
       style={{ cursor: 'pointer' }}
+      role="link"
+      tabIndex={0}
     >
       {props.children}
     </span>
