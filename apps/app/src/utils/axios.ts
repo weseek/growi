@@ -8,15 +8,37 @@ export * from 'axios';
 
 const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?(Z|[+-]\d{2}:\d{2})$/;
 
+// For type checking for Date and String types to work
+export type IsoDateString = string & { readonly __isIsoDateString: unique symbol };
+
+type IsTuple<T> = T extends readonly any[]
+    ? number extends T['length']
+        ? false // Not a tuple (it's a regular array)
+        : true // It's a tuple
+    : false;
+
 // Utility type to decide the resulting type of every input object at compile time.
-type DeepDateConvert<T> = T extends string
-    ? (string extends T ? T : (RegExpMatchArray extends T ? T : Date)) // If T is exactly string it becomes Date
+type DeepDateConvert<T> = T extends Date
+    ? T
+    : T extends IsoDateString
+    ? Date
+    : T extends string
+    ? T
+    : IsTuple<T> extends true
+    ? { [K in keyof T]: DeepDateConvert<T[K]> }
     : T extends (infer U)[]
-    ? DeepDateConvert<U>[] // If T is an array, map its elements
+    ? DeepDateConvert<U>[]
     : T extends object
-    ? { [K in keyof T]: DeepDateConvert<T[K]> } // If T is an object, map its properties
+    ? { [K in keyof T]: DeepDateConvert<T[K]> }
     : T;
 
+/**
+* Converts string to dates recursively.
+*
+* @param data - Data to be transformed to Date if applicable.
+* @param seen - Set containing data that has been through the function before.
+* @returns - Data containing transformed Dates.
+*/
 function convertStringsToDatesRecursive<T>(data: T, seen: Set<any>): DeepDateConvert<T> {
   if (typeof data !== 'object' || data === null) {
     if (typeof data === 'string' && isoDateRegex.test(data)) {
