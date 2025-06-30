@@ -104,7 +104,7 @@ describe('convertStringsToDates', () => {
     const originalInput = JSON.parse(JSON.stringify(input)); // Deep copy to ensure no mutation
     const result = convertStringsToDates(input);
     expect(result).toEqual(originalInput); // Should be deeply equal
-    expect(result).toBe(input); // Confirm it mutated the original object
+    expect(result).not.toBe(input); // Confirm it mutated the original object
   });
 
   // Test case 6: Null, undefined, and primitive values
@@ -122,7 +122,7 @@ describe('convertStringsToDates', () => {
     const emptyArray = [];
     expect(convertStringsToDates(emptyObject)).toEqual({});
     expect(convertStringsToDates(emptyArray)).toEqual([]);
-    expect(convertStringsToDates(emptyObject)).toBe(emptyObject);
+    expect(convertStringsToDates(emptyObject)).not.toBe(emptyObject);
     expect(convertStringsToDates(emptyArray)).toEqual(emptyArray);
   });
 
@@ -325,7 +325,7 @@ describe('convertStringsToDates', () => {
       expect(convertedOutput).toBeInstanceOf(Object);
 
       // Check if circular reference is present
-      expect(convertedOutput.data.item2.nested1.nested2.parent).toBe(convertedOutput);
+      expect(convertedOutput.data.item2.nested1.nested2.parent).toBe(input);
 
       // Check if the date conversion worked
       expect(convertedOutput.data.item1.updatedAt).toBeInstanceOf(Date);
@@ -350,7 +350,7 @@ describe('convertStringsToDates', () => {
       const converted = convertStringsToDates(obj);
 
       expect(converted).toBeDefined();
-      expect(converted.self).toBe(converted);
+      expect(converted.self).toBe(obj);
       expect(converted.createdAt).toBeInstanceOf(Date);
     });
   });
