@@ -42,13 +42,13 @@ interface CreateThread {
   (): Promise<IThreadRelationHasId>;
 }
 
-type PostMesageArgs = {
+type PostMessageArgs = {
   threadId: string;
   formData: FormData;
 }
 
 interface PostMessage {
-  (args: PostMesageArgs): Promise<Response>;
+  (args: PostMessageArgs): Promise<Response>;
 }
 interface ProcessMessage {
   (data: unknown, handler: {
