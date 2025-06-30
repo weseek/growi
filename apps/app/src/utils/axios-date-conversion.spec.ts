@@ -1,13 +1,15 @@
-import { convertDateStringsToDates } from './axios';
+import { convertStringsToDates } from './axios';
+import type { IsoDateString } from './axios';
 
-describe('convertDateStringsToDates', () => {
+
+describe('convertStringsToDates', () => {
 
   // Test case 1: Basic conversion in a flat object
   test('should convert ISO date strings to Date objects in a flat object', () => {
     const dateString = '2023-01-15T10:00:00.000Z';
     const input = {
       id: 1,
-      createdAt: dateString,
+      createdAt: dateString as IsoDateString,
       name: 'Test Item',
     };
     const expected = {
@@ -15,7 +17,7 @@ describe('convertDateStringsToDates', () => {
       createdAt: new Date(dateString),
       name: 'Test Item',
     };
-    const result = convertDateStringsToDates(input);
+    const result = convertStringsToDates(input);
     expect(result.createdAt).toBeInstanceOf(Date);
     expect(result.createdAt.toISOString()).toEqual(dateString);
     expect(result).toEqual(expected);
@@ -28,12 +30,12 @@ describe('convertDateStringsToDates', () => {
     const input = {
       data: {
         item1: {
-          updatedAt: dateString1,
+          updatedAt: dateString1 as IsoDateString,
           value: 10,
         },
         item2: {
           nested: {
-            deletedAt: dateString2,
+            deletedAt: dateString2 as IsoDateString,
             isActive: false,
           },
         },
@@ -53,7 +55,7 @@ describe('convertDateStringsToDates', () => {
         },
       },
     };
-    const result = convertDateStringsToDates(input);
+    const result = convertStringsToDates(input);
     expect(result.data.item1.updatedAt).toBeInstanceOf(Date);
     expect(result.data.item1.updatedAt.toISOString()).toEqual(dateString1);
     expect(result.data.item2.nested.deletedAt).toBeInstanceOf(Date);
@@ -66,14 +68,14 @@ describe('convertDateStringsToDates', () => {
     const dateString1 = '2023-04-05T14:15:00.000Z';
     const dateString2 = '2023-05-10T16:00:00.000Z';
     const input = [
-      { id: 1, eventDate: dateString1 },
-      { id: 2, eventDate: dateString2, data: { nestedProp: 'value' } },
+      { id: 1, eventDate: dateString1 as IsoDateString },
+      { id: 2, eventDate: dateString2 as IsoDateString, data: { nestedProp: 'value' } },
     ];
     const expected = [
       { id: 1, eventDate: new Date(dateString1) },
       { id: 2, eventDate: new Date(dateString2), data: { nestedProp: 'value' } },
     ];
-    const result = convertDateStringsToDates(input);
+    const result = convertStringsToDates(input);
     expect(result[0].eventDate).toBeInstanceOf(Date);
     expect(result[0].eventDate.toISOString()).toEqual(dateString1);
     expect(result[1].eventDate).toBeInstanceOf(Date);
@@ -84,9 +86,9 @@ describe('convertDateStringsToDates', () => {
   // Test case 4: Array containing date strings directly (though less common for this function)
   test('should handle arrays containing date strings directly', () => {
     const dateString = '2023-06-20T18:00:00.000Z';
-    const input = ['text', dateString, 123];
+    const input: [string, IsoDateString, number] = ['text', dateString as IsoDateString, 123];
     const expected = ['text', new Date(dateString), 123];
-    const result = convertDateStringsToDates(input);
+    const result = convertStringsToDates(input);
     expect(result[1]).toBeInstanceOf(Date);
     expect(result[1].toISOString()).toEqual(dateString);
     expect(result).toEqual(expected);
@@ -101,36 +103,36 @@ describe('convertDateStringsToDates', () => {
       description: 'Some text',
     };
     const originalInput = JSON.parse(JSON.stringify(input)); // Deep copy to ensure no mutation
-    const result = convertDateStringsToDates(input);
+    const result = convertStringsToDates(input);
     expect(result).toEqual(originalInput); // Should be deeply equal
-    expect(result).toBe(input); // Confirm it mutated the original object
+    expect(result).not.toBe(input); // Confirm it mutated the original object
   });
 
   // Test case 6: Null, undefined, and primitive values
   test('should return primitive values as is', () => {
-    expect(convertDateStringsToDates(null)).toBeNull();
-    expect(convertDateStringsToDates(undefined)).toBeUndefined();
-    expect(convertDateStringsToDates(123)).toBe(123);
-    expect(convertDateStringsToDates('hello')).toBe('hello');
-    expect(convertDateStringsToDates(true)).toBe(true);
+    expect(convertStringsToDates(null)).toBeNull();
+    expect(convertStringsToDates(undefined)).toBeUndefined();
+    expect(convertStringsToDates(123)).toBe(123);
+    expect(convertStringsToDates('hello')).toBe('hello');
+    expect(convertStringsToDates(true)).toBe(true);
   });
 
   // Test case 7: Edge case - empty objects/arrays
   test('should handle empty objects and arrays correctly', () => {
     const emptyObject = {};
     const emptyArray = [];
-    expect(convertDateStringsToDates(emptyObject)).toEqual({});
-    expect(convertDateStringsToDates(emptyArray)).toEqual([]);
-    expect(convertDateStringsToDates(emptyObject)).toBe(emptyObject);
-    expect(convertDateStringsToDates(emptyArray)).toEqual(emptyArray);
+    expect(convertStringsToDates(emptyObject)).toEqual({});
+    expect(convertStringsToDates(emptyArray)).toEqual([]);
+    expect(convertStringsToDates(emptyObject)).not.toBe(emptyObject);
+    expect(convertStringsToDates(emptyArray)).toEqual(emptyArray);
   });
 
   // Test case 8: Date string with different milliseconds (isoDateRegex without .000)
   test('should handle date strings with varied milliseconds', () => {
     const dateString = '2023-01-15T10:00:00Z'; // No milliseconds
-    const input = { createdAt: dateString };
+    const input = { createdAt: dateString as IsoDateString };
     const expected = { createdAt: new Date(dateString) };
-    const result = convertDateStringsToDates(input);
+    const result = convertStringsToDates(input);
     expect(result.createdAt).toBeInstanceOf(Date);
     expect(result.createdAt.toISOString()).toEqual('2023-01-15T10:00:00.000Z');
     expect(result).toEqual(expected);
@@ -155,7 +157,7 @@ describe('convertDateStringsToDates', () => {
         nestedDate: new Date(dateString),
       },
     };
-    const result = convertDateStringsToDates(input);
+    const result = convertStringsToDates(input);
     expect(result.prop1).toBeInstanceOf(Date);
     expect(result.prop3.nestedDate).toBeInstanceOf(Date);
     expect(result).toEqual(expected);
@@ -166,9 +168,9 @@ describe('convertDateStringsToDates', () => {
     const dateStringWithOffset = '2025-06-12T14:00:00+09:00';
     const input = {
       id: 2,
-      eventTime: dateStringWithOffset,
+      eventTime: dateStringWithOffset as IsoDateString,
       details: {
-        lastActivity: '2025-06-12T05:00:00-04:00',
+        lastActivity: '2025-06-12T05:00:00-04:00' as IsoDateString,
       },
     };
     const expected = {
@@ -179,7 +181,7 @@ describe('convertDateStringsToDates', () => {
       },
     };
 
-    const result = convertDateStringsToDates(input);
+    const result = convertStringsToDates(input);
 
     expect(result.eventTime).toBeInstanceOf(Date);
     expect(result.eventTime.toISOString()).toEqual(new Date(dateStringWithOffset).toISOString());
@@ -193,13 +195,13 @@ describe('convertDateStringsToDates', () => {
   test('should convert ISO date strings with negative UTC offset (-05:00) to Date objects', () => {
     const dateStringWithNegativeOffset = '2025-01-01T10:00:00-05:00';
     const input = {
-      startTime: dateStringWithNegativeOffset,
+      startTime: dateStringWithNegativeOffset as IsoDateString,
     };
     const expected = {
       startTime: new Date(dateStringWithNegativeOffset),
     };
 
-    const result = convertDateStringsToDates(input);
+    const result = convertStringsToDates(input);
 
     expect(result.startTime).toBeInstanceOf(Date);
     expect(result.startTime.toISOString()).toEqual(new Date(dateStringWithNegativeOffset).toISOString());
@@ -210,13 +212,13 @@ describe('convertDateStringsToDates', () => {
   test('should convert ISO date strings with explicit zero UTC offset (+00:00) to Date objects', () => {
     const dateStringWithZeroOffset = '2025-03-15T12:00:00+00:00';
     const input = {
-      zeroOffsetDate: dateStringWithZeroOffset,
+      zeroOffsetDate: dateStringWithZeroOffset as IsoDateString,
     };
     const expected = {
       zeroOffsetDate: new Date(dateStringWithZeroOffset),
     };
 
-    const result = convertDateStringsToDates(input);
+    const result = convertStringsToDates(input);
 
     expect(result.zeroOffsetDate).toBeInstanceOf(Date);
     expect(result.zeroOffsetDate.toISOString()).toEqual(new Date(dateStringWithZeroOffset).toISOString());
@@ -227,13 +229,13 @@ describe('convertDateStringsToDates', () => {
   test('should convert ISO date strings with milliseconds and UTC offset to Date objects', () => {
     const dateStringWithMsAndOffset = '2025-10-20T23:59:59.999-07:00';
     const input = {
-      detailedTime: dateStringWithMsAndOffset,
+      detailedTime: dateStringWithMsAndOffset as IsoDateString,
     };
     const expected = {
       detailedTime: new Date(dateStringWithMsAndOffset),
     };
 
-    const result = convertDateStringsToDates(input);
+    const result = convertStringsToDates(input);
 
     expect(result.detailedTime).toBeInstanceOf(Date);
     expect(result.detailedTime.toISOString()).toEqual(new Date(dateStringWithMsAndOffset).toISOString());
@@ -260,7 +262,7 @@ describe('convertDateStringsToDates', () => {
     // Deep copy to ensure comparison is accurate since the function modifies in place
     const expected = JSON.parse(JSON.stringify(input));
 
-    const result = convertDateStringsToDates(input);
+    const result = convertStringsToDates(input);
 
     // Assert that they remain strings (or whatever their original type was)
     expect(typeof result.date1).toBe('string');
@@ -282,4 +284,75 @@ describe('convertDateStringsToDates', () => {
     expect(result).toEqual(expected);
   });
 
+
+  describe('test circular reference occurrences', () => {
+
+    // Test case 1: Circular references
+    test('should handle circular references without crashing and preserve the cycle', () => {
+      const dateString1 = '2023-02-20T12:30:00.000Z';
+      const dateString2 = '2023-03-01T08:00:00.000Z';
+      const dateString3 = '2023-04-05T14:15:00.000Z';
+
+      const input: any = {
+        data: {
+          item1: {
+            updatedAt: dateString1,
+            value: 10,
+          },
+          item2: {
+            nested1: {
+              deletedAt: dateString2,
+              isActive: false,
+              nested2: {
+                createdAt: dateString3,
+                parent: null as any,
+              },
+            },
+            anotherItem: {
+              someValue: 42,
+              lastSeen: '2023-11-01T12:00:00Z',
+            },
+          },
+        },
+      };
+
+      // Create a circular reference
+      input.data.item2.nested1.nested2.parent = input;
+
+      const convertedOutput = convertStringsToDates(input);
+
+      // Expect the function not to have thrown an error
+      expect(convertedOutput).toBeDefined();
+      expect(convertedOutput).toBeInstanceOf(Object);
+
+      // Check if circular reference is present
+      expect(convertedOutput.data.item2.nested1.nested2.parent).toBe(input);
+
+      // Check if the date conversion worked
+      expect(convertedOutput.data.item1.updatedAt).toBeInstanceOf(Date);
+      expect(convertedOutput.data.item1.updatedAt.toISOString()).toBe(dateString1);
+
+      expect(convertedOutput.data.item2.nested1.deletedAt).toBeInstanceOf(Date);
+      expect(convertedOutput.data.item2.nested1.deletedAt.toISOString()).toBe(dateString2);
+
+      expect(convertedOutput.data.item2.nested1.nested2.createdAt).toBeInstanceOf(Date);
+      expect(convertedOutput.data.item2.nested1.nested2.createdAt.toISOString()).toBe(dateString3);
+
+      expect(convertedOutput.data.item2.anotherItem.lastSeen).toBeInstanceOf(Date);
+      expect(convertedOutput.data.item2.anotherItem.lastSeen.toISOString()).toBe(new Date(input.data.item2.anotherItem.lastSeen).toISOString());
+    });
+
+    // Test case 2: Direct self-reference
+    test('should work when encountering direct self-references', () => {
+      const obj: any = {};
+      obj.self = obj;
+      obj.createdAt = '2023-02-01T00:00:00Z';
+
+      const converted = convertStringsToDates(obj);
+
+      expect(converted).toBeDefined();
+      expect(converted.self).toBe(obj);
+      expect(converted.createdAt).toBeInstanceOf(Date);
+    });
+  });
 });
