@@ -136,13 +136,20 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
     if (isEditorAssistant) {
       if (isEditorAssistantFormData(formData)) {
-        const response = await postMessageForEditorAssistant(threadId, formData);
+        const response = await postMessageForEditorAssistant({
+          threadId,
+          formData,
+        });
         return response;
       }
       return;
     }
     if (aiAssistantData?._id != null) {
-      const response = await postMessageForKnowledgeAssistant(aiAssistantData._id, threadId, formData);
+      const response = await postMessageForKnowledgeAssistant({
+        aiAssistantId: aiAssistantData._id,
+        threadId,
+        formData,
+      });
       return response;
     }
   }, [aiAssistantData?._id, isEditorAssistant, postMessageForEditorAssistant, postMessageForKnowledgeAssistant]);

@@ -41,8 +41,14 @@ import { performSearchReplace } from './search-replace-engine';
 interface CreateThread {
   (): Promise<IThreadRelationHasId>;
 }
+
+type PostMesageArgs = {
+  threadId: string;
+  formData: FormData;
+}
+
 interface PostMessage {
-  (threadId: string, formData: FormData): Promise<Response>;
+  (args: PostMesageArgs): Promise<Response>;
 }
 interface ProcessMessage {
   (data: unknown, handler: {
@@ -162,7 +168,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     return response.data;
   }, [selectedAiAssistant?._id]);
 
-  const postMessage: PostMessage = useCallback(async(threadId, formData) => {
+  const postMessage: PostMessage = useCallback(async({ threadId, formData }) => {
     // Clear partial content info on new request
     setPartialContentInfo(null);
 
@@ -290,7 +296,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     });
   }, [isGeneratingEditorText, mutateIsEnableUnifiedMergeView, clientEngine, yDocs]);
 
-  const selectTextHandler = useCallback((selectedText: string, selectedTextFirstLineNumber: number) => {
+  const selectTextHandler = useCallback(({ selectedText, selectedTextIndex, selectedTextFirstLineNumber }) => {
     setSelectedText(selectedText);
     lineRef.current = selectedTextFirstLineNumber;
   }, []);
