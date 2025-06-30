@@ -15,8 +15,6 @@ const logger = loggerFactory('growi:routes:apiv3:markdown-setting');
 const express = require('express');
 
 const router = express.Router();
-const { body } = require('express-validator');
-
 
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
@@ -25,7 +23,7 @@ module.exports = (crowi) => {
   const activityEvent = crowi.event('activity');
 
 
-  router.get('/content-disposition', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/content-disposition-settings', loginRequiredStrictly, adminRequired, async(req, res) => {
     const promises = CONFIGURABLE_MIME_TYPES_FOR_DISPOSITION.map(async(mimeType) => {
       const configKey = `attachments:contentDisposition:${mimeType}:inline`;
       try {
