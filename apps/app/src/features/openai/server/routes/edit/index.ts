@@ -172,7 +172,7 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
         userMessage,
         pageBody, isPageBodyPartial, partialPageBodyStartIndex,
         selectedText, selectedPosition,
-        threadId,
+        threadId, aiAssistantId: _aiAssistantId,
       } = req.body;
 
       // Parameter check
@@ -192,13 +192,15 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
       }
 
       // Check if usable
-      if (threadRelation.aiAssistant != null) {
-        const aiAssistantId = getIdStringForRef(threadRelation.aiAssistant);
+      const aiAssistantId = _aiAssistantId ?? (threadRelation.aiAssistant != null ? getIdStringForRef(threadRelation.aiAssistant) : undefined);
+      if (aiAssistantId != null) {
         const isAiAssistantUsable = await openaiService.isAiAssistantUsable(aiAssistantId, req.user);
         if (!isAiAssistantUsable) {
           return res.apiv3Err(new ErrorV3('The specified AI assistant is not usable'), 400);
         }
       }
+
+      const aiAssistant = aiAssistantId != null ? await AiAssistantModel.findById(aiAssistantId) : undefined;
 
       // Initialize SSE helper and stream processor
       const sseHelper = new SseHelper(res);

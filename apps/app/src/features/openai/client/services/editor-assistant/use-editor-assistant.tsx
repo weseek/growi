@@ -191,6 +191,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
 
     const requestBody = {
       threadId,
+      aiAssistantId: selectedAiAssistant?._id,
       userMessage: formData.input,
       selectedText,
       pageBody: pageBodyContext.content,
