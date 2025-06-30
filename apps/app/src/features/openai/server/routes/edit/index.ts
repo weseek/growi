@@ -122,12 +122,12 @@ ${args.isPageBodyPartial && args.partialPageBodyStartIndex != null
     : ''
 }
 
-${args.selectedText != null
-    ? `## selectedText: \n\n\`\`\`markdown\n${args.selectedText}\n\`\`\``
+${args.selectedText != null && args.selectedText.length > 0
+    ? `## selectedText: <selected_text>${args.selectedText}\n</selected_text>`
     : ''
 }
 
-${args.selectedPosition != null
+${args.selectedText != null && args.selectedPosition != null
     ? `- **selectedPosition**: ${args.selectedPosition}`
     : ''
 }

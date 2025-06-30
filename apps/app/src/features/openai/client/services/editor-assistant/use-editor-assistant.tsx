@@ -128,6 +128,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
   const [selectedAiAssistant, setSelectedAiAssistant] = useState<AiAssistantHasId>();
   const [selectedText, setSelectedText] = useState<string>();
+  const [selectedTextIndex, setSelectedTextIndex] = useState<number>();
   const [isGeneratingEditorText, setIsGeneratingEditorText] = useState<boolean>(false);
   const [partialContentInfo, setPartialContentInfo] = useState<{
     startIndex: number;
@@ -193,11 +194,14 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       threadId,
       aiAssistantId: selectedAiAssistant?._id,
       userMessage: formData.input,
-      selectedText,
       pageBody: pageBodyContext.content,
       ...(pageBodyContext.isPartial && {
         isPageBodyPartial: pageBodyContext.isPartial,
         partialPageBodyStartIndex: pageBodyContext.startIndex,
+      }),
+      ...(selectedText != null && selectedText.length > 0 && {
+        selectedText,
+        selectedPosition: selectedTextIndex,
       }),
     } satisfies EditRequestBody;
 
@@ -208,7 +212,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     });
 
     return response;
-  }, [codeMirrorEditor, mutateIsEnableUnifiedMergeView, selectedText]);
+  }, [codeMirrorEditor, mutateIsEnableUnifiedMergeView, selectedAiAssistant?._id, selectedText, selectedTextIndex]);
 
 
   // Enhanced processMessage with client engine support (保持)
@@ -299,6 +303,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
 
   const selectTextHandler = useCallback(({ selectedText, selectedTextIndex, selectedTextFirstLineNumber }) => {
     setSelectedText(selectedText);
+    setSelectedTextIndex(selectedTextIndex);
     lineRef.current = selectedTextFirstLineNumber;
   }, []);
 
@@ -314,12 +319,11 @@ export const useEditorAssistant: UseEditorAssistant = () => {
         pendingDetectedDiff.forEach((detectedDiff) => {
           if (detectedDiff.data.diff) {
             const { search, replace, startLine } = detectedDiff.data.diff;
-
-            // 新しい検索・置換処理
+            // New search and replace processing
             const success = performSearchReplace(yText, search, replace, startLine);
 
             if (!success) {
-              // フォールバック: 既存の動作
+              // Fallback: existing behavior
               if (isTextSelected) {
                 insertTextAtLine(yText, lineRef.current, replace);
                 lineRef.current += 1;
@@ -350,6 +354,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   useEffect(() => {
     if (detectedDiff?.filter(detectedDiff => detectedDiff.applied === false).length === 0) {
       setSelectedText(undefined);
+      setSelectedTextIndex(undefined);
       setDetectedDiff(undefined);
       lineRef.current = 0;
     }
