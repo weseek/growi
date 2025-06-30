@@ -9,8 +9,6 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 import { CONFIGURABLE_MIME_TYPES_FOR_DISPOSITION } from './configurable-mime-types';
 
-// set config definitions
-// change to content disposition settings
 const logger = loggerFactory('growi:routes:apiv3:markdown-setting');
 const express = require('express');
 
@@ -23,7 +21,7 @@ module.exports = (crowi) => {
   const activityEvent = crowi.event('activity');
 
 
-  router.get('/content-disposition-settings', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const promises = CONFIGURABLE_MIME_TYPES_FOR_DISPOSITION.map(async(mimeType) => {
       const configKey = `attachments:contentDisposition:${mimeType}:inline`;
       try {
