@@ -1,5 +1,4 @@
-import path from 'path';
-
+import path from 'node:path';
 
 import react from '@vitejs/plugin-react';
 import glob from 'glob';
@@ -47,9 +46,7 @@ export default defineConfig({
     devSocketIOPlugin(),
     dts({
       entryRoot: 'src',
-      exclude: [
-        ...excludeFiles,
-      ],
+      exclude: [...excludeFiles],
       copyDtsFiles: true,
     }),
     {
@@ -65,10 +62,7 @@ export default defineConfig({
     sourcemap: true,
     lib: {
       entry: glob.sync(path.resolve(__dirname, 'src/**/*.{ts,tsx}'), {
-        ignore: [
-          ...excludeFiles,
-          '**/*.spec.ts',
-        ],
+        ignore: [...excludeFiles, '**/*.spec.ts'],
       }),
       name: 'editor-libs',
       formats: ['es'],
