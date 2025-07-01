@@ -51,7 +51,7 @@ jobs:
         turbo run lint --filter=@growi/pdf-converter
 
     - name: Slack Notification
-      uses: weseek/ghaction-slack-notification@master
+      uses: weseek/ghaction-slack-notification@support/168264-node-v22
       if: failure()
       with:
         type: ${{ job.status }}
@@ -87,7 +87,7 @@ jobs:
       run: turbo run dev:pdf-converter:ci
 
     - name: Slack Notification
-      uses: weseek/ghaction-slack-notification@master
+      uses: weseek/ghaction-slack-notification@support/168264-node-v22
       if: failure()
       with:
         type: ${{ job.status }}
@@ -150,7 +150,7 @@ jobs:
       run: pnpm run start:prod:ci
 
     - name: Slack Notification
-      uses: weseek/ghaction-slack-notification@master
+      uses: weseek/ghaction-slack-notification@support/168264-node-v22
       if: failure()
       with:
         type: ${{ job.status }}

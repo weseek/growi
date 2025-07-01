@@ -78,7 +78,7 @@ jobs:
         pnpm run reg:run
 
     - name: Slack Notification
-      uses: weseek/ghaction-slack-notification@master
+      uses: weseek/ghaction-slack-notification@support/168264-node-v22
       if: failure()
       with:
         type: ${{ job.status }}
