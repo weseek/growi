@@ -27,8 +27,14 @@ interface CreateThread {
   (aiAssistantId: string, initialUserMessage: string): Promise<IThreadRelationHasId>;
 }
 
+type PostMessageArgs = {
+  aiAssistantId: string;
+  threadId: string;
+  formData: FormData;
+};
+
 interface PostMessage {
-  (aiAssistantId: string, threadId: string, formData: FormData): Promise<Response>;
+  (args: PostMessageArgs): Promise<Response>;
 }
 
 interface ProcessMessage {
@@ -106,7 +112,7 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
     return thread;
   }, [mutateThreadData]);
 
-  const postMessage: PostMessage = useCallback(async(aiAssistantId, threadId, formData) => {
+  const postMessage: PostMessage = useCallback(async({ aiAssistantId, threadId, formData }) => {
     const response = await fetch('/_api/v3/openai/message', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
