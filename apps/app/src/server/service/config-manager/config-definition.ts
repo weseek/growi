@@ -268,6 +268,7 @@ export const CONFIG_KEYS = [
   // OpenTelemetry Settings
   'otel:enabled',
   'otel:isAppSiteUrlHashed',
+  'otel:anonymizeInBestEffort',
   'otel:serviceInstanceId',
 
   // S2S Messaging Pubsub Settings
@@ -1127,10 +1128,14 @@ export const CONFIG_DEFINITIONS = {
   // OpenTelemetry Settings
   'otel:enabled': defineConfig<boolean>({
     envVarName: 'OPENTELEMETRY_ENABLED',
-    defaultValue: false,
+    defaultValue: true,
   }),
   'otel:isAppSiteUrlHashed': defineConfig<boolean>({
     envVarName: 'OPENTELEMETRY_IS_APP_SITE_URL_HASHED',
+    defaultValue: false,
+  }),
+  'otel:anonymizeInBestEffort': defineConfig<boolean>({
+    envVarName: 'OPENTELEMETRY_ANONYMIZE_IN_BEST_EFFORT',
     defaultValue: false,
   }),
   'otel:serviceInstanceId': defineConfig<string | undefined>({
