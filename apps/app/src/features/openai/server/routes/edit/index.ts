@@ -216,7 +216,7 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
         }
       }
 
-      const aiAssistant = aiAssistantId != null ? await AiAssistantModel.findById(aiAssistantId) : undefined;
+      const aiAssistant = aiAssistantId != null ? await AiAssistantModel.findOne({ _id: { $eq: aiAssistantId } }) : undefined;
 
       // Initialize SSE helper and stream processor
       const sseHelper = new SseHelper(res);
