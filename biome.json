@@ -1,4 +1,5 @@
 {
+  "root": false,
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
     "includes": [
@@ -19,7 +20,8 @@
       "!**/.eslintrc.js",
       "!**/.stylelintrc.json",
       "!**/package.json",
-      "!apps/**",
+      "!apps/app/**",
+      "!apps/slackbot-proxy/**",
       "!packages/editor/**",
       "!packages/pdf-converter-client/src/index.ts"
     ]
@@ -28,7 +30,13 @@
     "enabled": true,
     "indentStyle": "space"
   },
-  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
   "linter": {
     "enabled": true,
     "rules": {
@@ -38,6 +46,23 @@
   "javascript": {
     "formatter": {
       "quoteStyle": "single"
+    },
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "apps/pdf-converter/**"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "useImportType": "off"
+          }
+        }
+      }
+    }
+  ]
 }
