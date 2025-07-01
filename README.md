@@ -81,7 +81,7 @@ See [GROWI Docs: Environment Variables](https://docs.growi.org/en/admin-guide/ad
 
 ## Dependencies
 
-- Node.js v18.x or v20.x
+- Node.js v20.x or v22.x
 - npm 6.x
 - pnpm 9.x
 - [Turborepo](https://turbo.build/repo)
