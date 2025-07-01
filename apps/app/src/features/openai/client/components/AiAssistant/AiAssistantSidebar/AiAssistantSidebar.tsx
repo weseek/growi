@@ -361,13 +361,10 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   }, [headerIconForEditorAssistant, headerIconForKnowledgeAssistant, isEditorAssistant]);
 
   const headerText = useMemo(() => {
-    if (threadData?.title) {
-      return threadData.title;
-    }
     return isEditorAssistant
       ? headerTextForEditorAssistant
       : headerTextForKnowledgeAssistant;
-  }, [threadData?.title, isEditorAssistant, headerTextForEditorAssistant, headerTextForKnowledgeAssistant]);
+  }, [isEditorAssistant, headerTextForEditorAssistant, headerTextForKnowledgeAssistant]);
 
   const placeHolder = useMemo(() => {
     if (form.formState.isSubmitting) {
