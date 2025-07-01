@@ -1,5 +1,4 @@
 import { convertStringsToDates } from './axios';
-import type { IsoDateString } from './axios';
 
 
 describe('convertStringsToDates', () => {
@@ -9,7 +8,7 @@ describe('convertStringsToDates', () => {
     const dateString = '2023-01-15T10:00:00.000Z';
     const input = {
       id: 1,
-      createdAt: dateString as IsoDateString,
+      createdAt: dateString,
       name: 'Test Item',
     };
     const expected = {
@@ -30,12 +29,12 @@ describe('convertStringsToDates', () => {
     const input = {
       data: {
         item1: {
-          updatedAt: dateString1 as IsoDateString,
+          updatedAt: dateString1,
           value: 10,
         },
         item2: {
           nested: {
-            deletedAt: dateString2 as IsoDateString,
+            deletedAt: dateString2,
             isActive: false,
           },
         },
@@ -68,8 +67,8 @@ describe('convertStringsToDates', () => {
     const dateString1 = '2023-04-05T14:15:00.000Z';
     const dateString2 = '2023-05-10T16:00:00.000Z';
     const input = [
-      { id: 1, eventDate: dateString1 as IsoDateString },
-      { id: 2, eventDate: dateString2 as IsoDateString, data: { nestedProp: 'value' } },
+      { id: 1, eventDate: dateString1ng },
+      { id: 2, eventDate: dateString2ng, data: { nestedProp: 'value' } },
     ];
     const expected = [
       { id: 1, eventDate: new Date(dateString1) },
@@ -86,7 +85,7 @@ describe('convertStringsToDates', () => {
   // Test case 4: Array containing date strings directly (though less common for this function)
   test('should handle arrays containing date strings directly', () => {
     const dateString = '2023-06-20T18:00:00.000Z';
-    const input: [string, IsoDateString, number] = ['text', dateString as IsoDateString, 123];
+    const input: [string, string, number] = ['text', dateString, 123];
     const expected = ['text', new Date(dateString), 123];
     const result = convertStringsToDates(input);
     expect(result[1]).toBeInstanceOf(Date);
@@ -130,7 +129,7 @@ describe('convertStringsToDates', () => {
   // Test case 8: Date string with different milliseconds (isoDateRegex without .000)
   test('should handle date strings with varied milliseconds', () => {
     const dateString = '2023-01-15T10:00:00Z'; // No milliseconds
-    const input = { createdAt: dateString as IsoDateString };
+    const input = { createdAt: dateString };
     const expected = { createdAt: new Date(dateString) };
     const result = convertStringsToDates(input);
     expect(result.createdAt).toBeInstanceOf(Date);
@@ -168,9 +167,9 @@ describe('convertStringsToDates', () => {
     const dateStringWithOffset = '2025-06-12T14:00:00+09:00';
     const input = {
       id: 2,
-      eventTime: dateStringWithOffset as IsoDateString,
+      eventTime: dateStringWithOffsetng,
       details: {
-        lastActivity: '2025-06-12T05:00:00-04:00' as IsoDateString,
+        lastActivity: '2025-06-12T05:00:00-04:00'ng,
       },
     };
     const expected = {
@@ -195,7 +194,7 @@ describe('convertStringsToDates', () => {
   test('should convert ISO date strings with negative UTC offset (-05:00) to Date objects', () => {
     const dateStringWithNegativeOffset = '2025-01-01T10:00:00-05:00';
     const input = {
-      startTime: dateStringWithNegativeOffset as IsoDateString,
+      startTime: dateStringWithNegativeOffsetng,
     };
     const expected = {
       startTime: new Date(dateStringWithNegativeOffset),
@@ -212,7 +211,7 @@ describe('convertStringsToDates', () => {
   test('should convert ISO date strings with explicit zero UTC offset (+00:00) to Date objects', () => {
     const dateStringWithZeroOffset = '2025-03-15T12:00:00+00:00';
     const input = {
-      zeroOffsetDate: dateStringWithZeroOffset as IsoDateString,
+      zeroOffsetDate: dateStringWithZeroOffsetng,
     };
     const expected = {
       zeroOffsetDate: new Date(dateStringWithZeroOffset),
@@ -229,7 +228,7 @@ describe('convertStringsToDates', () => {
   test('should convert ISO date strings with milliseconds and UTC offset to Date objects', () => {
     const dateStringWithMsAndOffset = '2025-10-20T23:59:59.999-07:00';
     const input = {
-      detailedTime: dateStringWithMsAndOffset as IsoDateString,
+      detailedTime: dateStringWithMsAndOffsetng,
     };
     const expected = {
       detailedTime: new Date(dateStringWithMsAndOffset),
