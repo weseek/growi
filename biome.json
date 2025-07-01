@@ -1,5 +1,4 @@
 {
-  "root": false,
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
     "includes": [
@@ -53,9 +52,7 @@
   },
   "overrides": [
     {
-      "includes": [
-        "apps/pdf-converter/**"
-      ],
+      "includes": ["apps/pdf-converter/**"],
       "linter": {
         "rules": {
           "style": {

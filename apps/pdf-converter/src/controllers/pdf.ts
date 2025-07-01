@@ -10,9 +10,10 @@ import {
   Required,
   Returns,
 } from '@tsed/schema';
-
-import PdfConvertService from '../service/pdf-convert.js';
-import { JobStatus, JobStatusSharedWithGrowi } from '../service/pdf-convert.js';
+import PdfConvertService, {
+  JobStatus,
+  JobStatusSharedWithGrowi,
+} from '../service/pdf-convert.js';
 
 @Controller('/pdf')
 class PdfCtrl {
