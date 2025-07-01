@@ -48,6 +48,12 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
   }, []);
 
   const handleChangeCustomExpirationDate = useCallback((customExpirationDate: string) => {
+    // set customExpirationDate to today if the input is empty
+    if (customExpirationDate.length === 0) {
+      setCustomExpirationDate(new Date());
+      return;
+    }
+
     const parsedDate = parse(customExpirationDate, 'yyyy-MM-dd', new Date());
     setCustomExpirationDate(parsedDate);
   }, []);
