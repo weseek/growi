@@ -72,7 +72,7 @@ const UserPictureRootWithLink = forwardRef<
       ref={ref}
       className={props.className}
       onClick={clickHandler}
-      onKeyDown={() => {}}
+      onKeyDown={clickHandler}
       style={{ cursor: 'pointer' }}
       role="link"
       tabIndex={0}
