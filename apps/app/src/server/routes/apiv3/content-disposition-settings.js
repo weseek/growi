@@ -1,4 +1,5 @@
 import { ErrorV3 } from '@growi/core/dist/models';
+import { body, param } from 'express-validator';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { configManager } from '~/server/service/config-manager';
@@ -13,6 +14,20 @@ const logger = loggerFactory('growi:routes:apiv3:markdown-setting');
 const express = require('express');
 
 const router = express.Router();
+
+const validator = {
+  updateContentDisposition: [
+    param('mimeType').exists().notEmpty().withMessage('MIME type is required')
+      .bail()
+      .matches(/^.+\/.+$/)
+      .custom(value => CONFIGURABLE_MIME_TYPES_FOR_DISPOSITION.includes(value))
+      .withMessage('Invalid or unconfigurable MIME type specified.'),
+
+    body('isInline')
+      .isBoolean().withMessage('`isInline` must be a boolean.')
+      .toBoolean(),
+  ],
+};
 
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
@@ -45,13 +60,12 @@ module.exports = (crowi) => {
     return res.apiv3({ contentDispositionSettings });
   });
 
-  // sets any specified mime type
-  // needs body { isInline: boolean }
-  router.put('/:mimeType',
+
+  router.put('/:mimeType(*)',
     loginRequiredStrictly,
     adminRequired,
     addActivity,
-    // validator.updateContentDisposition, // Validate path and body
+    validator.updateContentDisposition, // Validate path and body
     apiV3FormValidator,
     async(req, res) => {
       const { mimeType } = req.params; // Get mimeType from URL path
@@ -77,16 +91,13 @@ module.exports = (crowi) => {
         // Return success response
         return res.apiv3({ mimeType, isInline: updatedIsInline });
       }
-      // Moved catch to new line for brace-style
+
       catch (err) {
         const msg = `Error occurred in updating content disposition for MIME type: ${mimeType}`;
         logger.error(msg, err);
         return res.apiv3Err(new ErrorV3(msg, 'update-content-disposition-failed'));
       }
     });
-
-  // add function for setting predetermined allowed mime types in lists
-  // Recommended, Strict, Moderately strict, Lax, etc
 
   return router;
 };
