@@ -77,7 +77,7 @@ jobs:
           turbo run lint --filter=@growi/app --filter=./packages/*
 
       - name: Slack Notification
-        uses: weseek/ghaction-slack-notification@support/168264-node-v22
+        uses: weseek/ghaction-slack-notification@master
         if: failure()
         with:
           type: ${{ job.status }}
@@ -141,7 +141,7 @@ jobs:
             packages/remark-growi-directive/coverage
 
       - name: Slack Notification
-        uses: weseek/ghaction-slack-notification@support/168264-node-v22
+        uses: weseek/ghaction-slack-notification@master
         if: failure()
         with:
           type: ${{ job.status }}
@@ -199,7 +199,7 @@ jobs:
           MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_dev
 
       - name: Slack Notification
-        uses: weseek/ghaction-slack-notification@support/168264-node-v22
+        uses: weseek/ghaction-slack-notification@master
         if: failure()
         with:
           type: ${{ job.status }}

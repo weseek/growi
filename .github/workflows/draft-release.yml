@@ -67,7 +67,7 @@ jobs:
           echo "BASE_BRANCH=$BASE_BRANCH" >> $GITHUB_OUTPUT
 
       - name: Create/Update Pull Request
-        uses: bakunyo/git-pr-release-action@support/168264-node-v22
+        uses: bakunyo/git-pr-release-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GIT_PR_RELEASE_BRANCH_PRODUCTION: ${{ steps.base-branch.outputs.BASE_BRANCH }}
