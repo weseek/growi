@@ -83,6 +83,7 @@ export const generateMxgraphData = (code: string): string => {
     resize: true,
     lightbox: 'false',
     xml,
+    'dark-mode': 'auto',
   };
 
   return escapeHTML(JSON.stringify(mxGraphData));
