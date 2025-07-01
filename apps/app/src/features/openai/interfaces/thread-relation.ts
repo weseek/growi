@@ -13,7 +13,7 @@ export type ThreadType = typeof ThreadType[keyof typeof ThreadType];
 
 export interface IThreadRelation {
   userId: Ref<IUser>
-  aiAssistant: Ref<AiAssistant>
+  aiAssistant?: Ref<AiAssistant>
   threadId: string;
   title?: string;
   type: ThreadType;
