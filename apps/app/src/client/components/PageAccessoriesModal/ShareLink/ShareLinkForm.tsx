@@ -205,9 +205,14 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
             />
           </div>
         </div>
-        <button type="button" className="btn btn-primary d-block mx-auto px-5" onClick={handleIssueShareLink} data-testid="btn-sharelink-issue">
-          {t('share_links.Issue')}
-        </button>
+
+        <div className="row mt-4">
+          <div className="col">
+            <button type="button" className="btn btn-primary d-block mx-auto px-5" onClick={handleIssueShareLink} data-testid="btn-sharelink-issue">
+              {t('share_links.Issue')}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
