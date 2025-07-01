@@ -47,7 +47,7 @@ module.exports = (crowi) => {
 
   // sets any specified mime type
   // needs body { isInline: boolean }
-  router.put('/content-disposition/:mimeType',
+  router.put('/:mimeType',
     loginRequiredStrictly,
     adminRequired,
     addActivity,
