@@ -93,7 +93,11 @@ export const InlineFileTypeSelector = (): JSX.Element => {
             );
           })}
         </ul>
-        <AdminUpdateButtonRow />
+        <AdminUpdateButtonRow
+          onClick={() => {
+            console.log('選択されたmime types:', Array.from(selected));
+          }}
+        />
       </div>
     </>
   );
