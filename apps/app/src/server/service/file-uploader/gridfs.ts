@@ -65,7 +65,7 @@ class GridfsFileUploader extends AbstractFileUploader {
   override async uploadAttachment(readable: Readable, attachment: IAttachmentDocument): Promise<void> {
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
-    const contentHeaders = new ContentHeaders(configManager, attachment);
+    const contentHeaders = await ContentHeaders.create(configManager, attachment);
 
     return AttachmentFile.promisifiedWrite(
       {
@@ -80,7 +80,7 @@ class GridfsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override respond(): void {
+  override respond(): Promise<void> {
     throw new Error('GridfsFileUploader does not support ResponseMode.DELEGATE.');
   }
 

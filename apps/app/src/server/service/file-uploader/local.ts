@@ -83,7 +83,7 @@ class LocalFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void {
+  override respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): Promise<void> {
     throw new Error('Method not implemented.');
   }
 
@@ -221,7 +221,7 @@ module.exports = function(crowi: Crowi) {
    * @param {Response} res
    * @param {Response} attachment
    */
-  lib.respond = function(res, attachment, opts) {
+  lib.respond = async function(res, attachment, opts) {
     // Responce using internal redirect of nginx or Apache.
     const storagePath = getFilePathOnStorage(attachment);
     const relativePath = path.relative(crowi.publicDir, storagePath);
@@ -229,14 +229,14 @@ module.exports = function(crowi: Crowi) {
     const internalPath = urljoin(internalPathRoot, relativePath);
 
     const isDownload = opts?.download ?? false;
-    const contentHeaders = new ContentHeaders(configManager, attachment, { inline: !isDownload });
+    const contentHeaders = await ContentHeaders.create(configManager,attachment, { inline: !isDownload });
     applyHeaders(res, [
       ...contentHeaders.toExpressHttpHeaders(),
       { field: 'X-Accel-Redirect', value: internalPath },
       { field: 'X-Sendfile', value: storagePath },
     ]);
 
-    return res.end();
+    res.end();
   };
 
   /**

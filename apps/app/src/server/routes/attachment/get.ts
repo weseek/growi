@@ -112,7 +112,7 @@ const respondForRelayMode = async(crowi: Crowi, res: Response, fileUploadService
     attachment: IAttachmentDocument, opts?: RespondOptions): Promise<void> => {
   // apply content-* headers before response
   const isDownload = opts?.download ?? false;
-  const contentHeaders = new ContentHeaders(crowi.configManager as ConfigManager, attachment, { inline: !isDownload });
+  const contentHeaders = await ContentHeaders.create(crowi.configManager as ConfigManager, attachment, { inline: !isDownload });
   applyHeaders(res, contentHeaders.toExpressHttpHeaders());
 
   try {

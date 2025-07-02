@@ -140,7 +140,7 @@ class AzureFileUploader extends AbstractFileUploader {
     const filePath = getFilePathOnStorage(attachment);
     const containerClient = await getContainerClient();
     const blockBlobClient: BlockBlobClient = containerClient.getBlockBlobClient(filePath);
-    const contentHeaders = new ContentHeaders(this.configManager, attachment);
+    const contentHeaders = await ContentHeaders.create(this.configManager, attachment);
 
     await blockBlobClient.uploadStream(readable, undefined, undefined, {
       blobHTTPHeaders: {
@@ -163,7 +163,7 @@ class AzureFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override respond(): void {
+  override respond(): Promise<void> {
     throw new Error('AzureFileUploader does not support ResponseMode.DELEGATE.');
   }
 
@@ -218,7 +218,7 @@ class AzureFileUploader extends AbstractFileUploader {
       const userDelegationKey = await blobServiceClient.getUserDelegationKey(startsOn, expiresOn);
 
       const isDownload = opts?.download ?? false;
-      const contentHeaders = new ContentHeaders(this.configManager, attachment, { inline: !isDownload });
+      const contentHeaders = await ContentHeaders.create(this.configManager, attachment, { inline: !isDownload });
 
       // https://github.com/Azure/azure-sdk-for-js/blob/d4d55f73/sdk/storage/storage-blob/src/ContainerSASPermissions.ts#L24
       // r:read, a:add, c:create, w:write, d:delete, l:list

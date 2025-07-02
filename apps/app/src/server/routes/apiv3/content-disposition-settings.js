@@ -36,6 +36,42 @@ module.exports = (crowi) => {
   const activityEvent = crowi.event('activity');
 
 
+  /**
+   * @swagger
+  * /markdown-setting:
+  * get:
+  *  tags: [Markdown Settings]
+  *  summary: Get content disposition settings for configurable MIME types
+  *    description: Retrieve the current `inline` or `attachment` disposition setting for each configurable MIME type.
+  *  security:
+  *    - cookieAuth: []
+  *    - adminRequired: []
+  *  responses:
+  *    200:
+  *      description: Successfully retrieved content disposition settings.
+  *      content:
+  *        application/json:
+  *          schema:
+  *            type: object
+  *            properties:
+  *              contentDispositionSettings:
+  *                type: object
+  *                description: An object mapping configurable MIME types to their current inline disposition status.
+  *                additionalProperties:
+  *                  type: boolean
+  *                  description: true if inline, false if attachment.
+  *                example:
+  *                  image/png: true
+  *                  application/pdf: false
+  *                  text/plain: true
+  *    401:
+  *      $ref: '#/components/responses/401'
+  *    403:
+  *    $ref: '#/components/responses/403'
+  *  500:
+  *     $ref: '#/components/responses/500'
+  *
+   */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const promises = CONFIGURABLE_MIME_TYPES_FOR_DISPOSITION.map(async(mimeType) => {
       const configKey = `attachments:contentDisposition:${mimeType}:inline`;
@@ -61,15 +97,77 @@ module.exports = (crowi) => {
   });
 
 
+  /**
+   * @swagger
+   *
+   * /markdown-setting/{mimeType}:
+   * put:
+   * tags: [Markdown Settings]
+   * summary: Update content disposition setting for a specific MIME type
+   * description: Set the `inline` or `attachment` disposition for a given configurable MIME type.
+   * security:
+   *   - cookieAuth: []
+   *   - adminRequired: []
+   * parameters:
+   *   - in: path
+   *     name: mimeType
+   *     schema:
+   *       type: string
+   *       pattern: "^.+\\/.+$"
+   *       required: true
+   *       description: The MIME type to update (e.g., 'image/png', 'application/pdf'). Must be one of the configurable types.
+   *     examples:
+   *       imagePng:
+   *         value: image/png
+   *       applicationPdf:
+   *         value: application/pdf
+   * requestBody:
+   *   content:
+   *     application/json:
+   *       schema:
+   *         type: object
+   *         required:
+   *           - isInline
+   *         properties:
+   *           isInline:
+   *             type: boolean
+   *             description: Set to `true` for inline disposition, `false` for attachment disposition.
+   *             example: true
+   * responses:
+   *   200:
+   *     description: Successfully updated content disposition setting.
+   *     content:
+   *       application/json:
+   *         schema:
+   *           type: object
+   *           properties:
+   *             mimeType:
+   *               type: string
+   *               description: The updated MIME type.
+   *             isInline:
+   *               type: boolean
+   *               description: The new disposition status (`true` for inline, `false` for attachment).
+   *             example:
+   *               mimeType: image/png
+   *               isInline: true
+   *   400:
+   *     $ref: '#/components/responses/400'
+   *   401:
+   *     $ref: '#/components/responses/401'
+   *   403:
+   *     $ref: '#/components/responses/403'
+   *   500:
+   *     $ref: '#/components/responses/500'
+   */
   router.put('/:mimeType(*)',
     loginRequiredStrictly,
     adminRequired,
     addActivity,
-    validator.updateContentDisposition, // Validate path and body
+    validator.updateContentDisposition,
     apiV3FormValidator,
     async(req, res) => {
-      const { mimeType } = req.params; // Get mimeType from URL path
-      const { isInline } = req.body; // Get isInline from request body
+      const { mimeType } = req.params;
+      const { isInline } = req.body;
 
       const configKey = `attachments:contentDisposition:${mimeType}:inline`;
 
@@ -80,15 +178,13 @@ module.exports = (crowi) => {
         // Retrieve the updated value to send back in the response (best practice)
         const updatedIsInline = await crowi.configManager.getConfig(configKey);
 
-        // Emit activity event for auditing
         const parameters = {
-          action: SupportedAction.ACTION_ADMIN_ATTACHMENT_DISPOSITION_UPDATE, // need to define this SupportedAction
+          action: SupportedAction.ACTION_ADMIN_ATTACHMENT_DISPOSITION_UPDATE,
           mimeType,
           isInline: updatedIsInline,
         };
         activityEvent.emit('update', res.locals.activity._id, parameters);
 
-        // Return success response
         return res.apiv3({ mimeType, isInline: updatedIsInline });
       }
 
