@@ -11,9 +11,9 @@ import { Tooltip } from 'reactstrap';
 
 import type { IActivityHasId } from '~/interfaces/activity';
 
-type Props = {
-  activityList: IActivityHasId[]
-}
+ type Props = {
+   activityList: IActivityHasId[]
+ }
 
 const formatDate = (date: Date): string => {
   return format(new Date(date), 'yyyy/MM/dd HH:mm:ss');
@@ -63,19 +63,21 @@ export const ActivityTable : FC<Props> = (props: Props) => {
                 <td>{formatDate(activity.createdAt)}</td>
                 <td>{t(`admin:audit_log_action.${activity.action}`)}</td>
                 <td>{activity.ip}</td>
-                <div className="d-flex align-items-center">
-                  <span className="flex-grow-1 text-truncate">
-                    {activity.endpoint}
-                  </span>
-                  <CopyToClipboard text={activity.endpoint} onCopy={() => showToolTip(activity._id)}>
-                    <button type="button" className="btn btn-outline-secondary border-0 ms-2" id={`tooltipTarget-${activity._id}`}>
-                      <span className="material-symbols-outlined" aria-hidden="true">content_paste</span>
-                    </button>
-                  </CopyToClipboard>
-                  <Tooltip placement="top" isOpen={activeTooltipId === activity._id} fade={false} target={`tooltipTarget-${activity._id}`}>
-                    copied!
-                  </Tooltip>
-                </div>
+                <td className="audit-log-url-cell">
+                  <div className="d-flex align-items-center">
+                    <span className="flex-grow-1 text-truncate">
+                      {activity.endpoint}
+                    </span>
+                    <CopyToClipboard text={activity.endpoint} onCopy={() => showToolTip(activity._id)}>
+                      <button type="button" className="btn btn-outline-secondary border-0 ms-2" id={`tooltipTarget-${activity._id}`}>
+                        <span className="material-symbols-outlined" aria-hidden="true">content_paste</span>
+                      </button>
+                    </CopyToClipboard>
+                    <Tooltip placement="top" isOpen={activeTooltipId === activity._id} fade={false} target={`tooltipTarget-${activity._id}`}>
+                      copied!
+                    </Tooltip>
+                  </div>
+                </td>
               </tr>
             );
           })}
