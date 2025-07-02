@@ -1,3 +1,4 @@
+import type { DateConvertible } from './axios';
 import { convertStringsToDates } from './axios';
 
 
@@ -16,9 +17,14 @@ describe('convertStringsToDates', () => {
       createdAt: new Date(dateString),
       name: 'Test Item',
     };
-    const result = convertStringsToDates(input);
+    const result = convertStringsToDates(input) as Record<string, DateConvertible>;
+
     expect(result.createdAt).toBeInstanceOf(Date);
-    expect(result.createdAt.toISOString()).toEqual(dateString);
+
+    if (result.createdAt instanceof Date) {
+      expect(result.createdAt.toISOString()).toEqual(dateString);
+    }
+
     expect(result).toEqual(expected);
   });
 
@@ -54,11 +60,32 @@ describe('convertStringsToDates', () => {
         },
       },
     };
-    const result = convertStringsToDates(input);
+    const result = convertStringsToDates(input) as {
+        data: {
+            item1: {
+                updatedAt: DateConvertible; // Assert 'updatedAt' later
+                value: number;
+            };
+            item2: {
+                nested: {
+                    deletedAt: DateConvertible; // Assert 'deletedAt' later
+                    isActive: boolean;
+                };
+            };
+        };
+    };
     expect(result.data.item1.updatedAt).toBeInstanceOf(Date);
-    expect(result.data.item1.updatedAt.toISOString()).toEqual(dateString1);
-    expect(result.data.item2.nested.deletedAt).toBeInstanceOf(Date);
-    expect(result.data.item2.nested.deletedAt.toISOString()).toEqual(dateString2);
+
+    if (result.data.item1.updatedAt instanceof Date) {
+      expect(result.data.item1.updatedAt.toISOString()).toEqual(dateString1);
+      expect(result.data.item2.nested.deletedAt).toBeInstanceOf(Date);
+    }
+
+    if (result.data.item2.nested.deletedAt instanceof Date) {
+      expect(result.data.item2.nested.deletedAt).toBeInstanceOf(Date);
+      expect(result.data.item2.nested.deletedAt.toISOString()).toEqual(dateString2);
+    }
+
     expect(result).toEqual(expected);
   });
 
@@ -67,18 +94,29 @@ describe('convertStringsToDates', () => {
     const dateString1 = '2023-04-05T14:15:00.000Z';
     const dateString2 = '2023-05-10T16:00:00.000Z';
     const input = [
-      { id: 1, eventDate: dateString1ng },
-      { id: 2, eventDate: dateString2ng, data: { nestedProp: 'value' } },
+      { id: 1, eventDate: dateString1 },
+      { id: 2, eventDate: dateString2, data: { nestedProp: 'value' } },
     ];
     const expected = [
       { id: 1, eventDate: new Date(dateString1) },
       { id: 2, eventDate: new Date(dateString2), data: { nestedProp: 'value' } },
     ];
-    const result = convertStringsToDates(input);
+    const result = convertStringsToDates(input) as [
+      { id: number, eventDate: DateConvertible},
+      { id: number, eventDate: DateConvertible, data: { nestedProp: string }},
+    ];
+
     expect(result[0].eventDate).toBeInstanceOf(Date);
-    expect(result[0].eventDate.toISOString()).toEqual(dateString1);
-    expect(result[1].eventDate).toBeInstanceOf(Date);
-    expect(result[1].eventDate.toISOString()).toEqual(dateString2);
+
+    if (result[0].eventDate instanceof Date) {
+      expect(result[0].eventDate.toISOString()).toEqual(dateString1);
+    }
+
+    if (result[1].eventDate instanceof Date) {
+      expect(result[1].eventDate).toBeInstanceOf(Date);
+      expect(result[1].eventDate.toISOString()).toEqual(dateString2);
+    }
+
     expect(result).toEqual(expected);
   });
 
@@ -87,9 +125,14 @@ describe('convertStringsToDates', () => {
     const dateString = '2023-06-20T18:00:00.000Z';
     const input: [string, string, number] = ['text', dateString, 123];
     const expected = ['text', new Date(dateString), 123];
-    const result = convertStringsToDates(input);
+    const result = convertStringsToDates(input) as DateConvertible[];
+
     expect(result[1]).toBeInstanceOf(Date);
-    expect(result[1].toISOString()).toEqual(dateString);
+
+    if (result[1] instanceof Date) {
+      expect(result[1].toISOString()).toEqual(dateString);
+    }
+
     expect(result).toEqual(expected);
   });
 
@@ -131,9 +174,14 @@ describe('convertStringsToDates', () => {
     const dateString = '2023-01-15T10:00:00Z'; // No milliseconds
     const input = { createdAt: dateString };
     const expected = { createdAt: new Date(dateString) };
-    const result = convertStringsToDates(input);
+    const result = convertStringsToDates(input) as Record<string, DateConvertible>;
+
     expect(result.createdAt).toBeInstanceOf(Date);
-    expect(result.createdAt.toISOString()).toEqual('2023-01-15T10:00:00.000Z');
+
+    if (result.createdAt instanceof Date) {
+      expect(result.createdAt.toISOString()).toEqual('2023-01-15T10:00:00.000Z');
+    }
+
     expect(result).toEqual(expected);
   });
 
@@ -156,7 +204,14 @@ describe('convertStringsToDates', () => {
         nestedDate: new Date(dateString),
       },
     };
-    const result = convertStringsToDates(input);
+    const result = convertStringsToDates(input) as {
+      prop1: DateConvertible,
+      prop2: null,
+      prop3: {
+        nestedNull: null,
+        nestedDate: DateConvertible
+      }
+    };
     expect(result.prop1).toBeInstanceOf(Date);
     expect(result.prop3.nestedDate).toBeInstanceOf(Date);
     expect(result).toEqual(expected);
@@ -167,9 +222,9 @@ describe('convertStringsToDates', () => {
     const dateStringWithOffset = '2025-06-12T14:00:00+09:00';
     const input = {
       id: 2,
-      eventTime: dateStringWithOffsetng,
+      eventTime: dateStringWithOffset,
       details: {
-        lastActivity: '2025-06-12T05:00:00-04:00'ng,
+        lastActivity: '2025-06-12T05:00:00-04:00',
       },
     };
     const expected = {
@@ -180,12 +235,23 @@ describe('convertStringsToDates', () => {
       },
     };
 
-    const result = convertStringsToDates(input);
+    const result = convertStringsToDates(input) as {
+      id: number,
+      eventTime: DateConvertible,
+      details: {
+        lastActivity: DateConvertible
+      }
+    };
 
     expect(result.eventTime).toBeInstanceOf(Date);
-    expect(result.eventTime.toISOString()).toEqual(new Date(dateStringWithOffset).toISOString());
+    if (result.eventTime instanceof Date) {
+      expect(result.eventTime.toISOString()).toEqual(new Date(dateStringWithOffset).toISOString());
+    }
+
     expect(result.details.lastActivity).toBeInstanceOf(Date);
-    expect(result.details.lastActivity.toISOString()).toEqual(new Date('2025-06-12T05:00:00-04:00').toISOString());
+    if (result.details.lastActivity instanceof Date) {
+      expect(result.details.lastActivity.toISOString()).toEqual(new Date('2025-06-12T05:00:00-04:00').toISOString());
+    }
 
     expect(result).toEqual(expected);
   });
@@ -194,16 +260,19 @@ describe('convertStringsToDates', () => {
   test('should convert ISO date strings with negative UTC offset (-05:00) to Date objects', () => {
     const dateStringWithNegativeOffset = '2025-01-01T10:00:00-05:00';
     const input = {
-      startTime: dateStringWithNegativeOffsetng,
+      startTime: dateStringWithNegativeOffset,
     };
     const expected = {
       startTime: new Date(dateStringWithNegativeOffset),
     };
 
-    const result = convertStringsToDates(input);
+    const result = convertStringsToDates(input) as Record<string, DateConvertible>;
 
     expect(result.startTime).toBeInstanceOf(Date);
-    expect(result.startTime.toISOString()).toEqual(new Date(dateStringWithNegativeOffset).toISOString());
+    if (result.startTime instanceof Date) {
+      expect(result.startTime.toISOString()).toEqual(new Date(dateStringWithNegativeOffset).toISOString());
+    }
+
     expect(result).toEqual(expected);
   });
 
@@ -211,16 +280,18 @@ describe('convertStringsToDates', () => {
   test('should convert ISO date strings with explicit zero UTC offset (+00:00) to Date objects', () => {
     const dateStringWithZeroOffset = '2025-03-15T12:00:00+00:00';
     const input = {
-      zeroOffsetDate: dateStringWithZeroOffsetng,
+      zeroOffsetDate: dateStringWithZeroOffset,
     };
     const expected = {
       zeroOffsetDate: new Date(dateStringWithZeroOffset),
     };
 
-    const result = convertStringsToDates(input);
+    const result = convertStringsToDates(input) as Record<string, DateConvertible>;
 
     expect(result.zeroOffsetDate).toBeInstanceOf(Date);
-    expect(result.zeroOffsetDate.toISOString()).toEqual(new Date(dateStringWithZeroOffset).toISOString());
+    if (result.zeroOffsetDate instanceof Date) {
+      expect(result.zeroOffsetDate.toISOString()).toEqual(new Date(dateStringWithZeroOffset).toISOString());
+    }
     expect(result).toEqual(expected);
   });
 
@@ -228,16 +299,18 @@ describe('convertStringsToDates', () => {
   test('should convert ISO date strings with milliseconds and UTC offset to Date objects', () => {
     const dateStringWithMsAndOffset = '2025-10-20T23:59:59.999-07:00';
     const input = {
-      detailedTime: dateStringWithMsAndOffsetng,
+      detailedTime: dateStringWithMsAndOffset,
     };
     const expected = {
       detailedTime: new Date(dateStringWithMsAndOffset),
     };
 
-    const result = convertStringsToDates(input);
+    const result = convertStringsToDates(input) as Record<string, DateConvertible>;
 
     expect(result.detailedTime).toBeInstanceOf(Date);
-    expect(result.detailedTime.toISOString()).toEqual(new Date(dateStringWithMsAndOffset).toISOString());
+    if (result.detailedTime instanceof Date) {
+      expect(result.detailedTime.toISOString()).toEqual(new Date(dateStringWithMsAndOffset).toISOString());
+    }
     expect(result).toEqual(expected);
   });
 
@@ -261,7 +334,14 @@ describe('convertStringsToDates', () => {
     // Deep copy to ensure comparison is accurate since the function modifies in place
     const expected = JSON.parse(JSON.stringify(input));
 
-    const result = convertStringsToDates(input);
+    const result = convertStringsToDates(input) as {
+      date1: DateConvertible,
+      date2: DateConvertible,
+      date3: DateConvertible,
+      date4: DateConvertible,
+      date5: DateConvertible,
+      someOtherString: string,
+    };
 
     // Assert that they remain strings (or whatever their original type was)
     expect(typeof result.date1).toBe('string');
@@ -318,7 +398,28 @@ describe('convertStringsToDates', () => {
       // Create a circular reference
       input.data.item2.nested1.nested2.parent = input;
 
-      const convertedOutput = convertStringsToDates(input);
+      const convertedOutput = convertStringsToDates(input) as {
+        data: {
+          item1: {
+            updatedAt: DateConvertible,
+            value: number,
+          },
+          item2: {
+            nested1: {
+              deletedAt: DateConvertible,
+              isActive: boolean,
+              nested2: {
+                createdAt: DateConvertible,
+                parent: any,
+              },
+            },
+            anotherItem: {
+              someValue: number,
+              lastSeen: DateConvertible,
+            },
+          },
+        },
+      };
 
       // Expect the function not to have thrown an error
       expect(convertedOutput).toBeDefined();
@@ -329,16 +430,24 @@ describe('convertStringsToDates', () => {
 
       // Check if the date conversion worked
       expect(convertedOutput.data.item1.updatedAt).toBeInstanceOf(Date);
-      expect(convertedOutput.data.item1.updatedAt.toISOString()).toBe(dateString1);
+      if (convertedOutput.data.item1.updatedAt instanceof Date) {
+        expect(convertedOutput.data.item1.updatedAt.toISOString()).toBe(dateString1);
+      }
 
       expect(convertedOutput.data.item2.nested1.deletedAt).toBeInstanceOf(Date);
-      expect(convertedOutput.data.item2.nested1.deletedAt.toISOString()).toBe(dateString2);
+      if (convertedOutput.data.item2.nested1.deletedAt instanceof Date) {
+        expect(convertedOutput.data.item2.nested1.deletedAt.toISOString()).toBe(dateString2);
+      }
 
       expect(convertedOutput.data.item2.nested1.nested2.createdAt).toBeInstanceOf(Date);
-      expect(convertedOutput.data.item2.nested1.nested2.createdAt.toISOString()).toBe(dateString3);
+      if (convertedOutput.data.item2.nested1.nested2.createdAt instanceof Date) {
+        expect(convertedOutput.data.item2.nested1.nested2.createdAt.toISOString()).toBe(dateString3);
+      }
 
       expect(convertedOutput.data.item2.anotherItem.lastSeen).toBeInstanceOf(Date);
-      expect(convertedOutput.data.item2.anotherItem.lastSeen.toISOString()).toBe(new Date(input.data.item2.anotherItem.lastSeen).toISOString());
+      if (convertedOutput.data.item2.anotherItem.lastSeen instanceof Date) {
+        expect(convertedOutput.data.item2.anotherItem.lastSeen.toISOString()).toBe(new Date(input.data.item2.anotherItem.lastSeen).toISOString());
+      }
     });
 
     // Test case 2: Direct self-reference
@@ -347,7 +456,7 @@ describe('convertStringsToDates', () => {
       obj.self = obj;
       obj.createdAt = '2023-02-01T00:00:00Z';
 
-      const converted = convertStringsToDates(obj);
+      const converted = convertStringsToDates(obj) as Record<string, DateConvertible>;
 
       expect(converted).toBeDefined();
       expect(converted.self).toBe(obj);
