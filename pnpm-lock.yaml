@@ -1055,9 +1055,6 @@ importers:
       '@tsed/terminus':
         specifier: '=8.5.0'
         version: 8.5.0(@godaddy/terminus@4.12.1)(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
-      axios:
-        specifier: ^0.24.0
-        version: 0.24.0
       express:
         specifier: ^4.19.2
         version: 4.21.0
@@ -1406,8 +1403,8 @@ importers:
   packages/pdf-converter-client:
     dependencies:
       axios:
-        specifier: ^0.24.0
-        version: 0.24.0
+        specifier: ^1.10.0
+        version: 1.10.0
       tslib:
         specifier: ^2.8.0
         version: 2.8.1
@@ -6342,6 +6339,9 @@ packages:
 
   axios@0.26.1:
     resolution: {integrity: sha512-fPwcX4EvnSHuInCMItEhAGnaSEXRBjtzh9fOtsE6E1G6p7vl7edEeZe11QHf18+6+9gR5PbKV/sGKNaD8YaMeA==}
+
+  axios@1.10.0:
+    resolution: {integrity: sha512-/1xYAC4MP/HEG+3duIhFr4ZQXR4sQXOIe+o6sdqzeykGLx6Upp/1p8MHqhINOvGeP7xyNHe7tsiJByc4SSVUxw==}
 
   axios@1.9.0:
     resolution: {integrity: sha512-re4CqKTJaURpzbLHtIi6XpDv20/CnpXOtjRY5/CU32L8gU8ek9UIivcfvSWvmKEngmVbrUtPpdDwWDWL7DNHvg==}
@@ -18941,7 +18941,7 @@ snapshots:
       '@slack/types': 2.14.0
       '@types/node': 22.15.21
       '@types/retry': 0.12.0
-      axios: 1.9.0
+      axios: 1.10.0
       eventemitter3: 5.0.1
       form-data: 4.0.0
       is-electron: 2.2.2
@@ -21707,6 +21707,14 @@ snapshots:
   axios@0.26.1:
     dependencies:
       follow-redirects: 1.15.9(debug@4.4.1)
+    transitivePeerDependencies:
+      - debug
+
+  axios@1.10.0:
+    dependencies:
+      follow-redirects: 1.15.9(debug@4.4.1)
+      form-data: 4.0.0
+      proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
 
