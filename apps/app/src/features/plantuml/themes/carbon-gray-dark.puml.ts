@@ -1,3 +1,4 @@
+const style = `
 ---
 name: growi-carbon-gray-dark
 display_name: GROWI Carbon Gray
@@ -776,3 +777,6 @@ yamlDiagram {
 </style>
 !endsub
 '!endif
+`;
+
+export default style;

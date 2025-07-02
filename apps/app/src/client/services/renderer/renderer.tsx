@@ -22,6 +22,7 @@ import { RichAttachment } from '~/client/components/ReactMarkdownComponents/Rich
 import { TableWithEditButton } from '~/client/components/ReactMarkdownComponents/TableWithEditButton';
 import * as callout from '~/features/callout';
 import * as mermaid from '~/features/mermaid';
+import * as plantuml from '~/features/plantuml';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import * as addLineNumberAttribute from '~/services/renderer/rehype-plugins/add-line-number-attribute';
@@ -29,7 +30,6 @@ import * as keywordHighlighter from '~/services/renderer/rehype-plugins/keyword-
 import * as relocateToc from '~/services/renderer/rehype-plugins/relocate-toc';
 import * as attachment from '~/services/renderer/remark-plugins/attachment';
 import * as codeBlock from '~/services/renderer/remark-plugins/codeblock';
-import * as plantuml from '~/services/renderer/remark-plugins/plantuml';
 import * as xsvToTable from '~/services/renderer/remark-plugins/xsv-to-table';
 import {
   getCommonSanitizeOption, generateCommonOptions, verifySanitizePlugin,
