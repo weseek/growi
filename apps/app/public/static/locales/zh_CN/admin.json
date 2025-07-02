@@ -461,7 +461,9 @@
       "tag_names": "标记名",
       "tag_attributes": "标记属性",
       "import_recommended": "导入建议 {{target}}"
-    }
+    },
+    "inline_file_type_header": "允许内联显示的文件类型",
+    "inline_file_type_desc": "您可以设置允许内联显示的文件类型。"
   },
   "customize_settings": {
     "customize_settings": "页面定制",

@@ -452,7 +452,9 @@
       "tag_names": "Tag names",
       "tag_attributes": "Tag attributes",
       "import_recommended": "Import recommended {{target}}"
-    }
+    },
+    "inline_file_type_header": "File types that allow inline display",
+    "inline_file_type_desc": "You can set the file types that allow inline display."
   },
   "customize_settings": {
     "customize_settings": "Customize",

@@ -1,0 +1,18 @@
+export const MODERATE_MIME_TYPES = new Set([
+  'image/png',
+  'image/jpeg',
+  'image/gif',
+  'image/webp',
+  'image/bmp',
+  'image/x-icon',
+  'application/pdf',
+  'text/plain',
+  'text/csv',
+  'application/json',
+  'application/x-yaml',
+  'text/markdown',
+  'font/woff',
+  'font/woff2',
+  'font/ttf',
+  'font/otf',
+]);
