@@ -6,7 +6,7 @@ ARG PNPM_HOME="/root/.local/share/pnpm"
 ##
 ## base
 ##
-FROM node:20-slim AS base
+FROM node:22-slim AS base
 
 ARG OPT_DIR
 ARG PNPM_HOME
