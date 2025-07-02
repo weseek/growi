@@ -20,7 +20,7 @@ const lsxValidator = [
     .optional()
     .customSanitizer((options) => {
       try {
-        const jsonData: LsxApiOptions = JSON.parse(options);
+        const jsonData: LsxApiOptions = options;
 
         for (const key in jsonData) {
           jsonData[key] = filterXSS.process(jsonData[key]);
