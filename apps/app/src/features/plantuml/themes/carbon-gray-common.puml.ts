@@ -112,7 +112,7 @@ skinparam participant {
 skinparam actor {
 	FontColor $PRIMARY_TEXT
 	BorderColor $GRAY_50
-	BackgroundColor $GRAY_20
+	BackgroundColor $PRIMARY
 	RoundCorner 0
 }
 !endsub

@@ -73,7 +73,6 @@ skinparam useBetaStyle false
 !$GRAY_100 = '#161616'
 !$WHITE = '#FFFFF'
 
-!$GRAY_DARK = $GRAY_100
 !$GRAY = $GRAY_30
 !$LIGHT = $GRAY_70
 !$DARK = $GRAY_90
