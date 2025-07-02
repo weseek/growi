@@ -229,7 +229,7 @@ module.exports = function(crowi: Crowi) {
     const internalPath = urljoin(internalPathRoot, relativePath);
 
     const isDownload = opts?.download ?? false;
-    const contentHeaders = new ContentHeaders(attachment, { inline: !isDownload });
+    const contentHeaders = new ContentHeaders(configManager, attachment, { inline: !isDownload });
     applyHeaders(res, [
       ...contentHeaders.toExpressHttpHeaders(),
       { field: 'X-Accel-Redirect', value: internalPath },

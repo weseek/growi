@@ -23,10 +23,14 @@ export class ContentHeaders implements IContentHeaders {
 
   private configManager: ConfigManager;
 
-  constructor(attachment: IAttachmentDocument, opts?: {
-    configManager: ConfigManager,
-    inline?: boolean,
-  }) {
+  constructor(
+      configManager: ConfigManager,
+      attachment: IAttachmentDocument,
+      opts?: {
+      inline?: boolean,
+    },
+  ) {
+    this.configManager = configManager;
 
     const attachmentContentType = attachment.fileFormat;
     const filename = attachment.originalName;
