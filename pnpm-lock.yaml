@@ -1536,8 +1536,8 @@ importers:
         specifier: workspace:^
         version: link:../ui
       axios:
-        specifier: ^0.24.0
-        version: 0.24.0
+        specifier: ^1.10.0
+        version: 1.10.0
       bunyan:
         specifier: ^1.8.15
         version: 1.8.15

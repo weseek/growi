@@ -47,7 +47,7 @@
     "@growi/core": "workspace:^",
     "@growi/remark-growi-directive": "workspace:^",
     "@growi/ui": "workspace:^",
-    "axios": "^0.24.0",
+    "axios": "^1.10.0",
     "bunyan": "^1.8.15",
     "hast-util-select": "^6.0.2",
     "express": "^4.20.0",
