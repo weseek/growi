@@ -1,3 +1,4 @@
+// TODO: https://redmine.weseek.co.jp/issues/168415
 /* eslint-disable camelcase */
 export type NodesInfoResponse = {
   nodes: Record<
