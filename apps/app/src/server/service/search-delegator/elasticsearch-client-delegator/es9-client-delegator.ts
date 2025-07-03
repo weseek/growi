@@ -1,8 +1,6 @@
 import { Client, type ClientOptions, type estypes } from '@elastic/elasticsearch9';
 
-import type { IElasticsearchClientDelegator } from './interfaces';
-
-export class ES9ClientDelegator implements IElasticsearchClientDelegator {
+export class ES9ClientDelegator {
 
   private client: Client;
 

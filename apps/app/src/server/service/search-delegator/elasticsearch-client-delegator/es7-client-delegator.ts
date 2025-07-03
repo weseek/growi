@@ -7,9 +7,7 @@ import {
   type estypes,
 } from '@elastic/elasticsearch7';
 
-import type { IElasticsearchClientDelegator } from './interfaces';
-
-export class ES7ClientDelegator implements IElasticsearchClientDelegator {
+export class ES7ClientDelegator {
 
   private client: Client;
 
