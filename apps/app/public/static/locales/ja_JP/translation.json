@@ -530,6 +530,8 @@
   },
   "sidebar_ai_assistant": {
     "reference_pages_label": "参照するページ",
+    "recent_chat": "最近のチャット",
+    "no_recent_chat": "チャットがありません",
     "knowledge_assistant_placeholder": "ききたいことを入力してください",
     "editor_assistant_placeholder": "お手伝いできることはありますか？",
     "summary_mode_label": "要約モード",
@@ -635,11 +637,12 @@
   "default_ai_assistant": {
     "not_set": "デフォルトアシスタントが設定されていません"
   },
-  "ai_assistant_tree": {
+  "ai_assistant_substance": {
     "add_assistant": "アシスタントを追加する",
     "my_assistants": "マイアシスタント",
     "team_assistants": "チームアシスタント",
     "thread_does_not_exist": "スレッドが存在しません",
+    "recent_threads": "最近の項目",
     "toaster": {
       "ai_assistant_deleted_success": "アシスタントを削除しました",
       "ai_assistant_deleted_failed": "アシスタントの削除に失敗しました",
