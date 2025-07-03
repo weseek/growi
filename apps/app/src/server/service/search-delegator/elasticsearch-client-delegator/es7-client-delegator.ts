@@ -17,7 +17,7 @@ export class ES7ClientDelegator implements IElasticsearchClientDelegator {
     this.client = new Client({ ...options, ssl: { rejectUnauthorized } });
   }
 
-  async bulk(params: RequestParams.Bulk): Promise<ApiResponse<estypes.BulkResponse>> {
+  bulk(params: RequestParams.Bulk): Promise<ApiResponse<estypes.BulkResponse>> {
     return this.client.bulk(params);
   }
 
@@ -58,7 +58,7 @@ export class ES7ClientDelegator implements IElasticsearchClientDelegator {
     return this.client.reindex({ wait_for_completion: false, body: { source: { index: indexName }, dest: { index: tmpIndexName } } });
   }
 
-  async search(params: RequestParams.Search): Promise<ApiResponse<estypes.SearchResponse>> {
+  search(params: RequestParams.Search): Promise<ApiResponse<estypes.SearchResponse>> {
     return this.client.search(params);
   }
 

@@ -10,7 +10,7 @@ export class ES9ClientDelegator implements IElasticsearchClientDelegator {
     this.client = new Client({ ...options, tls: { rejectUnauthorized } });
   }
 
-  async bulk(params: estypes.BulkRequest): Promise<estypes.BulkResponse> {
+  bulk(params: estypes.BulkRequest): Promise<estypes.BulkResponse> {
     return this.client.bulk(params);
   }
 
@@ -47,7 +47,7 @@ export class ES9ClientDelegator implements IElasticsearchClientDelegator {
     return this.client.reindex({ wait_for_completion: false, source: { index: indexName }, dest: { index: tmpIndexName } });
   }
 
-  async search(params: estypes.SearchRequest): Promise<estypes.SearchResponse> {
+  search(params: estypes.SearchRequest): Promise<estypes.SearchResponse> {
     return this.client.search(params);
   }
 
