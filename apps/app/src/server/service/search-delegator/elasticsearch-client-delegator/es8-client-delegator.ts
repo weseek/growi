@@ -1,4 +1,3 @@
-
 import { Client, type ClientOptions, type estypes } from '@elastic/elasticsearch8';
 
 export class ES8ClientDelegator {

@@ -47,7 +47,6 @@ export class ES7ClientDelegator {
     info: (): Promise<ApiResponse<estypes.NodesInfoResponse>> => this.client.nodes.info(),
   };
 
-
   ping(): Promise<ApiResponse<estypes.PingResponse>> {
     return this.client.ping();
   }
