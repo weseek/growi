@@ -1,4 +1,3 @@
-
 import {
   Client,
   type ClientOptions,
@@ -32,11 +31,17 @@ export class ES7ClientDelegator {
     create: (params: RequestParams.IndicesCreate): Promise<ApiResponse<estypes.IndicesCreateResponse>> => this.client.indices.create(params),
     delete: (params: RequestParams.IndicesDelete): Promise<ApiResponse<estypes.IndicesDeleteResponse>> => this.client.indices.delete(params),
     exists: (params: RequestParams.IndicesExists): Promise<ApiResponse<estypes.IndicesDeleteResponse>> => this.client.indices.exists(params),
-    existsAlias: (params: RequestParams.IndicesExistsAlias): Promise<ApiResponse<estypes.IndicesExistsAliasResponse>> => this.client.indices.existsAlias(params),
+    existsAlias: (params: RequestParams.IndicesExistsAlias): Promise<ApiResponse<estypes.IndicesExistsAliasResponse>> => {
+      return this.client.indices.existsAlias(params);
+    },
     putAlias: (params: RequestParams.IndicesPutAlias): Promise<ApiResponse<estypes.IndicesUpdateAliasesResponse>> => this.client.indices.putAlias(params),
     getAlias: (params: RequestParams.IndicesGetAlias): Promise<ApiResponse<estypes.IndicesGetAliasResponse>> => this.client.indices.getAlias(params),
-    updateAliases: (params: RequestParams.IndicesUpdateAliases): Promise<ApiResponse<estypes.IndicesUpdateAliasesResponse>> => this.client.indices.updateAliases(params),
-    validateQuery: (params:RequestParams.IndicesValidateQuery): Promise<ApiResponse<estypes.IndicesValidateQueryResponse>> => this.client.indices.validateQuery(params),
+    updateAliases: (params: RequestParams.IndicesUpdateAliases): Promise<ApiResponse<estypes.IndicesUpdateAliasesResponse>> => {
+      return this.client.indices.updateAliases(params);
+    },
+    validateQuery: (params:RequestParams.IndicesValidateQuery): Promise<ApiResponse<estypes.IndicesValidateQueryResponse>> => {
+      return this.client.indices.validateQuery(params);
+    },
     stats: async(params: RequestParams.IndicesStats): Promise<ApiResponse<estypes.IndicesStatsResponse>> => this.client.indices.stats(params),
   };
 
