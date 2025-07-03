@@ -63,7 +63,7 @@ RUN tar -zcf /tmp/packages.tar.gz \
 ##
 ## release
 ##
-FROM node:20-slim
+FROM node:22-slim
 LABEL maintainer="Yuki Takei <yuki@weseek.co.jp>"
 
 ARG OPT_DIR
