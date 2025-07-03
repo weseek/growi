@@ -42,7 +42,7 @@ export class ES7ClientDelegator {
     validateQuery: (params:RequestParams.IndicesValidateQuery): Promise<ApiResponse<estypes.IndicesValidateQueryResponse>> => {
       return this.client.indices.validateQuery(params);
     },
-    stats: async(params: RequestParams.IndicesStats): Promise<ApiResponse<estypes.IndicesStatsResponse>> => this.client.indices.stats(params),
+    stats: (params: RequestParams.IndicesStats): Promise<ApiResponse<estypes.IndicesStatsResponse>> => this.client.indices.stats(params),
   };
 
   nodes = {
