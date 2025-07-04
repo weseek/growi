@@ -11,6 +11,7 @@ import type { ISearchResult, ISearchResultData } from '~/interfaces/search';
 import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import { SocketEventName } from '~/interfaces/websocket';
 import PageTagRelation from '~/server/models/page-tag-relation';
+import type { SocketIoService } from '~/server/service/socket-io';
 import loggerFactory from '~/utils/logger';
 
 import type {
@@ -51,7 +52,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   name!: SearchDelegatorName.DEFAULT;
 
-  socketIoService!: any;
+  socketIoService!: SocketIoService;
 
   // TODO: https://redmine.weseek.co.jp/issues/168446
   isElasticsearchV7: boolean;
@@ -64,7 +65,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   indexName: string;
 
-  constructor(socketIoService) {
+  constructor(socketIoService: SocketIoService) {
     this.name = SearchDelegatorName.DEFAULT;
     this.socketIoService = socketIoService;
 
