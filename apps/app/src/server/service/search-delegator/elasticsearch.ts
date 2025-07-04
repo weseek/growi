@@ -59,7 +59,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   isElasticsearchReindexOnBoot: boolean;
 
-  elasticVersion: 7 | 8 | 9;
+  elasticsearchVersion: 7 | 8 | 9;
 
   client: ElasticSEarchClientDeletegator;
 
@@ -77,18 +77,18 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     this.isElasticsearchV7 = elasticsearchVersion === 7;
 
-    this.elasticVersion = elasticsearchVersion;
+    this.elasticsearchVersion = elasticsearchVersion;
 
     this.isElasticsearchReindexOnBoot = configManager.getConfig('app:elasticsearchReindexOnBoot');
 
     this.initClient();
   }
 
-  get aliasName() {
+  get aliasName(): string {
     return `${this.indexName}-alias`;
   }
 
-  initClient() {
+  initClient(): void {
     const { host, auth, indexName } = this.getConnectionInfo();
 
     const rejectUnauthorized = configManager.getConfig('app:elasticsearchRejectUnauthorized');
@@ -99,7 +99,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       requestTimeout: configManager.getConfig('app:elasticsearchRequestTimeout'),
     };
 
-    this.client = getClient({ version: this.elasticVersion, options, rejectUnauthorized });
+    this.client = getClient({ version: this.elasticsearchVersion, options, rejectUnauthorized });
     this.indexName = indexName;
   }
 
@@ -247,7 +247,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   /**
    * rebuild index
    */
-  async rebuildIndex() {
+  async rebuildIndex(): Promise<void> {
     const { client, indexName, aliasName } = this;
 
     const tmpIndexName = `${indexName}-tmp`;
@@ -288,7 +288,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   }
 
-  async normalizeIndices() {
+  async normalizeIndices(): Promise<void> {
     const { client, indexName, aliasName } = this;
 
     const tmpIndexName = `${indexName}-tmp`;
@@ -373,7 +373,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     return [command, document];
   }
 
-  prepareBodyForDelete(body, page) {
+  prepareBodyForDelete(body, page): void {
     if (!Array.isArray(body)) {
       throw new Error('Body must be an array.');
     }
@@ -410,7 +410,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   /**
    * @param {function} queryFactory factory method to generate a Mongoose Query instance
    */
-  async updateOrInsertPages(queryFactory, option: UpdateOrInsertPagesOpts = {}) {
+  async updateOrInsertPages(queryFactory, option: UpdateOrInsertPagesOpts = {}): Promise<void> {
     const { shouldEmitProgress = false, invokeGarbageCollection = false } = option;
 
     const Page = mongoose.model<IPage, PageModel>('Page');
@@ -601,12 +601,12 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     return query;
   }
 
-  appendResultSize(query, from?, size?) {
+  appendResultSize(query, from?, size?): void {
     query.from = from || DEFAULT_OFFSET;
     query.size = size || DEFAULT_LIMIT;
   }
 
-  appendSortOrder(query, sortAxis: SORT_AXIS, sortOrder: SORT_ORDER) {
+  appendSortOrder(query, sortAxis: SORT_AXIS, sortOrder: SORT_ORDER): void {
     // default sort order is score descending
     const sort = ES_SORT_AXIS[sortAxis] || ES_SORT_AXIS[RELATION_SCORE];
     const order = ES_SORT_ORDER[sortOrder] || ES_SORT_ORDER[DESC];
@@ -722,7 +722,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     }
   }
 
-  async filterPagesByViewer(query, user, userGroups) {
+  async filterPagesByViewer(query, user, userGroups): Promise<void> {
     const showPagesRestrictedByOwner = !configManager.getConfig('security:list-policy:hideRestrictedByOwner');
     const showPagesRestrictedByGroup = !configManager.getConfig('security:list-policy:hideRestrictedByGroup');
 
@@ -786,7 +786,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     query.body.query.bool.filter.push({ bool: { should: grantConditions } });
   }
 
-  async appendFunctionScore(query, queryString) {
+  async appendFunctionScore(query, queryString): Promise<void> {
     const User = mongoose.model('User');
     const count = await User.count({}) || 1;
 
@@ -810,7 +810,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     };
   }
 
-  appendHighlight(query) {
+  appendHighlight(query): void {
     query.body.highlight = {
       fragmenter: 'simple',
       pre_tags: ["<em class='highlighted-keyword'>"],
@@ -877,7 +877,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   }
 
   // remove pages whitch should nod Indexed
-  async syncPagesUpdated(pages, user) {
+  async syncPagesUpdated(pages, user): Promise<void> {
     const shoudDeletePages: any[] = [];
 
     // delete if page should not indexed
