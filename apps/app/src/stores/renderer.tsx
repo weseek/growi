@@ -182,7 +182,7 @@ export const useCustomSidebarOptions = (config?: SWRConfiguration): SWRResponse<
 
 export const usePresentationViewOptions = (): SWRResponse<RendererOptions, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: rendererConfigRaw } = useRendererConfig();
+  const rendererConfigRaw = useRendererConfigExt();
 
   const rendererConfig = rendererConfigRaw ?? DEFAULT_RENDERER_CONFIG;
 
