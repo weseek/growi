@@ -5,18 +5,29 @@ import useSWR, { type SWRConfiguration, type SWRResponse } from 'swr';
 
 import { getGrowiFacade } from '~/features/growi-plugin/client/utils/growi-facade-utils';
 import type { RendererOptions } from '~/interfaces/renderer-options';
+import type { RendererConfigExt } from '~/interfaces/services/renderer';
 import { DEFAULT_RENDERER_CONFIG } from '~/services/renderer/default-renderer-config';
-import {
-  useRendererConfig,
-} from '~/stores-universal/context';
+import { useRendererConfig } from '~/stores-universal/context';
+import { useNextThemes } from '~/stores-universal/use-next-themes';
 
 import { useCurrentPagePath } from './page';
 import { useCurrentPageTocNode } from './ui';
 
 
+const useRendererConfigExt = (): RendererConfigExt | null => {
+  const { data: rendererConfig } = useRendererConfig();
+  const { isDarkMode } = useNextThemes();
+
+  return rendererConfig == null ? null : {
+    ...rendererConfig,
+    isDarkMode,
+  } satisfies RendererConfigExt;
+};
+
+
 export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: rendererConfig } = useRendererConfig();
+  const rendererConfig = useRendererConfigExt();
   const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
 
   const storeTocNodeHandler = useCallback((toc: HtmlElementNode) => {
@@ -48,7 +59,7 @@ export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
 
 export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: rendererConfig } = useRendererConfig();
+  const rendererConfig = useRendererConfigExt();
   const { data: tocNode } = useCurrentPageTocNode();
 
   const isAllDataValid = currentPagePath != null && rendererConfig != null && tocNode != null;
@@ -71,7 +82,7 @@ export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
 
 export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: rendererConfig } = useRendererConfig();
+  const rendererConfig = useRendererConfigExt();
 
   const isAllDataValid = currentPagePath != null && rendererConfig != null;
   const customGenerater = getGrowiFacade().markdownRenderer?.optionsGenerators?.customGeneratePreviewOptions;
@@ -98,7 +109,7 @@ export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
 
 export const useCommentForCurrentPageOptions = (): SWRResponse<RendererOptions, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: rendererConfig } = useRendererConfig();
+  const rendererConfig = useRendererConfigExt();
 
   const isAllDataValid = currentPagePath != null && rendererConfig != null;
 
@@ -125,7 +136,7 @@ export const useCommentForCurrentPageOptions = (): SWRResponse<RendererOptions, 
 export const useCommentPreviewOptions = useCommentForCurrentPageOptions;
 
 export const useSelectedPagePreviewOptions = (pagePath: string, highlightKeywords?: string | string[]): SWRResponse<RendererOptions, Error> => {
-  const { data: rendererConfig } = useRendererConfig();
+  const rendererConfig = useRendererConfigExt();
 
   const isAllDataValid = rendererConfig != null;
 
@@ -148,7 +159,7 @@ export const useSearchResultOptions = useSelectedPagePreviewOptions;
 export const useTimelineOptions = useSelectedPagePreviewOptions;
 
 export const useCustomSidebarOptions = (config?: SWRConfiguration): SWRResponse<RendererOptions, Error> => {
-  const { data: rendererConfig } = useRendererConfig();
+  const rendererConfig = useRendererConfigExt();
 
   const isAllDataValid = rendererConfig != null;
 
