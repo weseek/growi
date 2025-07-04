@@ -461,7 +461,9 @@
       "tag_names": "タグ名",
       "tag_attributes": "タグ属性",
       "import_recommended": "{{target}} のおすすめをインポート"
-    }
+    },
+    "inline_file_type_header": "インライン表示を許可するファイルタイプ",
+    "inline_file_type_desc": "インライン表示を許可するファイルタイプを設定できます"
   },
   "customize_settings": {
     "customize_settings": "カスタマイズ",

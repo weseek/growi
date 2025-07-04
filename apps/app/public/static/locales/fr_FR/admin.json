@@ -452,7 +452,9 @@
       "tag_names": "Nom de tags",
       "tag_attributes": "Attributs de tags",
       "import_recommended": "Importer {{target}}"
-    }
+    },
+    "inline_file_type_header": "Types de fichiers autorisés pour l'affichage en ligne",
+    "inline_file_type_desc": "Vous pouvez définir les types de fichiers autorisés pour l'affichage en ligne."
   },
   "customize_settings": {
     "customize_settings": "Interface",
