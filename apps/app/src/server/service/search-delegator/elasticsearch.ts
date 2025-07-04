@@ -613,8 +613,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     }
 
     // sort by score
-    // eslint-disable-next-line prefer-const
-    let query = {
+    const query = {
       index: this.aliasName,
       _source: fields,
       body: {
