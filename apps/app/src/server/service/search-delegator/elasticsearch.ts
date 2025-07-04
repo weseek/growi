@@ -23,7 +23,7 @@ import type { UpdateOrInsertPagesOpts } from '../interfaces/search';
 
 import { aggregatePipelineToIndex } from './aggregate-to-index';
 import type { AggregatedPage, BulkWriteBody, BulkWriteCommand } from './bulk-write';
-import ElasticsearchClient from './elasticsearch-client';
+import { getClient, type ElasticSEarchClientDeletegator } from './elasticsearch-client-delegator/get-client';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
 
@@ -57,7 +57,9 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   isElasticsearchReindexOnBoot: boolean;
 
-  client: ElasticsearchClient;
+  elasticVersion: 7 | 8 | 9;
+
+  client: ElasticSEarchClientDeletegator;
 
   queries: any;
 
@@ -76,6 +78,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     }
 
     this.isElasticsearchV7 = elasticsearchVersion === 7;
+
+    this.elasticVersion = configManager.getConfig('app:elasticsearchVersion');
 
     this.isElasticsearchReindexOnBoot = configManager.getConfig('app:elasticsearchReindexOnBoot');
 
@@ -117,7 +121,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       requestTimeout: configManager.getConfig('app:elasticsearchRequestTimeout'),
     };
 
-    this.client = new ElasticsearchClient(this.isElasticsearchV7, options, rejectUnauthorized);
+    this.client = getClient({ version: this.elasticVersion, options, rejectUnauthorized });
     this.indexName = indexName;
   }
 
@@ -186,7 +190,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     let esVersion = 'unknown';
     const esNodeInfos = {};
 
-    for (const [nodeName, nodeInfo] of Object.entries<any>(info)) {
+    for (const [nodeName, nodeInfo] of Object.entries(info)) {
       esVersion = nodeInfo.version;
 
       const filteredInfo = {
@@ -277,12 +281,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
       // update alias
       await client.indices.updateAliases({
-        body: {
-          actions: [
-            { add: { alias: aliasName, index: tmpIndexName } },
-            { remove: { alias: aliasName, index: indexName } },
-          ],
-        },
+        actions: [
+          { add: { alias: aliasName, index: tmpIndexName } },
+          { remove: { alias: aliasName, index: indexName } },
+        ],
       });
 
       // flush index
