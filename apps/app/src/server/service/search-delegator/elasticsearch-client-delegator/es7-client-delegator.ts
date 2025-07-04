@@ -30,7 +30,7 @@ export class ES7ClientDelegator {
   indices = {
     create: (params: RequestParams.IndicesCreate): Promise<ApiResponse<estypes.IndicesCreateResponse>> => this.client.indices.create(params),
     delete: (params: RequestParams.IndicesDelete): Promise<ApiResponse<estypes.IndicesDeleteResponse>> => this.client.indices.delete(params),
-    exists: (params: RequestParams.IndicesExists): Promise<ApiResponse<estypes.IndicesDeleteResponse>> => this.client.indices.exists(params),
+    exists: (params: RequestParams.IndicesExists): Promise<ApiResponse<estypes.IndicesExistsResponse>> => this.client.indices.exists(params),
     existsAlias: (params: RequestParams.IndicesExistsAlias): Promise<ApiResponse<estypes.IndicesExistsAliasResponse>> => {
       return this.client.indices.existsAlias(params);
     },
