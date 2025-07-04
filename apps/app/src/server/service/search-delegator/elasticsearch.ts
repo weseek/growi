@@ -62,11 +62,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   client: ElasticSEarchClientDeletegator;
 
-  queries: any;
-
   indexName: string;
-
-  esUri: string | undefined;
 
   constructor(socketIoService) {
     this.name = SearchDelegatorName.DEFAULT;
@@ -83,26 +79,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     this.elasticVersion = configManager.getConfig('app:elasticsearchVersion');
 
     this.isElasticsearchReindexOnBoot = configManager.getConfig('app:elasticsearchReindexOnBoot');
-
-    // In Elasticsearch RegExp, we don't need to used ^ and $.
-    // Ref: https://www.elastic.co/guide/en/elasticsearch/reference/5.6/query-dsl-regexp-query.html#_standard_operators
-    this.queries = {
-      PORTAL: {
-        regexp: {
-          'path.raw': '.*/',
-        },
-      },
-      PUBLIC: {
-        regexp: {
-          'path.raw': '.*[^/]',
-        },
-      },
-      USER: {
-        prefix: {
-          'path.raw': '/user/',
-        },
-      },
-    };
 
     this.initClient();
   }
@@ -136,7 +112,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
    */
   getConnectionInfo() {
     let indexName = 'crowi';
-    let host = this.esUri;
+    let host: string | undefined;
     let auth;
 
     const elasticsearchUri = configManager.getConfig('app:elasticsearchUri');
@@ -866,15 +842,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     const query = this.createSearchQuery();
 
-    if (option?.vector) {
-      // await this.filterPagesByViewer(query, user, userGroups);
-      // await this.appendVectorScore(query, queryString, user?.username);
-    }
-    else {
-      this.appendCriteriaForQueryString(query, terms);
-      await this.filterPagesByViewer(query, user, userGroups);
-      await this.appendFunctionScore(query, queryString);
-    }
+    this.appendCriteriaForQueryString(query, terms);
+    await this.filterPagesByViewer(query, user, userGroups);
+    await this.appendFunctionScore(query, queryString);
+
 
     this.appendResultSize(query, from, size);
 
