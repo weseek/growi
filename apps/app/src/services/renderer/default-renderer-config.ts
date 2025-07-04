@@ -12,7 +12,7 @@ export const DEFAULT_RENDERER_CONFIG: RendererConfig = {
   plantumlUri: 'https://www.plantuml.com/plantuml',
 
   isEnabledXssPrevention: true,
-  sanitizeType: 'Recommended' as const,
+  sanitizeType: 'Recommended',
   customTagWhitelist: [],
   customAttrWhitelist: {},
 };

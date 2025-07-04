@@ -9,9 +9,12 @@ import type { RendererConfigExt } from '~/interfaces/services/renderer';
 import { DEFAULT_RENDERER_CONFIG } from '~/services/renderer/default-renderer-config';
 import { useRendererConfig } from '~/stores-universal/context';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
+import loggerFactory from '~/utils/logger';
 
 import { useCurrentPagePath } from './page';
 import { useCurrentPageTocNode } from './ui';
+
+const logger = loggerFactory('growi:cli:services:renderer');
 
 
 const useRendererConfigExt = (): RendererConfigExt | null => {
@@ -187,9 +190,8 @@ export const usePresentationViewOptions = (): SWRResponse<RendererOptions, Error
   const rendererConfig = rendererConfigRaw ?? DEFAULT_RENDERER_CONFIG;
 
   useEffect(() => {
-    if (!rendererConfigRaw) {
-      // eslint-disable-next-line no-console
-      console.warn('RendererConfig is undefined or missing. Using DEFAULT_RENDERER_CONFIG.');
+    if (rendererConfigRaw == null) {
+      logger.warn('RendererConfig is undefined or missing. Using DEFAULT_RENDERER_CONFIG.');
     }
   }, [rendererConfigRaw]);
 
