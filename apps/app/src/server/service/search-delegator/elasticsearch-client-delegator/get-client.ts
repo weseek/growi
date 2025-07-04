@@ -6,7 +6,7 @@ import { ES7ClientDelegator } from './es7-client-delegator';
 import { ES8ClientDelegator } from './es8-client-delegator';
 import { ES9ClientDelegator } from './es9-client-delegator';
 
-export type ElasticSEarchClientDeletegator = ES7ClientDelegator | ES8ClientDelegator | ES9ClientDelegator;
+import type { ElasticSEarchClientDeletegator } from './interfaces';
 
 type GetDelegatorOptions = {
   version: 7;
