@@ -23,7 +23,7 @@ import type { UpdateOrInsertPagesOpts } from '../interfaces/search';
 
 import { aggregatePipelineToIndex } from './aggregate-to-index';
 import type { AggregatedPage, BulkWriteBody, BulkWriteCommand } from './bulk-write';
-import { getClient, type ElasticSEarchClientDeletegator } from './elasticsearch-client-delegator/get-client';
+import { getClient, type ElasticSEarchClientDeletegator } from './elasticsearch-client-delegator';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
 
