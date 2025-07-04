@@ -534,8 +534,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       readStream,
       batchStream,
       appendTagNamesStream,
-      // appendEmbeddingStream,
-      // appendFileUploadedStream,
       writeStream,
     );
   }
