@@ -14,8 +14,9 @@ export class ES7ClientDelegator {
     this.client = new Client({ ...options, ssl: { rejectUnauthorized } });
   }
 
-  bulk(params: RequestParams.Bulk): Promise<ApiResponse<estypes.BulkResponse>> {
-    return this.client.bulk(params);
+  async bulk(params: RequestParams.Bulk): Promise<estypes.BulkResponse> {
+    const res = (await this.client.bulk(params)).body as estypes.BulkResponse;
+    return res;
   }
 
   cat = {
@@ -30,19 +31,30 @@ export class ES7ClientDelegator {
   indices = {
     create: (params: RequestParams.IndicesCreate): Promise<ApiResponse<estypes.IndicesCreateResponse>> => this.client.indices.create(params),
     delete: (params: RequestParams.IndicesDelete): Promise<ApiResponse<estypes.IndicesDeleteResponse>> => this.client.indices.delete(params),
-    exists: (params: RequestParams.IndicesExists): Promise<ApiResponse<estypes.IndicesExistsResponse>> => this.client.indices.exists(params),
-    existsAlias: (params: RequestParams.IndicesExistsAlias): Promise<ApiResponse<estypes.IndicesExistsAliasResponse>> => {
-      return this.client.indices.existsAlias(params);
+    exists: async(params: RequestParams.IndicesExists): Promise<estypes.IndicesExistsResponse> => {
+      const res = (await this.client.indices.exists(params)).body;
+      return res;
+    },
+    existsAlias: async(params: RequestParams.IndicesExistsAlias): Promise<estypes.IndicesExistsAliasResponse> => {
+      const res = (await this.client.indices.existsAlias(params)).body;
+      return res;
     },
     putAlias: (params: RequestParams.IndicesPutAlias): Promise<ApiResponse<estypes.IndicesUpdateAliasesResponse>> => this.client.indices.putAlias(params),
-    getAlias: (params: RequestParams.IndicesGetAlias): Promise<ApiResponse<estypes.IndicesGetAliasResponse>> => this.client.indices.getAlias(params),
+    getAlias: async(params: RequestParams.IndicesGetAlias): Promise<estypes.IndicesGetAliasResponse> => {
+      const res = (await this.client.indices.getAlias(params)).body as estypes.IndicesGetAliasResponse;
+      return res;
+    },
     updateAliases: (params: RequestParams.IndicesUpdateAliases): Promise<ApiResponse<estypes.IndicesUpdateAliasesResponse>> => {
       return this.client.indices.updateAliases(params);
     },
-    validateQuery: (params:RequestParams.IndicesValidateQuery): Promise<ApiResponse<estypes.IndicesValidateQueryResponse>> => {
-      return this.client.indices.validateQuery(params);
+    validateQuery: async(params:RequestParams.IndicesValidateQuery): Promise<estypes.IndicesValidateQueryResponse> => {
+      const res = (await this.client.indices.validateQuery(params)).body as estypes.IndicesValidateQueryResponse;
+      return res;
     },
-    stats: (params: RequestParams.IndicesStats): Promise<ApiResponse<estypes.IndicesStatsResponse>> => this.client.indices.stats(params),
+    stats: async(params: RequestParams.IndicesStats): Promise<estypes.IndicesStatsResponse> => {
+      const res = (await this.client.indices.stats(params)).body as estypes.IndicesStatsResponse;
+      return res;
+    },
   };
 
   nodes = {
@@ -57,8 +69,9 @@ export class ES7ClientDelegator {
     return this.client.reindex({ wait_for_completion: false, body: { source: { index: indexName }, dest: { index: tmpIndexName } } });
   }
 
-  search(params: RequestParams.Search): Promise<ApiResponse<estypes.SearchResponse>> {
-    return this.client.search(params);
+  async search(params: RequestParams.Search): Promise<estypes.SearchResponse> {
+    const res = (await this.client.search(params)).body as estypes.SearchResponse;
+    return res;
   }
 
 }
