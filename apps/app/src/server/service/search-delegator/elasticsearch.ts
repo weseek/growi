@@ -53,6 +53,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   socketIoService!: any;
 
+  // TODO: https://redmine.weseek.co.jp/issues/168446
   isElasticsearchV7: boolean;
 
   isElasticsearchReindexOnBoot: boolean;
