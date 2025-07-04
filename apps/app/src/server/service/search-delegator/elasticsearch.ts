@@ -77,7 +77,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     this.isElasticsearchV7 = elasticsearchVersion === 7;
 
-    this.elasticVersion = configManager.getConfig('app:elasticsearchVersion');
+    this.elasticVersion = elasticsearchVersion;
 
     this.isElasticsearchReindexOnBoot = configManager.getConfig('app:elasticsearchReindexOnBoot');
 
