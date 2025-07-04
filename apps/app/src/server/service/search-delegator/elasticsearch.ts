@@ -52,18 +52,18 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   name!: SearchDelegatorName.DEFAULT;
 
-  socketIoService!: SocketIoService;
+  private socketIoService!: SocketIoService;
 
   // TODO: https://redmine.weseek.co.jp/issues/168446
-  isElasticsearchV7: boolean;
+  private isElasticsearchV7: boolean;
 
-  isElasticsearchReindexOnBoot: boolean;
+  private isElasticsearchReindexOnBoot: boolean;
 
-  elasticsearchVersion: 7 | 8 | 9;
+  private elasticsearchVersion: 7 | 8 | 9;
 
-  client: ElasticSEarchClientDeletegator;
+  private client: ElasticSEarchClientDeletegator;
 
-  indexName: string;
+  private indexName: string;
 
   constructor(socketIoService: SocketIoService) {
     this.name = SearchDelegatorName.DEFAULT;
