@@ -1,5 +1,6 @@
 import React, { type JSX, useState, useEffect } from 'react';
 
+import { InlineMimeModes, type InlineMimeMode } from '../../../../interfaces/inline-mime-mode';
 import { INLINE_ALLOWLIST_MIME_TYPES } from '../../../../server/service/file-uploader/utils/security';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
@@ -7,24 +8,25 @@ import { ALL_MIME_TYPES } from './allMimeTypes';
 import { MODERATE_MIME_TYPES } from './moderate';
 import { STRICT_MIME_TYPES } from './strict';
 
+
 export const InlineFileTypeSelector = (): JSX.Element => {
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [policy, setPolicy] = useState<'strict' | 'moderate' | 'lax' | 'manual'>('strict');
+  const [inlineMimeMode, setInlineMimeMode] = useState<InlineMimeMode>(InlineMimeModes.STRICT);
 
   useEffect(() => {
     setSelected(new Set(INLINE_ALLOWLIST_MIME_TYPES));
   }, []);
 
-  const policyChange = (value: typeof policy) => {
-    setPolicy(value);
+  const inlineMimeModeChange = (value: typeof inlineMimeMode) => {
+    setInlineMimeMode(value);
 
-    if (value === 'strict') {
+    if (value === InlineMimeModes.STRICT) {
       setSelected(new Set(STRICT_MIME_TYPES));
     }
-    else if (value === 'moderate') {
+    else if (value === InlineMimeModes.MODERATE) {
       setSelected(new Set(MODERATE_MIME_TYPES));
     }
-    else if (value === 'lax') {
+    else if (value === InlineMimeModes.LAX) {
       setSelected(new Set(ALL_MIME_TYPES));
     }
   };
@@ -47,20 +49,20 @@ export const InlineFileTypeSelector = (): JSX.Element => {
       <div>
         <div className="form-check form-check-inline">
           {[
-            { id: 'strict', label: 'Strict (Recommended)' },
-            { id: 'moderate', label: 'Moderate' },
-            { id: 'lax', label: 'Lax' },
-            { id: 'manual', label: 'Manual' },
+            { id: InlineMimeModes.STRICT, label: 'Strict (Recommended)' },
+            { id: InlineMimeModes.MODERATE, label: 'Moderate' },
+            { id: InlineMimeModes.LAX, label: 'Lax' },
+            { id: InlineMimeModes.MANUAL, label: 'Manual' },
           ].map(({ id, label }) => (
             <div className="form-check form-check-inline" key={id}>
               <input
                 className="form-check-input"
                 type="radio"
-                name="inlinePolicy"
+                name="inlineMimeMode"
                 value={id}
                 id={id}
-                checked={policy === id}
-                onChange={e => policyChange(e.target.value as typeof policy)}
+                checked={inlineMimeMode === id}
+                onChange={e => inlineMimeModeChange(e.target.value as InlineMimeMode)}
               />
               <label className="form-check-label" htmlFor={id}>{label}</label>
             </div>
@@ -82,7 +84,7 @@ export const InlineFileTypeSelector = (): JSX.Element => {
                     type="checkbox"
                     id={id}
                     checked={selected.has(type)}
-                    disabled={policy !== 'manual'}
+                    disabled={inlineMimeMode !== 'manual'}
                     onChange={() => toggleMime(type)}
                   />
                   <label className="form-check-label w-100" htmlFor={id}>
