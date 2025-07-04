@@ -1,10 +1,11 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import type { HtmlElementNode } from 'rehype-toc';
 import useSWR, { type SWRConfiguration, type SWRResponse } from 'swr';
 
 import { getGrowiFacade } from '~/features/growi-plugin/client/utils/growi-facade-utils';
 import type { RendererOptions } from '~/interfaces/renderer-options';
+import { DEFAULT_RENDERER_CONFIG } from '~/services/renderer/default-renderer-config';
 import {
   useRendererConfig,
 } from '~/stores-universal/context';
@@ -170,9 +171,18 @@ export const useCustomSidebarOptions = (config?: SWRConfiguration): SWRResponse<
 
 export const usePresentationViewOptions = (): SWRResponse<RendererOptions, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: rendererConfig } = useRendererConfig();
+  const { data: rendererConfigRaw } = useRendererConfig();
 
-  const isAllDataValid = currentPagePath != null && rendererConfig != null;
+  const rendererConfig = rendererConfigRaw ?? DEFAULT_RENDERER_CONFIG;
+
+  useEffect(() => {
+    if (!rendererConfigRaw) {
+      // eslint-disable-next-line no-console
+      console.warn('RendererConfig is undefined or missing. Using DEFAULT_RENDERER_CONFIG.');
+    }
+  }, [rendererConfigRaw]);
+
+  const isAllDataValid = currentPagePath != null;
 
   return useSWR(
     isAllDataValid
