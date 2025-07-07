@@ -67,9 +67,6 @@ export class ContentHeaders implements IContentHeaders {
       && isConfiguredInline
       && SAFE_INLINE_CONFIGURABLE_MIME_TYPES.has(actualContentTypeString);
 
-    console.log(shouldBeInline);
-    console.log(`Should be inline for ${attachmentContentType}: ${shouldBeInline}`); // Enhanced log
-
     instance.contentDisposition = {
       field: 'Content-Disposition',
       value: shouldBeInline
@@ -79,7 +76,12 @@ export class ContentHeaders implements IContentHeaders {
 
     instance.contentSecurityPolicy = {
       field: 'Content-Security-Policy',
-      value: "script-src 'unsafe-hashes'; style-src 'self' 'unsafe-inline'; object-src 'none'; require-trusted-types-for 'script'; media-src 'self'; default-src 'none';",
+      value: `script-src 'unsafe-hashes';
+          style-src 'self' 'unsafe-inline';
+          object-src 'none';
+          require-trusted-types-for 'script';
+          media-src 'self';
+          default-src 'none';`,
     };
 
     instance.xContentTypeOptions = {
@@ -122,7 +124,6 @@ export const toExpressHttpHeaders = (records: Record<string, string | string[]>)
 };
 
 export const applyHeaders = (res: Response, headers: ExpressHttpHeader[]): void => {
-  console.log('Applying headers:', headers);
   headers.forEach((header) => {
     res.header(header.field, header.value);
   });
