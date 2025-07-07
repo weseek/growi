@@ -21,21 +21,20 @@ export class ContentHeaders implements IContentHeaders {
 
   xContentTypeOptions?: ExpressHttpHeader<'X-Content-Type-Options'>;
 
-  private configManager: ConfigManager; // Now explicitly typed and assigned in constructor
+  private configManager: ConfigManager;
 
-  // Refactored: Make constructor private and have it accept configManager
   private constructor(configManager: ConfigManager) {
     this.configManager = configManager;
   }
 
-  // --- Factory Method (remains async) ---
   static async create(
-      configManager: ConfigManager, // This parameter is now passed to the private constructor
+      configManager: ConfigManager,
       attachment: IAttachmentDocument,
       opts?: {
       inline?: boolean,
     },
   ): Promise<ContentHeaders> {
+
     // Create instance, passing the configManager to the private constructor
     const instance = new ContentHeaders(configManager);
 

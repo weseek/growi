@@ -175,7 +175,7 @@ module.exports = (crowi) => {
         // Update the configuration in the database
         await configManager.updateConfigs({ [configKey]: isInline });
 
-        // Retrieve the updated value to send back in the response (best practice)
+        // Retrieve the updated value to send back in the response
         const updatedIsInline = await crowi.configManager.getConfig(configKey);
 
         const parameters = {
