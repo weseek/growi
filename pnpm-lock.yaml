@@ -227,8 +227,8 @@ importers:
         specifier: npm:@elastic/elasticsearch@^8.18.2
         version: '@elastic/elasticsearch@8.18.2'
       '@elastic/elasticsearch9':
-        specifier: npm:@elastic/elasticsearch@^9.0.3
-        version: '@elastic/elasticsearch@9.0.3'
+        specifier: npm:@elastic/elasticsearch@^9.0.2
+        version: '@elastic/elasticsearch@9.0.2'
       '@godaddy/terminus':
         specifier: ^4.9.0
         version: 4.12.1
@@ -2745,8 +2745,8 @@ packages:
     resolution: {integrity: sha512-2pOc/hGdxkbaDavfAlnUfjJdVsFRCGqg7fpsWJfJ2UzpgViIyojdViHg8zOCT1J14lAwvDgb9CNETWa3SBZRfw==}
     engines: {node: '>=18'}
 
-  '@elastic/elasticsearch@9.0.3':
-    resolution: {integrity: sha512-aagnssrVQi538wExO0Au169amtq68sXSwQMyzblQVAsqcmbqRTtzmGhKOjnDP0LK3ml0Mtje1uX+Vda7RhqDsA==}
+  '@elastic/elasticsearch@9.0.2':
+    resolution: {integrity: sha512-uKA0PuPSND3OhHH9UFqnKZfxifAg/8mQW4VnrQ+sUtusTbPhGuErs5NeWCPyd/RLgruBWBmLSv1zzEv5GS+UnA==}
     engines: {node: '>=18'}
 
   '@elastic/transport@8.9.7':
@@ -16902,7 +16902,7 @@ snapshots:
       - '@75lb/nature'
       - supports-color
 
-  '@elastic/elasticsearch@9.0.3':
+  '@elastic/elasticsearch@9.0.2':
     dependencies:
       '@elastic/transport': 9.0.2
       apache-arrow: 19.0.1
