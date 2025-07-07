@@ -35,26 +35,25 @@ type Delegator<Opts extends GetDelegatorOptions> =
           ? ES9ClientDelegator
           : ElasticSEarchClientDeletegator
 
-let instance: ElasticSEarchClientDeletegator;
-
+let instance: ElasticSEarchClientDeletegator | null = null;
 export const getClient = async<Opts extends GetDelegatorOptions>(opts: Opts): Promise<Delegator<Opts>> => {
   if (instance == null) {
     if (opts.version === 7) {
       await import('./es7-client-delegator').then(({ ES7ClientDelegator }) => {
         instance = new ES7ClientDelegator(opts.options, opts.rejectUnauthorized);
-        return instance as Delegator<Opts>;
+        return instance;
       });
     }
     if (opts.version === 8) {
       await import('./es8-client-delegator').then(({ ES8ClientDelegator }) => {
         instance = new ES8ClientDelegator(opts.options, opts.rejectUnauthorized);
-        return instance as Delegator<Opts>;
+        return instance;
       });
     }
     if (opts.version === 9) {
       await import('./es9-client-delegator').then(({ ES9ClientDelegator }) => {
         instance = new ES9ClientDelegator(opts.options, opts.rejectUnauthorized);
-        return instance as Delegator<Opts>;
+        return instance;
       });
     }
   }
