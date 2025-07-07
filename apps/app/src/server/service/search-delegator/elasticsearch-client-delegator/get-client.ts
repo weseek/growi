@@ -2,12 +2,10 @@ import type { ClientOptions as ES7ClientOptions } from '@elastic/elasticsearch7'
 import type { ClientOptions as ES8ClientOptions } from '@elastic/elasticsearch8';
 import type { ClientOptions as ES9ClientOptions } from '@elastic/elasticsearch9';
 
-
 import { type ES7ClientDelegator } from './es7-client-delegator';
 import { type ES8ClientDelegator } from './es8-client-delegator';
 import { type ES9ClientDelegator } from './es9-client-delegator';
 import type { ElasticSEarchClientDeletegator } from './interfaces';
-
 
 type GetDelegatorOptions = {
   version: 7;
