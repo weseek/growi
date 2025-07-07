@@ -80,15 +80,13 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     this.elasticsearchVersion = elasticsearchVersion;
 
     this.isElasticsearchReindexOnBoot = configManager.getConfig('app:elasticsearchReindexOnBoot');
-
-    this.initClient();
   }
 
   get aliasName(): string {
     return `${this.indexName}-alias`;
   }
 
-  initClient(): void {
+  async initClient(): Promise<void> {
     const { host, auth, indexName } = this.getConnectionInfo();
 
     const rejectUnauthorized = configManager.getConfig('app:elasticsearchRejectUnauthorized');
@@ -99,7 +97,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       requestTimeout: configManager.getConfig('app:elasticsearchRequestTimeout'),
     };
 
-    this.client = getClient({ version: this.elasticsearchVersion, options, rejectUnauthorized });
+    this.client = await getClient({ version: this.elasticsearchVersion, options, rejectUnauthorized });
     this.indexName = indexName;
   }
 
@@ -139,6 +137,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   }
 
   async init(): Promise<void> {
+    await this.initClient();
     const normalizeIndices = await this.normalizeIndices();
     if (this.isElasticsearchReindexOnBoot) {
       try {

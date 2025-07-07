@@ -2,11 +2,12 @@ import type { ClientOptions as ES7ClientOptions } from '@elastic/elasticsearch7'
 import type { ClientOptions as ES8ClientOptions } from '@elastic/elasticsearch8';
 import type { ClientOptions as ES9ClientOptions } from '@elastic/elasticsearch9';
 
-import { ES7ClientDelegator } from './es7-client-delegator';
-import { ES8ClientDelegator } from './es8-client-delegator';
-import { ES9ClientDelegator } from './es9-client-delegator';
 
+import { type ES7ClientDelegator } from './es7-client-delegator';
+import { type ES8ClientDelegator } from './es8-client-delegator';
+import { type ES9ClientDelegator } from './es9-client-delegator';
 import type { ElasticSEarchClientDeletegator } from './interfaces';
+
 
 type GetDelegatorOptions = {
   version: 7;
@@ -36,19 +37,25 @@ type Delegator<Opts extends GetDelegatorOptions> =
 
 let instance: ElasticSEarchClientDeletegator;
 
-export const getClient = <Opts extends GetDelegatorOptions>(opts: Opts): Delegator<Opts> => {
+export const getClient = async<Opts extends GetDelegatorOptions>(opts: Opts): Promise<Delegator<Opts>> => {
   if (instance == null) {
     if (opts.version === 7) {
-      instance = new ES7ClientDelegator(opts.options, opts.rejectUnauthorized);
-      return instance as Delegator<Opts>;
+      await import('./es7-client-delegator').then(({ ES7ClientDelegator }) => {
+        instance = new ES7ClientDelegator(opts.options, opts.rejectUnauthorized);
+        return instance as Delegator<Opts>;
+      });
     }
     if (opts.version === 8) {
-      instance = new ES8ClientDelegator(opts.options, opts.rejectUnauthorized);
-      return instance as Delegator<Opts>;
+      await import('./es8-client-delegator').then(({ ES8ClientDelegator }) => {
+        instance = new ES8ClientDelegator(opts.options, opts.rejectUnauthorized);
+        return instance as Delegator<Opts>;
+      });
     }
     if (opts.version === 9) {
-      instance = new ES9ClientDelegator(opts.options, opts.rejectUnauthorized);
-      return instance as Delegator<Opts>;
+      await import('./es9-client-delegator').then(({ ES9ClientDelegator }) => {
+        instance = new ES9ClientDelegator(opts.options, opts.rejectUnauthorized);
+        return instance as Delegator<Opts>;
+      });
     }
   }
 
