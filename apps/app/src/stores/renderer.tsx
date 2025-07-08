@@ -15,7 +15,6 @@ import { useCurrentPageTocNode } from './ui';
 
 const logger = loggerFactory('growi:cli:services:renderer');
 
-
 const useRendererConfigExt = (): RendererConfigExt | null => {
   const { data: rendererConfig } = useRendererConfig();
   const { isDarkMode } = useNextThemes();
