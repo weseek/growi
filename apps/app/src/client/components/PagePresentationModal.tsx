@@ -39,7 +39,7 @@ const PagePresentationModal = (): JSX.Element => {
   const fullscreen = useFullScreen();
 
   const { data: currentPage } = useSWRxCurrentPage();
-  const { data: rendererOptions } = usePresentationViewOptions();
+  const { data: rendererOptions, isLoading } = usePresentationViewOptions();
 
   const { data: isEnabledMarp } = useIsEnabledMarp();
 
@@ -88,7 +88,7 @@ const PagePresentationModal = (): JSX.Element => {
         <button className="btn-close" type="button" aria-label="Close" onClick={closeHandler}></button>
       </div>
       <ModalBody className="modal-body d-flex justify-content-center align-items-center">
-        {rendererOptions == null && <RendererErrorMessage />}
+        { isLoading === false && rendererOptions == null && <RendererErrorMessage />}
         { rendererOptions != null && isEnabledMarp != null && (
           <Presentation
             options={{
