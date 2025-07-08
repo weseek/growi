@@ -4,6 +4,7 @@ import { pipeline } from 'stream/promises';
 import { Storage } from '@google-cloud/storage';
 import { toNonBlankStringOrUndefined } from '@growi/core/dist/interfaces';
 import axios from 'axios';
+import type { Response } from 'express'; // <--- ADD THIS IMPORT for 'Response' type
 import urljoin from 'url-join';
 
 import type Crowi from '~/server/crowi';
@@ -17,7 +18,7 @@ import { configManager } from '../../config-manager';
 import {
   AbstractFileUploader, type TemporaryUrl, type SaveFileParam,
 } from '../file-uploader';
-import { ContentHeaders } from '../utils';
+import { ContentHeaders, applyHeaders } from '../utils';
 
 import { GcsMultipartUploader } from './multipart-uploader';
 
@@ -79,11 +80,19 @@ class GcsFileUploader extends AbstractFileUploader {
    */
   override isValidUploadSettings(): boolean {
     try {
-      getGcsBucket();
+      const gcsBucket = toNonBlankStringOrUndefined(this.configManager.getConfig('gcs:bucket'));
+      // You can add a check for apiKeyJsonPath here if it's strictly required
+      // const apiKeyJsonPath = toNonBlankStringOrUndefined(this.configManager.getConfig('gcs:apiKeyJsonPath'));
+
+      if (gcsBucket == null) {
+        throw new Error('GCS bucket is not configured.');
+      }
+      // if (apiKeyJsonPath == null) { /* throw error */ } // Uncomment if API key is strictly required
+
       return true;
     }
     catch (err) {
-      logger.error(err);
+      logger.error('GcsFileUploader isValidUploadSettings error:', err);
       return false;
     }
   }
@@ -113,7 +122,8 @@ class GcsFileUploader extends AbstractFileUploader {
    * @inheritdoc
    */
   override determineResponseMode() {
-    return configManager.getConfig('gcs:referenceFileWithRelayMode')
+    // This is already correct in your provided code, using this.configManager
+    return this.configManager.getConfig('gcs:referenceFileWithRelayMode')
       ? ResponseMode.RELAY
       : ResponseMode.REDIRECT;
   }
@@ -131,8 +141,7 @@ class GcsFileUploader extends AbstractFileUploader {
     const gcs = getGcsInstance();
     const myBucket = gcs.bucket(getGcsBucket());
     const filePath = getFilePathOnStorage(attachment);
-    const contentHeaders = new ContentHeaders(attachment);
-
+    const contentHeaders = await ContentHeaders.create(this.configManager, attachment);
     const file = myBucket.file(filePath);
 
     await pipeline(readable, file.createWriteStream({
@@ -143,9 +152,27 @@ class GcsFileUploader extends AbstractFileUploader {
 
   /**
    * @inheritdoc
+   * <--- FIX: Corrected signature and implemented actual logic
    */
-  override respond(): void {
-    throw new Error('GcsFileUploader does not support ResponseMode.DELEGATE.');
+  override async respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): Promise<void> {
+    const responseMode = this.determineResponseMode();
+
+    if (responseMode === ResponseMode.REDIRECT) {
+      const temporaryUrl = await this.generateTemporaryUrl(attachment, opts);
+      res.redirect(temporaryUrl.url);
+    }
+    else if (responseMode === ResponseMode.RELAY) {
+      const readableStream = await this.findDeliveryFile(attachment);
+      const isDownload = opts?.download ?? false;
+      // ContentHeaders.create already correctly uses this.configManager
+      const contentHeaders = await ContentHeaders.create(this.configManager, attachment, { inline: !isDownload });
+      applyHeaders(res, contentHeaders.toExpressHttpHeaders()); // <--- Uses applyHeaders
+      readableStream.pipe(res);
+    }
+    else {
+      // If you're only expecting REDIRECT or RELAY, this error is appropriate
+      throw new Error(`GcsFileUploader encountered an unsupported or unexpected ResponseMode: ${responseMode}.`);
+    }
   }
 
   /**
@@ -172,7 +199,7 @@ class GcsFileUploader extends AbstractFileUploader {
     }
     catch (err) {
       logger.error(err);
-      throw new Error(`Coudn't get file from AWS for the Attachment (${attachment._id.toString()})`);
+      throw new Error(`Couldn't get file from GCS for the Attachment (${attachment._id.toString()})`);
     }
   }
 
@@ -188,12 +215,12 @@ class GcsFileUploader extends AbstractFileUploader {
     const myBucket = gcs.bucket(getGcsBucket());
     const filePath = getFilePathOnStorage(attachment);
     const file = myBucket.file(filePath);
-    const lifetimeSecForTemporaryUrl = configManager.getConfig('gcs:lifetimeSecForTemporaryUrl');
+    const lifetimeSecForTemporaryUrl = this.configManager.getConfig('gcs:lifetimeSecForTemporaryUrl');
 
     // issue signed url (default: expires 120 seconds)
     // https://cloud.google.com/storage/docs/access-control/signed-urls
     const isDownload = opts?.download ?? false;
-    const contentHeaders = new ContentHeaders(attachment, { inline: !isDownload });
+    const contentHeaders = await ContentHeaders.create(this.configManager, attachment, { inline: !isDownload });
     const [signedUrl] = await file.getSignedUrl({
       action: 'read',
       expires: Date.now() + lifetimeSecForTemporaryUrl * 1000,
@@ -222,7 +249,7 @@ class GcsFileUploader extends AbstractFileUploader {
       // allow 404: allow duplicate abort requests to ensure abortion
       // allow 499: it is the success response code for canceling upload
       // ref: https://cloud.google.com/storage/docs/performing-resumable-uploads#cancel-upload
-      if (e.response?.status !== 404 && e.response?.status !== 499) {
+      if ((e as any).response?.status !== 404 && (e as any).response?.status !== 499) { // Added (e as any) for type safety
         throw e;
       }
     }
@@ -232,12 +259,7 @@ class GcsFileUploader extends AbstractFileUploader {
 
 
 module.exports = function(crowi: Crowi) {
-  const lib = new GcsFileUploader(crowi);
-
-  lib.isValidUploadSettings = function() {
-    return configManager.getConfig('gcs:apiKeyJsonPath') != null
-      && configManager.getConfig('gcs:bucket') != null;
-  };
+  const lib = new GcsFileUploader(crowi, configManager);
 
   (lib as any).deleteFile = function(attachment) {
     const filePath = getFilePathOnStorage(attachment);

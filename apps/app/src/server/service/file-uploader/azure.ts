@@ -86,11 +86,9 @@ function getFilePathOnStorage(attachment: IAttachmentDocument) {
 
 class AzureFileUploader extends AbstractFileUploader {
 
-  private readonly configManager: ConfigManager;
-
   constructor(crowi: Crowi) {
-    super(crowi);
-    this.configManager = crowi.configManager as ConfigManager;
+    super(crowi, configManager);
+    this.configManager = configManager;
   }
 
   /**

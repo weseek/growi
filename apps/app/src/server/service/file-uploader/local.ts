@@ -104,7 +104,7 @@ class LocalFileUploader extends AbstractFileUploader {
 }
 
 module.exports = function(crowi: Crowi) {
-  const lib = new LocalFileUploader(crowi);
+  const lib = new LocalFileUploader(crowi, configManager);
 
   const basePath = path.posix.join(crowi.publicDir, 'uploads');
 
@@ -229,7 +229,7 @@ module.exports = function(crowi: Crowi) {
     const internalPath = urljoin(internalPathRoot, relativePath);
 
     const isDownload = opts?.download ?? false;
-    const contentHeaders = await ContentHeaders.create(configManager,attachment, { inline: !isDownload });
+    const contentHeaders = await ContentHeaders.create(configManager, attachment, { inline: !isDownload });
     applyHeaders(res, [
       ...contentHeaders.toExpressHttpHeaders(),
       { field: 'X-Accel-Redirect', value: internalPath },

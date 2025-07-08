@@ -102,7 +102,7 @@ class GridfsFileUploader extends AbstractFileUploader {
 
 
 module.exports = function(crowi: Crowi) {
-  const lib = new GridfsFileUploader(crowi);
+  const lib = new GridfsFileUploader(crowi, configManager);
 
   // get Collection instance of chunk
   const chunkCollection = mongoose.connection.collection(CHUNK_COLLECTION_NAME);
