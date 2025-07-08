@@ -11,8 +11,7 @@ export const RendererErrorMessage: React.FC = () => {
       }}
     >
       ⚠️ <strong>Developer Warning:</strong>{' '}
-      <code>rendererOptions</code> is <code>null</code>
-      . Make sure to call <code>useRendererConfig()</code> in your page component to initialize it properly.
+      Required renderer configuration is missing. Ensure <code>useRendererConfig()</code> is properly called in the component.
     </p>
   );
 };
