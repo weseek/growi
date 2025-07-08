@@ -42,7 +42,7 @@ module.exports = (crowi) => {
   * get:
   *  tags: [Markdown Settings]
   *  summary: Get content disposition settings for configurable MIME types
-  *    description: Retrieve the current `inline` or `attachment` disposition setting for each configurable MIME type.
+  *  description: Retrieve the current `inline` or `attachment` disposition setting for each configurable MIME type.
   *  security:
   *    - cookieAuth: []
   *    - adminRequired: []
@@ -98,67 +98,56 @@ module.exports = (crowi) => {
 
 
   /**
-   * @swagger
-   *
-   * /markdown-setting/{mimeType}:
-   * put:
-   * tags: [Markdown Settings]
-   * summary: Update content disposition setting for a specific MIME type
-   * description: Set the `inline` or `attachment` disposition for a given configurable MIME type.
-   * security:
-   *   - cookieAuth: []
-   *   - adminRequired: []
-   * parameters:
-   *   - in: path
-   *     name: mimeType
-   *     schema:
-   *       type: string
-   *       pattern: "^.+\\/.+$"
-   *       required: true
-   *       description: The MIME type to update (e.g., 'image/png', 'application/pdf'). Must be one of the configurable types.
-   *     examples:
-   *       imagePng:
-   *         value: image/png
-   *       applicationPdf:
-   *         value: application/pdf
-   * requestBody:
-   *   content:
-   *     application/json:
-   *       schema:
-   *         type: object
-   *         required:
-   *           - isInline
-   *         properties:
-   *           isInline:
-   *             type: boolean
-   *             description: Set to `true` for inline disposition, `false` for attachment disposition.
-   *             example: true
-   * responses:
-   *   200:
-   *     description: Successfully updated content disposition setting.
-   *     content:
-   *       application/json:
-   *         schema:
-   *           type: object
-   *           properties:
-   *             mimeType:
-   *               type: string
-   *               description: The updated MIME type.
-   *             isInline:
-   *               type: boolean
-   *               description: The new disposition status (`true` for inline, `false` for attachment).
-   *             example:
-   *               mimeType: image/png
-   *               isInline: true
-   *   400:
-   *     $ref: '#/components/responses/400'
-   *   401:
-   *     $ref: '#/components/responses/401'
-   *   403:
-   *     $ref: '#/components/responses/403'
-   *   500:
-   *     $ref: '#/components/responses/500'
-   */
+ * @swagger
+ *
+ * /markdown-setting/{mimeType}:
+ *    put:
+ *      tags: [Content Disposition Settings]
+ *      summary: Update content disposition setting for a specific MIME type
+ *      description: Set the `inline` or `attachment` disposition for a given configurable MIME type.
+ *      security:
+ *        - cookieAuth: []
+ *        - adminRequired: []
+ *      parameters:
+ *        - $ref: '#/components/parameters/MimeTypePathParam'
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              required:
+ *                - isInline
+ *              properties:
+ *                isInline:
+ *                  type: boolean
+ *                  description: Set to `true` for inline disposition, `false` for attachment disposition (e.g., prompts download).
+ *                  example: true
+ *   responses:
+ *     200:
+ *       description: Successfully updated content disposition setting.
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               mimeType:
+ *                 type: string
+ *                 description: The updated MIME type.
+ *                 example: image/png
+ *               isInline:
+ *                 type: boolean
+ *                 description: The new disposition status (`true` for inline, `false` for attachment).
+ *                 example: true
+ *     400:
+ *       $ref: '#/components/responses/400'
+ *     401:
+ *       $ref: '#/components/responses/401'
+ *     403:
+ *       $ref: '#/components/responses/403'
+ *     500:
+ *       $ref: '#/components/responses/500'
+ */
   router.put('/:mimeType(*)',
     loginRequiredStrictly,
     adminRequired,
