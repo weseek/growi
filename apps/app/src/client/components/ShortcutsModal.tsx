@@ -237,7 +237,7 @@ const ShortcutsModal = (): JSX.Element => {
               {/* Multiple Cursors */}
               <li className="d-flex align-items-center p-3">
                 <div className="flex-grow-1">
-                  複数カーソル
+                  {t('modal_shortcuts.editor.Multiple Cursors')}
                 </div>
                 <div className="text-nowrap">
                   <div className="text-end">
@@ -252,7 +252,7 @@ const ShortcutsModal = (): JSX.Element => {
                       <span className="text-secondary mx-2">or</span>
                       <span className="key material-symbols-outlined fs-5 px-0">arrow_upward</span>
                     </div>
-                    <span className="small text-secondary">もしくは Alt + クリック</span>
+                    <span className="small text-secondary">{t('modal_shortcuts.editor.Or Alt Click')}</span>
 
                   </div>
                 </div>
@@ -265,12 +265,12 @@ const ShortcutsModal = (): JSX.Element => {
         <div className="row mt-4">
           <div className="col-lg-6">
             <h6>
-              <strong>書式設定 (エディター)</strong>
+              <strong>{t('modal_shortcuts.format.title')}</strong>
             </h6>
             <ul className="list-unstyled m-0">
               {/* Bold */}
               <li className="d-flex align-items-center p-3 border-bottom">
-                <div className="flex-grow-1">太字</div>
+                <div className="flex-grow-1">{t('modal_shortcuts.format.Bold')}</div>
                 <div className="text-nowrap">
                   <span className={`key cmd-key ${additionalClassByOs}`}></span>
                   <span className="text-secondary mx-2">+</span>
@@ -279,7 +279,7 @@ const ShortcutsModal = (): JSX.Element => {
               </li>
               {/* Italic */}
               <li className="d-flex align-items-center p-3 border-bottom">
-                <div className="flex-grow-1">斜体</div>
+                <div className="flex-grow-1">{t('modal_shortcuts.format.Italic')}</div>
                 <div className="text-nowrap">
                   <span className={`key cmd-key ${additionalClassByOs}`}></span>
                   <span className="text-secondary mx-2">+</span>
@@ -290,7 +290,7 @@ const ShortcutsModal = (): JSX.Element => {
               </li>
               {/* Strikethrough */}
               <li className="d-flex align-items-center p-3 border-bottom">
-                <div className="flex-grow-1">取り消し線</div>
+                <div className="flex-grow-1">{t('modal_shortcuts.format.Strikethrough')}</div>
                 <div className="text-nowrap">
                   <span className={`key cmd-key ${additionalClassByOs}`}></span>
                   <span className="text-secondary mx-2">+</span>
@@ -301,7 +301,7 @@ const ShortcutsModal = (): JSX.Element => {
               </li>
               {/* Code Text */}
               <li className="d-flex align-items-center p-3 border-bottom">
-                <div className="flex-grow-1">コードテキスト</div>
+                <div className="flex-grow-1">{t('modal_shortcuts.format.Code Text')}</div>
                 <div className="text-nowrap">
                   <span className={`key cmd-key ${additionalClassByOs}`}></span>
                   <span className="text-secondary mx-2">+</span>
@@ -312,7 +312,7 @@ const ShortcutsModal = (): JSX.Element => {
               </li>
               {/* Hyperlink */}
               <li className="d-flex align-items-center p-3">
-                <div className="flex-grow-1">ハイパーリンク</div>
+                <div className="flex-grow-1">{t('modal_shortcuts.format.Hyperlink')}</div>
                 <div className="text-nowrap">
                   <span className={`key cmd-key ${additionalClassByOs}`}></span>
                   <span className="text-secondary mx-2">+</span>
@@ -326,12 +326,12 @@ const ShortcutsModal = (): JSX.Element => {
 
           <div className="col-lg-6">
             <h6>
-              <strong>行の設定 (エディター)</strong>
+              <strong>{t('modal_shortcuts.line_settings.title')}</strong>
             </h6>
             <ul className="list-unstyled m-0">
               {/* Simple List */}
               <li className="d-flex align-items-center p-3 border-bottom">
-                <div className="flex-grow-1">箇条書きリスト</div>
+                <div className="flex-grow-1">{t('modal_shortcuts.line_settings.Bullet List')}</div>
                 <div className="text-nowrap">
                   <span className={`key cmd-key ${additionalClassByOs}`}></span>
                   <span className="text-secondary mx-2">+</span>
@@ -342,7 +342,7 @@ const ShortcutsModal = (): JSX.Element => {
               </li>
               {/* Numbered List */}
               <li className="d-flex align-items-center p-3 border-bottom">
-                <div className="flex-grow-1">番号付きリスト</div>
+                <div className="flex-grow-1">{t('modal_shortcuts.line_settings.Numbered List')}</div>
                 <div className="text-nowrap">
                   <span className={`key cmd-key ${additionalClassByOs}`}></span>
                   <span className="text-secondary mx-2">+</span>
@@ -353,7 +353,7 @@ const ShortcutsModal = (): JSX.Element => {
               </li>
               {/* Quote */}
               <li className="d-flex align-items-center p-3 border-bottom">
-                <div className="flex-grow-1">引用</div>
+                <div className="flex-grow-1">{t('modal_shortcuts.line_settings.Quote')}</div>
                 <div className="text-nowrap">
                   <span className={`key cmd-key ${additionalClassByOs}`}></span>
                   <span className="text-secondary mx-2">+</span>
@@ -364,7 +364,7 @@ const ShortcutsModal = (): JSX.Element => {
               </li>
               {/* Code Block */}
               <li className="d-flex align-items-center p-3 border-bottom">
-                <div className="flex-grow-1">コードブロック</div>
+                <div className="flex-grow-1">{t('modal_shortcuts.line_settings.Code Block')}</div>
                 <div className="text-nowrap">
                   <div className="text-start">
                     <div>
@@ -384,8 +384,8 @@ const ShortcutsModal = (): JSX.Element => {
               {/* Hide comments */}
               <li className="d-flex align-items-center p-3">
                 <div className="flex-grow-1">
-                  非表示にする<br />
-                  <span className="small text-secondary">(コメントアウト)</span>
+                  {t('modal_shortcuts.line_settings.Comment Out')}<br />
+                  <span className="small text-secondary">{t('modal_shortcuts.line_settings.Comment Out Desc')}</span>
                 </div>
                 <div className="text-nowrap">
                   <span className={`key cmd-key ${additionalClassByOs}`}></span>
