@@ -14,7 +14,7 @@ export class ES9ClientDelegator {
 
   cat = {
     aliases: (params: estypes.CatAliasesRequest): Promise<estypes.CatAliasesResponse> => this.client.cat.aliases(params),
-    indices: (params: estypes.CatIndicesRequest): Promise<estypes.CatAliasesResponse> => this.client.cat.indices(params),
+    indices: (params: estypes.CatIndicesRequest): Promise<estypes.CatIndicesResponse> => this.client.cat.indices(params),
   };
 
   cluster = {
