@@ -16,6 +16,7 @@ import { usePagePresentationModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { usePresentationViewOptions } from '~/stores/renderer';
 
+import { RendererErrorMessage } from './Common/RendererErrorMessage';
 
 import styles from './PagePresentationModal.module.scss';
 
@@ -87,6 +88,7 @@ const PagePresentationModal = (): JSX.Element => {
         <button className="btn-close" type="button" aria-label="Close" onClick={closeHandler}></button>
       </div>
       <ModalBody className="modal-body d-flex justify-content-center align-items-center">
+        {rendererOptions == null && <RendererErrorMessage />}
         { rendererOptions != null && isEnabledMarp != null && (
           <Presentation
             options={{
