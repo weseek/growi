@@ -39,38 +39,39 @@ module.exports = (crowi) => {
 
   /**
  * @swagger
- * /markdown-setting:
- *   get:
- *     tags: [Markdown Settings]
- *     summary: Get content disposition settings for configurable MIME types
- *     description: Retrieve the current `inline` or `attachment` disposition setting for each configurable MIME type.
- *     security:
- *       - cookieAuth: []
- *       - adminRequired: []
- *     responses:
- *       200:
- *         description: Successfully retrieved content disposition settings.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 contentDispositionSettings:
- *                   type: object
- *                   description: An object mapping configurable MIME types to their current inline disposition status.
- *                   additionalProperties:
- *                     type: boolean
- *                     description: true if inline, false if attachment.
- *                   example:
- *                     image/png: true
- *                     application/pdf: false
- *                     text/plain: true
- *       401:
- *         $ref: '#/components/responses/401'
- *       403:
- *         $ref: '#/components/responses/403'
- *       500:
- *         $ref: '#/components/responses/500'
+ *
+ *    /content-disposition-settings:
+ *      get:
+ *        tags: [Content-Disposition Settings]
+ *        summary: Get content disposition settings for configurable MIME types
+ *        description: Retrieve the current `inline` or `attachment` disposition setting for each configurable MIME type.
+ *        security:
+ *          - cookieAuth: []
+ *          - adminRequired: []
+ *       responses:
+ *         200:
+ *           description: Successfully retrieved content disposition settings.
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   contentDispositionSettings:
+ *                     type: object
+ *                     description: An object mapping configurable MIME types to their current inline disposition status.
+ *                     additionalProperties:
+ *                       type: boolean
+ *                       description: true if inline, false if attachment.
+ *                     example:
+ *                       image/png: true
+ *                       application/pdf: false
+ *                       text/plain: true
+ *         401:
+ *           $ref: '#/components/responses/401'
+ *         403:
+ *           $ref: '#/components/responses/403'
+ *         500:
+ *           $ref: '#/components/responses/500'
  *
   */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
@@ -101,7 +102,7 @@ module.exports = (crowi) => {
   /**
  * @swagger
  *
- * /markdown-setting/{mimeType}:
+ * /content-disposition-settings/{mimeType}:
  *    put:
  *      tags: [Content Disposition Settings]
  *      summary: Update content disposition setting for a specific MIME type
