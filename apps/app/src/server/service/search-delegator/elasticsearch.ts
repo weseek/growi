@@ -24,7 +24,7 @@ import type { UpdateOrInsertPagesOpts } from '../interfaces/search';
 
 import { aggregatePipelineToIndex } from './aggregate-to-index';
 import type { AggregatedPage, BulkWriteBody, BulkWriteCommand } from './bulk-write';
-import { getClient, type ElasticSEarchClientDeletegator } from './elasticsearch-client-delegator';
+import { getClient, type ElasticsearchClientDelegator } from './elasticsearch-client-delegator';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
 
@@ -61,7 +61,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   private elasticsearchVersion: 7 | 8 | 9;
 
-  private client: ElasticSEarchClientDeletegator;
+  private client: ElasticsearchClientDelegator;
 
   private indexName: string;
 
