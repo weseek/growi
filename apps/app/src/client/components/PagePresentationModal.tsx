@@ -88,7 +88,7 @@ const PagePresentationModal = (): JSX.Element => {
         <button className="btn-close" type="button" aria-label="Close" onClick={closeHandler}></button>
       </div>
       <ModalBody className="modal-body d-flex justify-content-center align-items-center">
-        { isLoading === false && rendererOptions == null && <RendererErrorMessage />}
+        { !isLoading && rendererOptions == null && <RendererErrorMessage />}
         { rendererOptions != null && isEnabledMarp != null && (
           <Presentation
             options={{
