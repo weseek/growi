@@ -479,9 +479,27 @@
       "Search in Editor": "Search in Editor",
       "Move Line": "Move Line",
       "Copy Line": "Copy Line",
-      "Toggle Line": "Toggle Line Comment",
       "Insert Line": "Insert Line",
-      "Post Comment": "(Post Comment)"
+      "Post Comment": "(Post Comment)",
+      "Multiple Cursors": "Multiple Cursors",
+      "Or Alt Click": "or Alt + Click"
+    },
+    "format": {
+      "title": "Format Settings (Editor)",
+      "Bold": "Bold",
+      "Italic": "Italic",
+      "Strikethrough": "Strikethrough",
+      "Code Text": "Code Text",
+      "Hyperlink": "Hyperlink"
+    },
+    "line_settings": {
+      "title": "Line Settings (Editor)",
+      "Bullet List": "Bullet List",
+      "Numbered List": "Numbered List",
+      "Quote": "Quote",
+      "Code Block": "Code Block",
+      "Comment Out": "Comment Out",
+      "Comment Out Desc": "(Hide)"
     }
   },
   "modal_resolve_conflict": {

@@ -512,9 +512,27 @@
       "Search in Editor": "エディター内検索",
       "Move Line": "行の移動",
       "Copy Line": "行のコピー",
-      "Toggle Line": "行の非表示化",
       "Insert Line": "行を挿入",
-      "Post Comment": "(コメント投稿)"
+      "Post Comment": "(コメント投稿)",
+      "Multiple Cursors": "複数カーソル",
+      "Or Alt Click": "もしくは Alt + クリック"
+    },
+    "format": {
+      "title": "書式設定 (エディター)",
+      "Bold": "太字",
+      "Italic": "斜体",
+      "Strikethrough": "取り消し線",
+      "Code Text": "コードテキスト",
+      "Hyperlink": "ハイパーリンク"
+    },
+    "line_settings": {
+      "title": "行の設定 (エディター)",
+      "Bullet List": "箇条書きリスト",
+      "Numbered List": "番号付きリスト",
+      "Quote": "引用",
+      "Code Block": "コードブロック",
+      "Comment Out": "非表示にする",
+      "Comment Out Desc": "(コメントアウト)"
     }
   },
   "modal_resolve_conflict": {
