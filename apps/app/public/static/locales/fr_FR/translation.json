@@ -460,7 +460,7 @@
       "Create Page": "Créer page",
       "Search": "Rechercher",
       "Show Contributors": "Voir contributeurs",
-      "MirrorMode": "Mode mirroir",
+      "MirrorMode": "Mode miroir",
       "Konami Code": "Code Konami",
       "konami_code_url": "https://fr.wikipedia.org/wiki/Code_Konami"
     },
@@ -474,9 +474,27 @@
       "Search in Editor": "Rechercher dans l'éditeur",
       "Move Line": "Déplacer la ligne",
       "Copy Line": "Copier la ligne",
-      "Toggle Line": "Commenter/Décommenter la ligne",
       "Insert Line": "Insérer une ligne",
-      "Post Comment": "(Publier le commentaire)"
+      "Post Comment": "(Publier le commentaire)",
+      "Multiple Cursors": "Curseurs multiples",
+      "Or Alt Click": "ou Alt + Clic"
+    },
+    "format": {
+      "title": "Paramètres de format (Éditeur)",
+      "Bold": "Gras",
+      "Italic": "Italique",
+      "Strikethrough": "Barré",
+      "Code Text": "Texte de code",
+      "Hyperlink": "Lien hypertexte"
+    },
+    "line_settings": {
+      "title": "Paramètres de ligne (Éditeur)",
+      "Bullet List": "Liste à puces",
+      "Numbered List": "Liste numérotée",
+      "Quote": "Citation",
+      "Code Block": "Bloc de code",
+      "Comment Out": "Masquer",
+      "Comment Out Desc": "(Commenter)"
     }
   },
   "modal_resolve_conflict": {

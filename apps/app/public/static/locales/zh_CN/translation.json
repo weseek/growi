@@ -469,9 +469,27 @@
       "Search in Editor": "编辑器内搜索",
       "Move Line": "移动行",
       "Copy Line": "复制行",
-      "Toggle Line": "注释/取消注释行",
       "Insert Line": "插入行",
-      "Post Comment": "(发表评论)"
+      "Post Comment": "(发表评论)",
+      "Multiple Cursors": "多光标",
+      "Or Alt Click": "或 Alt + 点击"
+    },
+    "format": {
+      "title": "格式设置（编辑器）",
+      "Bold": "粗体",
+      "Italic": "斜体",
+      "Strikethrough": "删除线",
+      "Code Text": "代码文本",
+      "Hyperlink": "超链接"
+    },
+    "line_settings": {
+      "title": "行设置（编辑器）",
+      "Bullet List": "项目符号列表",
+      "Numbered List": "编号列表",
+      "Quote": "引用",
+      "Code Block": "代码块",
+      "Comment Out": "隐藏",
+      "Comment Out Desc": "（注释）"
     }
   },
   "modal_resolve_conflict": {
