@@ -11,6 +11,7 @@ import type { ISearchResult, ISearchResultData } from '~/interfaces/search';
 import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import { SocketEventName } from '~/interfaces/websocket';
 import PageTagRelation from '~/server/models/page-tag-relation';
+import type { SocketIoService } from '~/server/service/socket-io';
 import loggerFactory from '~/utils/logger';
 
 import type {
@@ -20,12 +21,10 @@ import type { PageModel } from '../../models/page';
 import { createBatchStream } from '../../util/batch-stream';
 import { configManager } from '../config-manager';
 import type { UpdateOrInsertPagesOpts } from '../interfaces/search';
-// // import { embed, openaiClient, fileUpload } from '../openai';
-// import { getOrCreateSearchAssistant } from '../openai/assistant';
 
 import { aggregatePipelineToIndex } from './aggregate-to-index';
 import type { AggregatedPage, BulkWriteBody, BulkWriteCommand } from './bulk-write';
-import ElasticsearchClient from './elasticsearch-client';
+import { getClient, type ElasticSEarchClientDeletegator } from './elasticsearch-client-delegator';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
 
@@ -53,62 +52,41 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   name!: SearchDelegatorName.DEFAULT;
 
-  socketIoService!: any;
+  private socketIoService!: SocketIoService;
 
-  isElasticsearchV7: boolean;
+  // TODO: https://redmine.weseek.co.jp/issues/168446
+  private isElasticsearchV7: boolean;
 
-  isElasticsearchReindexOnBoot: boolean;
+  private isElasticsearchReindexOnBoot: boolean;
 
-  client: ElasticsearchClient;
+  private elasticsearchVersion: 7 | 8 | 9;
 
-  queries: any;
+  private client: ElasticSEarchClientDeletegator;
 
-  indexName: string;
+  private indexName: string;
 
-  esUri: string | undefined;
-
-  constructor(socketIoService) {
+  constructor(socketIoService: SocketIoService) {
     this.name = SearchDelegatorName.DEFAULT;
     this.socketIoService = socketIoService;
 
     const elasticsearchVersion = configManager.getConfig('app:elasticsearchVersion');
 
-    if (elasticsearchVersion !== 7 && elasticsearchVersion !== 8) {
+    if (elasticsearchVersion !== 7 && elasticsearchVersion !== 8 && elasticsearchVersion !== 9) {
       throw new Error('Unsupported Elasticsearch version. Please specify a valid number to \'ELASTICSEARCH_VERSION\'');
     }
 
     this.isElasticsearchV7 = elasticsearchVersion === 7;
 
+    this.elasticsearchVersion = elasticsearchVersion;
+
     this.isElasticsearchReindexOnBoot = configManager.getConfig('app:elasticsearchReindexOnBoot');
-
-    // In Elasticsearch RegExp, we don't need to used ^ and $.
-    // Ref: https://www.elastic.co/guide/en/elasticsearch/reference/5.6/query-dsl-regexp-query.html#_standard_operators
-    this.queries = {
-      PORTAL: {
-        regexp: {
-          'path.raw': '.*/',
-        },
-      },
-      PUBLIC: {
-        regexp: {
-          'path.raw': '.*[^/]',
-        },
-      },
-      USER: {
-        prefix: {
-          'path.raw': '/user/',
-        },
-      },
-    };
-
-    this.initClient();
   }
 
-  get aliasName() {
+  get aliasName(): string {
     return `${this.indexName}-alias`;
   }
 
-  initClient() {
+  async initClient(): Promise<void> {
     const { host, auth, indexName } = this.getConnectionInfo();
 
     const rejectUnauthorized = configManager.getConfig('app:elasticsearchRejectUnauthorized');
@@ -119,7 +97,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       requestTimeout: configManager.getConfig('app:elasticsearchRequestTimeout'),
     };
 
-    this.client = new ElasticsearchClient(this.isElasticsearchV7, options, rejectUnauthorized);
+    this.client = await getClient({ version: this.elasticsearchVersion, options, rejectUnauthorized });
     this.indexName = indexName;
   }
 
@@ -133,7 +111,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
    */
   getConnectionInfo() {
     let indexName = 'crowi';
-    let host = this.esUri;
+    let host: string | undefined;
     let auth;
 
     const elasticsearchUri = configManager.getConfig('app:elasticsearchUri');
@@ -159,6 +137,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   }
 
   async init(): Promise<void> {
+    await this.initClient();
     const normalizeIndices = await this.normalizeIndices();
     if (this.isElasticsearchReindexOnBoot) {
       try {
@@ -188,7 +167,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     let esVersion = 'unknown';
     const esNodeInfos = {};
 
-    for (const [nodeName, nodeInfo] of Object.entries<any>(info)) {
+    for (const [nodeName, nodeInfo] of Object.entries(info)) {
       esVersion = nodeInfo.version;
 
       const filteredInfo = {
@@ -267,7 +246,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   /**
    * rebuild index
    */
-  async rebuildIndex() {
+  async rebuildIndex(): Promise<void> {
     const { client, indexName, aliasName } = this;
 
     const tmpIndexName = `${indexName}-tmp`;
@@ -279,12 +258,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
       // update alias
       await client.indices.updateAliases({
-        body: {
-          actions: [
-            { add: { alias: aliasName, index: tmpIndexName } },
-            { remove: { alias: aliasName, index: indexName } },
-          ],
-        },
+        actions: [
+          { add: { alias: aliasName, index: tmpIndexName } },
+          { remove: { alias: aliasName, index: indexName } },
+        ],
       });
 
       // flush index
@@ -310,7 +287,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   }
 
-  async normalizeIndices() {
+  async normalizeIndices(): Promise<void> {
     const { client, indexName, aliasName } = this;
 
     const tmpIndexName = `${indexName}-tmp`;
@@ -395,7 +372,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     return [command, document];
   }
 
-  prepareBodyForDelete(body, page) {
+  prepareBodyForDelete(body, page): void {
     if (!Array.isArray(body)) {
       throw new Error('Body must be an array.');
     }
@@ -432,7 +409,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   /**
    * @param {function} queryFactory factory method to generate a Mongoose Query instance
    */
-  async updateOrInsertPages(queryFactory, option: UpdateOrInsertPagesOpts = {}) {
+  async updateOrInsertPages(queryFactory, option: UpdateOrInsertPagesOpts = {}): Promise<void> {
     const { shouldEmitProgress = false, invokeGarbageCollection = false } = option;
 
     const Page = mongoose.model<IPage, PageModel>('Page');
@@ -478,28 +455,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
         callback();
       },
     });
-
-    // const appendEmbeddingStream = new Transform({
-    //   objectMode: true,
-    //   async transform(chunk: AggregatedPage[], encoding, callback) {
-    //     // append embedding
-    //     for await (const doc of chunk) {
-    //       doc.revisionBodyEmbedded = (await embed(doc.revision.body, doc.creator?.username))[0].embedding;
-    //     }
-
-    //     this.push(chunk);
-    //     callback();
-    //   },
-    // });
-
-    // const appendFileUploadedStream = new Transform({
-    //   objectMode: true,
-    //   async transform(chunk, encoding, callback) {
-    //     await fileUpload(chunk);
-    //     this.push(chunk);
-    //     callback();
-    //   },
-    // });
 
     let count = 0;
     const writeStream = new Writable({
@@ -556,8 +511,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       readStream,
       batchStream,
       appendTagNamesStream,
-      // appendEmbeddingStream,
-      // appendFileUploadedStream,
       writeStream,
     );
   }
@@ -636,8 +589,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     }
 
     // sort by score
-    // eslint-disable-next-line prefer-const
-    let query = {
+    const query = {
       index: this.aliasName,
       _source: fields,
       body: {
@@ -648,12 +600,12 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     return query;
   }
 
-  appendResultSize(query, from?, size?) {
+  appendResultSize(query, from?, size?): void {
     query.from = from || DEFAULT_OFFSET;
     query.size = size || DEFAULT_LIMIT;
   }
 
-  appendSortOrder(query, sortAxis: SORT_AXIS, sortOrder: SORT_ORDER) {
+  appendSortOrder(query, sortAxis: SORT_AXIS, sortOrder: SORT_ORDER): void {
     // default sort order is score descending
     const sort = ES_SORT_AXIS[sortAxis] || ES_SORT_AXIS[RELATION_SCORE];
     const order = ES_SORT_ORDER[sortOrder] || ES_SORT_ORDER[DESC];
@@ -769,7 +721,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     }
   }
 
-  async filterPagesByViewer(query, user, userGroups) {
+  async filterPagesByViewer(query, user, userGroups): Promise<void> {
     const showPagesRestrictedByOwner = !configManager.getConfig('security:list-policy:hideRestrictedByOwner');
     const showPagesRestrictedByGroup = !configManager.getConfig('security:list-policy:hideRestrictedByGroup');
 
@@ -833,7 +785,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     query.body.query.bool.filter.push({ bool: { should: grantConditions } });
   }
 
-  async appendFunctionScore(query, queryString) {
+  async appendFunctionScore(query, queryString): Promise<void> {
     const User = mongoose.model('User');
     const count = await User.count({}) || 1;
 
@@ -857,43 +809,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     };
   }
 
-  // async appendVectorScore(query, queryString: string, username?: string): Promise<void> {
-
-  //   const searchAssistant = await getOrCreateSearchAssistant();
-
-  //   // generate keywords for vector
-  //   const run = await openaiClient.beta.threads.createAndRunPoll({
-  //     assistant_id: searchAssistant.id,
-  //     thread: {
-  //       messages: [
-  //         { role: 'user', content: 'globalLang: "en_US", userLang: "ja_JP", user_input: "武井さんがジョインしたのはいつですか？"' },
-  //         { role: 'assistant', content: '武井さん 武井 takei yuki ジョイン join 入社 加入 雇用開始 年月日 start date join employee' },
-  //         { role: 'user', content: `globalLang: "en_US", userLang: "ja_JP", user_input: "${queryString}"` },
-  //       ],
-  //     },
-  //   });
-  //   const messages = await openaiClient.beta.threads.messages.list(run.thread_id, {
-  //     limit: 1,
-  //   });
-  //   const content = messages.data[0].content[0];
-  //   const keywordsForVector = content.type === 'text' ? content.text.value : queryString;
-
-  //   logger.debug('keywordsFor: ', keywordsForVector);
-
-  //   const queryVector = (await embed(queryString, username))[0].embedding;
-
-  //   query.body.query = {
-  //     script_score: {
-  //       query: { ...query.body.query },
-  //       script: {
-  //         source: "cosineSimilarity(params.query_vector, 'body_embedded') + 1.0",
-  //         params: { query_vector: queryVector },
-  //       },
-  //     },
-  //   };
-  // }
-
-  appendHighlight(query) {
+  appendHighlight(query): void {
     query.body.highlight = {
       fragmenter: 'simple',
       pre_tags: ["<em class='highlighted-keyword'>"],
@@ -926,15 +842,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     const query = this.createSearchQuery();
 
-    if (option?.vector) {
-      // await this.filterPagesByViewer(query, user, userGroups);
-      // await this.appendVectorScore(query, queryString, user?.username);
-    }
-    else {
-      this.appendCriteriaForQueryString(query, terms);
-      await this.filterPagesByViewer(query, user, userGroups);
-      await this.appendFunctionScore(query, queryString);
-    }
+    this.appendCriteriaForQueryString(query, terms);
+    await this.filterPagesByViewer(query, user, userGroups);
+    await this.appendFunctionScore(query, queryString);
+
 
     this.appendResultSize(query, from, size);
 
@@ -965,7 +876,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   }
 
   // remove pages whitch should nod Indexed
-  async syncPagesUpdated(pages, user) {
+  async syncPagesUpdated(pages, user): Promise<void> {
     const shoudDeletePages: any[] = [];
 
     // delete if page should not indexed
