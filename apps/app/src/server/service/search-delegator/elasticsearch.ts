@@ -24,7 +24,9 @@ import type { UpdateOrInsertPagesOpts } from '../interfaces/search';
 
 import { aggregatePipelineToIndex } from './aggregate-to-index';
 import type { AggregatedPage, BulkWriteBody, BulkWriteCommand } from './bulk-write';
-import { getClient, type ElasticsearchClientDelegator } from './elasticsearch-client-delegator';
+import {
+  getClient, type ElasticsearchClientDelegator, isES9Client, isES7Client, isES8Client,
+} from './elasticsearch-client-delegator';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
 
@@ -314,19 +316,50 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     }
   }
 
-  async createIndex(index) {
-    let mappings = this.isElasticsearchV7
-      ? require('^/resource/search/mappings-es7.json')
-      : require('^/resource/search/mappings-es8.json');
+  // async createIndex(index) {
+  //   let mappings = this.isElasticsearchV7
+  //     ? require('^/resource/search/mappings-es7.json')
+  //     : require('^/resource/search/mappings-es8.json');
 
-    if (process.env.CI) {
-      mappings = require('^/resource/search/mappings-es8-for-ci.json');
+  //   if (process.env.CI) {
+  //     mappings = require('^/resource/search/mappings-es8-for-ci.json');
+  //   }
+
+  //   return this.client.indices.create({
+  //     index,
+  //     body: mappings,
+  //   });
+  // }
+
+  async createIndex(index: string) {
+    if (isES7Client(this.client)) {
+      const { mappings } = await import('^/resource/search/mappings-es7');
+      return this.client.indices.create({
+        index,
+        body: {
+          ...mappings,
+        },
+      });
     }
 
-    return this.client.indices.create({
-      index,
-      body: mappings,
-    });
+    if (isES8Client(this.client)) {
+      const { mappings } = await import('^/resource/search/mappings-es8');
+      return this.client.indices.create({
+        index,
+        ...mappings,
+      });
+    }
+
+    if (isES9Client(this.client)) {
+      const { mappings } = process.env.CI == null
+        ? await import('^/resource/search/mappings-es9')
+        : await import('^/resource/search/mappings-es9-for-ci');
+
+      return this.client.indices.create({
+        index,
+        ...mappings,
+      });
+    }
   }
 
   /**
