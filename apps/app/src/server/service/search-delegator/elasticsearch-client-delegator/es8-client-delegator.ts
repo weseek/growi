@@ -4,6 +4,8 @@ export class ES8ClientDelegator {
 
   private client: Client;
 
+  delegetorVersion = 8 as const;
+
   constructor(options: ClientOptions, rejectUnauthorized: boolean) {
     this.client = new Client({ ...options, tls: { rejectUnauthorized } });
   }

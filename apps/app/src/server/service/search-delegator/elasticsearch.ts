@@ -24,7 +24,9 @@ import type { UpdateOrInsertPagesOpts } from '../interfaces/search';
 
 import { aggregatePipelineToIndex } from './aggregate-to-index';
 import type { AggregatedPage, BulkWriteBody, BulkWriteCommand } from './bulk-write';
-import { getClient, type ElasticSEarchClientDeletegator } from './elasticsearch-client-delegator';
+import {
+  getClient, type ElasticsearchClientDelegator, isES9ClientDelegetor, isES7ClientDelegetor, isES8ClientDelegetor,
+} from './elasticsearch-client-delegator';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
 
@@ -61,7 +63,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   private elasticsearchVersion: 7 | 8 | 9;
 
-  private client: ElasticSEarchClientDeletegator;
+  private client: ElasticsearchClientDelegator;
 
   private indexName: string;
 
@@ -314,19 +316,36 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     }
   }
 
-  async createIndex(index) {
-    let mappings = this.isElasticsearchV7
-      ? require('^/resource/search/mappings-es7.json')
-      : require('^/resource/search/mappings-es8.json');
-
-    if (process.env.CI) {
-      mappings = require('^/resource/search/mappings-es8-for-ci.json');
+  async createIndex(index: string) {
+    // TODO: https://redmine.weseek.co.jp/issues/168446
+    if (isES7ClientDelegetor(this.client)) {
+      const { mappings } = await import('^/resource/search/mappings-es7');
+      return this.client.indices.create({
+        index,
+        body: {
+          ...mappings,
+        },
+      });
     }
 
-    return this.client.indices.create({
-      index,
-      body: mappings,
-    });
+    if (isES8ClientDelegetor(this.client)) {
+      const { mappings } = await import('^/resource/search/mappings-es8');
+      return this.client.indices.create({
+        index,
+        ...mappings,
+      });
+    }
+
+    if (isES9ClientDelegetor(this.client)) {
+      const { mappings } = process.env.CI == null
+        ? await import('^/resource/search/mappings-es9')
+        : await import('^/resource/search/mappings-es9-for-ci');
+
+      return this.client.indices.create({
+        index,
+        ...mappings,
+      });
+    }
   }
 
   /**

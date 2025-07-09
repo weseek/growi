@@ -11,6 +11,8 @@ export class ES7ClientDelegator {
 
   private client: Client;
 
+  delegetorVersion = 7 as const;
+
   constructor(options: ClientOptions, rejectUnauthorized: boolean) {
     this.client = new Client({ ...options, ssl: { rejectUnauthorized } });
   }
