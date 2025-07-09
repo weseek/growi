@@ -6,15 +6,15 @@ export type ElasticsearchClientDelegator = ES7ClientDelegator | ES8ClientDelegat
 
 
 // type guard
-export const isES7Client = (delegator: ElasticsearchClientDelegator): delegator is ES7ClientDelegator => {
+export const isES7ClientDelegetor = (delegator: ElasticsearchClientDelegator): delegator is ES7ClientDelegator => {
   return delegator.delegetorVersion === 7;
 };
 
-export const isES8Client = (delegator: ElasticsearchClientDelegator): delegator is ES8ClientDelegator => {
+export const isES8ClientDelegetor = (delegator: ElasticsearchClientDelegator): delegator is ES8ClientDelegator => {
   return delegator.delegetorVersion === 8;
 };
 
 // TODO: https://redmine.weseek.co.jp/issues/168446
-export const isES9Client = (delegator: ElasticsearchClientDelegator): delegator is ES9ClientDelegator => {
+export const isES9ClientDelegetor = (delegator: ElasticsearchClientDelegator): delegator is ES9ClientDelegator => {
   return delegator.delegetorVersion === 9;
 };
