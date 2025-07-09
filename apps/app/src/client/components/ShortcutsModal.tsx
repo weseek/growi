@@ -407,7 +407,7 @@ const ShortcutsModal = (): JSX.Element => {
           <ModalHeader tag="h4" toggle={close} className="px-4">
             {t('Shortcuts')}
           </ModalHeader>
-          <ModalBody className="p-md-4">
+          <ModalBody className="p-md-4 grw-modal-body-style overflow-auto">
             {bodyContent()}
           </ModalBody>
         </Modal>
