@@ -317,6 +317,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   }
 
   async createIndex(index: string) {
+    // TODO: https://redmine.weseek.co.jp/issues/168446
     if (isES7Client(this.client)) {
       const { mappings } = await import('^/resource/search/mappings-es7');
       return this.client.indices.create({

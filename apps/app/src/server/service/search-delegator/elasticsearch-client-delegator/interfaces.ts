@@ -14,6 +14,7 @@ export const isES8Client = (delegator: ElasticsearchClientDelegator): delegator 
   return delegator.delegetorVersion === 8;
 };
 
+// TODO: https://redmine.weseek.co.jp/issues/168446
 export const isES9Client = (delegator: ElasticsearchClientDelegator): delegator is ES9ClientDelegator => {
   return delegator.delegetorVersion === 9;
 };

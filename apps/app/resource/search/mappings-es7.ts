@@ -1,3 +1,4 @@
+// TODO: https://redmine.weseek.co.jp/issues/168446
 import type { estypes } from '@elastic/elasticsearch7';
 
 type Mappings = {
