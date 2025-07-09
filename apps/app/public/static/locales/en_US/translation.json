@@ -479,9 +479,27 @@
       "Search in Editor": "Search in Editor",
       "Move Line": "Move Line",
       "Copy Line": "Copy Line",
-      "Toggle Line": "Toggle Line Comment",
       "Insert Line": "Insert Line",
-      "Post Comment": "(Post Comment)"
+      "Post Comment": "(Post Comment)",
+      "Multiple Cursors": "Multiple Cursors",
+      "Or Alt Click": "or Alt + Click"
+    },
+    "format": {
+      "title": "Format Settings (Editor)",
+      "Bold": "Bold",
+      "Italic": "Italic",
+      "Strikethrough": "Strikethrough",
+      "Code Text": "Code Text",
+      "Hyperlink": "Hyperlink"
+    },
+    "line_settings": {
+      "title": "Line Settings (Editor)",
+      "Bullet List": "Bullet List",
+      "Numbered List": "Numbered List",
+      "Quote": "Quote",
+      "Code Block": "Code Block",
+      "Comment Out": "Comment Out",
+      "Comment Out Desc": "(Hide)"
     }
   },
   "modal_resolve_conflict": {
@@ -497,6 +515,8 @@
   },
   "sidebar_ai_assistant": {
     "reference_pages_label": "Reference pages",
+    "recent_chat": "Recent chat",
+    "no_recent_chat": "No recent chat",
     "placeholder": "Ask me anything.",
     "knowledge_assistant_placeholder": "Ask me anything.",
     "editor_assistant_placeholder": "Can I help you with anything?",
@@ -603,11 +623,12 @@
   "default_ai_assistant": {
     "not_set": "Default assistant is not set"
   },
-  "ai_assistant_tree": {
+  "ai_assistant_substance": {
     "add_assistant": "Add Assistant",
     "my_assistants": "My Assistants",
     "team_assistants": "Team Assistants",
     "thread_does_not_exist": "No threads exist",
+    "recent_threads": "Recent Items",
     "toaster": {
       "ai_assistant_deleted_success": "Assistant deleted",
       "ai_assistant_deleted_failed": "Failed to delete assistant",

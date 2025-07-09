@@ -1,6 +1,6 @@
 import { Document } from 'mongoose';
 
-import { type Ref, isPopulated, isRef } from '../../interfaces/common';
+import { isPopulated, isRef, type Ref } from '../../interfaces/common';
 import type { IUser } from '../../interfaces/user';
 
 export type IUserSerializedSecurely<U extends IUser> = Omit<
