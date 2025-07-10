@@ -601,15 +601,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   /**
    * create search query for Elasticsearch
-   *
-   * @param {object | undefined} option optional paramas
    * @returns {object} query object
    */
-  createSearchQuery(option?) {
-    let fields = ['path', 'bookmark_count', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names', 'comments'];
-    if (option) {
-      fields = option.fields || fields;
-    }
+  createSearchQuery() {
+    const fields = ['path', 'bookmark_count', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names', 'comments'];
 
     // sort by score
     const query = {
