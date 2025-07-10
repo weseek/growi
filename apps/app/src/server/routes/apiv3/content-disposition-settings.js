@@ -33,6 +33,12 @@ const validator = {
  * @swagger
  *
  * components:
+ *   securitySchemes:
+ *     adminRequired:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: AdminAccess
+ *       description: Requires an authenticated user with admin privileges.
  *   responses:
  *     400:
  *       description: Bad Request
