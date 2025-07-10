@@ -68,9 +68,6 @@ const validator = {
  *         status:
  *           type: number
  *           description: HTTP status code
- *         example:
- *           message: "Error message details"
- *           status: 500
  *   parameters:
  *     MimeTypePathParam:
  *       name: mimeType
