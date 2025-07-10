@@ -99,32 +99,32 @@ module.exports = (crowi) => {
   });
 
 
-  /**
+ /**
  * @swagger
  *
  * /content-disposition-settings/{mimeType}:
- *    put:
- *      tags: [Content Disposition Settings]
- *      summary: Update content disposition setting for a specific MIME type
- *      description: Set the `inline` or `attachment` disposition for a given configurable MIME type.
- *      security:
- *        - cookieAuth: []
- *        - adminRequired: []
- *      parameters:
- *        - $ref: '#/components/parameters/MimeTypePathParam'
- *      requestBody:
- *        required: true
- *        content:
- *          application/json:
- *            schema:
- *              type: object
- *              required:
- *                - isInline
- *              properties:
- *                isInline:
- *                  type: boolean
- *                  description: Set to `true` for inline disposition, `false` for attachment disposition (e.g., prompts download).
- *                  example: true
+ *   put:
+ *     tags: [Content Disposition Settings]
+ *     summary: Update content disposition setting for a specific MIME type
+ *     description: Set the `inline` or `attachment` disposition for a given configurable MIME type.
+ *     security:
+ *       - cookieAuth: []
+ *       - adminRequired: []
+ *     parameters:
+ *       - $ref: '#/components/parameters/MimeTypePathParam'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - isInline
+ *             properties:
+ *               isInline:
+ *                 type: boolean
+ *                 description: Set to `true` for inline disposition, `false` for attachment disposition (e.g., prompts download).
+ *                 example: true
  *   responses:
  *     200:
  *       description: Successfully updated content disposition setting.
