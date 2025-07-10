@@ -65,7 +65,7 @@ class GridfsFileUploader extends AbstractFileUploader {
   override async uploadAttachment(readable: Readable, attachment: IAttachmentDocument): Promise<void> {
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
-    const contentHeaders = new ContentHeaders(attachment);
+    const contentHeaders = await ContentHeaders.create(configManager, attachment);
 
     return AttachmentFile.promisifiedWrite(
       {
@@ -80,7 +80,7 @@ class GridfsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override respond(): void {
+  override respond(): Promise<void> {
     throw new Error('GridfsFileUploader does not support ResponseMode.DELEGATE.');
   }
 
@@ -102,7 +102,7 @@ class GridfsFileUploader extends AbstractFileUploader {
 
 
 module.exports = function(crowi: Crowi) {
-  const lib = new GridfsFileUploader(crowi);
+  const lib = new GridfsFileUploader(crowi, configManager);
 
   // get Collection instance of chunk
   const chunkCollection = mongoose.connection.collection(CHUNK_COLLECTION_NAME);

@@ -10,6 +10,7 @@ import { Attachment, type IAttachmentDocument } from '~/server/models/attachment
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
+import type { ConfigManager } from '../config-manager';
 
 import type { MultipartUploader } from './multipart-uploader';
 
@@ -41,7 +42,7 @@ export interface FileUploader {
   doCheckLimit(uploadFileSize: number, maxFileSize: number, totalLimit: number): Promise<ICheckLimitResult>,
   determineResponseMode(): ResponseMode,
   uploadAttachment(readable: Readable, attachment: IAttachmentDocument): Promise<void>,
-  respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void,
+  respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): Promise<void>;
   findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream>,
   generateTemporaryUrl(attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl>,
   createMultipartUploader: (uploadKey: string, maxPartSize: number) => MultipartUploader,
@@ -52,12 +53,15 @@ export abstract class AbstractFileUploader implements FileUploader {
 
   private crowi: Crowi;
 
-  constructor(crowi: Crowi) {
+  protected configManager: ConfigManager;
+
+  constructor(crowi: Crowi, configManager: ConfigManager) {
     this.crowi = crowi;
+    this.configManager = configManager;
   }
 
   getIsUploadable() {
-    return !configManager.getConfig('app:fileUploadDisabled') && this.isValidUploadSettings();
+    return !this.configManager.getConfig('app:fileUploadDisabled') && this.isValidUploadSettings();
   }
 
   /**
@@ -96,7 +100,7 @@ export abstract class AbstractFileUploader implements FileUploader {
       return false;
     }
 
-    return !!configManager.getConfig('app:fileUpload');
+    return !!this.configManager.getConfig('app:fileUpload');
   }
 
   abstract listFiles();
@@ -112,10 +116,10 @@ export abstract class AbstractFileUploader implements FileUploader {
    * @returns file upload total limit in bytes
    */
   getFileUploadTotalLimit() {
-    const fileUploadTotalLimit = configManager.getConfig('app:fileUploadType') === 'mongodb'
+    const fileUploadTotalLimit = this.configManager.getConfig('app:fileUploadType') === 'mongodb'
       // Use app:fileUploadTotalLimit if gridfs:totalLimit is null (default for gridfs:totalLimit is null)
-      ? configManager.getConfig('app:fileUploadTotalLimit')
-      : configManager.getConfig('app:fileUploadTotalLimit');
+      ? this.configManager.getConfig('app:fileUploadTotalLimit')
+      : this.configManager.getConfig('app:fileUploadTotalLimit');
     return fileUploadTotalLimit;
   }
 
@@ -177,7 +181,7 @@ export abstract class AbstractFileUploader implements FileUploader {
   /**
    * Respond to the HTTP request.
    */
-  abstract respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void;
+  abstract respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): Promise<void>;
 
   /**
    * Find the file and Return ReadStream
