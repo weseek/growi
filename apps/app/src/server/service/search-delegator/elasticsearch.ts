@@ -25,7 +25,11 @@ import type { UpdateOrInsertPagesOpts } from '../interfaces/search';
 import { aggregatePipelineToIndex } from './aggregate-to-index';
 import type { AggregatedPage, BulkWriteBody, BulkWriteCommand } from './bulk-write';
 import {
-  getClient, type ElasticsearchClientDelegator, isES9ClientDelegetor, isES7ClientDelegetor, isES8ClientDelegetor,
+  getClient,
+  isES9ClientDelegetor,
+  isES7ClientDelegetor,
+  isES8ClientDelegetor,
+  type ElasticsearchClientDelegator,
 } from './elasticsearch-client-delegator';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
