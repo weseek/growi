@@ -29,7 +29,75 @@ const validator = {
   ],
 };
 
-
+ /**
+ * @swagger
+ *
+ * components:
+ *   responses:
+ *     400:
+ *       description: Bad Request
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ErrorResponse'
+ *     401:
+ *       description: Unauthorized
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ErrorResponse'
+ *     403:
+ *       description: Forbidden
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ErrorResponse'
+ *     500:
+ *       description: Internal Server Error
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ErrorResponse'
+ *   schemas:
+ *     ErrorResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           description: Error message
+ *         status:
+ *           type: number
+ *           description: HTTP status code
+ *         example:
+ *           message: "Error message details"
+ *           status: 500
+ *   parameters:
+ *     MimeTypePathParam:
+ *       name: mimeType
+ *       in: path
+ *       required: true
+ *       description: Configurable MIME type (e.g., image/png, application/pdf)
+ *       schema:
+ *         type: string
+ *         enum:
+ *           - application/pdf
+ *           - image/png
+ *           - image/jpeg
+ *           - image/gif
+ *           - text/plain
+ *           - text/html
+ *           - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+ *           - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+ *           - application/vnd.openxmlformats-officedocument.presentationml.presentation
+ *           - application/msword
+ *           - application/vnd.ms-excel
+ *           - application/vnd.ms-powerpoint
+ *           - application/zip
+ *           - application/x-rar-compressed
+ *           - audio/mpeg
+ *           - video/mp4
+ *           - application/octet-stream
+ */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
