@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import type { HtmlElementNode } from 'rehype-toc';
 import useSWR, { type SWRConfiguration, type SWRResponse } from 'swr';
@@ -8,10 +8,12 @@ import type { RendererOptions } from '~/interfaces/renderer-options';
 import type { RendererConfigExt } from '~/interfaces/services/renderer';
 import { useRendererConfig } from '~/stores-universal/context';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
+import loggerFactory from '~/utils/logger';
 
 import { useCurrentPagePath } from './page';
 import { useCurrentPageTocNode } from './ui';
 
+const logger = loggerFactory('growi:cli:services:renderer');
 
 const useRendererConfigExt = (): RendererConfigExt | null => {
   const { data: rendererConfig } = useRendererConfig();
@@ -184,6 +186,12 @@ export const usePresentationViewOptions = (): SWRResponse<RendererOptions, Error
   const rendererConfig = useRendererConfigExt();
 
   const isAllDataValid = currentPagePath != null && rendererConfig != null;
+
+  useEffect(() => {
+    if (rendererConfig == null) {
+      logger.warn('RendererConfig is undefined or missing.');
+    }
+  }, [rendererConfig]);
 
   return useSWR(
     isAllDataValid
