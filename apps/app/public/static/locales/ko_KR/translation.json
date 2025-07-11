@@ -311,7 +311,8 @@
     "tag": {
       "desc": "{{tag}} 태그가 있는 페이지 검색"
     },
-    "exclude_tag": "{{tag}} 태그가 있는 페이지 제외"
+    "exclude_tag": {
+      "desc": "{{tag}} 태그가 있는 페이지 제외"
     }
   },
   "search": {
