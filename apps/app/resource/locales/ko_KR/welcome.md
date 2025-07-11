@@ -1,51 +1,51 @@
-# :tada: Welcome to GROWI 
+# :tada: GROWI에 오신 것을 환영합니다
 
-GROWI is an internal wiki & knowledge base tool for corporations and individuals.  
-With GROWI, members can easily share and edit information in a company, university seminar, or circle.
+GROWI는 기업 및 개인을 위한 내부 위키 및 지식 베이스 도구입니다.
+GROWI를 사용하면 회사, 대학 세미나 또는 동아리에서 구성원들이 쉽게 정보를 공유하고 편집할 수 있습니다.
 
-Casually writing down the information you know and editing it together can **reduce tacit knowledge within the team**.  
-Let's increase the amount of information shared on a daily base!
+알고 있는 정보를 부담 없이 적고 함께 편집하면 **팀 내의 암묵적인 지식을 줄일 수 있습니다**.
+매일 공유되는 정보의 양을 늘려봅시다!
 
 <div class="alert alert-primary" role="alert">
-※Feel free to edit and use this page as the top page of the wiki.
+※이 페이지를 위키의 최상위 페이지로 자유롭게 편집하고 사용하세요.
 </div>
 
-# :beginner: What can you do with GROWI?
-## 1. Knowledge Management: Create pages to store information and knowledge
-- How to create and edit pages?
-    - You can create a new page from the "Pencil Icon" in the upper left corner of the screen
-    - You can edit a page you have already created by clicking "Edit" in the upper right corner of the screen
-- How to manage pages?
-    - GROWI manages pages in a **hierarchical** structure
-        - Example: ` /page A/page B/page C ` 
-    - Apart from Hierarchy, pages can also be managed with Tags
+# :beginner: GROWI로 무엇을 할 수 있나요?
+## 1. 지식 관리: 정보와 지식을 저장할 페이지 만들기
+- 페이지를 만들고 편집하는 방법은?
+    - 화면 왼쪽 상단의 "연필 아이콘"에서 새 페이지를 만들 수 있습니다.
+    - 이미 만든 페이지는 화면 오른쪽 상단의 "편집"을 클릭하여 편집할 수 있습니다.
+- 페이지를 관리하는 방법은?
+    - GROWI는 **계층적** 구조로 페이지를 관리합니다.
+        - 예: ` /페이지 A/페이지 B/페이지 C `
+    - 계층 구조 외에도 태그로 페이지를 관리할 수 있습니다.
 
-## 2. Information Retrieval: Search information in various ways
-- Keyword search
-- Search using various sidebars
-    - Search by Page Tree
-    - Search by Latest Changes
-    - Search by Tag, and more...
+## 2. 정보 검색: 다양한 방법으로 정보 검색
+- 키워드 검색
+- 다양한 사이드바를 사용한 검색
+    - 페이지 트리로 검색
+    - 최신 변경 사항으로 검색
+    - 태그로 검색 등...
 
-## 3. Information Sharing: Easy to share both internally and externally
-- You can send the URL and permalink of the page to your company members
-    - User Groups can be used to manage viewing privileges among members of the company
-- GROWI also allows pages to be viewed by users outside the company who do not have an account
-    - Let's share information with users outside your company using shared links!
+## 3. 정보 공유: 내부 및 외부 공유 용이
+- 회사 구성원에게 페이지의 URL 및 고유 링크를 보낼 수 있습니다.
+    - 사용자 그룹을 사용하여 회사 구성원 간의 보기 권한을 관리할 수 있습니다.
+- GROWI는 계정이 없는 회사 외부 사용자도 페이지를 볼 수 있도록 허용합니다.
+    - 공유 링크를 사용하여 회사 외부 사용자와 정보를 공유해 보세요!
 
-#### :bulb: Check [Sandbox](/Sandbox) to learn more on how to edit pages！
+#### :bulb: 페이지 편집 방법에 대해 더 알아보려면 [샌드박스](/Sandbox)를 확인하세요!
 
 
-# :wrench: For Administrators - Once GROWI is created
+# :wrench: 관리자를 위해 - GROWI가 생성되면
 
-### :arrow_right: Wanna use GROWI with multiple people?
-- :heavy_check_mark: Invite your members!
-    - [Add or invite new members to GROWI](https://docs.growi.org/en/admin-guide/management-cookbook/user-management.html#temporary-issuance-of-a-new-user)
+### :arrow_right: 여러 사람과 GROWI를 사용하고 싶으신가요?
+- :heavy_check_mark: 구성원을 초대하세요!
+    - [GROWI에 새 구성원 추가 또는 초대](https://docs.growi.org/en/admin-guide/management-cookbook/user-management.html#temporary-issuance-of-a-new-user)
 
-### :arrow_right: Not satisfied with the current look of GROWI?
-- :heavy_check_mark: No worry! Let's customize the theme of GROWI!
-    - [Customizing GROWI Themes](/admin/customize)
+### :arrow_right: 현재 GROWI의 모습에 만족하지 않으신가요?
+- :heavy_check_mark: 걱정 마세요! GROWI의 테마를 사용자 정의해 보세요!
+    - [GROWI 테마 사용자 정의](/admin/customize)
 
-### :arrow_right: GROWI security settings are not completed?
-- :heavy_check_mark: Come to update your GROWI security settings!
-    - [Update GROWI security settings](/admin/security)
+### :arrow_right: GROWI 보안 설정이 완료되지 않았나요?
+- :heavy_check_mark: GROWI 보안 설정을 업데이트하러 오세요!
+    - [GROWI 보안 설정 업데이트](/admin/security)

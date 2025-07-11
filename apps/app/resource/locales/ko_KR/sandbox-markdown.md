@@ -1,88 +1,88 @@
-# Alerts
+# 알림 (Alerts)
 
 > [!NOTE]
-> Useful information that users should know, even when skimming content.
+> 사용자가 콘텐츠를 훑어볼 때도 알아야 할 유용한 정보입니다.
 
 > [!TIP]
-> Helpful advice for doing things better or more easily.
+> 일을 더 잘하거나 쉽게 할 수 있는 유용한 조언입니다.
 
 > [!IMPORTANT]
-> Key information users need to know to achieve their goal.
+> 목표를 달성하기 위해 사용자가 알아야 할 핵심 정보입니다.
 
 > [!WARNING]
-> Urgent info that needs immediate user attention to avoid problems.
+> 문제를 피하기 위해 즉각적인 사용자 주의가 필요한 긴급 정보입니다.
 
 > [!CAUTION]
-> Advises about risks or negative outcomes of certain actions.
+> 특정 행동의 위험이나 부정적인 결과에 대해 조언합니다.
 
 
 ```markdown
 > [!NOTE]
-> Useful information that users should know, even when skimming content.
+> 사용자가 콘텐츠를 훑어볼 때도 알아야 할 유용한 정보입니다.
 
 > [!TIP]
-> Helpful advice for doing things better or more easily.
+> 일을 더 잘하거나 쉽게 할 수 있는 유용한 조언입니다.
 
 > [!IMPORTANT]
-> Key information users need to know to achieve their goal.
+> 목표를 달성하기 위해 사용자가 알아야 할 핵심 정보입니다.
 
 > [!WARNING]
-> Urgent info that needs immediate user attention to avoid problems.
+> 문제를 피하기 위해 즉각적인 사용자 주의가 필요한 긴급 정보입니다.
 
 > [!CAUTION]
-> Advises about risks or negative outcomes of certain actions.
+> 특정 행동의 위험이나 부정적인 결과에 대해 조언합니다.
 ```
 
-You can also use [directive syntax](https://talk.commonmark.org/t/generic-directives-plugins-syntax/444).
+[지시어 구문](https://talk.commonmark.org/t/generic-directives-plugins-syntax/444)을 사용할 수도 있습니다.
 
 :::note
-Useful information that users should know, even when skimming content.
+사용자가 콘텐츠를 훑어볼 때도 알아야 할 유용한 정보입니다.
 :::
 
-:::tip[Custom Label]
-Useful information that users should know, even when skimming content.
+:::tip[사용자 정의 레이블]
+사용자가 콘텐츠를 훑어볼 때도 알아야 할 유용한 정보입니다.
 :::
 
 ```markdown
 :::note
-Useful information that users should know, even when skimming content.
+사용자가 콘텐츠를 훑어볼 때도 알아야 할 유용한 정보입니다.
 :::
 
-:::tip[Custom Label]
-Useful information that users should know, even when skimming content.
+:::tip[사용자 정의 레이블]
+사용자가 콘텐츠를 훑어볼 때도 알아야 할 유용한 정보입니다.
 :::
 ```
 
 
-# Quote text
-- Use quoted expressions by putting `>` at the beginning of the paragraph
-    - Multiple quotations can be expressed by using a sequence of `>` characters
-- Lists and other elements can be used together within the blockquotes
+# 인용문 (Quote text)
+- 단락 시작 부분에 `>`를 넣어 인용 표현을 사용합니다.
+    - `>` 문자를 연속으로 사용하여 다중 인용을 표현할 수 있습니다.
+- 목록 및 기타 요소를 블록 인용문 내에서 함께 사용할 수 있습니다.
 
-#### Example
-> - Quotation
-> - Quotation
->> Multiple quotations need to insert more `>`
+#### 예시
+> - 인용
+> - 인용
+>> 다중 인용은 `>`를 더 많이 삽입해야 합니다.
 
 ```markdown
-> - Quotation
-> - Quotation
->> Multiple quotations need to insert more `>`
+> - 인용
+> - 인용
+>> 다중 인용은 `>`를 더 많이 삽입해야 합니다.
 ```
 
 
-# Code
-- It is possible to express the code by adding it in three `` ` ``
+# 코드 (Code)
+- 세 개의 `` ` `` 안에 코드를 추가하여 표현할 수 있습니다.
 
-#### Example
+#### 예시
 
 ```markdown
-Add codes here  
+여기에 코드를 추가하세요
 
-Line breaks and paragraphs can be reflected in the code as-is
+줄 바꿈과 단락은 코드에 그대로 반영될 수 있습니다.
 ```
 
-#### Example (source code)
+#### 예시 (소스 코드)
 
 ```javascript:mersenne-twister.js
 function MersenneTwister(seed) {
@@ -95,153 +95,147 @@ function MersenneTwister(seed) {
 }
 ```
 
-## Inline Code
-- Enclose words in `` ` `` to make inline code
+## 인라인 코드 (Inline Code)
+- 단어를 `` ` ``로 묶어 인라인 코드를 만듭니다.
 
-#### Example
-Here is the `inline code` 
-
-
-
-# Task List
-- Insert an unchecked checkbox list by writing `[] `
-    - Check the checkbox by writing `[x]`
-
-#### Example
-- [ ] Task 1
-    - [x] Task 1-1
-    - [ ] Task 1-2
-- [x] Task 2
+#### 예시
+여기에 `인라인 코드`가 있습니다.
 
 
-# Horizontal lines
-- Insert the horizontal line with three or more consecutive asterisks `*` or underscores `_`
 
-#### Example
-Below is a horizontal line
+# 작업 목록 (Task List)
+- `[] `을 작성하여 선택되지 않은 체크박스 목록을 삽입합니다.
+    - `[x]`를 작성하여 체크박스를 선택합니다.
+
+#### 예시
+- [ ] 작업 1
+    - [x] 작업 1-1
+    - [ ] 작업 1-2
+- [x] 작업 2
+
+
+# 수평선 (Horizontal lines)
+- 세 개 이상의 연속된 별표 `*` 또는 밑줄 `_`로 수평선을 삽입합니다.
+
+#### 예시
+아래는 수평선입니다.
 ***
 
-Below is a horizontal line
+아래는 수평선입니다.
 ___
 
 ```markdown
-Below is a horizontal line
+아래는 수평선입니다.
 ***
 
-Below is a horizontal line
+아래는 수평선입니다.
 ___
 ```
 
 
-# Footnotes
+# 각주 (Footnotes)
 
-You can add footnotes to your content by using this bracket syntax:
+이 대괄호 구문을 사용하여 콘텐츠에 각주를 추가할 수 있습니다.
 
-Here is a simple footnote[^1].
+여기에 간단한 각주가 있습니다[^1].
 
-A footnote can also have multiple lines[^2].
+각주에는 여러 줄이 있을 수도 있습니다[^2].
 
-[^1]: My reference.
-[^2]: To add line breaks within a footnote, prefix new lines with 2 spaces.
-  This is a second line.
+[^1]: 내 참조.
+[^2]: 각주 내에서 줄을 바꾸려면 새 줄 앞에 공백 2개를 붙입니다.
+  이것은 두 번째 줄입니다.
 
 ```markdown
-Here is a simple footnote[^1].
+여기에 간단한 각주가 있습니다[^1].
 
-A footnote can also have multiple lines[^2].
+각주에는 여러 줄이 있을 수도 있습니다[^2].
 
-[^1]: My reference.
-[^2]: To add line breaks within a footnote, prefix new lines with 2 spaces.
-  This is a second line.
+[^1]: 내 참조.
+[^2]: 각주 내에서 줄을 바꾸려면 새 줄 앞에 공백 2개를 붙입니다.
+  이것은 두 번째 줄입니다.
 ```
 
 
-# emoji
+# 이모지 (emoji)
 
-You can add emojis to your text by typing the emoji name after a colon `:`.
+콜론 `:` 뒤에 이모지 이름을 입력하여 텍스트에 이모지를 추가할 수 있습니다.
 
-- :+1: GOOD!
-- :white_check_mark: Check
-- :lock: Lock
+- :+1: 좋아요!
+- :white_check_mark: 체크
+- :lock: 잠금
 
-When you type two or more characters after the colon, an emoji suggestion list will appear. This list will narrow down as you continue typing. Once you find the emoji you are looking for, press Tab or Enter to insert the highlighted emoji.
+콜론 뒤에 두 자 이상을 입력하면 이모지 제안 목록이 나타납니다. 이 목록은 계속 입력하면 좁혀집니다. 원하는 이모지를 찾으면 탭이나 엔터를 눌러 강조 표시된 이모지를 삽입합니다.
 
-For a list of available emojis, refer to the "[Emoji Cheat Sheet](https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md)".
+사용 가능한 이모지 목록은 "[이모지 치트 시트](https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md)"를 참조하세요.
 
 
-# Table
-### General syntax
-#### Example
+# 표 (Table)
+### 일반 구문
+#### 예시
 
-| Left align | Right align | Center align |
+| 왼쪽 정렬 | 오른쪽 정렬 | 가운데 정렬 |
 |:-----------|------------:|:------------:|
-| This       | This        | This         |
-| column     | column      | column       |
-| will       | will        | will         |
-| be         | be          | be           |
-| left       | right       | center       |
-| aligned    | aligned     | aligned      |
+| 이         | 이          | 이           |
+| 열은       | 열은        | 열은         |
+| 왼쪽으로   | 오른쪽으로  | 가운데로     |
+| 정렬됩니다 | 정렬됩니다  | 정렬됩니다   |
 
 ```markdown
-| Left align | Right align | Center align |
+| 왼쪽 정렬 | 오른쪽 정렬 | 가운데 정렬 |
 |:-----------|------------:|:------------:|
-| This       | This        | This         |
-| column     | column      | column       |
-| will       | will        | will         |
-| be         | be          | be           |
-| left       | right       | center       |
-| aligned    | aligned     | aligned      |
+| 이         | 이          | 이           |
+| 열은       | 열은        | 열은         |
+| 왼쪽으로   | 오른쪽으로  | 가운데로     |
+| 정렬됩니다 | 정렬됩니다  | 정렬됩니다   |
 ```
 
 ### CSV / TSV
 
-#### Example
+#### 예시
 
 ``` tsv
-Content Cell	Content Cell
-Content Cell	Content Cell
+콘텐츠 셀	콘텐츠 셀
+콘텐츠 셀	콘텐츠 셀
 ```
 
 ~~~
 ``` csv
-Content Cell,Content Cell
-Content Cell,Content Cell
+콘텐츠 셀,콘텐츠 셀
+콘텐츠 셀,콘텐츠 셀
 ```
 ~~~
 
 ~~~
 ``` tsv
-Content Cell	Content Cell
-Content Cell	Content Cell
+콘텐츠 셀	콘텐츠 셀
+콘텐츠 셀	콘텐츠 셀
 ```
 ~~~
 
 
-### CSV / TSV (with header)
+### CSV / TSV (헤더 포함)
 
 
-#### Example
+#### 예시
 
 ``` tsv-h
-First Header	Second Header
-Content Cell	Content Cell
-Content Cell	Content Cell
+첫 번째 헤더	두 번째 헤더
+콘텐츠 셀	콘텐츠 셀
+콘텐츠 셀	콘텐츠 셀
 ```
 
 ~~~
 ``` csv-h
-First Header,Second Header
-Content Cell,Content Cell
-Content Cell,Content Cell
+첫 번째 헤더,두 번째 헤더
+콘텐츠 셀,콘텐츠 셀
+콘텐츠 셀,콘텐츠 셀
 ```
 ~~~
 
 ~~~
 ``` tsv-h
-First Header	Second Header
-Content Cell	Content Cell
-Content Cell	Content Cell
+첫 번째 헤더	두 번째 헤더
+콘텐츠 셀	콘텐츠 셀
+콘텐츠 셀	콘텐츠 셀
 ```
 ~~~
-
-

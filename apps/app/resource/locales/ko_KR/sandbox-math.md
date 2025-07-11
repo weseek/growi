@@ -1,13 +1,14 @@
-# :pencil2: Math
+# :pencil2: 수학 (Math)
 
-See [KaTeX](https://katex.org/).
+[KaTeX](https://katex.org/)를 참조하세요.
 
-## Inline Formula
+## 인라인 수식 (Inline Formula)
 
-When $a \ne 0$, there are two solutions to $ax^2 + bx + c = 0$ and they are
+$a 
+e 0$일 때, $ax^2 + bx + c = 0$에 대한 두 가지 해는 다음과 같습니다.
   $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$
 
-## The Lorenz Equations
+## 로렌츠 방정식 (The Lorenz Equations)
 
 $$
 \begin{align}
@@ -18,14 +19,14 @@ $$
 $$
 
 
-## The Cauchy-Schwarz Inequality
+## 코시-슈바르츠 부등식 (The Cauchy-Schwarz Inequality)
 
 $$
 \left( \sum_{k=1}^n a_k b_k \right)^{\!\!2} \leq
  \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)
 $$
 
-## A Cross Product Formula
+## 벡터 곱 공식 (A Cross Product Formula)
 
 $$
 \mathbf{V}_1 \times \mathbf{V}_2 =
@@ -37,13 +38,13 @@ $$
 $$
 
 
-## The probability of getting $\left(k\right)$ heads when flipping $\left(n\right)$ coins is:
+## 동전 $\left(n\right)$개를 던져 앞면이 $\left(k\right)$번 나올 확률은 다음과 같습니다:
 
 $$
 P(E) = {n \choose k} p^k (1-p)^{ n-k}
 $$
 
-## An Identity of Ramanujan
+## 라마누잔의 항등식 (An Identity of Ramanujan)
 
 $$
 \frac{1}{(\sqrt{\phi \sqrt{5}}-\phi) e^{\frac25 \pi}} =
@@ -51,7 +52,7 @@ $$
       {1+\frac{e^{-8\pi}} {1+\ldots} } } }
 $$
 
-## A Rogers-Ramanujan Identity
+## 로저스-라마누잔 항등식 (A Rogers-Ramanujan Identity)
 
 $$
 1 +  \frac{q^2}{(1-q)}+\frac{q^6}{(1-q)(1-q^2)}+\cdots =
@@ -59,7 +60,7 @@ $$
      \quad\quad \text{for $|q|<1$}.
 $$
 
-## Maxwell's Equations
+## 맥스웰 방정식 (Maxwell's Equations)
 
 $$
 \begin{align}
