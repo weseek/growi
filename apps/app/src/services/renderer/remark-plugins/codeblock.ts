@@ -3,7 +3,7 @@ import type { Schema as SanitizeOption } from 'hast-util-sanitize';
 import type { InlineCode as MdastInlineCode, Html, Text } from 'mdast';
 import type { Plugin } from 'unified';
 import type { Node, Parent, Point } from 'unist';
-import type { visit as unistUtilVisit } from 'unist-util-visit';
+import { visit } from 'unist-util-visit';
 
 
 type InlineCode = MdastInlineCode & {
@@ -12,12 +12,6 @@ type InlineCode = MdastInlineCode & {
     [key: string]: unknown;
   };
 };
-
-let visit: typeof unistUtilVisit;
-(async() => {
-  const { visit: loadedVisit } = await import('unist-util-visit');
-  visit = loadedVisit;
-})();
 
 const SUPPORTED_CODE = ['inline'];
 
@@ -34,10 +28,6 @@ const SUPPORTED_CODE = ['inline'];
 
 export const remarkPlugin: Plugin = () => {
   return (tree: Node) => {
-    if (!visit) {
-      return tree;
-    }
-
     const defaultPoint: Point = { line: 1, column: 1, offset: 0 };
 
     visit(tree, 'html', (node: Html, index: number | undefined, parent: Parent | undefined) => {
