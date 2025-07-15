@@ -20,6 +20,7 @@ import { TransferKey } from '~/utils/vo/transfer-key';
 
 import type Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+import { Attachment } from '../../models/attachment';
 
 import type { ApiV3Response } from './interfaces/apiv3-response';
 
@@ -381,6 +382,22 @@ module.exports = (crowi: Crowi): Router => {
       catch (err) {
         logger.error(err);
         return res.apiv3Err(new ErrorV3('Failed to parse body.', 'parse_failed'), 500);
+      }
+
+      try {
+        const existingAttachment = await Attachment.findOne({
+          fileName: attachmentMap.fileName,
+          fileSize: attachmentMap.fileSize,
+        });
+
+        if (!existingAttachment) {
+          logger.warn(`Attachment not found in collection: ${attachmentMap.fileName}`);
+          return res.apiv3Err(new ErrorV3('Attachment not found in collection.', 'attachment_not_found'), 404);
+        }
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(new ErrorV3('Failed to check attachment existence.', 'attachment_check_failed'), 500);
       }
 
       const fileStream = createReadStream(file.path, {
