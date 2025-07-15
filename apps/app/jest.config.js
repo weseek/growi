@@ -19,7 +19,9 @@ module.exports = {
       transform: {
         '^.+\\.(t|j)sx?$': '@swc-node/jest',
       },
-
+      transformIgnorePatterns: [
+        '/node_modules/(?!unist-util-visit)/', // Ignore all node_modules EXCEPT unist-util-visit
+      ],
       rootDir: '.',
       roots: ['<rootDir>'],
       testMatch: ['<rootDir>/test/integration/**/*.test.ts', '<rootDir>/test/integration/**/*.test.js'],
@@ -40,7 +42,9 @@ module.exports = {
       transform: {
         '^.+\\.(t|j)sx?$': '@swc-node/jest',
       },
-
+      transformIgnorePatterns: [
+        '/node_modules/(?!unist-util-visit)/', // Ignore all node_modules EXCEPT unist-util-visit
+      ],
       rootDir: '.',
       roots: ['<rootDir>'],
       testMatch: ['<rootDir>/test/integration/**/v5.*.test.ts', '<rootDir>/test/integration/**/v5.*.test.js'],
