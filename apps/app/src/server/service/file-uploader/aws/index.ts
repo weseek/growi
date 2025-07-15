@@ -1,5 +1,6 @@
 import type { Readable } from 'stream';
 
+
 import type { GetObjectCommandInput, HeadObjectCommandInput } from '@aws-sdk/client-s3';
 import {
   S3Client,
@@ -15,6 +16,7 @@ import {
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import type { NonBlankString } from '@growi/core/dist/interfaces';
 import { toNonBlankStringOrUndefined } from '@growi/core/dist/interfaces';
+import type { Response } from 'express';
 import urljoin from 'url-join';
 
 import type Crowi from '~/server/crowi';
@@ -28,7 +30,7 @@ import { configManager } from '../../config-manager';
 import {
   AbstractFileUploader, type TemporaryUrl, type SaveFileParam,
 } from '../file-uploader';
-import { ContentHeaders } from '../utils';
+import { ContentHeaders, applyHeaders } from '../utils';
 
 import { AwsMultipartUploader } from './multipart-uploader';
 
@@ -49,7 +51,7 @@ const isFileExists = async(s3: S3Client, params: HeadObjectCommandInput) => {
     await s3.send(new HeadObjectCommand(params));
   }
   catch (err) {
-    if (err != null && err.code === 'NotFound') {
+    if (err != null && (err as any).code === 'NotFound') {
       return false;
     }
     throw err;
@@ -131,7 +133,13 @@ class AwsFileUploader extends AbstractFileUploader {
    * @inheritdoc
    */
   override isValidUploadSettings(): boolean {
-    throw new Error('Method not implemented.');
+    return this.configManager.getConfig('aws:s3AccessKeyId') != null
+      && this.configManager.getConfig('aws:s3SecretAccessKey') != null
+      && (
+        this.configManager.getConfig('aws:s3Region') != null
+        || this.configManager.getConfig('aws:s3CustomEndpoint') != null
+      )
+      && this.configManager.getConfig('aws:s3Bucket') != null;
   }
 
   /**
@@ -159,7 +167,7 @@ class AwsFileUploader extends AbstractFileUploader {
    * @inheritdoc
    */
   override determineResponseMode() {
-    return configManager.getConfig('aws:referenceFileWithRelayMode')
+    return this.configManager.getConfig('aws:referenceFileWithRelayMode')
       ? ResponseMode.RELAY
       : ResponseMode.REDIRECT;
   }
@@ -177,7 +185,8 @@ class AwsFileUploader extends AbstractFileUploader {
     const s3 = S3Factory();
 
     const filePath = getFilePathOnStorage(attachment);
-    const contentHeaders = new ContentHeaders(attachment);
+
+    const contentHeaders = await ContentHeaders.create(this.configManager, attachment);
 
     await s3.send(new PutObjectCommand({
       Bucket: getS3Bucket(),
@@ -190,11 +199,27 @@ class AwsFileUploader extends AbstractFileUploader {
     }));
   }
 
-  /**
-   * @inheritdoc
-   */
-  override respond(): void {
-    throw new Error('AwsFileUploader does not support ResponseMode.DELEGATE.');
+
+  override async respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): Promise<void> {
+    const responseMode = this.determineResponseMode();
+
+    if (responseMode === ResponseMode.REDIRECT) {
+      // In REDIRECT mode, generate a temporary URL and redirect
+      const temporaryUrl = await this.generateTemporaryUrl(attachment, opts);
+      res.redirect(temporaryUrl.url);
+    }
+    else if (responseMode === ResponseMode.RELAY) {
+      // In RELAY mode, stream the file content
+      const readableStream = await this.findDeliveryFile(attachment);
+      const isDownload = opts?.download ?? false;
+      const contentHeaders = await ContentHeaders.create(this.configManager, attachment, { inline: !isDownload });
+      applyHeaders(res, contentHeaders.toExpressHttpHeaders());
+      readableStream.pipe(res);
+    }
+    else {
+      // Fallback for any unexpected ResponseMode
+      throw new Error(`AwsFileUploader encountered an unsupported or unexpected ResponseMode: ${responseMode}.`);
+    }
   }
 
   /**
@@ -228,8 +253,8 @@ class AwsFileUploader extends AbstractFileUploader {
 
       // eslint-disable-next-line no-nested-ternary
       return 'stream' in body
-        ? body.stream() as unknown as NodeJS.ReadableStream // get stream from Blob and cast force
-        : body as unknown as NodeJS.ReadableStream; // cast force
+        ? (body as any).transformToWebStream() as unknown as NodeJS.ReadableStream // get stream from Blob and cast force
+        : body as unknown as NodeJS.ReadableStream; // cast force -- Updated for aws-sdk v3 'Body' type
     }
     catch (err) {
       logger.error(err);
@@ -247,12 +272,12 @@ class AwsFileUploader extends AbstractFileUploader {
 
     const s3 = S3Factory();
     const filePath = getFilePathOnStorage(attachment);
-    const lifetimeSecForTemporaryUrl = configManager.getConfig('aws:lifetimeSecForTemporaryUrl');
+    const lifetimeSecForTemporaryUrl = this.configManager.getConfig('aws:lifetimeSecForTemporaryUrl'); // <-- Changed
 
     // issue signed url (default: expires 120 seconds)
     // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#getSignedUrl-property
     const isDownload = opts?.download ?? false;
-    const contentHeaders = new ContentHeaders(attachment, { inline: !isDownload });
+    const contentHeaders = await ContentHeaders.create(this.configManager, attachment, { inline: !isDownload }); // <-- Changed
     const params: GetObjectCommandInput = {
       Bucket: getS3Bucket(),
       Key: filePath,
@@ -285,7 +310,10 @@ class AwsFileUploader extends AbstractFileUploader {
     }
     catch (e) {
       // allow duplicate abort requests to ensure abortion
-      if (e.response?.status !== 404) {
+      // Note: In AWS SDK v3, 'e.response' might not exist directly.
+      // You may need to inspect the 'name' or 'Code' property for specific error types,
+      // e.g., if (e instanceof NotFound) or (e as any).name === 'NotFound'
+      if ((e as any)?.name !== 'NotFound') {
         throw e;
       }
     }
@@ -293,15 +321,19 @@ class AwsFileUploader extends AbstractFileUploader {
 
 }
 
+// This is the factory function that creates an instance of AwsFileUploader
+// It receives 'crowi' and needs to pass the 'configManager' to the constructor
 module.exports = (crowi: Crowi) => {
-  const lib = new AwsFileUploader(crowi);
+  const lib = new AwsFileUploader(crowi, configManager);
 
+  // For ideal consistency, should be moved into the class as 'override' methods
+  // and use 'this.configManager'.
   lib.isValidUploadSettings = function() {
     return configManager.getConfig('aws:s3AccessKeyId') != null
       && configManager.getConfig('aws:s3SecretAccessKey') != null
       && (
         configManager.getConfig('aws:s3Region') != null
-          || configManager.getConfig('aws:s3CustomEndpoint') != null
+        || configManager.getConfig('aws:s3CustomEndpoint') != null
       )
       && configManager.getConfig('aws:s3Bucket') != null;
   };

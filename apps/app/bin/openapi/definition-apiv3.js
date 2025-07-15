@@ -49,6 +49,166 @@ module.exports = {
         in: 'header',
         name: 'x-growi-transfer-key',
       },
+      adminRequired: {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'AdminAccess',
+        description: 'Requires an authenticated user with admin privileges',
+      },
+    },
+    responses: {
+      400: {
+        description: 'Bad request.',
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/components/schemas/ErrorResponse',
+            },
+          },
+        },
+      },
+      401: {
+        description: 'Unauthorized.',
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/components/schemas/ErrorResponse',
+            },
+          },
+        },
+      },
+      403: {
+        description: 'Forbidden.',
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/components/schemas/ErrorResponse',
+            },
+          },
+        },
+      },
+      404: {
+        description: 'Not found.',
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/components/schemas/ErrorResponse',
+            },
+          },
+        },
+      },
+      500: {
+        description: 'Internal server error.',
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/components/schemas/ErrorResponse',
+            },
+          },
+        },
+      },
+    },
+    schemas: {
+      ErrorResponse: {
+        type: 'object',
+        description: 'Standard error response format for API failures.',
+        properties: {
+          message: {
+            type: 'string',
+            description: 'A human-readable message providing details about the error.',
+          },
+          status: {
+            type: 'number',
+            description: 'The HTTP status code associated with the error (e.g., 400, 401, 500).',
+          },
+        },
+      },
+      MarkdownParams: {
+        type: 'object',
+        description: 'All current Markdown rendering settings.',
+        properties: {
+          isEnabledLinebreaks: { type: 'boolean', description: 'Controls if line breaks are enabled in Markdown.' },
+          isEnabledLinebreaksInComments: { type: 'boolean', description: 'Controls if line breaks are enabled in Markdown comments.' },
+          adminPreferredIndentSize: { type: 'number', enum: [2, 4], description: 'Preferred indent size for Markdown, either 2 or 4 spaces.' },
+          isIndentSizeForced: { type: 'boolean', description: 'If true, forces the preferred indent size across all users.' },
+          isEnabledXss: { type: 'boolean', description: 'Controls if XSS prevention is enabled.' },
+          xssOption: { type: 'string', description: 'The XSS prevention option.' },
+          tagWhitelist: { type: 'array', items: { type: 'string' }, description: 'List of HTML tags allowed if XSS prevention is enabled.' },
+          attrWhitelist: { type: 'string', description: 'Stringified JSON object of allowed attributes for whitelisted tags.' },
+        },
+      },
+      LineBreakParams: {
+        type: 'object',
+        description: 'Parameters for Markdown line break settings.',
+        properties: {
+          isEnabledLinebreaks: { type: 'boolean', description: 'Enable or disable line breaks.' },
+          isEnabledLinebreaksInComments: { type: 'boolean', description: 'Enable or disable line breaks in comments.' },
+        },
+      },
+      IndentParams: {
+        type: 'object',
+        description: 'Parameters for Markdown indent settings.',
+        properties: {
+          adminPreferredIndentSize: { type: 'number', enum: [2, 4], description: 'The preferred indent size (2 or 4).' },
+          isIndentSizeForced: { type: 'boolean', description: 'Force preferred indent size for all users.' },
+        },
+      },
+      XssParams: {
+        type: 'object',
+        description: 'Parameters for Markdown XSS prevention settings.',
+        properties: {
+          isEnabledXss: { type: 'boolean', description: 'Enable or disable XSS prevention.' },
+          xssOption: { type: 'string', description: 'XSS prevention option (e.g., "permissive", "strict").' }, // Adjust enum if known values exist
+          tagWhitelist: { type: 'array', items: { type: 'string' }, description: 'Array of whitelisted HTML tags.' },
+          attrWhitelist: { type: 'string', description: 'Stringified JSON of whitelisted HTML attributes.' },
+        },
+      },
+    },
+    parameters: {
+      MimeTypePathParam: {
+        name: 'mimeType',
+        in: 'path',
+        required: true,
+        description: 'Configurable MIME type (e.g., image/png, application/pdf)',
+        schema: {
+          type: 'string',
+          enum: [
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'image/webp',
+            'image/bmp',
+            'image/tiff',
+            'image/x-icon',
+            'application/pdf',
+            'text/plain',
+            'video/mp4',
+            'video/webm',
+            'video/ogg',
+            'audio/mpeg',
+            'audio/ogg',
+            'audio/wav',
+            'text/html',
+            'text/javascript',
+            'application/javascript',
+            'image/svg+xml',
+            'application/xml',
+            'application/json',
+            'application/x-sh',
+            'application/x-msdownload',
+            'application/octet-stream',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/vnd.ms-powerpoint',
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            'application/zip',
+            'application/x-rar-compressed',
+            'text/csv',
+          ],
+        },
+      },
     },
   },
   'x-tagGroups': [
@@ -65,7 +225,6 @@ module.exports = {
         'ShareLinks',
         'Users',
         'UserUISettings',
-        '',
       ],
     },
     {
@@ -74,11 +233,6 @@ module.exports = {
         'GeneralSetting',
         'EditorSetting',
         'InAppNotificationSettings',
-        '',
-        '',
-        '',
-        '',
-        '',
       ],
     },
     {
@@ -120,12 +274,6 @@ module.exports = {
       tags: [
         'Healthcheck',
         'Statistics',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
       ],
     },
   ],
