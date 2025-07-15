@@ -463,7 +463,14 @@
       "import_recommended": "{{target}} のおすすめをインポート"
     },
     "inline_file_type_header": "インライン表示を許可するファイルタイプ",
-    "inline_file_type_desc": "インライン表示を許可するファイルタイプを設定できます"
+    "inline_file_type_desc": "インライン表示を許可するファイルタイプを設定できます",
+    "inline_file_type_options": {
+      "strict": "Strict (Recommended)",
+      "moderate": "Moderate",
+      "lax": "Lax",
+      "manual": "Manual",
+      "permitted_file_types": "Permitted file types"
+    }
   },
   "customize_settings": {
     "customize_settings": "カスタマイズ",

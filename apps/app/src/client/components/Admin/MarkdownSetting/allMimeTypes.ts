@@ -32,4 +32,4 @@ export const ALL_MIME_TYPES = [
   // Other
   'application/sql', 'application/vnd.sqlite3', 'application/x-msaccess',
   'application/x-apple-diskimage',
-];
+] as const;

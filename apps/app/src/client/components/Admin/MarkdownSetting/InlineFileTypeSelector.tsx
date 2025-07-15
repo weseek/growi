@@ -1,5 +1,7 @@
 import React, { type JSX, useState, useEffect } from 'react';
 
+import { useTranslation } from 'next-i18next';
+
 import { InlineMimeModes, type InlineMimeMode } from '../../../../interfaces/inline-mime-mode';
 import { INLINE_ALLOWLIST_MIME_TYPES } from '../../../../server/service/file-uploader/utils/security';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
@@ -13,6 +15,8 @@ export const InlineFileTypeSelector = (): JSX.Element => {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [inlineMimeMode, setInlineMimeMode] = useState<InlineMimeMode>(InlineMimeModes.STRICT);
 
+  const { t } = useTranslation('admin');
+
   useEffect(() => {
     setSelected(new Set(INLINE_ALLOWLIST_MIME_TYPES));
   }, []);
@@ -20,14 +24,19 @@ export const InlineFileTypeSelector = (): JSX.Element => {
   const inlineMimeModeChange = (value: typeof inlineMimeMode) => {
     setInlineMimeMode(value);
 
-    if (value === InlineMimeModes.STRICT) {
-      setSelected(new Set(STRICT_MIME_TYPES));
-    }
-    else if (value === InlineMimeModes.MODERATE) {
-      setSelected(new Set(MODERATE_MIME_TYPES));
-    }
-    else if (value === InlineMimeModes.LAX) {
-      setSelected(new Set(ALL_MIME_TYPES));
+    switch (value) {
+      case InlineMimeModes.STRICT:
+        setSelected(new Set(STRICT_MIME_TYPES));
+        break;
+      case InlineMimeModes.MODERATE:
+        setSelected(new Set(MODERATE_MIME_TYPES));
+        break;
+      case InlineMimeModes.LAX:
+        setSelected(new Set(ALL_MIME_TYPES));
+        break;
+      case InlineMimeModes.MANUAL:
+      default:
+        break;
     }
   };
 
@@ -48,12 +57,7 @@ export const InlineFileTypeSelector = (): JSX.Element => {
     <>
       <div>
         <div className="form-check form-check-inline">
-          {[
-            { id: InlineMimeModes.STRICT, label: 'Strict (Recommended)' },
-            { id: InlineMimeModes.MODERATE, label: 'Moderate' },
-            { id: InlineMimeModes.LAX, label: 'Lax' },
-            { id: InlineMimeModes.MANUAL, label: 'Manual' },
-          ].map(({ id, label }) => (
+          {Object.values(InlineMimeModes).map(id => (
             <div className="form-check form-check-inline" key={id}>
               <input
                 className="form-check-input"
@@ -64,21 +68,24 @@ export const InlineFileTypeSelector = (): JSX.Element => {
                 checked={inlineMimeMode === id}
                 onChange={e => inlineMimeModeChange(e.target.value as InlineMimeMode)}
               />
-              <label className="form-check-label" htmlFor={id}>{label}</label>
+              <label className="form-check-label" htmlFor={id}>
+                {t(`markdown_settings.inline_file_type_options.${id}`)}
+              </label>
             </div>
           ))}
+
         </div>
       </div>
       <div className="dropdown">
         <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-          Permitted files
+          {t('markdown_settings.inline_file_type_options.permitted_file_types')}
         </button>
         <ul className="dropdown-menu">
           {ALL_MIME_TYPES.map((type) => {
             const id = `inline-${type.replace('/', '-')}`;
             return (
               <li key={type} onClick={e => e.stopPropagation()}>
-                <div className="form-check form-switch">
+                <div className="form-check form-switch mx-2">
                   <input
                     className="form-check-input"
                     type="checkbox"
@@ -96,6 +103,7 @@ export const InlineFileTypeSelector = (): JSX.Element => {
           })}
         </ul>
         <AdminUpdateButtonRow
+        // TODO: implement save logic after backend API is ready(https://redmine.weseek.co.jp/issues/169025)
           onClick={() => {
             console.log('選択されたmime types:', Array.from(selected));
           }}

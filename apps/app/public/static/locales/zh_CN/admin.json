@@ -463,7 +463,14 @@
       "import_recommended": "导入建议 {{target}}"
     },
     "inline_file_type_header": "允许内联显示的文件类型",
-    "inline_file_type_desc": "您可以设置允许内联显示的文件类型。"
+    "inline_file_type_desc": "您可以设置允许内联显示的文件类型。",
+    "inline_file_type_options": {
+      "strict": "严格（推荐）",
+      "moderate": "中度",
+      "lax": "涣散",
+      "manual": "手册",
+      "permitted_file_types": "允许的文件类型"
+    }
   },
   "customize_settings": {
     "customize_settings": "页面定制",
