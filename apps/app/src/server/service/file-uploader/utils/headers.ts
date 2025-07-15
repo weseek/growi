@@ -48,23 +48,29 @@ export class ContentHeaders implements IContentHeaders {
       value: actualContentTypeString,
     };
 
-    const requestedInline = opts?.inline ?? false;
     const configKey = `attachments:contentDisposition:${actualContentTypeString}:inline` as ConfigKey;
+    const rawConfigValue = await instance.configManager.getConfig(configKey);
 
-    // AWAIT the config value here
-    const rawConfigValue = await instance.configManager.getConfig(configKey); // Use instance's configManager
+    const requestedInline = opts?.inline ?? false;
 
-    let isConfiguredInline: boolean;
-    if (typeof rawConfigValue === 'boolean') {
-      isConfiguredInline = rawConfigValue;
+    let systemAllowsInline: boolean;
+
+    const ALL_POSSIBLE_INLINE_MIME_TYPES = new Set<string>([
+      ...DEFAULT_ALLOWLIST_MIME_TYPES,
+      ...SAFE_INLINE_CONFIGURABLE_MIME_TYPES,
+    ]);
+
+    if (!ALL_POSSIBLE_INLINE_MIME_TYPES.has(actualContentTypeString)) {
+      systemAllowsInline = false;
+    }
+    else if (typeof rawConfigValue === 'boolean') {
+      systemAllowsInline = rawConfigValue;
     }
     else {
-      isConfiguredInline = DEFAULT_ALLOWLIST_MIME_TYPES.has(actualContentTypeString);
+      systemAllowsInline = DEFAULT_ALLOWLIST_MIME_TYPES.has(actualContentTypeString);
     }
 
-    const shouldBeInline = requestedInline
-      && isConfiguredInline
-      && SAFE_INLINE_CONFIGURABLE_MIME_TYPES.has(actualContentTypeString);
+    const shouldBeInline = requestedInline && systemAllowsInline;
 
     instance.contentDisposition = {
       field: 'Content-Disposition',
