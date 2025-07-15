@@ -6,9 +6,9 @@ import { InlineMimeModes, type InlineMimeMode } from '../../../../interfaces/inl
 import { INLINE_ALLOWLIST_MIME_TYPES } from '../../../../server/service/file-uploader/utils/security';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
-import { ALL_MIME_TYPES } from './allMimeTypes';
-import { MODERATE_MIME_TYPES } from './moderate';
-import { STRICT_MIME_TYPES } from './strict';
+import { ALL_MIME_TYPES } from './inlineMimeTypes/allMimeTypes';
+import { MODERATE_MIME_TYPES } from './inlineMimeTypes/moderate';
+import { STRICT_MIME_TYPES } from './inlineMimeTypes/strict';
 
 
 export const InlineFileTypeSelector = (): JSX.Element => {
@@ -66,7 +66,7 @@ export const InlineFileTypeSelector = (): JSX.Element => {
                 value={id}
                 id={id}
                 checked={inlineMimeMode === id}
-                onChange={e => inlineMimeModeChange(e.target.value as InlineMimeMode)}
+                onChange={() => inlineMimeModeChange(id)}
               />
               <label className="form-check-label" htmlFor={id}>
                 {t(`markdown_settings.inline_file_type_options.${id}`)}
@@ -91,7 +91,7 @@ export const InlineFileTypeSelector = (): JSX.Element => {
                     type="checkbox"
                     id={id}
                     checked={selected.has(type)}
-                    disabled={inlineMimeMode !== 'manual'}
+                    disabled={inlineMimeMode !== InlineMimeModes.MANUAL}
                     onChange={() => toggleMime(type)}
                   />
                   <label className="form-check-label w-100" htmlFor={id}>
