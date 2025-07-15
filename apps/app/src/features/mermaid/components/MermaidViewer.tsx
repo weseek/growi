@@ -89,17 +89,13 @@ export const MermaidViewer = React.memo((props: MermaidViewerProps): JSX.Element
         }
       }
     })();
-
   }, [isDarkMode, value]);
 
   return (
-    value
-      ? (
-        <div ref={ref} key={value as string}>
-          {value}
-        </div>
-      )
-      : <div key={value as string}></div>
+    <div ref={ref} key={value}>
+      {value}
+    </div>
   );
 });
+
 MermaidViewer.displayName = 'MermaidViewer';
