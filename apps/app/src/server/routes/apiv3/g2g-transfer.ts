@@ -385,13 +385,21 @@ module.exports = (crowi: Crowi): Router => {
       }
 
       try {
+        const { fileName, fileSize } = attachmentMap;
+        if (typeof fileName !== 'string' || fileName.length === 0 || fileName.length > 256) {
+          logger.warn('Invalid fileName in attachment metadata.', { fileName });
+          return res.apiv3Err(new ErrorV3('Invalid fileName in attachment metadata.', 'invalid_metadata'), 400);
+        }
+        if (typeof fileSize !== 'number' || !Number.isInteger(fileSize) || fileSize < 0) {
+          logger.warn('Invalid fileSize in attachment metadata.', { fileSize });
+          return res.apiv3Err(new ErrorV3('Invalid fileSize in attachment metadata.', 'invalid_metadata'), 400);
+        }
         const existingAttachment = await Attachment.findOne({
-          fileName: attachmentMap.fileName,
-          fileSize: attachmentMap.fileSize,
+          fileName,
+          fileSize,
         });
-
         if (!existingAttachment) {
-          logger.warn(`Attachment not found in collection: ${attachmentMap.fileName}`);
+          logger.warn('Attachment not found in collection.', { fileName, fileSize });
           return res.apiv3Err(new ErrorV3('Attachment not found in collection.', 'attachment_not_found'), 404);
         }
       }
