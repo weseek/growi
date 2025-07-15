@@ -33,82 +33,82 @@ const validator = {
 };
 
 /*
-  * @swagger
-  *
-  * components:
-  *    securitySchemes:
-  *      adminRequired:
-  *        type: http
-  *        scheme: bearer
-  *        bearerFormat: AdminAccess
-  *        description: Requires an authenticated user with admin privileges
-  *    responses:
-  *      400:
-  *        description: Bad Request
-  *        content:
-  *          application/json:
-  *            schema:
-  *              $ref: '#/components/schemas/ErrorResponse'
-  *      401:
-  *        description: Unauthorized
-  *        content:
-  *          application/json:
-  *            schema:
-  *              $ref: '#/components/schemas/ErrorResponse'
-  *      403:
-  *        description: Forbidden
-  *        content:
-  *          application/json:
-  *            schema:
-  *              $ref: '#/components/schemas/ErrorResponse'
-  *      404:
-  *        description: Not Found
-  *        content:
-  *          application/json:
-  *            schema:
-  *              $ref: '#/components/schemas/ErrorResponse'
-  *      500:
-  *        description: Internal Server Error
-  *        content:
-  *          application/json:
-  *            schema:
-  *              $ref: '#/components/schemas/ErrorResponse'
-  *    schemas:
-  *      ErrorResponse:
-  *        type: object
-  *        properties:
-  *          message:
-  *            type: string
-  *            description: Error message
-  *          status:
-  *            type: number
-  *            description: HTTP status code
-  *    parameters:
-  *      MimeTypePathParam:
-  *        name: mimeType
-  *        in: path
-  *        required: true
-  *        description: Configurable MIME type (e g , image/png, application/pdf)
-  *        schema:
-  *          type: string
-  *          enum:
-  *            - application/pdf
-  *            - image/png
-  *            - image/jpeg
-  *            - image/gif
-  *            - text/plain
-  *            - text/html
-  *            - application/vnd openxmlformats-officedocument spreadsheetml sheet
-  *            - application/vnd openxmlformats-officedocument wordprocessingml document
-  *            - application/vnd openxmlformats-officedocument presentationml presentation
-  *            - application/msword
-  *            - application/vnd ms-excel
-  *            - application/vnd ms-powerpoint
-  *            - application/zip
-  *            - application/x-rar-compressed
-  *            - audio/mpeg
-  *            - video/mp4
-  *            - application/octet-stream
+ * @swagger
+ *
+ *  components:
+ *    securitySchemes:
+ *      adminRequired:
+ *        type: http
+ *        scheme: bearer
+ *        bearerFormat: AdminAccess
+ *        description: Requires an authenticated user with admin privileges
+ *    responses:
+ *      400:
+ *        description: Bad Request
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ErrorResponse'
+ *      401:
+ *        description: Unauthorized
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ErrorResponse'
+ *      403:
+ *        description: Forbidden
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ErrorResponse'
+ *      404:
+ *        description: Not Found
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ErrorResponse'
+ *      500:
+ *        description: Internal Server Error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ErrorResponse'
+ *    schemas:
+ *      ErrorResponse:
+ *        type: object
+ *        properties:
+ *          message:
+ *            type: string
+ *            description: Error message
+ *          status:
+ *            type: number
+ *            description: HTTP status code
+ *    parameters:
+ *      MimeTypePathParam:
+ *        name: mimeType
+ *        in: path
+ *        required: true
+ *        description: Configurable MIME type (e g , image/png, application/pdf)
+ *        schema:
+ *          type: string
+ *          enum:
+ *            - application/pdf
+ *            - image/png
+ *            - image/jpeg
+ *            - image/gif
+ *            - text/plain
+ *            - text/html
+ *            - application/vnd openxmlformats-officedocument spreadsheetml sheet
+ *            - application/vnd openxmlformats-officedocument wordprocessingml document
+ *            - application/vnd openxmlformats-officedocument presentationml presentation
+ *            - application/msword
+ *            - application/vnd ms-excel
+ *            - application/vnd ms-powerpoint
+ *            - application/zip
+ *            - application/x-rar-compressed
+ *            - audio/mpeg
+ *            - video/mp4
+ *            - application/octet-stream
   */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
@@ -117,42 +117,42 @@ module.exports = (crowi) => {
   const activityEvent = crowi.event('activity');
 
   /**
-	 * @swagger
-	 *
-	 * /content-disposition-settings:
-	 *   get:
-	 *     tags: [Content-Disposition Settings]
-	 *     summary: Get content disposition settings for configurable MIME types
-	 *     description: Retrieve the current `inline` or `attachment` disposition setting for each configurable MIME type.
-	 *     security:
-	 *       - cookieAuth: []
-	 *       - adminRequired: []
-	 *     responses:
-	 *       200:
-	 *         description: Successfully retrieved content disposition settings.
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               type: object
-	 *               properties:
-	 *                 contentDispositionSettings:
-	 *                   type: object
-	 *                   description: An object mapping configurable MIME types to their current inline disposition status.
-	 *                   additionalProperties:
-	 *                     type: boolean
-	 *                     description: true if inline, false if attachment.
-	 *                     example:
-	 *                       image/png: true
-	 *                       application/pdf: false
-	 *                       text/plain: true
-	 *       401:
-	 *         $ref: '#/components/responses/401'
-	 *       403:
-	 *         $ref: '#/components/responses/403'
-	 *       500:
-	 *         $ref: '#/components/responses/500'
-	 *
-	 */
+ * @swagger
+ *
+ * /content-disposition-settings:
+ *   get:
+ *     tags: [Content-Disposition Settings]
+ *     summary: Get content disposition settings for configurable MIME types
+ *     description: Retrieve the current `inline` or `attachment` disposition setting for each configurable MIME type.
+ *     security:
+ *       - cookieAuth: []
+ *       - adminRequired: []
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved content disposition settings.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 contentDispositionSettings:
+ *                   type: object
+ *                   description: An object mapping configurable MIME types to their current inline disposition status.
+ *                   additionalProperties:
+ *                     type: boolean
+ *                     description: true if inline, false if attachment.
+ *                     example:
+ *                       image/png: true
+ *                       application/pdf: false
+ *                       text/plain: true
+ *       401:
+ *         $ref: '#/components/responses/401'
+ *       403:
+ *         $ref: '#/components/responses/403'
+ *       500:
+ *         $ref: '#/components/responses/500'
+ *
+ */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const promises = CONFIGURABLE_MIME_TYPES_FOR_DISPOSITION.map(
       async(mimeType) => {
@@ -181,61 +181,61 @@ module.exports = (crowi) => {
   });
 
   /**
-	 * @swagger
-	 *
-	 * paths:
-	 *    /content-disposition-settings/{mimeType}:
-	 *      put:
-	 *        tags: [Content Disposition Settings]
-	 *        summary: Update content disposition setting for a specific MIME type
-	 *        description: Set the `inline` or `attachment` disposition for a given configurable MIME type
-	 *        security:
-	 *          - cookieAuth: []
-	 *          - adminRequired: []
-	 *        parameters:
-	 *          - $ref: '#/components/parameters/MimeTypePathParam'
-	 *        requestBody:
-	 *          required: true
-	 *          content:
-	 *            application/json:
-	 *              schema:
-	 *                type: object
-	 *                required:
-	 *                  - isInline
-	 *                properties:
-	 *                  isInline:
-	 *                     type: boolean
-	 *                     description: 'Set to `true` for inline disposition, `false` for attachment disposition (e g , prompts download) '
-	 *                     example: true
-	 *      operationId: putContentDispositionSettingsByMimeType
-	 *      responses:
-	 *        200:
-	 *          description: Successfully updated content disposition setting
-	 *          content:
-	 *            application/json:
-	 *              schema:
-	 *                type: object
-	 *                properties:
-	 *                  setting:
-	 *                     type: object
-	 *                     properties:
-	 *                       mimeType:
-	 *                         type: string
-	 *                         example: 'application/pdf'
-	 *                       isInline:
-	 *                         type: boolean
-	 *                         example: true
-	 *        400:
-	 *          $ref: '#/components/responses/400'
-	 *        401:
-	 *          $ref: '#/components/responses/401'
-	 *        403:
-	 *          $ref: '#/components/responses/403'
-	 *        404:
-	 *          $ref: '#/components/responses/404'
-	 *        500:
-	 *          $ref: '#/components/responses/500'
-	 */
+ * @swagger
+ *
+ * paths:
+ *    /content-disposition-settings/{mimeType}:
+ *      put:
+ *        tags: [Content Disposition Settings]
+ *        summary: Update content disposition setting for a specific MIME type
+ *        description: Set the `inline` or `attachment` disposition for a given configurable MIME type
+ *        security:
+ *          - cookieAuth: []
+ *          - adminRequired: []
+ *        parameters:
+ *          - $ref: '#/components/parameters/MimeTypePathParam'
+ *        requestBody:
+ *          required: true
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                required:
+ *                  - isInline
+ *                properties:
+ *                  isInline:
+ *                     type: boolean
+ *                     description: 'Set to `true` for inline disposition, `false` for attachment disposition (e g , prompts download) '
+ *                     example: true
+ *        operationId: putContentDispositionSettingsByMimeType
+ *        responses:
+ *          200:
+ *            description: Successfully updated content disposition setting
+ *            content:
+ *              application/json:
+ *                schema:
+ *                  type: object
+ *                  properties:
+ *                    setting:
+ *                       type: object
+ *                       properties:
+ *                         mimeType:
+ *                           type: string
+ *                           example: 'application/pdf'
+ *                         isInline:
+ *                           type: boolean
+ *                           example: true
+ *        400:
+ *          $ref: '#/components/responses/400'
+ *        401:
+ *          $ref: '#/components/responses/401'
+ *        403:
+ *          $ref: '#/components/responses/403'
+ *        404:
+ *          $ref: '#/components/responses/404'
+ *        500:
+ *          $ref: '#/components/responses/500'
+ */
   router.put(
     '/:mimeType(*)',
     loginRequiredStrictly,
