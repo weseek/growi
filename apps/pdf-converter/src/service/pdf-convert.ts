@@ -183,8 +183,9 @@ class PdfConvertService implements OnInit {
    */
   private getHtmlReadable(jobId: string, appId?: number): Readable {
     const jobHtmlDir = path.join(
-      this.tmpHtmlDir,
+      this.tmpOutputRootDir,
       appId?.toString() ?? '',
+      'html',
       jobId,
     );
     const htmlFileEntries = fs
@@ -228,7 +229,10 @@ class PdfConvertService implements OnInit {
       objectMode: true,
       write: async (pageInfo: PageInfo, encoding, callback) => {
         const fileOutputPath = pageInfo.htmlFilePath
-          .replace(new RegExp(`^${this.tmpHtmlDir}`), this.tmpOutputRootDir)
+          .replace(
+            new RegExp(`^(${this.tmpOutputRootDir}(?:[^/]+)?)(/html)`),
+            '$1',
+          )
           .replace(/\.html$/, '.pdf');
         const fileOutputParentPath = this.getParentPath(fileOutputPath);
 
