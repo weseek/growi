@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+import type { ErrorV3 } from '@growi/core/dist/models';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import type { Response } from 'express';
 import { mock } from 'vitest-mock-extended';
@@ -14,6 +15,7 @@ import { accessTokenParser } from '.';
 
 vi.mock('@growi/core/dist/models/serializers', { spy: true });
 
+type Apiv3ErrFunction = (error: ErrorV3) => void;
 
 describe('access-token-parser middleware', () => {
 
@@ -38,7 +40,7 @@ describe('access-token-parser middleware', () => {
     const reqMock = mock<AccessTokenParserReq>({
       user: undefined,
     });
-    const resMock = mock<Response>();
+    const resMock = mock<Response & { apiv3Err: Apiv3ErrFunction }>();
     const nextMock = vi.fn();
 
     expect(reqMock.user).toBeUndefined();
@@ -57,7 +59,7 @@ describe('access-token-parser middleware', () => {
     const reqMock = mock<AccessTokenParserReq>({
       user: undefined,
     });
-    const resMock = mock<Response>();
+    const resMock = mock<Response & { apiv3Err: Apiv3ErrFunction }>();
     const nextMock = vi.fn();
 
     expect(reqMock.user).toBeUndefined();
@@ -77,7 +79,7 @@ describe('access-token-parser middleware', () => {
     const reqMock = mock<AccessTokenParserReq>({
       user: undefined,
     });
-    const resMock = mock<Response>();
+    const resMock = mock<Response & { apiv3Err: Apiv3ErrFunction }>();
     const nextMock = vi.fn();
 
     expect(reqMock.user).toBeUndefined();
@@ -107,7 +109,7 @@ describe('access-token-parser middleware', () => {
     const reqMock = mock<AccessTokenParserReq>({
       user: undefined,
     });
-    const resMock = mock<Response>();
+    const resMock = mock<Response & { apiv3Err: Apiv3ErrFunction }>();
     const nextMock = vi.fn();
 
     expect(reqMock.user).toBeUndefined();
