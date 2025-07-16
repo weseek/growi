@@ -225,15 +225,26 @@ class PdfConvertService implements OnInit {
    * @returns writable stream
    */
   private getPdfWritable(): Writable {
+    const escapedRoot = this.tmpOutputRootDir.replace(/\//g, '\\/');
     return new Writable({
       objectMode: true,
       write: async (pageInfo: PageInfo, encoding, callback) => {
-        const fileOutputPath = pageInfo.htmlFilePath
-          .replace(
-            new RegExp(`^(${this.tmpOutputRootDir}(?:[^/]+)?)(/html)`),
-            '$1',
-          )
-          .replace(/\.html$/, '.pdf');
+        const pattern = new RegExp(
+          `^${escapedRoot}(?:\\/([0-9]+))?\\/html\\/(.+?)\\.html$`,
+        );
+
+        const match = pageInfo.htmlFilePath.match(pattern);
+        if (match == null) {
+          // Skip to next pageInfo if path doesn't match expected layout
+          callback();
+          return;
+        }
+
+        // match[1] → optional numeric dir, match[2] → basename (without extension)
+        const numericSegment = match[1] ? `/${match[1]}` : '';
+        const baseName = match[2];
+
+        const fileOutputPath = `${this.tmpOutputRootDir}${numericSegment}/${baseName}.pdf`;
         const fileOutputParentPath = this.getParentPath(fileOutputPath);
 
         try {
