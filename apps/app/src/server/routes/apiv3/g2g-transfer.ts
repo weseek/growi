@@ -394,11 +394,8 @@ module.exports = (crowi: Crowi): Router => {
           logger.warn('Invalid fileSize in attachment metadata.', { fileSize });
           return res.apiv3Err(new ErrorV3('Invalid fileSize in attachment metadata.', 'invalid_metadata'), 400);
         }
-        const existingAttachment = await Attachment.findOne({
-          fileName,
-          fileSize,
-        });
-        if (!existingAttachment) {
+        const count = await Attachment.countDocuments({ fileName, fileSize });
+        if (count === 0) {
           logger.warn('Attachment not found in collection.', { fileName, fileSize });
           return res.apiv3Err(new ErrorV3('Attachment not found in collection.', 'attachment_not_found'), 404);
         }
