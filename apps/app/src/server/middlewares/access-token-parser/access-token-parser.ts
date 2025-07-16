@@ -1,11 +1,9 @@
 import type { IUser, IUserHasId } from '@growi/core/dist/interfaces';
-import { ErrorV3 } from '@growi/core/dist/models';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
-import type { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Response } from 'express';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
-import isSimpleRequest from '~/server/util/is-simple-request';
 import loggerFactory from '~/utils/logger';
 
 import type { AccessTokenParserReq } from './interfaces';
@@ -41,26 +39,6 @@ export const accessTokenParser = async(req: AccessTokenParserReq, res: Response,
   logger.debug('accessToken is', accessToken);
 
   const user: IUserHasId = await User.findUserByApiToken(accessToken);
-
-  if (user == null) {
-    logger.debug('The access token is invalid');
-    return next();
-  }
-
-  const User = mongoose.model<HydratedDocument<IUser>, { findUserByApiToken }>('User');
-
-  logger.debug('accessToken is', accessToken);
-
-  const user: IUserHasId = await User.findUserByApiToken(accessToken);
-
-  // const isSimpleRequest = isSimpleRequest_(req);
-
-  // CSRF Protection
-  if (!req.isSameOriginReq && user == null && !isSimpleRequest(req)) {
-    const message = 'Invalid request';
-    logger.error(message);
-    return res.apiv3Err(new ErrorV3(message));
-  }
 
   if (user == null) {
     logger.debug('The access token is invalid');
