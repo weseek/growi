@@ -32,84 +32,93 @@ const validator = {
 };
 
 
-/*
-  * @swagger
-  *
-  * components:
-  *    securitySchemes:
-  *      adminRequired:
-  *        type: http
-  *        scheme: bearer
-  *        bearerFormat: AdminAccess
-  *        description: Requires an authenticated user with admin privileges
-  *    responses:
-  *      400:
-  *        description: Bad Request
-  *        content:
-  *          application/json:
-  *            schema:
-  *              $ref: '#/components/schemas/ErrorResponse'
-  *      401:
-  *        description: Unauthorized
-  *        content:
-  *          application/json:
-  *            schema:
-  *              $ref: '#/components/schemas/ErrorResponse'
-  *      403:
-  *        description: Forbidden
-  *        content:
-  *          application/json:
-  *            schema:
-  *              $ref: '#/components/schemas/ErrorResponse'
-  *      404:
-  *        description: Not Found
-  *        content:
-  *          application/json:
-  *            schema:
-  *              $ref: '#/components/schemas/ErrorResponse'
-  *      500:
-  *        description: Internal Server Error
-  *        content:
-  *          application/json:
-  *            schema:
-  *              $ref: '#/components/schemas/ErrorResponse'
-  *    schemas:
-  *      ErrorResponse:
-  *        type: object
-  *        properties:
-  *          message:
-  *            type: string
-  *            description: Error message
-  *          status:
-  *            type: number
-  *            description: HTTP status code
-  *    parameters:
-  *      MimeTypePathParam:
-  *        name: mimeType
-  *        in: path
-  *        required: true
-  *        description: Configurable MIME type (e.g., image/png, application/pdf)
-  *        schema:
-  *          type: string
-  *          enum:
-  *            - application/pdf
-  *            - image/png
-  *            - image/jpeg
-  *            - - image/gif
-  *            - text/plain
-  *            - text/html
-  *            - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
-  *            - application/vnd.openxmlformats-officedocument.wordprocessingml.document
-  *            - application/vnd.openxmlformats-officedocument.presentationml.presentation
-  *            - application/msword
-  *            - application/vnd.ms-excel
-  *            - application/vnd.ms-powerpoint
-  *            - application/zip
-  *            - application/x-rar-compressed
-  *            - audio/mpeg
-  *            - video/mp4
-  *            - application/octet-stream
-  */
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      MarkdownParams:
+ *        description: MarkdownParams
+ *        type: object
+ *        properties:
+ *          isEnabledLinebreaks:
+ *            type: boolean
+ *            description: enable lineBreak
+ *          isEnabledLinebreaksInComments:
+ *            type: boolean
+ *            description: enable lineBreak in comment
+ *          adminPreferredIndentSize:
+ *            type: number
+ *            description: preferred indent size
+ *          isIndentSizeForced:
+ *            type: boolean
+ *            description: force indent size
+ *          isEnabledXss:
+ *            type: boolean
+ *            description: enable xss
+ *          xssOption:
+ *            type: number
+ *            description: number of xss option
+ *          tagWhitelist:
+ *            type: array
+ *            description: array of tag whitelist
+ *            items:
+ *              type: string
+ *              description: tag whitelist
+ *          attrWhitelist:
+ *            type: string
+ *            description: attr whitelist
+ *      LineBreakParams:
+ *        description: LineBreakParams
+ *        type: object
+ *        properties:
+ *          isEnabledLinebreaks:
+ *            type: boolean
+ *            description: enable lineBreak
+ *          isEnabledLinebreaksInComments:
+ *            type: boolean
+ *            description: enable lineBreak in comment
+ *      PresentationParams:
+ *        description: PresentationParams
+ *        type: object
+ *        properties:
+ *          pageBreakSeparator:
+ *            type: number
+ *            description: number of pageBreakSeparator
+ *          pageBreakCustomSeparator:
+ *            type: string
+ *            description: string of pageBreakCustomSeparator
+ *      XssParams:
+ *        description: XssParams
+ *        type: object
+ *        properties:
+ *          isEnabledXss:
+ *            type: boolean
+ *            description: enable xss
+ *          xssOption:
+ *            type: number
+ *            description: number of xss option
+ *          tagWhitelist:
+ *            type: array
+ *            description: array of tag whitelist
+ *            items:
+ *              type: string
+ *              description: tag whitelist
+ *          attrWhitelist:
+ *            type: string
+ *            description: attr whitelist
+ *      IndentParams:
+ *        description: IndentParams
+ *        type: object
+ *        properties:
+ *          adminPreferredIndentSize:
+ *            type: number
+ *            description: preferred indent size
+ *          isIndentSizeForced:
+ *            type: boolean
+ *            description: force indent size
+ */
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
