@@ -9,6 +9,8 @@ import type * as RemarkRehype from 'remark-rehype';
 import type * as Unified from 'unified';
 import type * as UnistUtilVisit from 'unist-util-visit';
 
+import { remarkPlugin as inlineCodeRemarkPlugin } from 'src/services/renderer/remark-plugins/codeblock';
+
 interface ModuleCache {
   unified?: typeof Unified.unified;
   visit?: typeof UnistUtilVisit.visit;
@@ -88,6 +90,7 @@ export const convertMarkdownToHtml = async(revisionBody: string, args: ConvertMa
 
   const processor = unified()
     .use(remarkParse)
+    .use(inlineCodeRemarkPlugin)
     .use(sanitizeMarkdown)
     .use(remarkRehype)
     .use(rehypeMeta, {
