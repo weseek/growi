@@ -15,6 +15,13 @@ const isSimpleRequest = (req: Request | AccessTokenParserReq): boolean => {
     'accept-language',
     'content-language',
     'content-type',
+    'range',
+    'referer',
+    'dpr',
+    'downlink',
+    'save-Data',
+    'viewport-Width',
+    'width',
   ];
   const nonSafeHeaders = Object.keys(req.headers).filter((header) => {
     const headerLower = header.toLowerCase();

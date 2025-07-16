@@ -1,12 +1,12 @@
-import { ErrorV3 } from '@growi/core/dist/models';
 import { themesRootPath as presetThemesRootPath } from '@growi/preset-themes';
 import csrf from 'csurf';
 import qs from 'qs';
 
 import { PLUGIN_EXPRESS_STATIC_DIR, PLUGIN_STORING_PATH } from '~/features/growi-plugin/server/consts';
-import isSimpleRequest from '~/server/util/is-simple-request';
+import registerCertifyOrigin from '~/server/middlewares/certify-origin';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
+
 
 import registerSafeRedirectFactory from '../middlewares/safe-redirect';
 
@@ -27,7 +27,7 @@ module.exports = function(crowi, app) {
   const registerSafeRedirect = registerSafeRedirectFactory();
   const injectCurrentuserToLocalvars = require('../middlewares/inject-currentuser-to-localvars')();
   const autoReconnectToS2sMsgServer = require('../middlewares/auto-reconnect-to-s2s-msg-server')(crowi);
-
+  const certifyOrigin = registerCertifyOrigin(crowi);
   const avoidSessionRoutes = require('../routes/avoid-session-routes');
 
   const env = crowi.node_env;
@@ -44,7 +44,6 @@ module.exports = function(crowi, app) {
   const trustProxyBool = configManager.getConfig('crowi', 'security:trustProxyBool');
   const trustProxyCsv = configManager.getConfig('crowi', 'security:trustProxyCsv');
   const trustProxyHops = configManager.getConfig('crowi', 'security:trustProxyHops');
-  const appSiteUrl = configManager.getConfig('crowi', 'app:siteUrl');
 
   const trustProxy = trustProxyBool ?? trustProxyCsv ?? trustProxyHops;
 
@@ -125,23 +124,7 @@ module.exports = function(crowi, app) {
   // default methods + PUT. See: https://expressjs.com/en/resources/middleware/csurf.html#ignoremethods
   app.use(csrf({ ignoreMethods: ['GET', 'HEAD', 'OPTIONS', 'PUT', 'POST', 'DELETE'], cookie: false }));
 
-  // CSRF Protection
-  app.use((req, res, next) => {
-    console.log(req.headers['content-type']);
-
-
-    const isSameOriginReq = req.headers.origin == null || req.headers.origin === appSiteUrl;
-    req.isSameOriginReq = isSameOriginReq;
-
-    const accessToken = req.query.access_token ?? req.body.access_token;
-    if (!isSameOriginReq && accessToken == null && !isSimpleRequest(req)) {
-      const message = 'Invalid request';
-      logger.error(message);
-      return res.apiv3Err(new ErrorV3(message));
-    }
-
-    next();
-  });
+  app.use(certifyOrigin);
 
   // passport
   logger.debug('initialize Passport');
