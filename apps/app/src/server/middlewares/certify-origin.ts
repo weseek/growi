@@ -7,7 +7,10 @@ import isSimpleRequest from '~/server/util/is-simple-request';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:middleware:certify-origin');
-const certifyOrigin = (crowi: Crowi): ((req: AccessTokenParserReq, res: Response & { apiv3Err }, next: NextFunction) => void) => {
+
+type Apiv3ErrFunction = (error: ErrorV3) => void;
+
+const certifyOrigin = (crowi: Crowi): ((req: AccessTokenParserReq, res: Response & { apiv3Err: Apiv3ErrFunction }, next: NextFunction) => void) => {
 
   const { configManager } = crowi;
   const appSiteUrl = configManager?.getConfig('crowi', 'app:siteUrl');
