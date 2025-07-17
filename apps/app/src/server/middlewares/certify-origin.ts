@@ -12,7 +12,7 @@ type Apiv3ErrFunction = (error: ErrorV3) => void;
 
 const certifyOrigin = (crowi: Crowi): ((req: AccessTokenParserReq, res: Response & { apiv3Err: Apiv3ErrFunction }, next: NextFunction) => void) => {
 
-  const appSiteUrl = crowi.configManager?.getConfig('crowi', 'app:siteUrl');
+  const appSiteUrl = crowi.configManager?.getConfig('app:siteUrl');
   return (req: AccessTokenParserReq, res: Response & { apiv3Err }, next: NextFunction): void => {
 
     const isSameOriginReq = req.headers.origin == null || req.headers.origin === appSiteUrl;
