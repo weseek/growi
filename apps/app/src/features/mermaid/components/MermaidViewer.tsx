@@ -38,9 +38,13 @@ export const MermaidViewer = React.memo((props: MermaidViewerProps): JSX.Element
   }, [isDarkMode, value]);
 
   return (
-    <div ref={ref} key={value}>
-      {value}
-    </div>
+    value
+      ? (
+        <div ref={ref} key={value}>
+          {value}
+        </div>
+      )
+      : <div key={value}></div>
   );
 });
 
