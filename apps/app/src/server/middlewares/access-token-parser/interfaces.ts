@@ -11,4 +11,6 @@ type ReqBody = {
 
 export interface AccessTokenParserReq extends Request<undefined, undefined, ReqBody, ReqQuery> {
   user?: IUserSerializedSecurely<IUserHasId>,
+  isSameOriginReq: boolean,
+  isSimpleRequest?: boolean,
 }
