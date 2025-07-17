@@ -44,8 +44,6 @@ class PdfConvertService implements OnInit {
 
   private tmpOutputRootDir = '/tmp/page-bulk-export';
 
-  private tmpHtmlDir = `${this.tmpOutputRootDir}/html`;
-
   private jobList: {
     [key: string]: JobInfo;
   } = {};
@@ -225,12 +223,11 @@ class PdfConvertService implements OnInit {
    * @returns writable stream
    */
   private getPdfWritable(): Writable {
-    const escapedRoot = this.tmpOutputRootDir.replace(/\//g, '\\/');
     return new Writable({
       objectMode: true,
       write: async (pageInfo: PageInfo, encoding, callback) => {
         const pattern = new RegExp(
-          `^${escapedRoot}(?:\\/([0-9]+))?\\/html\\/(.+?)\\.html$`,
+          `^${this.tmpOutputRootDir}(?:\\/([0-9]+))?\\/html\\/(.+?)\\.html$`,
         );
 
         const match = pageInfo.htmlFilePath.match(pattern);
