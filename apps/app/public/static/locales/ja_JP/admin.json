@@ -465,11 +465,11 @@
     "inline_file_type_header": "インライン表示を許可するファイルタイプ",
     "inline_file_type_desc": "インライン表示を許可するファイルタイプを設定できます",
     "inline_file_type_options": {
-      "strict": "Strict (Recommended)",
-      "moderate": "Moderate",
-      "lax": "Lax",
-      "manual": "Manual",
-      "permitted_file_types": "Permitted file types"
+      "strict": "厳格（推奨）",
+      "moderate": "中程度",
+      "lax": "緩め",
+      "manual": "手動",
+      "permitted_file_types": "許可するファイルタイプ"
     }
   },
   "customize_settings": {

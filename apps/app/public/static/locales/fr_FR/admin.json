@@ -456,11 +456,11 @@
     "inline_file_type_header": "Types de fichiers autorisés pour l'affichage en ligne",
     "inline_file_type_desc": "Vous pouvez définir les types de fichiers autorisés pour l'affichage en ligne.",
     "inline_file_type_options": {
-      "strict": "Strict (Recommended)",
-      "moderate": "Moderate",
-      "lax": "Lax",
-      "manual": "Manual",
-      "permitted_file_types": "Permitted file types"
+      "strict": "Strict (Recommandé)",
+      "moderate": "Modéré",
+      "lax": "Laxiste",
+      "manual": "Manuel",
+      "permitted_file_types": "Types de fichiers autorisés"
     }
   },
   "customize_settings": {

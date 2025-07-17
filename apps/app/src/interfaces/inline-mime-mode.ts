@@ -5,4 +5,4 @@ export const InlineMimeModes = {
   MANUAL: 'manual',
 } as const;
 
-export type InlineMimeMode = (typeof InlineMimeModes)[keyof typeof InlineMimeModes];
+export type InlineMimeMode = typeof InlineMimeModes[keyof typeof InlineMimeModes];

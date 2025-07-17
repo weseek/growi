@@ -2,7 +2,8 @@ import React, { type JSX, useState, useEffect } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { InlineMimeModes, type InlineMimeMode } from '../../../../interfaces/inline-mime-mode';
+import type { InlineMimeMode } from '../../../../interfaces/inline-mime-mode';
+import { InlineMimeModes } from '../../../../interfaces/inline-mime-mode';
 import { INLINE_ALLOWLIST_MIME_TYPES } from '../../../../server/service/file-uploader/utils/security';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
@@ -21,10 +22,10 @@ export const InlineFileTypeSelector = (): JSX.Element => {
     setSelected(new Set(INLINE_ALLOWLIST_MIME_TYPES));
   }, []);
 
-  const inlineMimeModeChange = (value: typeof inlineMimeMode) => {
-    setInlineMimeMode(value);
+  const inlineMimeModeChange = (selectedMode: InlineMimeMode) => {
+    setInlineMimeMode(selectedMode);
 
-    switch (value) {
+    switch (selectedMode) {
       case InlineMimeModes.STRICT:
         setSelected(new Set(STRICT_MIME_TYPES));
         break;
@@ -57,19 +58,19 @@ export const InlineFileTypeSelector = (): JSX.Element => {
     <>
       <div>
         <div className="form-check form-check-inline">
-          {Object.values(InlineMimeModes).map(id => (
-            <div className="form-check form-check-inline" key={id}>
+          {Object.values(InlineMimeModes).map(mimeMode => (
+            <div className="form-check form-check-inline" key={mimeMode}>
               <input
                 className="form-check-input"
                 type="radio"
                 name="inlineMimeMode"
-                value={id}
-                id={id}
-                checked={inlineMimeMode === id}
-                onChange={() => inlineMimeModeChange(id)}
+                value={mimeMode}
+                id={mimeMode}
+                checked={inlineMimeMode === mimeMode}
+                onChange={() => inlineMimeModeChange(mimeMode)}
               />
-              <label className="form-check-label" htmlFor={id}>
-                {t(`markdown_settings.inline_file_type_options.${id}`)}
+              <label className="form-check-label" htmlFor={mimeMode}>
+                {t(`markdown_settings.inline_file_type_options.${mimeMode}`)}
               </label>
             </div>
           ))}
