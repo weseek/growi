@@ -77,7 +77,7 @@ ENV appDir="$OPT_DIR/pdf-converter"
 RUN --mount=type=cache,target=/var/lib/apt,sharing=locked \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
   apt-get update; \
-  apt-get install -y chromium fonts-lato fonts-ipafont-gothic fonts-noto-cjk gosu; \
+  apt-get install -y chromium chromium-sandbox fonts-lato fonts-ipafont-gothic fonts-noto-cjk gosu; \
   rm -rf /var/lib/apt/lists/*; \
 # verify that the binary works
   gosu nobody true
