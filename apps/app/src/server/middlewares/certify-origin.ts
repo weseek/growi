@@ -1,8 +1,8 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { NextFunction, Response } from 'express';
 
-import type Crowi from '~/server/crowi';
 import type { AccessTokenParserReq } from '~/server/middlewares/access-token-parser/interfaces';
+import { configManager } from '~/server/service/config-manager';
 import isSimpleRequest from '~/server/util/is-simple-request';
 import loggerFactory from '~/utils/logger';
 
@@ -10,22 +10,23 @@ const logger = loggerFactory('growi:middleware:certify-origin');
 
 type Apiv3ErrFunction = (error: ErrorV3) => void;
 
-const certifyOrigin = (crowi: Crowi): ((req: AccessTokenParserReq, res: Response & { apiv3Err: Apiv3ErrFunction }, next: NextFunction) => void) => {
+const certifyOrigin = (): ((req: AccessTokenParserReq, res: Response & { apiv3Err: Apiv3ErrFunction }, next: NextFunction) => void) => {
 
-  const appSiteUrl = crowi.configManager?.getConfig('app:siteUrl');
+  const appSiteUrl = configManager.getConfig('app:siteUrl');
   return (req: AccessTokenParserReq, res: Response & { apiv3Err }, next: NextFunction): void => {
 
     const isSameOriginReq = req.headers.origin == null || req.headers.origin === appSiteUrl;
     req.isSameOriginReq = isSameOriginReq;
     const accessToken = req.query.access_token ?? req.body.access_token;
+    req.isSimpleRequest = isSimpleRequest(req);
 
-    if (!isSameOriginReq && req.headers.origin != null && isSimpleRequest(req)) {
+    if (!isSameOriginReq && req.headers.origin != null && req.isSimpleRequest) {
       const message = 'Invalid request (origin check failed but simple request)';
       logger.error(message);
       return res.apiv3Err(new ErrorV3(message));
     }
 
-    if (!isSameOriginReq && accessToken == null && !isSimpleRequest(req)) {
+    if (!isSameOriginReq && accessToken == null && !req.isSimpleRequest) {
       const message = 'Invalid request (origin check failed and no access token)';
       logger.error(message);
       return res.apiv3Err(new ErrorV3(message));
