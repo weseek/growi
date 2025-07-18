@@ -104,6 +104,16 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('esa.io form is blank'));
     }
 
+    const ALLOWED_KEYS = ['importer:esa:team_name', 'importer:esa:access_token'];
+    const receivedKeys = Object.keys(form);
+
+    const unexpectedKeys = receivedKeys.filter(key => !ALLOWED_KEYS.includes(key));
+
+    if (unexpectedKeys.length > 0) {
+      logger.warn('Esa config update contained unexpected keys.', { unexpectedKeys });
+      return res.json(ApiResponse.error('Invalid config keys provided.'));
+    }
+
     await configManager.updateConfigs(form);
     importer.initializeEsaClient(); // let it run in the back aftert res
     const parameters = { action: SupportedAction.ACTION_ADMIN_ESA_DATA_UPDATED };
