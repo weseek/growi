@@ -25,7 +25,11 @@ import type { UpdateOrInsertPagesOpts } from '../interfaces/search';
 import { aggregatePipelineToIndex } from './aggregate-to-index';
 import type { AggregatedPage, BulkWriteBody, BulkWriteCommand } from './bulk-write';
 import {
-  getClient, type ElasticsearchClientDelegator, isES9ClientDelegator, isES7ClientDelegator, isES8ClientDelegator,
+  getClient,
+  isES7ClientDelegator,
+  isES8ClientDelegator,
+  isES9ClientDelegator,
+  type ElasticsearchClientDelegator,
 } from './elasticsearch-client-delegator';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
@@ -597,15 +601,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   /**
    * create search query for Elasticsearch
-   *
-   * @param {object | undefined} option optional paramas
    * @returns {object} query object
    */
-  createSearchQuery(option?) {
-    let fields = ['path', 'bookmark_count', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names', 'comments'];
-    if (option) {
-      fields = option.fields || fields;
-    }
+  createSearchQuery() {
+    const fields = ['path', 'bookmark_count', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names', 'comments'];
 
     // sort by score
     const query = {
