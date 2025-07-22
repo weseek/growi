@@ -186,7 +186,7 @@ class AwsFileUploader extends AbstractFileUploader {
 
     const filePath = getFilePathOnStorage(attachment);
 
-    const contentHeaders = await ContentHeaders.create(this.configManager, attachment);
+    const contentHeaders = new ContentHeaders(attachment);
 
     await s3.send(new PutObjectCommand({
       Bucket: getS3Bucket(),
@@ -212,7 +212,7 @@ class AwsFileUploader extends AbstractFileUploader {
       // In RELAY mode, stream the file content
       const readableStream = await this.findDeliveryFile(attachment);
       const isDownload = opts?.download ?? false;
-      const contentHeaders = await ContentHeaders.create(this.configManager, attachment, { inline: !isDownload });
+      const contentHeaders = new ContentHeaders(attachment, { inline: !isDownload });
       applyHeaders(res, contentHeaders.toExpressHttpHeaders());
       readableStream.pipe(res);
     }
@@ -277,7 +277,7 @@ class AwsFileUploader extends AbstractFileUploader {
     // issue signed url (default: expires 120 seconds)
     // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#getSignedUrl-property
     const isDownload = opts?.download ?? false;
-    const contentHeaders = await ContentHeaders.create(this.configManager, attachment, { inline: !isDownload }); // <-- Changed
+    const contentHeaders = new ContentHeaders(attachment, { inline: !isDownload }); // <-- Changed
     const params: GetObjectCommandInput = {
       Bucket: getS3Bucket(),
       Key: filePath,
