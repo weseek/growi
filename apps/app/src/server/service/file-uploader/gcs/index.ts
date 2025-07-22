@@ -152,27 +152,9 @@ class GcsFileUploader extends AbstractFileUploader {
 
   /**
    * @inheritdoc
-   * <--- FIX: Corrected signature and implemented actual logic
    */
-  override async respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): Promise<void> {
-    const responseMode = this.determineResponseMode();
-
-    if (responseMode === ResponseMode.REDIRECT) {
-      const temporaryUrl = await this.generateTemporaryUrl(attachment, opts);
-      res.redirect(temporaryUrl.url);
-    }
-    else if (responseMode === ResponseMode.RELAY) {
-      const readableStream = await this.findDeliveryFile(attachment);
-      const isDownload = opts?.download ?? false;
-      // ContentHeaders.create already correctly uses this.configManager
-      const contentHeaders = await ContentHeaders.create(this.configManager, attachment, { inline: !isDownload });
-      applyHeaders(res, contentHeaders.toExpressHttpHeaders()); // <--- Uses applyHeaders
-      readableStream.pipe(res);
-    }
-    else {
-      // If you're only expecting REDIRECT or RELAY, this error is appropriate
-      throw new Error(`GcsFileUploader encountered an unsupported or unexpected ResponseMode: ${responseMode}.`);
-    }
+  override respond(): void {
+    throw new Error('GcsFileUploader does not support ResponseMode.DELEGATE.');
   }
 
   /**

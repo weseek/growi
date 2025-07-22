@@ -42,7 +42,7 @@ export interface FileUploader {
   doCheckLimit(uploadFileSize: number, maxFileSize: number, totalLimit: number): Promise<ICheckLimitResult>,
   determineResponseMode(): ResponseMode,
   uploadAttachment(readable: Readable, attachment: IAttachmentDocument): Promise<void>,
-  respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): Promise<void>;
+  respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void,
   findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream>,
   generateTemporaryUrl(attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl>,
   createMultipartUploader: (uploadKey: string, maxPartSize: number) => MultipartUploader,
@@ -181,7 +181,7 @@ export abstract class AbstractFileUploader implements FileUploader {
   /**
    * Respond to the HTTP request.
    */
-  abstract respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): Promise<void>;
+  abstract respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void;
 
   /**
    * Find the file and Return ReadStream
