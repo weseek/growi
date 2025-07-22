@@ -9,7 +9,6 @@ import { type RespondOptions, ResponseMode } from '~/server/interfaces/attachmen
 import { Attachment, type IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
-import { configManager } from '../config-manager';
 import type { ConfigManager } from '../config-manager';
 
 import type { MultipartUploader } from './multipart-uploader';

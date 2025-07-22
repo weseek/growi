@@ -24,7 +24,6 @@ import { FilePathOnStoragePrefix, ResponseMode, type RespondOptions } from '~/se
 import type { IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
-import type { ConfigManager } from '../config-manager';
 import { configManager } from '../config-manager';
 
 import {
@@ -138,7 +137,7 @@ class AzureFileUploader extends AbstractFileUploader {
     const filePath = getFilePathOnStorage(attachment);
     const containerClient = await getContainerClient();
     const blockBlobClient: BlockBlobClient = containerClient.getBlockBlobClient(filePath);
-    const contentHeaders = await ContentHeaders.create(this.configManager, attachment);
+    const contentHeaders = new ContentHeaders(attachment);
 
     await blockBlobClient.uploadStream(readable, undefined, undefined, {
       blobHTTPHeaders: {
@@ -216,7 +215,7 @@ class AzureFileUploader extends AbstractFileUploader {
       const userDelegationKey = await blobServiceClient.getUserDelegationKey(startsOn, expiresOn);
 
       const isDownload = opts?.download ?? false;
-      const contentHeaders = await ContentHeaders.create(this.configManager, attachment, { inline: !isDownload });
+      const contentHeaders = new ContentHeaders(attachment, { inline: !isDownload });
 
       // https://github.com/Azure/azure-sdk-for-js/blob/d4d55f73/sdk/storage/storage-blob/src/ContainerSASPermissions.ts#L24
       // r:read, a:add, c:create, w:write, d:delete, l:list

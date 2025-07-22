@@ -2,8 +2,8 @@ import type { Response } from 'express';
 
 import type { ExpressHttpHeader, IContentHeaders } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models/attachment';
-import type { ConfigManager } from '~/server/service/config-manager';
 
+import { configManager } from '../../config-manager';
 import type { ConfigKey } from '../../config-manager/config-definition';
 
 import { DEFAULT_ALLOWLIST_MIME_TYPES, SAFE_INLINE_CONFIGURABLE_MIME_TYPES } from './security';
@@ -21,37 +21,26 @@ export class ContentHeaders implements IContentHeaders {
 
   xContentTypeOptions?: ExpressHttpHeader<'X-Content-Type-Options'>;
 
-  private configManager: ConfigManager;
-
-  private constructor(configManager: ConfigManager) {
-    this.configManager = configManager;
-  }
-
-  static async create(
-      configManager: ConfigManager,
+  constructor(
       attachment: IAttachmentDocument,
       opts?: {
-      inline?: boolean,
+        inline?: boolean,
     },
-  ): Promise<ContentHeaders> {
-
-    // Create instance, passing the configManager to the private constructor
-    const instance = new ContentHeaders(configManager);
-
+  ) {
     const attachmentContentType = attachment.fileFormat;
     const filename = attachment.originalName;
 
     const actualContentTypeString: string = attachmentContentType || 'application/octet-stream';
 
-    instance.contentType = {
+    this.contentType = {
       field: 'Content-Type',
       value: actualContentTypeString,
     };
 
-    const configKey = `attachments:contentDisposition:${actualContentTypeString}:inline` as ConfigKey;
-    const rawConfigValue = await instance.configManager.getConfig(configKey);
-
     const requestedInline = opts?.inline ?? false;
+    const configKey = `attachments:contentDisposition:${actualContentTypeString}:inline` as ConfigKey;
+
+    const rawConfigValue = configManager.getConfig(configKey);
 
     let systemAllowsInline: boolean;
 
@@ -72,37 +61,35 @@ export class ContentHeaders implements IContentHeaders {
 
     const shouldBeInline = requestedInline && systemAllowsInline;
 
-    instance.contentDisposition = {
+    this.contentDisposition = {
       field: 'Content-Disposition',
       value: shouldBeInline
         ? 'inline'
         : `attachment;filename*=UTF-8''${encodeURIComponent(filename)}`,
     };
 
-    instance.contentSecurityPolicy = {
+    this.contentSecurityPolicy = {
       field: 'Content-Security-Policy',
-      value: `script-src 'unsafe-hashes';
-          style-src 'self' 'unsafe-inline';
-          object-src 'none';
-          require-trusted-types-for 'script';
-          media-src 'self';
-          default-src 'none';`,
+      value: "script-src 'unsafe-hashes';"
+         + " style-src 'self' 'unsafe-inline';"
+         + " object-src 'none';"
+         + " require-trusted-types-for 'script';"
+         + " media-src 'self';"
+         + " default-src 'none';",
     };
 
-    instance.xContentTypeOptions = {
+    this.xContentTypeOptions = {
       field: 'X-Content-Type-Options',
       value: 'nosniff',
     };
 
     if (attachment.fileSize) {
-      instance.contentLength = {
+      this.contentLength = {
         field: 'Content-Length',
         value: attachment.fileSize.toString(),
       };
     }
-
-    return instance;
-  }
+  } // End of constructor
 
   /**
    * Convert to ExpressHttpHeader[]

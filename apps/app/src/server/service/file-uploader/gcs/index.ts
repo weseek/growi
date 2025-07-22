@@ -4,7 +4,6 @@ import { pipeline } from 'stream/promises';
 import { Storage } from '@google-cloud/storage';
 import { toNonBlankStringOrUndefined } from '@growi/core/dist/interfaces';
 import axios from 'axios';
-import type { Response } from 'express'; // <--- ADD THIS IMPORT for 'Response' type
 import urljoin from 'url-join';
 
 import type Crowi from '~/server/crowi';
@@ -18,7 +17,7 @@ import { configManager } from '../../config-manager';
 import {
   AbstractFileUploader, type TemporaryUrl, type SaveFileParam,
 } from '../file-uploader';
-import { ContentHeaders, applyHeaders } from '../utils';
+import { ContentHeaders } from '../utils';
 
 import { GcsMultipartUploader } from './multipart-uploader';
 
@@ -141,7 +140,7 @@ class GcsFileUploader extends AbstractFileUploader {
     const gcs = getGcsInstance();
     const myBucket = gcs.bucket(getGcsBucket());
     const filePath = getFilePathOnStorage(attachment);
-    const contentHeaders = await ContentHeaders.create(this.configManager, attachment);
+    const contentHeaders = new ContentHeaders(attachment);
     const file = myBucket.file(filePath);
 
     await pipeline(readable, file.createWriteStream({
@@ -202,7 +201,7 @@ class GcsFileUploader extends AbstractFileUploader {
     // issue signed url (default: expires 120 seconds)
     // https://cloud.google.com/storage/docs/access-control/signed-urls
     const isDownload = opts?.download ?? false;
-    const contentHeaders = await ContentHeaders.create(this.configManager, attachment, { inline: !isDownload });
+    const contentHeaders = new ContentHeaders(attachment, { inline: !isDownload });
     const [signedUrl] = await file.getSignedUrl({
       action: 'read',
       expires: Date.now() + lifetimeSecForTemporaryUrl * 1000,

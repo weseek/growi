@@ -65,7 +65,7 @@ class GridfsFileUploader extends AbstractFileUploader {
   override async uploadAttachment(readable: Readable, attachment: IAttachmentDocument): Promise<void> {
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
-    const contentHeaders = await ContentHeaders.create(configManager, attachment);
+    const contentHeaders = new ContentHeaders(attachment);
 
     return AttachmentFile.promisifiedWrite(
       {

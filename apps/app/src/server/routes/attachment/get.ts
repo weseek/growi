@@ -9,7 +9,7 @@ import mongoose from 'mongoose';
 
 import type { CrowiProperties, CrowiRequest } from '~/interfaces/crowi-request';
 import { ResponseMode, type ExpressHttpHeader, type RespondOptions } from '~/server/interfaces/attachment';
-import type { ConfigManager } from '~/server/service/config-manager';
+import { configManager } from '~/server/service/config-manager';
 import {
   type FileUploader,
   toExpressHttpHeaders, ContentHeaders, applyHeaders,
@@ -112,7 +112,7 @@ const respondForRelayMode = async(crowi: Crowi, res: Response, fileUploadService
     attachment: IAttachmentDocument, opts?: RespondOptions): Promise<void> => {
   // apply content-* headers before response
   const isDownload = opts?.download ?? false;
-  const contentHeaders = await ContentHeaders.create(crowi.configManager as ConfigManager, attachment, { inline: !isDownload });
+  const contentHeaders = new ContentHeaders(attachment, { inline: !isDownload });
   applyHeaders(res, contentHeaders.toExpressHttpHeaders());
 
   try {
