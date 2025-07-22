@@ -5,13 +5,6 @@ import type { Plugin } from 'unified';
 import type { Node, Parent, Point } from 'unist';
 import type { visit as UnistUtilVisitFunction } from 'unist-util-visit';
 
-let visit: typeof UnistUtilVisitFunction;
-
-(async() => {
-  const mod = await import('unist-util-visit');
-  visit = mod.visit;
-})();
-
 
 type InlineCode = MdastInlineCode & {
   data?: {
@@ -22,23 +15,46 @@ type InlineCode = MdastInlineCode & {
 
 const SUPPORTED_CODE = ['inline'];
 
-/**
- * Remark plugin to unify inline code handling.
- *
- * This plugin converts HTML `<code>...</code>` sequences in the Markdown AST
- * into standard `inlineCode` nodes. It also ensures all `inlineCode` nodes
- * (both converted and native Markdown backtick code) receive a `data.hProperties.inline: 'true'`
- * property, crucial for `react-markdown` to pass the `inline` prop to custom code components.
- *
- * @returns {Plugin} A unified plugin.
- */
-
 export const remarkPlugin: Plugin = () => {
-  return (tree: Node) => {
+  let visit: typeof UnistUtilVisitFunction | undefined;
+  let loadPromise: Promise<void> | undefined;
+  let isLoaded = false;
+
+  // Function to ensure visit is loaded
+  const ensureVisitLoaded = async() => {
+    if (isLoaded) {
+      return;
+    }
+    if (loadPromise) {
+      return loadPromise;
+    }
+
+    loadPromise = (async() => {
+      try {
+        const mod = await import('unist-util-visit');
+        visit = mod.visit;
+        isLoaded = true;
+      }
+      catch (error) {
+        throw error;
+      }
+      finally {
+        loadPromise = undefined;
+      }
+    })();
+    return loadPromise;
+  };
+
+  return async(tree: Node) => {
     const defaultPoint: Point = { line: 1, column: 1, offset: 0 };
 
+    // Ensure visit is loaded before proceeding
+    if (!visit) {
+      await ensureVisitLoaded();
+    }
+
     if (typeof visit === 'undefined') {
-      return tree;
+      throw new Error("Failed to load 'unist-util-visit' dependency.");
     }
 
     visit(tree, 'html', (node: Html, index: number | undefined, parent: Parent | undefined) => {
@@ -50,8 +66,8 @@ export const remarkPlugin: Plugin = () => {
 
           // Find closing tag
           if (contentNode && contentNode.type === 'text'
-              && closingTagNode && closingTagNode.type === 'html'
-              && typeof closingTagNode.value === 'string' && closingTagNode.value.toLowerCase() === '</code>') {
+            && closingTagNode && closingTagNode.type === 'html'
+            && typeof closingTagNode.value === 'string' && closingTagNode.value.toLowerCase() === '</code>') {
 
             // Create InlineCode node
             const newInlineCodeNode: InlineCode = {

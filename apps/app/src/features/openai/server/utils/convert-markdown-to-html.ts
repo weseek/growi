@@ -9,7 +9,7 @@ import type * as RemarkRehype from 'remark-rehype';
 import type * as Unified from 'unified';
 import type * as UnistUtilVisit from 'unist-util-visit';
 
-import { remarkPlugin as inlineCodeRemarkPlugin } from 'src/services/renderer/remark-plugins/codeblock';
+import { remarkPlugin as inlineCodeRemarkPlugin } from '../../../../services/renderer/remark-plugins/codeblock';
 
 interface ModuleCache {
   unified?: typeof Unified.unified;
