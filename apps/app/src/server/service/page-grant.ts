@@ -1,4 +1,4 @@
-import type { IPage } from '@growi/core';
+import type { IPage, IUserHasId } from '@growi/core';
 import {
   type IGrantedGroup,
   PageGrant, GroupType, getIdForRef,
@@ -101,7 +101,7 @@ export interface IPageGrantService {
   validateGrantChangeSyncronously:(
     userRelatedGroups: PopulatedGrantedGroup[], previousGrantedGroups: IGrantedGroup[], grant?: PageGrant, grantedGroups?: IGrantedGroup[],
   ) => boolean,
-  getUserRelatedGroups: (user) => Promise<PopulatedGrantedGroup[]>,
+  getUserRelatedGroups: (user?: IUserHasId | null) => Promise<PopulatedGrantedGroup[]>,
   getPopulatedGrantedGroups: (grantedGroups: IGrantedGroup[]) => Promise<PopulatedGrantedGroup[]>,
   getUserRelatedGrantedGroups: (page: PageDocument, user) => Promise<IGrantedGroup[]>,
   getUserRelatedGrantedGroupsSyncronously: (userRelatedGroups: PopulatedGrantedGroup[], page: PageDocument) => IGrantedGroup[],
@@ -729,7 +729,11 @@ class PageGrantService implements IPageGrantService {
   /*
    * get all groups that user is related to
    */
-  async getUserRelatedGroups(user): Promise<PopulatedGrantedGroup[]> {
+  async getUserRelatedGroups(user?: IUserHasId | null): Promise<PopulatedGrantedGroup[]> {
+    if (user == null) {
+      return [];
+    }
+
     const userRelatedUserGroups = await UserGroupRelation.findAllGroupsForUser(user);
     const userRelatedExternalUserGroups = await ExternalUserGroupRelation.findAllGroupsForUser(user);
     return [

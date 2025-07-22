@@ -304,9 +304,7 @@ const routerFactory = (crowi: Crowi): Router => {
 
       const isGuestUser = req.user == null;
 
-      const userRelatedGroups = isGuestUser
-        ? []
-        : await pageGrantService.getUserRelatedGroups(req.user);
+      const userRelatedGroups = await pageGrantService.getUserRelatedGroups(req.user);
 
       for (const page of pages) {
         // construct isIPageInfoForListing
