@@ -72,11 +72,11 @@ module.exports = (crowi) => {
  *
  */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
-    const promises = CONFIGURABLE_MIME_TYPES_FOR_DISPOSITION.map(
-      async(mimeType) => {
+    const results = CONFIGURABLE_MIME_TYPES_FOR_DISPOSITION.map(
+      (mimeType) => {
         const configKey = `attachments:contentDisposition:${mimeType}:inline`;
         try {
-          const value = await crowi.configManager.getConfig(configKey);
+          const value = crowi.configManager.getConfig(configKey);
           return { mimeType, value };
         }
         catch (err) {
@@ -87,8 +87,6 @@ module.exports = (crowi) => {
         }
       },
     );
-
-    const results = await Promise.all(promises);
 
     const contentDispositionSettings = {};
     for (const result of results) {
