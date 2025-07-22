@@ -98,7 +98,7 @@ module.exports = function(crowi, app) {
    * @param {Object} res
    * @returns {boolean}
    */
-  function rejectUnexpectedKeys(form, allowedKeys, res) {
+  function isValidFormKeys(form, allowedKeys, res) {
     const receivedKeys = Object.keys(form);
     const unexpectedKeys = receivedKeys.filter(key => !allowedKeys.includes(key));
 
@@ -127,7 +127,7 @@ module.exports = function(crowi, app) {
     }
 
     const ALLOWED_KEYS = ['importer:esa:team_name', 'importer:esa:access_token'];
-    if (!rejectUnexpectedKeys(form, ALLOWED_KEYS, res)) return;
+    if (!isValidFormKeys(form, ALLOWED_KEYS, res)) return;
 
     await configManager.updateConfigs(form);
     importer.initializeEsaClient(); // let it run in the back aftert res
@@ -152,7 +152,7 @@ module.exports = function(crowi, app) {
     }
 
     const ALLOWED_KEYS = ['importer:qiita:team_name', 'importer:qiita:access_token'];
-    if (!rejectUnexpectedKeys(form, ALLOWED_KEYS, res)) return;
+    if (!isValidFormKeys(form, ALLOWED_KEYS, res)) return;
 
     await configManager.updateConfigs(form);
     importer.initializeQiitaClient(); // let it run in the back aftert res
