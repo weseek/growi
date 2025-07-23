@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
@@ -9,23 +9,21 @@ import { useAiAssistantManagementModal } from '../../../stores/ai-assistant';
 
 import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
 
+import styles from './AiAssistantManagementPageSelectionMethod.module.scss';
+
+const moduleClass = styles['grw-ai-assistant-management-page-selection-method'] ?? '';
 
 const SelectionButton = (props: { icon: string, label: string, onClick: () => void }): JSX.Element => {
   const { icon, label, onClick } = props;
-  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <button
       type="button"
-      className={`btn p-4 text-center ${isHovered ? 'btn-outline-primary' : 'btn-outline-secondary'}`}
-      style={{ width: '280px' }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      className="btn p-4 text-center page-selection-method-btn"
       onClick={onClick}
     >
       <span
-        className="material-symbols-outlined d-block mb-3"
-        style={{ fontSize: '48px' }}
+        className="material-symbols-outlined d-block mb-3 fs-1"
       >
         {icon}
       </span>
@@ -41,7 +39,7 @@ export const AiAssistantManagementPageSelectionMethod = (): JSX.Element => {
   const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
 
   return (
-    <>
+    <div className={moduleClass}>
       <AiAssistantManagementHeader
         hideBackButton={isNewAiAssistant}
         labelTranslationKey={isNewAiAssistant ? 'modal_ai_assistant.header.add_new_assistant' : 'modal_ai_assistant.header.update_assistant'}
@@ -61,6 +59,6 @@ export const AiAssistantManagementPageSelectionMethod = (): JSX.Element => {
           </div>
         </div>
       </ModalBody>
-    </>
+    </div>
   );
 };
