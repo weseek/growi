@@ -96,6 +96,9 @@ export class GrowiInfoService {
       return configManager.getConfig(`security:passport-${type}:isEnabled`);
     });
 
+    const Page = mongoose.model('Page');
+    const currentPagesCount = await Page.countDocuments({ isDeleted: false });
+
     return {
       installedAt,
       installedAtByOldestUser,
@@ -103,6 +106,7 @@ export class GrowiInfoService {
       currentActiveUsersCount,
       attachmentType: configManager.getConfig('app:fileUploadType'),
       activeExternalAccountTypes,
+      currentPagesCount,
     };
   }
 
