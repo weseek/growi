@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useMemo, useRef, useState, type JSX,
+  useEffect, useMemo, useRef, type JSX,
 } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
@@ -48,8 +48,6 @@ export const PageView = (props: Props): JSX.Element => {
 
   const commentsContainerRef = useRef<HTMLDivElement>(null);
 
-  const [isCommentsLoaded, setCommentsLoaded] = useState(false);
-
   const {
     pagePath, initialPage, rendererConfig, className,
   } = props;
@@ -72,21 +70,30 @@ export const PageView = (props: Props): JSX.Element => {
   const markdown = page?.revision?.body;
   const isSlide = useSlidesByFrontmatter(markdown, rendererConfig.isEnabledMarp);
 
+  const hasScrolledRef = useRef(false);
+  const prevHashRef = useRef('');
 
   // ***************************  Auto Scroll  ***************************
   useEffect(() => {
-    // do nothing if hash is empty
+    // do nothing if hash is empty or scroll already done
     const { hash } = window.location;
-    if (hash.length === 0) {
+    if (hash.length === 0 && hasScrolledRef.current) {
       return;
+    }
+    if (hash !== prevHashRef.current) {
+      hasScrolledRef.current = false;
+      prevHashRef.current = hash;
     }
 
     const targetId = hash.slice(1);
 
     const target = document.getElementById(decodeURIComponent(targetId));
-    target?.scrollIntoView();
 
-  }, [isCommentsLoaded]);
+    if (target) {
+      target.scrollIntoView();
+      hasScrolledRef.current = true;
+    }
+  }, [markdown]);
   // *******************************  end  *******************************
 
   const specialContents = useMemo(() => {
@@ -145,7 +152,6 @@ export const PageView = (props: Props): JSX.Element => {
                 pageId={page._id}
                 pagePath={pagePath}
                 revision={page.revision}
-                onLoaded={() => setCommentsLoaded(true)}
               />
             </div>
           ) }
