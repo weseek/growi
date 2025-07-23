@@ -166,7 +166,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
 
             <button
               type="button"
-              onClick={() => { changePageMode(AiAssistantManagementModalPageMode.PAGES) }}
+              onClick={() => { changePageMode(AiAssistantManagementModalPageMode.PAGE_SELECTION_METHOD) }}
               className="btn w-100 d-flex justify-content-between align-items-center py-3 mb-2 border-0"
             >
               <span className="fw-normal">{t('modal_ai_assistant.page_mode_title.pages')}</span>
