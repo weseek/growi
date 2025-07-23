@@ -566,6 +566,9 @@
       "create_failed": "Échec de la création de l'assistant",
       "update_failed": "Échec de la mise à jour de l'assistant"
     },
+    "select_source_pages": "Sélectionnez les pages sources pour l'apprentissage de l'assistant",
+    "search_by_keyword": "Rechercher par mot-clé",
+    "select_from_page_tree": "Sélectionner depuis l'arborescence des pages",
     "edit_page_description": "Modifier les pages que l'assistant peut référencer.<br> L'assistant peut référencer jusqu'à {{limitLearnablePageCountPerAssistant}} pages, y compris les pages enfants.",
     "default_instruction": "Vous êtes l'assistant de connaissances pour ce Wiki.\n\n## Support multilingue :\nRépondez dans la même langue que celle utilisée par l'utilisateur dans sa requête.\n",
     "add_page_button": "Ajouter une page",

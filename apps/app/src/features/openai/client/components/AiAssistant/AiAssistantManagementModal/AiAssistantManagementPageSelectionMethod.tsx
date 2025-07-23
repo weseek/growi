@@ -48,15 +48,15 @@ export const AiAssistantManagementPageSelectionMethod = (): JSX.Element => {
 
       <ModalBody className="px-4">
         <h4 className="text-center mb-4">
-          アシスタントの学習元にするページを選択します
+          {t('modal_ai_assistant.select_source_pages')}
         </h4>
         <div className="row justify-content-center">
           <div className="col-auto">
-            <SelectionButton icon="manage_search" label="キーワードで検索" onClick={() => {}} />
+            <SelectionButton icon="manage_search" label={t('modal_ai_assistant.search_by_keyword')} onClick={() => {}} />
           </div>
 
           <div className="col-auto">
-            <SelectionButton icon="account_tree" label="ページツリーから選択" onClick={() => {}} />
+            <SelectionButton icon="account_tree" label={t('modal_ai_assistant.select_from_page_tree')} onClick={() => {}} />
           </div>
         </div>
       </ModalBody>
