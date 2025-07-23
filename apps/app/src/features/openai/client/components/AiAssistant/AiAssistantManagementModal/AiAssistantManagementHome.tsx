@@ -14,8 +14,8 @@ import { useCurrentUser, useLimitLearnablePageCountPerAssistant } from '~/stores
 import type { SelectedPage } from '../../../../interfaces/selected-page';
 import { determineShareScope } from '../../../../utils/determine-share-scope';
 import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } from '../../../stores/ai-assistant';
-import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
 
+import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
 import { ShareScopeWarningModal } from './ShareScopeWarningModal';
 
 type Props = {
@@ -167,7 +167,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
 
             <button
               type="button"
-              onClick={() => { changePageMode(AiAssistantManagementModalPageMode.PAGE_SELECTION_METHOD) }}
+              onClick={() => { changePageMode(AiAssistantManagementModalPageMode.PAGES) }}
               className="btn w-100 d-flex justify-content-between align-items-center py-3 mb-2 border-0"
             >
               <span className="fw-normal">{t('modal_ai_assistant.page_mode_title.pages')}</span>
