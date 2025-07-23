@@ -1,4 +1,4 @@
-import { type JSX, useMemo } from 'react';
+import { type JSX } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { ModalHeader } from 'reactstrap';
@@ -9,10 +9,13 @@ type Props = {
   label?: string;
   backToPageMode?: AiAssistantManagementModalPageMode;
   hideBackButton?: boolean;
+  backButtonColor?: 'primary' | 'secondary';
 }
 
 export const AiAssistantManagementHeader = (props: Props): JSX.Element => {
-  const { label, backToPageMode, hideBackButton } = props;
+  const {
+    label, backToPageMode, hideBackButton, backButtonColor = 'primary',
+  } = props;
 
   const { t } = useTranslation();
   const { data, close, changePageMode } = useAiAssistantManagementModal();
@@ -33,11 +36,11 @@ export const AiAssistantManagementHeader = (props: Props): JSX.Element => {
           )
           : (
             <button type="button" className="btn p-0 me-3" onClick={() => changePageMode(backToPageMode ?? AiAssistantManagementModalPageMode.HOME)}>
-              <span className="material-symbols-outlined text-primary">chevron_left</span>
+              <span className={`material-symbols-outlined text-${backButtonColor}`}>chevron_left</span>
             </button>
           )
         }
-        <span className='fw-bold'>{label ?? t(`modal_ai_assistant.page_mode_title.${data?.pageMode}`)}</span>
+        <span className="fw-bold">{label ?? t(`modal_ai_assistant.page_mode_title.${data?.pageMode}`)}</span>
       </div>
     </ModalHeader>
   );
