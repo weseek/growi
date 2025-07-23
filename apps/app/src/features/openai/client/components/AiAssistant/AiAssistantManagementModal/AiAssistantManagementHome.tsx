@@ -14,6 +14,7 @@ import { useCurrentUser, useLimitLearnablePageCountPerAssistant } from '~/stores
 import type { SelectedPage } from '../../../../interfaces/selected-page';
 import { determineShareScope } from '../../../../utils/determine-share-scope';
 import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } from '../../../stores/ai-assistant';
+import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
 
 import { ShareScopeWarningModal } from './ShareScopeWarningModal';
 
@@ -116,10 +117,10 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
 
   return (
     <>
-      <ModalHeader tag="h4" toggle={closeAiAssistantManagementModal} className="pe-4">
-        <span className="growi-custom-icons growi-ai-assistant-icon me-3 fs-4">growi_ai</span>
-        <span className="fw-bold">{t(shouldEdit ? 'modal_ai_assistant.header.update_assistant' : 'modal_ai_assistant.header.add_new_assistant')}</span>
-      </ModalHeader>
+      <AiAssistantManagementHeader
+        hideBackButton
+        label={t(shouldEdit ? 'modal_ai_assistant.header.update_assistant' : 'modal_ai_assistant.header.add_new_assistant')}
+      />
 
       <div className="px-4">
         <ModalBody>

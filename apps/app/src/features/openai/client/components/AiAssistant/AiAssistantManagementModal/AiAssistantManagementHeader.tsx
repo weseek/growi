@@ -19,6 +19,7 @@ export const AiAssistantManagementHeader = (props: Props): JSX.Element => {
 
   return (
     <ModalHeader
+      tag="h4"
       close={(
         <button type="button" className="btn p-0" onClick={close}>
           <span className="material-symbols-outlined">close</span>
@@ -26,12 +27,17 @@ export const AiAssistantManagementHeader = (props: Props): JSX.Element => {
       )}
     >
       <div className="d-flex align-items-center">
-        { !hideBackButton && (
-          <button type="button" className="btn p-0 me-3" onClick={() => changePageMode(backToPageMode ?? AiAssistantManagementModalPageMode.HOME)}>
-            <span className="material-symbols-outlined text-primary">chevron_left</span>
-          </button>
-        )}
-        <span>{t(`modal_ai_assistant.page_mode_title.${data?.pageMode}`)}</span>
+        { hideBackButton
+          ? (
+            <span className="growi-custom-icons growi-ai-assistant-icon me-3 fs-4">growi_ai</span>
+          )
+          : (
+            <button type="button" className="btn p-0 me-3" onClick={() => changePageMode(backToPageMode ?? AiAssistantManagementModalPageMode.HOME)}>
+              <span className="material-symbols-outlined text-primary">chevron_left</span>
+            </button>
+          )
+        }
+        <span className='fw-bold'>{label ?? t(`modal_ai_assistant.page_mode_title.${data?.pageMode}`)}</span>
       </div>
     </ModalHeader>
   );
