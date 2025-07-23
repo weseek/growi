@@ -17,7 +17,7 @@ export const AiAssistantManagementModalPageMode = {
   PAGE_SELECTION_METHOD: 'page-selection-method',
 } as const;
 
-type AiAssistantManagementModalPageMode = typeof AiAssistantManagementModalPageMode[keyof typeof AiAssistantManagementModalPageMode];
+export type AiAssistantManagementModalPageMode = typeof AiAssistantManagementModalPageMode[keyof typeof AiAssistantManagementModalPageMode];
 
 type AiAssistantManagementModalStatus = {
   isOpened: boolean,

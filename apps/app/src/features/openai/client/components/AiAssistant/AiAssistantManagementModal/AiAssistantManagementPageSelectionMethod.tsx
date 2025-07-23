@@ -35,7 +35,7 @@ const SelectionButton = (props: { icon: string, label: string, onClick: () => vo
 export const AiAssistantManagementPageSelectionMethod = (): JSX.Element => {
   return (
     <>
-      <AiAssistantManagementHeader />
+      <AiAssistantManagementHeader hideBackButton/>
 
       <ModalBody className="px-4">
         <h4 className="text-center mb-4">
