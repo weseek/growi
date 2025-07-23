@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 
+import { useTranslation } from 'react-i18next';
 import {
   ModalBody,
 } from 'reactstrap';
 
-import { useTranslation } from 'react-i18next';
+import { useAiAssistantManagementModal } from '../../../stores/ai-assistant';
+
 import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
-import { useAiAssistantManagementModal  } from '../../../stores/ai-assistant';
 
 
 const SelectionButton = (props: { icon: string, label: string, onClick: () => void }): JSX.Element => {
@@ -37,7 +38,7 @@ const SelectionButton = (props: { icon: string, label: string, onClick: () => vo
 export const AiAssistantManagementPageSelectionMethod = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: aiAssistantManagementModalData } = useAiAssistantManagementModal();
-  const isNewAiAssistant  = aiAssistantManagementModalData?.aiAssistantData == null;
+  const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
 
   return (
     <>
