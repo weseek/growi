@@ -138,7 +138,6 @@ module.exports = (crowi) => {
         const currentMimeTypeDefaults = crowi.configManager.getConfig('attachments:contentDisposition:mimeTypeDefaults') as Record<string, 'inline'
           | 'attachment'>;
 
-        // No need for conversion, directly use the received 'disposition' string
         const newDisposition: 'inline' | 'attachment' = disposition;
 
         const updatedMimeTypeDefaults = {
@@ -147,8 +146,6 @@ module.exports = (crowi) => {
         };
 
         await crowi.configManager.updateConfigs({ 'attachments:contentDisposition:mimeTypeDefaults': updatedMimeTypeDefaults });
-
-        // Retrieve the updated value (optional, can just use newDisposition)
         const updatedDispositionFromDb = crowi.configManager.getConfig('attachments:contentDisposition:mimeTypeDefaults')[mimeType];
 
         const parameters = {
