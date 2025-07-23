@@ -14,6 +14,7 @@ export const AiAssistantManagementModalPageMode = {
   SHARE: 'share',
   PAGES: 'pages',
   INSTRUCTION: 'instruction',
+  PAGE_SELECTION_METHOD: 'page-selection-method',
 } as const;
 
 type AiAssistantManagementModalPageMode = typeof AiAssistantManagementModalPageMode[keyof typeof AiAssistantManagementModalPageMode];
@@ -33,12 +34,20 @@ type AiAssistantManagementModalUtils = {
 export const useAiAssistantManagementModal = (
     status?: AiAssistantManagementModalStatus,
 ): SWRResponse<AiAssistantManagementModalStatus, Error> & AiAssistantManagementModalUtils => {
-  const initialStatus = { isOpened: false, pageType: AiAssistantManagementModalPageMode.HOME };
+  const initialStatus = { isOpened: false, pageType: AiAssistantManagementModalPageMode.PAGES };
   const swrResponse = useSWRStatic<AiAssistantManagementModalStatus, Error>('AiAssistantManagementModal', status, { fallbackData: initialStatus });
 
   return {
     ...swrResponse,
-    open: useCallback((aiAssistantData) => { swrResponse.mutate({ isOpened: true, aiAssistantData }) }, [swrResponse]),
+    open: useCallback((aiAssistantData) => {
+      swrResponse.mutate({
+        isOpened: true,
+        aiAssistantData,
+        pageMode: aiAssistantData != null
+          ? AiAssistantManagementModalPageMode.HOME
+          : AiAssistantManagementModalPageMode.PAGE_SELECTION_METHOD,
+      });
+    }, [swrResponse]),
     close: useCallback(() => swrResponse.mutate({ isOpened: false, aiAssistantData: undefined }), [swrResponse]),
     changePageMode: useCallback((pageMode: AiAssistantManagementModalPageMode) => {
       swrResponse.mutate({ isOpened: swrResponse.data?.isOpened ?? false, pageMode, aiAssistantData: swrResponse.data?.aiAssistantData });
