@@ -44,7 +44,7 @@ export const AiAssistantManagementPageSelectionMethod = (): JSX.Element => {
     <>
       <AiAssistantManagementHeader
         hideBackButton={isNewAiAssistant}
-        label={t(isNewAiAssistant ? 'modal_ai_assistant.header.add_new_assistant' : 'modal_ai_assistant.header.update_assistant')}
+        labelTranslationKey={isNewAiAssistant ? 'modal_ai_assistant.header.add_new_assistant' : 'modal_ai_assistant.header.update_assistant'}
       />
 
       <ModalBody className="px-4">

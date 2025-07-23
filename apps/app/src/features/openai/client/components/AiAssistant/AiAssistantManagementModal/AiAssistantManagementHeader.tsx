@@ -6,7 +6,7 @@ import { ModalHeader } from 'reactstrap';
 import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } from '../../../stores/ai-assistant';
 
 type Props = {
-  label?: string;
+  labelTranslationKey: string;
   backToPageMode?: AiAssistantManagementModalPageMode;
   hideBackButton?: boolean;
   backButtonColor?: 'primary' | 'secondary';
@@ -14,11 +14,11 @@ type Props = {
 
 export const AiAssistantManagementHeader = (props: Props): JSX.Element => {
   const {
-    label, backToPageMode, hideBackButton, backButtonColor = 'primary',
+    labelTranslationKey, backToPageMode, hideBackButton, backButtonColor = 'primary',
   } = props;
 
   const { t } = useTranslation();
-  const { data, close, changePageMode } = useAiAssistantManagementModal();
+  const { close, changePageMode } = useAiAssistantManagementModal();
 
   return (
     <ModalHeader
@@ -40,7 +40,7 @@ export const AiAssistantManagementHeader = (props: Props): JSX.Element => {
             </button>
           )
         }
-        <span className="fw-bold">{label ?? t(`modal_ai_assistant.page_mode_title.${data?.pageMode}`)}</span>
+        <span className="fw-bold">{t(labelTranslationKey)}</span>
       </div>
     </ModalHeader>
   );

@@ -119,7 +119,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
     <>
       <AiAssistantManagementHeader
         hideBackButton
-        label={t(shouldEdit ? 'modal_ai_assistant.header.update_assistant' : 'modal_ai_assistant.header.add_new_assistant')}
+        labelTranslationKey={shouldEdit ? 'modal_ai_assistant.header.update_assistant' : 'modal_ai_assistant.header.add_new_assistant'}
       />
 
       <div className="px-4">
