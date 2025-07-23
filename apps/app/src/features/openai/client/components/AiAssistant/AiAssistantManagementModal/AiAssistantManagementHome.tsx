@@ -4,7 +4,7 @@ import React, {
 
 import { useTranslation } from 'react-i18next';
 import {
-  ModalHeader, ModalBody, ModalFooter, Input,
+  ModalBody, ModalFooter, Input,
 } from 'reactstrap';
 
 import { AiAssistantShareScope, AiAssistantAccessScope } from '~/features/openai/interfaces/ai-assistant';
