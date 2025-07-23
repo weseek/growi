@@ -604,7 +604,7 @@
       "create_failed": "アシスタントの作成に失敗しました",
       "update_failed": "アシスタントの更新に失敗しました"
     },
-    "select_source_pages": "アシスタントの学習元にするページを選択します",
+    "select_source_pages": "アシスタントが参照するページを選択します",
     "search_by_keyword": "キーワードで検索",
     "select_from_page_tree": "ページツリーから選択",
     "edit_page_description": " アシスタントが参照するページを編集します。<br> 参照できるページは配下ページも含めて {{limitLearnablePageCountPerAssistant}} ページまでです。",
