@@ -9,6 +9,10 @@ import { apiv3Get } from '~/client/util/apiv3-client';
 import { type AccessibleAiAssistantsHasId, type AiAssistantHasId } from '../../interfaces/ai-assistant';
 import type { IThreadRelationHasId } from '../../interfaces/thread-relation'; // IThreadHasId を削除
 
+
+/*
+*  useAiAssistantManagementModal
+*/
 export const AiAssistantManagementModalPageMode = {
   HOME: 'home',
   SHARE: 'share',
@@ -34,7 +38,7 @@ type AiAssistantManagementModalUtils = {
 export const useAiAssistantManagementModal = (
     status?: AiAssistantManagementModalStatus,
 ): SWRResponse<AiAssistantManagementModalStatus, Error> & AiAssistantManagementModalUtils => {
-  const initialStatus = { isOpened: false, pageType: AiAssistantManagementModalPageMode.PAGES };
+  const initialStatus = { isOpened: false, pageType: AiAssistantManagementModalPageMode.HOME };
   const swrResponse = useSWRStatic<AiAssistantManagementModalStatus, Error>('AiAssistantManagementModal', status, { fallbackData: initialStatus });
 
   return {
