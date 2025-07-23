@@ -7,14 +7,17 @@ import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } fro
 
 type Props = {
   labelTranslationKey: string;
-  backToPageMode?: AiAssistantManagementModalPageMode;
   hideBackButton?: boolean;
   backButtonColor?: 'primary' | 'secondary';
+  backToPageMode?: AiAssistantManagementModalPageMode;
 }
 
 export const AiAssistantManagementHeader = (props: Props): JSX.Element => {
   const {
-    labelTranslationKey, backToPageMode, hideBackButton, backButtonColor = 'primary',
+    labelTranslationKey,
+    hideBackButton,
+    backButtonColor = 'primary',
+    backToPageMode = AiAssistantManagementModalPageMode.HOME,
   } = props;
 
   const { t } = useTranslation();
@@ -35,7 +38,7 @@ export const AiAssistantManagementHeader = (props: Props): JSX.Element => {
             <span className="growi-custom-icons growi-ai-assistant-icon me-3 fs-4">growi_ai</span>
           )
           : (
-            <button type="button" className="btn p-0 me-3" onClick={() => changePageMode(backToPageMode ?? AiAssistantManagementModalPageMode.HOME)}>
+            <button type="button" className="btn p-0 me-3" onClick={() => changePageMode(backToPageMode)}>
               <span className={`material-symbols-outlined text-${backButtonColor}`}>chevron_left</span>
             </button>
           )
