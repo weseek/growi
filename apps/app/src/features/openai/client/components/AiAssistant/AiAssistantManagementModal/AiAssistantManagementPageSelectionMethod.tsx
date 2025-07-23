@@ -4,6 +4,7 @@ import {
   ModalBody,
 } from 'reactstrap';
 
+import { useTranslation } from 'react-i18next';
 import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
 import { useAiAssistantManagementModal  } from '../../../stores/ai-assistant';
 
@@ -34,12 +35,16 @@ const SelectionButton = (props: { icon: string, label: string, onClick: () => vo
 
 
 export const AiAssistantManagementPageSelectionMethod = (): JSX.Element => {
+  const { t } = useTranslation();
   const { data: aiAssistantManagementModalData } = useAiAssistantManagementModal();
   const isNewAiAssistant  = aiAssistantManagementModalData?.aiAssistantData == null;
 
   return (
     <>
-      <AiAssistantManagementHeader hideBackButton={isNewAiAssistant} />
+      <AiAssistantManagementHeader
+        hideBackButton={isNewAiAssistant}
+        label={t(isNewAiAssistant ? 'modal_ai_assistant.header.add_new_assistant' : 'modal_ai_assistant.header.update_assistant')}
+      />
 
       <ModalBody className="px-4">
         <h4 className="text-center mb-4">
@@ -52,7 +57,6 @@ export const AiAssistantManagementPageSelectionMethod = (): JSX.Element => {
 
           <div className="col-auto">
             <SelectionButton icon="account_tree" label="ページツリーから選択" onClick={() => {}} />
-
           </div>
         </div>
       </ModalBody>
