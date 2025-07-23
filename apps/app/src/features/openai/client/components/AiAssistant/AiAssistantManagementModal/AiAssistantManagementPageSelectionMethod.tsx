@@ -5,6 +5,7 @@ import {
 } from 'reactstrap';
 
 import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
+import { useAiAssistantManagementModal  } from '../../../stores/ai-assistant';
 
 
 const SelectionButton = (props: { icon: string, label: string, onClick: () => void }): JSX.Element => {
@@ -33,9 +34,12 @@ const SelectionButton = (props: { icon: string, label: string, onClick: () => vo
 
 
 export const AiAssistantManagementPageSelectionMethod = (): JSX.Element => {
+  const { data: aiAssistantManagementModalData } = useAiAssistantManagementModal();
+  const isNewAiAssistant  = aiAssistantManagementModalData?.aiAssistantData == null;
+
   return (
     <>
-      <AiAssistantManagementHeader hideBackButton/>
+      <AiAssistantManagementHeader hideBackButton={isNewAiAssistant} />
 
       <ModalBody className="px-4">
         <h4 className="text-center mb-4">
