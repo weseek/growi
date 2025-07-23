@@ -168,8 +168,11 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
       toastError(shouldEdit ? t('modal_ai_assistant.toaster.update_failed') : t('modal_ai_assistant.toaster.create_failed'));
       logger.error(err);
     }
-  // eslint-disable-next-line max-len
-  }, [t, selectedPages, selectedShareScope, selectedUserGroupsForShareScope, selectedAccessScope, selectedUserGroupsForAccessScope, name, description, instruction, shouldEdit, aiAssistant?._id, mutateAiAssistants, closeAiAssistantManagementModal]);
+  }, [
+    selectedPages, selectedShareScope, selectedUserGroupsForShareScope, selectedAccessScope,
+    selectedUserGroupsForAccessScope, name, description, instruction, shouldEdit, t, mutateAiAssistants,
+    closeAiAssistantManagementModal, aiAssistant?._id, aiAssistantSidebarData?.aiAssistantData?._id, refreshAiAssistantData,
+  ]);
 
 
   /*
