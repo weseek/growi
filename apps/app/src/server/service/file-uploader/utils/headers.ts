@@ -89,7 +89,7 @@ export class ContentHeaders implements IContentHeaders {
         value: attachment.fileSize.toString(),
       };
     }
-  } // End of constructor
+  }
 
   /**
    * Convert to ExpressHttpHeader[]

@@ -85,11 +85,6 @@ function getFilePathOnStorage(attachment: IAttachmentDocument) {
 
 class AzureFileUploader extends AbstractFileUploader {
 
-  constructor(crowi: Crowi) {
-    super(crowi, configManager);
-    this.configManager = configManager;
-  }
-
   /**
    * @inheritdoc
    */
@@ -160,7 +155,7 @@ class AzureFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override respond(): Promise<void> {
+  override respond(): void {
     throw new Error('AzureFileUploader does not support ResponseMode.DELEGATE.');
   }
 

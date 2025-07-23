@@ -80,7 +80,7 @@ class GridfsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override respond(): Promise<void> {
+  override respond(): void {
     throw new Error('GridfsFileUploader does not support ResponseMode.DELEGATE.');
   }
 
@@ -102,7 +102,7 @@ class GridfsFileUploader extends AbstractFileUploader {
 
 
 module.exports = function(crowi: Crowi) {
-  const lib = new GridfsFileUploader(crowi, configManager);
+  const lib = new GridfsFileUploader(crowi);
 
   // get Collection instance of chunk
   const chunkCollection = mongoose.connection.collection(CHUNK_COLLECTION_NAME);

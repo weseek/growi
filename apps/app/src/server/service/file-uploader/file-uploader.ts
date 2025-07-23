@@ -9,7 +9,7 @@ import { type RespondOptions, ResponseMode } from '~/server/interfaces/attachmen
 import { Attachment, type IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
-import type { ConfigManager } from '../config-manager';
+import { configManager } from '../config-manager';
 
 import type { MultipartUploader } from './multipart-uploader';
 
@@ -52,15 +52,12 @@ export abstract class AbstractFileUploader implements FileUploader {
 
   private crowi: Crowi;
 
-  protected configManager: ConfigManager;
-
-  constructor(crowi: Crowi, configManager: ConfigManager) {
+  constructor(crowi: Crowi) {
     this.crowi = crowi;
-    this.configManager = configManager;
   }
 
   getIsUploadable() {
-    return !this.configManager.getConfig('app:fileUploadDisabled') && this.isValidUploadSettings();
+    return !configManager.getConfig('app:fileUploadDisabled') && this.isValidUploadSettings();
   }
 
   /**
@@ -99,7 +96,7 @@ export abstract class AbstractFileUploader implements FileUploader {
       return false;
     }
 
-    return !!this.configManager.getConfig('app:fileUpload');
+    return !!configManager.getConfig('app:fileUpload');
   }
 
   abstract listFiles();
@@ -115,10 +112,10 @@ export abstract class AbstractFileUploader implements FileUploader {
    * @returns file upload total limit in bytes
    */
   getFileUploadTotalLimit() {
-    const fileUploadTotalLimit = this.configManager.getConfig('app:fileUploadType') === 'mongodb'
+    const fileUploadTotalLimit = configManager.getConfig('app:fileUploadType') === 'mongodb'
       // Use app:fileUploadTotalLimit if gridfs:totalLimit is null (default for gridfs:totalLimit is null)
-      ? this.configManager.getConfig('app:fileUploadTotalLimit')
-      : this.configManager.getConfig('app:fileUploadTotalLimit');
+      ? configManager.getConfig('app:fileUploadTotalLimit')
+      : configManager.getConfig('app:fileUploadTotalLimit');
     return fileUploadTotalLimit;
   }
 

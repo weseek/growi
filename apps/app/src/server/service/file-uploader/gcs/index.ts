@@ -79,19 +79,11 @@ class GcsFileUploader extends AbstractFileUploader {
    */
   override isValidUploadSettings(): boolean {
     try {
-      const gcsBucket = toNonBlankStringOrUndefined(this.configManager.getConfig('gcs:bucket'));
-      // You can add a check for apiKeyJsonPath here if it's strictly required
-      // const apiKeyJsonPath = toNonBlankStringOrUndefined(this.configManager.getConfig('gcs:apiKeyJsonPath'));
-
-      if (gcsBucket == null) {
-        throw new Error('GCS bucket is not configured.');
-      }
-      // if (apiKeyJsonPath == null) { /* throw error */ } // Uncomment if API key is strictly required
-
+      getGcsBucket();
       return true;
     }
     catch (err) {
-      logger.error('GcsFileUploader isValidUploadSettings error:', err);
+      logger.error(err);
       return false;
     }
   }
@@ -122,7 +114,7 @@ class GcsFileUploader extends AbstractFileUploader {
    */
   override determineResponseMode() {
     // This is already correct in your provided code, using this.configManager
-    return this.configManager.getConfig('gcs:referenceFileWithRelayMode')
+    return configManager.getConfig('gcs:referenceFileWithRelayMode')
       ? ResponseMode.RELAY
       : ResponseMode.REDIRECT;
   }
@@ -180,7 +172,7 @@ class GcsFileUploader extends AbstractFileUploader {
     }
     catch (err) {
       logger.error(err);
-      throw new Error(`Couldn't get file from GCS for the Attachment (${attachment._id.toString()})`);
+      throw new Error(`Coudn't get file from AWS for the Attachment (${attachment._id.toString()})`);
     }
   }
 
@@ -196,7 +188,7 @@ class GcsFileUploader extends AbstractFileUploader {
     const myBucket = gcs.bucket(getGcsBucket());
     const filePath = getFilePathOnStorage(attachment);
     const file = myBucket.file(filePath);
-    const lifetimeSecForTemporaryUrl = this.configManager.getConfig('gcs:lifetimeSecForTemporaryUrl');
+    const lifetimeSecForTemporaryUrl = configManager.getConfig('gcs:lifetimeSecForTemporaryUrl');
 
     // issue signed url (default: expires 120 seconds)
     // https://cloud.google.com/storage/docs/access-control/signed-urls
@@ -230,7 +222,7 @@ class GcsFileUploader extends AbstractFileUploader {
       // allow 404: allow duplicate abort requests to ensure abortion
       // allow 499: it is the success response code for canceling upload
       // ref: https://cloud.google.com/storage/docs/performing-resumable-uploads#cancel-upload
-      if ((e as any).response?.status !== 404 && (e as any).response?.status !== 499) { // Added (e as any) for type safety
+      if (e.response?.status !== 404 && e.response?.status !== 499) {
         throw e;
       }
     }
@@ -240,7 +232,12 @@ class GcsFileUploader extends AbstractFileUploader {
 
 
 module.exports = function(crowi: Crowi) {
-  const lib = new GcsFileUploader(crowi, configManager);
+  const lib = new GcsFileUploader(crowi);
+
+  lib.isValidUploadSettings = function() {
+    return configManager.getConfig('gcs:apiKeyJsonPath') != null
+      && configManager.getConfig('gcs:bucket') != null;
+  };
 
   (lib as any).deleteFile = function(attachment) {
     const filePath = getFilePathOnStorage(attachment);
