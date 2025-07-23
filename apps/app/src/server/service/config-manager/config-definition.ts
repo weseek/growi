@@ -78,44 +78,8 @@ export const CONFIG_KEYS = [
   'app:openaiThreadDeletionCronMaxMinutesUntilRequest',
   'app:openaiVectorStoreFileDeletionCronMaxMinutesUntilRequest',
 
-  // Attachment Content-Disposition settings
-  // Image Types ---
-  'attachments:contentDisposition:image/jpeg:inline',
-  'attachments:contentDisposition:image/png:inline',
-  'attachments:contentDisposition:image/gif:inline',
-  'attachments:contentDisposition:image/webp:inline',
-  'attachments:contentDisposition:image/bmp:inline',
-  'attachments:contentDisposition:image/tiff:inline',
-  'attachments:contentDisposition:image/x-icon:inline',
-  // Document & Media Types ---
-  'attachments:contentDisposition:application/pdf:inline',
-  'attachments:contentDisposition:text/plain:inline',
-  'attachments:contentDisposition:video/mp4:inline',
-  'attachments:contentDisposition:video/webm:inline',
-  'attachments:contentDisposition:video/ogg:inline',
-  'attachments:contentDisposition:audio/mpeg:inline',
-  'attachments:contentDisposition:audio/ogg:inline',
-  'attachments:contentDisposition:audio/wav:inline',
-  // Potentially Dangerous / Executable / Scriptable Types ---
-  'attachments:contentDisposition:text/html:inline',
-  'attachments:contentDisposition:text/javascript:inline',
-  'attachments:contentDisposition:application/javascript:inline',
-  'attachments:contentDisposition:image/svg+xml:inline',
-  'attachments:contentDisposition:application/xml:inline',
-  'attachments:contentDisposition:application/json:inline',
-  'attachments:contentDisposition:application/x-sh:inline',
-  'attachments:contentDisposition:application/x-msdownload:inline',
-  'attachments:contentDisposition:application/octet-stream:inline',
-  // Other Common Document Formats ---
-  'attachments:contentDisposition:application/msword:inline',
-  'attachments:contentDisposition:application/vnd.openxmlformats-officedocument.wordprocessingml.document:inline',
-  'attachments:contentDisposition:application/vnd.ms-excel:inline',
-  'attachments:contentDisposition:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:inline',
-  'attachments:contentDisposition:application/vnd.ms-powerpoint:inline',
-  'attachments:contentDisposition:application/vnd.openxmlformats-officedocument.presentationml.presentation:inline',
-  'attachments:contentDisposition:application/zip:inline',
-  'attachments:contentDisposition:application/x-rar-compressed:inline',
-  'attachments:contentDisposition:text/csv:inline',
+  // Content-Disposition settings for MIME types
+  'attachments:contentDisposition:mimeTypeDefaults',
 
   // Security Settings
   'security:wikiMode',
@@ -578,138 +542,51 @@ export const CONFIG_DEFINITIONS = {
   }),
 
   // Attachment Content-Disposition settings
-  'attachments:contentDisposition:image/jpeg:inline': defineConfig<boolean>({
-    defaultValue: true,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_IMAGE_JPEG_INLINE',
+  'attachments:contentDisposition:mimeTypeDefaults': defineConfig<Record<string, 'inline' | 'attachment'>>({
+    defaultValue: {
+      // Image Types
+      'image/jpeg': 'inline',
+      'image/png': 'inline',
+      'image/gif': 'inline',
+      'image/webp': 'inline',
+      'image/bmp': 'inline',
+      'image/tiff': 'inline',
+      'image/x-icon': 'inline',
+
+      // Document & Media Types
+      'application/pdf': 'inline',
+      'text/plain': 'inline',
+      'video/mp4': 'inline',
+      'video/webm': 'inline',
+      'video/ogg': 'inline',
+      'audio/mpeg': 'inline',
+      'audio/ogg': 'inline',
+      'audio/wav': 'inline',
+
+      // Potentially Dangerous / Executable / Scriptable Types
+      'text/html': 'attachment',
+      'text/javascript': 'attachment',
+      'application/javascript': 'attachment',
+      'image/svg+xml': 'attachment',
+      'application/xml': 'attachment',
+      'application/json': 'attachment',
+      'application/x-sh': 'attachment',
+      'application/x-msdownload': 'attachment',
+      'application/octet-stream': 'attachment',
+
+      // Other Common Document Formats
+      'application/msword': 'attachment',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'attachment',
+      'application/vnd.ms-excel': 'attachment',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'attachment',
+      'application/vnd.ms-powerpoint': 'attachment',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'attachment',
+      'application/zip': 'attachment',
+      'application/x-rar-compressed': 'attachment',
+      'text/csv': 'attachment',
+    },
   }),
-  'attachments:contentDisposition:image/png:inline': defineConfig<boolean>({
-    defaultValue: true,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_IMAGE_PNG_INLINE',
-  }),
-  'attachments:contentDisposition:image/gif:inline': defineConfig<boolean>({
-    defaultValue: true,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_IMAGE_GIF_INLINE',
-  }),
-  'attachments:contentDisposition:image/webp:inline': defineConfig<boolean>({
-    defaultValue: true,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_IMAGE_WEBP_INLINE',
-  }),
-  'attachments:contentDisposition:image/bmp:inline': defineConfig<boolean>({
-    defaultValue: true,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_IMAGE_BMP_INLINE',
-  }),
-  'attachments:contentDisposition:image/tiff:inline': defineConfig<boolean>({
-    defaultValue: true, // TIFF is common for scans, often supported by browsers
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_IMAGE_TIFF_INLINE',
-  }),
-  'attachments:contentDisposition:image/x-icon:inline': defineConfig<boolean>({ // Favicons
-    defaultValue: true,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_IMAGE_X_ICON_INLINE',
-  }),
-  'attachments:contentDisposition:application/pdf:inline': defineConfig<boolean>({
-    defaultValue: true,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_APPLICATION_PDF_INLINE',
-  }),
-  'attachments:contentDisposition:text/plain:inline': defineConfig<boolean>({
-    defaultValue: true,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_TEXT_PLAIN_INLINE',
-  }),
-  'attachments:contentDisposition:video/mp4:inline': defineConfig<boolean>({
-    defaultValue: true,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_VIDEO_MP4_INLINE',
-  }),
-  'attachments:contentDisposition:video/webm:inline': defineConfig<boolean>({
-    defaultValue: true,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_VIDEO_WEBM_INLINE',
-  }),
-  'attachments:contentDisposition:video/ogg:inline': defineConfig<boolean>({
-    defaultValue: true,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_VIDEO_OGG_INLINE',
-  }),
-  'attachments:contentDisposition:audio/mpeg:inline': defineConfig<boolean>({
-    defaultValue: true,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_AUDIO_MPEG_INLINE',
-  }),
-  'attachments:contentDisposition:audio/ogg:inline': defineConfig<boolean>({
-    defaultValue: true,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_AUDIO_OGG_INLINE',
-  }),
-  'attachments:contentDisposition:audio/wav:inline': defineConfig<boolean>({
-    defaultValue: true,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_AUDIO_WAV_INLINE',
-  }),
-  'attachments:contentDisposition:text/html:inline': defineConfig<boolean>({
-    defaultValue: false, // HTML can contain scripts, always download
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_TEXT_HTML_INLINE',
-  }),
-  'attachments:contentDisposition:text/javascript:inline': defineConfig<boolean>({
-    defaultValue: false, // JS files should always download
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_TEXT_JAVASCRIPT_INLINE',
-  }),
-  'attachments:contentDisposition:application/javascript:inline': defineConfig<boolean>({
-    defaultValue: false, // JS files should always download
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_APPLICATION_JAVASCRIPT_INLINE',
-  }),
-  'attachments:contentDisposition:image/svg+xml:inline': defineConfig<boolean>({
-    defaultValue: false, // SVG can contain embedded scripts and vulnerabilities, default to download. Consider a strong warning if setting to true.
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_IMAGE_SVG_XML_INLINE',
-  }),
-  'attachments:contentDisposition:application/xml:inline': defineConfig<boolean>({
-    defaultValue: false, // XML can have XSLT for scripts, default to download
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_APPLICATION_XML_INLINE',
-  }),
-  'attachments:contentDisposition:application/json:inline': defineConfig<boolean>({
-    defaultValue: false, // Often contains sensitive data, better to download unless explicitly intended to display in browser's JSON viewer
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_APPLICATION_JSON_INLINE',
-  }),
-  'attachments:contentDisposition:application/x-sh:inline': defineConfig<boolean>({ // Shell scripts
-    defaultValue: false,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_APPLICATION_X_SH_INLINE',
-  }),
-  'attachments:contentDisposition:application/x-msdownload:inline': defineConfig<boolean>({ // Executables (.exe, .dll, etc.)
-    defaultValue: false,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_APPLICATION_X_MSDOWNLOAD_INLINE',
-  }),
-  'attachments:contentDisposition:application/octet-stream:inline': defineConfig<boolean>({ // Generic binary data
-    defaultValue: false, // Often used for downloads anyway
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_APPLICATION_OCTET_STREAM_INLINE',
-  }),
-  'attachments:contentDisposition:application/msword:inline': defineConfig<boolean>({ // .doc
-    defaultValue: false,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_APPLICATION_MSWORD_INLINE',
-  }),
-  'attachments:contentDisposition:application/vnd.openxmlformats-officedocument.wordprocessingml.document:inline': defineConfig<boolean>({ // .docx
-    defaultValue: false,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_APPLICATION_VND_WORDPROCESSINGML_DOCUMENT_INLINE',
-  }),
-  'attachments:contentDisposition:application/vnd.ms-excel:inline': defineConfig<boolean>({ // .xls
-    defaultValue: false,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_APPLICATION_MS_EXCEL_INLINE',
-  }),
-  'attachments:contentDisposition:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:inline': defineConfig<boolean>({ // .xlsx
-    defaultValue: false,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_APPLICATION_VND_SPREADSHEETML_SHEET_INLINE',
-  }),
-  'attachments:contentDisposition:application/vnd.ms-powerpoint:inline': defineConfig<boolean>({ // .ppt
-    defaultValue: false,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_APPLICATION_MS_POWERPOINT_INLINE',
-  }),
-  'attachments:contentDisposition:application/vnd.openxmlformats-officedocument.presentationml.presentation:inline': defineConfig<boolean>({ // .pptx
-    defaultValue: false,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_APPLICATION_VND_PRESENTATIONML_PRESENTATION_INLINE',
-  }),
-  'attachments:contentDisposition:application/zip:inline': defineConfig<boolean>({
-    defaultValue: false,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_APPLICATION_ZIP_INLINE',
-  }),
-  'attachments:contentDisposition:application/x-rar-compressed:inline': defineConfig<boolean>({
-    defaultValue: false,
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_APPLICATION_X_RAR_COMPRESSED_INLINE',
-  }),
-  'attachments:contentDisposition:text/csv:inline': defineConfig<boolean>({
-    defaultValue: false, // Best to download for CSV to avoid rendering issues
-    envVarName: 'ATTACHMENTS_CONTENT_DISPOSITION_TEXT_CSV_INLINE',
-  }),
+
 
   // Security Settings
   'security:wikiMode': defineConfig<string | undefined>({

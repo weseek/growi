@@ -7,8 +7,6 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
-import { CONFIGURABLE_MIME_TYPES_FOR_DISPOSITION } from './configurable-mime-types';
-
 const logger = loggerFactory('growi:routes:apiv3:content-disposition-settings');
 const express = require('express');
 
@@ -22,13 +20,15 @@ const validator = {
       .withMessage('MIME type is required')
       .bail()
       .matches(/^.+\/.+$/)
-      .custom(value => CONFIGURABLE_MIME_TYPES_FOR_DISPOSITION.includes(value))
+      .custom((value) => {
+        const mimeTypeDefaults = configManager.getConfig('attachments:contentDisposition:mimeTypeDefaults');
+        return Object.keys(mimeTypeDefaults).includes(value);
+      })
       .withMessage('Invalid or unconfigurable MIME type specified.'),
 
-    body('isInline')
-      .isBoolean()
-      .withMessage('`isInline` must be a boolean.')
-      .toBoolean(),
+    body('disposition')
+      .isIn(['inline', 'attachment']) // Validate that it's one of these two strings
+      .withMessage('`disposition` must be either "inline" or "attachment".'),
   ],
 };
 
@@ -65,35 +65,23 @@ module.exports = (crowi) => {
  *               properties:
  *                 contentDispositionSettings:
  *                   type: object
- *                   description: An object mapping configurable MIME types to their current inline disposition status.
  *                   additionalProperties:
- *                     type: boolean
- *                     description: true if inline, false if attachment.
+ *                     type: string
+ *                     description: inline or attachment
  *
  */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
-    const results = CONFIGURABLE_MIME_TYPES_FOR_DISPOSITION.map(
-      (mimeType) => {
-        const configKey = `attachments:contentDisposition:${mimeType}:inline`;
-        try {
-          const value = crowi.configManager.getConfig(configKey);
-          return { mimeType, value };
-        }
-        catch (err) {
-          logger.warn(
-            `Could not retrieve config for ${configKey}: ${err.message}`,
-          );
-          return { mimeType, value: false };
-        }
-      },
-    );
+    try {
 
-    const contentDispositionSettings = {};
-    for (const result of results) {
-      contentDispositionSettings[result.mimeType] = result.value;
+      const mimeTypeDefaults = crowi.configManager.getConfig('attachments:contentDisposition:mimeTypeDefaults');
+      const contentDispositionSettings: Record<string, 'inline' | 'attachment'> = mimeTypeDefaults;
+
+      return res.apiv3({ contentDispositionSettings });
     }
-
-    return res.apiv3({ contentDispositionSettings });
+    catch (err) {
+      logger.error('Error retrieving content disposition settings:', err);
+      return res.apiv3Err(new ErrorV3('Failed to retrieve content disposition settings', 'get-content-disposition-failed'));
+    }
   });
 
   /**
@@ -115,11 +103,10 @@ module.exports = (crowi) => {
  *              schema:
  *                type: object
  *                required:
- *                  - isInline
+ *                  - disposition
  *                properties:
- *                  isInline:
- *                     type: boolean
- *                     description: 'Set to `true` for inline disposition, `false` for attachment disposition (e g , prompts download) '
+ *                  disposition:
+ *                     type: string
  *        responses:
  *          200:
  *            description: Successfully updated content disposition setting
@@ -133,8 +120,8 @@ module.exports = (crowi) => {
  *                       properties:
  *                         mimeType:
  *                           type: string
- *                         isInline:
- *                           type: boolean
+ *                         disposition:
+ *                           type: string
  */
   router.put(
     '/:mimeType(*)',
@@ -145,25 +132,33 @@ module.exports = (crowi) => {
     apiV3FormValidator,
     async(req, res) => {
       const { mimeType } = req.params;
-      const { isInline } = req.body;
-
-      const configKey = `attachments:contentDisposition:${mimeType}:inline`;
+      const { disposition } = req.body;
 
       try {
-        // Update the configuration in the database
-        await configManager.updateConfigs({ [configKey]: isInline });
+        const currentMimeTypeDefaults = crowi.configManager.getConfig('attachments:contentDisposition:mimeTypeDefaults') as Record<string, 'inline'
+          | 'attachment'>;
 
-        // Retrieve the updated value to send back in the response
-        const updatedIsInline = await crowi.configManager.getConfig(configKey);
+        // No need for conversion, directly use the received 'disposition' string
+        const newDisposition: 'inline' | 'attachment' = disposition;
+
+        const updatedMimeTypeDefaults = {
+          ...currentMimeTypeDefaults,
+          [mimeType]: newDisposition,
+        };
+
+        await crowi.configManager.updateConfigs({ 'attachments:contentDisposition:mimeTypeDefaults': updatedMimeTypeDefaults });
+
+        // Retrieve the updated value (optional, can just use newDisposition)
+        const updatedDispositionFromDb = crowi.configManager.getConfig('attachments:contentDisposition:mimeTypeDefaults')[mimeType];
 
         const parameters = {
           action: SupportedAction.ACTION_ADMIN_ATTACHMENT_DISPOSITION_UPDATE,
           mimeType,
-          isInline: updatedIsInline,
+          disposition: updatedDispositionFromDb,
         };
         activityEvent.emit('update', res.locals.activity._id, parameters);
 
-        return res.apiv3({ mimeType, isInline: updatedIsInline });
+        return res.apiv3({ mimeType, disposition: updatedDispositionFromDb });
       }
       catch (err) {
         const msg = `Error occurred in updating content disposition for MIME type: ${mimeType}`;

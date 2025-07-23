@@ -4,9 +4,6 @@ import type { ExpressHttpHeader, IContentHeaders } from '~/server/interfaces/att
 import type { IAttachmentDocument } from '~/server/models/attachment';
 
 import { configManager } from '../../config-manager';
-import type { ConfigKey } from '../../config-manager/config-definition';
-
-import { DEFAULT_ALLOWLIST_MIME_TYPES, SAFE_INLINE_CONFIGURABLE_MIME_TYPES } from './security';
 
 
 export class ContentHeaders implements IContentHeaders {
@@ -38,32 +35,24 @@ export class ContentHeaders implements IContentHeaders {
     };
 
     const requestedInline = opts?.inline ?? false;
-    const configKey = `attachments:contentDisposition:${actualContentTypeString}:inline` as ConfigKey;
-
-    const rawConfigValue = configManager.getConfig(configKey);
+    const mimeTypeDefaults = configManager.getConfig('attachments:contentDisposition:mimeTypeDefaults') as Record<string, 'inline' | 'attachment'>;
 
     let systemAllowsInline: boolean;
+    const defaultDispositionForType = mimeTypeDefaults[actualContentTypeString];
 
-    const ALL_POSSIBLE_INLINE_MIME_TYPES = new Set<string>([
-      ...DEFAULT_ALLOWLIST_MIME_TYPES,
-      ...SAFE_INLINE_CONFIGURABLE_MIME_TYPES,
-    ]);
-
-    if (!ALL_POSSIBLE_INLINE_MIME_TYPES.has(actualContentTypeString)) {
-      systemAllowsInline = false;
-    }
-    else if (typeof rawConfigValue === 'boolean') {
-      systemAllowsInline = rawConfigValue;
+    if (defaultDispositionForType === 'inline') {
+      systemAllowsInline = true;
     }
     else {
-      systemAllowsInline = DEFAULT_ALLOWLIST_MIME_TYPES.has(actualContentTypeString);
+      systemAllowsInline = false;
     }
 
-    const shouldBeInline = requestedInline && systemAllowsInline;
+    // Determine the final disposition based on user request and system allowance
+    const finalDispositionValue: 'inline' | 'attachment' = (requestedInline && systemAllowsInline) ? 'inline' : 'attachment';
 
     this.contentDisposition = {
       field: 'Content-Disposition',
-      value: shouldBeInline
+      value: finalDispositionValue === 'inline'
         ? 'inline'
         : `attachment;filename*=UTF-8''${encodeURIComponent(filename)}`,
     };
