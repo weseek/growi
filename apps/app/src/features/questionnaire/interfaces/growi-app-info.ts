@@ -7,6 +7,7 @@ import type { IExternalAuthProviderType } from '~/interfaces/external-auth-provi
 export type IGrowiAppAdditionalInfo = IGrowiAdditionalInfo & {
   attachmentType: AttachmentMethodType
   activeExternalAccountTypes?: IExternalAuthProviderType[]
+  currentPagesCount: number
 }
 
 // legacy properties (extracted from additionalInfo for growi-questionnaire)

@@ -17,6 +17,7 @@ export interface IGrowiAdditionalInfo {
   installedAtByOldestUser: Date | null;
   currentUsersCount: number;
   currentActiveUsersCount: number;
+  currentPagesCount: number;
 }
 
 export interface IGrowiInfo<A extends object = IGrowiAdditionalInfo> {

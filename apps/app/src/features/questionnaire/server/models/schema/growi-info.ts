@@ -14,6 +14,7 @@ const growiAdditionalInfoSchema = new Schema<IGrowiAppAdditionalInfo>({
   currentActiveUsersCount: { type: Number, required: true },
   attachmentType: { type: String, required: true, enum: Object.values(AttachmentMethodType) },
   activeExternalAccountTypes: [{ type: String, enum: Object.values(IExternalAuthProviderType) }],
+  currentPagesCount: { type: Number, required: true },
 });
 
 export const growiInfoSchema = new Schema<IGrowiInfo<IGrowiAppAdditionalInfo> & IGrowiAppAdditionalInfo>({
@@ -39,4 +40,5 @@ export const growiInfoSchema = new Schema<IGrowiInfo<IGrowiAppAdditionalInfo> & 
   currentActiveUsersCount: { type: Number },
   attachmentType: { type: String, enum: Object.values(AttachmentMethodType) },
   activeExternalAccountTypes: [{ type: String, enum: Object.values(IExternalAuthProviderType) }],
+  currentPagesCount: { type: Number },
 });
