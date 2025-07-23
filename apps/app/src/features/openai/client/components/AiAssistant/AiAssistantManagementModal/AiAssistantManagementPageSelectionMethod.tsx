@@ -32,11 +32,7 @@ const SelectionButton = (props: { icon: string, label: string, onClick: () => vo
 };
 
 
-type Props = {
-  //
-}
-
-export const AiAssistantManagementPageSelectionMethod = (props: Props): JSX.Element => {
+export const AiAssistantManagementPageSelectionMethod = (): JSX.Element => {
   return (
     <>
       <AiAssistantManagementHeader />
