@@ -46,7 +46,7 @@ export const AiAssistantManagementPageSelectionMethod = (): JSX.Element => {
       />
 
       <ModalBody className="px-4">
-        <h4 className="text-center mb-4">
+        <h4 className="text-center mb-4 fw-bold">
           {t('modal_ai_assistant.select_source_pages')}
         </h4>
         <div className="row justify-content-center">
