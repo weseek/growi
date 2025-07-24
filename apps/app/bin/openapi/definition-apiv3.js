@@ -98,8 +98,6 @@ module.exports = {
         'MongoDB',
         'NotificationSetting',
         'Plugins',
-        'Questionnaire',
-        'QuestionnaireSetting',
         'SlackIntegration',
         'SlackIntegrationSettings',
         'SlackIntegrationSettings (with proxy)',

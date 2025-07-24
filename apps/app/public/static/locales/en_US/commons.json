@@ -7,7 +7,6 @@
   "Sign out": "Logout",
   "New": "New",
   "Delete": "Delete",
-
   "meta": {
     "display_name": "English"
   },
@@ -30,7 +29,6 @@
   "headers": {
     "app_settings": "App Settings"
   },
-
   "header_search_box": {
     "label": {
       "All pages": "All pages",
@@ -41,20 +39,17 @@
       "This tree": "Only children of this tree"
     }
   },
-
   "search_method_menu_item": {
     "search_in_all": "Search in all",
     "only_children_of_this_tree": "Only children of this tree",
     "exact_mutch": "Exact match"
   },
-
   "share_links": {
     "Share Link": "Share Link",
     "Page Path": "Page Path",
     "expire": "Expiration",
     "description": "Description"
   },
-
   "in_app_notification": {
     "notification_list": "In-App Notification List",
     "see_all": "See All",
@@ -65,7 +60,6 @@
     "no_unread_messages": "no_unread_messages",
     "only_unread": "Only unread"
   },
-
   "personal_dropdown": {
     "home": "Home",
     "settings": "Settings",
@@ -75,7 +69,6 @@
     "use_os_settings": "Use OS settings",
     "feedback": "Feedback"
   },
-
   "create_page_dropdown": {
     "new_page": "Create New Page",
     "open_page_create_modal": "Open new page create modal",
@@ -89,7 +82,6 @@
       "descendants": "Template for descendants"
     }
   },
-
   "copy_to_clipboard": {
     "Copy to clipboard": "Copy to clipboard",
     "Page path": "Page path",
@@ -99,14 +91,12 @@
     "Markdown link": "Markdown link",
     "Append params": "Append params"
   },
-
   "crop_image_modal": {
     "image_crop": "Image Crop",
     "crop": "Crop",
     "save": "Save",
     "cancel": "Cancel"
   },
-
   "handsontable_modal": {
     "title": "Edit Table",
     "data_import": "Data Import",
@@ -122,35 +112,9 @@
       "import": "Import"
     }
   },
-
-  "questionnaire_modal": {
-    "required": "Required",
-    "submit": "Submit",
-    "close": "Close",
-    "title": "GROWI questionnaire for service improvement",
-    "more_satisfied_services": "We hope that GROWI customers will be even more satisfied",
-    "strive_to_improve_services": "once we improve our services based on your feedback.",
-    "length_of_experience": {
-      "more_than_two_years": "More than 2 years",
-      "one_to_two_years": "More than 1 year but less than 2 years",
-      "six_months_to_one_year": "More than 6 months but less than 1 year",
-      "three_months_to_six_months": "More than 3 months but less than 6 months",
-      "one_month_to_three_months": "More than 1 month but less than 3 months",
-      "less_than_one_month": "Less than 1 month"
-    },
-    "satisfaction_with_growi": "Satisfaction with GROWI",
-    "history_of_growi_usage": "History of GROWI usage",
-    "occupation": "Occupation",
-    "position": "Position",
-    "comment_on_growi": "Comment on GROWI",
-    "successfully_submitted": "Your survey has been submitted.",
-    "thanks_for_answering": "Thank you very much for answering."
-  },
-
   "not_found_page": {
     "page_not_exist": "This page does not exist."
   },
-
   "g2g_data_transfer": {
     "tab": "Data transfer",
     "data_transfer": "Data Transfer",
