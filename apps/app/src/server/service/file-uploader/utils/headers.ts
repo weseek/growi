@@ -3,7 +3,7 @@ import type { Response } from 'express';
 import type { ExpressHttpHeader, IContentHeaders } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models/attachment';
 
-import { INLINE_ALLOWLIST_MIME_TYPES } from './security'; // Adjust path if necessary
+import { configManager } from '../../config-manager';
 
 
 export class ContentHeaders implements IContentHeaders {
@@ -18,13 +18,15 @@ export class ContentHeaders implements IContentHeaders {
 
   xContentTypeOptions?: ExpressHttpHeader<'X-Content-Type-Options'>;
 
-  constructor(attachment: IAttachmentDocument, opts?: {
-    inline?: boolean,
-  }) {
+  constructor(
+      attachment: IAttachmentDocument,
+      opts?: {
+        inline?: boolean,
+    },
+  ) {
     const attachmentContentType = attachment.fileFormat;
     const filename = attachment.originalName;
 
-    // Define the final content type value in a local variable.
     const actualContentTypeString: string = attachmentContentType || 'application/octet-stream';
 
     this.contentType = {
@@ -32,23 +34,37 @@ export class ContentHeaders implements IContentHeaders {
       value: actualContentTypeString,
     };
 
-    // Determine Content-Disposition based on allowlist and the 'inline' request flag
     const requestedInline = opts?.inline ?? false;
+    const mimeTypeDefaults = configManager.getConfig('attachments:contentDisposition:mimeTypeDefaults') as Record<string, 'inline' | 'attachment'>;
 
-    // Should only be inline if it was requested and MIME type is explicitly in the security allowlist.
-    const shouldBeInline = requestedInline && INLINE_ALLOWLIST_MIME_TYPES.has(actualContentTypeString);
+    let systemAllowsInline: boolean;
+    const defaultDispositionForType = mimeTypeDefaults[actualContentTypeString];
+
+    if (defaultDispositionForType === 'inline') {
+      systemAllowsInline = true;
+    }
+    else {
+      systemAllowsInline = false;
+    }
+
+    // Determine the final disposition based on user request and system allowance
+    const finalDispositionValue: 'inline' | 'attachment' = (requestedInline && systemAllowsInline) ? 'inline' : 'attachment';
 
     this.contentDisposition = {
       field: 'Content-Disposition',
-      value: shouldBeInline
+      value: finalDispositionValue === 'inline'
         ? 'inline'
         : `attachment;filename*=UTF-8''${encodeURIComponent(filename)}`,
     };
 
     this.contentSecurityPolicy = {
       field: 'Content-Security-Policy',
-      // eslint-disable-next-line max-len
-      value: "script-src 'unsafe-hashes'; style-src 'self' 'unsafe-inline'; object-src 'none'; require-trusted-types-for 'script'; media-src 'self'; default-src 'none';",
+      value: "script-src 'unsafe-hashes';"
+         + " style-src 'self' 'unsafe-inline';"
+         + " object-src 'none';"
+         + " require-trusted-types-for 'script';"
+         + " media-src 'self';"
+         + " default-src 'none';",
     };
 
     this.xContentTypeOptions = {
