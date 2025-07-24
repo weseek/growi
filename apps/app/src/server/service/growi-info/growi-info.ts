@@ -63,8 +63,8 @@ export class GrowiInfoService {
   getGrowiInfo(includeAdditionalInfo: true): Promise<IGrowiInfo<IGrowiAdditionalInfoResult<typeof FULL_ADDITIONAL_INFO_OPTIONS>>>;
 
   async getGrowiInfo<T extends GrowiInfoOptions>(
-      optionsOrLegacyFlag?: T | boolean,
-  ): Promise<IGrowiInfo<IGrowiAdditionalInfoResult<T>>> {
+      optionsOrLegacyFlag?: T | true,
+  ): Promise<IGrowiInfo<IGrowiAdditionalInfoResult<T>> | IGrowiInfo<undefined> | IGrowiInfo<IGrowiAdditionalInfoResult<typeof FULL_ADDITIONAL_INFO_OPTIONS>>> {
 
     const appSiteUrl = this.getSiteUrl();
 
@@ -117,17 +117,30 @@ export class GrowiInfoService {
   private async getAdditionalInfoByOptions<T extends GrowiInfoOptions>(options: T): Promise<IGrowiAdditionalInfoResult<T>> {
     const User = mongoose.model<IUser, Model<IUser>>('User');
 
-    const result: Record<string, unknown> = {};
+    // Check if any option is enabled to determine if we should return additional info
+    const hasAnyOption = options.includeAttachment || options.includeInstalledInfo || options.includeUserCount;
 
-    // Always include attachment info if any option is enabled
-    if (options.includeAttachment || options.includeInstalledInfo || options.includeUserCount) {
-      const activeExternalAccountTypes: IExternalAuthProviderType[] = Object.values(IExternalAuthProviderType).filter((type) => {
-        return configManager.getConfig(`security:passport-${type}:isEnabled`);
-      });
-
-      result.attachmentType = configManager.getConfig('app:fileUploadType');
-      result.activeExternalAccountTypes = activeExternalAccountTypes;
+    if (!hasAnyOption) {
+      return undefined as IGrowiAdditionalInfoResult<T>;
     }
+
+    // Include attachment info (required for all additional info)
+    const activeExternalAccountTypes: IExternalAuthProviderType[] = Object.values(IExternalAuthProviderType).filter((type) => {
+      return configManager.getConfig(`security:passport-${type}:isEnabled`);
+    });
+
+    // Build result incrementally with proper typing
+    const partialResult: Partial<{
+      attachmentType: unknown;
+      activeExternalAccountTypes: IExternalAuthProviderType[];
+      installedAt: Date | null;
+      installedAtByOldestUser: Date | null;
+      currentUsersCount: number;
+      currentActiveUsersCount: number;
+    }> = {
+      attachmentType: configManager.getConfig('app:fileUploadType'),
+      activeExternalAccountTypes,
+    };
 
     if (options.includeInstalledInfo) {
       // Get the oldest user who probably installed this GROWI.
@@ -138,19 +151,19 @@ export class GrowiInfoService {
       const oldestConfig = await Config.findOne().sort({ createdAt: 1 });
       const installedAt = installedAtByOldestUser ?? appInstalledConfig?.createdAt ?? oldestConfig?.createdAt ?? null;
 
-      result.installedAt = installedAt;
-      result.installedAtByOldestUser = installedAtByOldestUser;
+      partialResult.installedAt = installedAt;
+      partialResult.installedAtByOldestUser = installedAtByOldestUser;
     }
 
     if (options.includeUserCount) {
       const currentUsersCount = await User.countDocuments();
       const currentActiveUsersCount = await (User as unknown as { countActiveUsers: () => Promise<number> }).countActiveUsers();
 
-      result.currentUsersCount = currentUsersCount;
-      result.currentActiveUsersCount = currentActiveUsersCount;
+      partialResult.currentUsersCount = currentUsersCount;
+      partialResult.currentActiveUsersCount = currentActiveUsersCount;
     }
 
-    return (Object.keys(result).length > 0 ? result : undefined) as IGrowiAdditionalInfoResult<T>;
+    return partialResult as IGrowiAdditionalInfoResult<T>;
   }
 
 }
