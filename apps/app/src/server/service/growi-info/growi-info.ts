@@ -1,6 +1,10 @@
 import * as os from 'node:os';
 
-import type { IGrowiInfo } from '@growi/core';
+import type {
+  IGrowiInfo,
+  GrowiInfoOptions,
+  IGrowiAdditionalInfoResult,
+} from '@growi/core';
 import type { IUser } from '@growi/core/dist/interfaces';
 import { GrowiWikiType } from '@growi/core/dist/interfaces';
 import { pathUtils } from '@growi/core/dist/utils';
@@ -13,7 +17,12 @@ import { aclService } from '~/server/service/acl';
 import { configManager } from '~/server/service/config-manager';
 import { getGrowiVersion } from '~/utils/growi-version';
 
-import type { IGrowiAppAdditionalInfo } from '../../../features/questionnaire/interfaces/growi-app-info';
+// Local preset for full additional info
+const FULL_ADDITIONAL_INFO_OPTIONS = {
+  includeAttachment: true,
+  includeInstalledInfo: true,
+  includeUserCount: true,
+} as const;
 
 
 export class GrowiInfoService {
@@ -38,15 +47,24 @@ export class GrowiInfoService {
   /**
    * Get GROWI information
    */
-  getGrowiInfo(): Promise<IGrowiInfo<Record<string, never>>>;
+  getGrowiInfo(): Promise<IGrowiInfo<undefined>>;
 
   /**
-   * Get GROWI information with additional information
-   * @param includeAdditionalInfo whether to include additional information
+   * Get GROWI information with flexible options
+   * @param options options to determine what additional information to include
    */
-  getGrowiInfo(includeAdditionalInfo: true): Promise<IGrowiInfo<IGrowiAppAdditionalInfo>>;
+  getGrowiInfo<T extends GrowiInfoOptions>(options: T): Promise<IGrowiInfo<IGrowiAdditionalInfoResult<T>>>;
 
-  async getGrowiInfo(includeAdditionalInfo?: boolean): Promise<IGrowiInfo<Record<string, never>> | IGrowiInfo<IGrowiAppAdditionalInfo>> {
+  /**
+   * Get GROWI information with additional information (legacy)
+   * @param includeAdditionalInfo whether to include additional information
+   * @deprecated Use getGrowiInfo(options) instead
+   */
+  getGrowiInfo(includeAdditionalInfo: true): Promise<IGrowiInfo<IGrowiAdditionalInfoResult<typeof FULL_ADDITIONAL_INFO_OPTIONS>>>;
+
+  async getGrowiInfo<T extends GrowiInfoOptions>(
+      optionsOrLegacyFlag?: T | boolean,
+  ): Promise<IGrowiInfo<IGrowiAdditionalInfoResult<T>>> {
 
     const appSiteUrl = this.getSiteUrl();
 
@@ -66,44 +84,73 @@ export class GrowiInfoService {
       type: configManager.getConfig('app:serviceType'),
       wikiType,
       deploymentType: configManager.getConfig('app:deploymentType'),
-    } satisfies IGrowiInfo<Record<string, never>>;
+    } satisfies IGrowiInfo<undefined>;
 
-    if (!includeAdditionalInfo) {
+    if (optionsOrLegacyFlag == null) {
       return baseInfo;
+    }
+
+    let options: GrowiInfoOptions;
+
+    // Handle different parameter types
+    if (typeof optionsOrLegacyFlag === 'boolean') {
+      // Legacy boolean parameter
+      options = optionsOrLegacyFlag ? FULL_ADDITIONAL_INFO_OPTIONS : {};
+    }
+    else {
+      // GrowiInfoOptions parameter
+      options = optionsOrLegacyFlag;
+    }
+
+    const additionalInfo = await this.getAdditionalInfoByOptions(options);
+
+    if (!additionalInfo) {
+      return baseInfo as IGrowiInfo<IGrowiAdditionalInfoResult<T>>;
     }
 
     return {
       ...baseInfo,
-      additionalInfo: await this.getAdditionalInfo(),
-    };
+      additionalInfo,
+    } as IGrowiInfo<IGrowiAdditionalInfoResult<T>>;
   }
 
-  private async getAdditionalInfo(): Promise<IGrowiAppAdditionalInfo> {
+  private async getAdditionalInfoByOptions<T extends GrowiInfoOptions>(options: T): Promise<IGrowiAdditionalInfoResult<T>> {
     const User = mongoose.model<IUser, Model<IUser>>('User');
 
-    // Get the oldest user who probably installed this GROWI.
-    const user = await User.findOne({ createdAt: { $ne: null } }).sort({ createdAt: 1 });
-    const installedAtByOldestUser = user ? user.createdAt : null;
+    const result: Record<string, unknown> = {};
 
-    const appInstalledConfig = await Config.findOne({ key: 'app:installed' });
-    const oldestConfig = await Config.findOne().sort({ createdAt: 1 });
-    const installedAt = installedAtByOldestUser ?? appInstalledConfig?.createdAt ?? oldestConfig!.createdAt ?? null;
+    // Always include attachment info if any option is enabled
+    if (options.includeAttachment || options.includeInstalledInfo || options.includeUserCount) {
+      const activeExternalAccountTypes: IExternalAuthProviderType[] = Object.values(IExternalAuthProviderType).filter((type) => {
+        return configManager.getConfig(`security:passport-${type}:isEnabled`);
+      });
 
-    const currentUsersCount = await User.countDocuments();
-    const currentActiveUsersCount = await (User as any).countActiveUsers();
+      result.attachmentType = configManager.getConfig('app:fileUploadType');
+      result.activeExternalAccountTypes = activeExternalAccountTypes;
+    }
 
-    const activeExternalAccountTypes: IExternalAuthProviderType[] = Object.values(IExternalAuthProviderType).filter((type) => {
-      return configManager.getConfig(`security:passport-${type}:isEnabled`);
-    });
+    if (options.includeInstalledInfo) {
+      // Get the oldest user who probably installed this GROWI.
+      const user = await User.findOne({ createdAt: { $ne: null } }).sort({ createdAt: 1 });
+      const installedAtByOldestUser = user ? user.createdAt : null;
 
-    return {
-      installedAt,
-      installedAtByOldestUser,
-      currentUsersCount,
-      currentActiveUsersCount,
-      attachmentType: configManager.getConfig('app:fileUploadType'),
-      activeExternalAccountTypes,
-    };
+      const appInstalledConfig = await Config.findOne({ key: 'app:installed' });
+      const oldestConfig = await Config.findOne().sort({ createdAt: 1 });
+      const installedAt = installedAtByOldestUser ?? appInstalledConfig?.createdAt ?? oldestConfig?.createdAt ?? null;
+
+      result.installedAt = installedAt;
+      result.installedAtByOldestUser = installedAtByOldestUser;
+    }
+
+    if (options.includeUserCount) {
+      const currentUsersCount = await User.countDocuments();
+      const currentActiveUsersCount = await (User as unknown as { countActiveUsers: () => Promise<number> }).countActiveUsers();
+
+      result.currentUsersCount = currentUsersCount;
+      result.currentActiveUsersCount = currentActiveUsersCount;
+    }
+
+    return (Object.keys(result).length > 0 ? result : undefined) as IGrowiAdditionalInfoResult<T>;
   }
 
 }
