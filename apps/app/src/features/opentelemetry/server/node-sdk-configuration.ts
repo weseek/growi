@@ -41,6 +41,7 @@ export const generateNodeSDKConfiguration = (opts?: Option): Configuration => {
       traceExporter: new OTLPTraceExporter(),
       metricReader: new PeriodicExportingMetricReader({
         exporter: new OTLPMetricExporter(),
+        exportIntervalMillis: 300000, // 5 minute
       }),
       instrumentations: [getNodeAutoInstrumentations({
         '@opentelemetry/instrumentation-bunyan': {
