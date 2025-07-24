@@ -621,7 +621,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     return query;
   }
 
-  appendResultSize(query, from?, size?): void {
+  appendResultSize(query: SearchQuery, from?: number, size?: number): void {
     query.from = from || DEFAULT_OFFSET;
     query.size = size || DEFAULT_LIMIT;
   }
