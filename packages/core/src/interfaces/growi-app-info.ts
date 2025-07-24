@@ -36,21 +36,32 @@ export interface IUserCountInfo {
   currentActiveUsersCount: number;
 }
 
-export interface IGrowiAdditionalInfo extends IInstalledAtInfo, IUserCountInfo, IAttachmentInfo {
-}
+export interface IGrowiAdditionalInfo
+  extends IInstalledAtInfo,
+    IUserCountInfo,
+    IAttachmentInfo {}
 
 // Type mapping for flexible options
 export type IGrowiAdditionalInfoByOptions<T extends GrowiInfoOptions> =
-  (T['includeAttachment'] extends true ? IAttachmentInfo : {}) &
-  (T['includeInstalledInfo'] extends true ? IInstalledAtInfo : {}) &
-  (T['includeUserCount'] extends true ? IUserCountInfo : {});
+  (T['includeAttachment'] extends true
+    ? IAttachmentInfo
+    : Record<string, never>) &
+    (T['includeInstalledInfo'] extends true
+      ? IInstalledAtInfo
+      : Record<string, never>) &
+    (T['includeUserCount'] extends true
+      ? IUserCountInfo
+      : Record<string, never>);
 
 // Helper type to check if any option is enabled
 export type HasAnyOption<T extends GrowiInfoOptions> =
-  T['includeAttachment'] extends true ? true :
-  T['includeInstalledInfo'] extends true ? true :
-  T['includeUserCount'] extends true ? true :
-  false;
+  T['includeAttachment'] extends true
+    ? true
+    : T['includeInstalledInfo'] extends true
+      ? true
+      : T['includeUserCount'] extends true
+        ? true
+        : false;
 
 // Final result type based on options
 export type IGrowiAdditionalInfoResult<T extends GrowiInfoOptions> =
