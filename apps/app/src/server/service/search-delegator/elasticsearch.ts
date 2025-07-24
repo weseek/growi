@@ -848,7 +848,11 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     };
   }
 
-  appendHighlight(query): void {
+  appendHighlight(query: SearchQuery): void {
+    if (query.body == null) {
+      throw new Error('query.body is not initialized');
+    }
+
     query.body.highlight = {
       fragmenter: 'simple',
       pre_tags: ["<em class='highlighted-keyword'>"],
