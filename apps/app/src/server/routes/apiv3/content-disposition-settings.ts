@@ -73,7 +73,7 @@ module.exports = (crowi) => {
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     try {
 
-      const mimeTypeDefaults = crowi.configManager.getConfig('attachments:contentDisposition:mimeTypeDefaults');
+      const mimeTypeDefaults = configManager.getConfig('attachments:contentDisposition:mimeTypeDefaults');
       const contentDispositionSettings: Record<string, 'inline' | 'attachment'> = mimeTypeDefaults;
 
       return res.apiv3({ contentDispositionSettings });
@@ -135,8 +135,7 @@ module.exports = (crowi) => {
       const { disposition } = req.body;
 
       try {
-        const currentMimeTypeDefaults = crowi.configManager.getConfig('attachments:contentDisposition:mimeTypeDefaults') as Record<string, 'inline'
-          | 'attachment'>;
+        const currentMimeTypeDefaults = configManager.getConfig('attachments:contentDisposition:mimeTypeDefaults');
 
         const newDisposition: 'inline' | 'attachment' = disposition;
 
@@ -145,8 +144,8 @@ module.exports = (crowi) => {
           [mimeType]: newDisposition,
         };
 
-        await crowi.configManager.updateConfigs({ 'attachments:contentDisposition:mimeTypeDefaults': updatedMimeTypeDefaults });
-        const updatedDispositionFromDb = crowi.configManager.getConfig('attachments:contentDisposition:mimeTypeDefaults')[mimeType];
+        await configManager.updateConfigs({ 'attachments:contentDisposition:mimeTypeDefaults': updatedMimeTypeDefaults });
+        const updatedDispositionFromDb = configManager.getConfig('attachments:contentDisposition:mimeTypeDefaults')[mimeType];
 
         const parameters = {
           action: SupportedAction.ACTION_ADMIN_ATTACHMENT_DISPOSITION_UPDATE,

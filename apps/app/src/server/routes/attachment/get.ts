@@ -108,7 +108,7 @@ const respondForRedirectMode = async(res: Response, fileUploadService: FileUploa
   }
 };
 
-const respondForRelayMode = async(crowi: Crowi, res: Response, fileUploadService: FileUploader,
+const respondForRelayMode = async(res: Response, fileUploadService: FileUploader,
     attachment: IAttachmentDocument, opts?: RespondOptions): Promise<void> => {
   // apply content-* headers before response
   const isDownload = opts?.download ?? false;
@@ -150,7 +150,7 @@ export const getActionFactory = (crowi: Crowi, attachment: IAttachmentDocument) 
         respondForRedirectMode(res, fileUploadService, attachment, opts);
         return;
       case ResponseMode.RELAY:
-        respondForRelayMode(crowi, res, fileUploadService, attachment, opts);
+        respondForRelayMode(res, fileUploadService, attachment, opts);
         return;
     }
   };
