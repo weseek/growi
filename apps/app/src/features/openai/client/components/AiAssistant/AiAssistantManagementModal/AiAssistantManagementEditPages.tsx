@@ -33,7 +33,7 @@ export const AiAssistantManagementEditPages = (props: Props): JSX.Element => {
 
   return (
     <>
-      <AiAssistantManagementHeader />
+      <AiAssistantManagementHeader labelTranslationKey="modal_ai_assistant.page_mode_title.pages" />
 
       <ModalBody className="px-4">
         <p

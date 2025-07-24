@@ -9,14 +9,19 @@ import { apiv3Get } from '~/client/util/apiv3-client';
 import { type AccessibleAiAssistantsHasId, type AiAssistantHasId } from '../../interfaces/ai-assistant';
 import type { IThreadRelationHasId } from '../../interfaces/thread-relation'; // IThreadHasId を削除
 
+
+/*
+*  useAiAssistantManagementModal
+*/
 export const AiAssistantManagementModalPageMode = {
   HOME: 'home',
   SHARE: 'share',
   PAGES: 'pages',
   INSTRUCTION: 'instruction',
+  PAGE_SELECTION_METHOD: 'page-selection-method',
 } as const;
 
-type AiAssistantManagementModalPageMode = typeof AiAssistantManagementModalPageMode[keyof typeof AiAssistantManagementModalPageMode];
+export type AiAssistantManagementModalPageMode = typeof AiAssistantManagementModalPageMode[keyof typeof AiAssistantManagementModalPageMode];
 
 type AiAssistantManagementModalStatus = {
   isOpened: boolean,
@@ -38,7 +43,15 @@ export const useAiAssistantManagementModal = (
 
   return {
     ...swrResponse,
-    open: useCallback((aiAssistantData) => { swrResponse.mutate({ isOpened: true, aiAssistantData }) }, [swrResponse]),
+    open: useCallback((aiAssistantData) => {
+      swrResponse.mutate({
+        isOpened: true,
+        aiAssistantData,
+        pageMode: aiAssistantData != null
+          ? AiAssistantManagementModalPageMode.HOME
+          : AiAssistantManagementModalPageMode.PAGE_SELECTION_METHOD,
+      });
+    }, [swrResponse]),
     close: useCallback(() => swrResponse.mutate({ isOpened: false, aiAssistantData: undefined }), [swrResponse]),
     changePageMode: useCallback((pageMode: AiAssistantManagementModalPageMode) => {
       swrResponse.mutate({ isOpened: swrResponse.data?.isOpened ?? false, pageMode, aiAssistantData: swrResponse.data?.aiAssistantData });
