@@ -3,6 +3,7 @@ import csrf from 'csurf';
 import qs from 'qs';
 
 import { PLUGIN_EXPRESS_STATIC_DIR, PLUGIN_STORING_PATH } from '~/features/growi-plugin/server/consts';
+import CertifyOrigin from '~/server/middlewares/certify-origin';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
@@ -26,7 +27,6 @@ module.exports = function(crowi, app) {
   const registerSafeRedirect = registerSafeRedirectFactory();
   const injectCurrentuserToLocalvars = require('../middlewares/inject-currentuser-to-localvars')();
   const autoReconnectToS2sMsgServer = require('../middlewares/auto-reconnect-to-s2s-msg-server')(crowi);
-
   const avoidSessionRoutes = require('../routes/avoid-session-routes');
 
   const env = crowi.node_env;
@@ -122,6 +122,8 @@ module.exports = function(crowi, app) {
   // csurf should be initialized after express-session
   // default methods + PUT. See: https://expressjs.com/en/resources/middleware/csurf.html#ignoremethods
   app.use(csrf({ ignoreMethods: ['GET', 'HEAD', 'OPTIONS', 'PUT', 'POST', 'DELETE'], cookie: false }));
+
+  app.use(CertifyOrigin);
 
   // passport
   logger.debug('initialize Passport');
