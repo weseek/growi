@@ -20,7 +20,7 @@ export const MermaidViewer = React.memo((props: MermaidViewerProps): JSX.Element
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    (async () => {
+    (async() => {
       if (ref.current != null && value != null) {
         mermaid.initialize({
           theme: isDarkMode ? 'dark' : undefined,
