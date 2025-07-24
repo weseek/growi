@@ -115,7 +115,7 @@ describe('GrowiInfoService', () => {
 
     test('Should get correct GROWI info with specific options - attachment only', async() => {
       // act
-      const growiInfo = await growiInfoService.getGrowiInfo({ includeAttachment: true });
+      const growiInfo = await growiInfoService.getGrowiInfo({ includeAttachmentInfo: true });
 
       // assert
       assert(growiInfo != null);
@@ -127,7 +127,7 @@ describe('GrowiInfoService', () => {
 
     test('Should get correct GROWI info with specific options - user count only', async() => {
       // act
-      const growiInfo = await growiInfoService.getGrowiInfo({ includeUserCount: true });
+      const growiInfo = await growiInfoService.getGrowiInfo({ includeUserCountInfo: true });
 
       // assert
       assert(growiInfo != null);
@@ -156,8 +156,8 @@ describe('GrowiInfoService', () => {
     test('Should get correct GROWI info with combined options', async() => {
       // act
       const growiInfo = await growiInfoService.getGrowiInfo({
-        includeAttachment: true,
-        includeUserCount: true,
+        includeAttachmentInfo: true,
+        includeUserCountInfo: true,
       });
 
       // assert
@@ -173,9 +173,9 @@ describe('GrowiInfoService', () => {
     test('Should get correct GROWI info with all options', async() => {
       // act
       const growiInfo = await growiInfoService.getGrowiInfo({
-        includeAttachment: true,
+        includeAttachmentInfo: true,
         includeInstalledInfo: true,
-        includeUserCount: true,
+        includeUserCountInfo: true,
       });
 
       // assert

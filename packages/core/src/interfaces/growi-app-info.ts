@@ -7,9 +7,9 @@ type GrowiWikiType = (typeof GrowiWikiType)[keyof typeof GrowiWikiType];
 
 // Info options for additionalInfo selection
 export interface GrowiInfoOptions {
-  includeAttachment?: boolean;
+  includeAttachmentInfo?: boolean;
   includeInstalledInfo?: boolean;
-  includeUserCount?: boolean;
+  includeUserCountInfo?: boolean;
   // Future extensions can be added here
   // includePageCount?: boolean;
 }
@@ -21,45 +21,45 @@ interface IGrowiOSInfo {
   totalmem?: ReturnType<typeof os.totalmem>;
 }
 
-export interface IAttachmentInfo {
+interface IAdditionalAttachmentInfo {
   attachmentType: string;
   activeExternalAccountTypes: string[];
 }
 
-export interface IInstalledAtInfo {
+interface IAdditionalInstalledAtInfo {
   installedAt: Date;
   installedAtByOldestUser: Date | null;
 }
 
-export interface IUserCountInfo {
+interface IAdditionalUserCountInfo {
   currentUsersCount: number;
   currentActiveUsersCount: number;
 }
 
 export interface IGrowiAdditionalInfo
-  extends IInstalledAtInfo,
-    IUserCountInfo,
-    IAttachmentInfo {}
+  extends IAdditionalInstalledAtInfo,
+    IAdditionalUserCountInfo,
+    IAdditionalAttachmentInfo {}
 
 // Type mapping for flexible options
 export type IGrowiAdditionalInfoByOptions<T extends GrowiInfoOptions> =
-  (T['includeAttachment'] extends true
-    ? IAttachmentInfo
+  (T['includeAttachmentInfo'] extends true
+    ? IAdditionalAttachmentInfo
     : Record<string, never>) &
     (T['includeInstalledInfo'] extends true
-      ? IInstalledAtInfo
+      ? IAdditionalInstalledAtInfo
       : Record<string, never>) &
-    (T['includeUserCount'] extends true
-      ? IUserCountInfo
+    (T['includeUserCountInfo'] extends true
+      ? IAdditionalUserCountInfo
       : Record<string, never>);
 
 // Helper type to check if any option is enabled
 export type HasAnyOption<T extends GrowiInfoOptions> =
-  T['includeAttachment'] extends true
+  T['includeAttachmentInfo'] extends true
     ? true
     : T['includeInstalledInfo'] extends true
       ? true
-      : T['includeUserCount'] extends true
+      : T['includeUserCountInfo'] extends true
         ? true
         : false;
 

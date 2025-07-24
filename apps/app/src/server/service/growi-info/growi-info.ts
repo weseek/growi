@@ -19,9 +19,9 @@ import { getGrowiVersion } from '~/utils/growi-version';
 
 // Local preset for full additional info
 const FULL_ADDITIONAL_INFO_OPTIONS = {
-  includeAttachment: true,
+  includeAttachmentInfo: true,
   includeInstalledInfo: true,
-  includeUserCount: true,
+  includeUserCountInfo: true,
 } as const;
 
 
@@ -118,7 +118,7 @@ export class GrowiInfoService {
     const User = mongoose.model<IUser, Model<IUser>>('User');
 
     // Check if any option is enabled to determine if we should return additional info
-    const hasAnyOption = options.includeAttachment || options.includeInstalledInfo || options.includeUserCount;
+    const hasAnyOption = options.includeAttachmentInfo || options.includeInstalledInfo || options.includeUserCountInfo;
 
     if (!hasAnyOption) {
       return undefined as IGrowiAdditionalInfoResult<T>;
@@ -155,7 +155,7 @@ export class GrowiInfoService {
       partialResult.installedAtByOldestUser = installedAtByOldestUser;
     }
 
-    if (options.includeUserCount) {
+    if (options.includeUserCountInfo) {
       const currentUsersCount = await User.countDocuments();
       const currentActiveUsersCount = await (User as unknown as { countActiveUsers: () => Promise<number> }).countActiveUsers();
 
