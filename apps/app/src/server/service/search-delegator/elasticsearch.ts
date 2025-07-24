@@ -756,11 +756,15 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     }
   }
 
-  async filterPagesByViewer(query, user, userGroups): Promise<void> {
+  async filterPagesByViewer(query: SearchQuery, user, userGroups): Promise<void> {
     const showPagesRestrictedByOwner = !configManager.getConfig('security:list-policy:hideRestrictedByOwner');
     const showPagesRestrictedByGroup = !configManager.getConfig('security:list-policy:hideRestrictedByGroup');
 
     query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
+
+    if (query.body?.query?.bool?.filter == null || !Array.isArray(query.body?.query?.bool?.filter)) {
+      throw new Error('query.body.query.bool is not initialized');
+    }
 
     const Page = mongoose.model('Page') as unknown as PageModel;
     const {
