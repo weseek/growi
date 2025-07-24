@@ -123,7 +123,7 @@ module.exports = function(crowi, app) {
   // default methods + PUT. See: https://expressjs.com/en/resources/middleware/csurf.html#ignoremethods
   app.use(csrf({ ignoreMethods: ['GET', 'HEAD', 'OPTIONS', 'PUT', 'POST', 'DELETE'], cookie: false }));
 
-  app.use(CertifyOrigin);//
+  app.use(CertifyOrigin);
 
   // passport
   logger.debug('initialize Passport');
