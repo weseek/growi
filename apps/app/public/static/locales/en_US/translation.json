@@ -142,7 +142,6 @@
   "edited this page": "edited this page.",
   "List Drafts": "Drafts",
   "Deleted Pages": "Deleted Pages",
-  "Questionnaire": "Questionnaire",
   "Disassociate": "Disassociate",
   "No bookmarks yet": "No bookmarks yet",
   "add_bookmark": "Add to Bookmarks",
@@ -978,23 +977,6 @@
   "v5_page_migration": {
     "page_tree_not_avaliable": "Page tree feature is not available yet.",
     "go_to_settings": "Go to settings to enable the feature"
-  },
-  "questionnaire": {
-    "give_us_feedback": "Give us feedback for improvements",
-    "thank_you_for_answering": "Thank you for answering",
-    "additional_feedback": "Send us additional feedback from the user icon dropdown.",
-    "dont_show_again": "Don`t show again",
-    "deny": "Don't answer",
-    "agree": "Agree",
-    "disagree": "Disagree",
-    "answer": "Answer",
-    "no_answer": "No answer",
-    "settings": "Questionnaire settings",
-    "failed_to_send": "Failed to send feedback",
-    "denied": "The questionnaire won't be shown again",
-    "personal_settings_explanation": "Questionnaires for improving GROWI will be shown. If you have other feedbacks, you can send them from the user icon dropdown.",
-    "enable_questionnaire": "Enable questionnaire",
-    "disabled_by_admin": "Questionnaire is disabled by admin"
   },
   "tag_edit_modal": {
     "edit_tags": "Edit Tags",
