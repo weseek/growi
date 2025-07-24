@@ -24,8 +24,13 @@ import type { UpdateOrInsertPagesOpts } from '../interfaces/search';
 
 import { aggregatePipelineToIndex } from './aggregate-to-index';
 import type { AggregatedPage, BulkWriteBody, BulkWriteCommand } from './bulk-write';
+import type { SearchQuery } from './elasticsearch-client-delegator';
 import {
-  getClient, type ElasticsearchClientDelegator, isES9ClientDelegator, isES7ClientDelegator, isES8ClientDelegator,
+  getClient,
+  isES7ClientDelegator,
+  isES8ClientDelegator,
+  isES9ClientDelegator,
+  type ElasticsearchClientDelegator,
 } from './elasticsearch-client-delegator';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
@@ -597,22 +602,19 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   /**
    * create search query for Elasticsearch
-   *
-   * @param {object | undefined} option optional paramas
    * @returns {object} query object
    */
-  createSearchQuery(option?) {
-    let fields = ['path', 'bookmark_count', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names', 'comments'];
-    if (option) {
-      fields = option.fields || fields;
-    }
+  createSearchQuery(): SearchQuery {
+    const fields = ['path', 'bookmark_count', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names', 'comments'];
 
     // sort by score
     const query = {
       index: this.aliasName,
       _source: fields,
       body: {
-        query: {}, // query
+        query: {
+          bool: {},
+        },
       },
     };
 
@@ -631,10 +633,9 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     query.body.sort = { [sort]: { order } };
   }
 
-  initializeBoolQuery(query) {
-    // query is created by createSearchQuery()
-    if (!query.body.query.bool) {
-      query.body.query.bool = {};
+  initializeBoolQuery(query: SearchQuery): SearchQuery {
+    if (query?.body?.query?.bool == null) {
+      throw new Error('query.body.query.bool is not initialized');
     }
 
     const isInitialized = (query) => { return !!query && Array.isArray(query) };
@@ -651,14 +652,30 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     return query;
   }
 
-  appendCriteriaForQueryString(query, parsedKeywords: ESQueryTerms): void {
+  appendCriteriaForQueryString(query: SearchQuery, parsedKeywords: ESQueryTerms): void {
     query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
+
+    if (query.body?.query?.bool == null) {
+      throw new Error('query.body.query.bool is not initialized');
+    }
+
+    if (query.body?.query?.bool.must == null || !Array.isArray(query.body?.query?.bool.must)) {
+      throw new Error('query.body.query.bool.must is not initialized');
+    }
+
+    if (query.body?.query?.bool.must_not == null || !Array.isArray(query.body?.query?.bool.must_not)) {
+      throw new Error('query.body.query.bool.must_not is not initialized');
+    }
+
+    if (query.body?.query?.bool.filter == null || !Array.isArray(query.body?.query?.bool.filter)) {
+      throw new Error('query.body.query.bool.filter is not initialized');
+    }
 
     if (parsedKeywords.match.length > 0) {
       const q = {
         multi_match: {
           query: parsedKeywords.match.join(' '),
-          type: 'most_fields',
+          type: 'most_fields' as const,
           fields: ['path.ja^2', 'path.en^2', 'body.ja', 'body.en', 'comments.ja', 'comments.en'],
         },
       };
@@ -670,36 +687,35 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
         multi_match: {
           query: parsedKeywords.not_match.join(' '),
           fields: ['path.ja', 'path.en', 'body.ja', 'body.en', 'comments.ja', 'comments.en'],
-          operator: 'or',
+          operator: 'or' as const,
         },
       };
       query.body.query.bool.must_not.push(q);
     }
 
     if (parsedKeywords.phrase.length > 0) {
-      parsedKeywords.phrase.forEach((phrase) => {
+      for (const phrase of parsedKeywords.phrase) {
         const phraseQuery = {
           multi_match: {
-            query: phrase, // each phrase is quoteted words like "This is GROWI"
-            type: 'phrase',
+            query: phrase,
+            type: 'phrase' as const,
             fields: [
-              // Not use "*.ja" fields here, because we want to analyze (parse) search words
               'path.raw^2',
               'body',
               'comments',
             ],
           },
         };
-        query.body.query.bool.must.push(phraseQuery);
-      });
+        query.body.query.bool.must.push(phraseQuery); // TypeScript can track this better
+      }
     }
 
     if (parsedKeywords.not_phrase.length > 0) {
-      parsedKeywords.not_phrase.forEach((phrase) => {
+      for (const phrase of parsedKeywords.not_phrase) {
         const notPhraseQuery = {
           multi_match: {
             query: phrase, // each phrase is quoteted words
-            type: 'phrase',
+            type: 'phrase' as const, // Add 'as const' to fix type error
             fields: [
               // Not use "*.ja" fields here, because we want to analyze (parse) search words
               'path.raw^2',
@@ -708,7 +724,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
           },
         };
         query.body.query.bool.must_not.push(notPhraseQuery);
-      });
+      }
     }
 
     if (parsedKeywords.prefix.length > 0) {
@@ -740,11 +756,15 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     }
   }
 
-  async filterPagesByViewer(query, user, userGroups): Promise<void> {
+  async filterPagesByViewer(query: SearchQuery, user, userGroups): Promise<void> {
     const showPagesRestrictedByOwner = !configManager.getConfig('security:list-policy:hideRestrictedByOwner');
     const showPagesRestrictedByGroup = !configManager.getConfig('security:list-policy:hideRestrictedByGroup');
 
     query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
+
+    if (query.body?.query?.bool?.filter == null || !Array.isArray(query.body?.query?.bool?.filter)) {
+      throw new Error('query.body.query.bool is not initialized');
+    }
 
     const Page = mongoose.model('Page') as unknown as PageModel;
     const {
