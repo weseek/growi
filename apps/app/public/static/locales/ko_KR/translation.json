@@ -142,7 +142,6 @@
   "edited this page": "이 페이지를 편집했습니다.",
   "List Drafts": "초안 목록",
   "Deleted Pages": "삭제된 페이지",
-  "Questionnaire": "설문 조사",
   "Disassociate": "연결 해제",
   "No bookmarks yet": "아직 북마크가 없습니다.",
   "add_bookmark": "북마크에 추가",
@@ -978,23 +977,6 @@
   "v5_page_migration": {
     "page_tree_not_avaliable": "페이지 트리 기능은 아직 사용할 수 없습니다.",
     "go_to_settings": "기능을 활성화하려면 설정으로 이동"
-  },
-  "questionnaire": {
-    "give_us_feedback": "개선을 위한 피드백을 제공하십시오.",
-    "thank_you_for_answering": "답변해 주셔서 감사합니다.",
-    "additional_feedback": "사용자 아이콘 드롭다운에서 추가 피드백을 보내주십시오.",
-    "dont_show_again": "다시 표시 안 함",
-    "deny": "답변 안 함",
-    "agree": "동의",
-    "disagree": "동의하지 않음",
-    "answer": "답변",
-    "no_answer": "답변 없음",
-    "settings": "설문 조사 설정",
-    "failed_to_send": "피드백 전송 실패",
-    "denied": "설문 조사가 다시 표시되지 않습니다.",
-    "personal_settings_explanation": "GROWI 개선을 위한 설문 조사가 표시됩니다. 다른 피드백이 있는 경우 사용자 아이콘 드롭다운에서 보낼 수 있습니다.",
-    "enable_questionnaire": "설문 조사 활성화",
-    "disabled_by_admin": "설문 조사가 관리자에 의해 비활성화되었습니다."
   },
   "tag_edit_modal": {
     "edit_tags": "태그 편집",

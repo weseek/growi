@@ -7,7 +7,6 @@
   "Sign out": "로그아웃",
   "New": "새로 만들기",
   "Delete": "삭제",
-
   "meta": {
     "display_name": "한국어"
   },
@@ -30,7 +29,6 @@
   "headers": {
     "app_settings": "앱 설정"
   },
-
   "header_search_box": {
     "label": {
       "All pages": "모든 페이지",
@@ -41,20 +39,17 @@
       "This tree": "이 트리의 하위 항목만"
     }
   },
-
   "search_method_menu_item": {
     "search_in_all": "모두 검색",
     "only_children_of_this_tree": "이 트리의 하위 항목만",
     "exact_mutch": "정확히 일치"
   },
-
   "share_links": {
     "Share Link": "공유 링크",
     "Page Path": "페이지 경로",
     "expire": "만료",
     "description": "설명"
   },
-
   "in_app_notification": {
     "notification_list": "앱 내 알림 목록",
     "see_all": "모두 보기",
@@ -65,7 +60,6 @@
     "no_unread_messages": "읽지 않은 메시지 없음",
     "only_unread": "읽지 않은 메시지만"
   },
-
   "personal_dropdown": {
     "home": "홈",
     "settings": "설정",
@@ -75,7 +69,6 @@
     "use_os_settings": "OS 설정 사용",
     "feedback": "피드백"
   },
-
   "create_page_dropdown": {
     "new_page": "새 페이지 생성",
     "open_page_create_modal": "새 페이지 생성 모달 열기",
@@ -89,7 +82,6 @@
       "descendants": "하위 항목용 템플릿"
     }
   },
-
   "copy_to_clipboard": {
     "Copy to clipboard": "클립보드에 복사",
     "Page path": "페이지 경로",
@@ -99,14 +91,12 @@
     "Markdown link": "마크다운 링크",
     "Append params": "매개변수 추가"
   },
-
   "crop_image_modal": {
     "image_crop": "이미지 자르기",
     "crop": "자르기",
     "save": "저장",
     "cancel": "취소"
   },
-
   "handsontable_modal": {
     "title": "테이블 편집",
     "data_import": "데이터 가져오기",
@@ -122,35 +112,9 @@
       "import": "가져오기"
     }
   },
-
-  "questionnaire_modal": {
-    "required": "필수",
-    "submit": "제출",
-    "close": "닫기",
-    "title": "서비스 개선을 위한 GROWI 설문 조사",
-    "more_satisfied_services": "GROWI 고객이 더욱 만족하기를 바랍니다.",
-    "strive_to_improve_services": "귀하의 피드백을 바탕으로 서비스를 개선하기 위해 노력하겠습니다.",
-    "length_of_experience": {
-      "more_than_two_years": "2년 이상",
-      "one_to_two_years": "1년 이상 2년 미만",
-      "six_months_to_one_year": "6개월 이상 1년 미만",
-      "three_months_to_six_months": "3개월 이상 6개월 미만",
-      "one_month_to_three_months": "1개월 이상 3개월 미만",
-      "less_than_one_month": "1개월 미만"
-    },
-    "satisfaction_with_growi": "GROWI 만족도",
-    "history_of_growi_usage": "GROWI 사용 이력",
-    "occupation": "직업",
-    "position": "직위",
-    "comment_on_growi": "GROWI에 대한 의견",
-    "successfully_submitted": "설문 조사가 제출되었습니다.",
-    "thanks_for_answering": "답변해 주셔서 대단히 감사합니다."
-  },
-
   "not_found_page": {
     "page_not_exist": "이 페이지는 존재하지 않습니다."
   },
-
   "g2g_data_transfer": {
     "tab": "데이터 전송",
     "data_transfer": "데이터 전송",
