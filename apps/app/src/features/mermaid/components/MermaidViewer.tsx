@@ -3,7 +3,6 @@ import React, { useRef, useEffect, type JSX } from 'react';
 import mermaid from 'mermaid';
 import { v7 as uuidV7 } from 'uuid';
 
-import { useNextThemes } from '~/stores-universal/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:features:mermaid:MermaidViewer');
@@ -15,16 +14,12 @@ type MermaidViewerProps = {
 export const MermaidViewer = React.memo((props: MermaidViewerProps): JSX.Element => {
   const { value } = props;
 
-  const { isDarkMode } = useNextThemes();
-
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     (async() => {
       if (ref.current != null && value != null) {
-        mermaid.initialize({
-          theme: isDarkMode ? 'dark' : undefined,
-        });
+        mermaid.initialize({});
         try {
           // Attempting to render multiple Mermaid diagrams using `mermaid.run` can cause duplicate SVG IDs.
           // This is because it uses `Date.now()` for ID generation.
@@ -40,7 +35,7 @@ export const MermaidViewer = React.memo((props: MermaidViewerProps): JSX.Element
         }
       }
     })();
-  }, [isDarkMode, value]);
+  }, [value]);
 
   return (
     value
