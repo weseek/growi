@@ -285,6 +285,9 @@ class PdfConvertService implements OnInit {
       concurrency: Cluster.CONCURRENCY_PAGE,
       maxConcurrency: this.maxConcurrency,
       workerCreationDelay: 10000,
+      puppeteerOptions: {
+        args: ['--no-sandbox'],
+      },
     });
 
     await this.puppeteerCluster.task(async ({ page, data: htmlString }) => {
