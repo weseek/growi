@@ -286,6 +286,7 @@ class PdfConvertService implements OnInit {
       maxConcurrency: this.maxConcurrency,
       workerCreationDelay: 10000,
       puppeteerOptions: {
+        // c.f) https://github.com/weseek/growi/pull/10192
         args: ['--no-sandbox'],
       },
     });
