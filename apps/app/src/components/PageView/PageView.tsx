@@ -89,7 +89,7 @@ export const PageView = (props: Props): JSX.Element => {
 
     const target = document.getElementById(decodeURIComponent(targetId));
 
-    if (target) {
+    if (target != null) {
       target.scrollIntoView();
       hasScrolledRef.current = true;
     }
