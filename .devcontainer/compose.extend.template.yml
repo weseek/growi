@@ -10,5 +10,3 @@ services:
       - node_modules:/workspace/growi/node_modules
       - page_bulk_export_tmp:/tmp/page-bulk-export
     tty: true
-    cap_add:
-      - SYS_ADMIN

@@ -1,7 +1,7 @@
 # Instal additional packages
 sudo apt update
 sudo apt-get install -y --no-install-recommends \
-  chromium chromium-sandbox fonts-lato fonts-ipafont-gothic fonts-noto-cjk
+  chromium fonts-lato fonts-ipafont-gothic fonts-noto-cjk
 sudo apt-get clean -y
 
 # Set permissions for shared directory for bulk export
