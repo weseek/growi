@@ -1014,23 +1014,6 @@
     "page_tree_not_avaliable": "Page Tree 機能は現在使用できません。",
     "go_to_settings": "設定する"
   },
-  "questionnaire": {
-    "give_us_feedback": "GROWI の改善のために、アンケートにご協力ください",
-    "thank_you_for_answering": "ご回答ありがとうございます",
-    "additional_feedback": "その他ご意見ご要望はユーザーアイコンのドロップダウンからお願い致します。",
-    "dont_show_again": "今後このアンケートを表示しない",
-    "deny": "回答しない",
-    "agree": "そう思う",
-    "disagree": "そう思わない",
-    "answer": "回答する",
-    "no_answer": "わからない",
-    "settings": "アンケート設定",
-    "failed_to_send": "回答送信に失敗しました",
-    "denied": "このアンケートは今後表示されません",
-    "personal_settings_explanation": "GROWI 改善のためのアンケートが表示されるようになります。ご意見ご要望はユーザーアイコンのドロップダウンからお願いいたします。",
-    "enable_questionnaire": "アンケートを有効にする",
-    "disabled_by_admin": "管理者によってアンケートは無効化されています"
-  },
   "tag_edit_modal": {
     "edit_tags": "タグの編集",
     "done": "完了",

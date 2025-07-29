@@ -113,8 +113,8 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
       }
     }
 
-    const basePath = isHtmlPath ? path.join(this.tmpOutputRootDir, 'html') : this.tmpOutputRootDir;
-    return path.join(basePath, appId ?? '', jobId);
+    const basePath = path.join(this.tmpOutputRootDir, appId ?? '');
+    return isHtmlPath ? path.join(basePath, 'html', jobId) : path.join(basePath, jobId);
   }
 
   /**

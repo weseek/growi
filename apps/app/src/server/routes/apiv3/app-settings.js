@@ -106,9 +106,6 @@ const router = express.Router();
  *          isMaintenanceMode:
  *            type: boolean
  *            example: false
- *          isQuestionnaireEnabled:
- *            type: boolean
- *            example: true
  *          isV5Compatible:
  *            type: boolean
  *            example: true
@@ -317,17 +314,6 @@ const router = express.Router();
  *          azureReferenceFileWithRelayMode:
  *            type: boolean
  *            description: is enable internal stream system for azure file request
- *      QuestionnaireSettingParams:
- *        description: QuestionnaireSettingParams
- *        type: object
- *        properties:
- *          isQuestionnaireEnabled:
- *            type: boolean
- *            description: is questionnaire enabled, or not
- *            example: true
- *          isAppSiteUrlHashed:
- *            type: boolean
- *            description: is app site url hashed, or not
  */
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
@@ -400,10 +386,6 @@ module.exports = (crowi) => {
       body('azureStorageStorageName').trim(),
       body('azureReferenceFileWithRelayMode').if(value => value != null).isBoolean(),
 
-    ],
-    questionnaireSettings: [
-      body('isQuestionnaireEnabled').isBoolean(),
-      body('isAppSiteUrlHashed').isBoolean(),
     ],
     pageBulkExportSettings: [
       body('isBulkExportPagesEnabled').isBoolean(),
@@ -494,9 +476,6 @@ module.exports = (crowi) => {
       envAzureStorageContainerName: configManager.getConfig('azure:storageContainerName', ConfigSource.env),
 
       isEnabledPlugins: configManager.getConfig('plugin:isEnabledPlugins'),
-
-      isQuestionnaireEnabled: configManager.getConfig('questionnaire:isQuestionnaireEnabled'),
-      isAppSiteUrlHashed: configManager.getConfig('questionnaire:isAppSiteUrlHashed'),
 
       isMaintenanceMode: configManager.getConfig('app:isMaintenanceMode'),
 
@@ -1023,63 +1002,6 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in retrieving file upload configurations';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-fileUploadType-failed'));
-    }
-
-  });
-
-  /**
-   * @swagger
-   *
-   *    /app-settings/questionnaire-settings:
-   *      put:
-   *        tags: [AppSettings]
-   *        security:
-   *          - cookieAuth: []
-   *        summary: /app-settings/questionnaire-settings
-   *        description: Update QuestionnaireSetting
-   *        requestBody:
-   *          required: true
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/QuestionnaireSettingParams'
-   *        responses:
-   *          200:
-   *            description: Succeeded to update QuestionnaireSetting
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  type: object
-   *                  properties:
-   *                    responseParams:
-   *                      type: object
-   *                      $ref: '#/components/schemas/QuestionnaireSettingParams'
-   */
-  // eslint-disable-next-line max-len
-  router.put('/questionnaire-settings', loginRequiredStrictly, adminRequired, addActivity, validator.questionnaireSettings, apiV3FormValidator, async(req, res) => {
-    const { isQuestionnaireEnabled, isAppSiteUrlHashed } = req.body;
-
-    const requestParams = {
-      'questionnaire:isQuestionnaireEnabled': isQuestionnaireEnabled,
-      'questionnaire:isAppSiteUrlHashed': isAppSiteUrlHashed,
-    };
-
-    try {
-      await configManager.updateConfigs(requestParams, { skipPubsub: true });
-
-      const responseParams = {
-        isQuestionnaireEnabled: configManager.getConfig('questionnaire:isQuestionnaireEnabled'),
-        isAppSiteUrlHashed: configManager.getConfig('questionnaire:isAppSiteUrlHashed'),
-      };
-
-      const parameters = { action: SupportedAction.ACTION_ADMIN_QUESTIONNAIRE_SETTINGS_UPDATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-      return res.apiv3({ responseParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating questionnaire settings';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-questionnaire-settings-failed'));
     }
 
   });

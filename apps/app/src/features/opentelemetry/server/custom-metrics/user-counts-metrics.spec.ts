@@ -25,7 +25,7 @@ vi.mock('@opentelemetry/api', () => ({
 const mockGrowiInfoService = {
   getGrowiInfo: vi.fn(),
 };
-vi.mock('~/server/service/growi-info', () => ({
+vi.mock('~/server/service/growi-info', async() => ({
   growiInfoService: mockGrowiInfoService,
 }));
 
@@ -85,7 +85,7 @@ describe('addUserCountsMetrics', () => {
       const callback = mockMeter.addBatchObservableCallback.mock.calls[0][0];
       await callback(mockResult);
 
-      expect(mockGrowiInfoService.getGrowiInfo).toHaveBeenCalledWith(true);
+      expect(mockGrowiInfoService.getGrowiInfo).toHaveBeenCalledWith({ includeUserCountInfo: true });
       expect(mockResult.observe).toHaveBeenCalledWith(mockUserCountGauge, 150);
       expect(mockResult.observe).toHaveBeenCalledWith(mockActiveUserCountGauge, 75);
     });

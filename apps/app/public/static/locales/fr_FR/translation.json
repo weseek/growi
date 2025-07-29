@@ -143,7 +143,6 @@
   "edited this page": "à modifié cette page.",
   "List Drafts": "Brouillons",
   "Deleted Pages": "Pages supprimées",
-  "Questionnaire": "Questionnaire",
   "Disassociate": "Dissocier",
   "No bookmarks yet": "Aucuns favoris",
   "add_bookmark": "Ajouter aux favoris",
@@ -620,7 +619,7 @@
   "default_ai_assistant": {
     "not_set": "L'assistant par défaut n'est pas configuré"
   },
- "ai_assistant_substance": {
+  "ai_assistant_substance": {
     "add_assistant": "Ajouter un assistant",
     "my_assistants": "Mes assistants",
     "team_assistants": "Assistants d'équipe",
@@ -975,23 +974,6 @@
   "v5_page_migration": {
     "page_tree_not_avaliable": "Cette fonctionnalité n'est pas encore disponible.",
     "go_to_settings": "Activer cette fonctionnalité dans les paramètres"
-  },
-  "questionnaire": {
-    "give_us_feedback": "Faites-nous part de votre avis",
-    "thank_you_for_answering": "Merci pour votre réponse",
-    "additional_feedback": "Envoyez-nous votre avis depuis le menu déroulant sur le menu utilisateur.",
-    "dont_show_again": "Ne plus afficher",
-    "deny": "Ne pas répondre",
-    "agree": "En accord",
-    "disagree": "En désaccord",
-    "answer": "Répondre",
-    "no_answer": "Aucune réponse",
-    "settings": "Sondages anonymes",
-    "failed_to_send": "Échec de l'envoi du sondage",
-    "denied": "Les sondages ne seront plus affichés.",
-    "personal_settings_explanation": "Sondages de satisfaction anonymes.",
-    "enable_questionnaire": "Sondages anonymes",
-    "disabled_by_admin": "Sondages anonymes désactivés par l'administrateur"
   },
   "tag_edit_modal": {
     "edit_tags": "Étiquettes",
