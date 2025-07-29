@@ -20,7 +20,7 @@ import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
 import type { CommonProps } from './utils/commons';
 import {
-  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig,
+  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from './utils/commons';
 
 const SearchResultLayout = dynamic(() => import('~/components/Layout/SearchResultLayout'), { ssr: false });
@@ -65,9 +65,6 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
 
   // Hydrate sidebar atoms with server-side data
   useHydrateSidebarAtoms(props.sidebarConfig, props.userUISettings);
-
-  // init sidebar config with UserUISettings and sidebarConfig
-  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
   // render config
   useRendererConfig(props.rendererConfig);

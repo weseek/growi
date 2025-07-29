@@ -42,34 +42,31 @@
 - ✅ JSX階層がフラット
 - ✅ より自然な React Hook の使用感
 
-### 優先度 1: UI 状態（クライアントサイド完結）
+### ✅ 優先度 1: UI 状態（クライアントサイド完結）- 完了
 
-#### 1.1 サイドバー関連の残り
-- [ ] `useCurrentSidebarContents`: サイドバーのコンテンツタイプ
-  - **ファイル**: `/workspace/growi/apps/app/src/stores/ui.tsx:156`
-  - **使用箇所**: 
-    - `SidebarContents.tsx`
-    - `PrimaryItem.tsx`
-    - `pages/utils/commons.ts`
-  - **特徴**: 永続化必要（`scheduleToPut({ currentSidebarContents: data })`）
+#### ✅ 1.1 サイドバー関連の完全移行（完了）
+- ✅ `useCurrentSidebarContents`: サイドバーのコンテンツタイプ
+  - **実装**: `currentSidebarContentsAtom` + `currentSidebarContentsAtomExt`
+  - **永続化**: `scheduleToPut({ currentSidebarContents: data })`
+  - **SSRハイドレーション**: 追加済み
 
-- [ ] `useCollapsedContentsOpened`: 折りたたまれたコンテンツの開閉状態
-  - **ファイル**: `/workspace/growi/apps/app/src/stores/ui.tsx:188`
-  - **使用箇所**: 
-    - `ToggleCollapseButton.tsx`
-    - `PrimaryItem.tsx`
-    - `SidebarContents.tsx`
-    - `Sidebar.tsx`
-    - `UISettings.tsx`
+- ✅ `useCollapsedContentsOpened`: 折りたたまれたコンテンツの開閉状態
+  - **実装**: `isCollapsedContentsOpenedAtom`
   - **特徴**: 一時的な状態（永続化不要）
 
-- [ ] `useCurrentProductNavWidth`: プロダクトナビゲーションの幅
-  - **ファイル**: `/workspace/growi/apps/app/src/stores/ui.tsx:175`
-  - **使用箇所**: 
-    - `PagePathNavSticky.tsx`
-    - `Sidebar.tsx`
-    - `pages/utils/commons.ts`
-  - **特徴**: 永続化必要（`scheduleToPut({ currentProductNavWidth: data })`）
+- ✅ `useCurrentProductNavWidth`: プロダクトナビゲーションの幅
+  - **実装**: `currentProductNavWidthAtom` + `currentProductNavWidthAtomExt`
+  - **永続化**: `scheduleToPut({ currentProductNavWidth: data })`
+  - **SSRハイドレーション**: 追加済み
+
+**実施内容:**
+- ✅ 新しい atoms を `states/ui/sidebar.ts` に実装
+- ✅ `preferCollapsedModeAtomExt` パターンに従って永続化対応
+- ✅ SSRハイドレーションに全ての atoms を追加
+- ✅ `useInitSidebarConfig` 関数を完全削除
+- ✅ 使用箇所の更新（imports削除）
+
+**次のステップ**: 既存SWR版の使用箇所をJotai版に置き換え
 
 #### 1.2 ページ関連の UI 状態
 - [ ] `usePageControlsX`: ページコントロールのX座標

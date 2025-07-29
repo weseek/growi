@@ -5,10 +5,11 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 import type { SidebarContentsType } from '~/interfaces/ui';
 import { SidebarMode } from '~/interfaces/ui';
-import { useCollapsedContentsOpened, useCurrentSidebarContents, useIsMobile } from '~/stores/ui';
+import { useCollapsedContentsOpened, useCurrentSidebarContents } from '~/states/ui/sidebar';
+import { useIsMobile } from '~/stores/ui';
 
 const useIndicator = (sidebarMode: SidebarMode, isSelected: boolean): string => {
-  const { data: isCollapsedContentsOpened } = useCollapsedContentsOpened();
+  const [isCollapsedContentsOpened] = useCollapsedContentsOpened();
 
   if (sidebarMode === SidebarMode.COLLAPSED && !isCollapsedContentsOpened) {
     return '';
@@ -34,15 +35,15 @@ export const PrimaryItem = (props: PrimaryItemProps): JSX.Element => {
     onClick, onHover,
   } = props;
 
-  const { data: currentContents, mutateAndSave: mutateContents } = useCurrentSidebarContents();
+  const [currentContents, setCurrentContents] = useCurrentSidebarContents();
 
   const indicatorClass = useIndicator(sidebarMode, contents === currentContents);
   const { data: isMobile } = useIsMobile();
   const { t } = useTranslation();
 
   const selectThisItem = useCallback(() => {
-    mutateContents(contents, false);
-  }, [contents, mutateContents]);
+    setCurrentContents(contents);
+  }, [contents, setCurrentContents]);
 
   const itemClickedHandler = useCallback(() => {
     // do nothing ONLY WHEN the collapse mode

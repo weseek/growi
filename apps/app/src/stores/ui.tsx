@@ -4,21 +4,18 @@ import {
 } from 'react';
 
 import { PageGrant, type Nullable } from '@growi/core';
-import { type SWRResponseWithUtils, useSWRStatic, withUtils } from '@growi/core/dist/swr';
+import { useSWRStatic } from '@growi/core/dist/swr';
 import { pagePathUtils, isClient } from '@growi/core/dist/utils';
 import { Breakpoint } from '@growi/ui/dist/interfaces';
 import { addBreakpointListener, cleanupBreakpointListener } from '@growi/ui/dist/utils';
 import { useRouter } from 'next/router';
 import type { HtmlElementNode } from 'rehype-toc';
-import type { MutatorOptions } from 'swr';
 import {
   useSWRConfig, type SWRResponse, type Key,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import { scheduleToPut } from '~/client/services/user-ui-settings';
 import type { IPageSelectedGrant } from '~/interfaces/page';
-import { SidebarContentsType } from '~/interfaces/ui';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
 import {
   useIsEditable, useIsReadOnlyUser,
@@ -148,45 +145,8 @@ export const useIsDeviceLargerThanLg = (): SWRResponse<boolean, Error> => {
 };
 
 
-type MutateAndSaveUserUISettings<Data> = (data: Data, opts?: boolean | MutatorOptions<Data>) => Promise<Data | undefined>;
-type MutateAndSaveUserUISettingsUtils<Data> = {
-  mutateAndSave: MutateAndSaveUserUISettings<Data>;
-}
-
-export const useCurrentSidebarContents = (
-    initialData?: SidebarContentsType,
-): SWRResponseWithUtils<MutateAndSaveUserUISettingsUtils<SidebarContentsType>, SidebarContentsType> => {
-  const swrResponse = useSWRStatic('sidebarContents', initialData, { fallbackData: SidebarContentsType.TREE });
-
-  const { mutate } = swrResponse;
-
-  const mutateAndSave: MutateAndSaveUserUISettings<SidebarContentsType> = useCallback((data, opts?) => {
-    scheduleToPut({ currentSidebarContents: data });
-    return mutate(data, opts);
-  }, [mutate]);
-
-  return withUtils(swrResponse, { mutateAndSave });
-};
-
 export const usePageControlsX = (initialData?: number): SWRResponse<number> => {
   return useSWRStatic('pageControlsX', initialData);
-};
-
-export const useCurrentProductNavWidth = (initialData?: number): SWRResponseWithUtils<MutateAndSaveUserUISettingsUtils<number>, number> => {
-  const swrResponse = useSWRStatic('productNavWidth', initialData, { fallbackData: 320 });
-
-  const { mutate } = swrResponse;
-
-  const mutateAndSave: MutateAndSaveUserUISettings<number> = useCallback((data, opts?) => {
-    scheduleToPut({ currentProductNavWidth: data });
-    return mutate(data, opts);
-  }, [mutate]);
-
-  return withUtils(swrResponse, { mutateAndSave });
-};
-
-export const useCollapsedContentsOpened = (initialData?: boolean): SWRResponse<boolean> => {
-  return useSWRStatic('isCollapsedContentsOpened', initialData, { fallbackData: false });
 };
 
 export const useSelectedGrant = (initialData?: Nullable<IPageSelectedGrant>): SWRResponse<Nullable<IPageSelectedGrant>, Error> => {

@@ -9,12 +9,10 @@ import * as nextI18NextConfig from '^/config/next-i18next.config';
 
 import { type SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { PageDocument } from '~/server/models/page';
 import type { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import { detectLocaleFromBrowserAcceptLanguage } from '~/server/util/locale-utils';
-import { useCurrentProductNavWidth, useCurrentSidebarContents } from '~/stores/ui';
 import { getGrowiVersion } from '~/utils/growi-version';
 
 export type CommonProps = {
@@ -180,15 +178,6 @@ export const generateCustomTitleForPage = (props: CommonProps, pagePath: string)
     .replace('{{sitename}}', props.appTitle)
     .replace('{{pagepath}}', pagePath)
     .replace('{{pagename}}', dPagePath.latter);
-};
-
-export const useInitSidebarConfig = (sidebarConfig: ISidebarConfig, userUISettings?: IUserUISettings): void => {
-  // NOTE: UI state initialization is now handled by useHydrateSidebarAtoms hook
-  // This function is kept for backwards compatibility with existing SWR-based states
-  // TODO: Remove this function after migrating all UI states to Jotai
-
-  useCurrentSidebarContents(userUISettings?.currentSidebarContents);
-  useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
 };
 
 export const skipSSR = async(page: PageDocument, ssrMaxRevisionBodyLength: number): Promise<boolean> => {

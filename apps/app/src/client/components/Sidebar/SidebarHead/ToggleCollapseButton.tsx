@@ -3,11 +3,8 @@ import {
 } from 'react';
 
 import {
-  useDrawerOpened, usePreferCollapsedMode, useSidebarMode,
+  useDrawerOpened, usePreferCollapsedMode, useSidebarMode, useCollapsedContentsOpened,
 } from '~/states/ui/sidebar';
-import {
-  useCollapsedContentsOpened,
-} from '~/stores/ui';
 
 
 import styles from './ToggleCollapseButton.module.scss';
@@ -18,7 +15,7 @@ export const ToggleCollapseButton = memo((): JSX.Element => {
   const { isDrawerMode, isCollapsedMode } = useSidebarMode();
   const [isDrawerOpened, setIsDrawerOpened] = useDrawerOpened();
   const [, setPreferCollapsedMode] = usePreferCollapsedMode();
-  const { mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
+  const [, setCollapsedContentsOpened] = useCollapsedContentsOpened();
 
   const toggleDrawer = useCallback(() => {
     setIsDrawerOpened(!isDrawerOpened);
@@ -26,8 +23,8 @@ export const ToggleCollapseButton = memo((): JSX.Element => {
 
   const toggleCollapsed = useCallback(() => {
     setPreferCollapsedMode(!isCollapsedMode());
-    mutateCollapsedContentsOpened(false);
-  }, [isCollapsedMode, mutateCollapsedContentsOpened, setPreferCollapsedMode]);
+    setCollapsedContentsOpened(false);
+  }, [isCollapsedMode, setCollapsedContentsOpened, setPreferCollapsedMode]);
 
   const rotationClass = isCollapsedMode() ? 'rotate180' : '';
   const icon = useMemo(() => {

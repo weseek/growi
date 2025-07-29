@@ -1,7 +1,7 @@
 import { atom, useAtom } from 'jotai';
 
 import { scheduleToPut } from '~/client/services/user-ui-settings';
-import { SidebarMode } from '~/interfaces/ui';
+import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
 import { EditorMode } from '~/stores-universal/ui';
 
 import { isDeviceLargerThanXlAtom } from './device';
@@ -29,14 +29,49 @@ export const usePreferCollapsedMode = (): UseAtom<typeof preferCollapsedModeAtom
   return useAtom(preferCollapsedModeAtomExt);
 };
 
-// Export the base atom for SSR hydration
-export { preferCollapsedModeAtom };
+// Collapsed contents opened state (temporary UI state, no persistence needed)
+const isCollapsedContentsOpenedAtom = atom(false);
 
-// TODO: Migrate from SWR - Current sidebar contents atom
-// const currentSidebarContentsAtom = atom<SidebarContentsType>(SidebarContentsType.TREE);
+export const useCollapsedContentsOpened = (): UseAtom<typeof isCollapsedContentsOpenedAtom> => {
+  return useAtom(isCollapsedContentsOpenedAtom);
+};
 
-// TODO: Migrate from SWR - Product navigation width atom
-// const currentProductNavWidthAtom = atom<number>(320);
+// Current sidebar contents state (with persistence)
+const currentSidebarContentsAtom = atom<SidebarContentsType>(SidebarContentsType.TREE);
+const currentSidebarContentsAtomExt = atom(
+  get => get(currentSidebarContentsAtom),
+  (get, set, update: SidebarContentsType) => {
+    set(currentSidebarContentsAtom, update);
+    scheduleToPut({ currentSidebarContents: update });
+  },
+);
+
+export const useCurrentSidebarContents = (): UseAtom<typeof currentSidebarContentsAtom> => {
+  return useAtom(currentSidebarContentsAtomExt);
+};
+
+// Current product navigation width state (with persistence)
+const currentProductNavWidthAtom = atom<number>(320);
+const currentProductNavWidthAtomExt = atom(
+  get => get(currentProductNavWidthAtom),
+  (get, set, update: number) => {
+    set(currentProductNavWidthAtom, update);
+    scheduleToPut({ currentProductNavWidth: update });
+  },
+);
+
+export const useCurrentProductNavWidth = (): UseAtom<typeof currentProductNavWidthAtom> => {
+  return useAtom(currentProductNavWidthAtomExt);
+};
+
+// Export base atoms for SSR hydration
+export {
+  preferCollapsedModeAtom,
+  isCollapsedContentsOpenedAtom,
+  currentSidebarContentsAtom,
+  currentProductNavWidthAtom,
+};
+
 const sidebarModeAtom = atom(
   (get) => {
     const isDeviceLargerThanXl = get(isDeviceLargerThanXlAtom);

@@ -8,20 +8,20 @@ import SimpleBar from 'simplebar-react';
 import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import { SidebarMode } from '~/interfaces/ui';
-import { useIsSearchPage } from '~/stores-universal/context';
-import { EditorMode, useEditorMode } from '~/stores-universal/ui';
-import {
-  useCollapsedContentsOpened,
-  useCurrentProductNavWidth,
-  useSidebarScrollerRef,
-  useIsDeviceLargerThanMd,
-} from '~/stores/ui';
 import { useDeviceLargerThanXl } from '~/states/ui/device';
 import {
   useDrawerOpened,
   usePreferCollapsedMode,
   useSidebarMode,
+  useCollapsedContentsOpened,
+  useCurrentProductNavWidth,
 } from '~/states/ui/sidebar';
+import { useIsSearchPage } from '~/stores-universal/context';
+import { EditorMode, useEditorMode } from '~/stores-universal/ui';
+import {
+  useSidebarScrollerRef,
+  useIsDeviceLargerThanMd,
+} from '~/stores/ui';
 
 import { DrawerToggler } from '../Common/DrawerToggler';
 
@@ -73,9 +73,9 @@ const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element =>
 
   const { isDrawerMode, isCollapsedMode, isDockMode } = useSidebarMode();
   const [, setIsDrawerOpened] = useDrawerOpened();
-  const { data: currentProductNavWidth, mutateAndSave: mutateProductNavWidth } = useCurrentProductNavWidth();
+  const [currentProductNavWidth, setCurrentProductNavWidth] = useCurrentProductNavWidth();
   const [, setPreferCollapsedMode] = usePreferCollapsedMode();
-  const { mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
+  const [, setCollapsedContentsOpened] = useCollapsedContentsOpened();
 
   const [isClient, setClient] = useState(false);
   const [resizableAreaWidth, setResizableAreaWidth] = useState<number|undefined>(
@@ -87,13 +87,13 @@ const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element =>
   }, []);
 
   const resizeDoneHandler = useCallback((newWidth: number) => {
-    mutateProductNavWidth(newWidth, false);
-  }, [mutateProductNavWidth]);
+    setCurrentProductNavWidth(newWidth);
+  }, [setCurrentProductNavWidth]);
 
   const collapsedByResizableAreaHandler = useCallback(() => {
     setPreferCollapsedMode(true);
-    mutateCollapsedContentsOpened(false);
-  }, [mutateCollapsedContentsOpened, setPreferCollapsedMode]);
+    setCollapsedContentsOpened(false);
+  }, [setCollapsedContentsOpened, setPreferCollapsedMode]);
 
   useIsomorphicLayoutEffect(() => {
     setClient(true);
@@ -142,8 +142,8 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
   const { Nav, className, children } = props;
 
   const { isCollapsedMode } = useSidebarMode();
-  const { data: currentProductNavWidth } = useCurrentProductNavWidth();
-  const { data: isCollapsedContentsOpened, mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
+  const [currentProductNavWidth] = useCurrentProductNavWidth();
+  const [isCollapsedContentsOpened, setCollapsedContentsOpened] = useCollapsedContentsOpened();
 
   const sidebarScrollerRef = useRef<HTMLDivElement>(null);
   const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
@@ -157,8 +157,8 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
       return;
     }
 
-    mutateCollapsedContentsOpened(true);
-  }, [isCollapsedMode, mutateCollapsedContentsOpened]);
+    setCollapsedContentsOpened(true);
+  }, [isCollapsedMode, setCollapsedContentsOpened]);
 
   // close menu when collapsed mode
   const mouseLeaveHandler = useCallback(() => {
@@ -167,8 +167,8 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
       return;
     }
 
-    mutateCollapsedContentsOpened(false);
-  }, [isCollapsedMode, mutateCollapsedContentsOpened]);
+    setCollapsedContentsOpened(false);
+  }, [isCollapsedMode, setCollapsedContentsOpened]);
 
   const closedClass = isCollapsedMode() && !isCollapsedContentsOpened ? 'd-none' : '';
   const openedClass = isCollapsedMode() && isCollapsedContentsOpened ? 'open' : '';

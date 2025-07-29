@@ -64,7 +64,7 @@ import loggerFactory from '~/utils/logger';
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
 import {
-  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, useInitSidebarConfig, skipSSR, addActivity,
+  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, skipSSR, addActivity,
 } from './utils/commons';
 
 
@@ -409,9 +409,6 @@ type LayoutProps = Props & {
 const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
   // Hydrate sidebar atoms with server-side data
   useHydrateSidebarAtoms(props.sidebarConfig, props.userUISettings);
-
-  // init sidebar config with UserUISettings and sidebarConfig
-  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
   return <BasicLayoutWithEditor>{children}</BasicLayoutWithEditor>;
 };

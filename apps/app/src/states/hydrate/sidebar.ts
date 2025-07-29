@@ -1,8 +1,13 @@
 import { useHydrateAtoms } from 'jotai/utils';
 
 import type { ISidebarConfig } from '../../interfaces/sidebar-config';
+import { SidebarContentsType } from '../../interfaces/ui';
 import type { IUserUISettings } from '../../interfaces/user-ui-settings';
-import { preferCollapsedModeAtom } from '../ui/sidebar';
+import {
+  preferCollapsedModeAtom,
+  currentSidebarContentsAtom,
+  currentProductNavWidthAtom,
+} from '../ui/sidebar';
 
 /**
  * Hook for hydrating sidebar-related UI state atoms with server-side data
@@ -16,8 +21,10 @@ export const useHydrateSidebarAtoms = (sidebarConfig: ISidebarConfig, userUISett
     // Use user preference from DB if available, otherwise use system default
     [preferCollapsedModeAtom, userUISettings?.preferCollapsedModeByUser ?? sidebarConfig.isSidebarCollapsedMode],
 
-    // TODO: Add other sidebar UI state atoms when migrated from SWR
-    // [currentSidebarContentsAtom, userUISettings?.currentSidebarContents ?? SidebarContentsType.TREE],
-    // [currentProductNavWidthAtom, userUISettings?.currentProductNavWidth ?? 320],
+    // Sidebar contents type (with default fallback)
+    [currentSidebarContentsAtom, userUISettings?.currentSidebarContents ?? SidebarContentsType.TREE],
+
+    // Product navigation width (with default fallback)
+    [currentProductNavWidthAtom, userUISettings?.currentProductNavWidth ?? 320],
   ]);
 };

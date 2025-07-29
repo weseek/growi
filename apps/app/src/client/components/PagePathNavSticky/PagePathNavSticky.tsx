@@ -7,9 +7,9 @@ import { pagePathUtils } from '@growi/core/dist/utils';
 import Sticky from 'react-stickynode';
 
 import LinkedPagePath from '~/models/linked-page-path';
-import { useSidebarMode } from '~/states/ui/sidebar';
+import { useSidebarMode, useCurrentProductNavWidth } from '~/states/ui/sidebar';
 import {
-  usePageControlsX, useCurrentProductNavWidth,
+  usePageControlsX,
 } from '~/stores/ui';
 
 import { PagePathHierarchicalLink } from '../../../components/Common/PagePathHierarchicalLink';
@@ -29,7 +29,7 @@ export const PagePathNavSticky = (props: PagePathNavLayoutProps): JSX.Element =>
   const { pagePath } = props;
 
   const { data: pageControlsX } = usePageControlsX();
-  const { data: sidebarWidth } = useCurrentProductNavWidth();
+  const [sidebarWidth] = useCurrentProductNavWidth();
   const { sidebarMode } = useSidebarMode();
   const pagePathNavRef = useRef<HTMLDivElement>(null);
 
