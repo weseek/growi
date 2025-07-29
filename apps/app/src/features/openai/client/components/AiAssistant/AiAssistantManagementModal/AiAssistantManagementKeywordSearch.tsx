@@ -62,7 +62,7 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
           allowNew
           multiple
           options={[]}
-          placeholder="キーワードを入力"
+          placeholder={t('modal_ai_assistant.enter_keywords')}
           id="ai-assistant-keyword-search"
           ref={typeaheadRef}
           onKeyDown={keyDownHandler}

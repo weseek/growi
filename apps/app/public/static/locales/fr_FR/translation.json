@@ -568,6 +568,7 @@
     "select_source_pages": "Sélectionnez les pages que l'assistant doit référencer",
     "search_reference_pages_by_keyword": "Rechercher les pages de référence de l'assistant par mot-clé",
     "search_by_keyword": "Rechercher par mot-clé",
+    "enter_keywords": "Entrer des mots-clés",
     "select_from_page_tree": "Sélectionner depuis l'arborescence des pages",
     "edit_page_description": "Modifier les pages que l'assistant peut référencer.<br> L'assistant peut référencer jusqu'à {{limitLearnablePageCountPerAssistant}} pages, y compris les pages enfants.",
     "default_instruction": "Vous êtes l'assistant de connaissances pour ce Wiki.\n\n## Support multilingue :\nRépondez dans la même langue que celle utilisée par l'utilisateur dans sa requête.\n",

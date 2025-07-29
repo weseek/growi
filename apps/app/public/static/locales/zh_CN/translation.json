@@ -564,6 +564,7 @@
     "select_source_pages": "选择助手要参考的页面",
     "search_reference_pages_by_keyword": "按关键词搜索助手参考的页面",
     "search_by_keyword": "按关键词搜索",
+    "enter_keywords": "输入关键词",
     "select_from_page_tree": "从页面树选择",
     "edit_page_description": "编辑助手可以参考的页面。<br> 助手可以参考最多 {{limitLearnablePageCountPerAssistant}} 个页面，包括子页面。",
     "default_instruction": "您是这个Wiki的知识助手。\n\n## 多语言支持：\n请使用用户输入中使用的相同语言进行回复。\n",
