@@ -23,6 +23,10 @@ type SelectedSearchKeyword = {
   label: string
 }
 
+const isSelectedSearchKeyword = (value: unknown): value is SelectedSearchKeyword => {
+  return (value as SelectedSearchKeyword).label != null;
+};
+
 export const AiAssistantKeywordSearch = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: aiAssistantManagementModalData } = useAiAssistantManagementModal();
@@ -37,24 +41,40 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
   }, []);
 
   const keyDownHandler = useCallback((event: KeyboardEvent<HTMLElement>) => {
-    if (event.code === 'Space') {
-      event.preventDefault();
-
-      // fix: https://redmine.weseek.co.jp/issues/140689
-      // "event.isComposing" is not supported
-      const isComposing = event.nativeEvent.isComposing;
-      if (isComposing) {
-        return;
-      }
-
-      const initialItem = typeaheadRef?.current?.state?.initialItem;
-      const handleMenuItemSelect = typeaheadRef?.current?._handleMenuItemSelect;
-
-      if (initialItem != null && handleMenuItemSelect != null) {
-        handleMenuItemSelect(initialItem, event);
-      }
+    if (event.code !== 'Space') {
+      return;
     }
-  }, []);
+
+    if (selectedSearchKeywords.length >= 5) {
+      return;
+    }
+
+    event.preventDefault();
+
+    // fix: https://redmine.weseek.co.jp/issues/140689
+    // "event.isComposing" is not supported
+    const isComposing = event.nativeEvent.isComposing;
+    if (isComposing) {
+      return;
+    }
+
+    const initialItem = typeaheadRef?.current?.state?.initialItem;
+    const handleMenuItemSelect = typeaheadRef?.current?._handleMenuItemSelect;
+    if (initialItem == null || handleMenuItemSelect == null) {
+      return;
+    }
+
+    if (!isSelectedSearchKeyword(initialItem)) {
+      return;
+    }
+
+    const allLabels = selectedSearchKeywords.map(item => item.label);
+    if (allLabels.includes(initialItem.label)) {
+      return;
+    }
+
+    handleMenuItemSelect(initialItem, event);
+  }, [selectedSearchKeywords]);
 
   return (
     <div className={moduleClass}>
