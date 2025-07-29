@@ -66,7 +66,6 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
           id="ai-assistant-keyword-search"
           ref={typeaheadRef}
           onKeyDown={keyDownHandler}
-          isLoading={false}
         />
 
         <label htmlFor="ai-assistant-keyword-search" className="form-text text-muted mt-2">
