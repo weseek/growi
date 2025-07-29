@@ -12,6 +12,7 @@ import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import PageTagRelation from '~/server/models/page-tag-relation';
+import { configManager } from '~/server/service/config-manager';
 import { preNotifyService } from '~/server/service/pre-notify';
 import loggerFactory from '~/utils/logger';
 
@@ -28,35 +29,6 @@ const router = express.Router();
 const LIMIT_FOR_LIST = 10;
 const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
 
-/**
- * @swagger
- *
- *  components:
- *    schemas:
- *      Tags:
- *        description: Tags
- *        type: array
- *        items:
- *          $ref: '#/components/schemas/Tag/properties/name'
- *        example: ['daily', 'report', 'tips']
- *
- *      Tag:
- *        description: Tag
- *        type: object
- *        properties:
- *          _id:
- *            type: string
- *            description: tag ID
- *            example: 5e2d6aede35da4004ef7e0b7
- *          name:
- *            type: string
- *            description: tag name
- *            example: daily
- *          count:
- *            type: number
- *            description: Count of tagged pages
- *            example: 3
- */
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequired = require('../../../middlewares/login-required')(crowi, true);
@@ -85,10 +57,14 @@ module.exports = (crowi) => {
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
       body('isRenameRedirect').if(value => value != null).isBoolean().withMessage('isRenameRedirect must be boolean'),
       body('updateMetadata').if(value => value != null).isBoolean().withMessage('updateMetadata must be boolean'),
-      body('isMoveMode').if(value => value != null).isBoolean().withMessage('isMoveMode must be boolean'),
     ],
     resumeRenamePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
+    ],
+    list: [
+      query('path').optional(),
+      query('page').optional().isInt().withMessage('page must be integer'),
+      query('limit').optional().isInt().withMessage('limit must be integer'),
     ],
     duplicatePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
@@ -156,8 +132,8 @@ module.exports = (crowi) => {
     const offset = parseInt(req.query.offset) || 0;
     const includeWipPage = req.query.includeWipPage === 'true'; // Need validation using express-validator
 
-    const hideRestrictedByOwner = await crowi.configManager.getConfig('security:list-policy:hideRestrictedByOwner');
-    const hideRestrictedByGroup = await crowi.configManager.getConfig('security:list-policy:hideRestrictedByGroup');
+    const hideRestrictedByOwner = configManager.getConfig('security:list-policy:hideRestrictedByOwner');
+    const hideRestrictedByGroup = configManager.getConfig('security:list-policy:hideRestrictedByGroup');
 
     /**
     * @type {import('~/server/models/page').FindRecentUpdatedPagesOption}
@@ -220,9 +196,8 @@ module.exports = (crowi) => {
    *
    *
    *    /pages/rename:
-   *      post:
+   *      put:
    *        tags: [Pages]
-   *        operationId: renamePage
    *        description: Rename page
    *        requestBody:
    *          content:
@@ -230,9 +205,9 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  pageId:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                    $ref: '#/components/schemas/ObjectId'
    *                  path:
-   *                    $ref: '#/components/schemas/Page/properties/path'
+   *                    $ref: '#/components/schemas/PagePath'
    *                  revisionId:
    *                    type: string
    *                    description: revision ID
@@ -250,9 +225,6 @@ module.exports = (crowi) => {
    *                  isRecursively:
    *                    type: boolean
    *                    description: whether rename page with descendants
-   *                  isMoveMode:
-   *                    type: boolean
-   *                    description: whether rename page with moving
    *                required:
    *                  - pageId
    *                  - revisionId
@@ -279,7 +251,6 @@ module.exports = (crowi) => {
       isRecursively: req.body.isRecursively,
       createRedirectPage: req.body.isRenameRedirect,
       updateMetadata: req.body.updateMetadata,
-      isMoveMode: req.body.isMoveMode,
     };
 
     const activityParameters = {
@@ -353,7 +324,6 @@ module.exports = (crowi) => {
     *    /pages/resume-rename:
     *      post:
     *        tags: [Pages]
-    *        operationId: resumeRenamePage
     *        description: Resume rename page operation
     *        requestBody:
     *          content:
@@ -361,7 +331,7 @@ module.exports = (crowi) => {
     *              schema:
     *                properties:
     *                  pageId:
-    *                    $ref: '#/components/schemas/Page/properties/_id'
+    *                    $ref: '#/components/schemas/ObjectId'
     *                required:
     *                  - pageId
     *        responses:
@@ -481,7 +451,6 @@ module.exports = (crowi) => {
     *    /pages/list:
     *      get:
     *        tags: [Pages]
-    *        operationId: getList
     *        description: Get list of pages
     *        parameters:
     *          - name: path
@@ -528,10 +497,10 @@ module.exports = (crowi) => {
     *                              lastUpdateUser:
     *                                $ref: '#/components/schemas/User'
     */
-  router.get('/list', accessTokenParser, loginRequired, validator.displayList, apiV3FormValidator, async(req, res) => {
+  router.get('/list', accessTokenParser, loginRequired, validator.list, apiV3FormValidator, async(req, res) => {
 
-    const { path } = req.query;
-    const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('customize:showPageLimitationS') || 10;
+    const path = normalizePath(req.query.path ?? '/');
+    const limit = parseInt(req.query.limit ?? configManager.getConfig('customize:showPageLimitationS'));
     const page = req.query.page || 1;
     const offset = (page - 1) * limit;
 
@@ -571,7 +540,6 @@ module.exports = (crowi) => {
    *    /pages/duplicate:
    *      post:
    *        tags: [Pages]
-   *        operationId: duplicatePage
    *        description: Duplicate page
    *        requestBody:
    *          content:
@@ -579,9 +547,9 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  pageId:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                    $ref: '#/components/schemas/ObjectId'
    *                  pageNameInput:
-   *                    $ref: '#/components/schemas/Page/properties/path'
+   *                    $ref: '#/components/schemas/PagePath'
    *                  isRecursively:
    *                    type: boolean
    *                    description: whether duplicate page with descendants
@@ -677,7 +645,6 @@ module.exports = (crowi) => {
    *    /pages/subordinated-list:
    *      get:
    *        tags: [Pages]
-   *        operationId: subordinatedList
    *        description: Get subordinated pages
    *        parameters:
    *          - name: path
@@ -723,7 +690,6 @@ module.exports = (crowi) => {
     *    /pages/delete:
     *      post:
     *        tags: [Pages]
-    *        operationId: deletePages
     *        description: Delete pages
     *        requestBody:
     *          content:
@@ -822,7 +788,6 @@ module.exports = (crowi) => {
    *    /pages/convert-pages-by-path:
    *      post:
    *        tags: [Pages]
-   *        operationId: convertPagesByPath
    *        description: Convert pages by path
    *        requestBody:
    *          content:
@@ -870,7 +835,6 @@ module.exports = (crowi) => {
    *    /pages/legacy-pages-migration:
    *      post:
    *        tags: [Pages]
-   *        operationId: legacyPagesMigration
    *        description: Migrate legacy pages
    *        requestBody:
    *          content:
@@ -946,7 +910,7 @@ module.exports = (crowi) => {
    */
   router.get('/v5-migration-status', accessTokenParser, loginRequired, async(req, res) => {
     try {
-      const isV5Compatible = crowi.configManager.getConfig('app:isV5Compatible');
+      const isV5Compatible = configManager.getConfig('app:isV5Compatible');
       const migratablePagesCount = req.user != null ? await crowi.pageService.countPagesCanNormalizeParentByUser(req.user) : null; // null check since not using loginRequiredStrictly
       return res.apiv3({ isV5Compatible, migratablePagesCount });
     }

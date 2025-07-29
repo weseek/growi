@@ -1,26 +1,39 @@
 import { BodyParams } from '@tsed/common';
 import { Controller } from '@tsed/di';
-import { InternalServerError } from '@tsed/exceptions';
+import { BadRequest, InternalServerError } from '@tsed/exceptions';
 import { Logger } from '@tsed/logger';
 import {
-  Post, Returns, Enum, Description,
+  Description,
+  Enum,
+  Integer,
+  Post,
+  Required,
+  Returns,
 } from '@tsed/schema';
-
-import PdfConvertService, { JobStatusSharedWithGrowi, JobStatus } from '../service/pdf-convert.js';
+import PdfConvertService, {
+  JobStatus,
+  JobStatusSharedWithGrowi,
+} from '../service/pdf-convert.js';
 
 @Controller('/pdf')
 class PdfCtrl {
-
-  constructor(private readonly pdfConvertService: PdfConvertService, private readonly logger: Logger) {}
+  constructor(
+    private readonly pdfConvertService: PdfConvertService,
+    private readonly logger: Logger,
+  ) {}
 
   @Post('/sync-job')
-  @(Returns(202).ContentType('application/json').Schema({
-    type: 'object',
-    properties: {
-      status: { type: 'string', enum: Object.values(JobStatus) },
-    },
-    required: ['status'],
-  }))
+  @(
+    Returns(202)
+      .ContentType('application/json')
+      .Schema({
+        type: 'object',
+        properties: {
+          status: { type: 'string', enum: Object.values(JobStatus) },
+        },
+        required: ['status'],
+      })
+  )
   @Returns(500)
   @Description(`
     Sync job pdf convert status with GROWI.
@@ -28,23 +41,37 @@ class PdfCtrl {
     Return resulting status of job to GROWI.
   `)
   async syncJobStatus(
-    @BodyParams('jobId') jobId: string,
-    @BodyParams('expirationDate') expirationDateStr: string,
-    @BodyParams('status') @Enum(Object.values(JobStatusSharedWithGrowi)) growiJobStatus: JobStatusSharedWithGrowi,
-  ): Promise<{ status: JobStatus }> {
+    @Required() @BodyParams('jobId') jobId: string,
+    @Required() @BodyParams('expirationDate') expirationDateStr: string,
+    @Required()
+    @BodyParams('status')
+    @Enum(Object.values(JobStatusSharedWithGrowi))
+    growiJobStatus: JobStatusSharedWithGrowi,
+    @Integer() @BodyParams('appId') appId?: number, // prevent path traversal attack
+  ): Promise<{ status: JobStatus } | undefined> {
+    // prevent path traversal attack
+    if (!/^[a-f\d]{24}$/i.test(jobId)) {
+      throw new BadRequest('jobId must be a valid MongoDB ObjectId');
+    }
+
     const expirationDate = new Date(expirationDateStr);
     try {
-      await this.pdfConvertService.registerOrUpdateJob(jobId, expirationDate, growiJobStatus);
+      await this.pdfConvertService.registerOrUpdateJob(
+        jobId,
+        expirationDate,
+        growiJobStatus,
+        appId,
+      );
       const status = this.pdfConvertService.getJobStatus(jobId); // get status before cleanup
       this.pdfConvertService.cleanUpJobList();
       return { status };
-    }
-    catch (err) {
+    } catch (err) {
       this.logger.error('Failed to register or update job', err);
-      throw new InternalServerError(err);
+      if (err instanceof Error) {
+        throw new InternalServerError(err.message);
+      }
     }
   }
-
 }
 
 export default PdfCtrl;

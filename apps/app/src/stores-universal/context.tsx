@@ -224,6 +224,16 @@ export const useLimitLearnablePageCountPerAssistant = (initialData?: number): SW
   return useContextSWR('limitLearnablePageCountPerAssistant', initialData);
 };
 
+
+export const useIsUsersHomepageDeletionEnabled = (initialData?: boolean): SWRResponse<boolean, false> => {
+  return useContextSWR('isUsersHomepageDeletionEnabled', initialData);
+};
+
+export const useIsEnableUnifiedMergeView = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useSWRStatic<boolean, Error>('isEnableUnifiedMergeView', initialData, { fallbackData: false });
+
+};
+
 /** **********************************************************
  *                     Computed contexts
  *********************************************************** */

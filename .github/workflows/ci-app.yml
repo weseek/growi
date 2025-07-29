@@ -44,7 +44,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.x]
+        node-version: [22.x]
 
     steps:
       - uses: actions/checkout@v4
@@ -74,7 +74,7 @@ jobs:
 
       - name: Lint
         run: |
-          turbo run lint --filter=!@growi/slackbot-proxy
+          turbo run lint --filter=@growi/app --filter=./packages/*
 
       - name: Slack Notification
         uses: weseek/ghaction-slack-notification@master
@@ -128,7 +128,7 @@ jobs:
 
       - name: Test
         run: |
-          turbo run test --filter=!@growi/slackbot-proxy --env-mode=loose
+          turbo run test --filter=@growi/app --filter=./packages/* --env-mode=loose
         env:
           MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
 

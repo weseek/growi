@@ -12,3 +12,7 @@ export type RendererConfig = {
   drawioUri: string,
   plantumlUri: string,
 } & RehypeSanitizeConfiguration;
+
+export type RendererConfigExt = RendererConfig & {
+  isDarkMode?: boolean,
+};

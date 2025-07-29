@@ -3,14 +3,13 @@ import type { Request, Response } from 'express';
 import createError from 'http-errors';
 import { mock } from 'vitest-mock-extended';
 
-import type { LsxApiResponseData, LsxApiParams } from '../../../interfaces/api';
-
+import type { LsxApiParams, LsxApiResponseData } from '../../../interfaces/api';
+import { listPages } from '.';
 import type { PageQuery, PageQueryBuilder } from './generate-base-query';
 
-import { listPages } from '.';
-
-interface IListPagesRequest extends Request<undefined, undefined, undefined, LsxApiParams> {
-  user: IUser,
+interface IListPagesRequest
+  extends Request<undefined, undefined, undefined, LsxApiParams> {
+  user: IUser;
 }
 
 // mocking modules
@@ -23,15 +22,21 @@ const mocks = vi.hoisted(() => {
   };
 });
 
-vi.mock('./add-num-condition', () => ({ addNumCondition: mocks.addNumConditionMock }));
-vi.mock('./add-sort-condition', () => ({ addSortCondition: mocks.addSortConditionMock }));
-vi.mock('./generate-base-query', () => ({ generateBaseQuery: mocks.generateBaseQueryMock }));
-vi.mock('./get-toppage-viewers-count', () => ({ getToppageViewersCount: mocks.getToppageViewersCountMock }));
-
+vi.mock('./add-num-condition', () => ({
+  addNumCondition: mocks.addNumConditionMock,
+}));
+vi.mock('./add-sort-condition', () => ({
+  addSortCondition: mocks.addSortConditionMock,
+}));
+vi.mock('./generate-base-query', () => ({
+  generateBaseQuery: mocks.generateBaseQueryMock,
+}));
+vi.mock('./get-toppage-viewers-count', () => ({
+  getToppageViewersCount: mocks.getToppageViewersCountMock,
+}));
 
 describe('listPages', () => {
-
-  it("returns 400 HTTP response when the query 'pagePath' is undefined", async() => {
+  it("returns 400 HTTP response when the query 'pagePath' is undefined", async () => {
     // setup
     const reqMock = mock<IListPagesRequest>();
     const resMock = mock<Response>();
@@ -48,7 +53,6 @@ describe('listPages', () => {
   });
 
   describe('with num option', () => {
-
     const reqMock = mock<IListPagesRequest>();
     reqMock.query = { pagePath: '/Sandbox' };
 
@@ -60,7 +64,7 @@ describe('listPages', () => {
     const queryMock = mock<PageQuery>();
     builderMock.query = queryMock;
 
-    it('returns 200 HTTP response', async() => {
+    it('returns 200 HTTP response', async () => {
       // setup query.clone().count()
       const queryClonedMock = mock<PageQuery>();
       queryMock.clone.mockReturnValue(queryClonedMock);
@@ -98,7 +102,7 @@ describe('listPages', () => {
       expect(resStatusMock.send).toHaveBeenCalledWith(expectedResponseData);
     });
 
-    it('returns 500 HTTP response when an unexpected error occured', async() => {
+    it('returns 500 HTTP response when an unexpected error occured', async () => {
       // setup
       const reqMock = mock<IListPagesRequest>();
       reqMock.query = { pagePath: '/Sandbox' };
@@ -122,10 +126,12 @@ describe('listPages', () => {
       expect(mocks.addNumConditionMock).toHaveBeenCalledOnce(); // throw an error
       expect(mocks.addSortConditionMock).not.toHaveBeenCalledOnce(); // does not called
       expect(resMock.status).toHaveBeenCalledOnce();
-      expect(resStatusMock.send).toHaveBeenCalledWith('error for test');
+      expect(resStatusMock.send).toHaveBeenCalledWith(
+        'An internal server error occurred.',
+      );
     });
 
-    it('returns 400 HTTP response when the value is invalid', async() => {
+    it('returns 400 HTTP response when the value is invalid', async () => {
       // setup
       const reqMock = mock<IListPagesRequest>();
       reqMock.query = { pagePath: '/Sandbox' };
@@ -151,6 +157,5 @@ describe('listPages', () => {
       expect(resMock.status).toHaveBeenCalledOnce();
       expect(resStatusMock.send).toHaveBeenCalledWith('error for test');
     });
-
   });
 });

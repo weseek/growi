@@ -30,7 +30,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.x]
+        node-version: [22.x]
 
     steps:
     - uses: actions/checkout@v4
@@ -59,7 +59,7 @@ jobs:
 
     - name: Lint
       run: |
-        turbo run lint --filter=@growi/slackbot-proxy
+        turbo run lint --filter=@growi/slackbot-proxy --filter=@growi/slack
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -85,7 +85,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.x]
+        node-version: [22.x]
 
     services:
       mysql:
@@ -163,7 +163,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.x]
+        node-version: [22.x]
 
     services:
       mysql:

@@ -1,4 +1,6 @@
-import { ConfigSource } from '@growi/core/dist/interfaces';
+import {
+  ConfigSource, toNonBlankString, toNonBlankStringOrUndefined,
+} from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { body } from 'express-validator';
 
@@ -104,9 +106,6 @@ const router = express.Router();
  *          isMaintenanceMode:
  *            type: boolean
  *            example: false
- *          isQuestionnaireEnabled:
- *            type: boolean
- *            example: true
  *          isV5Compatible:
  *            type: boolean
  *            example: true
@@ -315,17 +314,6 @@ const router = express.Router();
  *          azureReferenceFileWithRelayMode:
  *            type: boolean
  *            description: is enable internal stream system for azure file request
- *      QuestionnaireSettingParams:
- *        description: QuestionnaireSettingParams
- *        type: object
- *        properties:
- *          isQuestionnaireEnabled:
- *            type: boolean
- *            description: is questionnaire enabled, or not
- *            example: true
- *          isAppSiteUrlHashed:
- *            type: boolean
- *            description: is app site url hashed, or not
  */
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
@@ -367,6 +355,7 @@ module.exports = (crowi) => {
       body('gcsBucket').trim(),
       body('gcsUploadNamespace').trim(),
       body('gcsReferenceFileWithRelayMode').if(value => value != null).isBoolean(),
+      body('s3Bucket').trim(),
       body('s3Region')
         .trim()
         .if(value => value !== '')
@@ -387,7 +376,6 @@ module.exports = (crowi) => {
           }
           return true;
         }),
-      body('s3Bucket').trim(),
       body('s3AccessKeyId').trim().if(value => value !== '').matches(/^[\da-zA-Z]+$/),
       body('s3SecretAccessKey').trim(),
       body('s3ReferenceFileWithRelayMode').if(value => value != null).isBoolean(),
@@ -398,10 +386,6 @@ module.exports = (crowi) => {
       body('azureStorageStorageName').trim(),
       body('azureReferenceFileWithRelayMode').if(value => value != null).isBoolean(),
 
-    ],
-    questionnaireSettings: [
-      body('isQuestionnaireEnabled').isBoolean(),
-      body('isAppSiteUrlHashed').isBoolean(),
     ],
     pageBulkExportSettings: [
       body('isBulkExportPagesEnabled').isBoolean(),
@@ -418,9 +402,9 @@ module.exports = (crowi) => {
    *    /app-settings:
    *      get:
    *        tags: [AppSettings]
-   *        operationId: getAppSettings
    *        security:
-   *          - api_key: []
+   *          - bearer: []
+   *          - accessTokenInQuery: []
    *        summary: /app-settings
    *        description: get app setting params
    *        responses:
@@ -493,9 +477,6 @@ module.exports = (crowi) => {
 
       isEnabledPlugins: configManager.getConfig('plugin:isEnabledPlugins'),
 
-      isQuestionnaireEnabled: configManager.getConfig('questionnaire:isQuestionnaireEnabled'),
-      isAppSiteUrlHashed: configManager.getConfig('questionnaire:isAppSiteUrlHashed'),
-
       isMaintenanceMode: configManager.getConfig('app:isMaintenanceMode'),
 
       isBulkExportPagesEnabled: configManager.getConfig('app:isBulkExportPagesEnabled'),
@@ -514,7 +495,6 @@ module.exports = (crowi) => {
    *    /app-settings/app-setting:
    *      put:
    *        tags: [AppSettings]
-   *        operationId: updateAppSettings
    *        security:
    *          - cookieAuth: []
    *        summary: /app-settings/app-setting
@@ -575,7 +555,6 @@ module.exports = (crowi) => {
    *    /app-settings/site-url-setting:
    *      put:
    *        tags: [AppSettings]
-   *        operationId: updateAppSettingSiteUrlSetting
    *        security:
    *          - cookieAuth: []
    *        summary: /app-settings/site-url-setting
@@ -726,7 +705,6 @@ module.exports = (crowi) => {
    *    /app-settings/smtp-setting:
    *      put:
    *        tags: [AppSettings]
-   *        operationId: updateAppSettingSmtpSetting
    *        security:
    *          - cookieAuth: []
    *        summary: /app-settings/smtp-setting
@@ -778,7 +756,6 @@ module.exports = (crowi) => {
    *    /app-settings/smtp-test:
    *      post:
    *        tags: [AppSettings]
-   *        operationId: postSmtpTest
    *        security:
    *          - cookieAuth: []
    *        summary: /app-settings/smtp-setting
@@ -815,7 +792,6 @@ module.exports = (crowi) => {
    *    /app-settings/ses-setting:
    *      put:
    *        tags: [AppSettings]
-   *        operationId: updateAppSettingSesSetting
    *        security:
    *          - cookieAuth: []
    *        summary: /app-settings/ses-setting
@@ -867,7 +843,6 @@ module.exports = (crowi) => {
    *    /app-settings/file-upload-settings:
    *      put:
    *        tags: [AppSettings]
-   *        operationId: updateAppSettingFileUploadSetting
    *        security:
    *          - cookieAuth: []
    *        summary: /app-settings/file-upload-setting
@@ -894,42 +869,101 @@ module.exports = (crowi) => {
   router.put('/file-upload-setting', loginRequiredStrictly, adminRequired, addActivity, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
     const { fileUploadType } = req.body;
 
-    const requestParams = {
-      'app:fileUploadType': fileUploadType,
-    };
-
-    if (fileUploadType === 'gcs') {
-      requestParams['gcs:apiKeyJsonPath'] = req.body.gcsApiKeyJsonPath;
-      requestParams['gcs:bucket'] = req.body.gcsBucket;
-      requestParams['gcs:uploadNamespace'] = req.body.gcsUploadNamespace;
-      requestParams['gcs:referenceFileWithRelayMode'] = req.body.gcsReferenceFileWithRelayMode;
+    if (fileUploadType === 'local' || fileUploadType === 'gridfs') {
+      try {
+        await configManager.updateConfigs({
+          'app:fileUploadType': fileUploadType,
+        }, { skipPubsub: true });
+      }
+      catch (err) {
+        const msg = `Error occurred in updating ${fileUploadType} settings: ${err.message}`;
+        logger.error('Error', err);
+        return res.apiv3Err(new ErrorV3(msg, 'update-fileUploadType-failed'));
+      }
     }
 
     if (fileUploadType === 'aws') {
-      requestParams['aws:s3Region'] = req.body.s3Region;
-      requestParams['aws:s3CustomEndpoint'] = req.body.s3CustomEndpoint;
-      requestParams['aws:s3Bucket'] = req.body.s3Bucket;
-      requestParams['aws:s3AccessKeyId'] = req.body.s3AccessKeyId;
-      requestParams['aws:referenceFileWithRelayMode'] = req.body.s3ReferenceFileWithRelayMode;
+      try {
+        try {
+          toNonBlankString(req.body.s3Bucket);
+        }
+        catch (err) {
+          throw new Error('S3 Bucket name is required');
+        }
+        try {
+          toNonBlankString(req.body.s3Region);
+        }
+        catch (err) {
+          throw new Error('S3 Region is required');
+        }
+        await configManager.updateConfigs({
+          'app:fileUploadType': fileUploadType,
+          'aws:s3Region': toNonBlankString(req.body.s3Region),
+          'aws:s3Bucket': toNonBlankString(req.body.s3Bucket),
+          'aws:referenceFileWithRelayMode': req.body.s3ReferenceFileWithRelayMode,
+        },
+        { skipPubsub: true });
+        await configManager.updateConfigs({
+          'aws:s3CustomEndpoint': toNonBlankStringOrUndefined(req.body.s3CustomEndpoint),
+          'aws:s3AccessKeyId': toNonBlankStringOrUndefined(req.body.s3AccessKeyId),
+          'aws:s3SecretAccessKey': toNonBlankStringOrUndefined(req.body.s3SecretAccessKey),
+        },
+        {
+          skipPubsub: true,
+          removeIfUndefined: true,
+        });
+      }
+      catch (err) {
+        const msg = `Error occurred in updating AWS S3 settings: ${err.message}`;
+        logger.error('Error', err);
+        return res.apiv3Err(new ErrorV3(msg, 'update-fileUploadType-failed'));
+      }
+    }
+
+    if (fileUploadType === 'gcs') {
+      try {
+        await configManager.updateConfigs({
+          'app:fileUploadType': fileUploadType,
+          'gcs:referenceFileWithRelayMode': req.body.gcsReferenceFileWithRelayMode,
+        },
+        { skipPubsub: true });
+        await configManager.updateConfigs({
+          'gcs:apiKeyJsonPath': toNonBlankStringOrUndefined(req.body.gcsApiKeyJsonPath),
+          'gcs:bucket': toNonBlankStringOrUndefined(req.body.gcsBucket),
+          'gcs:uploadNamespace': toNonBlankStringOrUndefined(req.body.gcsUploadNamespace),
+        },
+        { skipPubsub: true, removeIfUndefined: true });
+      }
+      catch (err) {
+        const msg = `Error occurred in updating GCS settings: ${err.message}`;
+        logger.error('Error', err);
+        return res.apiv3Err(new ErrorV3(msg, 'update-fileUploadType-failed'));
+      }
     }
 
     if (fileUploadType === 'azure') {
-      requestParams['azure:tenantId'] = req.body.azureTenantId;
-      requestParams['azure:clientId'] = req.body.azureClientId;
-      requestParams['azure:clientSecret'] = req.body.azureClientSecret;
-      requestParams['azure:storageAccountName'] = req.body.azureStorageAccountName;
-      requestParams['azure:storageContainerName'] = req.body.azureStorageContainerName;
-      requestParams['azure:referenceFileWithRelayMode'] = req.body.azureReferenceFileWithRelayMode;
+      try {
+        await configManager.updateConfigs({
+          'app:fileUploadType': fileUploadType,
+          'azure:referenceFileWithRelayMode': req.body.azureReferenceFileWithRelayMode,
+        },
+        { skipPubsub: true });
+        await configManager.updateConfigs({
+          'azure:tenantId': toNonBlankStringOrUndefined(req.body.azureTenantId),
+          'azure:clientId': toNonBlankStringOrUndefined(req.body.azureClientId),
+          'azure:clientSecret': toNonBlankStringOrUndefined(req.body.azureClientSecret),
+          'azure:storageAccountName': toNonBlankStringOrUndefined(req.body.azureStorageAccountName),
+          'azure:storageContainerName': toNonBlankStringOrUndefined(req.body.azureStorageContainerName),
+        }, { skipPubsub: true, removeIfUndefined: true });
+      }
+      catch (err) {
+        const msg = `Error occurred in updating Azure settings: ${err.message}`;
+        logger.error('Error', err);
+        return res.apiv3Err(new ErrorV3(msg, 'update-fileUploadType-failed'));
+      }
     }
 
     try {
-      await configManager.updateConfigs(requestParams, { skipPubsub: true });
-
-      const s3SecretAccessKey = req.body.s3SecretAccessKey;
-      if (fileUploadType === 'aws' && s3SecretAccessKey != null && s3SecretAccessKey.trim() !== '') {
-        await configManager.updateConfigs({ 'aws:s3SecretAccessKey': s3SecretAccessKey }, { skipPubsub: true });
-      }
-
       await crowi.setUpFileUpload(true);
       crowi.fileUploaderSwitchService.publishUpdatedMessage();
 
@@ -965,67 +999,9 @@ module.exports = (crowi) => {
       return res.apiv3({ responseParams });
     }
     catch (err) {
-      const msg = 'Error occurred in updating fileUploadType';
+      const msg = 'Error occurred in retrieving file upload configurations';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-fileUploadType-failed'));
-    }
-
-  });
-
-  /**
-   * @swagger
-   *
-   *    /app-settings/questionnaire-settings:
-   *      put:
-   *        tags: [AppSettings]
-   *        operationId: updateAppSettingQuestionnaireSettings
-   *        security:
-   *          - cookieAuth: []
-   *        summary: /app-settings/questionnaire-settings
-   *        description: Update QuestionnaireSetting
-   *        requestBody:
-   *          required: true
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/QuestionnaireSettingParams'
-   *        responses:
-   *          200:
-   *            description: Succeeded to update QuestionnaireSetting
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  type: object
-   *                  properties:
-   *                    responseParams:
-   *                      type: object
-   *                      $ref: '#/components/schemas/QuestionnaireSettingParams'
-   */
-  // eslint-disable-next-line max-len
-  router.put('/questionnaire-settings', loginRequiredStrictly, adminRequired, addActivity, validator.questionnaireSettings, apiV3FormValidator, async(req, res) => {
-    const { isQuestionnaireEnabled, isAppSiteUrlHashed } = req.body;
-
-    const requestParams = {
-      'questionnaire:isQuestionnaireEnabled': isQuestionnaireEnabled,
-      'questionnaire:isAppSiteUrlHashed': isAppSiteUrlHashed,
-    };
-
-    try {
-      await configManager.updateConfigs(requestParams, { skipPubsub: true });
-
-      const responseParams = {
-        isQuestionnaireEnabled: configManager.getConfig('questionnaire:isQuestionnaireEnabled'),
-        isAppSiteUrlHashed: configManager.getConfig('questionnaire:isAppSiteUrlHashed'),
-      };
-
-      const parameters = { action: SupportedAction.ACTION_ADMIN_QUESTIONNAIRE_SETTINGS_UPDATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-      return res.apiv3({ responseParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating questionnaire settings';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-questionnaire-settings-failed'));
     }
 
   });
@@ -1063,9 +1039,9 @@ module.exports = (crowi) => {
    *    /app-settings/v5-schema-migration:
    *      post:
    *        tags: [AppSettings]
-   *        operationId: updateAppSettingV5SchemaMigration
    *        security:
-   *          - api_key: []
+   *          - bearer: []
+   *          - accessTokenInQuery: []
    *        summary: AccessToken supported.
    *        description: Update V5SchemaMigration
    *        responses:
@@ -1108,9 +1084,9 @@ module.exports = (crowi) => {
    *    /app-settings/maintenance-mode:
    *      post:
    *        tags: [AppSettings]
-   *        operationId: updateAppSettingMaintenanceMode
    *        security:
-   *          - api_key: []
+   *          - bearer: []
+   *          - accessTokenInQuery: []
    *        summary: AccessToken supported.
    *        description: Update MaintenanceMode
    *        requestBody:

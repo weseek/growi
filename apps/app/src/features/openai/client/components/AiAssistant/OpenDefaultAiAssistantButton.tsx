@@ -6,15 +6,14 @@ import { NotAvailable } from '~/client/components/NotAvailable';
 import { NotAvailableForGuest } from '~/client/components/NotAvailableForGuest';
 import { useIsAiEnabled } from '~/stores-universal/context';
 
-import { useAiAssistantChatSidebar, useSWRxAiAssistants } from '../../stores/ai-assistant';
+import { useAiAssistantSidebar, useSWRxAiAssistants } from '../../stores/ai-assistant';
 
 import styles from './OpenDefaultAiAssistantButton.module.scss';
 
-const OpenDefaultAiAssistantButton = (): JSX.Element => {
+const OpenDefaultAiAssistantButtonSubstance = (): JSX.Element => {
   const { t } = useTranslation();
-  const { data: isAiEnabled } = useIsAiEnabled();
   const { data: aiAssistantData } = useSWRxAiAssistants();
-  const { open: openAiAssistantChatSidebar } = useAiAssistantChatSidebar();
+  const { openChat } = useAiAssistantSidebar();
 
   const defaultAiAssistant = useMemo(() => {
     if (aiAssistantData == null) {
@@ -30,12 +29,8 @@ const OpenDefaultAiAssistantButton = (): JSX.Element => {
       return;
     }
 
-    openAiAssistantChatSidebar(defaultAiAssistant);
-  }, [defaultAiAssistant, openAiAssistantChatSidebar]);
-
-  if (!isAiEnabled) {
-    return <></>;
-  }
+    openChat(defaultAiAssistant);
+  }, [defaultAiAssistant, openChat]);
 
   return (
     <NotAvailableForGuest>
@@ -50,6 +45,16 @@ const OpenDefaultAiAssistantButton = (): JSX.Element => {
       </NotAvailable>
     </NotAvailableForGuest>
   );
+};
+
+const OpenDefaultAiAssistantButton = (): JSX.Element => {
+  const { data: isAiEnabled } = useIsAiEnabled();
+
+  if (!isAiEnabled) {
+    return <></>;
+  }
+
+  return <OpenDefaultAiAssistantButtonSubstance />;
 };
 
 export default OpenDefaultAiAssistantButton;

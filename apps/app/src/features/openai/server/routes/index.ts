@@ -23,6 +23,10 @@ export const factory = (crowi: Crowi): express.Router => {
       router.post('/thread', createThreadHandlersFactory(crowi));
     });
 
+    import('./get-recent-threads').then(({ getRecentThreadsFactory }) => {
+      router.get('/threads/recent', getRecentThreadsFactory(crowi));
+    });
+
     import('./get-threads').then(({ getThreadsFactory }) => {
       router.get('/threads/:aiAssistantId', getThreadsFactory(crowi));
     });
@@ -31,12 +35,13 @@ export const factory = (crowi: Crowi): express.Router => {
       router.delete('/thread/:aiAssistantId/:threadRelationId', deleteThreadFactory(crowi));
     });
 
-    import('./message').then(({ postMessageHandlersFactory }) => {
+    import('./message').then(({ getMessagesFactory, postMessageHandlersFactory }) => {
       router.post('/message', postMessageHandlersFactory(crowi));
+      router.get('/messages/:aiAssistantId/:threadId', getMessagesFactory(crowi));
     });
 
-    import('./get-messages').then(({ getMessagesFactory }) => {
-      router.get('/messages/:aiAssistantId/:threadId', getMessagesFactory(crowi));
+    import('./edit').then(({ postMessageToEditHandlersFactory }) => {
+      router.post('/edit', postMessageToEditHandlersFactory(crowi));
     });
 
     import('./ai-assistant').then(({ createAiAssistantFactory }) => {

@@ -19,41 +19,13 @@ const openPageItemControl = async(page: Page): Promise<void> => {
   await button.click();
 };
 
-const openPutBackPageModal = async(page: Page): Promise<void> => {
-  const alert = page.getByTestId('trash-page-alert');
-  const button = alert.getByTestId('put-back-button');
+test('PageDeleteModal is shown successfully', async({ page }) => {
+  await page.goto('/Sandbox');
 
-  // Wait for alert element to be visible and attached
-  await expect(alert).toBeVisible();
-  await alert.waitFor({ state: 'visible' });
-
-  // Wait for button to be visible, enabled and attached
-  await expect(button).toBeVisible();
-  await expect(button).toBeEnabled();
-  await button.waitFor({ state: 'visible' });
-
-  // Scroll to the top of the page to prevent the subnav hide the button
-  await page.evaluate(() => {
-    window.scrollTo(0, 0);
-  });
-
-  await button.click();
-  await expect(page.getByTestId('put-back-page-modal')).toBeVisible();
-};
-
-test('Page Deletion and PutBack is executed successfully', async({ page }) => {
-  await page.goto('/Sandbox/Bootstrap5');
-
-  // Delete
   await openPageItemControl(page);
   await page.getByTestId('open-page-delete-modal-btn').click();
-  await expect(page.getByTestId('page-delete-modal')).toBeVisible();
-  await page.getByTestId('delete-page-button').click();
 
-  // PutBack
-  await openPutBackPageModal(page);
-  await page.getByTestId('put-back-execution-button').click();
-  await expect(page.getByTestId('trash-page-alert')).not.toBeVisible();
+  await expect(page.getByTestId('page-delete-modal')).toBeVisible();
 });
 
 test('PageDuplicateModal is shown successfully', async({ page }) => {

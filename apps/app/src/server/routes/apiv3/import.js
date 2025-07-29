@@ -169,8 +169,8 @@ export default function route(crowi) {
    *    get:
    *      tags: [Import]
    *      security:
-   *        - api_key: []
-   *      operationId: getImportSettingsParams
+   *        - bearer: []
+   *        - accessTokenInQuery: []
    *      summary: /import
    *      description: Get import settings params
    *      responses:
@@ -221,8 +221,8 @@ export default function route(crowi) {
    *    get:
    *      tags: [Import]
    *      security:
-   *        - api_key: []
-   *      operationId: getImportStatus
+   *        - bearer: []
+   *        - accessTokenInQuery: []
    *      summary: /import/status
    *      description: Get properties of stored zip files for import
    *      responses:
@@ -252,8 +252,8 @@ export default function route(crowi) {
    *    post:
    *      tags: [Import]
    *      security:
-   *        - api_key: []
-   *      operationId: executeImport
+   *        - bearer: []
+   *        - accessTokenInQuery: []
    *      summary: /import
    *      description: import a collection from a zipped json
    *      requestBody:
@@ -384,8 +384,8 @@ export default function route(crowi) {
    *    post:
    *      tags: [Import]
    *      security:
-   *        - api_key: []
-   *      operationId: uploadImport
+   *        - bearer: []
+   *        - accessTokenInQuery: []
    *      summary: /import/upload
    *      description: upload a zip file
    *      requestBody:
@@ -395,6 +395,7 @@ export default function route(crowi) {
    *              type: object
    *              properties:
    *                file:
+   *                  type: string
    *                  format: binary
    *      responses:
    *        200:
@@ -440,8 +441,8 @@ export default function route(crowi) {
    *    delete:
    *      tags: [Import]
    *      security:
-   *        - api_key: []
-   *      operationId: deleteImportAll
+   *        - bearer: []
+   *        - accessTokenInQuery: []
    *      summary: /import/all
    *      description: Delete all zip files
    *      responses:

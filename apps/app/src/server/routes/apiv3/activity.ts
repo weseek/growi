@@ -107,9 +107,6 @@ const validator = {
  *                       isInvitationEmailSended:
  *                         type: boolean
  *                         example: false
- *                       isQuestionnaireEnabled:
- *                         type: boolean
- *                         example: true
  *                       name:
  *                         type: string
  *                         example: "Taro"
@@ -185,7 +182,8 @@ module.exports = (crowi: Crowi): Router => {
    *     summary: /activity
    *     tags: [Activity]
    *     security:
-   *       - api_key: []
+   *       - bearer: []
+   *       - accessTokenInQuery: []
    *     parameters:
    *       - name: limit
    *         in: query

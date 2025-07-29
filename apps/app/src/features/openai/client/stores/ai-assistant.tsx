@@ -7,7 +7,7 @@ import useSWRImmutable from 'swr/immutable';
 import { apiv3Get } from '~/client/util/apiv3-client';
 
 import { type AccessibleAiAssistantsHasId, type AiAssistantHasId } from '../../interfaces/ai-assistant';
-import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
+import type { IThreadRelationHasId } from '../../interfaces/thread-relation'; // IThreadHasId を削除
 
 export const AiAssistantManagementModalPageMode = {
   HOME: 'home',
@@ -55,33 +55,65 @@ export const useSWRxAiAssistants = (): SWRResponse<AccessibleAiAssistantsHasId, 
 };
 
 
-type AiAssistantChatSidebarStatus = {
+/*
+*  useAiAssistantSidebar
+*/
+type AiAssistantSidebarStatus = {
   isOpened: boolean,
+  isEditorAssistant?: boolean,
   aiAssistantData?: AiAssistantHasId,
   threadData?: IThreadRelationHasId,
 }
 
-type AiAssistantChatSidebarUtils = {
-  open(
+type AiAssistantSidebarUtils = {
+  openChat(
     aiAssistantData: AiAssistantHasId,
     threadData?: IThreadRelationHasId,
   ): void
+  openEditor(): void
   close(): void
+  refreshAiAssistantData(aiAssistantData?: AiAssistantHasId): void
+  refreshThreadData(threadData?: IThreadRelationHasId): void
 }
 
-export const useAiAssistantChatSidebar = (
-    status?: AiAssistantChatSidebarStatus,
-): SWRResponse<AiAssistantChatSidebarStatus, Error> & AiAssistantChatSidebarUtils => {
+export const useAiAssistantSidebar = (
+    status?: AiAssistantSidebarStatus,
+): SWRResponse<AiAssistantSidebarStatus, Error> & AiAssistantSidebarUtils => {
   const initialStatus = { isOpened: false };
-  const swrResponse = useSWRStatic<AiAssistantChatSidebarStatus, Error>('AiAssistantChatSidebar', status, { fallbackData: initialStatus });
+  const swrResponse = useSWRStatic<AiAssistantSidebarStatus, Error>('AiAssistantSidebar', status, { fallbackData: initialStatus });
 
   return {
     ...swrResponse,
-    open: useCallback(
-      (aiAssistantData: AiAssistantHasId, threadData: IThreadRelationHasId) => {
+    openChat: useCallback(
+      (aiAssistantData: AiAssistantHasId, threadData?: IThreadRelationHasId) => {
         swrResponse.mutate({ isOpened: true, aiAssistantData, threadData });
       }, [swrResponse],
     ),
-    close: useCallback(() => swrResponse.mutate({ isOpened: false }), [swrResponse]),
+    openEditor: useCallback(
+      () => {
+        swrResponse.mutate({
+          isOpened: true, isEditorAssistant: true, aiAssistantData: undefined, threadData: undefined,
+        });
+      }, [swrResponse],
+    ),
+    close: useCallback(
+      () => swrResponse.mutate({
+        isOpened: false, isEditorAssistant: false, aiAssistantData: undefined, threadData: undefined,
+      }), [swrResponse],
+    ),
+    refreshAiAssistantData: useCallback(
+      (aiAssistantData) => {
+        swrResponse.mutate((currentState = { isOpened: false }) => {
+          return { ...currentState, aiAssistantData };
+        });
+      }, [swrResponse],
+    ),
+    refreshThreadData: useCallback(
+      (threadData?: IThreadRelationHasId) => {
+        swrResponse.mutate((currentState = { isOpened: false }) => {
+          return { ...currentState, threadData };
+        });
+      }, [swrResponse],
+    ),
   };
 };

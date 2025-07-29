@@ -8,7 +8,7 @@
 
   "features": {
     "ghcr.io/devcontainers/features/node:1": {
-      "version": "20.18.3"
+      "version": "22.17.0"
     }
   },
 
@@ -24,6 +24,7 @@
     "vscode": {
       "extensions": [
         "dbaeumer.vscode-eslint",
+        "biomejs.biome",
         "mhutchie.git-graph",
         "eamodio.gitlens",
         "github.vscode-pull-request-github",

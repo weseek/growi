@@ -62,7 +62,6 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
   compressExtension = 'tar.gz';
 
   // temporal path of local fs to output page files before upload
-  // TODO: If necessary, change to a proper path in https://redmine.weseek.co.jp/issues/149512
   tmpOutputRootDir = '/tmp/page-bulk-export';
 
   // Keep track of the stream executed for PageBulkExportJob to destroy it on job failure.
@@ -104,10 +103,18 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
    * @param isHtmlPath whether the tmp output path is for html files
    */
   getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument, isHtmlPath = false): string {
-    if (isHtmlPath) {
-      return path.join(this.tmpOutputRootDir, 'html', pageBulkExportJob._id.toString());
+    const isGrowiCloud = configManager.getConfig('app:growiCloudUri') != null;
+    const appId = configManager.getConfig('app:growiAppIdForCloud')?.toString();
+    const jobId = pageBulkExportJob._id.toString();
+
+    if (isGrowiCloud) {
+      if (appId == null) {
+        throw new Error('appId is required for bulk export on GROWI.cloud');
+      }
     }
-    return path.join(this.tmpOutputRootDir, pageBulkExportJob._id.toString());
+
+    const basePath = path.join(this.tmpOutputRootDir, appId ?? '');
+    return isHtmlPath ? path.join(basePath, 'html', jobId) : path.join(basePath, jobId);
   }
 
   /**
@@ -242,13 +249,12 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
 
     const promises = [
       PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
-      // delete /tmp/page-bulk-export/{jobId} dir
       fs.promises.rm(this.getTmpOutputDir(pageBulkExportJob), { recursive: true, force: true }),
     ];
 
+    // clean up html files exported for PDF conversion
     if (pageBulkExportJob.format === PageBulkExportFormat.pdf) {
       promises.push(
-        // delete /tmp/page-bulk-export/html/{jobId} dir
         fs.promises.rm(this.getTmpOutputDir(pageBulkExportJob, true), { recursive: true, force: true }),
       );
     }

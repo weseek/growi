@@ -1,8 +1,8 @@
 export * from './attachment';
 export * from './color-scheme';
 export * from './color-scheme';
-export * from './config-manager';
 export * from './common';
+export * from './config-manager';
 export * from './external-account';
 export * from './growi-app-info';
 export * from './growi-facade';
@@ -11,6 +11,7 @@ export * from './has-object-id';
 export * from './lang';
 export * from './locale';
 export * from './page';
+export * from './primitive/string';
 export * from './revision';
 export * from './subscription';
 export * from './tag';

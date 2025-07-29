@@ -1,34 +1,47 @@
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-grpc';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
-import { Resource, type IResource } from '@opentelemetry/resources';
+import type { Resource } from '@opentelemetry/resources';
+import { resourceFromAttributes } from '@opentelemetry/resources';
 import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import type { NodeSDKConfiguration } from '@opentelemetry/sdk-node';
-import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION, SEMRESATTRS_SERVICE_INSTANCE_ID } from '@opentelemetry/semantic-conventions';
+import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 
+import { configManager } from '~/server/service/config-manager';
 import { getGrowiVersion } from '~/utils/growi-version';
 
+import { httpInstrumentationConfig as httpInstrumentationConfigForAnonymize } from './anonymization';
+import { ATTR_SERVICE_INSTANCE_ID } from './semconv';
+
+type Option = {
+  enableAnonymization?: boolean,
+}
+
 type Configuration = Partial<NodeSDKConfiguration> & {
-  resource: IResource;
+  resource: Resource;
 };
 
 let resource: Resource;
 let configuration: Configuration;
 
-export const generateNodeSDKConfiguration = (serviceInstanceId?: string): Configuration => {
+export const generateNodeSDKConfiguration = (opts?: Option): Configuration => {
   if (configuration == null) {
     const version = getGrowiVersion();
 
-    resource = new Resource({
+    resource = resourceFromAttributes({
       [ATTR_SERVICE_NAME]: 'growi',
       [ATTR_SERVICE_VERSION]: version,
     });
+
+    // Data anonymization configuration
+    const httpInstrumentationConfig = opts?.enableAnonymization ? httpInstrumentationConfigForAnonymize : {};
 
     configuration = {
       resource,
       traceExporter: new OTLPTraceExporter(),
       metricReader: new PeriodicExportingMetricReader({
         exporter: new OTLPMetricExporter(),
+        exportIntervalMillis: 300000, // 5 minute
       }),
       instrumentations: [getNodeAutoInstrumentations({
         '@opentelemetry/instrumentation-bunyan': {
@@ -39,29 +52,36 @@ export const generateNodeSDKConfiguration = (serviceInstanceId?: string): Config
         '@opentelemetry/instrumentation-fs': {
           enabled: false,
         },
+        // HTTP instrumentation with anonymization
+        '@opentelemetry/instrumentation-http': {
+          enabled: true,
+          ...httpInstrumentationConfig,
+        },
       })],
     };
-  }
 
-  if (serviceInstanceId != null) {
-    configuration.resource = resource.merge(new Resource({
-      [SEMRESATTRS_SERVICE_INSTANCE_ID]: serviceInstanceId,
-    }));
   }
 
   return configuration;
 };
 
-// public async shutdownInstrumentation(): Promise<void> {
-//   await this.sdkInstance.shutdown();
+/**
+ * Generate additional attributes after database initialization
+ * This function should be called after database is available
+ */
+export const generateAdditionalResourceAttributes = async(opts?: Option): Promise<Resource> => {
+  if (resource == null) {
+    throw new Error('Resource is not initialized. Call generateNodeSDKConfiguration first.');
+  }
 
-//   // メモ: 以下の restart コードは動かない
-//   // span/metrics ともに何も出なくなる
-//   // そもそも、restart するような使い方が出来なさそう？
-//   // see: https://github.com/open-telemetry/opentelemetry-specification/issues/27/
-//   // const sdk = new NodeSDK({...});
-//   // sdk.start();
-//   // await sdk.shutdown().catch(console.error);
-//   // const newSdk = new NodeSDK({...});
-//   // newSdk.start();
-// }
+  const serviceInstanceId = configManager.getConfig('otel:serviceInstanceId')
+    ?? configManager.getConfig('app:serviceInstanceId');
+
+  const { getApplicationResourceAttributes, getOsResourceAttributes } = await import('./custom-resource-attributes');
+
+  return resource.merge(resourceFromAttributes({
+    [ATTR_SERVICE_INSTANCE_ID]: serviceInstanceId,
+    ...await getApplicationResourceAttributes(),
+    ...await getOsResourceAttributes(),
+  }));
+};

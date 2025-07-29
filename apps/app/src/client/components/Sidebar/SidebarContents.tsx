@@ -2,6 +2,7 @@ import React, { memo, useMemo } from 'react';
 
 import { AiAssistant } from '~/features/openai/client/components/AiAssistant/Sidebar/AiAssistant';
 import { SidebarContentsType } from '~/interfaces/ui';
+import { useIsAiEnabled, useIsGuestUser } from '~/stores-universal/context';
 import { useSidebarMode } from '~/states/ui/sidebar';
 import { useCollapsedContentsOpened, useCurrentSidebarContents } from '~/stores/ui';
 
@@ -18,8 +19,10 @@ import styles from './SidebarContents.module.scss';
 
 export const SidebarContents = memo(() => {
   const { isCollapsedMode } = useSidebarMode();
-  const { data: isCollapsedContentsOpened } = useCollapsedContentsOpened();
+  const { data: isGuestUser } = useIsGuestUser();
+  const { data: isAiEnabled } = useIsAiEnabled();
 
+  const { data: isCollapsedContentsOpened } = useCollapsedContentsOpened();
   const { data: currentSidebarContents } = useCurrentSidebarContents();
 
   const Contents = useMemo(() => {
@@ -33,13 +36,21 @@ export const SidebarContents = memo(() => {
       case SidebarContentsType.BOOKMARKS:
         return Bookmarks;
       case SidebarContentsType.NOTIFICATION:
-        return InAppNotification;
+        if (isGuestUser == null) return () => <></>; // wait for isGuestUser to be determined
+        if (!isGuestUser) {
+          return InAppNotification;
+        }
+        return PageTree;
       case SidebarContentsType.AI_ASSISTANT:
-        return AiAssistant;
+        if (isAiEnabled == null) return () => <></>; // wait for isAiEnabled to be determined
+        if (isAiEnabled) {
+          return AiAssistant;
+        }
+        return PageTree;
       default:
         return PageTree;
     }
-  }, [currentSidebarContents]);
+  }, [currentSidebarContents, isAiEnabled, isGuestUser]);
 
   const isHidden = isCollapsedMode() && !isCollapsedContentsOpened;
   const classToHide = isHidden ? 'd-none' : '';

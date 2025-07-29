@@ -11,13 +11,12 @@ import next from 'next';
 import { KeycloakUserGroupSyncService } from '~/features/external-user-group/server/service/keycloak-user-group-sync';
 import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
 import { startCronIfEnabled as startOpenaiCronIfEnabled } from '~/features/openai/server/services/cron';
+import { initializeOpenaiService } from '~/features/openai/server/services/openai';
 import { checkPageBulkExportJobInProgressCronService } from '~/features/page-bulk-export/server/service/check-page-bulk-export-job-in-progress-cron';
 import instanciatePageBulkExportJobCleanUpCronService, {
   pageBulkExportJobCleanUpCronService,
 } from '~/features/page-bulk-export/server/service/page-bulk-export-job-clean-up-cron';
 import instanciatePageBulkExportJobCronService from '~/features/page-bulk-export/server/service/page-bulk-export-job-cron';
-import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
-import questionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
 import { getGrowiVersion } from '~/utils/growi-version';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
@@ -94,9 +93,6 @@ class Crowi {
   /** @type {PassportService} */
   passportService;
 
-  /** @type {QuestionnaireService} */
-  questionnaireService;
-
   /** @type {import('../service/rest-qiita-API')} */
   restQiitaAPIService;
 
@@ -146,7 +142,6 @@ class Crowi {
     this.inAppNotificationService = null;
     this.activityService = null;
     this.commentService = null;
-    this.questionnaireService = null;
     this.openaiThreadDeletionCronService = null;
     this.openaiVectorStoreFileDeletionCronService = null;
 
@@ -177,7 +172,6 @@ Crowi.prototype.init = async function() {
   this.models = await setupModelsDependentOnCrowi(this);
   await this.setupConfigManager();
   await this.setupSessionConfig();
-  this.setupCron();
 
   // setup messaging services
   await this.setupS2sMessagingService();
@@ -212,7 +206,6 @@ Crowi.prototype.init = async function() {
     this.setupActivityService(),
     this.setupCommentService(),
     this.setupSyncPageStatusService(),
-    this.setupQuestionnaireService(),
     this.setUpCustomize(), // depends on pluginService
   ]);
 
@@ -223,7 +216,12 @@ Crowi.prototype.init = async function() {
     // depends on passport service
     this.setupExternalAccountService(),
     this.setupExternalUserGroupSyncService(),
+
+    // depends on AttachmentService
+    this.setupOpenaiService(),
   ]);
+
+  this.setupCron();
 
   await normalizeData();
 };
@@ -357,8 +355,6 @@ Crowi.prototype.setupSocketIoService = async function() {
 };
 
 Crowi.prototype.setupCron = function() {
-  questionnaireCronService.startCron();
-
   instanciatePageBulkExportJobCronService(this);
   checkPageBulkExportJobInProgressCronService.startCron();
 
@@ -366,10 +362,6 @@ Crowi.prototype.setupCron = function() {
   pageBulkExportJobCleanUpCronService.startCron();
 
   startOpenaiCronIfEnabled();
-};
-
-Crowi.prototype.setupQuestionnaireService = function() {
-  this.questionnaireService = new QuestionnaireService(this);
 };
 
 Crowi.prototype.getSlack = function() {
@@ -807,6 +799,10 @@ Crowi.prototype.setupExternalAccountService = function() {
 Crowi.prototype.setupExternalUserGroupSyncService = function() {
   this.ldapUserGroupSyncService = new LdapUserGroupSyncService(this.passportService, this.s2sMessagingService, this.socketIoService);
   this.keycloakUserGroupSyncService = new KeycloakUserGroupSyncService(this.s2sMessagingService, this.socketIoService);
+};
+
+Crowi.prototype.setupOpenaiService = function() {
+  initializeOpenaiService(this);
 };
 
 export default Crowi;

@@ -47,7 +47,7 @@ import {
   useIsLocalAccountRegistrationEnabled,
   useIsRomUserAllowedToComment,
   useIsPdfBulkExportEnabled,
-  useIsAiEnabled, useLimitLearnablePageCountPerAssistant,
+  useIsAiEnabled, useLimitLearnablePageCountPerAssistant, useIsUsersHomepageDeletionEnabled,
 } from '~/stores-universal/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -91,7 +91,6 @@ const TemplateModal = dynamic(() => import('~/client/components/TemplateModal').
 const LinkEditModal = dynamic(() => import('~/client/components/PageEditor/LinkEditModal').then(mod => mod.LinkEditModal), { ssr: false });
 const TagEditModal = dynamic(() => import('~/client/components/PageTags/TagEditModal').then(mod => mod.TagEditModal), { ssr: false });
 const ConflictDiffModal = dynamic(() => import('~/client/components/PageEditor/ConflictDiffModal').then(mod => mod.ConflictDiffModal), { ssr: false });
-const QuestionnaireModalManager = dynamic(() => import('~/features/questionnaire/client/components/QuestionnaireModalManager'), { ssr: false });
 
 const EditablePageEffects = dynamic(() => import('~/client/components/Page/EditablePageEffects').then(mod => mod.EditablePageEffects), { ssr: false });
 
@@ -200,6 +199,7 @@ type Props = CommonProps & {
 
   aiEnabled: boolean,
   limitLearnablePageCountPerAssistant: number,
+  isUsersHomepageDeletionEnabled: boolean,
 };
 
 const Page: NextPageWithLayout<Props> = (props: Props) => {
@@ -257,6 +257,9 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useIsAiEnabled(props.aiEnabled);
   useLimitLearnablePageCountPerAssistant(props.limitLearnablePageCountPerAssistant);
+
+  useIsUsersHomepageDeletionEnabled(props.isUsersHomepageDeletionEnabled);
+
 
   const { pageWithMeta } = props;
 
@@ -422,7 +425,6 @@ Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
       <DescendantsPageListModal />
       <DrawioModal />
       <HandsontableModal />
-      <QuestionnaireModalManager />
       <TemplateModal />
       <LinkEditModal />
       <TagEditModal />
@@ -576,7 +578,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
 
   props.aiEnabled = configManager.getConfig('app:aiEnabled');
   props.limitLearnablePageCountPerAssistant = configManager.getConfig('openai:limitLearnablePageCountPerAssistant');
-
+  props.isUsersHomepageDeletionEnabled = configManager.getConfig('security:user-homepage-deletion:isEnabled');
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('customize:isSearchScopeChildrenAsDefault');

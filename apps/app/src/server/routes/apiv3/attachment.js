@@ -245,7 +245,6 @@ module.exports = (crowi) => {
    *    /attachment/limit:
    *      get:
    *        tags: [Attachment]
-   *        operationId: getAttachmentLimit
    *        summary: /attachment/limit
    *        description: Get available capacity of uploaded file with GridFS
    *        parameters:
@@ -268,9 +267,9 @@ module.exports = (crowi) => {
    *                      description: uploadable
    *                      example: true
    *          403:
-   *            $ref: '#/components/responses/403'
+   *            $ref: '#/components/responses/Forbidden'
    *          500:
-   *            $ref: '#/components/responses/500'
+   *            $ref: '#/components/responses/InternalServerError'
    */
   router.get('/limit', accessTokenParser, loginRequiredStrictly, validator.retrieveFileLimit, apiV3FormValidator, async(req, res) => {
     const { fileUploadService } = crowi;
@@ -290,7 +289,6 @@ module.exports = (crowi) => {
    *    /attachment:
    *      post:
    *        tags: [Attachment]
-   *        operationId: addAttachment
    *        summary: /attachment
    *        description: Add attachment to the page
    *        requestBody:
@@ -335,12 +333,13 @@ module.exports = (crowi) => {
    *                    revision:
    *                      type: string
    *          403:
-   *            $ref: '#/components/responses/403'
+   *            $ref: '#/components/responses/Forbidden'
    *          500:
-   *            $ref: '#/components/responses/500'
+   *            $ref: '#/components/responses/InternalServerError'
    */
-  router.post('/', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, uploads.single('file'), autoReap,
+  router.post('/', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, uploads.single('file'),
     validator.retrieveAddAttachment, apiV3FormValidator, addActivity,
+    // Removed autoReap middleware to use file data in asynchronous processes. Instead, implemented file deletion after asynchronous processes complete
     async(req, res) => {
 
       const pageId = req.body.page_id;
@@ -360,7 +359,7 @@ module.exports = (crowi) => {
           return res.apiv3Err(`Forbidden to access to the page '${page.id}'`);
         }
 
-        const attachment = await attachmentService.createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE);
+        const attachment = await attachmentService.createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE, () => autoReap(req, res, () => {}));
 
         const result = {
           page: serializePageSecurely(page),

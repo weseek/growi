@@ -27,7 +27,7 @@ import {
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
   useIsEditable, useIsIndentSizeForced,
-  useAcceptedUploadFileType,
+  useAcceptedUploadFileType, useIsEnableUnifiedMergeView,
 } from '~/stores-universal/context';
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
@@ -44,11 +44,11 @@ import {
 import { mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 import { usePreviewOptions } from '~/stores/renderer';
 import { useIsUntitledPage, useSelectedGrant } from '~/stores/ui';
-import { useEditingUsers } from '~/stores/use-editing-users';
+import { useEditingClients } from '~/stores/use-editing-clients';
 import loggerFactory from '~/utils/logger';
 
 import { EditorNavbar } from './EditorNavbar';
-import EditorNavbarBottom from './EditorNavbarBottom';
+import { EditorNavbarBottom } from './EditorNavbarBottom';
 import Preview from './Preview';
 import { useScrollSync } from './ScrollSyncHelper';
 import { useConflictResolver, useConflictEffect, type ConflictHandler } from './conflict';
@@ -108,9 +108,10 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
   const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsGrantNormalized } = useSWRxCurrentGrantData(currentPage?._id);
   const { data: user } = useCurrentUser();
-  const { onEditorsUpdated } = useEditingUsers();
+  const { mutate: mutateEditingUsers } = useEditingClients();
   const onConflict = useConflictResolver();
   const { data: reservedNextCaretLine, mutate: mutateReservedNextCaretLine } = useReservedNextCaretLine();
+  const { data: isEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
 
   const { data: rendererOptions } = usePreviewOptions();
 
@@ -155,7 +156,7 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
-  const [markdownToPreview, setMarkdownToPreview] = useState<string>(codeMirrorEditor?.getDoc() ?? '');
+  const [markdownToPreview, setMarkdownToPreview] = useState<string>(codeMirrorEditor?.getDocString() ?? '');
   const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
     setMarkdownToPreview(value);
   })), []);
@@ -216,7 +217,7 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
   }, [pageId, selectedGrant, mutateWaitingSaveProcessing, updatePage, mutateIsGrantNormalized, t]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: SaveOptions) => {
-    const markdown = codeMirrorEditor?.getDoc();
+    const markdown = codeMirrorEditor?.getDocString();
     const revisionId = isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined;
     const page = await save(revisionId, markdown, opts, onConflict);
     if (page == null) {
@@ -228,7 +229,7 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
   }, [codeMirrorEditor, currentRevisionId, isRevisionIdRequiredForPageUpdate, mutateEditorMode, onConflict, save, updateStateAfterSave]);
 
   const saveWithShortcut = useCallback(async() => {
-    const markdown = codeMirrorEditor?.getDoc();
+    const markdown = codeMirrorEditor?.getDocString();
     const revisionId = isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined;
     const page = await save(revisionId, markdown, undefined, onConflict);
     if (page == null) {
@@ -365,7 +366,8 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
     <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
       <div className="page-editor-editor-container flex-expand-vert border-end">
         <CodeMirrorEditorMain
-          isEditorMode={editorMode === EditorMode.Editor}
+          enableUnifiedMergeView={isEnableUnifiedMergeView}
+          enableCollaboration={editorMode === EditorMode.Editor}
           onSave={saveWithShortcut}
           onUpload={uploadHandler}
           acceptedUploadFileType={acceptedUploadFileType}
@@ -373,9 +375,8 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
           indentSize={currentIndentSize ?? defaultIndentSize}
           user={user ?? undefined}
           pageId={pageId ?? undefined}
-          initialValue={initialValue}
           editorSettings={editorSettings}
-          onEditorsUpdated={onEditorsUpdated}
+          onEditorsUpdated={mutateEditingUsers}
           cmProps={cmProps}
         />
       </div>
