@@ -1,4 +1,5 @@
 
+import { useTranslation } from 'react-i18next';
 import {
   ModalBody,
 } from 'reactstrap';
@@ -11,6 +12,7 @@ import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
 
 
 export const AiAssistantKeywordSearch = (): JSX.Element => {
+  const { t } = useTranslation();
   const { data: aiAssistantManagementModalData } = useAiAssistantManagementModal();
   const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
 
@@ -23,6 +25,9 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
       />
 
       <ModalBody className="px-4">
+        <h4 className="text-center mb-4 fw-bold">
+          {t('modal_ai_assistant.search_reference_pages_by_keyword')}
+        </h4>
       </ModalBody>
     </>
   );

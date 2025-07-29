@@ -605,6 +605,7 @@
       "update_failed": "アシスタントの更新に失敗しました"
     },
     "select_source_pages": "アシスタントが参照するページを選択します",
+    "search_reference_pages_by_keyword": "アシスタントが参照するページをキーワードで検索",
     "search_by_keyword": "キーワードで検索",
     "select_from_page_tree": "ページツリーから選択",
     "edit_page_description": " アシスタントが参照するページを編集します。<br> 参照できるページは配下ページも含めて {{limitLearnablePageCountPerAssistant}} ページまでです。",

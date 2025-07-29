@@ -562,6 +562,7 @@
       "update_failed": "更新助手失败"
     },
     "select_source_pages": "选择助手要参考的页面",
+    "search_reference_pages_by_keyword": "按关键词搜索助手参考的页面",
     "search_by_keyword": "按关键词搜索",
     "select_from_page_tree": "从页面树选择",
     "edit_page_description": "编辑助手可以参考的页面。<br> 助手可以参考最多 {{limitLearnablePageCountPerAssistant}} 个页面，包括子页面。",
