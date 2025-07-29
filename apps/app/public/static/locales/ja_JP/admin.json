@@ -468,8 +468,9 @@
       "strict": "厳格（推奨）",
       "moderate": "中程度",
       "lax": "緩め",
-      "manual": "手動",
-      "permitted_file_types": "許可するファイルタイプ"
+      "permitted_file_types": "許可するファイルタイプ",
+      "inline_mime_mode_update_success": "インライン表示を許可するファイルタイプの設定を更新しました",
+      "inline_mime_mode_update_failed": "インライン表示を許可するファイルタイプの更新に失敗しました"
     }
   },
   "customize_settings": {

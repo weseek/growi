@@ -2,9 +2,11 @@ import React, { type JSX, useState, useEffect } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
+import { fetchInlineMimeMode, updateInlineMimeMode } from '~/client/services/admin-inline-mime-mode';
+import { toastSuccess, toastError } from '~/client/util/toastr';
+
 import type { InlineMimeMode } from '../../../../interfaces/inline-mime-mode';
 import { InlineMimeModes } from '../../../../interfaces/inline-mime-mode';
-import { INLINE_ALLOWLIST_MIME_TYPES } from '../../../../server/service/file-uploader/utils/security';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 import { ALL_MIME_TYPES } from './inlineMimeTypes/allMimeTypes';
@@ -19,8 +21,33 @@ export const InlineFileTypeSelector = (): JSX.Element => {
   const { t } = useTranslation('admin');
 
   useEffect(() => {
-    setSelected(new Set(INLINE_ALLOWLIST_MIME_TYPES));
+    const fetchMode = async() => {
+      try {
+        const mode = await fetchInlineMimeMode();
+        setInlineMimeMode(mode);
+
+        switch (mode) {
+          case InlineMimeModes.STRICT:
+            setSelected(new Set(STRICT_MIME_TYPES));
+            break;
+          case InlineMimeModes.MODERATE:
+            setSelected(new Set(MODERATE_MIME_TYPES));
+            break;
+          case InlineMimeModes.LAX:
+            setSelected(new Set(ALL_MIME_TYPES));
+            break;
+          default:
+            break;
+        }
+      }
+      catch (err) {
+        console.error('Failed to fetch inlineMimeMode', err);
+      }
+    };
+
+    fetchMode();
   }, []);
+
 
   const inlineMimeModeChange = (selectedMode: InlineMimeMode) => {
     setInlineMimeMode(selectedMode);
@@ -35,7 +62,6 @@ export const InlineFileTypeSelector = (): JSX.Element => {
       case InlineMimeModes.LAX:
         setSelected(new Set(ALL_MIME_TYPES));
         break;
-      case InlineMimeModes.MANUAL:
       default:
         break;
     }
@@ -92,7 +118,7 @@ export const InlineFileTypeSelector = (): JSX.Element => {
                     type="checkbox"
                     id={id}
                     checked={selected.has(type)}
-                    disabled={inlineMimeMode !== InlineMimeModes.MANUAL}
+                    disabled
                     onChange={() => toggleMime(type)}
                   />
                   <label className="form-check-label w-100" htmlFor={id}>
@@ -104,9 +130,14 @@ export const InlineFileTypeSelector = (): JSX.Element => {
           })}
         </ul>
         <AdminUpdateButtonRow
-        // TODO: implement save logic after backend API is ready(https://redmine.weseek.co.jp/issues/169025)
-          onClick={() => {
-            console.log('選択されたmime types:', Array.from(selected));
+          onClick={async() => {
+            try {
+              await updateInlineMimeMode(inlineMimeMode);
+              toastSuccess(t('markdown_settings.inline_file_type_options.inline_mime_mode_update_succes'));
+            }
+            catch (err) {
+              toastError(t('markdown_settings.inline_file_type_options.inline_mime_mode_update_failed'));
+            }
           }}
         />
       </div>
