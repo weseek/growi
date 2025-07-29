@@ -89,10 +89,6 @@ const validator = {};
  *            type: boolean
  *            description: whether the invitation email is sent
  *            example: false
- *          isQuestionnaireEnabled:
- *            type: boolean
- *            description: whether the questionnaire is enabled
- *            example: false
  *          lastLoginAt:
  *            type: string
  *            description: datetime last login at
