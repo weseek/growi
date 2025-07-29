@@ -70,30 +70,33 @@ export const PageView = (props: Props): JSX.Element => {
   const markdown = page?.revision?.body;
   const isSlide = useSlidesByFrontmatter(markdown, rendererConfig.isEnabledMarp);
 
-  const hasScrolledRef = useRef(false);
-  const prevHashRef = useRef('');
 
   // ***************************  Auto Scroll  ***************************
   useEffect(() => {
-    // do nothing if hash is empty or scroll already done
+    // do nothing if hash is empty
     const { hash } = window.location;
-    if (hash.length === 0 && hasScrolledRef.current) {
+    if (hash.length === 0) {
       return;
     }
-    if (hash !== prevHashRef.current) {
-      hasScrolledRef.current = false;
-      prevHashRef.current = hash;
-    }
 
-    const targetId = hash.slice(1);
+    const contentContainer = document.getElementById('page-content-container');
+    if (contentContainer == null) return;
 
-    const target = document.getElementById(decodeURIComponent(targetId));
+    const observer = new MutationObserver(() => {
+      const targetId = decodeURIComponent(hash.slice(1));
+      const target = document.getElementById(targetId);
 
-    if (target != null) {
-      target.scrollIntoView();
-      hasScrolledRef.current = true;
-    }
-  }, [markdown]);
+      if (target != null) {
+        target.scrollIntoView();
+        observer.disconnect();
+      }
+    });
+
+    observer.observe(contentContainer, { childList: true, subtree: true });
+
+    return () => observer.disconnect();
+  }, []);
+
   // *******************************  end  *******************************
 
   const specialContents = useMemo(() => {
@@ -174,7 +177,7 @@ export const PageView = (props: Props): JSX.Element => {
       {specialContents == null && (
         <>
           {(isUsersHomepagePath && page?.creator != null) && <UserInfo author={page.creator} />}
-          <div className="flex-expand-vert">
+          <div id="page-content-container" className="flex-expand-vert">
             <Contents />
           </div>
         </>
