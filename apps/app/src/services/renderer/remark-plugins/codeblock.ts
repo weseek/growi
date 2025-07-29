@@ -3,7 +3,7 @@ import type { Schema as SanitizeOption } from 'hast-util-sanitize';
 import type { InlineCode as MdastInlineCode, Html, Text } from 'mdast';
 import type { Plugin } from 'unified';
 import type { Node, Parent, Point } from 'unist';
-import type { visit as UnistUtilVisitFunction } from 'unist-util-visit';
+import { visit } from 'unist-util-visit';
 
 
 type InlineCode = MdastInlineCode & {
@@ -16,46 +16,9 @@ type InlineCode = MdastInlineCode & {
 const SUPPORTED_CODE = ['inline'];
 
 export const remarkPlugin: Plugin = () => {
-  let visit: typeof UnistUtilVisitFunction | undefined;
-  let loadPromise: Promise<void> | undefined;
-  let isLoaded = false;
 
-  // Function to ensure visit is loaded
-  const ensureVisitLoaded = async() => {
-    if (isLoaded) {
-      return;
-    }
-    if (loadPromise) {
-      return loadPromise;
-    }
-
-    loadPromise = (async() => {
-      try {
-        const mod = await import('unist-util-visit');
-        visit = mod.visit;
-        isLoaded = true;
-      }
-      catch (error) {
-        throw error;
-      }
-      finally {
-        loadPromise = undefined;
-      }
-    })();
-    return loadPromise;
-  };
-
-  return async(tree: Node) => {
+  return (tree: Node) => {
     const defaultPoint: Point = { line: 1, column: 1, offset: 0 };
-
-    // Ensure visit is loaded before proceeding
-    if (!visit) {
-      await ensureVisitLoaded();
-    }
-
-    if (typeof visit === 'undefined') {
-      throw new Error("Failed to load 'unist-util-visit' dependency.");
-    }
 
     visit(tree, 'html', (node: Html, index: number | undefined, parent: Parent | undefined) => {
       // Find <code> tag
