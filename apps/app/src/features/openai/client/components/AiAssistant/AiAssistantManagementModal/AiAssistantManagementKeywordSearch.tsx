@@ -68,6 +68,10 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
           onKeyDown={keyDownHandler}
           isLoading={false}
         />
+
+        <label htmlFor="ai-assistant-keyword-search" className="form-text text-muted mt-2">
+          {t('modal_ai_assistant.max_items_space_separated_hint')}
+        </label>
       </ModalBody>
     </div>
   );
