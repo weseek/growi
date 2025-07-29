@@ -1,5 +1,5 @@
 import React, {
-  useRef, useCallback, type KeyboardEvent,
+  useRef, useCallback, useState, type KeyboardEvent,
 } from 'react';
 
 import { type TypeaheadRef, Typeahead } from 'react-bootstrap-typeahead';
@@ -18,12 +18,23 @@ import styles from './AiAssistantManagementKeywordSearch.module.scss';
 
 const moduleClass = styles['grw-ai-assistant-keyword-search'] ?? '';
 
+type SelectedSearchKeyword = {
+  id: string
+  label: string
+}
+
 export const AiAssistantKeywordSearch = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: aiAssistantManagementModalData } = useAiAssistantManagementModal();
   const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
 
+  const [selectedSearchKeywords, setSelectedSearchKeywords] = useState<Array<SelectedSearchKeyword>>([]);
+
   const typeaheadRef = useRef<TypeaheadRef>(null);
+
+  const changeHandler = useCallback((selected: Array<SelectedSearchKeyword>) => {
+    setSelectedSearchKeywords(selected);
+  }, []);
 
   const keyDownHandler = useCallback((event: KeyboardEvent<HTMLElement>) => {
     if (event.code === 'Space') {
@@ -62,9 +73,11 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
           allowNew
           multiple
           options={[]}
+          selected={selectedSearchKeywords}
           placeholder={t('modal_ai_assistant.enter_keywords')}
           id="ai-assistant-keyword-search"
           ref={typeaheadRef}
+          onChange={changeHandler}
           onKeyDown={keyDownHandler}
         />
 
