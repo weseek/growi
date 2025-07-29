@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 import { atom, useAtom } from 'jotai';
 
 import { scheduleToPut } from '~/client/services/user-ui-settings';
@@ -31,23 +29,14 @@ export const usePreferCollapsedMode = (): UseAtom<typeof preferCollapsedModeAtom
   return useAtom(preferCollapsedModeAtomExt);
 };
 
-// Initialize state from server-side props only once per session
-const preferCollapsedModeInitializedAtom = atom(false);
+// Export the base atom for SSR hydration
+export { preferCollapsedModeAtom };
 
-export const usePreferCollapsedModeInitializer = (initialData: boolean): void => {
-  const [isInitialized, setIsInitialized] = useAtom(preferCollapsedModeInitializedAtom);
-  const [, setPreferCollapsedMode] = usePreferCollapsedMode();
+// TODO: Migrate from SWR - Current sidebar contents atom
+// const currentSidebarContentsAtom = atom<SidebarContentsType>(SidebarContentsType.TREE);
 
-  useEffect(() => {
-    if (!isInitialized) {
-      setPreferCollapsedMode(initialData);
-      setIsInitialized(true);
-    }
-  }, [isInitialized, setPreferCollapsedMode, setIsInitialized, initialData]);
-};
-
-
-// Sidebar mode atom
+// TODO: Migrate from SWR - Product navigation width atom
+// const currentProductNavWidthAtom = atom<number>(320);
 const sidebarModeAtom = atom(
   (get) => {
     const isDeviceLargerThanXl = get(isDeviceLargerThanXlAtom);

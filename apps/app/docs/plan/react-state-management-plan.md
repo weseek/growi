@@ -97,16 +97,23 @@ PoC の結果を踏まえ、Jotai を本格的に導入し、既存の状態管�
 
 ## 6. 今後の方針
 
-### 5.1 実施した PoC の概要
+### 6.1 実施した PoC の概要
 
-以下の2つの状態を Jotai を使用して実装し、検証を行いました：
+以下の状態を Jotai を使用して実装し、検証を行いました：
 
 1.  **`useDrawerOpened`:** サイドバーのドロワー表示状態
 2.  **`usePreferCollapsedMode`:** サイドバーの折りたたみモード設定（ユーザー設定の永続化を含む）
+3.  **`useSidebarMode`:** サイドバーの表示モード管理（複数の状態を組み合わせた派生状態）
+4.  **`useDeviceLargerThanXl`:** デバイスサイズ判定
 
-### 5.2 実装内容
+### 6.2 実装内容
 
-*   新しい `states/ui.ts` モジュールを作成し、Jotai の atoms とカスタムフックを実装
+*   新しい `states/` ディレクトリ構造を作成し、責務別に分割:
+    *   `states/ui/sidebar.ts`: サイドバー関連の状態定義・操作
+    *   `states/ui/device.ts`: デバイス状態
+    *   `states/ui/editor.ts`: エディター関連の状態
+    *   `states/ui/helper.ts`: 型定義ヘルパー
+    *   `states/hydrate/sidebar.ts`: サイドバー状態のSSRハイドレーション専用
 *   既存の SWR ベースの実装を削除
 *   関連するコンポーネントを新しいカスタムフックを使用するように修正:
     *   `DrawerToggler`
@@ -114,31 +121,45 @@ PoC の結果を踏まえ、Jotai を本格的に導入し、既存の状態管�
     *   `EditorNavbarBottom`
     *   `Sidebar`
     *   `ToggleCollapseButton`
-    *   `useSidebarMode`
+    *   `PagePathNavSticky`
+    *   `SidebarContents`
+    *   `PrimaryItems`
 *   `pages/utils/commons.ts` の初期化処理を更新
 
-### 5.3 PoC の成果
+### 6.3 PoC の成果
 
 *   **コードの簡潔化:** SWR の仕組みを使った複雑なカスタムフックが、シンプルな Jotai の atoms とフックに置き換わりました。
 *   **責務の分離:** データフェッチングとクライアント状態管理の役割が明確に分かれました。
 *   **実装の直感性:** Jotai の API は React の `useState` に近く、理解しやすい実装となりました。
 *   **TypeScript との親和性:** Jotai は優れた型推論をサポートしており、型安全な実装が実現できました。
+*   **パフォーマンス改善:** 必要な箇所のみの再レンダリングが実現され、パフォーマンスが改善されました。
+*   **保守性の向上:** 状態の依存関係が明確になり、デバッグが容易になりました。
 
-### 5.4 今後の方針
+### 6.4 次の実装フェーズ
 
-PoC の結果を踏まえ、以下の方針で Jotai への移行を進めることを推奨します：
+PoC の成功を受けて、以下の段階的な移行を実施します：
 
-1.  **段階的な移行:**
-    *   まず `useSWRStatic` で管理されている他の UI 状態（`useCurrentSidebarContents` など）を移行
-    *   次に `useContextSWR` による状態管理を見直し、適切なものを Jotai に移行
-2.  **パターン確立:**
-    *   PoC で確立したパターン（`states/` ディレクトリへの実装、命名規則など）を踏襲
-    *   永続化が必要な状態については `usePreferCollapsedMode` の実装パターンを参考に
-3.  **テスト戦略:**
-    *   Jotai の状態に対するユニットテストの方針を確立
-    *   E2E テストでの状態管理変更の影響確認方法を整備
-4.  **ドキュメント整備:**
-    *   Jotai での状態管理パターンをチーム内で共有
-    *   新規開発時の状態管理の判断基準（SWR vs Jotai）を明確化
+#### フェーズ 1: UI 状態の移行（実施中）
+*   `useCurrentSidebarContents`: サイドバーのコンテンツタイプ（永続化必要）
+*   `useCollapsedContentsOpened`: 折りたたまれたコンテンツの開閉状態
+*   `useCurrentProductNavWidth`: プロダクトナビゲーションの幅（永続化必要）
+*   `usePageControlsX`: ページコントロールのX座標
+*   `useSelectedGrant`: 選択された権限設定
 
-この方針で進めることで、段階的かつ安全に状態管理の改善を実現できると考えられます。
+#### フェーズ 2: モーダル状態の移行
+*   各種モーダルの開閉状態（`stores/modal.tsx` の内容）
+*   統一的なモーダル管理パターンの確立
+
+#### フェーズ 3: その他のクライアント状態
+*   データフェッチングが不要な状態の特定と移行
+*   SWR を継続使用すべき状態の明確化
+
+### 6.5 技術的指針
+
+*   **ディレクトリ構造**: `states/ui/` 配下に機能別でファイルを分割
+*   **命名規則**: `{feature}Atom` および `use{Feature}` パターンを継続
+*   **永続化**: ユーザー設定が必要な状態は `scheduleToPut` を使用した永続化を実装
+*   **初期化**: サーバーサイドデータが必要な状態は専用の initializer フックを提供
+*   **型安全性**: TypeScript の型推論を活用し、`UseAtom` ヘルパー型を使用
+
+詳細な移行計画とTODOリストは `jotai-migration-todo.md` を参照してください。

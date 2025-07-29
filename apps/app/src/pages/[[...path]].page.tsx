@@ -32,6 +32,7 @@ import type { CurrentPageYjsData } from '~/interfaces/yjs';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
 import { useEditorModeClassName } from '~/services/layout/use-editor-mode-class-name';
+import { useHydrateSidebarAtoms } from '~/states/hydrate/sidebar';
 import {
   useCurrentUser,
   useIsForbidden, useIsSharedUser,
@@ -406,6 +407,9 @@ type LayoutProps = Props & {
 }
 
 const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
+  // Hydrate sidebar atoms with server-side data
+  useHydrateSidebarAtoms(props.sidebarConfig, props.userUISettings);
+
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 

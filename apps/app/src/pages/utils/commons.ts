@@ -14,7 +14,6 @@ import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { PageDocument } from '~/server/models/page';
 import type { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import { detectLocaleFromBrowserAcceptLanguage } from '~/server/util/locale-utils';
-import { usePreferCollapsedModeInitializer } from '~/states/ui/sidebar';
 import { useCurrentProductNavWidth, useCurrentSidebarContents } from '~/stores/ui';
 import { getGrowiVersion } from '~/utils/growi-version';
 
@@ -184,8 +183,9 @@ export const generateCustomTitleForPage = (props: CommonProps, pagePath: string)
 };
 
 export const useInitSidebarConfig = (sidebarConfig: ISidebarConfig, userUISettings?: IUserUISettings): void => {
-  // Initialize with user preference from DB if available, otherwise use system default
-  usePreferCollapsedModeInitializer(userUISettings?.preferCollapsedModeByUser ?? sidebarConfig.isSidebarCollapsedMode);
+  // NOTE: UI state initialization is now handled by useHydrateSidebarAtoms hook
+  // This function is kept for backwards compatibility with existing SWR-based states
+  // TODO: Remove this function after migrating all UI states to Jotai
 
   useCurrentSidebarContents(userUISettings?.currentSidebarContents);
   useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
