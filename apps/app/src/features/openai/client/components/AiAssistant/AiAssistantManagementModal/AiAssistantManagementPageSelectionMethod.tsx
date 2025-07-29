@@ -5,7 +5,7 @@ import {
   ModalBody,
 } from 'reactstrap';
 
-import { useAiAssistantManagementModal } from '../../../stores/ai-assistant';
+import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } from '../../../stores/ai-assistant';
 
 import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
 
@@ -35,7 +35,7 @@ const SelectionButton = (props: { icon: string, label: string, onClick: () => vo
 
 export const AiAssistantManagementPageSelectionMethod = (): JSX.Element => {
   const { t } = useTranslation();
-  const { data: aiAssistantManagementModalData } = useAiAssistantManagementModal();
+  const { data: aiAssistantManagementModalData, changePageMode } = useAiAssistantManagementModal();
   const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
 
   return (
@@ -51,11 +51,18 @@ export const AiAssistantManagementPageSelectionMethod = (): JSX.Element => {
         </h4>
         <div className="row justify-content-center">
           <div className="col-auto">
-            <SelectionButton icon="manage_search" label={t('modal_ai_assistant.search_by_keyword')} onClick={() => {}} />
+            <SelectionButton
+              icon="manage_search"
+              label={t('modal_ai_assistant.search_by_keyword')}
+              onClick={() => changePageMode(AiAssistantManagementModalPageMode.KEYWORD_SEARCH)}
+            />
           </div>
-
           <div className="col-auto">
-            <SelectionButton icon="account_tree" label={t('modal_ai_assistant.select_from_page_tree')} onClick={() => {}} />
+            <SelectionButton
+              icon="account_tree"
+              label={t('modal_ai_assistant.select_from_page_tree')}
+              onClick={() => changePageMode(AiAssistantManagementModalPageMode.PAGE_TREE_SELECTION)}
+            />
           </div>
         </div>
       </ModalBody>

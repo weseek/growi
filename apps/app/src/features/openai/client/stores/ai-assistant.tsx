@@ -19,6 +19,8 @@ export const AiAssistantManagementModalPageMode = {
   PAGES: 'pages',
   INSTRUCTION: 'instruction',
   PAGE_SELECTION_METHOD: 'page-selection-method',
+  KEYWORD_SEARCH: 'keyword-search',
+  PAGE_TREE_SELECTION: 'page-tree-selection',
 } as const;
 
 export type AiAssistantManagementModalPageMode = typeof AiAssistantManagementModalPageMode[keyof typeof AiAssistantManagementModalPageMode];
