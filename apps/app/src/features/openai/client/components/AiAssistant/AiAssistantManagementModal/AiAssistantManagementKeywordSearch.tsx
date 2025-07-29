@@ -1,8 +1,8 @@
-import type { KeyboardEvent } from 'react';
-import React, { useRef, useCallback } from 'react';
+import React, {
+  useRef, useCallback, type KeyboardEvent,
+} from 'react';
 
-import type { TypeaheadRef } from 'react-bootstrap-typeahead';
-import { Typeahead } from 'react-bootstrap-typeahead';
+import { type TypeaheadRef, Typeahead } from 'react-bootstrap-typeahead';
 import { useTranslation } from 'react-i18next';
 import {
   ModalBody,
