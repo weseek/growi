@@ -32,7 +32,7 @@ export function addApplicationMetrics(): void {
       try {
         // Dynamic import to avoid circular dependencies
         const { growiInfoService } = await import('~/server/service/growi-info');
-        const growiInfo = await growiInfoService.getGrowiInfo(true);
+        const growiInfo = await growiInfoService.getGrowiInfo({ includeAttachmentInfo: true });
 
         const isAppSiteUrlHashed = configManager.getConfig('otel:isAppSiteUrlHashed');
 

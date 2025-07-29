@@ -43,7 +43,7 @@ describe('getApplicationResourceAttributes', () => {
       'growi.installedAt': '2023-01-01T00:00:00.000Z',
       'growi.installedAt.by_oldest_user': '2023-01-01T00:00:00.000Z',
     });
-    expect(mockGrowiInfoService.getGrowiInfo).toHaveBeenCalledWith(true);
+    expect(mockGrowiInfoService.getGrowiInfo).toHaveBeenCalledWith({ includeInstalledInfo: true });
   });
 
   it('should handle missing additionalInfo gracefully', async() => {

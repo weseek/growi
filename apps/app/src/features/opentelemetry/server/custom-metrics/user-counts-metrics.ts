@@ -29,7 +29,7 @@ export function addUserCountsMetrics(): void {
         // Dynamic import to avoid circular dependencies
         const { growiInfoService } = await import('~/server/service/growi-info');
 
-        const growiInfo = await growiInfoService.getGrowiInfo(true);
+        const growiInfo = await growiInfoService.getGrowiInfo({ includeUserCountInfo: true });
 
         // Observe user count metrics
         result.observe(userCountGauge, growiInfo.additionalInfo?.currentUsersCount || 0);
