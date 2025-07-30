@@ -122,9 +122,34 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
         </label>
 
         { shownSearchResult && (
-          <h4 className="text-center mb-4 fw-bold mt-5">
-            {t('modal_ai_assistant.select_assistant_reference_pages')}
-          </h4>
+          <>
+            <h4 className="text-center mb-4 fw-bold mt-5">
+              {t('modal_ai_assistant.select_assistant_reference_pages')}
+            </h4>
+
+            <div className="p-3 list-group">
+              {searchResult?.data.map((page) => {
+                return (
+                  <div className="list-group-item list-group-item-action d-flex align-items-center p-1 mb-3 rounded">
+                    <button
+                      type="button"
+                      className="btn"
+                    >
+                      <span className="text-primary material-symbols-outlined">
+                        add_circle
+                      </span>
+                    </button>
+                    <div className="flex-grow-1">
+                      <span>{page.data.path}</span>
+                    </div>
+                    <span className="badge bg-secondary rounded-pill">
+                      {page.data.descendantCount}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </>
         )}
 
       </ModalBody>
