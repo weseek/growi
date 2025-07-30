@@ -15,7 +15,7 @@ export const latestRevisionAtom = atom(true);
 
 // Template data atoms (internal)
 export const templateTagsAtom = atom<string[]>([]);
-export const templateContentAtom = atom<string>('');
+export const templateBodyAtom = atom<string>('');
 
 // Derived atoms for computed states
 export const currentPagePathAtom = atom((get) => {
@@ -76,14 +76,14 @@ export const setPageStatusAtom = atom(
 );
 
 // Update atoms for template and remote revision data
-export const setTemplateDataAtom = atom(
+export const setTemplateContentAtom = atom(
   null,
   (get, set, data: { tags?: string[]; body?: string }) => {
     if (data.tags !== undefined) {
       set(templateTagsAtom, data.tags);
     }
     if (data.body !== undefined) {
-      set(templateContentAtom, data.body);
+      set(templateBodyAtom, data.body);
     }
   },
 );

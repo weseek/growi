@@ -13,8 +13,8 @@ import { useTranslation } from 'react-i18next';
 import { type Text as YText } from 'yjs';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { useCurrentPageId } from '~/states/page';
 import { useIsEnableUnifiedMergeView } from '~/stores-universal/context';
-import { useCurrentPageId } from '~/stores/page';
 
 import type { AiAssistantHasId } from '../../../interfaces/ai-assistant';
 import {
@@ -139,7 +139,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
 
   // Hooks
   const { t } = useTranslation();
-  const { data: currentPageId } = useCurrentPageId();
+  const [currentPageId] = useCurrentPageId();
   const { data: isEnableUnifiedMergeView, mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
   const yDocs = useSecondaryYdocs(isEnableUnifiedMergeView ?? false, { pageId: currentPageId ?? undefined, useSecondary: isEnableUnifiedMergeView ?? false });

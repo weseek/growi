@@ -20,12 +20,13 @@ import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import ShareLink from '~/server/models/share-link';
+import { useHydrateSharedPageAtoms } from '~/states/hydrate/page';
+import { useCurrentPageData, usePageFetcher } from '~/states/page';
 import {
   useCurrentUser, useRendererConfig, useIsSearchPage, useCurrentPathname,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useIsContainerFluid, useIsEnabledMarp,
   useIsLocalAccountRegistrationEnabled, useShowPageSideAuthors,
 } from '~/stores-universal/context';
-import { useCurrentPageId, useIsNotFound, useSWRMUTxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import type { NextPageWithLayout } from '../_app.page';
@@ -88,11 +89,15 @@ const GrowiContextualSubNavigationForSharedPage = (props: GrowiContextualSubNavi
 };
 
 const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
+  useHydrateSharedPageAtoms({
+    pageId: props.shareLinkRelatedPage?._id,
+    isNotFound: props.isNotFound,
+  });
+
+  const [currentPage] = useCurrentPageData();
   useCurrentPathname(props.shareLink?.relatedPage.path);
   useIsSearchPage(false);
-  useIsNotFound(props.isNotFound);
   useShareLinkId(props.shareLink?._id);
-  useCurrentPageId(props.shareLink?.relatedPage._id);
   useCurrentUser(props.currentUser);
   useRendererConfig(props.rendererConfig);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
@@ -103,7 +108,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useShowPageSideAuthors(props.showPageSideAuthors);
   useIsContainerFluid(props.isContainerFluid);
 
-  const { trigger: mutateCurrentPage, data: currentPage } = useSWRMUTxCurrentPage();
+  const { fetchAndUpdatePage } = usePageFetcher();
 
   useEffect(() => {
     if (!props.skipSSR) {
@@ -111,9 +116,9 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
     }
 
     if (props.shareLink?.relatedPage._id != null && !props.isNotFound) {
-      mutateCurrentPage();
+      fetchAndUpdatePage();
     }
-  }, [mutateCurrentPage, props.isNotFound, props.shareLink?.relatedPage._id, props.skipSSR]);
+  }, [fetchAndUpdatePage, props.isNotFound, props.shareLink?.relatedPage._id, props.skipSSR]);
 
 
   const pagePath = props.shareLinkRelatedPage?.path ?? '';

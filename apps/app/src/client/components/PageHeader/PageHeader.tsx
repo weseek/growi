@@ -2,7 +2,7 @@ import {
   useCallback, useEffect, useRef, useState, type JSX,
 } from 'react';
 
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useCurrentPageData } from '~/states/page';
 import { usePageControlsX } from '~/stores/ui';
 
 import { PagePathHeader } from './PagePathHeader';
@@ -14,7 +14,7 @@ const moduleClass = styles['page-header'] ?? '';
 
 export const PageHeader = (): JSX.Element => {
 
-  const { data: currentPage } = useSWRxCurrentPage();
+  const [currentPage] = useCurrentPageData();
   const { data: pageControlsX } = usePageControlsX();
   const pageHeaderRef = useRef<HTMLDivElement>(null);
 

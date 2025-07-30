@@ -3,7 +3,7 @@ import React, { useCallback, type JSX } from 'react';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import ReactMarkdown from 'react-markdown';
 
-import { useCurrentPagePath } from '~/stores/page';
+import { useCurrentPagePath } from '~/states/page';
 import { useTocOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
@@ -21,7 +21,7 @@ type Props = {
 }
 
 const TableOfContents = ({ tagsElementHeight }: Props): JSX.Element => {
-  const { data: currentPagePath } = useCurrentPagePath();
+  const [currentPagePath] = useCurrentPagePath();
 
   const isUsersHomePage = currentPagePath != null && _isUsersHomepage(currentPagePath);
 

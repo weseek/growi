@@ -2,10 +2,10 @@ import React, { useCallback, type JSX } from 'react';
 
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import { useSearchModal } from '~/features/search/client/stores/search';
+import { useCurrentPagePath } from '~/states/page';
 import { useDrawerOpened } from '~/states/ui/sidebar';
 import { useIsSearchPage } from '~/stores-universal/context';
 import { usePageCreateModal } from '~/stores/modal';
-import { useCurrentPagePath } from '~/stores/page';
 
 import styles from './GrowiNavbarBottom.module.scss';
 
@@ -14,7 +14,7 @@ export const GrowiNavbarBottom = (): JSX.Element => {
 
   const [isDrawerOpened, setIsDrawerOpened] = useDrawerOpened();
   const { open: openCreateModal } = usePageCreateModal();
-  const { data: currentPagePath } = useCurrentPagePath();
+  const [currentPagePath] = useCurrentPagePath();
   const { data: isSearchPage } = useIsSearchPage();
   const { open: openSearchModal } = useSearchModal();
 

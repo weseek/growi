@@ -10,10 +10,10 @@ import type { Save, SaveOptions } from '~/client/components/PageEditor/PageEdito
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/toastr';
 import { SocketEventName } from '~/interfaces/websocket';
+import { useCurrentPageData, useCurrentPageId } from '~/states/page';
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { usePageStatusAlert } from '~/stores/alert';
 import { useConflictDiffModal } from '~/stores/modal';
-import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 import { type RemoteRevisionData, useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 
 
@@ -34,7 +34,7 @@ type GenerateResolveConflicthandler = () => (
 const useGenerateResolveConflictHandler: GenerateResolveConflicthandler = () => {
   const { t } = useTranslation();
 
-  const { data: pageId } = useCurrentPageId();
+  const [pageId] = useCurrentPageId();
   const { close: closePageStatusAlert } = usePageStatusAlert();
   const { close: closeConflictDiffModal } = useConflictDiffModal();
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
@@ -80,7 +80,7 @@ export const useConflictResolver: ConflictResolver = () => {
 };
 
 export const useConflictEffect = (): void => {
-  const { data: currentPage } = useSWRxCurrentPage();
+  const [currentPage] = useCurrentPageData();
   const { close: closePageStatusAlert } = usePageStatusAlert();
   const { close: closeConflictDiffModal } = useConflictDiffModal();
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);

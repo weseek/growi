@@ -8,7 +8,7 @@ import type { SWRResponseWithUtils } from '@growi/core/dist/swr';
 import { isServer } from '@growi/core/dist/utils';
 import useSWRImmutable from 'swr/immutable';
 
-import { useIsNotFound } from '~/stores/page';
+import { usePageNotFound } from '~/states/page';
 
 import { useIsEditable } from './context';
 
@@ -70,7 +70,7 @@ type EditorModeUtils = {
 
 export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMode> => {
   const { data: _isEditable } = useIsEditable();
-  const { data: isNotFound } = useIsNotFound();
+  const [isNotFound] = usePageNotFound();
 
   const editorModeByHash = determineEditorModeByHash();
 

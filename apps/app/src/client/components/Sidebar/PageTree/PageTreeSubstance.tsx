@@ -5,8 +5,8 @@ import React, {
 import { useTranslation } from 'next-i18next';
 import { debounce } from 'throttle-debounce';
 
+import { useCurrentPageId, useCurrentPagePath } from '~/states/page';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
-import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
 import {
   mutatePageTree, mutateRecentlyUpdated, useSWRxRootPage, useSWRxV5MigrationStatus,
 } from '~/stores/page-listing';
@@ -97,8 +97,8 @@ export const PageTreeContent = memo(({ isWipPageShown }: PageTreeContentProps) =
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
-  const { data: currentPath } = useCurrentPagePath();
-  const { data: targetId } = useCurrentPageId();
+  const [currentPath] = useCurrentPagePath();
+  const [targetId] = useCurrentPageId();
 
   const { data: migrationStatus } = useSWRxV5MigrationStatus({ suspense: true });
 

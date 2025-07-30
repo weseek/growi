@@ -2,15 +2,15 @@ import type { JSX } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
+import { useCurrentPageData } from '~/states/page';
 import { useElasticsearchMaxBodyLengthToIndex } from '~/stores-universal/context';
-import { useSWRxCurrentPage } from '~/stores/page';
 
 
 export const FullTextSearchNotCoverAlert = (): JSX.Element => {
   const { t } = useTranslation();
 
   const { data: elasticsearchMaxBodyLengthToIndex } = useElasticsearchMaxBodyLengthToIndex();
-  const { data } = useSWRxCurrentPage();
+  const [data] = useCurrentPageData();
 
   const markdownLength = data?.revision?.body?.length;
 

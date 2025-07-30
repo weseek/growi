@@ -10,8 +10,9 @@ import {
 
 import { UserGroupPageGrantStatus, type IPageGrantData } from '~/interfaces/page';
 import type { PopulatedGrantedGroup, IRecordApplicableGrant, IResGrantData } from '~/interfaces/page-grant';
+import { useCurrentPageData } from '~/states/page';
 import { useCurrentUser } from '~/stores-universal/context';
-import { useSWRxApplicableGrant, useSWRxCurrentGrantData, useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxApplicableGrant, useSWRxCurrentGrantData } from '~/stores/page';
 
 type ModalProps = {
   isOpen: boolean
@@ -284,7 +285,7 @@ export const FixPageGrantAlert = (): JSX.Element => {
   const { t } = useTranslation();
 
   const { data: currentUser } = useCurrentUser();
-  const { data: pageData } = useSWRxCurrentPage();
+  const [pageData] = useCurrentPageData();
   const hasParent = pageData != null ? pageData.parent != null : false;
   const pageId = pageData?._id;
 

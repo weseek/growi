@@ -4,8 +4,9 @@ import { isIPageInfoForEntity } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 
+import { useCurrentPageData } from '~/states/page';
 import { useIsEnabledStaleNotification } from '~/stores-universal/context';
-import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
+import { useSWRxPageInfo } from '~/stores/page';
 
 
 export const PageStaleAlert = ():JSX.Element => {
@@ -13,7 +14,7 @@ export const PageStaleAlert = ():JSX.Element => {
   const { data: isEnabledStaleNotification } = useIsEnabledStaleNotification();
 
   // Todo: determine if it should fetch or not like useSWRxPageInfo below after https://redmine.weseek.co.jp/issues/96788
-  const { data: pageData } = useSWRxCurrentPage();
+  const [pageData] = useCurrentPageData();
   const { data: pageInfo } = useSWRxPageInfo(isEnabledStaleNotification ? pageData?._id : null);
 
   const contentAge = isIPageInfoForEntity(pageInfo) ? pageInfo.contentAge : null;

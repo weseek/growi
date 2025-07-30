@@ -12,13 +12,13 @@ import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
+import { useHydratePageAtoms } from '~/states/hydrate/page';
 import { useHydrateSidebarAtoms } from '~/states/hydrate/sidebar';
 import {
   useCurrentUser, useCurrentPathname, useGrowiCloudUri,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL,
 } from '~/stores-universal/context';
-import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
 
 import type { NextPageWithLayout } from './_app.page';
@@ -49,8 +49,7 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
 
   // clear the cache for the current page
   //  in order to fix https://redmine.weseek.co.jp/issues/135811
-  useSWRxCurrentPage(null);
-  useCurrentPageId(null);
+  useHydratePageAtoms(undefined);
   useCurrentPathname('/trash');
 
   useGrowiCloudUri(props.growiCloudUri);

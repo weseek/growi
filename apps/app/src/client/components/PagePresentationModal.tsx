@@ -10,10 +10,10 @@ import {
   Modal, ModalBody,
 } from 'reactstrap';
 
+import { useCurrentPageData } from '~/states/page';
 import { useIsEnabledMarp } from '~/stores-universal/context';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
 import { usePagePresentationModal } from '~/stores/modal';
-import { useSWRxCurrentPage } from '~/stores/page';
 import { usePresentationViewOptions } from '~/stores/renderer';
 
 import { RendererErrorMessage } from './Common/RendererErrorMessage';
@@ -38,7 +38,7 @@ const PagePresentationModal = (): JSX.Element => {
   const { isDarkMode } = useNextThemes();
   const fullscreen = useFullScreen();
 
-  const { data: currentPage } = useSWRxCurrentPage();
+  const [currentPage] = useCurrentPageData();
   const { data: rendererOptions, isLoading } = usePresentationViewOptions();
 
   const { data: isEnabledMarp } = useIsEnabledMarp();

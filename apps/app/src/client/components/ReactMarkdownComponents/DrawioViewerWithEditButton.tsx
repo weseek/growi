@@ -9,10 +9,10 @@ import {
 } from '@growi/remark-drawio';
 import { useTranslation } from 'next-i18next';
 
+import { useIsRevisionOutdated } from '~/states/page';
 import {
   useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
 } from '~/stores-universal/context';
-import { useIsRevisionOutdated } from '~/stores/page';
 import { useCurrentPageYjsData } from '~/stores/yjs';
 
 import '@growi/remark-drawio/dist/style.css';
@@ -34,7 +34,7 @@ export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps):
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
-  const { data: isRevisionOutdated } = useIsRevisionOutdated();
+  const [isRevisionOutdated] = useIsRevisionOutdated();
   const { data: currentPageYjsData } = useCurrentPageYjsData();
 
   const [isRendered, setRendered] = useState(false);

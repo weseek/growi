@@ -4,8 +4,8 @@ import { Dropdown } from 'reactstrap';
 
 import { useCreateTemplatePage } from '~/client/services/create-page';
 import { useToastrOnError } from '~/client/services/use-toastr-on-error';
+import { useCurrentPagePath } from '~/states/page';
 import { usePageCreateModal } from '~/stores/modal';
-import { useCurrentPagePath } from '~/stores/page';
 
 import { CreateButton } from './CreateButton';
 import { DropendMenu } from './DropendMenu';
@@ -19,7 +19,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const { open: openPageCreateModal } = usePageCreateModal();
-  const { data: currentPagePath } = useCurrentPagePath();
+  const [currentPagePath] = useCurrentPagePath();
 
   const { createNewPage, isCreating: isNewPageCreating } = useCreateNewPage();
   // TODO: https://redmine.weseek.co.jp/issues/138806

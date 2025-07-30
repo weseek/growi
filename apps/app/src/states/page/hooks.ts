@@ -1,4 +1,4 @@
-import type { IPagePopulatedToShowRevision } from '@growi/core';
+import type { IPagePopulatedToShowRevision, IUserHasId } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { useAtom } from 'jotai';
 
@@ -13,16 +13,15 @@ import {
   pageNotFoundAtom,
   latestRevisionAtom,
   setCurrentPageAtom,
-  setPageStatusAtom,
   // New atoms for enhanced functionality
   remoteRevisionIdAtom,
   remoteRevisionBodyAtom,
   remoteRevisionLastUpdateUserAtom,
   remoteRevisionLastUpdatedAtAtom,
-  setTemplateDataAtom,
-  setRemoteRevisionDataAtom,
   isTrashPageAtom,
   isRevisionOutdatedAtom,
+  templateTagsAtom,
+  templateBodyAtom,
 } from './internal-atoms';
 
 /**
@@ -47,30 +46,17 @@ export const useLatestRevision = (): UseAtom<typeof latestRevisionAtom> => {
   return useAtom(latestRevisionAtom);
 };
 
-export const useCurrentPagePath = (): readonly [string | undefined, never] => {
-  return useAtom(currentPagePathAtom);
-};
-
 // Write hooks for updating page state
 export const useSetCurrentPage = (): ((page: IPagePopulatedToShowRevision | undefined) => void) => {
   return useAtom(setCurrentPageAtom)[1];
 };
 
-export const useSetPageStatus = (): ((status: { isNotFound?: boolean; isLatestRevision?: boolean }) => void) => {
-  return useAtom(setPageStatusAtom)[1];
+export const useTemplateTags = (): UseAtom<typeof templateTagsAtom> => {
+  return useAtom(templateTagsAtom);
 };
 
-export const useSetTemplateData = (): ((data: { tags?: string[]; body?: string }) => void) => {
-  return useAtom(setTemplateDataAtom)[1];
-};
-
-export const useSetRemoteRevisionData = (): ((data: {
-  id?: string | null;
-  body?: string | null;
-  lastUpdateUser?: any;
-  lastUpdatedAt?: Date | null;
-}) => void) => {
-  return useAtom(setRemoteRevisionDataAtom)[1];
+export const useTemplateBody = (): UseAtom<typeof templateBodyAtom> => {
+  return useAtom(templateBodyAtom);
 };
 
 // Remote revision hooks (replacements for stores/remote-latest-page.ts)
@@ -96,17 +82,17 @@ export const useRemoteRevisionLastUpdatedAt = (): UseAtom<typeof remoteRevisionL
  * Get current page path with fallback to pathname
  * Pure Jotai replacement for stores/page.tsx useCurrentPagePath
  */
-export const useCurrentPagePathWithFallback = (): string | undefined => {
+export const useCurrentPagePath = (): readonly [string | undefined] => {
   const [currentPagePath] = useAtom(currentPagePathAtom);
   const { data: currentPathname } = useCurrentPathname();
 
   if (currentPagePath != null) {
-    return currentPagePath;
+    return [currentPagePath];
   }
   if (currentPathname != null && !pagePathUtils.isPermalink(currentPathname)) {
-    return currentPathname;
+    return [currentPathname];
   }
-  return undefined;
+  return [undefined];
 };
 
 /**

@@ -18,6 +18,7 @@ import {
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
 import OpenDefaultAiAssistantButton from '~/features/openai/client/components/AiAssistant/OpenDefaultAiAssistantButton';
+import { useCurrentPagePath } from '~/states/page';
 import {
   useIsGuestUser, useIsReadOnlyUser, useIsSearchPage, useIsUsersHomepageDeletionEnabled,
 } from '~/stores-universal/context';
@@ -30,7 +31,7 @@ import {
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
-import { useSWRxPageInfo, useSWRxTagsInfo, useCurrentPagePath } from '../../../stores/page';
+import { useSWRxPageInfo, useSWRxTagsInfo } from '../../../stores/page';
 import { useSWRxUsersList } from '../../../stores/user';
 import type { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 import {
@@ -138,7 +139,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
   const { data: isSearchPage } = useIsSearchPage();
   const { data: isUsersHomepageDeletionEnabled } = useIsUsersHomepageDeletionEnabled();
-  const { data: currentPagePath } = useCurrentPagePath();
+  const [currentPagePath] = useCurrentPagePath();
 
   const isUsersHomepage = currentPagePath == null ? false : pagePathUtils.isUsersHomepage(currentPagePath);
 

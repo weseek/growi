@@ -12,12 +12,12 @@ import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
+import { useHydratePageAtoms } from '~/states/hydrate/page';
 import { useHydrateSidebarAtoms } from '~/states/hydrate/sidebar';
 import {
   useCsrfToken, useCurrentUser, useIsContainerFluid, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useShowPageLimitationL, useGrowiCloudUri, useCurrentPathname,
 } from '~/stores-universal/context';
-import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
@@ -58,8 +58,7 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
 
   // clear the cache for the current page
   //  in order to fix https://redmine.weseek.co.jp/issues/135811
-  useSWRxCurrentPage(null);
-  useCurrentPageId(null);
+  useHydratePageAtoms(undefined);
   useCurrentPathname('/_search');
 
   // Search

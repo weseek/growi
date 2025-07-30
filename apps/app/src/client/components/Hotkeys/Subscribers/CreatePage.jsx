@@ -2,21 +2,21 @@ import React, { useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
+import { useCurrentPagePath } from '~/states/page';
 import { usePageCreateModal } from '~/stores/modal';
-import { useCurrentPagePath } from '~/stores/page';
 
 const CreatePage = React.memo((props) => {
 
   const { open: openCreateModal } = usePageCreateModal();
-  const { data: currentPath = '' } = useCurrentPagePath();
+  const [currentPath] = useCurrentPagePath();
 
   // setup effect
   useEffect(() => {
-    openCreateModal(currentPath);
+    openCreateModal(currentPath ?? '');
 
     // remove this
     props.onDeleteRender(this);
-  }, [openCreateModal, props]);
+  }, [currentPath, openCreateModal, props]);
 
   return <></>;
 });

@@ -2,11 +2,11 @@ import React, { useCallback, type JSX } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { useCurrentPageData } from '~/states/page';
+import { useCurrentPageData, useRemoteRevisionId } from '~/states/page';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
 import { useEditorMode } from '~/stores-universal/ui';
 import { usePageStatusAlert } from '~/stores/alert';
-import { useRemoteRevisionId, useRemoteRevisionLastUpdateUser } from '~/stores/remote-latest-page';
+import { useRemoteRevisionLastUpdateUser } from '~/stores/remote-latest-page';
 
 import { Username } from '../../components/User/Username';
 
@@ -19,7 +19,7 @@ export const PageStatusAlert = (): JSX.Element => {
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: pageStatusAlertData } = usePageStatusAlert();
-  const { data: remoteRevisionId } = useRemoteRevisionId();
+  const [remoteRevisionId] = useRemoteRevisionId();
   const { data: remoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
   const [pageData] = useCurrentPageData();
 

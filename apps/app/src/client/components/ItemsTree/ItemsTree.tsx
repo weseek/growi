@@ -12,9 +12,10 @@ import type { IPageForItem } from '~/interfaces/page';
 import type { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import type { UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
 import { SocketEventName } from '~/interfaces/websocket';
+import { useCurrentPagePath, usePageFetcher } from '~/states/page';
 import type { IPageForPageDuplicateModal } from '~/stores/modal';
 import { usePageDuplicateModal, usePageDeleteModal } from '~/stores/modal';
-import { mutateAllPageInfo, useCurrentPagePath, useSWRMUTxCurrentPage } from '~/stores/page';
+import { mutateAllPageInfo } from '~/stores/page';
 import {
   useSWRxRootPage, mutatePageTree, mutatePageList,
 } from '~/stores/page-listing';
@@ -54,7 +55,7 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   const router = useRouter();
 
   const { data: rootPageResult, error } = useSWRxRootPage({ suspense: true });
-  const { data: currentPagePath } = useCurrentPagePath();
+  const [currentPagePath] = useCurrentPagePath();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openDeleteModal } = usePageDeleteModal();
 
@@ -62,7 +63,7 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   const { data: ptDescCountMap, update: updatePtDescCountMap } = usePageTreeDescCountMap();
 
   // for mutation
-  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
+  const { trigger: mutateCurrentPage } = usePageFetcher();
 
   useEffect(() => {
     if (socket == null) {

@@ -8,8 +8,8 @@ import { useTranslation } from 'next-i18next';
 
 import { useCreatePage } from '~/client/services/create-page';
 import { toastError } from '~/client/util/toastr';
+import { usePageNotFound } from '~/states/page';
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
-import { useIsNotFound } from '~/stores/page';
 import { useIsDeviceLargerThanMd } from '~/stores/ui';
 import { useCurrentPageYjsData } from '~/stores/yjs';
 
@@ -66,7 +66,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
 
   const { t } = useTranslation('commons');
 
-  const { data: isNotFound } = useIsNotFound();
+  const [isNotFound] = usePageNotFound();
   const { mutate: mutateEditorMode } = useEditorMode();
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
   const { data: currentPageYjsData } = useCurrentPageYjsData();

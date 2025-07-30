@@ -14,6 +14,7 @@ import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
+import { useHydratePageAtoms } from '~/states/hydrate/page';
 import { useHydrateSidebarAtoms } from '~/states/hydrate/sidebar';
 import {
   useCurrentUser, useIsSearchPage, useGrowiCloudUri,
@@ -21,7 +22,6 @@ import {
   useCsrfToken, useIsSearchScopeChildrenAsDefault,
   useRegistrationWhitelist, useShowPageLimitationXL, useRendererConfig, useIsEnabledMarp, useCurrentPathname,
 } from '~/stores-universal/context';
-import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import type { NextPageWithLayout } from '../_app.page';
@@ -105,8 +105,7 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
 
   // clear the cache for the current page
   //  in order to fix https://redmine.weseek.co.jp/issues/135811
-  useSWRxCurrentPage(null);
-  useCurrentPageId(null);
+  useHydratePageAtoms(undefined);
   useCurrentPathname('/me');
 
   // page

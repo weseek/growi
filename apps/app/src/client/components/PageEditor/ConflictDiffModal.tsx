@@ -14,11 +14,11 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
+import { useCurrentPageData, useRemoteRevisionBody, useRemoteRevisionId } from '~/states/page';
 import { useCurrentUser } from '~/stores-universal/context';
 import { useConflictDiffModal } from '~/stores/modal';
-import { useSWRxCurrentPage } from '~/stores/page';
 import {
-  useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdateUser,
+  useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdateUser,
 } from '~/stores/remote-latest-page';
 
 import styles from './ConflictDiffModal.module.scss';
@@ -187,12 +187,12 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
 
 export const ConflictDiffModal = (): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
-  const { data: currentPage } = useSWRxCurrentPage();
+  const [currentPage] = useCurrentPageData();
   const { data: conflictDiffModalStatus } = useConflictDiffModal();
 
   // state for latest page
-  const { data: remoteRevisionId } = useRemoteRevisionId();
-  const { data: remoteRevisionBody } = useRemoteRevisionBody();
+  const [remoteRevisionId] = useRemoteRevisionId();
+  const [remoteRevisionBody] = useRemoteRevisionBody();
   const { data: remoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
   const { data: remoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
 

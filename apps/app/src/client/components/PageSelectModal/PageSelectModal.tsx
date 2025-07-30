@@ -13,9 +13,9 @@ import {
 import SimpleBar from 'simplebar-react';
 
 import type { IPageForItem } from '~/interfaces/page';
+import { useCurrentPageData } from '~/states/page';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
 import { usePageSelectModal } from '~/stores/modal';
-import { useSWRxCurrentPage } from '~/stores/page';
 
 import { ItemsTree } from '../ItemsTree';
 import ItemsTreeContentSkeleton from '../ItemsTree/ItemsTreeContentSkeleton';
@@ -35,7 +35,7 @@ const PageSelectModalSubstance: FC = () => {
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
-  const { data: currentPage } = useSWRxCurrentPage();
+  const [currentPage] = useCurrentPageData();
   const { data: pageSelectModalData } = usePageSelectModal();
 
   const isHierarchicalSelectionMode = pageSelectModalData?.opts?.isHierarchicalSelectionMode ?? false;

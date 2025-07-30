@@ -24,6 +24,12 @@ import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import {
+  useCurrentPagePath,
+  useCurrentPageData,
+  useCurrentPageId,
+  usePageNotFound,
+} from '~/states/page';
+import {
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
   useIsEditable, useIsIndentSizeForced,
@@ -39,7 +45,7 @@ import {
   useWaitingSaveProcessing,
 } from '~/stores/editor';
 import {
-  useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId, useIsNotFound, useTemplateBodyData, useSWRxCurrentGrantData,
+  useSWRxCurrentGrantData,
 } from '~/stores/page';
 import { mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 import { usePreviewOptions } from '~/stores/renderer';
@@ -54,6 +60,7 @@ import { useScrollSync } from './ScrollSyncHelper';
 import { useConflictResolver, useConflictEffect, type ConflictHandler } from './conflict';
 
 import '@growi/editor/dist/style.css';
+import { useTemplateBody } from '~/states/page/hooks';
 
 
 const logger = loggerFactory('growi:PageEditor');
@@ -88,15 +95,15 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
   const previewRef = useRef<HTMLDivElement>(null);
   const [previewRect] = useRect(previewRef);
 
-  const { data: isNotFound } = useIsNotFound();
-  const { data: pageId } = useCurrentPageId();
-  const { data: currentPagePath } = useCurrentPagePath();
+  const [isNotFound] = usePageNotFound();
+  const [pageId] = useCurrentPageId();
+  const [currentPagePath] = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
-  const { data: currentPage } = useSWRxCurrentPage();
+  const [currentPage] = useCurrentPageData();
   const { data: selectedGrant } = useSelectedGrant();
   const { data: editingMarkdown } = useEditingMarkdown();
   const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
-  const { data: templateBodyData } = useTemplateBodyData();
+  const [templateBody] = useTemplateBody();
   const { data: isEditable } = useIsEditable();
   const { mutate: mutateWaitingSaveProcessing } = useWaitingSaveProcessing();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
@@ -141,13 +148,13 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
       const pageTitle = nodePath.basename(currentPathname);
       initialValue += `${pathUtils.attachTitleHeader(pageTitle)}\n`;
     }
-    if (templateBodyData != null) {
-      initialValue += `${templateBodyData}\n`;
+    if (templateBody != null) {
+      initialValue += `${templateBody}\n`;
     }
 
     return initialValue;
 
-  }, [isNotFound, currentPathname, editingMarkdown, isEnabledAttachTitleHeader, templateBodyData]);
+  }, [isNotFound, currentPathname, editingMarkdown, isEnabledAttachTitleHeader, templateBody]);
 
   useEffect(() => {
     // set to ref

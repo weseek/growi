@@ -5,10 +5,11 @@ import { SubscriptionStatusType } from '@growi/core';
 import urljoin from 'url-join';
 
 import type { SyncLatestRevisionBody } from '~/interfaces/yjs';
+import { useCurrentPageId, usePageFetcher } from '~/states/page';
 import { useIsGuestUser } from '~/stores-universal/context';
 import { useEditingMarkdown, usePageTagsForEditors } from '~/stores/editor';
 import {
-  useCurrentPageId, useSWRMUTxCurrentPage, useSWRxApplicableGrant, useSWRxTagsInfo,
+  useSWRxApplicableGrant, useSWRxTagsInfo,
   useSWRxCurrentGrantData,
 } from '~/stores/page';
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
@@ -98,8 +99,8 @@ export type UpdateStateAfterSaveOption = {
 }
 
 export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: UpdateStateAfterSaveOption): (() => Promise<void>) | undefined => {
-  const { mutate: mutateCurrentPageId } = useCurrentPageId();
-  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
+  const [, setCurrentPageId] = useCurrentPageId();
+  const { fetchAndUpdatePage } = usePageFetcher();
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
@@ -117,8 +118,8 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
     await mutateTagsInfo(); // get from DB
     syncTagsInfoForEditor(); // sync global state for client
 
-    await mutateCurrentPageId(pageId);
-    const updatedPage = await mutateCurrentPage();
+    await setCurrentPageId(pageId);
+    const updatedPage = await fetchAndUpdatePage();
 
     if (updatedPage == null || updatedPage.revision == null) { return }
 
@@ -142,7 +143,7 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
     setRemoteLatestPageData(remoterevisionData);
   },
   // eslint-disable-next-line max-len
-  [pageId, mutateTagsInfo, syncTagsInfoForEditor, mutateCurrentPageId, mutateCurrentPage, opts?.supressEditingMarkdownMutation, mutateCurrentGrantData, mutateApplicableGrant, setRemoteLatestPageData, mutateEditingMarkdown]);
+  [pageId, mutateTagsInfo, syncTagsInfoForEditor, setCurrentPageId, fetchAndUpdatePage, opts?.supressEditingMarkdownMutation, mutateCurrentGrantData, mutateApplicableGrant, setRemoteLatestPageData, mutateEditingMarkdown]);
 };
 
 export const unlink = async(path: string): Promise<void> => {

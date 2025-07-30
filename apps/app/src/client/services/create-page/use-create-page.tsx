@@ -6,9 +6,9 @@ import { useTranslation } from 'react-i18next';
 import { exist, getIsNonUserRelatedGroupsGranted } from '~/client/services/page-operation';
 import { toastWarning } from '~/client/util/toastr';
 import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
+import { useCurrentPagePath } from '~/states/page';
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useGrantedGroupsInheritanceSelectModal } from '~/stores/modal';
-import { useCurrentPagePath } from '~/stores/page';
 import { useIsUntitledPage } from '~/stores/ui';
 
 import { createPage } from './create-page';
@@ -50,7 +50,7 @@ export const useCreatePage: UseCreatePage = () => {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const { data: currentPagePath } = useCurrentPagePath();
+  const [currentPagePath] = useCurrentPagePath();
   const { mutate: mutateEditorMode } = useEditorMode();
   const { mutate: mutateIsUntitledPage } = useIsUntitledPage();
   const { open: openGrantedGroupsInheritanceSelectModal, close: closeGrantedGroupsInheritanceSelectModal } = useGrantedGroupsInheritanceSelectModal();

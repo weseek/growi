@@ -16,8 +16,9 @@ import {
 
 import type { UserRelatedGroupsData } from '~/interfaces/page';
 import { UserGroupPageGrantStatus } from '~/interfaces/page';
+import { useCurrentPageId } from '~/states/page';
 import { useCurrentUser } from '~/stores-universal/context';
-import { useCurrentPageId, useSWRxCurrentGrantData } from '~/stores/page';
+import { useSWRxCurrentGrantData } from '~/stores/page';
 import { useSelectedGrant } from '~/stores/ui';
 
 
@@ -65,7 +66,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
 
   const shouldFetch = isSelectGroupModalShown;
   const { data: selectedGrant, mutate: mutateSelectedGrant } = useSelectedGrant();
-  const { data: currentPageId } = useCurrentPageId();
+  const [currentPageId] = useCurrentPageId();
   const { data: grantData } = useSWRxCurrentGrantData(currentPageId);
 
   const currentPageGrantData = grantData?.grantData.currentPageGrant;

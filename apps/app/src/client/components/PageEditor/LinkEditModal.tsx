@@ -18,7 +18,7 @@ import {
 import validator from 'validator';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
-import { useCurrentPagePath } from '~/stores/page';
+import { useCurrentPagePath } from '~/states/page';
 import { usePreviewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
@@ -34,7 +34,7 @@ const logger = loggerFactory('growi:components:LinkEditModal');
 
 export const LinkEditModal = (): JSX.Element => {
   const { t } = useTranslation();
-  const { data: currentPath } = useCurrentPagePath();
+  const [currentPath] = useCurrentPagePath();
   const { data: rendererOptions } = usePreviewOptions();
   const { data: linkEditModalStatus, close } = useLinkEditModal();
 

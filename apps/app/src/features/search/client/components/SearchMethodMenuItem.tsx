@@ -3,7 +3,7 @@ import React, { type JSX } from 'react';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { useTranslation } from 'next-i18next';
 
-import { useCurrentPagePath } from '~/stores/page';
+import { useCurrentPagePath } from '~/states/page';
 
 import type { GetItemProps } from '../interfaces/downshift';
 
@@ -22,7 +22,7 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
 
   const { t } = useTranslation('commons');
 
-  const { data: currentPagePath } = useCurrentPagePath();
+  const [currentPagePath] = useCurrentPagePath();
 
   const dPagePath = (new DevidedPagePath(currentPagePath ?? '', true, true));
   const currentPageName = `

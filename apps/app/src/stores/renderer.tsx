@@ -27,7 +27,7 @@ const useRendererConfigExt = (): RendererConfigExt | null => {
 
 
 export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
-  const { data: currentPagePath } = useCurrentPagePath();
+  const [currentPagePath] = useCurrentPagePath();
   const rendererConfig = useRendererConfigExt();
   const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
 
@@ -82,7 +82,7 @@ export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
 };
 
 export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
-  const { data: currentPagePath } = useCurrentPagePath();
+  const [currentPagePath] = useCurrentPagePath();
   const rendererConfig = useRendererConfigExt();
 
   const isAllDataValid = currentPagePath != null && rendererConfig != null;
@@ -109,7 +109,7 @@ export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
 };
 
 export const useCommentForCurrentPageOptions = (): SWRResponse<RendererOptions, Error> => {
-  const { data: currentPagePath } = useCurrentPagePath();
+  const [currentPagePath] = useCurrentPagePath();
   const rendererConfig = useRendererConfigExt();
 
   const isAllDataValid = currentPagePath != null && rendererConfig != null;
@@ -182,7 +182,7 @@ export const useCustomSidebarOptions = (config?: SWRConfiguration): SWRResponse<
 };
 
 export const usePresentationViewOptions = (): SWRResponse<RendererOptions, Error> => {
-  const { data: currentPagePath } = useCurrentPagePath();
+  const [currentPagePath] = useCurrentPagePath();
   const rendererConfig = useRendererConfigExt();
 
   const isAllDataValid = currentPagePath != null && rendererConfig != null;

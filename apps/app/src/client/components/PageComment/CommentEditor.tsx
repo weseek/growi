@@ -18,6 +18,7 @@ import {
 
 import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError } from '~/client/util/toastr';
+import { useCurrentPagePath } from '~/states/page';
 import {
   useCurrentUser, useIsSlackConfigured, useAcceptedUploadFileType,
 } from '~/stores-universal/context';
@@ -26,7 +27,6 @@ import { useSWRxPageComment } from '~/stores/comment';
 import {
   useSWRxSlackChannels, useIsSlackEnabled, useIsEnabledUnsavedWarning, useEditorSettings,
 } from '~/stores/editor';
-import { useCurrentPagePath } from '~/stores/page';
 import { useCommentEditorDirtyMap } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -78,7 +78,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   } = props;
 
   const { data: currentUser } = useCurrentUser();
-  const { data: currentPagePath } = useCurrentPagePath();
+  const [currentPagePath] = useCurrentPagePath();
   const { update: updateComment, post: postComment } = useSWRxPageComment(pageId);
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();

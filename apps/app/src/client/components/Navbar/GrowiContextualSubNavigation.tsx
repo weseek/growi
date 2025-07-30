@@ -24,6 +24,7 @@ import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import { usePageBulkExportSelectModal } from '~/features/page-bulk-export/client/stores/modal';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
+import { useCurrentPageId, usePageFetcher } from '~/states/page';
 import {
   useCurrentPathname,
   useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsBulkExportPagesEnabled,
@@ -35,7 +36,7 @@ import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
 import {
-  useSWRMUTxCurrentPage, useCurrentPageId, useSWRxPageInfo,
+  useSWRxPageInfo,
 } from '~/stores/page';
 import { mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 import {
@@ -254,7 +255,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const router = useRouter();
 
   const { data: shareLinkId } = useShareLinkId();
-  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
+  const { trigger: mutateCurrentPage } = usePageFetcher();
 
   const { data: currentPathname } = useCurrentPathname();
   const isSharedPage = pagePathUtils.isSharedPage(currentPathname ?? '');
@@ -263,7 +264,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const revisionId = (revision != null && isPopulated(revision)) ? revision._id : undefined;
 
   const { data: editorMode } = useEditorMode();
-  const { data: pageId } = useCurrentPageId();
+  const [pageId] = useCurrentPageId();
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
