@@ -1,5 +1,5 @@
 import React, {
-  useRef, useCallback, useState, type KeyboardEvent,
+  useRef, useMemo, useCallback, useState, type KeyboardEvent,
 } from 'react';
 
 import { type TypeaheadRef, Typeahead } from 'react-bootstrap-typeahead';
@@ -7,6 +7,8 @@ import { useTranslation } from 'react-i18next';
 import {
   ModalBody,
 } from 'reactstrap';
+
+import { useSWRxSearch } from '~/stores/search';
 
 import {
   useAiAssistantManagementModal, AiAssistantManagementModalPageMode,
@@ -28,11 +30,23 @@ const isSelectedSearchKeyword = (value: unknown): value is SelectedSearchKeyword
 };
 
 export const AiAssistantKeywordSearch = (): JSX.Element => {
+  const [selectedSearchKeywords, setSelectedSearchKeywords] = useState<Array<SelectedSearchKeyword>>([]);
+
+  const joinedSelectedSearchKeywords = useMemo(() => {
+    return selectedSearchKeywords.map(item => item.label).join(' ');
+  }, [selectedSearchKeywords]);
+
   const { t } = useTranslation();
+  const { data: searchResult } = useSWRxSearch(joinedSelectedSearchKeywords, null, {
+    limit: 5,
+    offset: 0,
+    includeUserPages: true,
+  });
+
+  console.log('searchResult', searchResult);
+
   const { data: aiAssistantManagementModalData } = useAiAssistantManagementModal();
   const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
-
-  const [selectedSearchKeywords, setSelectedSearchKeywords] = useState<Array<SelectedSearchKeyword>>([]);
 
   const typeaheadRef = useRef<TypeaheadRef>(null);
 
