@@ -129,6 +129,12 @@ jobs:
         node-version: ${{ inputs.node-version }}
         cache: 'pnpm'
 
+    # avoid setup-node cache failure; see: https://github.com/actions/setup-node/issues/1137
+    - name: Verify PNPM Cache Directory
+      run: |
+        PNPM_STORE_PATH="$( pnpm store path --silent )"
+        [ -d "$PNPM_STORE_PATH" ] || mkdir -vp "$PNPM_STORE_PATH"
+
     - name: Download production files artifact
       uses: actions/download-artifact@v4
       with:

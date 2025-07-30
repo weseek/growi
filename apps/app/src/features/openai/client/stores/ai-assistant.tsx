@@ -72,6 +72,7 @@ type AiAssistantSidebarUtils = {
   ): void
   openEditor(): void
   close(): void
+  refreshAiAssistantData(aiAssistantData?: AiAssistantHasId): void
   refreshThreadData(threadData?: IThreadRelationHasId): void
 }
 
@@ -99,6 +100,13 @@ export const useAiAssistantSidebar = (
       () => swrResponse.mutate({
         isOpened: false, isEditorAssistant: false, aiAssistantData: undefined, threadData: undefined,
       }), [swrResponse],
+    ),
+    refreshAiAssistantData: useCallback(
+      (aiAssistantData) => {
+        swrResponse.mutate((currentState = { isOpened: false }) => {
+          return { ...currentState, aiAssistantData };
+        });
+      }, [swrResponse],
     ),
     refreshThreadData: useCallback(
       (threadData?: IThreadRelationHasId) => {
