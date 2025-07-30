@@ -609,6 +609,7 @@
     "search_by_keyword": "キーワードで検索",
     "enter_keywords": "キーワードを入力",
     "max_items_space_separated_hint": "スペース区切りで最大5つまで入力できます",
+    "select_assistant_reference_pages": "アシスタントが参照するページを選択してください",
     "select_from_page_tree": "ページツリーから選択",
     "edit_page_description": " アシスタントが参照するページを編集します。<br> 参照できるページは配下ページも含めて {{limitLearnablePageCountPerAssistant}} ページまでです。",
     "default_instruction": "あなたはこのWikiの知識アシスタントです。\n\n## 多言語サポート:\nユーザーが入力で使用した言語と同じ言語で応答してください。\n",

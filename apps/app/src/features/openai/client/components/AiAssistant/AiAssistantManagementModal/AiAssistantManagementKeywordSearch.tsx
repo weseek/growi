@@ -43,7 +43,9 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
     includeUserPages: true,
   });
 
-  console.log('searchResult', searchResult);
+  const shownSearchResult = useMemo(() => {
+    return selectedSearchKeywords.length > 0 && searchResult != null && searchResult.data.length > 0;
+  }, [searchResult, selectedSearchKeywords.length]);
 
   const { data: aiAssistantManagementModalData } = useAiAssistantManagementModal();
   const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
@@ -118,6 +120,13 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
         <label htmlFor="ai-assistant-keyword-search" className="form-text text-muted mt-2">
           {t('modal_ai_assistant.max_items_space_separated_hint')}
         </label>
+
+        { shownSearchResult && (
+          <h4 className="text-center mb-4 fw-bold mt-5">
+            {t('modal_ai_assistant.select_assistant_reference_pages')}
+          </h4>
+        )}
+
       </ModalBody>
     </div>
   );
