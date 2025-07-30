@@ -319,8 +319,12 @@ export const useSWRxApplicableGrant = (
 
 /** **********************************************************
  *                     Computed states
+ *                     @deprecated Use enhanced versions from ~/states/page instead
  *********************************************************** */
 
+/**
+ * @deprecated Use useCurrentPagePathEnhanced from ~/states/page instead
+ */
 export const useCurrentPagePath = (): SWRResponse<string | undefined, Error> => {
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: currentPathname } = useCurrentPathname();
@@ -341,6 +345,9 @@ export const useCurrentPagePath = (): SWRResponse<string | undefined, Error> => 
   );
 };
 
+/**
+ * @deprecated Use useIsTrashPageEnhanced from ~/states/page instead
+ */
 export const useIsTrashPage = (): SWRResponse<boolean, Error> => {
   const { data: pagePath } = useCurrentPagePath();
 
@@ -352,6 +359,9 @@ export const useIsTrashPage = (): SWRResponse<boolean, Error> => {
   );
 };
 
+/**
+ * @deprecated Use useIsRevisionOutdatedEnhanced from ~/states/page instead
+ */
 export const useIsRevisionOutdated = (): SWRResponse<boolean, Error> => {
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: remoteRevisionId } = useRemoteRevisionId();
