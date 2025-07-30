@@ -52,34 +52,60 @@ SWRとJotaiの併用により、それぞれの長所を活かしつつ問題を
 
 #### **移行可能性の根拠**
 
-1. **限定的な影響範囲**: 約44箇所の使用箇所（manageable）
+1. **拡大した影響範囲**: 約182箇所の使用箇所（manageable but significant）
 2. **一貫したパターン**: 各hookの使用方法が標準化されている
 3. **型安全性**: Jotai版は既存以上の型安全性を提供
 4. **リスクの低さ**: 機能変更ではなく、実装方法の変更のみ
+5. **完成したインフラ**: 新システムが完全に実装済み
 
-#### **具体的な移行箇所**
+#### **具体的な移行箇所（最新調査結果）**
 
-- **`useCurrentPageId`**: 10箇所
+**影響範囲統計:**
+- **ファイル数**: 67ファイル
+- **import文**: 75箇所
+- **hook使用箇所**: 182箇所
+
+**主要hook別移行内容:**
+
+- **`useCurrentPageId`**: 複数箇所
   ```typescript
   // Before: { data: currentPageId } = useCurrentPageId()
   // After:  [currentPageId] = useCurrentPageId()
   ```
 
-- **`useSWRxCurrentPage`**: 19箇所  
+- **`useSWRxCurrentPage`**: 複数箇所  
   ```typescript
   // Before: { data: currentPage } = useSWRxCurrentPage()
   // After:  [currentPage] = useCurrentPageData()
   ```
 
-- **`useSWRMUTxCurrentPage`**: 15箇所
+- **`useSWRMUTxCurrentPage`**: 複数箇所
   ```typescript
   // Before: { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage()
   // After:  { fetchAndUpdatePage } = usePageFetcher()
   ```
 
-### **Phase 1: 一括置換（1日）**
+- **`useCurrentPagePath`**: 複数箇所（Deprecated）
+  ```typescript
+  // Before: { data: currentPagePath } = useCurrentPagePath()
+  // After:  [currentPagePath] = useCurrentPagePath()
+  ```
 
-1. **Import文の更新**
+- **`useIsTrashPage`**: 複数箇所（Deprecated）
+  ```typescript
+  // Before: { data: isTrashPage } = useIsTrashPage()
+  // After:  [isTrashPage] = useIsTrashPage()
+  ```
+
+- **`useIsRevisionOutdated`**: 複数箇所（Deprecated）
+  ```typescript
+  // Before: { data: isRevisionOutdated } = useIsRevisionOutdated()
+  // After:  [isRevisionOutdated] = useIsRevisionOutdated()
+  ```
+
+### **Phase 1: 一括置換（2-3日）**
+
+1. **Import文の更新（75箇所）**
    ```typescript
    // Before
    import { useCurrentPageId, useSWRxCurrentPage, useSWRMUTxCurrentPage } from '~/stores/page';
@@ -88,32 +114,39 @@ SWRとJotaiの併用により、それぞれの長所を活かしつつ問題を
    import { useCurrentPageId, useCurrentPageData, usePageFetcher } from '~/states/page';
    ```
 
-2. **Hook使用箇所の一括変更**
-   - 正規表現での一括置換が可能
+2. **Hook使用箇所の一括変更（182箇所）**
+   - 正規表現での一括置換を段階的に実行
    - TypeScriptコンパイラーでの検証
+   - 各hook別の置換パターン適用
 
 3. **SSRハイドレーション対応**
    ```typescript
    // ページコンポーネントで
-   useHydratePageAtoms({ 
-     currentPageId: pageId,
-     currentPage: pageData 
-   });
+   useHydratePageAtoms(pageWithMeta?.data ?? null);
    ```
 
-### **Phase 2: 検証とクリーンアップ（1日）**
+4. **主要影響ファイル（67ファイル）**
+   - `pages/[[...path]].page.tsx` - メインページコンポーネント
+   - `components/PageView/**` - ページビュー関連コンポーネント
+   - `components/PageEditor/**` - エディター関連コンポーネント
+   - `client/services/**` - サービス層コンポーネント
+   - `stores/ui.tsx` - UI状態管理
+
+### **Phase 2: 検証とクリーンアップ（1-2日）**
 
 1. **動作確認**
-   - 主要ページでの動作テスト
+   - 主要ページでの動作テスト（67ファイル）
    - エラーログの確認
+   - TypeScript型チェック（182箇所）
 
 2. **旧コードの削除**
    - `~/stores/page.tsx`からの該当hook削除
-   - 未使用importの整理
+   - 未使用importの整理（75箇所のimport文更新）
 
 3. **型チェック**
    - TypeScriptエラーの解消
    - lint警告の対応
+   - 段階的な検証プロセス
 
 ### **Phase 3: 旧システム削除（半日）**
 
@@ -177,9 +210,25 @@ const [pagePath] = useCurrentPagePath(); // string | null (computed)
 
 **一気移行による速やかな問題解決を推奨**します。この戦略により：
 
-1. **即座の効果**: shouldMutateの複雑性を2-3日で完全解決
+1. **即座の効果**: shouldMutateの複雑性を5-6日で完全解決
 2. **リスクの最小化**: 段階的移行による中間状態の複雑さを回避
 3. **開発効率**: 移行期間中の二重管理コストを削減
 4. **保守性向上**: クリーンなアーキテクチャへの迅速な移行
 
-約44箇所という限定的な影響範囲であり、一貫したパターンの変更のため、一気に移行する方が効率的かつ安全です。
+約182箇所、67ファイルという拡大した影響範囲ですが、一貫したパターンの変更であり、新システムのインフラが完全に整備されているため、慎重な段階的移行が適切です。
+
+## 追加で実装済みの機能
+
+### **Jotai実装の完成**
+- ✅ **`~/states/page/internal-atoms.ts`**: 内部atom定義
+- ✅ **`~/states/page/hooks.ts`**: 公開hookインターフェース  
+- ✅ **`~/states/page/page-fetcher.ts`**: ハイブリッドSWR+Jotaiフェッチャー
+- ✅ **`~/states/page/index.ts`**: 統合エクスポート
+- ✅ **`~/states/hydrate/page.ts`**: SSRハイドレーション対応
+
+### **移行インフラ**
+- ✅ **型安全性**: 完全なTypeScript対応
+- ✅ **互換API**: 既存コードとの互換性確保
+- ✅ **SSR対応**: `useHydratePageAtoms`による初期化
+- ✅ **エラーハンドリング**: SWRエラーパターンの維持
+- ✅ **デバッグ支援**: Jotai DevTools対応
