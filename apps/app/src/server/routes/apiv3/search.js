@@ -138,6 +138,7 @@ module.exports = (crowi) => {
       return res.status(200).send({ info });
     }
     catch (err) {
+      logger.error(err);
       return res.apiv3Err(err, 503);
     }
   });
@@ -169,6 +170,7 @@ module.exports = (crowi) => {
       return res.status(200).send();
     }
     catch (err) {
+      logger.error(err);
       return res.apiv3Err(err, 503);
     }
   });
@@ -241,6 +243,7 @@ module.exports = (crowi) => {
       }
     }
     catch (err) {
+      logger.error(err);
       return res.apiv3Err(err, 503);
     }
   });
