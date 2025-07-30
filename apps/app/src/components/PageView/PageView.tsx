@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useMemo, useRef, useState, type JSX,
+  useEffect, useMemo, useRef, type JSX,
 } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
@@ -48,8 +48,6 @@ export const PageView = (props: Props): JSX.Element => {
 
   const commentsContainerRef = useRef<HTMLDivElement>(null);
 
-  const [isCommentsLoaded, setCommentsLoaded] = useState(false);
-
   const {
     pagePath, initialPage, rendererConfig, className,
   } = props;
@@ -81,12 +79,24 @@ export const PageView = (props: Props): JSX.Element => {
       return;
     }
 
-    const targetId = hash.slice(1);
+    const contentContainer = document.getElementById('page-content-container');
+    if (contentContainer == null) return;
 
-    const target = document.getElementById(decodeURIComponent(targetId));
-    target?.scrollIntoView();
+    const observer = new MutationObserver(() => {
+      const targetId = decodeURIComponent(hash.slice(1));
+      const target = document.getElementById(targetId);
 
-  }, [isCommentsLoaded]);
+      if (target != null) {
+        target.scrollIntoView();
+        observer.disconnect();
+      }
+    });
+
+    observer.observe(contentContainer, { childList: true, subtree: true });
+
+    return () => observer.disconnect();
+  }, []);
+
   // *******************************  end  *******************************
 
   const specialContents = useMemo(() => {
@@ -145,7 +155,6 @@ export const PageView = (props: Props): JSX.Element => {
                 pageId={page._id}
                 pagePath={pagePath}
                 revision={page.revision}
-                onLoaded={() => setCommentsLoaded(true)}
               />
             </div>
           ) }
@@ -168,7 +177,7 @@ export const PageView = (props: Props): JSX.Element => {
       {specialContents == null && (
         <>
           {(isUsersHomepagePath && page?.creator != null) && <UserInfo author={page.creator} />}
-          <div className="flex-expand-vert">
+          <div id="page-content-container" className="flex-expand-vert">
             <Contents />
           </div>
         </>
