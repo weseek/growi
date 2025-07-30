@@ -25,18 +25,6 @@ test('Vist User settings', async({ page }) => {
   await expect(page.getByTestId('grw-user-settings')).toBeVisible();
 });
 
-test('Open questionnaire modal', async({ page }) => {
-  await page.goto('/dummy');
-
-  // Open PersonalDropdown
-  await page.getByTestId('personal-dropdown-button').click();
-  await expect(page.getByTestId('grw-personal-dropdown-menu-user-home')).toBeVisible();
-
-  // Expect the questionnaire modal to be displayed when the QuestionnaireModalToggleButton is clicked
-  await page.getByTestId('grw-proactive-questionnaire-modal-toggle-btn').click();
-  await expect(page.getByTestId('grw-proactive-questionnaire-modal')).toBeVisible();
-});
-
 test('Access User information', async({ page }) => {
   await page.goto('/me');
 
@@ -139,7 +127,7 @@ test('Acccess Other setting', async({ page }) => {
   await expect(page.getByTestId('grw-user-settings')).toBeVisible();
   await page.getByTestId('other-settings-tab-button').first().click();
 
-  // Expect a success toaster to be displayed when the QuestionnaireSettingsUpdateButton is clicked
-  await page.getByTestId('grw-questionnaire-settings-update-btn').click();
+  // Expect a success toaster to be displayed when the updating UI button is clicked
+  await page.getByTestId('grw-ui-settings-update-btn').click();
   await expect(page.locator('.Toastify__toast')).toBeVisible();
 });

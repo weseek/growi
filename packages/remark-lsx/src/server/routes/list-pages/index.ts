@@ -10,7 +10,7 @@ import type { LsxApiParams, LsxApiResponseData } from '../../../interfaces/api';
 import { addDepthCondition } from './add-depth-condition';
 import { addNumCondition } from './add-num-condition';
 import { addSortCondition } from './add-sort-condition';
-import { type PageQuery, generateBaseQuery } from './generate-base-query';
+import { generateBaseQuery, type PageQuery } from './generate-base-query';
 import { getToppageViewersCount } from './get-toppage-viewers-count';
 
 const { addTrailingSlash, removeTrailingSlash } = pathUtils;

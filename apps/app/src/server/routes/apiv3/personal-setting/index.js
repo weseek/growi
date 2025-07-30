@@ -1,3 +1,4 @@
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { body } from 'express-validator';
 
@@ -5,7 +6,6 @@ import { body } from 'express-validator';
 import { i18n } from '^/config/next-i18next.config';
 
 import { SupportedAction } from '~/interfaces/activity';
-import { SCOPE } from '@growi/core/dist/interfaces';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import loggerFactory from '~/utils/logger';
 
@@ -128,9 +128,6 @@ module.exports = (crowi) => {
     inAppNotificationSettings: [
       body('defaultSubscribeRules.*.name').isString(),
       body('defaultSubscribeRules.*.isEnabled').optional().isBoolean(),
-    ],
-    questionnaireSettings: [
-      body('isQuestionnaireEnabled').isBoolean(),
     ],
   };
 
@@ -816,49 +813,6 @@ module.exports = (crowi) => {
       return res.apiv3Err('getting-in-app-notification-settings-failed');
     }
   });
-
-  /**
-   * @swagger
-   *   /personal-setting/questionnaire-settings:
-   *     put:
-   *       tags: [QuestionnaireSetting]
-   *       summary: /personal-setting/questionnaire-settings
-   *       description: Update the questionnaire settings for the current user
-   *       requestBody:
-   *         required: true
-   *         content:
-   *           application/json:
-   *             schema:
-   *               properties:
-   *                 isQuestionnaireEnabled:
-   *                   type: boolean
-   *       responses:
-   *         200:
-   *           description: Successfully updated questionnaire settings
-   *           content:
-   *             application/json:
-   *               schema:
-   *                 properties:
-   *                   message:
-   *                     type: string
-   *                   isQuestionnaireEnabled:
-   *                     type: boolean
-   */
-  router.put('/questionnaire-settings',
-    accessTokenParser([SCOPE.WRITE.FEATURES.QUESTIONNAIRE]), loginRequiredStrictly, validator.questionnaireSettings, apiV3FormValidator, async(req, res) => {
-      const { isQuestionnaireEnabled } = req.body;
-      const { user } = req;
-      try {
-        await user.updateIsQuestionnaireEnabled(isQuestionnaireEnabled);
-
-        return res.apiv3({ message: 'Successfully updated questionnaire settings.', isQuestionnaireEnabled });
-      }
-      catch (err) {
-        logger.error(err);
-        return res.apiv3Err({ error: 'Failed to update questionnaire settings.' });
-      }
-    });
-
 
   return router;
 };

@@ -21,6 +21,7 @@ import { TransferKey } from '~/utils/vo/transfer-key';
 
 import type Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+import { Attachment } from '../../models/attachment';
 
 import type { ApiV3Response } from './interfaces/apiv3-response';
 
@@ -380,6 +381,27 @@ module.exports = (crowi: Crowi): Router => {
       catch (err) {
         logger.error(err);
         return res.apiv3Err(new ErrorV3('Failed to parse body.', 'parse_failed'), 500);
+      }
+
+      try {
+        const { fileName, fileSize } = attachmentMap;
+        if (typeof fileName !== 'string' || fileName.length === 0 || fileName.length > 256) {
+          logger.warn('Invalid fileName in attachment metadata.', { fileName });
+          return res.apiv3Err(new ErrorV3('Invalid fileName in attachment metadata.', 'invalid_metadata'), 400);
+        }
+        if (typeof fileSize !== 'number' || !Number.isInteger(fileSize) || fileSize < 0) {
+          logger.warn('Invalid fileSize in attachment metadata.', { fileSize });
+          return res.apiv3Err(new ErrorV3('Invalid fileSize in attachment metadata.', 'invalid_metadata'), 400);
+        }
+        const count = await Attachment.countDocuments({ fileName, fileSize });
+        if (count === 0) {
+          logger.warn('Attachment not found in collection.', { fileName, fileSize });
+          return res.apiv3Err(new ErrorV3('Attachment not found in collection.', 'attachment_not_found'), 404);
+        }
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(new ErrorV3('Failed to check attachment existence.', 'attachment_check_failed'), 500);
       }
 
       const fileStream = createReadStream(file.path, {

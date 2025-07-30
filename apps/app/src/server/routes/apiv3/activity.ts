@@ -108,9 +108,6 @@ const validator = {
  *                       isInvitationEmailSended:
  *                         type: boolean
  *                         example: false
- *                       isQuestionnaireEnabled:
- *                         type: boolean
- *                         example: true
  *                       name:
  *                         type: string
  *                         example: "Taro"

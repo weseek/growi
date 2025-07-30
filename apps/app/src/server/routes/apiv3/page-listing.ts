@@ -1,7 +1,8 @@
 import type {
-  IPageInfoForListing, IPageInfo, IPage,
+  IPageInfoForListing, IPageInfo, IPage, IUserHasId,
 } from '@growi/core';
 import { getIdForRef, isIPageInfoForEntity } from '@growi/core';
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, Router } from 'express';
 import express from 'express';
@@ -9,7 +10,6 @@ import { query, oneOf } from 'express-validator';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
-import { SCOPE } from '@growi/core/dist/interfaces';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { configManager } from '~/server/service/config-manager';
 import type { IPageGrantService } from '~/server/service/page-grant';
@@ -28,7 +28,7 @@ const logger = loggerFactory('growi:routes:apiv3:page-tree');
  * Types & Interfaces
  */
 interface AuthorizedRequest extends Request {
-  user?: any
+  user?: IUserHasId,
 }
 
 /*
@@ -273,7 +273,7 @@ const routerFactory = (crowi: Crowi): Router => {
    */
   router.get('/info',
     accessTokenParser([SCOPE.READ.FEATURES.PAGE], { acceptLegacy: true }),
-    loginRequired, validator.pageIdsOrPathRequired, validator.infoParams, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
+    validator.pageIdsOrPathRequired, validator.infoParams, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
       const {
         pageIds, path, attachBookmarkCount: attachBookmarkCountParam, attachShortBody: attachShortBodyParam,
       } = req.query;
