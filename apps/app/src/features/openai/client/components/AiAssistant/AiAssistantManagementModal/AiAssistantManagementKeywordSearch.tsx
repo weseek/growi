@@ -38,7 +38,7 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
 
   const { t } = useTranslation();
   const { data: searchResult } = useSWRxSearch(joinedSelectedSearchKeywords, null, {
-    limit: 5,
+    limit: 10,
     offset: 0,
     includeUserPages: true,
   });
@@ -101,57 +101,59 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
       />
 
       <ModalBody className="px-4">
-        <h4 className="text-center mb-4 fw-bold">
+        <h4 className="text-center fw-bold mb-3 mt-2">
           {t('modal_ai_assistant.search_reference_pages_by_keyword')}
         </h4>
 
-        <Typeahead
-          allowNew
-          multiple
-          options={[]}
-          selected={selectedSearchKeywords}
-          placeholder={t('modal_ai_assistant.enter_keywords')}
-          id="ai-assistant-keyword-search"
-          ref={typeaheadRef}
-          onChange={changeHandler}
-          onKeyDown={keyDownHandler}
-        />
+        <div className="px-4">
+          <Typeahead
+            allowNew
+            multiple
+            options={[]}
+            selected={selectedSearchKeywords}
+            placeholder={t('modal_ai_assistant.enter_keywords')}
+            id="ai-assistant-keyword-search"
+            ref={typeaheadRef}
+            onChange={changeHandler}
+            onKeyDown={keyDownHandler}
+          />
 
-        <label htmlFor="ai-assistant-keyword-search" className="form-text text-muted mt-2">
-          {t('modal_ai_assistant.max_items_space_separated_hint')}
-        </label>
+          <label htmlFor="ai-assistant-keyword-search" className="form-text text-muted mt-2">
+            {t('modal_ai_assistant.max_items_space_separated_hint')}
+          </label>
+        </div>
 
         { shownSearchResult && (
           <>
-            <h4 className="text-center mb-4 fw-bold mt-5">
+            <h4 className="text-center fw-bold mb-4 mt-5">
               {t('modal_ai_assistant.select_assistant_reference_pages')}
             </h4>
 
-            <ul className="p-3 list-group">
+            <div className="px-4 list-group">
               {searchResult?.data.map((page) => {
                 return (
-                  <li className="list-group-item list-group-item-action d-flex align-items-center p-1 mb-2 rounded">
-                    <button
-                      type="button"
-                      className="btn"
-                    >
-                      <span className="text-primary material-symbols-outlined">
+                  <button type="button" className="list-group-item list-group-item-action d-flex align-items-center p-1 mb-2 rounded">
+                    <button type="button" className="btn text-primary">
+                      <span className="material-symbols-outlined">
                         add_circle
                       </span>
                     </button>
                     <div className="flex-grow-1">
-                      <span>{page.data.path}</span>
+                      <span>
+                        {page.data.path}
+                      </span>
                     </div>
-                    <span className="badge bg-secondary rounded-pill me-2">
-                      {page.data.descendantCount}
+                    <span className="badge bg-body-secondary rounded-pill me-2">
+                      <span className="text-body-tertiary">
+                        {page.data.descendantCount}
+                      </span>
                     </span>
-                  </li>
+                  </button>
                 );
               })}
-            </ul>
+            </div>
           </>
         )}
-
       </ModalBody>
     </div>
   );
