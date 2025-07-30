@@ -1,0 +1,50 @@
+@use '@growi/core-styles/scss/variables/growi-official-colors';
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
+@use '~/styles/variables' as var;
+
+
+.grw-ai-assistant-keyword-search :global {
+  .rbt {
+    .rbt-input-multi {
+      border: none;
+      border-bottom: 3px solid bs.$gray-200;
+      border-radius: 0;
+
+      &.focus {
+        border-color: var(--grw-primary-500);
+        box-shadow: none;
+      }
+    }
+
+    .rbt-menu {
+       display: none !important;
+    }
+  }
+
+  .list-group-item {
+    border: none;
+  }
+}
+
+// == Colors
+@include bs.color-mode(light) {
+  .grw-ai-assistant-keyword-search :global {
+    .list-group-item {
+      background-color: #{bs.$gray-100};
+        &:hover {
+          background-color: var(--grw-primary-100);
+      }
+    }
+  }
+}
+
+@include bs.color-mode(dark) {
+  .grw-ai-assistant-keyword-search :global {
+    .list-group-item {
+      background-color: #{bs.$gray-900};
+      &:hover {
+        background-color: var(--grw-primary-800);
+      }
+    }
+  }
+}

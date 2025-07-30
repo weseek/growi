@@ -30,6 +30,8 @@ import { AiAssistantManagementEditInstruction } from './AiAssistantManagementEdi
 import { AiAssistantManagementEditPages } from './AiAssistantManagementEditPages';
 import { AiAssistantManagementEditShare } from './AiAssistantManagementEditShare';
 import { AiAssistantManagementHome } from './AiAssistantManagementHome';
+import { AiAssistantKeywordSearch } from './AiAssistantManagementKeywordSearch';
+import { AiAssistantManagementPageSelectionMethod } from './AiAssistantManagementPageSelectionMethod';
 
 import styles from './AiAssistantManagementModal.module.scss';
 
@@ -167,8 +169,11 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
       toastError(shouldEdit ? t('modal_ai_assistant.toaster.update_failed') : t('modal_ai_assistant.toaster.create_failed'));
       logger.error(err);
     }
-  // eslint-disable-next-line max-len
-  }, [t, selectedPages, selectedShareScope, selectedUserGroupsForShareScope, selectedAccessScope, selectedUserGroupsForAccessScope, name, description, instruction, shouldEdit, aiAssistant?._id, mutateAiAssistants, closeAiAssistantManagementModal]);
+  }, [
+    selectedPages, selectedShareScope, selectedUserGroupsForShareScope, selectedAccessScope,
+    selectedUserGroupsForAccessScope, name, description, instruction, shouldEdit, t, mutateAiAssistants,
+    closeAiAssistantManagementModal, aiAssistant?._id, aiAssistantSidebarData?.aiAssistantData?._id, refreshAiAssistantData,
+  ]);
 
 
   /*
@@ -236,6 +241,14 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   return (
     <>
       <TabContent activeTab={pageMode}>
+        <TabPane tabId={AiAssistantManagementModalPageMode.PAGE_SELECTION_METHOD}>
+          <AiAssistantManagementPageSelectionMethod />
+        </TabPane>
+
+        <TabPane tabId={AiAssistantManagementModalPageMode.KEYWORD_SEARCH}>
+          <AiAssistantKeywordSearch />
+        </TabPane>
+
         <TabPane tabId={AiAssistantManagementModalPageMode.HOME}>
           <AiAssistantManagementHome
             shouldEdit={shouldEdit}
