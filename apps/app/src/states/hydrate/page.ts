@@ -26,17 +26,17 @@ import {
  *
  * @example
  * // Basic usage
- * useHydratePageAtoms(pageWithMeta?.data ?? null);
+ * useHydratePageAtoms(pageWithMeta?.data);
  *
  * // With template data and custom flags
- * useHydratePageAtoms(pageWithMeta?.data ?? null, {
+ * useHydratePageAtoms(pageWithMeta?.data, {
  *   isLatestRevision: false,
  *   templateTags: ['tag1', 'tag2'],
  *   templateBody: 'Template content'
  * });
  */
 export const useHydratePageAtoms = (
-    page: IPagePopulatedToShowRevision | null,
+    page: IPagePopulatedToShowRevision | undefined,
     options?: {
       isNotFound?: boolean;
       isLatestRevision?: boolean;
@@ -46,8 +46,8 @@ export const useHydratePageAtoms = (
 ): void => {
   useHydrateAtoms([
     // Core page state - automatically extract from page object
-    [currentPageIdAtom, page?._id ?? null],
-    [currentPageDataAtom, page ?? null],
+    [currentPageIdAtom, page?._id],
+    [currentPageDataAtom, page],
     [pageNotFoundAtom, options?.isNotFound ?? (page == null)],
     [latestRevisionAtom, options?.isLatestRevision ?? true],
 
@@ -56,7 +56,7 @@ export const useHydratePageAtoms = (
     [templateContentAtom, options?.templateBody ?? ''],
 
     // Remote revision data - auto-extracted from page.revision
-    [remoteRevisionIdAtom, page?.revision?._id ?? null],
-    [remoteRevisionBodyAtom, page?.revision?.body ?? null],
+    [remoteRevisionIdAtom, page?.revision?._id],
+    [remoteRevisionBodyAtom, page?.revision?.body],
   ]);
 };

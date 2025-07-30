@@ -90,16 +90,3 @@ export const usePageFetcher = (): SWRMutationResponse<IPagePopulatedToShowRevisi
     fetchAndUpdatePage,
   };
 };
-
-/**
- * Hook for initializing page data (replaces useSWRxCurrentPage complexity)
- * This simplifies the shouldMutate logic by using Jotai's reactive state
- */
-export const useInitializePageData = (): ((initialData: IPagePopulatedToShowRevision | null) => void) => {
-  const setCurrentPage = useAtom(setCurrentPageAtom)[1];
-
-  return useCallback((initialData: IPagePopulatedToShowRevision | null) => {
-    // Simple direct update - no complex shouldMutate logic needed
-    setCurrentPage(initialData);
-  }, [setCurrentPage]);
-};

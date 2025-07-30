@@ -1,4 +1,4 @@
-import type { IPagePopulatedToShowRevision, Nullable, IUserHasId } from '@growi/core';
+import type { IPagePopulatedToShowRevision, IUserHasId } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { atom } from 'jotai';
 
@@ -8,8 +8,8 @@ import { atom } from 'jotai';
  */
 
 // Core page state atoms (internal)
-export const currentPageIdAtom = atom<Nullable<string>>(null);
-export const currentPageDataAtom = atom<IPagePopulatedToShowRevision | null>(null);
+export const currentPageIdAtom = atom<string>();
+export const currentPageDataAtom = atom<IPagePopulatedToShowRevision>();
 export const pageNotFoundAtom = atom(false);
 export const latestRevisionAtom = atom(true);
 
@@ -20,20 +20,20 @@ export const templateContentAtom = atom<string>('');
 // Derived atoms for computed states
 export const currentPagePathAtom = atom((get) => {
   const currentPage = get(currentPageDataAtom);
-  return currentPage?.path ?? null;
+  return currentPage?.path;
 });
 
 // Additional computed atoms for migrated hooks
 export const currentRevisionIdAtom = atom((get) => {
   const currentPage = get(currentPageDataAtom);
-  return currentPage?.revision?._id ?? null;
+  return currentPage?.revision?._id;
 });
 
 // Remote revision data atoms (migrated from useSWRStatic)
-export const remoteRevisionIdAtom = atom<string | null>(null);
-export const remoteRevisionBodyAtom = atom<string | null>(null);
-export const remoteRevisionLastUpdateUserAtom = atom<IUserHasId | null>(null);
-export const remoteRevisionLastUpdatedAtAtom = atom<Date | null>(null);
+export const remoteRevisionIdAtom = atom<string>();
+export const remoteRevisionBodyAtom = atom<string>();
+export const remoteRevisionLastUpdateUserAtom = atom<IUserHasId>();
+export const remoteRevisionLastUpdatedAtAtom = atom<Date>();
 
 // Enhanced computed atoms that replace SWR-based hooks
 export const isTrashPageAtom = atom((get) => {
@@ -55,7 +55,7 @@ export const isRevisionOutdatedAtom = atom((get) => {
 // Action atoms for state updates
 export const setCurrentPageAtom = atom(
   null,
-  (get, set, page: IPagePopulatedToShowRevision | null) => {
+  (get, set, page: IPagePopulatedToShowRevision | undefined) => {
     set(currentPageDataAtom, page);
     if (page?._id) {
       set(currentPageIdAtom, page._id);
@@ -91,10 +91,10 @@ export const setTemplateDataAtom = atom(
 export const setRemoteRevisionDataAtom = atom(
   null,
   (get, set, data: {
-    id?: string | null;
-    body?: string | null;
-    lastUpdateUser?: IUserHasId | null;
-    lastUpdatedAt?: Date | null;
+    id?: string;
+    body?: string;
+    lastUpdateUser?: IUserHasId;
+    lastUpdatedAt?: Date;
   }) => {
     if (data.id !== undefined) {
       set(remoteRevisionIdAtom, data.id);

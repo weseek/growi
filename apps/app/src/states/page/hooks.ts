@@ -1,4 +1,4 @@
-import type { IPagePopulatedToShowRevision, IUserHasId } from '@growi/core';
+import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { useAtom } from 'jotai';
 
@@ -47,12 +47,12 @@ export const useLatestRevision = (): UseAtom<typeof latestRevisionAtom> => {
   return useAtom(latestRevisionAtom);
 };
 
-export const useCurrentPagePath = (): readonly [string | null, never] => {
+export const useCurrentPagePath = (): readonly [string | undefined, never] => {
   return useAtom(currentPagePathAtom);
 };
 
 // Write hooks for updating page state
-export const useSetCurrentPage = (): ((page: IPagePopulatedToShowRevision | null) => void) => {
+export const useSetCurrentPage = (): ((page: IPagePopulatedToShowRevision | undefined) => void) => {
   return useAtom(setCurrentPageAtom)[1];
 };
 
@@ -67,7 +67,7 @@ export const useSetTemplateData = (): ((data: { tags?: string[]; body?: string }
 export const useSetRemoteRevisionData = (): ((data: {
   id?: string | null;
   body?: string | null;
-  lastUpdateUser?: IUserHasId | null;
+  lastUpdateUser?: any;
   lastUpdatedAt?: Date | null;
 }) => void) => {
   return useAtom(setRemoteRevisionDataAtom)[1];

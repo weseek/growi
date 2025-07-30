@@ -30,7 +30,6 @@ export {
 // Data fetching hooks
 export {
   usePageFetcher,
-  useInitializePageData,
 } from './page-fetcher';
 
 // Template data atoms (these need to be directly accessible for some use cases)
