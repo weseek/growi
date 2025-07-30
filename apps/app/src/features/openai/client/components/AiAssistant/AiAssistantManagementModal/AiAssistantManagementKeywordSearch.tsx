@@ -142,7 +142,7 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
                     <div className="flex-grow-1">
                       <span>{page.data.path}</span>
                     </div>
-                    <span className="badge bg-secondary rounded-pill">
+                    <span className="badge bg-secondary rounded-pill me-2">
                       {page.data.descendantCount}
                     </span>
                   </div>
