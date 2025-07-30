@@ -2,10 +2,10 @@ import React, { useCallback, type JSX } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
+import { useCurrentPageData } from '~/states/page';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
 import { useEditorMode } from '~/stores-universal/ui';
 import { usePageStatusAlert } from '~/stores/alert';
-import { useSWRxCurrentPage } from '~/stores/page';
 import { useRemoteRevisionId, useRemoteRevisionLastUpdateUser } from '~/stores/remote-latest-page';
 
 import { Username } from '../../components/User/Username';
@@ -21,7 +21,7 @@ export const PageStatusAlert = (): JSX.Element => {
   const { data: pageStatusAlertData } = usePageStatusAlert();
   const { data: remoteRevisionId } = useRemoteRevisionId();
   const { data: remoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
-  const { data: pageData } = useSWRxCurrentPage();
+  const [pageData] = useCurrentPageData();
 
   const onClickRefreshPage = useCallback(() => {
     pageStatusAlertData?.onRefleshPage?.();

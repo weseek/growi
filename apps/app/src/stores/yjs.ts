@@ -7,7 +7,7 @@ import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import type { CurrentPageYjsData } from '~/interfaces/yjs';
 
-import { useCurrentPageId } from './page';
+import { useCurrentPageId } from '../states/page';
 
 type CurrentPageYjsDataUtils = {
   updateHasYdocsNewerThanLatestRevision(hasYdocsNewerThanLatestRevision: boolean): void
@@ -15,7 +15,7 @@ type CurrentPageYjsDataUtils = {
 }
 
 export const useCurrentPageYjsData = (): SWRResponse<CurrentPageYjsData, Error> & CurrentPageYjsDataUtils => {
-  const { data: currentPageId } = useCurrentPageId();
+  const [currentPageId] = useCurrentPageId();
 
   const key = currentPageId != null
     ? `/page/${currentPageId}/yjs-data`
@@ -35,7 +35,7 @@ export const useCurrentPageYjsData = (): SWRResponse<CurrentPageYjsData, Error> 
 };
 
 export const useSWRMUTxCurrentPageYjsData = (): SWRMutationResponse<CurrentPageYjsData, Error> => {
-  const { data: currentPageId } = useCurrentPageId();
+  const [currentPageId] = useCurrentPageId();
 
   const key = currentPageId != null
     ? `/page/${currentPageId}/yjs-data`

@@ -6,11 +6,11 @@ import useSWR, { type SWRConfiguration, type SWRResponse } from 'swr';
 import { getGrowiFacade } from '~/features/growi-plugin/client/utils/growi-facade-utils';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import type { RendererConfigExt } from '~/interfaces/services/renderer';
+import { useCurrentPagePath } from '~/states/page';
 import { useRendererConfig } from '~/stores-universal/context';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
-import { useCurrentPagePath } from './page';
 import { useCurrentPageTocNode } from './ui';
 
 const logger = loggerFactory('growi:cli:services:renderer');
@@ -59,7 +59,7 @@ export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
 };
 
 export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
-  const { data: currentPagePath } = useCurrentPagePath();
+  const [currentPagePath] = useCurrentPagePath();
   const rendererConfig = useRendererConfigExt();
   const { data: tocNode } = useCurrentPageTocNode();
 

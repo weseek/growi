@@ -32,7 +32,11 @@ import type { CurrentPageYjsData } from '~/interfaces/yjs';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
 import { useEditorModeClassName } from '~/services/layout/use-editor-mode-class-name';
+import { useHydratePageAtoms } from '~/states/hydrate/page';
 import { useHydrateSidebarAtoms } from '~/states/hydrate/sidebar';
+import {
+  useCurrentPageData, usePageFetcher, useCurrentPageId, useCurrentPagePath,
+} from '~/states/page';
 import {
   useCurrentUser,
   useIsForbidden, useIsSharedUser,
@@ -51,12 +55,7 @@ import {
   useIsAiEnabled, useLimitLearnablePageCountPerAssistant, useIsUsersHomepageDeletionEnabled,
 } from '~/stores-universal/context';
 import { useEditingMarkdown } from '~/stores/editor';
-import {
-  useSWRxCurrentPage, useSWRMUTxCurrentPage, useCurrentPageId,
-  useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
-} from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
-import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
 import { useCurrentPageYjsData, useSWRMUTxCurrentPageYjsData } from '~/stores/yjs';
 import loggerFactory from '~/utils/logger';
@@ -136,7 +135,7 @@ type GrowiContextualSubNavigationProps = {
 
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
   const { isLinkSharingDisabled } = props;
-  const { data: currentPage } = useSWRxCurrentPage();
+  const [currentPage] = useCurrentPageData();
   return (
     <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled} />
   );
@@ -270,22 +269,15 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useCurrentPathname(props.currentPathname);
 
-  const { data: currentPage } = useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
+  // Initialize Jotai atoms with initial data
+  useHydratePageAtoms(pageWithMeta?.data);
 
-  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
+  const { fetchAndUpdatePage } = usePageFetcher();
   const { trigger: mutateCurrentPageYjsDataFromApi } = useSWRMUTxCurrentPageYjsData();
 
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
-  const { data: currentPageId, mutate: mutateCurrentPageId } = useCurrentPageId();
-
-  const { mutate: mutateIsNotFound } = useIsNotFound();
-
-  const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
-
-  const { mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
-
-  const { mutate: mutateTemplateTagData } = useTemplateTagData();
-  const { mutate: mutateTemplateBodyData } = useTemplateBodyData();
+  const [currentPageId] = useCurrentPageId();
+  const [currentPagePath] = useCurrentPagePath();
 
   const { mutate: mutateCurrentPageYjsData } = useCurrentPageYjsData();
 
@@ -300,7 +292,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
     if (currentPageId != null && revisionId != null && !props.isNotFound) {
       const mutatePageData = async() => {
-        const pageData = await mutateCurrentPage();
+        const pageData = await fetchAndUpdatePage();
         mutateEditingMarkdown(pageData?.revision?.body);
       };
 
@@ -309,7 +301,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       mutatePageData();
     }
   }, [
-    revisionId, currentPageId, mutateCurrentPage,
+    revisionId, currentPageId, fetchAndUpdatePage,
     mutateCurrentPageYjsDataFromApi, mutateEditingMarkdown, props.isNotFound, props.skipSSR,
   ]);
 
@@ -338,36 +330,13 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   }, [mutateEditingMarkdown, revisionBody, props.currentPathname]);
 
   useEffect(() => {
-    mutateRemoteRevisionId(revisionId);
-  }, [mutateRemoteRevisionId, revisionId]);
-
-  useEffect(() => {
-    mutateCurrentPageId(pageId ?? null);
-  }, [mutateCurrentPageId, pageId]);
-
-  useEffect(() => {
-    mutateIsNotFound(props.isNotFound);
-  }, [mutateIsNotFound, props.isNotFound]);
-
-  useEffect(() => {
-    mutateIsLatestRevision(props.isLatestRevision);
-  }, [mutateIsLatestRevision, props.isLatestRevision]);
-
-  useEffect(() => {
-    mutateTemplateTagData(props.templateTagData);
-  }, [props.templateTagData, mutateTemplateTagData]);
-
-  useEffect(() => {
-    mutateTemplateBodyData(props.templateBodyData);
-  }, [props.templateBodyData, mutateTemplateBodyData]);
-
-  useEffect(() => {
     mutateCurrentPageYjsData(props.yjsData);
   }, [mutateCurrentPageYjsData, props.yjsData]);
 
   // If the data on the page changes without router.push, pageWithMeta remains old because getServerSideProps() is not executed
   // So preferentially take page data from useSWRxCurrentPage
-  const pagePath = currentPage?.path ?? pageWithMeta?.data.path ?? props.currentPathname;
+  // const pagePath = currentPage?.path ?? pageWithMeta?.data.path ?? props.currentPathname;
+  const pagePath = currentPagePath ?? props.currentPathname;
 
   const title = generateCustomTitleForPage(props, pagePath);
 
@@ -383,7 +352,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <PageView
           className="d-edit-none"
           pagePath={pagePath}
-          initialPage={pageWithMeta?.data}
           rendererConfig={props.rendererConfig}
         />
 

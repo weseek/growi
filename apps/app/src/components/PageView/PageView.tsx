@@ -2,7 +2,6 @@ import React, {
   useEffect, useMemo, useRef, useState, type JSX,
 } from 'react';
 
-import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import { useSlidesByFrontmatter } from '@growi/presentation/dist/services';
 import dynamic from 'next/dynamic';
@@ -11,10 +10,10 @@ import { PagePathNavTitle } from '~/components/Common/PagePathNavTitle';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
+import { useCurrentPageData, usePageNotFound } from '~/states/page';
 import {
   useIsForbidden, useIsIdenticalPath, useIsNotCreatable,
 } from '~/stores-universal/context';
-import { useSWRxCurrentPage, useIsNotFound } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 
 import { UserInfo } from '../User/UserInfo';
@@ -40,7 +39,6 @@ const SlideRenderer = dynamic(() => import('~/client/components/Page/SlideRender
 type Props = {
   pagePath: string,
   rendererConfig: RendererConfig,
-  initialPage?: IPagePopulatedToShowRevision,
   className?: string,
 }
 
@@ -51,18 +49,17 @@ export const PageView = (props: Props): JSX.Element => {
   const [isCommentsLoaded, setCommentsLoaded] = useState(false);
 
   const {
-    pagePath, initialPage, rendererConfig, className,
+    pagePath, rendererConfig, className,
   } = props;
 
   const { data: isIdenticalPathPage } = useIsIdenticalPath();
   const { data: isForbidden } = useIsForbidden();
   const { data: isNotCreatable } = useIsNotCreatable();
-  const { data: isNotFoundMeta } = useIsNotFound();
+  const [isNotFoundMeta] = usePageNotFound();
 
-  const { data: pageBySWR } = useSWRxCurrentPage();
+  const [page] = useCurrentPageData();
   const { data: viewOptions } = useViewOptions();
 
-  const page = pageBySWR ?? initialPage;
   const isNotFound = isNotFoundMeta || page == null;
   const isUsersHomepagePath = isUsersHomepage(pagePath);
 

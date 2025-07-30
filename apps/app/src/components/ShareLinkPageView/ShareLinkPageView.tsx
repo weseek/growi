@@ -9,7 +9,7 @@ import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
-import { useIsNotFound } from '~/stores/page';
+import { usePageNotFound } from '~/states/page';
 import { useViewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
@@ -43,7 +43,7 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
     isExpired, disableLinkSharing,
   } = props;
 
-  const { data: isNotFoundMeta } = useIsNotFound();
+  const [isNotFoundMeta] = usePageNotFound();
 
   const { data: viewOptions } = useViewOptions();
 

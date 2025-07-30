@@ -18,13 +18,13 @@ import useSWRImmutable from 'swr/immutable';
 import type { IPageSelectedGrant } from '~/interfaces/page';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
 import {
+  usePageNotFound, useCurrentPagePath, useIsTrashPage, useCurrentPageId,
+} from '~/states/page';
+import {
   useIsEditable, useIsReadOnlyUser,
   useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId,
 } from '~/stores-universal/context';
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
-import {
-  useIsNotFound, useCurrentPagePath, useIsTrashPage, useCurrentPageId,
-} from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import { useStaticSWR } from './use-static-swr';
@@ -39,7 +39,7 @@ const logger = loggerFactory('growi:stores:ui');
  *********************************************************** */
 
 export const useCurrentPageTocNode = (): SWRResponse<HtmlElementNode, any> => {
-  const { data: currentPagePath } = useCurrentPagePath();
+  const [currentPagePath] = useCurrentPagePath();
 
   return useStaticSWR(['currentPageTocNode', currentPagePath]);
 };
@@ -235,9 +235,9 @@ export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean
   const { data: _currentUser } = useCurrentUser();
   const isCurrentUserExist = _currentUser != null;
 
-  const { data: _currentPageId } = useCurrentPageId();
-  const { data: _isNotFound } = useIsNotFound();
-  const { data: _isTrashPage } = useIsTrashPage();
+  const [_currentPageId] = useCurrentPageId();
+  const [_isNotFound] = usePageNotFound();
+  const [_isTrashPage] = useIsTrashPage();
   const { data: _isReadOnlyUser } = useIsReadOnlyUser();
   const isPageExist = _currentPageId != null && _isNotFound === false;
   const isTrashPage = isPageExist && _isTrashPage === true;
@@ -253,10 +253,10 @@ export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean
 
 export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageManagement';
-  const { data: currentPageId } = useCurrentPageId();
-  const { data: _isTrashPage } = useIsTrashPage();
+  const [currentPageId] = useCurrentPageId();
+  const [isNotFound] = usePageNotFound();
+  const [_isTrashPage] = useIsTrashPage();
   const { data: _isSharedUser } = useIsSharedUser();
-  const { data: isNotFound } = useIsNotFound();
 
   const pageId = currentPageId;
   const includesUndefined = [pageId, _isTrashPage, _isSharedUser, isNotFound].some(v => v === undefined);
@@ -273,10 +273,10 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
 
 export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowTagLabel';
-  const { data: pageId } = useCurrentPageId();
-  const { data: currentPagePath } = useCurrentPagePath();
+  const [pageId] = useCurrentPageId();
+  const [isNotFound] = usePageNotFound();
+  const [currentPagePath] = useCurrentPagePath();
   const { data: isIdenticalPath } = useIsIdenticalPath();
-  const { data: isNotFound } = useIsNotFound();
   const { data: editorMode } = useEditorMode();
   const { data: shareLinkId } = useShareLinkId();
 
@@ -307,9 +307,9 @@ export const useIsAbleToChangeEditorMode = (): SWRResponse<boolean, Error> => {
 
 export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageAuthors';
-  const { data: pageId } = useCurrentPageId();
-  const { data: pagePath } = useCurrentPagePath();
-  const { data: isNotFound } = useIsNotFound();
+  const [pageId] = useCurrentPageId();
+  const [isNotFound] = usePageNotFound();
+  const [pagePath] = useCurrentPagePath();
 
   const includesUndefined = [pageId, pagePath, isNotFound].some(v => v === undefined);
   const isPageExist = (pageId != null) && !isNotFound;
@@ -324,7 +324,7 @@ export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
 export const useIsUntitledPage = (): SWRResponse<boolean> => {
   const key = 'isUntitledPage';
 
-  const { data: pageId } = useCurrentPageId();
+  const [pageId] = useCurrentPageId();
 
   return useSWRStatic(
     pageId == null ? null : [key, pageId],
