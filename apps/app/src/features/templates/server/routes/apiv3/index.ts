@@ -8,7 +8,9 @@ import { param, query } from 'express-validator';
 
 import { PLUGIN_STORING_PATH } from '~/features/growi-plugin/server/consts';
 import { GrowiPlugin } from '~/features/growi-plugin/server/models';
+import { SCOPE } from '@growi/core/dist/interfaces';
 import type Crowi from '~/server/crowi';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
@@ -77,7 +79,7 @@ module.exports = (crowi: Crowi) => {
    *                       title:
    *                         type: string
    */
-  router.get('/', loginRequiredStrictly, validator.list, apiV3FormValidator, async(req, res: ApiV3Response) => {
+  router.get('/', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequiredStrictly, validator.list, apiV3FormValidator, async(req, res: ApiV3Response) => {
     const { includeInvalidTemplates } = req.query;
 
     // scan preset templates
@@ -147,21 +149,23 @@ module.exports = (crowi: Crowi) => {
    *                 markdown:
    *                   type: string
    */
-  router.get('/preset-templates/:templateId/:locale', loginRequiredStrictly, validator.get, apiV3FormValidator, async(req, res: ApiV3Response) => {
-    const {
-      templateId, locale,
-    } = req.params;
+  router.get('/preset-templates/:templateId/:locale', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequiredStrictly,
+    validator.get, apiV3FormValidator,
+    async(req, res: ApiV3Response) => {
+      const {
+        templateId, locale,
+      } = req.params;
 
-    const presetTemplatesRoot = resolveFromRoot('node_modules/@growi/preset-templates');
+      const presetTemplatesRoot = resolveFromRoot('node_modules/@growi/preset-templates');
 
-    try {
-      const markdown = await getMarkdown(presetTemplatesRoot, templateId, locale);
-      return res.apiv3({ markdown });
-    }
-    catch (err) {
-      res.apiv3Err(err);
-    }
-  });
+      try {
+        const markdown = await getMarkdown(presetTemplatesRoot, templateId, locale);
+        return res.apiv3({ markdown });
+      }
+      catch (err) {
+        res.apiv3Err(err);
+      }
+    });
 
   /**
    * @swagger
@@ -209,23 +213,24 @@ module.exports = (crowi: Crowi) => {
    *                 markdown:
    *                   type: string
    */
-  router.get('/plugin-templates/:organizationId/:reposId/:templateId/:locale', loginRequiredStrictly, validator.get, apiV3FormValidator, async(
-      req, res: ApiV3Response,
-  ) => {
-    const {
-      organizationId, reposId, templateId, locale,
-    } = req.params;
+  router.get('/plugin-templates/:organizationId/:reposId/:templateId/:locale', accessTokenParser([SCOPE.READ.FEATURES.PAGE]),
+    loginRequiredStrictly, validator.get, apiV3FormValidator, async(
+        req, res: ApiV3Response,
+    ) => {
+      const {
+        organizationId, reposId, templateId, locale,
+      } = req.params;
 
-    const pluginRoot = path.join(PLUGIN_STORING_PATH, `${organizationId}/${reposId}`);
+      const pluginRoot = path.join(PLUGIN_STORING_PATH, `${organizationId}/${reposId}`);
 
-    try {
-      const markdown = await getMarkdown(pluginRoot, templateId, locale);
-      return res.apiv3({ markdown });
-    }
-    catch (err) {
-      res.apiv3Err(err);
-    }
-  });
+      try {
+        const markdown = await getMarkdown(pluginRoot, templateId, locale);
+        return res.apiv3({ markdown });
+      }
+      catch (err) {
+        res.apiv3Err(err);
+      }
+    });
 
   return router;
 };

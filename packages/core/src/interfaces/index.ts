@@ -17,3 +17,4 @@ export * from './subscription';
 export * from './tag';
 export * from './user';
 export * from './vite';
+export * from './scope';
