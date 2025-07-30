@@ -127,10 +127,10 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
               {t('modal_ai_assistant.select_assistant_reference_pages')}
             </h4>
 
-            <div className="p-3 list-group">
+            <ul className="p-3 list-group">
               {searchResult?.data.map((page) => {
                 return (
-                  <div className="list-group-item list-group-item-action d-flex align-items-center p-1 mb-3 rounded">
+                  <li className="list-group-item list-group-item-action d-flex align-items-center p-1 mb-2 rounded">
                     <button
                       type="button"
                       className="btn"
@@ -145,10 +145,10 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
                     <span className="badge bg-secondary rounded-pill me-2">
                       {page.data.descendantCount}
                     </span>
-                  </div>
+                  </li>
                 );
               })}
-            </div>
+            </ul>
           </>
         )}
 
