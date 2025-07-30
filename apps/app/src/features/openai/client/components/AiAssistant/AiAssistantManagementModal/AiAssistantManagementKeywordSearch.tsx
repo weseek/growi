@@ -132,8 +132,20 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
             <div className="px-4 list-group">
               {searchResult?.data.map((page) => {
                 return (
-                  <button type="button" className="list-group-item list-group-item-action d-flex align-items-center p-1 mb-2 rounded">
-                    <button type="button" className="btn text-primary">
+                  <button
+                    type="button"
+                    className="list-group-item list-group-item-action d-flex align-items-center p-1 mb-2 rounded"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <button
+                      type="button"
+                      className="btn text-primary"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    >
                       <span className="material-symbols-outlined">
                         add_circle
                       </span>
