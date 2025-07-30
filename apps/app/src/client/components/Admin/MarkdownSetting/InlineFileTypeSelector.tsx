@@ -4,6 +4,7 @@ import { useTranslation } from 'next-i18next';
 
 import { fetchInlineMimeMode, updateInlineMimeMode } from '~/client/services/admin-inline-mime-mode';
 import { toastSuccess, toastError } from '~/client/util/toastr';
+import loggerFactory from '~/utils/logger';
 
 import type { InlineMimeMode } from '../../../../interfaces/inline-mime-mode';
 import { InlineMimeModes } from '../../../../interfaces/inline-mime-mode';
@@ -12,6 +13,8 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import { ALL_MIME_TYPES } from './inlineMimeTypes/allMimeTypes';
 import { MODERATE_MIME_TYPES } from './inlineMimeTypes/moderate';
 import { STRICT_MIME_TYPES } from './inlineMimeTypes/strict';
+
+const logger = loggerFactory('growi:importer');
 
 
 export const InlineFileTypeSelector = (): JSX.Element => {
@@ -41,7 +44,7 @@ export const InlineFileTypeSelector = (): JSX.Element => {
         }
       }
       catch (err) {
-        console.error('Failed to fetch inlineMimeMode', err);
+        logger.error('Failed to fetch inlineMimeMode:', err);
       }
     };
 
@@ -133,10 +136,11 @@ export const InlineFileTypeSelector = (): JSX.Element => {
           onClick={async() => {
             try {
               await updateInlineMimeMode(inlineMimeMode);
-              toastSuccess(t('markdown_settings.inline_file_type_options.inline_mime_mode_update_succes'));
+              toastSuccess(t('markdown_settings.inline_file_type_options.inline_mime_mode_update_success'));
             }
             catch (err) {
               toastError(t('markdown_settings.inline_file_type_options.inline_mime_mode_update_failed'));
+              logger.error(err);
             }
           }}
         />

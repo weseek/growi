@@ -469,7 +469,9 @@
       "moderate": "中度",
       "lax": "涣散",
       "manual": "手册",
-      "permitted_file_types": "允许的文件类型"
+      "permitted_file_types": "允许的文件类型",
+      "inline_mime_mode_update_success": "成功更新了允许内联显示的文件类型设置。",
+      "inline_mime_mode_update_failed": "更新允许内联显示的文件类型设置失败。"
     }
   },
   "customize_settings": {

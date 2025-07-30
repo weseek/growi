@@ -460,7 +460,9 @@
       "moderate": "Moderate",
       "lax": "Lax",
       "manual": "Manual",
-      "permitted_file_types": "Permitted file types"
+      "permitted_file_types": "Permitted file types",
+      "inline_mime_mode_update_success": "Successfully updated the settings for file types allowed to be displayed inline.",
+      "inline_mime_mode_update_failed": "Failed to update the settings for file types allowed to be displayed inline."
     }
   },
   "customize_settings": {
