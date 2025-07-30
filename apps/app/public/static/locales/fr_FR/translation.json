@@ -569,6 +569,7 @@
     "search_reference_pages_by_keyword": "Rechercher les pages de référence de l'assistant par mot-clé",
     "search_by_keyword": "Rechercher par mot-clé",
     "max_items_space_separated_hint": "Saisissez jusqu'à 5 éléments séparés par des espaces",
+    "select_assistant_reference_pages": "Sélectionnez les pages de référence pour l'assistant",
     "enter_keywords": "Entrer des mots-clés",
     "select_from_page_tree": "Sélectionner depuis l'arborescence des pages",
     "edit_page_description": "Modifier les pages que l'assistant peut référencer.<br> L'assistant peut référencer jusqu'à {{limitLearnablePageCountPerAssistant}} pages, y compris les pages enfants.",

@@ -1,5 +1,5 @@
 import React, {
-  useRef, useCallback, useState, type KeyboardEvent,
+  useRef, useMemo, useCallback, useState, type KeyboardEvent,
 } from 'react';
 
 import { type TypeaheadRef, Typeahead } from 'react-bootstrap-typeahead';
@@ -7,6 +7,8 @@ import { useTranslation } from 'react-i18next';
 import {
   ModalBody,
 } from 'reactstrap';
+
+import { useSWRxSearch } from '~/stores/search';
 
 import {
   useAiAssistantManagementModal, AiAssistantManagementModalPageMode,
@@ -28,11 +30,26 @@ const isSelectedSearchKeyword = (value: unknown): value is SelectedSearchKeyword
 };
 
 export const AiAssistantKeywordSearch = (): JSX.Element => {
+  const [selectedSearchKeywords, setSelectedSearchKeywords] = useState<Array<SelectedSearchKeyword>>([]);
+
+  const joinedSelectedSearchKeywords = useMemo(() => {
+    return selectedSearchKeywords.map(item => item.label).join(' ');
+  }, [selectedSearchKeywords]);
+
   const { t } = useTranslation();
+  const { data: searchResult } = useSWRxSearch(joinedSelectedSearchKeywords, null, {
+    limit: 10,
+    offset: 0,
+    includeUserPages: true,
+    includeTrashPages: false,
+  });
+
+  const shownSearchResult = useMemo(() => {
+    return selectedSearchKeywords.length > 0 && searchResult != null && searchResult.data.length > 0;
+  }, [searchResult, selectedSearchKeywords.length]);
+
   const { data: aiAssistantManagementModalData } = useAiAssistantManagementModal();
   const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
-
-  const [selectedSearchKeywords, setSelectedSearchKeywords] = useState<Array<SelectedSearchKeyword>>([]);
 
   const typeaheadRef = useRef<TypeaheadRef>(null);
 
@@ -85,25 +102,71 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
       />
 
       <ModalBody className="px-4">
-        <h4 className="text-center mb-4 fw-bold">
+        <h4 className="text-center fw-bold mb-3 mt-2">
           {t('modal_ai_assistant.search_reference_pages_by_keyword')}
         </h4>
 
-        <Typeahead
-          allowNew
-          multiple
-          options={[]}
-          selected={selectedSearchKeywords}
-          placeholder={t('modal_ai_assistant.enter_keywords')}
-          id="ai-assistant-keyword-search"
-          ref={typeaheadRef}
-          onChange={changeHandler}
-          onKeyDown={keyDownHandler}
-        />
+        <div className="px-4">
+          <Typeahead
+            allowNew
+            multiple
+            options={[]}
+            selected={selectedSearchKeywords}
+            placeholder={t('modal_ai_assistant.enter_keywords')}
+            id="ai-assistant-keyword-search"
+            ref={typeaheadRef}
+            onChange={changeHandler}
+            onKeyDown={keyDownHandler}
+          />
 
-        <label htmlFor="ai-assistant-keyword-search" className="form-text text-muted mt-2">
-          {t('modal_ai_assistant.max_items_space_separated_hint')}
-        </label>
+          <label htmlFor="ai-assistant-keyword-search" className="form-text text-muted mt-2">
+            {t('modal_ai_assistant.max_items_space_separated_hint')}
+          </label>
+        </div>
+
+        { shownSearchResult && (
+          <>
+            <h4 className="text-center fw-bold mb-4 mt-5">
+              {t('modal_ai_assistant.select_assistant_reference_pages')}
+            </h4>
+
+            <div className="px-4 list-group">
+              {searchResult?.data.map((page) => {
+                return (
+                  <button
+                    type="button"
+                    className="list-group-item list-group-item-action d-flex align-items-center p-1 mb-2 rounded"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <button
+                      type="button"
+                      className="btn text-primary"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    >
+                      <span className="material-symbols-outlined">
+                        add_circle
+                      </span>
+                    </button>
+                    <div className="flex-grow-1">
+                      <span>
+                        {page.data.path}
+                      </span>
+                    </div>
+                    <span className="badge bg-body-secondary rounded-pill me-2">
+                      <span className="text-body-tertiary">
+                        {page.data.descendantCount}
+                      </span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </>
+        )}
       </ModalBody>
     </div>
   );

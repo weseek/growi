@@ -20,4 +20,31 @@
        display: none !important;
     }
   }
+
+  .list-group-item {
+    border: none;
+  }
+}
+
+// == Colors
+@include bs.color-mode(light) {
+  .grw-ai-assistant-keyword-search :global {
+    .list-group-item {
+      background-color: #{bs.$gray-100};
+        &:hover {
+          background-color: var(--grw-primary-100);
+      }
+    }
+  }
+}
+
+@include bs.color-mode(dark) {
+  .grw-ai-assistant-keyword-search :global {
+    .list-group-item {
+      background-color: #{bs.$gray-900};
+      &:hover {
+        background-color: var(--grw-primary-800);
+      }
+    }
+  }
 }
