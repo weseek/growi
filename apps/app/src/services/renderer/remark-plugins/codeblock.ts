@@ -4,13 +4,10 @@ import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
 
-const SUPPORTED_CODE = ['inline'];
-
 export const remarkPlugin: Plugin = () => {
   return (tree) => {
     visit(tree, 'inlineCode', (node: InlineCode) => {
-      const data = node.data || (node.data = {});
-      data.hProperties = { inline: 'true' }; // set 'true' explicitly because the empty string is evaluated as false for `if (inline) { ... }`
+      // REMOVE THIS BLOCK
     });
   };
 };
@@ -18,6 +15,14 @@ export const remarkPlugin: Plugin = () => {
 export const sanitizeOption: SanitizeOption = {
   tagNames: ['code'],
   attributes: {
-    code: SUPPORTED_CODE,
+
+    code: [
+      'className', // Allow the 'class' attribute on <code> tags
+      ['className', 'code-inline'], // Explicitly allow 'code-inline' as a class value
+      // By NOT listing 'inline' here, rehype-sanitize will strip inline="true"
+      // which is what you want for Markdown inline code.
+    ],
+    // If you have `data-line` attributes on code blocks, you might need to allow them globally or specifically:
+    '*': ['data-line'],
   },
 };

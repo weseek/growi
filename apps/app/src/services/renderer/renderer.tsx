@@ -102,7 +102,6 @@ export const generateCommonOptions = (pagePath: string|undefined): RendererOptio
       remarkDirective,
       echoDirective.remarkPlugin,
       remarkFrontmatter,
-      codeBlock.remarkPlugin,
     ],
     remarkRehypeOptions: {
       clobberPrefix: '', // remove clobber prefix
@@ -119,7 +118,6 @@ export const generateCommonOptions = (pagePath: string|undefined): RendererOptio
     ],
     components: {
       a: NextLink,
-      code: CodeBlock,
     },
   };
 };
