@@ -29,35 +29,6 @@ const router = express.Router();
 const LIMIT_FOR_LIST = 10;
 const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
 
-/**
- * @swagger
- *
- *  components:
- *    schemas:
- *      Tags:
- *        description: Tags
- *        type: array
- *        items:
- *          $ref: '#/components/schemas/Tag/properties/name'
- *        example: ['daily', 'report', 'tips']
- *
- *      Tag:
- *        description: Tag
- *        type: object
- *        properties:
- *          _id:
- *            type: string
- *            description: tag ID
- *            example: 5e2d6aede35da4004ef7e0b7
- *          name:
- *            type: string
- *            description: tag name
- *            example: daily
- *          count:
- *            type: number
- *            description: Count of tagged pages
- *            example: 3
- */
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequired = require('../../../middlewares/login-required')(crowi, true);
@@ -225,9 +196,8 @@ module.exports = (crowi) => {
    *
    *
    *    /pages/rename:
-   *      post:
+   *      put:
    *        tags: [Pages]
-   *        operationId: renamePage
    *        description: Rename page
    *        requestBody:
    *          content:
@@ -235,9 +205,9 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  pageId:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                    $ref: '#/components/schemas/ObjectId'
    *                  path:
-   *                    $ref: '#/components/schemas/Page/properties/path'
+   *                    $ref: '#/components/schemas/PagePath'
    *                  revisionId:
    *                    type: string
    *                    description: revision ID
@@ -354,7 +324,6 @@ module.exports = (crowi) => {
     *    /pages/resume-rename:
     *      post:
     *        tags: [Pages]
-    *        operationId: resumeRenamePage
     *        description: Resume rename page operation
     *        requestBody:
     *          content:
@@ -362,7 +331,7 @@ module.exports = (crowi) => {
     *              schema:
     *                properties:
     *                  pageId:
-    *                    $ref: '#/components/schemas/Page/properties/_id'
+    *                    $ref: '#/components/schemas/ObjectId'
     *                required:
     *                  - pageId
     *        responses:
@@ -482,7 +451,6 @@ module.exports = (crowi) => {
     *    /pages/list:
     *      get:
     *        tags: [Pages]
-    *        operationId: getList
     *        description: Get list of pages
     *        parameters:
     *          - name: path
@@ -572,7 +540,6 @@ module.exports = (crowi) => {
    *    /pages/duplicate:
    *      post:
    *        tags: [Pages]
-   *        operationId: duplicatePage
    *        description: Duplicate page
    *        requestBody:
    *          content:
@@ -580,9 +547,9 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  pageId:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                    $ref: '#/components/schemas/ObjectId'
    *                  pageNameInput:
-   *                    $ref: '#/components/schemas/Page/properties/path'
+   *                    $ref: '#/components/schemas/PagePath'
    *                  isRecursively:
    *                    type: boolean
    *                    description: whether duplicate page with descendants
@@ -678,7 +645,6 @@ module.exports = (crowi) => {
    *    /pages/subordinated-list:
    *      get:
    *        tags: [Pages]
-   *        operationId: subordinatedList
    *        description: Get subordinated pages
    *        parameters:
    *          - name: path
@@ -724,7 +690,6 @@ module.exports = (crowi) => {
     *    /pages/delete:
     *      post:
     *        tags: [Pages]
-    *        operationId: deletePages
     *        description: Delete pages
     *        requestBody:
     *          content:
@@ -823,7 +788,6 @@ module.exports = (crowi) => {
    *    /pages/convert-pages-by-path:
    *      post:
    *        tags: [Pages]
-   *        operationId: convertPagesByPath
    *        description: Convert pages by path
    *        requestBody:
    *          content:
@@ -871,7 +835,6 @@ module.exports = (crowi) => {
    *    /pages/legacy-pages-migration:
    *      post:
    *        tags: [Pages]
-   *        operationId: legacyPagesMigration
    *        description: Migrate legacy pages
    *        requestBody:
    *          content:

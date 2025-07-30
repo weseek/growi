@@ -142,7 +142,6 @@
   "edited this page": "edited this page.",
   "List Drafts": "Drafts",
   "Deleted Pages": "Deleted Pages",
-  "Questionnaire": "Questionnaire",
   "Disassociate": "Disassociate",
   "No bookmarks yet": "No bookmarks yet",
   "add_bookmark": "Add to Bookmarks",
@@ -479,9 +478,27 @@
       "Search in Editor": "Search in Editor",
       "Move Line": "Move Line",
       "Copy Line": "Copy Line",
-      "Toggle Line": "Toggle Line Comment",
       "Insert Line": "Insert Line",
-      "Post Comment": "(Post Comment)"
+      "Post Comment": "(Post Comment)",
+      "Multiple Cursors": "Multiple Cursors",
+      "Or Alt Click": "or Alt + Click"
+    },
+    "format": {
+      "title": "Format Settings (Editor)",
+      "Bold": "Bold",
+      "Italic": "Italic",
+      "Strikethrough": "Strikethrough",
+      "Code Text": "Code Text",
+      "Hyperlink": "Hyperlink"
+    },
+    "line_settings": {
+      "title": "Line Settings (Editor)",
+      "Bullet List": "Bullet List",
+      "Numbered List": "Numbered List",
+      "Quote": "Quote",
+      "Code Block": "Code Block",
+      "Comment Out": "Comment Out",
+      "Comment Out Desc": "(Hide)"
     }
   },
   "modal_resolve_conflict": {
@@ -497,6 +514,8 @@
   },
   "sidebar_ai_assistant": {
     "reference_pages_label": "Reference pages",
+    "recent_chat": "Recent chat",
+    "no_recent_chat": "No recent chat",
     "placeholder": "Ask me anything.",
     "knowledge_assistant_placeholder": "Ask me anything.",
     "editor_assistant_placeholder": "Can I help you with anything?",
@@ -511,6 +530,8 @@
     "budget_exceeded_for_growi_cloud": "You have reached your OpenAI API usage limit. To use the Knowledge Assistant again, please add credits from the GROWI.cloud admin page for Hosted users or from the OpenAI billing page for Owned users.",
     "error_message": "An error has occurred",
     "show_error_detail": "Show error details",
+    "editor_assistant_long_context_warn_with_unit_line": "The text is too long, so the Editor Assistant will reference approximately lines {{startPosition}} to {{endPosition}} for its response.",
+    "editor_assistant_long_context_warn_with_unit_char": "The text is too long, so the Editor Assistant will reference characters {{startPosition}} to {{endPosition}} for its response.",
     "discard": "Discard",
     "accept": "Accept",
     "use_assistant": "Use Assistant",
@@ -601,11 +622,12 @@
   "default_ai_assistant": {
     "not_set": "Default assistant is not set"
   },
-  "ai_assistant_tree": {
+  "ai_assistant_substance": {
     "add_assistant": "Add Assistant",
     "my_assistants": "My Assistants",
     "team_assistants": "Team Assistants",
     "thread_does_not_exist": "No threads exist",
+    "recent_threads": "Recent Items",
     "toaster": {
       "ai_assistant_deleted_success": "Assistant deleted",
       "ai_assistant_deleted_failed": "Failed to delete assistant",
@@ -955,23 +977,6 @@
   "v5_page_migration": {
     "page_tree_not_avaliable": "Page tree feature is not available yet.",
     "go_to_settings": "Go to settings to enable the feature"
-  },
-  "questionnaire": {
-    "give_us_feedback": "Give us feedback for improvements",
-    "thank_you_for_answering": "Thank you for answering",
-    "additional_feedback": "Send us additional feedback from the user icon dropdown.",
-    "dont_show_again": "Don`t show again",
-    "deny": "Don't answer",
-    "agree": "Agree",
-    "disagree": "Disagree",
-    "answer": "Answer",
-    "no_answer": "No answer",
-    "settings": "Questionnaire settings",
-    "failed_to_send": "Failed to send feedback",
-    "denied": "The questionnaire won't be shown again",
-    "personal_settings_explanation": "Questionnaires for improving GROWI will be shown. If you have other feedbacks, you can send them from the user icon dropdown.",
-    "enable_questionnaire": "Enable questionnaire",
-    "disabled_by_admin": "Questionnaire is disabled by admin"
   },
   "tag_edit_modal": {
     "edit_tags": "Edit Tags",

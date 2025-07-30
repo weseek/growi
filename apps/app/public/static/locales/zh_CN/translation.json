@@ -123,8 +123,8 @@
   "V5 Page Migration": "转换为V5的兼容性",
   "GROWI.5.0_new_schema": "GROWI.5.0 new schema",
   "See_more_detail_on_new_schema": "更多详情请见<a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html#about-the-new-v5-compatible-format' target='_blank'> {{title}}</a> <span class='growi-custom-icons'>external_link</span> ",
-	"Markdown Settings": "Markdown设置",
-	"external_account_management": "外部账户管理",
+  "Markdown Settings": "Markdown设置",
+  "external_account_management": "外部账户管理",
   "UserGroup": "用户组",
   "ChildUserGroup": "儿童用户组",
   "Basic Settings": "基础设置",
@@ -192,12 +192,12 @@
   "custom_navigation": {
     "no_pages_under_this_page": "There are no pages under this page."
   },
-"author_info": {
-  "created_at": "创建日期",
-  "created_by": "创建者:",
-  "last_revision_posted_at": "最后更新日期",
-  "updated_by": "更新者:"
-},
+  "author_info": {
+    "created_at": "创建日期",
+    "created_by": "创建者:",
+    "last_revision_posted_at": "最后更新日期",
+    "updated_by": "更新者:"
+  },
   "installer": {
     "tab": "创建账户",
     "title": "安装",
@@ -321,9 +321,9 @@
       "no_deadline": "此页面没有到期日期",
       "not_indexed1": "此页面可能不会被全文搜索引擎索引。",
       "not_indexed2": "页面正文超过了{{threshold}}指定的阈值。"
-		}
-	},
-	"page_edit": {
+    }
+  },
+  "page_edit": {
     "input_channels": "频道名",
     "theme": "主题",
     "keymap": "键表",
@@ -336,12 +336,12 @@
     },
     "editor_config": "编辑器配置",
     "editor_assistant": "编辑助手",
-		"Show active line": "显示活动行",
-		"auto_format_table": "自动格式化表格",
-		"overwrite_scopes": "{{operation}和覆盖所有子体的作用域",
-		"notice": {
-			"conflict": "无法保存您所做的更改，因为其他人正在编辑此页。请在重新加载页面后重新编辑受影响的部分。"
-		},
+    "Show active line": "显示活动行",
+    "auto_format_table": "自动格式化表格",
+    "overwrite_scopes": "{{operation}和覆盖所有子体的作用域",
+    "notice": {
+      "conflict": "无法保存您所做的更改，因为其他人正在编辑此页。请在重新加载页面后重新编辑受影响的部分。"
+    },
     "changes_not_saved": "您所做的更改可能不会保存。你真的想继续前进吗？"
   },
   "page_comment": {
@@ -469,9 +469,27 @@
       "Search in Editor": "编辑器内搜索",
       "Move Line": "移动行",
       "Copy Line": "复制行",
-      "Toggle Line": "注释/取消注释行",
       "Insert Line": "插入行",
-      "Post Comment": "(发表评论)"
+      "Post Comment": "(发表评论)",
+      "Multiple Cursors": "多光标",
+      "Or Alt Click": "或 Alt + 点击"
+    },
+    "format": {
+      "title": "格式设置（编辑器）",
+      "Bold": "粗体",
+      "Italic": "斜体",
+      "Strikethrough": "删除线",
+      "Code Text": "代码文本",
+      "Hyperlink": "超链接"
+    },
+    "line_settings": {
+      "title": "行设置（编辑器）",
+      "Bullet List": "项目符号列表",
+      "Numbered List": "编号列表",
+      "Quote": "引用",
+      "Code Block": "代码块",
+      "Comment Out": "隐藏",
+      "Comment Out Desc": "（注释）"
     }
   },
   "modal_resolve_conflict": {
@@ -487,6 +505,8 @@
   },
   "sidebar_ai_assistant": {
     "reference_pages_label": "参考页面",
+    "recent_chat": "最近聊天",
+    "no_recent_chat": "最近没有聊天",
     "knowledge_assistant_placeholder": "问我任何问题。",
     "editor_assistant_placeholder": "有什么需要帮忙的吗？",
     "summary_mode_label": "摘要模式",
@@ -500,6 +520,8 @@
     "budget_exceeded_for_growi_cloud": "您已达到 OpenAI API 使用上限。如需再次使用知识助手，请从GROWI.cloud管理页面为托管用户添加点数，或从OpenAI计费页面为自有用户添加点数。",
     "error_message": "错误",
     "show_error_detail": "显示详情",
+    "editor_assistant_long_context_warn_with_unit_line": "文本过长，编辑助理将参考大约第 {{startPosition}} 行到第 {{endPosition}} 行来响应",
+    "editor_assistant_long_context_warn_with_unit_char": "文本过长，编辑助理将参考第 {{startPosition}} 个字符到第 {{endPosition}} 个字符来响应",
     "discard": "丢弃",
     "accept": "接受",
     "use_assistant": "使用助手",
@@ -590,11 +612,12 @@
   "default_ai_assistant": {
     "not_set": "未设置默认助手"
   },
-  "ai_assistant_tree": {
+  "ai_assistant_substance": {
     "add_assistant": "添加助手",
     "my_assistants": "我的助手",
     "team_assistants": "团队助手",
     "thread_does_not_exist": "暂无会话",
+    "recent_threads": "最近的项目",
     "toaster": {
       "ai_assistant_deleted_success": "已删除助手",
       "ai_assistant_deleted_failed": "删除助手失败",
@@ -954,23 +977,6 @@
     "cancel_bookmark": "取消收藏此页面",
     "move_to_root": "移动到根部",
     "root": "root (default)"
-  },
-  "questionnaire": {
-    "give_us_feedback": "向我们提供反馈以进行改进",
-    "thank_you_for_answering": "谢谢你的回答",
-    "additional_feedback": "从用户图标下拉菜单向我们发送更多反馈。",
-    "dont_show_again": "不再显示",
-    "deny": "不要回答",
-    "agree": "同意",
-    "disagree": "不同意",
-    "answer": "答案是",
-    "no_answer": "没有答案",
-    "settings": "问卷设置",
-    "failed_to_send": "无法发送反馈",
-    "denied": "问卷不会再显示",
-    "personal_settings_explanation": "将展示改进 GROWI 的问卷。 如果您有其他反馈，可以从用户图标下拉菜单中发送。",
-    "enable_questionnaire": "启用问卷",
-    "disabled_by_admin": "问卷已被管理员禁用"
   },
   "v5_page_migration": {
     "page_tree_not_avaliable": "Page Tree 功能不可用",

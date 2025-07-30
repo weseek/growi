@@ -111,11 +111,17 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
     // Dynamic import to avoid loading database modules too early
     const { Config } = await import('../../models/config');
 
-    await Config.updateOne(
-      { key },
-      { value: JSON.stringify(value) },
-      { upsert: true },
-    );
+    if (options?.removeIfUndefined && value === undefined) {
+      // remove the config if the value is undefined and removeIfUndefined is true
+      await Config.deleteOne({ key });
+    }
+    else {
+      await Config.updateOne(
+        { key },
+        { value: JSON.stringify(value) },
+        { upsert: true },
+      );
+    }
 
     await this.loadConfigs({ source: 'db' });
 
@@ -128,13 +134,19 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
     // Dynamic import to avoid loading database modules too early
     const { Config } = await import('../../models/config');
 
-    const operations = Object.entries(updates).map(([key, value]) => ({
-      updateOne: {
-        filter: { key },
-        update: { value: JSON.stringify(value) },
-        upsert: true,
-      },
-    }));
+    const operations = Object.entries(updates).map(([key, value]) => {
+      return (options?.removeIfUndefined && value === undefined)
+        // remove the config if the value is undefined
+        ? { deleteOne: { filter: { key } } }
+        // update
+        : {
+          updateOne: {
+            filter: { key },
+            update: { value: JSON.stringify(value) },
+            upsert: true,
+          },
+        };
+    });
 
     await Config.bulkWrite(operations);
     await this.loadConfigs({ source: 'db' });

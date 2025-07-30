@@ -41,7 +41,6 @@ const router = express.Router();
  *              "ELASTICSEARCH_REQUEST_TIMEOUT": 15000
  *              "ELASTICSEARCH_REJECT_UNAUTHORIZED": true
  *              "OGP_URI": "http://ogp:8088"
- *              "QUESTIONNAIRE_SERVER_ORIGIN": "http://host.docker.internal:3003"
  *          isV5Compatible:
  *            type: boolean
  *            description: This value is true if this GROWI is compatible v5.
@@ -68,7 +67,6 @@ module.exports = (crowi) => {
    *    /admin-home/:
    *      get:
    *        tags: [AdminHome]
-   *        operationId: getAdminHome
    *        summary: /admin-home
    *        security:
    *          - cookieAuth: []

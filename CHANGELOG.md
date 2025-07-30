@@ -1,8 +1,83 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.2.5...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.2.8...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.2.8](https://github.com/weseek/growi/compare/v7.2.7...v7.2.8) - 2025-06-26
+
+### 💎 Features
+
+* feat(ai): Send pre-message before main chat stream (#10089) @miya
+
+### 🚀 Improvement
+
+* imprv(ai): Add page content around the cursor position as context for editor assistant (#10106) @yuki-takei
+* imprv(ai): Search and Replace strategy for Editor Assistant (#10093) @yuki-takei
+* imprv(ai): Submit with Enter key (#10085) @yuki-takei
+* imprv: Make axios response convert dates to type Date (#10064) @arvid-e
+* imprv: OpenAPI Spec for GROWI API v1 (#10063) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Unhandled exception in GlobalNotificationMailService (#10076) @yuki-takei
+* fix: Prevent dropdown menu from hiding behind sidebar (#10103) @arvid-e
+* fix(ai): Message gets sent when pressing Enter to confirm text conversion (#10094) @miya
+
+### 🧰 Maintenance
+
+* support: Configure biome for core package utils and models (#10082) @arafubeatbox
+* support: Configure biome for pdf-converter-client package (#10077) @arafubeatbox
+* support: Configure biome for core package biome (excluding utils and models) (#10078) @arafubeatbox
+* support: Configure biome for pluginkit package (#10071) @arafubeatbox
+* support: Configure biome for remark-attachment-refs package (#10054) @arafubeatbox
+* support: Configure biome for presentation package (#10067) @arafubeatbox
+* ci(deps): bump next from 14.2.26 to 14.2.30 (#10068) @[dependabot[bot]](https://github.com/apps/dependabot)
+
+## [v7.2.7](https://github.com/weseek/growi/compare/v7.2.6...v7.2.7) - 2025-06-11
+
+### 🐛 Bug Fixes
+
+* fix: Input values ​​in the admin settings form are sometimes not reflected (#10051) @yuki-takei
+* fix: Hide Google OAuth client secret field (#10049) @yuki-takei
+* fix: Prevent unnecessary API request when the user is guest (#10046) @yuki-takei
+* fix(ai): Prevent unnecessary API request when GROWI AI is disabled (#10044) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Configure biome for preset-templates package (#10058) @arafubeatbox
+* support: Configure biome for preset-themes package (#10055) @arafubeatbox
+* support: Configure biome for remark-drawio package (#10033) @arafubeatbox
+
+## [v7.2.6](https://github.com/weseek/growi/compare/v7.2.5...v7.2.6) - 2025-06-10
+
+### 💎 Features
+
+* feat(ai): Display spinner while creating diff (#9991) @miya
+
+### 🚀 Improvement
+
+* imprv: Message card markdown header size (#10038) @miya
+* imprv: Type safe configuration for file uploading (#10032) @yuki-takei
+* imprv: EditorAssistant instruction (#10030) @miya
+* imprv: Add NonEmptyString type (#10031) @yuki-takei
+* imprv: Security settings search results redesign (#9992) @arvid-e
+* imprv: OpenAPI spec properties ref (#10023) @yuki-takei
+* imprv(ai): Make input form position sticky (#10002) @miya
+* imprv: Prevent path traversal attack in pdf converter (#9993) @arafubeatbox
+* imprv: Discard when form is submitted without Accept/Discard after showing diff (#9980) @miya
+
+### 🐛 Bug Fixes
+
+* imprv:  The delete button on the user home page is now hidden for unauthorized users. (#9915) @taikou-m
+* fix: OpenAI threads can be retrieved regardless of assistant's public permissions (#9994) @miya
+* fix: Editor assistant button is being displayed when ai functionality is not enabled (#9985) @miya
+* fix: Improve attribute handling in Lsx (#9989) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: OpenAPI operationId generation (#10009) @yuki-takei
+* support: Configure biome for remark-growi-directive (#9999) @arafubeatbox
 
 ## [v7.2.5](https://github.com/weseek/growi/compare/v7.2.4...v7.2.5) - 2025-05-28
 
