@@ -21,3 +21,22 @@
     }
   }
 }
+
+// == Colors
+@include bs.color-mode(light) {
+  .grw-ai-assistant-keyword-search :global {
+      .list-group-item {
+        --item-bg-color: #{bs.$gray-100};
+        --item-hover-bg-color: var(--grw-primary-100);
+      }
+  }
+}
+
+@include bs.color-mode(dark) {
+  .grw-ai-assistant-keyword-search :global {
+    .list-group-item {
+      --item-bg-color: #{bs.$gray-800};
+      --item-hover-bg-color: var(--grw-primary-800);
+    }
+  }
+}
