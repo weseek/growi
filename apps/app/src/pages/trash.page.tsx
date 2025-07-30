@@ -12,6 +12,7 @@ import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
+import { useHydrateSidebarAtoms } from '~/states/hydrate/sidebar';
 import {
   useCurrentUser, useCurrentPathname, useGrowiCloudUri,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
@@ -23,7 +24,7 @@ import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
 import {
-  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitleForPage, useInitSidebarConfig,
+  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitleForPage,
 } from './utils/commons';
 
 
@@ -60,9 +61,6 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
 
   useIsSearchPage(false);
 
-  // init sidebar config with UserUISettings and sidebarConfig
-  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
-
   useShowPageLimitationXL(props.showPageLimitationXL);
 
   const title = generateCustomTitleForPage(props, '/trash');
@@ -91,8 +89,7 @@ type LayoutProps = Props & {
 }
 
 const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
-  // init sidebar config with UserUISettings and sidebarConfig
-  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
+  useHydrateSidebarAtoms(props.sidebarConfig, props.userUISettings);
 
   return <BasicLayout>{children}</BasicLayout>;
 };

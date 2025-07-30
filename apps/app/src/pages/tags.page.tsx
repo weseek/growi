@@ -15,6 +15,7 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IDataTagCount } from '~/interfaces/tag';
+import { useHydrateSidebarAtoms } from '~/states/hydrate/sidebar';
 import {
   useCurrentUser, useIsSearchPage,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
@@ -27,7 +28,7 @@ import { useSWRxTagsList } from '~/stores/tag';
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
 import {
-  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle, useInitSidebarConfig,
+  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle,
 } from './utils/commons';
 
 const PAGING_LIMIT = 10;
@@ -75,9 +76,6 @@ const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
-
-  // init sidebar config with UserUISettings and sidebarConfig
-  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
   const title = generateCustomTitle(props, t('Tags'));
 
@@ -129,8 +127,7 @@ type LayoutProps = Props & {
 }
 
 const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
-  // init sidebar config with UserUISettings and sidebarConfig
-  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
+  useHydrateSidebarAtoms(props.sidebarConfig, props.userUISettings);
 
   return <BasicLayout>{children}</BasicLayout>;
 };

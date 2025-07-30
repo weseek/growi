@@ -14,6 +14,7 @@ import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
+import { useHydrateSidebarAtoms } from '~/states/hydrate/sidebar';
 import {
   useCurrentUser, useIsSearchPage, useGrowiCloudUri,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
@@ -26,7 +27,7 @@ import loggerFactory from '~/utils/logger';
 import type { NextPageWithLayout } from '../_app.page';
 import type { CommonProps } from '../utils/commons';
 import {
-  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig,
+  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from '../utils/commons';
 
 
@@ -108,9 +109,6 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
   useCurrentPageId(null);
   useCurrentPathname('/me');
 
-  // init sidebar config with UserUISettings and sidebarConfig
-  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
-
   // page
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -149,8 +147,7 @@ type LayoutProps = Props & {
 }
 
 const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
-  // init sidebar config with UserUISettings and sidebarConfig
-  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
+  useHydrateSidebarAtoms(props.sidebarConfig, props.userUISettings);
 
   return (
     <BasicLayout>
