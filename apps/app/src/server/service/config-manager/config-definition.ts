@@ -237,6 +237,8 @@ export const CONFIG_KEYS = [
   'markdown:adminPreferredIndentSize',
   'markdown:isIndentSizeForced',
 
+  'markdown:inlineMimeMode',
+
   // Slack Settings
   'slack:isIncomingWebhookPrioritized',
   'slack:incomingWebhookUrl',
@@ -537,6 +539,12 @@ export const CONFIG_DEFINITIONS = {
     envVarName: 'OPENAI_VECTOR_STORE_FILE_DELETION_CRON_MAX_MINUTES_UNTIL_REQUEST',
     defaultValue: 30,
   }),
+
+  // Markdown Settings
+  'markdown:inlineMimeMode': defineConfig<'strict' | 'moderate' | 'lax'>({
+    defaultValue: 'strict',
+  }),
+
 
   // Security Settings
   'security:wikiMode': defineConfig<string | undefined>({
