@@ -30,6 +30,7 @@ import { AiAssistantManagementEditInstruction } from './AiAssistantManagementEdi
 import { AiAssistantManagementEditPages } from './AiAssistantManagementEditPages';
 import { AiAssistantManagementEditShare } from './AiAssistantManagementEditShare';
 import { AiAssistantManagementHome } from './AiAssistantManagementHome';
+import { AiAssistantKeywordSearch } from './AiAssistantManagementKeywordSearch';
 import { AiAssistantManagementPageSelectionMethod } from './AiAssistantManagementPageSelectionMethod';
 
 import styles from './AiAssistantManagementModal.module.scss';
@@ -240,6 +241,14 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   return (
     <>
       <TabContent activeTab={pageMode}>
+        <TabPane tabId={AiAssistantManagementModalPageMode.PAGE_SELECTION_METHOD}>
+          <AiAssistantManagementPageSelectionMethod />
+        </TabPane>
+
+        <TabPane tabId={AiAssistantManagementModalPageMode.KEYWORD_SEARCH}>
+          <AiAssistantKeywordSearch />
+        </TabPane>
+
         <TabPane tabId={AiAssistantManagementModalPageMode.HOME}>
           <AiAssistantManagementHome
             shouldEdit={shouldEdit}
@@ -276,10 +285,6 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
             onSelect={selectPageHandler}
             onRemove={removePageHandler}
           />
-        </TabPane>
-
-        <TabPane tabId={AiAssistantManagementModalPageMode.PAGE_SELECTION_METHOD}>
-          <AiAssistantManagementPageSelectionMethod />
         </TabPane>
 
         <TabPane tabId={AiAssistantManagementModalPageMode.INSTRUCTION}>
