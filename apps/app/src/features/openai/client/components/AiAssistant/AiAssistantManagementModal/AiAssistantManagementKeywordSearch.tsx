@@ -41,6 +41,7 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
     limit: 10,
     offset: 0,
     includeUserPages: true,
+    includeTrashPages: false,
   });
 
   const shownSearchResult = useMemo(() => {
