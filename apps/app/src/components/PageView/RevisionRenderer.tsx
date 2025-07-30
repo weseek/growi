@@ -5,6 +5,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import ReactMarkdown from 'react-markdown';
 
 import type { RendererOptions } from '~/interfaces/renderer-options';
+import { sanitizeIframeSrcdocHtml } from '~/services/renderer/preprocessor/sanitize-dangerous-html';
 import loggerFactory from '~/utils/logger';
 
 import 'katex/dist/katex.min.css';
@@ -35,13 +36,15 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
     rendererOptions, markdown, additionalClassName,
   } = props;
 
+  const sanitizedMarkdown = sanitizeIframeSrcdocHtml(markdown);
+
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <ReactMarkdown
         {...rendererOptions}
         className={`wiki ${additionalClassName ?? ''}`}
       >
-        {markdown}
+        {sanitizedMarkdown}
       </ReactMarkdown>
     </ErrorBoundary>
   );
