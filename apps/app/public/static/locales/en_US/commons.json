@@ -166,7 +166,6 @@
         "page": "Grants permission to view page features.",
         "share_link": "Grants permission to view share link features.",
         "bookmark": "Grants permission to view bookmark features.",
-        "questionnaire": "Grants permission to view questionnaire features.",
         "attachment": "Grants permission to view attachment features.",
         "page_bulk_export": "Grants permission to view page bulk export features."
       }
@@ -212,7 +211,6 @@
         "page": "Grants permission to edit page features.",
         "share_link": "Grants permission to edit share link features.",
         "bookmark": "Grants permission to edit bookmark features.",
-        "questionnaire": "Grants permission to edit questionnaire features.",
         "attachment": "Grants permission to edit attachment features.",
         "page_bulk_export": "Grants permission to edit page bulk export features."
       }
