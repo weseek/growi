@@ -49,7 +49,7 @@ const ES_SORT_AXIS = {
 const ES_SORT_ORDER = {
   [DESC]: 'desc',
   [ASC]: 'asc',
-};
+} as const;
 
 const AVAILABLE_KEYS = ['match', 'not_match', 'phrase', 'not_phrase', 'prefix', 'not_prefix', 'tag', 'not_tag'];
 
@@ -626,11 +626,19 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     query.size = size || DEFAULT_LIMIT;
   }
 
-  appendSortOrder(query, sortAxis: SORT_AXIS, sortOrder: SORT_ORDER): void {
+  appendSortOrder(query: SearchQuery, sortAxis: SORT_AXIS, sortOrder: SORT_ORDER): void {
+    if (query.body == null) {
+      throw new Error('query.body is not initialized');
+    }
+
     // default sort order is score descending
     const sort = ES_SORT_AXIS[sortAxis] || ES_SORT_AXIS[RELATION_SCORE];
     const order = ES_SORT_ORDER[sortOrder] || ES_SORT_ORDER[DESC];
-    query.body.sort = { [sort]: { order } };
+
+    query.body.sort = {
+      [sort]: { order },
+    };
+
   }
 
   initializeBoolQuery(query: SearchQuery): SearchQuery {
