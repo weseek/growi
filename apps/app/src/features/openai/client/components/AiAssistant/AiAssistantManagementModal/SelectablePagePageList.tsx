@@ -6,12 +6,15 @@ const moduleClass = styles['selectable-page-page-list'] ?? '';
 
 type Props = {
   pages: IPageHasId[],
-  onClick: (page: IPageHasId) => void,
   method: 'add' | 'remove',
+  disablePageIds?: string[],
+  onClick: (page: IPageHasId) => void,
 }
 
 export const SelectablePagePageList = (props: Props): JSX.Element => {
-  const { pages, method, onClick } = props;
+  const {
+    pages, method, disablePageIds, onClick,
+  } = props;
 
   return (
     <div className={`px-4 list-group ${moduleClass}`}>
@@ -28,6 +31,7 @@ export const SelectablePagePageList = (props: Props): JSX.Element => {
             <button
               type="button"
               className={`btn ${method === 'add' ? 'text-primary' : 'text-secondary'}`}
+              disabled={disablePageIds?.includes(page._id)}
               onClick={(e) => {
                 e.stopPropagation();
                 onClick(page);

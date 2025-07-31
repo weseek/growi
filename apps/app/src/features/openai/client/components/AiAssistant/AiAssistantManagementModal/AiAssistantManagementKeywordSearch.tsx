@@ -155,6 +155,7 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
               pages={searchResult?.data.map(page => page.data) ?? []}
               method="add"
               onClick={addPageHandler}
+              disablePageIds={selectedPages.map(page => page._id)}
             />
           </>
         )}
