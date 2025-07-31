@@ -33,7 +33,6 @@ const isSelectedSearchKeyword = (value: unknown): value is SelectedSearchKeyword
 export const AiAssistantKeywordSearch = (): JSX.Element => {
   const [selectedSearchKeywords, setSelectedSearchKeywords] = useState<Array<SelectedSearchKeyword>>([]);
   const [selectedPages, setSelectedPages] = useState<Array<IPageHasId>>([]);
-  console.log('selectedPages', selectedPages);
 
   const joinedSelectedSearchKeywords = useMemo(() => {
     return selectedSearchKeywords.map(item => item.label).join(' ');
@@ -50,6 +49,10 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
   const shownSearchResult = useMemo(() => {
     return selectedSearchKeywords.length > 0 && searchResult != null && searchResult.data.length > 0;
   }, [searchResult, selectedSearchKeywords.length]);
+
+  const showSelectedPages = useMemo(() => {
+    return selectedPages.length > 0;
+  }, [selectedPages.length]);
 
   const { data: aiAssistantManagementModalData } = useAiAssistantManagementModal();
   const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
@@ -102,6 +105,12 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
         return prevSelectedPages;
       }
       return [...prevSelectedPages, page];
+    });
+  }, []);
+
+  const removePageHandler = useCallback((page: IPageHasId) => {
+    setSelectedPages((prevSelectedPages) => {
+      return prevSelectedPages.filter(selectedPage => selectedPage._id !== page._id);
     });
   }, []);
 
@@ -178,13 +187,54 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
                 );
               })}
             </div>
+          </>
+        )}
 
+        {showSelectedPages && (
+          <>
             <h4 className="text-center fw-bold mb-4 mt-3">
               {t('modal_ai_assistant.reference_pages')}
             </h4>
-
+            <div className="px-4 list-group">
+              {selectedPages?.map((page) => {
+                return (
+                  <button
+                    type="button"
+                    className="list-group-item list-group-item-action d-flex align-items-center p-1 mb-2 rounded"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <button
+                      type="button"
+                      className="btn text-secondary"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removePageHandler(page);
+                      }}
+                    >
+                      <span className="material-symbols-outlined">
+                        do_not_disturb_on
+                      </span>
+                    </button>
+                    <div className="flex-grow-1">
+                      <span>
+                        {page.path}
+                      </span>
+                    </div>
+                    <span className="badge bg-body-secondary rounded-pill me-2">
+                      <span className="text-body-tertiary">
+                        {page.descendantCount}
+                      </span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </>
         )}
+
+
       </ModalBody>
     </div>
   );
