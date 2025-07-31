@@ -17,7 +17,7 @@ export const SelectablePagePageList = (props: Props): JSX.Element => {
   } = props;
 
   return (
-    <div className={`px-4 list-group ${moduleClass}`}>
+    <div className={`list-group ${moduleClass}`}>
       {pages.map((page) => {
         return (
           <button

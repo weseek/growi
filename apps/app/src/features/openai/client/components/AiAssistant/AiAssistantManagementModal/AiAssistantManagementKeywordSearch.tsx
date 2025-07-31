@@ -51,9 +51,6 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
     return selectedSearchKeywords.length > 0 && searchResult != null && searchResult.data.length > 0;
   }, [searchResult, selectedSearchKeywords.length]);
 
-  const showSelectedPages = useMemo(() => {
-    return selectedPages.length > 0;
-  }, [selectedPages.length]);
 
   const { data: aiAssistantManagementModalData } = useAiAssistantManagementModal();
   const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
@@ -148,31 +145,46 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
 
         { shownSearchResult && (
           <>
-            <h4 className="text-center fw-bold mb-4 mt-5">
+            <h4 className="text-center fw-bold mb-3 mt-4">
               {t('modal_ai_assistant.select_assistant_reference_pages')}
             </h4>
-            <SelectablePagePageList
-              pages={searchResult?.data.map(page => page.data) ?? []}
-              method="add"
-              onClick={addPageHandler}
-              disablePageIds={selectedPages.map(page => page._id)}
-            />
+            <div className="px-4">
+              <SelectablePagePageList
+                pages={searchResult?.data.map(page => page.data) ?? []}
+                method="add"
+                onClick={addPageHandler}
+                disablePageIds={selectedPages.map(page => page._id)}
+              />
+            </div>
           </>
         )}
 
-        {showSelectedPages && (
-          <>
-            <h4 className="text-center fw-bold mb-4 mt-3">
-              {t('modal_ai_assistant.reference_pages')}
-            </h4>
-            <SelectablePagePageList
-              pages={selectedPages}
-              method="remove"
-              onClick={removePageHandler}
-            />
-          </>
-        )}
+        <h4 className="text-center fw-bold mb-3 mt-4">
+          {t('modal_ai_assistant.reference_pages')}
+        </h4>
 
+        <div className="px-4">
+          { selectedPages.length > 0
+            ? (
+              <SelectablePagePageList
+                pages={selectedPages}
+                method="remove"
+                onClick={removePageHandler}
+              />
+            )
+            : (
+              <div className="card bg-light border-0 text-center px-4">
+                <div className="card-body">
+                  <p className="text-muted mb-0">{t('modal_ai_assistant.no_pages_selected')}</p>
+                </div>
+              </div>
+            )
+          }
+
+          <label className="form-text text-muted mt-2">
+            {t('modal_ai_assistant.can_add_later')}
+          </label>
+        </div>
       </ModalBody>
     </div>
   );
