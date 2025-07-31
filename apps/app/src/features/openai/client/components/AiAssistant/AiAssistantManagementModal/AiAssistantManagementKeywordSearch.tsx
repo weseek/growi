@@ -16,6 +16,7 @@ import {
 } from '../../../stores/ai-assistant';
 
 import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
+import { SelectablePagePageList } from './SelectablePagePageList';
 
 import styles from './AiAssistantManagementKeywordSearch.module.scss';
 
@@ -150,43 +151,11 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
             <h4 className="text-center fw-bold mb-4 mt-5">
               {t('modal_ai_assistant.select_assistant_reference_pages')}
             </h4>
-
-            <div className="px-4 list-group">
-              {searchResult?.data.map((page) => {
-                return (
-                  <button
-                    type="button"
-                    className="list-group-item list-group-item-action d-flex align-items-center p-1 mb-2 rounded"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <button
-                      type="button"
-                      className="btn text-primary"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        addPageHandler(page.data);
-                      }}
-                    >
-                      <span className="material-symbols-outlined">
-                        add_circle
-                      </span>
-                    </button>
-                    <div className="flex-grow-1">
-                      <span>
-                        {page.data.path}
-                      </span>
-                    </div>
-                    <span className="badge bg-body-secondary rounded-pill me-2">
-                      <span className="text-body-tertiary">
-                        {page.data.descendantCount}
-                      </span>
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
+            <SelectablePagePageList
+              pages={searchResult?.data.map(page => page.data) ?? []}
+              method="add"
+              onClick={addPageHandler}
+            />
           </>
         )}
 
@@ -195,45 +164,13 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
             <h4 className="text-center fw-bold mb-4 mt-3">
               {t('modal_ai_assistant.reference_pages')}
             </h4>
-            <div className="px-4 list-group">
-              {selectedPages?.map((page) => {
-                return (
-                  <button
-                    type="button"
-                    className="list-group-item list-group-item-action d-flex align-items-center p-1 mb-2 rounded"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <button
-                      type="button"
-                      className="btn text-secondary"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        removePageHandler(page);
-                      }}
-                    >
-                      <span className="material-symbols-outlined">
-                        do_not_disturb_on
-                      </span>
-                    </button>
-                    <div className="flex-grow-1">
-                      <span>
-                        {page.path}
-                      </span>
-                    </div>
-                    <span className="badge bg-body-secondary rounded-pill me-2">
-                      <span className="text-body-tertiary">
-                        {page.descendantCount}
-                      </span>
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
+            <SelectablePagePageList
+              pages={selectedPages}
+              method="remove"
+              onClick={removePageHandler}
+            />
           </>
         )}
-
 
       </ModalBody>
     </div>

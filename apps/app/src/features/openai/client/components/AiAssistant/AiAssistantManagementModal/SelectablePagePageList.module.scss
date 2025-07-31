@@ -1,0 +1,32 @@
+@use '~/styles/variables' as var;
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/variables/growi-official-colors';
+
+.selectable-page-page-list :global {
+  .list-group-item {
+    border: none;
+  }
+}
+
+// == Colors
+@include bs.color-mode(light) {
+  .selectable-page-page-list :global {
+    .list-group-item {
+      background-color: #{bs.$gray-100};
+        &:hover {
+          background-color: var(--grw-primary-100);
+      }
+    }
+  }
+}
+
+@include bs.color-mode(dark) {
+  .selectable-page-page-list :global {
+    .list-group-item {
+      background-color: #{bs.$gray-900};
+      &:hover {
+        background-color: var(--grw-primary-800);
+      }
+    }
+  }
+}

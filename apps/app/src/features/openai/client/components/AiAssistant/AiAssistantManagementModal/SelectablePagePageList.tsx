@@ -1,0 +1,55 @@
+import type { IPageHasId } from '@growi/core';
+
+import styles from './SelectablePagePageList.module.scss';
+
+const moduleClass = styles['selectable-page-page-list'] ?? '';
+
+type Props = {
+  pages: IPageHasId[],
+  onClick: (page: IPageHasId) => void,
+  method: 'add' | 'remove',
+}
+
+export const SelectablePagePageList = (props: Props): JSX.Element => {
+  const { pages, method, onClick } = props;
+
+  return (
+    <div className={`px-4 list-group ${moduleClass}`}>
+      {pages.map((page) => {
+        return (
+          <button
+            key={page._id}
+            type="button"
+            className="list-group-item list-group-item-action d-flex align-items-center p-1 mb-2 rounded"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <button
+              type="button"
+              className={`btn ${method === 'add' ? 'text-primary' : 'text-secondary'}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                onClick(page);
+              }}
+            >
+              <span className="material-symbols-outlined">
+                { method === 'add' ? 'add_circle' : 'do_not_disturb_on' }
+              </span>
+            </button>
+            <div className="flex-grow-1">
+              <span>
+                {page.path}
+              </span>
+            </div>
+            <span className="badge bg-body-secondary rounded-pill me-2">
+              <span className="text-body-tertiary">
+                {page.descendantCount}
+              </span>
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+};
