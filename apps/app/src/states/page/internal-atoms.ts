@@ -52,17 +52,6 @@ export const isRevisionOutdatedAtom = atom((get) => {
   return remoteRevisionId !== currentRevisionId;
 });
 
-// Action atoms for state updates
-export const setCurrentPageAtom = atom(
-  null,
-  (get, set, page: IPagePopulatedToShowRevision | undefined) => {
-    set(currentPageDataAtom, page);
-    if (page?._id) {
-      set(currentPageIdAtom, page._id);
-    }
-  },
-);
-
 export const setPageStatusAtom = atom(
   null,
   (get, set, status: { isNotFound?: boolean; isLatestRevision?: boolean }) => {

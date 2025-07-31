@@ -5,7 +5,7 @@ import { SubscriptionStatusType } from '@growi/core';
 import urljoin from 'url-join';
 
 import type { SyncLatestRevisionBody } from '~/interfaces/yjs';
-import { useCurrentPageId, usePageFetcher } from '~/states/page';
+import { useCurrentPageId, useFetchCurrentPage } from '~/states/page';
 import { useIsGuestUser } from '~/stores-universal/context';
 import { useEditingMarkdown, usePageTagsForEditors } from '~/stores/editor';
 import {
@@ -100,7 +100,7 @@ export type UpdateStateAfterSaveOption = {
 
 export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: UpdateStateAfterSaveOption): (() => Promise<void>) | undefined => {
   const [, setCurrentPageId] = useCurrentPageId();
-  const { fetchAndUpdatePage } = usePageFetcher();
+  const { fetchCurrentPage } = useFetchCurrentPage();
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
@@ -119,7 +119,7 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
     syncTagsInfoForEditor(); // sync global state for client
 
     await setCurrentPageId(pageId);
-    const updatedPage = await fetchAndUpdatePage();
+    const updatedPage = await fetchCurrentPage();
 
     if (updatedPage == null || updatedPage.revision == null) { return }
 
@@ -143,7 +143,7 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
     setRemoteLatestPageData(remoterevisionData);
   },
   // eslint-disable-next-line max-len
-  [pageId, mutateTagsInfo, syncTagsInfoForEditor, setCurrentPageId, fetchAndUpdatePage, opts?.supressEditingMarkdownMutation, mutateCurrentGrantData, mutateApplicableGrant, setRemoteLatestPageData, mutateEditingMarkdown]);
+  [pageId, mutateTagsInfo, syncTagsInfoForEditor, setCurrentPageId, fetchCurrentPage, opts?.supressEditingMarkdownMutation, mutateCurrentGrantData, mutateApplicableGrant, setRemoteLatestPageData, mutateEditingMarkdown]);
 };
 
 export const unlink = async(path: string): Promise<void> => {

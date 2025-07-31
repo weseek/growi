@@ -3,7 +3,7 @@ import { useCallback, useEffect } from 'react';
 import { useGlobalSocket } from '@growi/core/dist/swr';
 
 import { SocketEventName } from '~/interfaces/websocket';
-import { useCurrentPageData, usePageFetcher } from '~/states/page';
+import { useCurrentPageData, useFetchCurrentPage } from '~/states/page';
 import { useEditorMode, EditorMode } from '~/stores-universal/ui';
 import { usePageStatusAlert } from '~/stores/alert';
 import { useSetRemoteLatestPageData, type RemoteRevisionData } from '~/stores/remote-latest-page';
@@ -16,7 +16,7 @@ export const usePageUpdatedEffect = (): void => {
   const { data: socket } = useGlobalSocket();
   const { data: editorMode } = useEditorMode();
   const [currentPage] = useCurrentPageData();
-  const { fetchAndUpdatePage } = usePageFetcher();
+  const { fetchCurrentPage } = useFetchCurrentPage();
   const { open: openPageStatusAlert, close: closePageStatusAlert } = usePageStatusAlert();
 
   const remotePageDataUpdateHandler = useCallback((data) => {
@@ -40,7 +40,7 @@ export const usePageUpdatedEffect = (): void => {
 
       // !!CAUTION!! Timing of calling openPageStatusAlert may clash with components/PageEditor/conflict.tsx
       if (isRevisionOutdated && editorMode === EditorMode.View) {
-        openPageStatusAlert({ hideEditorMode: EditorMode.Editor, onRefleshPage: fetchAndUpdatePage });
+        openPageStatusAlert({ hideEditorMode: EditorMode.Editor, onRefleshPage: fetchCurrentPage });
       }
 
       // Clear cache
@@ -48,7 +48,7 @@ export const usePageUpdatedEffect = (): void => {
         closePageStatusAlert();
       }
     }
-  }, [currentPage?._id, currentPage?.revision?._id, editorMode, fetchAndUpdatePage, openPageStatusAlert, closePageStatusAlert, setRemoteLatestPageData]);
+  }, [currentPage?._id, currentPage?.revision?._id, editorMode, fetchCurrentPage, openPageStatusAlert, closePageStatusAlert, setRemoteLatestPageData]);
 
   // listen socket for someone updating this page
   useEffect(() => {

@@ -15,7 +15,7 @@ import { addBookmarkToFolder, renamePage } from '~/client/util/bookmark-utils';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import type { BookmarkFolderItems, DragItemDataType } from '~/interfaces/bookmark-info';
 import { DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
-import { usePageFetcher } from '~/states/page';
+import { useFetchCurrentPage } from '~/states/page';
 import { usePutBackPageModal } from '~/stores/modal';
 import { mutateAllPageInfo, useSWRxPageInfo } from '~/stores/page';
 
@@ -52,7 +52,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   const [isRenameInputShown, setRenameInputShown] = useState(false);
 
   const { data: pageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(bookmarkedPage?._id);
-  const { trigger: mutateCurrentPage } = usePageFetcher();
+  const { fetchAndUpdatePage } = useFetchCurrentPage();
 
   const paddingLeft = BASE_BOOKMARK_PADDING + (BASE_FOLDER_PADDING * (level));
   const dragItem: Partial<DragItemDataType> = {
@@ -146,7 +146,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
         mutateAllPageInfo();
         bookmarkFolderTreeMutation();
         router.push(`/${pageId}`);
-        mutateCurrentPage();
+        fetchAndUpdatePage();
         toastSuccess(t('page_has_been_reverted', { path }));
       }
       catch (err) {
@@ -154,7 +154,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
       }
     };
     openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
-  }, [bookmarkedPage, openPutBackPageModal, bookmarkFolderTreeMutation, router, mutateCurrentPage, t]);
+  }, [bookmarkedPage, openPutBackPageModal, bookmarkFolderTreeMutation, router, fetchAndUpdatePage, t]);
 
   if (bookmarkedPage == null) {
     return <></>;

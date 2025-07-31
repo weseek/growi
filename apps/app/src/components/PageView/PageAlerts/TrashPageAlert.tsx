@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 
 import {
-  useCurrentPageData, useCurrentPagePath, useIsTrashPage, usePageFetcher,
+  useCurrentPageData, useCurrentPagePath, useIsTrashPage, useFetchCurrentPage,
 } from '~/states/page';
 import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';
@@ -37,7 +37,7 @@ export const TrashPageAlert = (): JSX.Element => {
   const { open: openPutBackPageModal } = usePutBackPageModal();
   const [currentPagePath] = useCurrentPagePath();
 
-  const { fetchAndUpdatePage } = usePageFetcher();
+  const { fetchCurrentPage } = useFetchCurrentPage();
 
   const deleteUser = pageData?.deleteUser;
   const deletedAt = pageData?.deletedAt ? format(new Date(pageData?.deletedAt), 'yyyy/MM/dd HH:mm') : '';
@@ -58,7 +58,7 @@ export const TrashPageAlert = (): JSX.Element => {
         unlink(currentPagePath);
 
         router.push(`/${pageId}`);
-        fetchAndUpdatePage();
+        fetchCurrentPage();
         mutateRecentlyUpdated();
       }
       catch (err) {
@@ -67,7 +67,7 @@ export const TrashPageAlert = (): JSX.Element => {
       }
     };
     openPutBackPageModal({ pageId, path: pagePath }, { onPutBacked: putBackedHandler });
-  }, [isEmptyPage, openPutBackPageModal, pageId, pagePath, currentPagePath, router, fetchAndUpdatePage]);
+  }, [isEmptyPage, openPutBackPageModal, pageId, pagePath, currentPagePath, router, fetchCurrentPage]);
 
   const openPageDeleteModalHandler = useCallback(() => {
     // User cannot operate empty page.

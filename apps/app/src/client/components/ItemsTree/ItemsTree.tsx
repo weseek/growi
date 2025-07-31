@@ -12,7 +12,7 @@ import type { IPageForItem } from '~/interfaces/page';
 import type { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import type { UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
 import { SocketEventName } from '~/interfaces/websocket';
-import { useCurrentPagePath, usePageFetcher } from '~/states/page';
+import { useCurrentPagePath, useFetchCurrentPage } from '~/states/page';
 import type { IPageForPageDuplicateModal } from '~/stores/modal';
 import { usePageDuplicateModal, usePageDeleteModal } from '~/stores/modal';
 import { mutateAllPageInfo } from '~/stores/page';
@@ -63,7 +63,7 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   const { data: ptDescCountMap, update: updatePtDescCountMap } = usePageTreeDescCountMap();
 
   // for mutation
-  const { trigger: mutateCurrentPage } = usePageFetcher();
+  const { fetchCurrentPage } = useFetchCurrentPage();
 
   useEffect(() => {
     if (socket == null) {
@@ -87,9 +87,9 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
     mutatePageList();
 
     if (currentPagePath === fromPath || currentPagePath === toPath) {
-      mutateCurrentPage();
+      fetchCurrentPage();
     }
-  }, [currentPagePath, mutateCurrentPage]);
+  }, [currentPagePath, fetchCurrentPage]);
 
   const onClickDuplicateMenuItem = useCallback((pageToDuplicate: IPageForPageDuplicateModal) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -123,13 +123,13 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
       mutateAllPageInfo();
 
       if (currentPagePath === pathOrPathsToDelete) {
-        mutateCurrentPage();
+        fetchCurrentPage();
         router.push(isCompletely ? path.dirname(pathOrPathsToDelete) : `/trash${pathOrPathsToDelete}`);
       }
     };
 
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
-  }, [currentPagePath, mutateCurrentPage, openDeleteModal, router, t]);
+  }, [currentPagePath, fetchCurrentPage, openDeleteModal, router, t]);
 
 
   if (error != null) {

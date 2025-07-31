@@ -21,7 +21,7 @@ import type { IShareLinkHasId } from '~/interfaces/share-link';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import ShareLink from '~/server/models/share-link';
 import { useHydrateSharedPageAtoms } from '~/states/hydrate/page';
-import { useCurrentPageData, usePageFetcher } from '~/states/page';
+import { useCurrentPageData, useFetchCurrentPage } from '~/states/page';
 import {
   useCurrentUser, useRendererConfig, useIsSearchPage, useCurrentPathname,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useIsContainerFluid, useIsEnabledMarp,
@@ -108,7 +108,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useShowPageSideAuthors(props.showPageSideAuthors);
   useIsContainerFluid(props.isContainerFluid);
 
-  const { fetchAndUpdatePage } = usePageFetcher();
+  const { fetchCurrentPage } = useFetchCurrentPage();
 
   useEffect(() => {
     if (!props.skipSSR) {
@@ -116,9 +116,9 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
     }
 
     if (props.shareLink?.relatedPage._id != null && !props.isNotFound) {
-      fetchAndUpdatePage();
+      fetchCurrentPage();
     }
-  }, [fetchAndUpdatePage, props.isNotFound, props.shareLink?.relatedPage._id, props.skipSSR]);
+  }, [fetchCurrentPage, props.isNotFound, props.shareLink?.relatedPage._id, props.skipSSR]);
 
 
   const pagePath = props.shareLinkRelatedPage?.path ?? '';

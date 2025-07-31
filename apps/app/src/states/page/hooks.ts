@@ -12,7 +12,6 @@ import {
   currentPagePathAtom,
   pageNotFoundAtom,
   latestRevisionAtom,
-  setCurrentPageAtom,
   // New atoms for enhanced functionality
   remoteRevisionIdAtom,
   remoteRevisionBodyAtom,
@@ -44,11 +43,6 @@ export const usePageNotFound = (): UseAtom<typeof pageNotFoundAtom> => {
 
 export const useLatestRevision = (): UseAtom<typeof latestRevisionAtom> => {
   return useAtom(latestRevisionAtom);
-};
-
-// Write hooks for updating page state
-export const useSetCurrentPage = (): ((page: IPagePopulatedToShowRevision | undefined) => void) => {
-  return useAtom(setCurrentPageAtom)[1];
 };
 
 export const useTemplateTags = (): UseAtom<typeof templateTagsAtom> => {

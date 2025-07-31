@@ -24,7 +24,7 @@ import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import { usePageBulkExportSelectModal } from '~/features/page-bulk-export/client/stores/modal';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
-import { useCurrentPageId, usePageFetcher } from '~/states/page';
+import { useCurrentPageId, useFetchCurrentPage } from '~/states/page';
 import {
   useCurrentPathname,
   useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsBulkExportPagesEnabled,
@@ -255,7 +255,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const router = useRouter();
 
   const { data: shareLinkId } = useShareLinkId();
-  const { trigger: mutateCurrentPage } = usePageFetcher();
+  const { fetchCurrentPage } = useFetchCurrentPage();
 
   const { data: currentPathname } = useCurrentPathname();
   const isSharedPage = pagePathUtils.isSharedPage(currentPathname ?? '');
@@ -302,13 +302,13 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const renameItemClickedHandler = useCallback(async(page: IPageToRenameWithMeta<IPageInfoForEntity>) => {
     const renamedHandler: OnRenamedFunction = () => {
-      mutateCurrentPage();
+      fetchCurrentPage();
       mutatePageInfo();
       mutatePageTree();
       mutateRecentlyUpdated();
     };
     openRenameModal(page, { onRenamed: renamedHandler });
-  }, [mutateCurrentPage, mutatePageInfo, openRenameModal]);
+  }, [fetchCurrentPage, mutatePageInfo, openRenameModal]);
 
   const deleteItemClickedHandler = useCallback((pageWithMeta: IPageWithMeta) => {
     const deletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
@@ -326,20 +326,20 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         router.push(currentPathname);
       }
 
-      mutateCurrentPage();
+      fetchCurrentPage();
       mutatePageInfo();
       mutatePageTree();
       mutateRecentlyUpdated();
     };
     openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
-  }, [currentPathname, mutateCurrentPage, openDeleteModal, router, mutatePageInfo]);
+  }, [currentPathname, fetchCurrentPage, openDeleteModal, router, mutatePageInfo]);
 
   const switchContentWidthHandler = useCallback(async(pageId: string, value: boolean) => {
     if (!isSharedPage) {
       await updateContentWidth(pageId, value);
-      mutateCurrentPage();
+      fetchCurrentPage();
     }
-  }, [isSharedPage, mutateCurrentPage]);
+  }, [isSharedPage, fetchCurrentPage]);
 
   const additionalMenuItemsRenderer = useCallback(() => {
     if (revisionId == null || pageId == null) {

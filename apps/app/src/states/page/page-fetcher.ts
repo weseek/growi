@@ -1,61 +1,45 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { isClient } from '@growi/core/dist/utils';
-import { useAtom } from 'jotai';
-import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
+import { useAtomCallback } from 'jotai/utils';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { useShareLinkId } from '~/stores-universal/context';
-import type { AxiosResponse } from '~/utils/axios';
 
-import { currentPageIdAtom, setCurrentPageAtom } from './internal-atoms';
+import { currentPageIdAtom, currentPageDataAtom } from './internal-atoms';
 
-/**
- * Hybrid approach: Use Jotai for state management, SWR for data fetching
- * This eliminates the complex shouldMutate logic while keeping SWR's benefits
- */
-
-const getPageApiErrorHandler = (errs: AxiosResponse[]): IPagePopulatedToShowRevision | null => {
-  if (!Array.isArray(errs)) {
-    throw Error('error is not array');
-  }
-
-  const statusCode = errs[0].status;
-  if (statusCode === 403 || statusCode === 404) {
-    // for NotFoundPage
-    return null;
-  }
-  throw Error('failed to get page');
-};
 
 /**
  * Simplified page fetching hook using Jotai + SWR
  * Replaces the complex useSWRMUTxCurrentPage with cleaner state management
  */
-export const usePageFetcher = (): SWRMutationResponse<IPagePopulatedToShowRevision | null, Error> & {
-  fetchAndUpdatePage: () => Promise<IPagePopulatedToShowRevision | null>;
+export const useFetchCurrentPage = (): {
+  fetchCurrentPage: () => Promise<IPagePopulatedToShowRevision | null>,
+  isLoading: boolean,
+  error: Error | null,
 } => {
-  const [currentPageId] = useAtom(currentPageIdAtom);
   const { data: shareLinkId } = useShareLinkId();
-  const setCurrentPage = useAtom(setCurrentPageAtom)[1];
 
-  // Get URL parameter for specific revisionId
-  let revisionId: string | undefined;
-  if (isClient()) {
-    const urlParams = new URLSearchParams(window.location.search);
-    const requestRevisionId = urlParams.get('revisionId');
-    revisionId = requestRevisionId != null ? requestRevisionId : undefined;
-  }
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
 
-  const key = 'fetchCurrentPage';
+  const fetchCurrentPage = useAtomCallback(
+    useCallback(async(get, set) => {
+      const currentPageId = get(currentPageIdAtom);
 
-  const swrMutationResult = useSWRMutation(
-    key,
-    async() => {
-      if (!currentPageId) {
-        return null;
+      if (!currentPageId) return null;
+
+      // Get URL parameter for specific revisionId
+      let revisionId: string | undefined;
+      if (isClient()) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const requestRevisionId = urlParams.get('revisionId');
+        revisionId = requestRevisionId != null ? requestRevisionId : undefined;
       }
+
+      setIsLoading(true);
+      setError(null);
 
       try {
         const response = await apiv3Get<{ page: IPagePopulatedToShowRevision }>(
@@ -64,29 +48,22 @@ export const usePageFetcher = (): SWRMutationResponse<IPagePopulatedToShowRevisi
         );
 
         const newData = response.data.page;
-
-        // Update Jotai state instead of manual SWR cache mutation
-        setCurrentPage(newData);
+        set(currentPageDataAtom, newData);
 
         return newData;
       }
-      catch (error) {
-        return getPageApiErrorHandler([error]);
+      catch (err) {
+        // TODO: Handle error properly
+        // ref: https://redmine.weseek.co.jp/issues/169797
+        setError(new Error('Failed to fetch current page'));
+        return null;
       }
-    },
-    {
-      populateCache: false, // We're using Jotai for state, not SWR cache
-      revalidate: false,
-    },
+      finally {
+        setIsLoading(false);
+      }
+    }, [shareLinkId]),
   );
 
-  const fetchAndUpdatePage = useCallback(async() => {
-    const result = await swrMutationResult.trigger();
-    return result ?? null;
-  }, [swrMutationResult]);
+  return { fetchCurrentPage, isLoading, error };
 
-  return {
-    ...swrMutationResult,
-    fetchAndUpdatePage,
-  };
 };

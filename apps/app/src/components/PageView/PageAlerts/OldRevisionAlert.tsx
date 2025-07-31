@@ -4,7 +4,7 @@ import { returnPathForURL } from '@growi/core/dist/utils/path-utils';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 
-import { useCurrentPageData, useLatestRevision, usePageFetcher } from '~/states/page';
+import { useCurrentPageData, useLatestRevision, useFetchCurrentPage } from '~/states/page';
 
 export const OldRevisionAlert = (): JSX.Element => {
   const router = useRouter();
@@ -12,7 +12,7 @@ export const OldRevisionAlert = (): JSX.Element => {
 
   const [isOldRevisionPage] = useLatestRevision();
   const [page] = useCurrentPageData();
-  const { fetchAndUpdatePage } = usePageFetcher();
+  const { fetchCurrentPage } = useFetchCurrentPage();
 
   const onClickShowLatestButton = useCallback(async() => {
     if (page == null) {
@@ -21,8 +21,8 @@ export const OldRevisionAlert = (): JSX.Element => {
 
     const url = returnPathForURL(page.path, page._id);
     await router.push(url);
-    fetchAndUpdatePage();
-  }, [fetchAndUpdatePage, page, router]);
+    fetchCurrentPage();
+  }, [fetchCurrentPage, page, router]);
 
   if (page == null || isOldRevisionPage) {
     return <></>;

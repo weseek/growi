@@ -2,13 +2,13 @@ import React, { useCallback, type JSX } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { useCurrentPageData, usePageFetcher } from '~/states/page';
+import { useCurrentPageData, useFetchCurrentPage } from '~/states/page';
 
 
 export const WipPageAlert = (): JSX.Element => {
   const { t } = useTranslation();
   const [currentPage] = useCurrentPageData();
-  const { fetchAndUpdatePage } = usePageFetcher();
+  const { fetchCurrentPage } = useFetchCurrentPage();
 
   const clickPagePublishButton = useCallback(async() => {
     const pageId = currentPage?._id;
@@ -21,7 +21,7 @@ export const WipPageAlert = (): JSX.Element => {
       const publish = (await import('~/client/services/page-operation')).publish;
       await publish(pageId);
 
-      await fetchAndUpdatePage();
+      await fetchCurrentPage();
 
       const mutatePageTree = (await import('~/stores/page-listing')).mutatePageTree;
       await mutatePageTree();
@@ -36,7 +36,7 @@ export const WipPageAlert = (): JSX.Element => {
       const toastError = (await import('~/client/util/toastr')).toastError;
       toastError(t('wip_page.fail_publish_page'));
     }
-  }, [currentPage?._id, fetchAndUpdatePage, t]);
+  }, [currentPage?._id, fetchCurrentPage, t]);
 
 
   if (!currentPage?.wip) {

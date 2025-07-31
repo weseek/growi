@@ -1,5 +1,5 @@
 import type { ReactNode, JSX } from 'react';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import EventEmitter from 'events';
 
@@ -35,7 +35,7 @@ import { useEditorModeClassName } from '~/services/layout/use-editor-mode-class-
 import { useHydratePageAtoms } from '~/states/hydrate/page';
 import { useHydrateSidebarAtoms } from '~/states/hydrate/sidebar';
 import {
-  useCurrentPageData, usePageFetcher, useCurrentPageId, useCurrentPagePath,
+  useCurrentPageData, useFetchCurrentPage, useCurrentPageId, useCurrentPagePath,
 } from '~/states/page';
 import {
   useCurrentUser,
@@ -272,11 +272,11 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // Initialize Jotai atoms with initial data
   useHydratePageAtoms(pageWithMeta?.data);
 
-  const { fetchAndUpdatePage } = usePageFetcher();
+  const { fetchCurrentPage } = useFetchCurrentPage();
   const { trigger: mutateCurrentPageYjsDataFromApi } = useSWRMUTxCurrentPageYjsData();
 
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
-  const [currentPageId] = useCurrentPageId();
+  const [currentPageId, setCurrentPageId] = useCurrentPageId();
   const [currentPagePath] = useCurrentPagePath();
 
   const { mutate: mutateCurrentPageYjsData } = useCurrentPageYjsData();
@@ -290,9 +290,10 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       return;
     }
 
-    if (currentPageId != null && revisionId != null && !props.isNotFound) {
+    if (pageId != null && revisionId != null && !props.isNotFound) {
       const mutatePageData = async() => {
-        const pageData = await fetchAndUpdatePage();
+        setCurrentPageId(pageId);
+        const pageData = await fetchCurrentPage();
         mutateEditingMarkdown(pageData?.revision?.body);
       };
 
@@ -300,10 +301,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       // Because pageWIthMeta does not contain revision.body
       mutatePageData();
     }
-  }, [
-    revisionId, currentPageId, fetchAndUpdatePage,
-    mutateCurrentPageYjsDataFromApi, mutateEditingMarkdown, props.isNotFound, props.skipSSR,
-  ]);
+  }, [revisionId, currentPageId, mutateEditingMarkdown, props.isNotFound, props.skipSSR, fetchCurrentPage, pageId, setCurrentPageId]);
 
   // Load current yjs data
   useEffect(() => {

@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { usePageFetcher } from '~/states/page';
+import { useFetchCurrentPage } from '~/states/page';
 import { mutatePageTree, mutatePageList, mutateRecentlyUpdated } from '~/stores/page-listing';
 import { useIsUntitledPage } from '~/stores/ui';
 
@@ -17,7 +17,7 @@ export const usePagePathRenameHandler = (
 ): PagePathRenameHandler => {
 
   const { t } = useTranslation();
-  const { fetchAndUpdatePage } = usePageFetcher();
+  const { fetchCurrentPage } = useFetchCurrentPage();
   const { mutate: mutateIsUntitledPage } = useIsUntitledPage();
 
   const pagePathRenameHandler = useCallback(async(newPagePath, onRenameFinish, onRenameFailure) => {
@@ -38,7 +38,7 @@ export const usePagePathRenameHandler = (
       mutateIsUntitledPage(false);
 
       if (currentPage.path === fromPath || currentPage.path === toPath) {
-        fetchAndUpdatePage();
+        fetchCurrentPage();
       }
     };
 
@@ -58,7 +58,7 @@ export const usePagePathRenameHandler = (
       onRenameFailure?.();
       toastError(err);
     }
-  }, [currentPage, mutateCurrentPage, mutateIsUntitledPage, t]);
+  }, [currentPage, fetchCurrentPage, mutateIsUntitledPage, t]);
 
   return pagePathRenameHandler;
 };

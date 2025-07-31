@@ -69,7 +69,6 @@ export const PageView = (props: Props): JSX.Element => {
   const markdown = page?.revision?.body;
   const isSlide = useSlidesByFrontmatter(markdown, rendererConfig.isEnabledMarp);
 
-
   // ***************************  Auto Scroll  ***************************
   useEffect(() => {
     // do nothing if hash is empty

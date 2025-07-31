@@ -12,7 +12,6 @@ export {
   useCurrentPagePath,
   usePageNotFound,
   useLatestRevision,
-  useSetCurrentPage,
   // Remote revision hooks (replacements for stores/remote-latest-page.ts)
   useRemoteRevisionId,
   useRemoteRevisionBody,
@@ -24,7 +23,7 @@ export {
 
 // Data fetching hooks
 export {
-  usePageFetcher,
+  useFetchCurrentPage,
 } from './page-fetcher';
 
 // Re-export types that external consumers might need

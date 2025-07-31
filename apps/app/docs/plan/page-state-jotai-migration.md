@@ -25,7 +25,7 @@ SWRとJotaiの併用により、それぞれの長所を活かしつつ問題を
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   Components    │◄───┤  Jotai Atoms    │◄───┤ SWR Fetchers    │
 │                 │    │                 │    │                 │
-│ - usePageData   │    │ - pageAtom      │    │ - usePageFetcher│
+│ - usePageData   │    │ - pageAtom      │    │ - useFetchCurrentPage│
 │ - usePageId     │    │ - pageIdAtom    │    │ - API calls     │
 │ - usePagePath   │    │ - statusAtoms   │    │ - Error handling│
 └─────────────────┘    └─────────────────┘    └─────────────────┘
@@ -82,7 +82,7 @@ SWRとJotaiの併用により、それぞれの長所を活かしつつ問題を
 - **`useSWRMUTxCurrentPage`**: 複数箇所
   ```typescript
   // Before: { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage()
-  // After:  { fetchAndUpdatePage } = usePageFetcher()
+  // After:  { fetchCurrentPage } = useFetchCurrentPage()
   ```
 
 - **`useCurrentPagePath`**: 複数箇所（Deprecated）
@@ -111,7 +111,7 @@ SWRとJotaiの併用により、それぞれの長所を活かしつつ問題を
    import { useCurrentPageId, useSWRxCurrentPage, useSWRMUTxCurrentPage } from '~/stores/page';
    
    // After
-   import { useCurrentPageId, useCurrentPageData, usePageFetcher } from '~/states/page';
+   import { useCurrentPageId, useCurrentPageData, useFetchCurrentPage } from '~/states/page';
    ```
 
 2. **Hook使用箇所の一括変更（182箇所）**
