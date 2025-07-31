@@ -24,7 +24,7 @@ export {
 // Data fetching hooks
 export {
   useFetchCurrentPage,
-} from './page-fetcher';
+} from './fetch-current-page';
 
 // Re-export types that external consumers might need
 export type { UseAtom } from '../ui/helper';
