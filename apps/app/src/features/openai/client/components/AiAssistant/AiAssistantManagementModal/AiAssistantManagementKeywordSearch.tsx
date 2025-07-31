@@ -165,6 +165,11 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
                 );
               })}
             </div>
+
+            <h4 className="text-center fw-bold mb-4 mt-3">
+              {t('modal_ai_assistant.reference_pages')}
+            </h4>
+
           </>
         )}
       </ModalBody>
