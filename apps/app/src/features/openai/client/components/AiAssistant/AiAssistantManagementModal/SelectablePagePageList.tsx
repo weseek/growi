@@ -23,14 +23,14 @@ export const SelectablePagePageList = (props: Props): JSX.Element => {
           <button
             key={page._id}
             type="button"
-            className="list-group-item list-group-item-action d-flex align-items-center p-1 mb-2 rounded"
+            className="list-group-item border-0 list-group-item-action d-flex align-items-center p-1 mb-2 rounded"
             onClick={(e) => {
               e.stopPropagation();
             }}
           >
             <button
               type="button"
-              className={`btn ${method === 'add' ? 'text-primary' : 'text-secondary'}`}
+              className={`btn border-0 ${method === 'add' ? 'text-primary' : 'text-secondary'}`}
               disabled={disablePageIds?.includes(page._id)}
               onClick={(e) => {
                 e.stopPropagation();

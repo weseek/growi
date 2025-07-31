@@ -2,15 +2,6 @@
 @use '@growi/core-styles/scss/bootstrap/init' as bs;
 @use '@growi/core-styles/scss/variables/growi-official-colors';
 
-.selectable-page-page-list :global {
-  .list-group-item {
-    border: none;
-  }
-
-  .btn {
-    border: none;
-  }
-}
 
 // == Colors
 @include bs.color-mode(light) {
