@@ -2,6 +2,7 @@ import React, {
   useRef, useMemo, useCallback, useState, type KeyboardEvent,
 } from 'react';
 
+import type { IPageHasId } from '@growi/core';
 import { type TypeaheadRef, Typeahead } from 'react-bootstrap-typeahead';
 import { useTranslation } from 'react-i18next';
 import {
@@ -31,6 +32,8 @@ const isSelectedSearchKeyword = (value: unknown): value is SelectedSearchKeyword
 
 export const AiAssistantKeywordSearch = (): JSX.Element => {
   const [selectedSearchKeywords, setSelectedSearchKeywords] = useState<Array<SelectedSearchKeyword>>([]);
+  const [selectedPages, setSelectedPages] = useState<Array<IPageHasId>>([]);
+  console.log('selectedPages', selectedPages);
 
   const joinedSelectedSearchKeywords = useMemo(() => {
     return selectedSearchKeywords.map(item => item.label).join(' ');
@@ -93,6 +96,15 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
     handleMenuItemSelect(initialItem, event);
   }, [selectedSearchKeywords]);
 
+  const addPageHandler = useCallback((page: IPageHasId) => {
+    setSelectedPages((prevSelectedPages) => {
+      if (prevSelectedPages.some(selectedPage => selectedPage._id === page._id)) {
+        return prevSelectedPages;
+      }
+      return [...prevSelectedPages, page];
+    });
+  }, []);
+
   return (
     <div className={moduleClass}>
       <AiAssistantManagementHeader
@@ -145,6 +157,7 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
                       className="btn text-primary"
                       onClick={(e) => {
                         e.stopPropagation();
+                        addPageHandler(page.data);
                       }}
                     >
                       <span className="material-symbols-outlined">
