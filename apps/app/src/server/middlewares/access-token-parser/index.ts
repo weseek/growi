@@ -1,9 +1,13 @@
 import type { Scope } from '@growi/core/dist/interfaces';
 import type { NextFunction, Response } from 'express';
 
+import loggerFactory from '~/utils/logger';
+
 import { parserForAccessToken } from './access-token';
 import { parserForApiToken } from './api-token';
 import type { AccessTokenParserReq } from './interfaces';
+
+const logger = loggerFactory('growi:middleware:access-token-parser');
 
 export type AccessTokenParser = (scopes?: Scope[], opts?: {acceptLegacy: boolean})
   => (req: AccessTokenParserReq, res: Response, next: NextFunction) => Promise<void>
@@ -12,6 +16,7 @@ export const accessTokenParser: AccessTokenParser = (scopes, opts) => {
   return async(req, res, next): Promise<void> => {
     // TODO: comply HTTP header of RFC6750 / Authorization: Bearer
     if (scopes == null || scopes.length === 0) {
+      logger.warn('scopes is empty');
       return next();
     }
 

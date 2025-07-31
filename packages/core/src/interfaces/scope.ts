@@ -108,11 +108,10 @@ const buildScopeConstants = (): ScopeConstantType => {
   const result = {} as Partial<ScopeConstantType>;
 
   const processObject = (
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    // biome-ignore lint/suspicious/noExplicitAny: ignore
     obj: Record<string, any>,
-    // biome-ignore lint/style/useDefaultParameterLast: <explanation>
     path: string[] = [],
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    // biome-ignore lint/suspicious/noExplicitAny: ignore
     resultObj: Record<string, any>,
   ) => {
     for (const [key, value] of Object.entries(obj)) {
