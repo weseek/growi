@@ -28,6 +28,7 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { RegistrationMode } from '~/interfaces/registration-mode';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
+import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { CurrentPageYjsData } from '~/interfaces/yjs';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
@@ -38,14 +39,13 @@ import {
   useCurrentPageData, useFetchCurrentPage, useCurrentPageId, useCurrentPagePath,
 } from '~/states/page';
 import {
-  useCurrentUser,
   useIsForbidden, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useDefaultIndentSize, useIsIndentSizeForced,
   useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
-  useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
-  useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
+  useIsSearchScopeChildrenAsDefault, useIsEnabledMarp,
+  useIsSlackConfigured, useRendererConfig,
   useIsAllReplyShown, useShowPageSideAuthors, useIsContainerFluid, useIsNotCreatable,
   useIsUploadAllFileAllowed, useIsUploadEnabled, useIsBulkExportPagesEnabled,
   useElasticsearchMaxBodyLengthToIndex,
@@ -61,8 +61,9 @@ import { useCurrentPageYjsData, useSWRMUTxCurrentPageYjsData } from '~/stores/yj
 import loggerFactory from '~/utils/logger';
 
 import type { NextPageWithLayout } from './_app.page';
-import type { CommonProps } from './utils/commons';
+import type { CommonProps, PageTitleCustomizationProps } from './utils/commons';
 import {
+  getServerSidePageTitleCustomizationProps,
   getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, skipSSR, addActivity,
 } from './utils/commons';
 
@@ -141,9 +142,10 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   );
 };
 
-type Props = CommonProps & {
+type Props = CommonProps & PageTitleCustomizationProps & {
   pageWithMeta: IPageToShowRevisionWithMeta | null,
   // pageUser?: any,
+  redirectDestination?: string,
   redirectFrom?: string;
 
   // shareLinkId?: string;
@@ -169,6 +171,7 @@ type Props = CommonProps & {
   isRomUserAllowedToComment: boolean,
 
   sidebarConfig: ISidebarConfig,
+  userUISettings: IUserUISettings,
 
   isSlackConfigured: boolean,
   // isMailerSetup: boolean,
@@ -209,12 +212,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   }
 
   const router = useRouter();
-
-  useCurrentUser(props.currentUser ?? null);
-
-  // commons
-  useCsrfToken(props.csrfToken);
-  useGrowiCloudUri(props.growiCloudUri);
 
   // page
   useIsContainerFluid(props.isContainerFluid);
@@ -266,8 +263,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const pageId = pageWithMeta?.data._id;
   const revisionId = pageWithMeta?.data.revision?._id;
   const revisionBody = pageWithMeta?.data.revision?.body;
-
-  useCurrentPathname(props.currentPathname);
 
   // Initialize Jotai atoms with initial data
   useHydratePageAtoms(pageWithMeta?.data);
@@ -637,15 +632,19 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const req = context.req as CrowiRequest;
   const { user } = req;
 
-  const result = await getServerSideCommonProps(context);
+  const commonPropsResult = await getServerSideCommonProps(context);
+  const pageTitleCustomizeationPropsResult = await getServerSidePageTitleCustomizationProps(context);
 
   // check for presence
   // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
-  if (!('props' in result)) {
+  if (!('props' in commonPropsResult) || !('props' in pageTitleCustomizeationPropsResult)) {
     throw new Error('invalid getSSP result');
   }
 
-  const props: Props = result.props as Props;
+  const props: Props = {
+    ...commonPropsResult.props,
+    ...pageTitleCustomizeationPropsResult.props,
+  } as Props;
 
   if (props.redirectDestination != null) {
     return {

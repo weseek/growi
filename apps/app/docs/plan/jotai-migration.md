@@ -107,3 +107,23 @@ export const useHydrateFeatureAtoms = (initialData: InitialData) => {
 - **SSR対応**: `useHydrateAtoms`（公式パターン）
 - **永続化**: 既存の`scheduleToPut`機構と連携
 - **TypeScript**: 型推論とタイプセーフティ
+
+---
+
+## 6. 今後の対応予定
+
+### 動的ルーティング時に更新が必要な値
+以下の値は Next.js の dynamic routing によるページ遷移時に値の更新が必要な可能性があります：
+
+- **currentPathname** - ページ遷移時に現在のパスが変更される
+- **isIdenticalPath** - ページごとに異なる値を持つ
+- **isForbidden** - ページのアクセス権限がページごとに異なる
+- **isNotCreatable** - ページの作成可能性がページごとに異なる
+- **csrfToken** - セキュリティ要件によってはページ遷移時に更新が必要（既に対応済み）
+
+これらの値については、現在のSWR実装から段階的にJotaiへの移行を検討する必要があります。
+移行時には以下の点を考慮する必要があります：
+
+1. **ページ遷移時の同期**: `useEffect` と `useRouter` を使用した値の同期
+2. **初期値の設定**: `useHydrateAtoms` による SSR からの初期値設定
+3. **永続化の必要性**: 一時的な状態かユーザー設定として永続化が必要かの判断

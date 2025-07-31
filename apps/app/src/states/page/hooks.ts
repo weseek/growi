@@ -1,9 +1,7 @@
-import type { IPagePopulatedToShowRevision, IUserHasId } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { useAtom } from 'jotai';
 
-import { useCurrentPathname } from '~/stores-universal/context';
-
+import { useCurrentPathname } from '../global';
 import type { UseAtom } from '../ui/helper';
 
 import {
@@ -78,7 +76,7 @@ export const useRemoteRevisionLastUpdatedAt = (): UseAtom<typeof remoteRevisionL
  */
 export const useCurrentPagePath = (): readonly [string | undefined] => {
   const [currentPagePath] = useAtom(currentPagePathAtom);
-  const { data: currentPathname } = useCurrentPathname();
+  const [currentPathname] = useCurrentPathname();
 
   if (currentPagePath != null) {
     return [currentPagePath];

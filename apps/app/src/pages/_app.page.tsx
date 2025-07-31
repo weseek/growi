@@ -13,15 +13,15 @@ import * as nextI18nConfig from '^/config/next-i18next.config';
 
 import { GlobalFonts } from '~/components/FontFamily/GlobalFonts';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import {
-  useAppTitle, useConfidential, useGrowiVersion, useSiteUrl, useIsDefaultLogo, useForcedColorScheme,
-} from '~/stores-universal/context';
+import { useAutoUpdateGlobalAtoms } from '~/states/auto-update/global';
+import { useHydrateGlobalAtoms } from '~/states/hydrate/global';
 import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
 import { getLocaleAtServerSide, type CommonProps } from './utils/commons';
+import { registerTransformerForObjectId } from './utils/objectid-transformer';
+
 import '~/styles/prebuilt/vendor.css';
 import '~/styles/style-app.scss';
-import { registerTransformerForObjectId } from './utils/objectid-transformer';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -56,12 +56,10 @@ function GrowiApp({ Component, pageProps, userLocale }: GrowiAppProps): JSX.Elem
   }, []);
 
   const commonPageProps = pageProps as CommonProps;
-  useAppTitle(commonPageProps.appTitle);
-  useSiteUrl(commonPageProps.siteUrl);
-  useConfidential(commonPageProps.confidential);
-  useGrowiVersion(commonPageProps.growiVersion);
-  useIsDefaultLogo(commonPageProps.isDefaultLogo);
-  useForcedColorScheme(commonPageProps.forcedColorScheme);
+
+  // Hydrate global atoms with server-side data
+  useHydrateGlobalAtoms(commonPageProps);
+  useAutoUpdateGlobalAtoms(commonPageProps);
 
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? (page => page);

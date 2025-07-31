@@ -16,33 +16,37 @@ import { detectLocaleFromBrowserAcceptLanguage } from '~/server/util/locale-util
 import { getGrowiVersion } from '~/utils/growi-version';
 
 export type CommonProps = {
-  namespacesRequired: string[], // i18next
   currentPathname: string,
+  currentUser?: IUserHasId,
   appTitle: string,
   siteUrl: string | undefined,
-  confidential: string,
-  customTitleTemplate: string,
   csrfToken: string,
-  isContainerFluid: boolean,
+  confidential: string,
   growiVersion: string,
   isMaintenanceMode: boolean,
-  redirectDestination: string | null,
   isDefaultLogo: boolean,
   growiCloudUri: string | undefined,
-  isAccessDeniedForNonAdminUser?: boolean,
-  currentUser?: IUserHasId,
   forcedColorScheme?: ColorScheme,
-  userUISettings?: IUserUISettings
+  // namespacesRequired: string[], // i18next
+  // isContainerFluid: boolean,
+  // redirectDestination: string | null,
+  // isAccessDeniedForNonAdminUser?: boolean,
+  // userUISettings?: IUserUISettings
 } & Partial<SSRConfig>;
+
+export type PageTitleCustomizationProps = {
+  appTitle: string,
+  customTitleTemplate: string,
+};
 
 // eslint-disable-next-line max-len
 export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(context: GetServerSidePropsContext) => {
-  const getModelSafely = await import('~/server/util/mongoose-utils').then(mod => mod.getModelSafely);
+  // const getModelSafely = await import('~/server/util/mongoose-utils').then(mod => mod.getModelSafely);
 
   const req = context.req as CrowiRequest;
   const { crowi, user } = req;
   const {
-    appService, configManager, customizeService, attachmentService,
+    appService, configManager, attachmentService,
   } = crowi;
 
   const url = new URL(context.resolvedUrl, 'http://example.com');
@@ -55,48 +59,62 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     currentUser = user.toObject();
   }
 
-  // Redirect destination for page transition by next/link
-  let redirectDestination: string | null = null;
-  if (!crowi.aclService.isGuestAllowedToRead() && currentUser == null) {
-    redirectDestination = '/login';
-  }
-  else if (!isMaintenanceMode && currentPathname === '/maintenance') {
-    redirectDestination = '/';
-  }
-  else if (isMaintenanceMode && !currentPathname.match('/admin/*') && !(currentPathname === '/maintenance')) {
-    redirectDestination = '/maintenance';
-  }
-  else {
-    redirectDestination = null;
-  }
+  // // Redirect destination for page transition by next/link
+  // let redirectDestination: string | null = null;
+  // if (!crowi.aclService.isGuestAllowedToRead() && currentUser == null) {
+  //   redirectDestination = '/login';
+  // }
+  // else if (!isMaintenanceMode && currentPathname === '/maintenance') {
+  //   redirectDestination = '/';
+  // }
+  // else if (isMaintenanceMode && !currentPathname.match('/admin/*') && !(currentPathname === '/maintenance')) {
+  //   redirectDestination = '/maintenance';
+  // }
+  // else {
+  //   redirectDestination = null;
+  // }
 
   const isCustomizedLogoUploaded = await attachmentService.isBrandLogoExist();
   const isDefaultLogo = crowi.configManager.getConfig('customize:isDefaultLogo') || !isCustomizedLogoUploaded;
   const forcedColorScheme = crowi.customizeService.forcedColorScheme;
 
   // retrieve UserUISett ings
-  const UserUISettings = getModelSafely<UserUISettingsDocument>('UserUISettings');
-  const userUISettings = user != null && UserUISettings != null
-    ? await UserUISettings.findOne({ user: user._id }).exec()
-    : req.session.uiSettings; // for guests
+  // const UserUISettings = getModelSafely<UserUISettingsDocument>('UserUISettings');
+  // const userUISettings = user != null && UserUISettings != null
+  //   ? await UserUISettings.findOne({ user: user._id }).exec()
+  //   : req.session.uiSettings; // for guests
 
   const props: CommonProps = {
-    namespacesRequired: ['translation'],
+    // namespacesRequired: ['translation'],
     currentPathname,
+    currentUser,
     appTitle: appService.getAppTitle(),
     siteUrl: configManager.getConfig('app:siteUrl'), // DON'T USE growiInfoService.getSiteUrl()
     confidential: appService.getAppConfidential() || '',
-    customTitleTemplate: customizeService.customTitleTemplate,
     csrfToken: req.csrfToken(),
-    isContainerFluid: configManager.getConfig('customize:isContainerFluid') ?? false,
+    // isContainerFluid: configManager.getConfig('customize:isContainerFluid') ?? false,
     growiVersion: getGrowiVersion(),
     isMaintenanceMode,
-    redirectDestination,
-    currentUser,
+    // redirectDestination,
     isDefaultLogo,
     forcedColorScheme,
     growiCloudUri: configManager.getConfig('app:growiCloudUri'),
-    userUISettings: userUISettings?.toObject?.() ?? userUISettings,
+    // userUISettings: userUISettings?.toObject?.() ?? userUISettings,
+  };
+
+  return { props };
+};
+
+export const getServerSidePageTitleCustomizationProps: GetServerSideProps<PageTitleCustomizationProps> = async(context: GetServerSidePropsContext) => {
+  const req = context.req as CrowiRequest;
+  const { crowi } = req;
+  const {
+    appService, customizeService,
+  } = crowi;
+
+  const props: PageTitleCustomizationProps = {
+    appTitle: appService.getAppTitle(),
+    customTitleTemplate: customizeService.customTitleTemplate,
   };
 
   return { props };
@@ -159,7 +177,7 @@ export const getNextI18NextConfig = async(
  * @param props
  * @param title
  */
-export const generateCustomTitle = (props: CommonProps, title: string): string => {
+export const generateCustomTitle = (props: PageTitleCustomizationProps, title: string): string => {
   return props.customTitleTemplate
     .replace('{{sitename}}', props.appTitle)
     .replace('{{pagepath}}', title)
@@ -171,7 +189,7 @@ export const generateCustomTitle = (props: CommonProps, title: string): string =
  * @param props
  * @param pagePath
  */
-export const generateCustomTitleForPage = (props: CommonProps, pagePath: string): string => {
+export const generateCustomTitleForPage = (props: PageTitleCustomizationProps, pagePath: string): string => {
   const dPagePath = new DevidedPagePath(pagePath, true, true);
 
   return props.customTitleTemplate

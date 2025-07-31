@@ -1,14 +1,14 @@
 import type EventEmitter from 'events';
 
 import { AcceptedUploadFileType } from '@growi/core';
-import type { ColorScheme, IUserHasId } from '@growi/core';
 import { useSWRStatic } from '@growi/core/dist/swr';
 import type { SWRResponse } from 'swr';
-import useSWR from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import type { SupportedActionType } from '~/interfaces/activity';
 import type { RendererConfig } from '~/interfaces/services/renderer';
+
+import { useIsGuestUser, useIsReadOnlyUser } from '../states/context';
 
 import { useContextSWR } from './use-context-swr';
 
@@ -19,30 +19,6 @@ declare global {
 
 type Nullable<T> = T | null;
 
-
-export const useCsrfToken = (initialData?: string): SWRResponse<string, Error> => {
-  return useContextSWR<string, Error>('csrfToken', initialData);
-};
-
-export const useAppTitle = (initialData?: string): SWRResponse<string, Error> => {
-  return useContextSWR('appTitle', initialData);
-};
-
-export const useSiteUrl = (initialData?: string): SWRResponse<string, Error> => {
-  return useContextSWR<string, Error>('siteUrl', initialData);
-};
-
-export const useConfidential = (initialData?: string): SWRResponse<string, Error> => {
-  return useContextSWR('confidential', initialData);
-};
-
-export const useCurrentUser = (initialData?: Nullable<IUserHasId>): SWRResponse<Nullable<IUserHasId>, Error> => {
-  return useContextSWR('currentUser', initialData);
-};
-
-export const useCurrentPathname = (initialData?: string): SWRResponse<string, Error> => {
-  return useContextSWR('currentPathname', initialData);
-};
 
 export const useIsIdenticalPath = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isIdenticalPath', initialData, { fallbackData: false });
@@ -73,7 +49,7 @@ export const useRegistrationWhitelist = (initialData?: Nullable<string[]>): SWRR
 };
 
 export const useIsSearchPage = (initialData?: Nullable<boolean>) : SWRResponse<Nullable<boolean>, Error> => {
-  return useContextSWR<Nullable<any>, Error>('isSearchPage', initialData);
+  return useContextSWR<Nullable<boolean>, Error>('isSearchPage', initialData);
 };
 
 export const useIsAclEnabled = (initialData?: boolean) : SWRResponse<boolean, Error> => {
@@ -92,7 +68,7 @@ export const useElasticsearchMaxBodyLengthToIndex = (initialData?: number) : SWR
   return useContextSWR('elasticsearchMaxBodyLengthToIndex', initialData);
 };
 
-export const useIsMailerSetup = (initialData?: boolean): SWRResponse<boolean, any> => {
+export const useIsMailerSetup = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR('isMailerSetup', initialData);
 };
 
@@ -136,15 +112,11 @@ export const useAuditLogAvailableActions = (initialData?: Array<SupportedActionT
   return useContextSWR<Array<SupportedActionType>, Error>('auditLogAvailableActions', initialData);
 };
 
-export const useGrowiVersion = (initialData?: string): SWRResponse<string, any> => {
-  return useContextSWR('growiVersion', initialData);
-};
-
-export const useIsEnabledStaleNotification = (initialData?: boolean): SWRResponse<boolean, any> => {
+export const useIsEnabledStaleNotification = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR('isEnabledStaleNotification', initialData);
 };
 
-export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<RendererConfig, any> => {
+export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<RendererConfig, Error> => {
   return useContextSWR('growiRendererConfig', initialData);
 };
 
@@ -184,20 +156,8 @@ export const useCustomizeTitle = (initialData?: string): SWRResponse<string, Err
   return useContextSWR('CustomizeTitle', initialData);
 };
 
-export const useIsDefaultLogo = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useContextSWR('isDefaultLogo', initialData);
-};
-
 export const useIsCustomizedLogoUploaded = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useSWRStatic('isCustomizedLogoUploaded', initialData);
-};
-
-export const useForcedColorScheme = (initialData?: ColorScheme): SWRResponse<ColorScheme, Error> => {
-  return useContextSWR('forcedColorScheme', initialData);
-};
-
-export const useGrowiCloudUri = (initialData?: string): SWRResponse<string, Error> => {
-  return useContextSWR('growiCloudUri', initialData);
 };
 
 export const useGrowiAppIdForGrowiCloud = (initialData?: number): SWRResponse<number, Error> => {
@@ -238,50 +198,9 @@ export const useIsEnableUnifiedMergeView = (initialData?: boolean): SWRResponse<
  *                     Computed contexts
  *********************************************************** */
 
-export const useIsGuestUser = (): SWRResponse<boolean, Error> => {
-  const { data: currentUser, isLoading } = useCurrentUser();
-
-  return useSWRImmutable(
-    isLoading ? null : ['isGuestUser', currentUser?._id],
-    ([, currentUserId]) => currentUserId == null,
-    { fallbackData: currentUser?._id == null },
-  );
-};
-
-export const useIsReadOnlyUser = (): SWRResponse<boolean, Error> => {
-  const { data: currentUser, isLoading: isCurrentUserLoading } = useCurrentUser();
-  const { data: isGuestUser, isLoading: isGuestUserLoding } = useIsGuestUser();
-
-  const isLoading = isCurrentUserLoading || isGuestUserLoding;
-  const isReadOnlyUser = !isGuestUser && !!currentUser?.readOnly;
-
-  return useSWRImmutable(
-    isLoading ? null : ['isReadOnlyUser', isReadOnlyUser, currentUser?._id],
-    () => isReadOnlyUser,
-    { fallbackData: isReadOnlyUser },
-  );
-};
-
-export const useIsAdmin = (): SWRResponse<boolean, Error> => {
-  const { data: currentUser, isLoading } = useCurrentUser();
-
-  return useSWR(
-    isLoading ? null : ['isAdminUser', currentUser?._id, currentUser?.admin],
-    ([, , isAdmin]) => isAdmin ?? false,
-    {
-      fallbackData: currentUser?.admin ?? false,
-      keepPreviousData: true,
-      // disable all revalidation but revalidateIfStale
-      revalidateOnMount: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    },
-  );
-};
-
 export const useIsEditable = (): SWRResponse<boolean, Error> => {
-  const { data: isGuestUser } = useIsGuestUser();
-  const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const [isGuestUser] = useIsGuestUser();
+  const [isReadOnlyUser] = useIsReadOnlyUser();
   const { data: isForbidden } = useIsForbidden();
   const { data: isNotCreatable } = useIsNotCreatable();
   const { data: isIdenticalPath } = useIsIdenticalPath();
@@ -308,26 +227,6 @@ export const useAcceptedUploadFileType = (): SWRResponse<AcceptedUploadFileType,
         return AcceptedUploadFileType.ALL;
       }
       return AcceptedUploadFileType.IMAGE;
-    },
-  );
-};
-
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const useGrowiDocumentationUrl = () => {
-  const { data: growiCloudUri } = useGrowiCloudUri();
-
-  return useSWR(
-    ['documentationUrl', growiCloudUri],
-    ([, growiCloudUri]) => {
-      const url = growiCloudUri != null
-        ? new URL('/help', growiCloudUri)
-        : new URL('https://docs.growi.org');
-      return url.toString();
-    },
-    {
-      fallbackData: 'https://docs.growi.org',
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
     },
   );
 };
