@@ -185,6 +185,12 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
             {t('modal_ai_assistant.can_add_later')}
           </label>
         </div>
+
+        <div className="d-flex justify-content-center mt-4">
+          <button type="button" className="btn btn-primary rounded next-button">
+            {t('modal_ai_assistant.next')}
+          </button>
+        </div>
       </ModalBody>
     </div>
   );
