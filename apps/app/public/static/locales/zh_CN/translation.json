@@ -469,9 +469,27 @@
       "Search in Editor": "编辑器内搜索",
       "Move Line": "移动行",
       "Copy Line": "复制行",
-      "Toggle Line": "注释/取消注释行",
       "Insert Line": "插入行",
-      "Post Comment": "(发表评论)"
+      "Post Comment": "(发表评论)",
+      "Multiple Cursors": "多光标",
+      "Or Alt Click": "或 Alt + 点击"
+    },
+    "format": {
+      "title": "格式设置（编辑器）",
+      "Bold": "粗体",
+      "Italic": "斜体",
+      "Strikethrough": "删除线",
+      "Code Text": "代码文本",
+      "Hyperlink": "超链接"
+    },
+    "line_settings": {
+      "title": "行设置（编辑器）",
+      "Bullet List": "项目符号列表",
+      "Numbered List": "编号列表",
+      "Quote": "引用",
+      "Code Block": "代码块",
+      "Comment Out": "隐藏",
+      "Comment Out Desc": "（注释）"
     }
   },
   "modal_resolve_conflict": {
@@ -959,23 +977,6 @@
     "cancel_bookmark": "取消收藏此页面",
     "move_to_root": "移动到根部",
     "root": "root (default)"
-  },
-  "questionnaire": {
-    "give_us_feedback": "向我们提供反馈以进行改进",
-    "thank_you_for_answering": "谢谢你的回答",
-    "additional_feedback": "从用户图标下拉菜单向我们发送更多反馈。",
-    "dont_show_again": "不再显示",
-    "deny": "不要回答",
-    "agree": "同意",
-    "disagree": "不同意",
-    "answer": "答案是",
-    "no_answer": "没有答案",
-    "settings": "问卷设置",
-    "failed_to_send": "无法发送反馈",
-    "denied": "问卷不会再显示",
-    "personal_settings_explanation": "将展示改进 GROWI 的问卷。 如果您有其他反馈，可以从用户图标下拉菜单中发送。",
-    "enable_questionnaire": "启用问卷",
-    "disabled_by_admin": "问卷已被管理员禁用"
   },
   "v5_page_migration": {
     "page_tree_not_avaliable": "Page Tree 功能不可用",

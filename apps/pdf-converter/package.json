@@ -1,6 +1,6 @@
 {
   "name": "@growi/pdf-converter",
-  "version": "1.1.1-RC.0",
+  "version": "1.1.2-RC.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
@@ -29,7 +29,7 @@
     "@tsed/engines": "=8.5.0",
     "@tsed/exceptions": "=8.5.0",
     "@tsed/json-mapper": "=8.5.0",
-    "@tsed/logger": ">=7.0.1",
+    "@tsed/logger": ">=7.0.2",
     "@tsed/platform-express": "=8.5.0",
     "@tsed/platform-http": "=8.5.0",
     "@tsed/platform-views": "=8.5.0",

@@ -1,5 +1,5 @@
 import type {
-  IPageInfoForListing, IPageInfo, IPage,
+  IPageInfoForListing, IPageInfo, IPage, IUserHasId,
 } from '@growi/core';
 import { getIdForRef, isIPageInfoForEntity } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
@@ -27,7 +27,7 @@ const logger = loggerFactory('growi:routes:apiv3:page-tree');
  * Types & Interfaces
  */
 interface AuthorizedRequest extends Request {
-  user?: any
+  user?: IUserHasId,
 }
 
 /*
@@ -267,7 +267,7 @@ const routerFactory = (crowi: Crowi): Router => {
    *                 $ref: '#/components/schemas/PageInfoAll'
    */
   // eslint-disable-next-line max-len
-  router.get('/info', accessTokenParser, loginRequired, validator.pageIdsOrPathRequired, validator.infoParams, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/info', accessTokenParser, validator.pageIdsOrPathRequired, validator.infoParams, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const {
       pageIds, path, attachBookmarkCount: attachBookmarkCountParam, attachShortBody: attachShortBodyParam,
     } = req.query;
