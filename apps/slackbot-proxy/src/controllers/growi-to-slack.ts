@@ -30,10 +30,10 @@ import {
 import { InstallationRepository } from '~/repositories/installation';
 import { OrderRepository } from '~/repositories/order';
 import { RelationRepository } from '~/repositories/relation';
-import { InstallerService } from '~/services/InstallerService';
 import { ActionsBlockPayloadDelegator } from '~/services/growi-uri-injector/ActionsBlockPayloadDelegator';
 import { SectionBlockPayloadDelegator } from '~/services/growi-uri-injector/SectionBlockPayloadDelegator';
 import { ViewInteractionPayloadDelegator } from '~/services/growi-uri-injector/ViewInteractionPayloadDelegator';
+import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('slackbot-proxy:controllers:growi-to-slack');
