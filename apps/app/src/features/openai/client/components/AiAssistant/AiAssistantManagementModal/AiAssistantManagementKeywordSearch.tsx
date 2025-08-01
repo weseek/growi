@@ -51,6 +51,7 @@ export const AiAssistantKeywordSearch = (props: { updateBaseSelectedPages: (page
     includeTrashPages: false,
   });
 
+  // Search results will include subordinate pages by default
   const pagesWithGlobPath = useMemo((): IPageHasId[] | undefined => {
     if (searchResult == null) {
       return;
