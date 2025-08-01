@@ -8,12 +8,12 @@ type Props = {
   pages: IPageHasId[],
   method: 'add' | 'remove',
   disablePageIds?: string[],
-  onClick: (page: IPageHasId) => void,
+  onClickMethodButton: (page: IPageHasId) => void,
 }
 
 export const SelectablePagePageList = (props: Props): JSX.Element => {
   const {
-    pages, method, disablePageIds, onClick,
+    pages, method, disablePageIds, onClickMethodButton,
   } = props;
 
   return (
@@ -34,7 +34,7 @@ export const SelectablePagePageList = (props: Props): JSX.Element => {
               disabled={disablePageIds?.includes(page._id)}
               onClick={(e) => {
                 e.stopPropagation();
-                onClick(page);
+                onClickMethodButton(page);
               }}
             >
               <span className="material-symbols-outlined">

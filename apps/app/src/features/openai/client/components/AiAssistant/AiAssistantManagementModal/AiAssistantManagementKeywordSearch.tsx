@@ -181,7 +181,7 @@ export const AiAssistantKeywordSearch = (props: { updateBaseSelectedPages: (page
               <SelectablePagePageList
                 pages={pagesWithGlobPath ?? []}
                 method="add"
-                onClick={addPageHandler}
+                onClickMethodButton={addPageHandler}
                 disablePageIds={selectedPages.map(page => page._id)}
               />
             </div>
@@ -198,7 +198,7 @@ export const AiAssistantKeywordSearch = (props: { updateBaseSelectedPages: (page
               <SelectablePagePageList
                 pages={selectedPages}
                 method="remove"
-                onClick={removePageHandler}
+                onClickMethodButton={removePageHandler}
               />
             )
             : (
