@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect } from 'react';
+import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import type { CommonProps } from '../../pages/utils/commons';
 import {
@@ -15,19 +15,19 @@ import {
 export const useAutoUpdateGlobalAtoms = (commonProps: CommonProps): void => {
   // Update pathname and user atoms
   const [, setCurrentPathname] = useCurrentPathname();
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     setCurrentPathname(commonProps.currentPathname);
   }, [setCurrentPathname, commonProps.currentPathname]);
 
   // Update user atom
   const [, setCurrentUser] = useCurrentUser();
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     setCurrentUser(commonProps.currentUser);
   }, [setCurrentUser, commonProps.currentUser]);
 
   // Update CSRF token atom
   const [, setCsrfToken] = useCsrfToken();
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     setCsrfToken(commonProps.csrfToken);
   }, [setCsrfToken, commonProps.csrfToken]);
 
