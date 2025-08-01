@@ -12,7 +12,6 @@ import {
 
 import { useSWRxSearch } from '~/stores/search';
 
-import type { SelectedPage } from '../../../../interfaces/selected-page';
 import {
   useAiAssistantManagementModal, AiAssistantManagementModalPageMode,
 } from '../../../stores/ai-assistant';
@@ -218,6 +217,7 @@ export const AiAssistantKeywordSearch = (props: { updateBaseSelectedPages: (page
 
         <div className="d-flex justify-content-center mt-4">
           <button
+            disabled={selectedPages.length === 0}
             type="button"
             className="btn btn-primary rounded next-button"
             onClick={nextButtonClickHandler}
