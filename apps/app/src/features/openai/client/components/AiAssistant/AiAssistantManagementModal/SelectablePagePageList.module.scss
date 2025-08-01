@@ -7,8 +7,11 @@
   .selectable-page-page-list :global {
     .page-list-item {
       background-color: #{bs.$gray-100};
-        &:not(.card):hover {
-          background-color: var(--grw-primary-100);
+    }
+
+    .list-group-item {
+      &:hover {
+        background-color: var(--grw-primary-100);
       }
     }
   }
@@ -18,8 +21,11 @@
   .selectable-page-page-list :global {
     .page-list-item {
       background-color: #{bs.$gray-900};
-      &:not(.card):hover {
-        background-color: var(--grw-primary-800);
+    }
+
+    .list-group-item {
+      &:hover {
+        background-color: var(--grw-primary-800)
       }
     }
   }

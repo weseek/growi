@@ -22,10 +22,8 @@ export const SelectablePagePageList = (props: Props): JSX.Element => {
   if (pages.length === 0) {
     return (
       <div className={moduleClass}>
-        <div className="card border-0 text-center page-list-item">
-          <div className="card-body">
-            <p className="text-muted mb-0">{t('modal_ai_assistant.no_pages_selected')}</p>
-          </div>
+        <div className="border-0 text-center page-list-item rounded py-3">
+          <p className="text-muted mb-0">{t('modal_ai_assistant.no_pages_selected')}</p>
         </div>
       </div>
     );
