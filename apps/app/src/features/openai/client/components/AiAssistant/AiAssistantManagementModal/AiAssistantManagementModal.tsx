@@ -131,6 +131,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
 
       return {
         page,
+        // Determine whether to include subordinate pages from path
         isIncludeSubPage: isGlobPatternPath(pagePath),
       };
     });
