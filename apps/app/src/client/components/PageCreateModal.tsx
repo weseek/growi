@@ -18,7 +18,8 @@ import { debounce } from 'throttle-debounce';
 import { useCreateTemplatePage } from '~/client/services/create-page';
 import { useCreatePage } from '~/client/services/create-page/use-create-page';
 import { useToastrOnError } from '~/client/services/use-toastr-on-error';
-import { useCurrentUser, useIsSearchServiceReachable } from '~/stores-universal/context';
+import { useCurrentUser } from '~/states/global';
+import { useIsSearchServiceReachable } from '~/stores-universal/context';
 import { usePageCreateModal } from '~/stores/modal';
 
 
@@ -33,7 +34,7 @@ const {
 const PageCreateModal: React.FC = () => {
   const { t } = useTranslation();
 
-  const { data: currentUser } = useCurrentUser();
+  const [currentUser] = useCurrentUser();
 
   const { data: pageCreateModalData, close: closeCreateModal } = usePageCreateModal();
 

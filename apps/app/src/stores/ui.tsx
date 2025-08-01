@@ -17,12 +17,13 @@ import useSWRImmutable from 'swr/immutable';
 
 import type { IPageSelectedGrant } from '~/interfaces/page';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
+import { useIsReadOnlyUser } from '~/states/context';
+import { useCurrentUser } from '~/states/global';
 import {
   usePageNotFound, useCurrentPagePath, useIsTrashPage, useCurrentPageId,
 } from '~/states/page';
 import {
-  useIsEditable, useIsReadOnlyUser,
-  useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId,
+  useIsEditable, useIsSharedUser, useIsIdenticalPath, useShareLinkId,
 } from '~/stores-universal/context';
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import loggerFactory from '~/utils/logger';
@@ -232,13 +233,13 @@ export const useCommentEditorDirtyMap = (): SWRResponse<Map<string, boolean>, Er
 export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowTrashPageManagementButtons';
 
-  const { data: _currentUser } = useCurrentUser();
+  const [_currentUser] = useCurrentUser();
   const isCurrentUserExist = _currentUser != null;
 
   const [_currentPageId] = useCurrentPageId();
   const [_isNotFound] = usePageNotFound();
   const [_isTrashPage] = useIsTrashPage();
-  const { data: _isReadOnlyUser } = useIsReadOnlyUser();
+  const [_isReadOnlyUser] = useIsReadOnlyUser();
   const isPageExist = _currentPageId != null && _isNotFound === false;
   const isTrashPage = isPageExist && _isTrashPage === true;
   const isReadOnlyUser = isPageExist && _isReadOnlyUser === true;

@@ -30,8 +30,8 @@ import {
   usePageNotFound,
 } from '~/states/page';
 import {
-  useDefaultIndentSize, useCurrentUser,
-  useCurrentPathname, useIsEnabledAttachTitleHeader,
+  useDefaultIndentSize,
+  useIsEnabledAttachTitleHeader,
   useIsEditable, useIsIndentSizeForced,
   useAcceptedUploadFileType, useIsEnableUnifiedMergeView,
 } from '~/stores-universal/context';
@@ -61,6 +61,7 @@ import { useConflictResolver, useConflictEffect, type ConflictHandler } from './
 
 import '@growi/editor/dist/style.css';
 import { useTemplateBody } from '~/states/page/hooks';
+import { useCurrentPathname, useCurrentUser } from '~/states/global';
 
 
 const logger = loggerFactory('growi:PageEditor');
@@ -98,7 +99,7 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
   const [isNotFound] = usePageNotFound();
   const [pageId] = useCurrentPageId();
   const [currentPagePath] = useCurrentPagePath();
-  const { data: currentPathname } = useCurrentPathname();
+  const [currentPathname] = useCurrentPathname();
   const [currentPage] = useCurrentPageData();
   const { data: selectedGrant } = useSelectedGrant();
   const { data: editingMarkdown } = useEditingMarkdown();
@@ -114,7 +115,7 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsGrantNormalized } = useSWRxCurrentGrantData(currentPage?._id);
-  const { data: user } = useCurrentUser();
+  const [user] = useCurrentUser();
   const { mutate: mutateEditingUsers } = useEditingClients();
   const onConflict = useConflictResolver();
   const { data: reservedNextCaretLine, mutate: mutateReservedNextCaretLine } = useReservedNextCaretLine();

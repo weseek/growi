@@ -20,7 +20,7 @@ import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError } from '~/client/util/toastr';
 import { useCurrentPagePath } from '~/states/page';
 import {
-  useCurrentUser, useIsSlackConfigured, useAcceptedUploadFileType,
+  useIsSlackConfigured, useAcceptedUploadFileType,
 } from '~/stores-universal/context';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
 import { useSWRxPageComment } from '~/stores/comment';
@@ -39,6 +39,8 @@ import { SwitchingButtonGroup } from './SwitchingButtonGroup';
 
 import '@growi/editor/dist/style.css';
 import styles from './CommentEditor.module.scss';
+
+import { useCurrentUser } from '~/states/global';
 
 
 const logger = loggerFactory('growi:components:CommentEditor');
@@ -77,7 +79,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     currentCommentId, commentBody, onCanceled, onCommented,
   } = props;
 
-  const { data: currentUser } = useCurrentUser();
+  const [currentUser] = useCurrentUser();
   const [currentPagePath] = useCurrentPagePath();
   const { update: updateComment, post: postComment } = useSWRxPageComment(pageId);
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
@@ -321,7 +323,7 @@ export const CommentEditorPre = (props: CommentEditorProps): JSX.Element => {
 
   const { onCommented, onCanceled, ...rest } = props;
 
-  const { data: currentUser } = useCurrentUser();
+  const [currentUser] = useCurrentUser();
   const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
   const { resolvedTheme } = useNextThemes();
   mutateResolvedTheme({ themeData: resolvedTheme });

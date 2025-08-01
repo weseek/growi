@@ -8,8 +8,8 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { debounce } from 'throttle-debounce';
 
+import { useCurrentUser } from '~/states/global';
 import { useIsTrashPage } from '~/states/page';
-import { useCurrentUser } from '~/stores-universal/context';
 import { useSWRxPageComment } from '~/stores/comment';
 import { useSWRMUTxPageInfo } from '~/stores/page';
 
@@ -38,7 +38,7 @@ export const Comments = (props: CommentsProps): JSX.Element => {
   const { mutate } = useSWRxPageComment(pageId);
   const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(pageId);
   const [isDeleted] = useIsTrashPage();
-  const { data: currentUser } = useCurrentUser();
+  const [currentUser] = useCurrentUser();
 
   const pageCommentParentRef = useRef<HTMLDivElement>(null);
 

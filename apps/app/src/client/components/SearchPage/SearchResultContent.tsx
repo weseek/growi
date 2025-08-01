@@ -17,7 +17,7 @@ import { PagePathNav } from '~/components/Common/PagePathNav';
 import type { IPageWithSearchMeta } from '~/interfaces/search';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
-import { useCurrentUser } from '~/stores-universal/context';
+import { useCurrentUser } from '~/states/global';
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
@@ -125,7 +125,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
   const { data: rendererOptions } = useSearchResultOptions(pageWithMeta.data.path, highlightKeywords);
-  const { data: currentUser } = useCurrentUser();
+  const [currentUser] = useCurrentUser();
 
   const shouldExpandContent = useShouldExpandContent(page);
 

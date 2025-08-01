@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Collapse } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { useCurrentUser } from '~/stores-universal/context';
+import { useCurrentUser } from '~/states/global';
 import loggerFactory from '~/utils/logger';
 
 import { AiAssistantShareScope, type AiAssistantHasId } from '../../../../interfaces/ai-assistant';
@@ -155,7 +155,7 @@ export const AiAssistantList: React.FC<AiAssistantListProps> = ({
 }) => {
   const { t } = useTranslation();
   const { openChat } = useAiAssistantSidebar();
-  const { data: currentUser } = useCurrentUser();
+  const [currentUser] = useCurrentUser();
   const { open: openAiAssistantManagementModal } = useAiAssistantManagementModal();
 
   const [isCollapsed, setIsCollapsed] = useState(false);

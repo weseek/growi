@@ -14,8 +14,8 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
+import { useCurrentUser } from '~/states/global';
 import { useCurrentPageData, useRemoteRevisionBody, useRemoteRevisionId } from '~/states/page';
-import { useCurrentUser } from '~/stores-universal/context';
 import { useConflictDiffModal } from '~/stores/modal';
 import {
   useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdateUser,
@@ -186,7 +186,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
 
 
 export const ConflictDiffModal = (): JSX.Element => {
-  const { data: currentUser } = useCurrentUser();
+  const [currentUser] = useCurrentUser();
   const [currentPage] = useCurrentPageData();
   const { data: conflictDiffModalStatus } = useConflictDiffModal();
 
