@@ -143,7 +143,6 @@
   "edited this page": "à modifié cette page.",
   "List Drafts": "Brouillons",
   "Deleted Pages": "Pages supprimées",
-  "Questionnaire": "Questionnaire",
   "Disassociate": "Dissocier",
   "No bookmarks yet": "Aucuns favoris",
   "add_bookmark": "Ajouter aux favoris",
@@ -460,7 +459,7 @@
       "Create Page": "Créer page",
       "Search": "Rechercher",
       "Show Contributors": "Voir contributeurs",
-      "MirrorMode": "Mode mirroir",
+      "MirrorMode": "Mode miroir",
       "Konami Code": "Code Konami",
       "konami_code_url": "https://fr.wikipedia.org/wiki/Code_Konami"
     },
@@ -474,9 +473,27 @@
       "Search in Editor": "Rechercher dans l'éditeur",
       "Move Line": "Déplacer la ligne",
       "Copy Line": "Copier la ligne",
-      "Toggle Line": "Commenter/Décommenter la ligne",
       "Insert Line": "Insérer une ligne",
-      "Post Comment": "(Publier le commentaire)"
+      "Post Comment": "(Publier le commentaire)",
+      "Multiple Cursors": "Curseurs multiples",
+      "Or Alt Click": "ou Alt + Clic"
+    },
+    "format": {
+      "title": "Paramètres de format (Éditeur)",
+      "Bold": "Gras",
+      "Italic": "Italique",
+      "Strikethrough": "Barré",
+      "Code Text": "Texte de code",
+      "Hyperlink": "Lien hypertexte"
+    },
+    "line_settings": {
+      "title": "Paramètres de ligne (Éditeur)",
+      "Bullet List": "Liste à puces",
+      "Numbered List": "Liste numérotée",
+      "Quote": "Citation",
+      "Code Block": "Bloc de code",
+      "Comment Out": "Masquer",
+      "Comment Out Desc": "(Commenter)"
     }
   },
   "modal_resolve_conflict": {
@@ -599,7 +616,7 @@
   "default_ai_assistant": {
     "not_set": "L'assistant par défaut n'est pas configuré"
   },
- "ai_assistant_substance": {
+  "ai_assistant_substance": {
     "add_assistant": "Ajouter un assistant",
     "my_assistants": "Mes assistants",
     "team_assistants": "Assistants d'équipe",
@@ -954,23 +971,6 @@
   "v5_page_migration": {
     "page_tree_not_avaliable": "Cette fonctionnalité n'est pas encore disponible.",
     "go_to_settings": "Activer cette fonctionnalité dans les paramètres"
-  },
-  "questionnaire": {
-    "give_us_feedback": "Faites-nous part de votre avis",
-    "thank_you_for_answering": "Merci pour votre réponse",
-    "additional_feedback": "Envoyez-nous votre avis depuis le menu déroulant sur le menu utilisateur.",
-    "dont_show_again": "Ne plus afficher",
-    "deny": "Ne pas répondre",
-    "agree": "En accord",
-    "disagree": "En désaccord",
-    "answer": "Répondre",
-    "no_answer": "Aucune réponse",
-    "settings": "Sondages anonymes",
-    "failed_to_send": "Échec de l'envoi du sondage",
-    "denied": "Les sondages ne seront plus affichés.",
-    "personal_settings_explanation": "Sondages de satisfaction anonymes.",
-    "enable_questionnaire": "Sondages anonymes",
-    "disabled_by_admin": "Sondages anonymes désactivés par l'administrateur"
   },
   "tag_edit_modal": {
     "edit_tags": "Étiquettes",

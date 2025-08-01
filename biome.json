@@ -1,36 +1,41 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "ignore": [
-      "dist/**",
-      "node_modules/**",
-      "coverage/**",
-      "vite.config.ts.timestamp-*",
-      "vite.server.config.ts.timestamp-*",
-      "vite.client.config.ts.timestamp-*",
-      ".pnpm-store/**",
-      ".turbo/**",
-      ".vscode/**",
-      "turbo.json",
-      "./bin/**",
-      "./tsconfig.base.json",
-      ".devcontainer/**",
-      ".eslintrc.js",
-      ".stylelintrc.json",
-      "package.json",
-      "./apps/app/**",
-      "./apps/slackbot-proxy/src/public/bootstrap/**",
-      "./apps/slackbot-proxy/src/services/**",
-      "./packages/editor/**",
-      "./packages/pdf-converter-client/src/index.ts"
+    "includes": [
+      "**",
+      "!**/dist/**",
+      "!**/node_modules/**",
+      "!**/coverage/**",
+      "!**/vite.config.ts.timestamp-*",
+      "!**/vite.server.config.ts.timestamp-*",
+      "!**/vite.client.config.ts.timestamp-*",
+      "!**/.pnpm-store/**",
+      "!**/.turbo/**",
+      "!**/.vscode/**",
+      "!**/turbo.json",
+      "!bin/**",
+      "!tsconfig.base.json",
+      "!**/.devcontainer/**",
+      "!**/.eslintrc.js",
+      "!**/.stylelintrc.json",
+      "!**/package.json",
+      "!apps/app/**",
+      "!apps/slackbot-proxy/src/public/bootstrap/**",
+      "!apps/slackbot-proxy/src/services/**",
+      "!packages/editor/**",
+      "!packages/pdf-converter-client/src/index.ts"
     ]
   },
   "formatter": {
     "enabled": true,
     "indentStyle": "space"
   },
-  "organizeImports": {
-    "enabled": true
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
   },
   "linter": {
     "enabled": true,
@@ -48,7 +53,7 @@
   },
   "overrides": [
     {
-      "include": ["./apps/pdf-converter/**", "./apps/slackbot-proxy/**"],
+      "includes": ["apps/pdf-converter/**", "./apps/slackbot-proxy/**"],
       "linter": {
         "rules": {
           "style": {

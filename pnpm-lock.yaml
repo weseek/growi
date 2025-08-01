@@ -14,8 +14,8 @@ importers:
   .:
     devDependencies:
       '@biomejs/biome':
-        specifier: 1.9.4
-        version: 1.9.4
+        specifier: 2.0.6
+        version: 2.0.6
       '@changesets/changelog-github':
         specifier: ^0.5.0
         version: 0.5.0(encoding@0.1.13)
@@ -60,7 +60,7 @@ importers:
         version: 5.59.7(eslint@8.41.0)(typescript@5.0.4)
       '@vitejs/plugin-react':
         specifier: ^4.3.1
-        version: 4.3.1(vite@5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.42.0))
+        version: 4.3.1(vite@5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.43.1))
       '@vitest/coverage-v8':
         specifier: ^2.1.1
         version: 2.1.1(vitest@2.1.1)
@@ -177,16 +177,16 @@ importers:
         version: 3.4.7(typescript@5.0.4)
       vite:
         specifier: ^5.4.19
-        version: 5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.42.0)
+        version: 5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.43.1)
       vite-plugin-dts:
         specifier: ^3.9.1
-        version: 3.9.1(@types/node@20.14.0)(rollup@4.41.0)(typescript@5.0.4)(vite@5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.42.0))
+        version: 3.9.1(@types/node@20.14.0)(rollup@4.41.0)(typescript@5.0.4)(vite@5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.43.1))
       vite-tsconfig-paths:
         specifier: ^5.0.1
-        version: 5.0.1(typescript@5.0.4)(vite@5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.42.0))
+        version: 5.0.1(typescript@5.0.4)(vite@5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.43.1))
       vitest:
         specifier: ^2.1.1
-        version: 2.1.1(@types/node@20.14.0)(@vitest/ui@2.1.1)(happy-dom@15.7.4)(sass@1.77.6)(terser@5.42.0)
+        version: 2.1.1(@types/node@20.14.0)(@vitest/ui@2.1.1)(happy-dom@15.7.4)(sass@1.77.6)(terser@5.43.1)
       vitest-mock-extended:
         specifier: ^2.0.2
         version: 2.0.2(typescript@5.0.4)(vitest@2.1.1)
@@ -416,8 +416,8 @@ importers:
         specifier: ^0.0.7
         version: 0.0.7
       form-data:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.0.4
+        version: 4.0.4
       graceful-fs:
         specifier: ^4.1.11
         version: 4.2.11
@@ -482,8 +482,8 @@ importers:
         specifier: ^0.1.2
         version: 0.1.2
       mermaid:
-        specifier: ^11.7.0
-        version: 11.7.0
+        specifier: ^11.9.0
+        version: 11.9.0
       method-override:
         specifier: ^3.0.0
         version: 3.0.0
@@ -1009,13 +1009,13 @@ importers:
         version: 4.12.1
       '@tsed/cli-core':
         specifier: '=6.1.4'
-        version: 6.1.4(@babel/core@7.24.6)(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/hooks@8.5.0)(ejs@3.1.10)(hogan.js@3.0.2)(lodash@4.17.21)(mustache@4.2.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: 6.1.4(@babel/core@7.24.6)(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/hooks@8.5.0)(ejs@3.1.10)(hogan.js@3.0.2)(lodash@4.17.21)(mustache@4.2.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@tsed/cli-generate-swagger':
         specifier: '=6.1.4'
-        version: 6.1.4(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0))(@tsed/swagger@8.5.0(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0)))
+        version: 6.1.4(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0))(@tsed/swagger@8.5.0(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0)))
       '@tsed/common':
         specifier: '=8.5.0'
-        version: 8.5.0(@tsed/engines@8.5.0)(@tsed/logger-file@7.0.1(@tsed/logger@7.0.1))(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0)
+        version: 8.5.0(@tsed/engines@8.5.0)(@tsed/logger-file@7.0.1(@tsed/logger@7.0.2))(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0)
       '@tsed/components-scan':
         specifier: '=8.5.0'
         version: 8.5.0(@tsed/core@8.5.0)
@@ -1024,7 +1024,7 @@ importers:
         version: 8.5.0
       '@tsed/di':
         specifier: '=8.5.0'
-        version: 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
+        version: 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
       '@tsed/engines':
         specifier: '=8.5.0'
         version: 8.5.0
@@ -1035,26 +1035,26 @@ importers:
         specifier: '=8.5.0'
         version: 8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
       '@tsed/logger':
-        specifier: '>=7.0.1'
-        version: 7.0.1
+        specifier: '>=7.0.2'
+        version: 7.0.2
       '@tsed/platform-express':
         specifier: '=8.5.0'
-        version: 8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/json-mapper@8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0)(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0))(@tsed/platform-views@8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/engines@8.5.0)(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))(@types/multer@1.4.12)(body-parser@1.20.3)(cross-env@7.0.0)(multer@1.4.4)
+        version: 8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/json-mapper@8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0)(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0))(@tsed/platform-views@8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/engines@8.5.0)(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))(@types/multer@1.4.12)(body-parser@1.20.3)(cross-env@7.0.0)(multer@1.4.4)
       '@tsed/platform-http':
         specifier: '=8.5.0'
-        version: 8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0)
+        version: 8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0)
       '@tsed/platform-views':
         specifier: '=8.5.0'
-        version: 8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/engines@8.5.0)(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
+        version: 8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/engines@8.5.0)(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
       '@tsed/schema':
         specifier: '=8.5.0'
         version: 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)
       '@tsed/swagger':
         specifier: '=8.5.0'
-        version: 8.5.0(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0))
+        version: 8.5.0(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0))
       '@tsed/terminus':
         specifier: '=8.5.0'
-        version: 8.5.0(@godaddy/terminus@4.12.1)(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
+        version: 8.5.0(@godaddy/terminus@4.12.1)(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
       axios:
         specifier: ^0.24.0
         version: 0.24.0
@@ -1278,7 +1278,7 @@ importers:
         version: 6.3.2
       '@codemirror/language':
         specifier: ^6.10.8
-        version: 6.11.1
+        version: 6.11.2
       '@codemirror/language-data':
         specifier: ^6.5.1
         version: 6.5.1
@@ -1290,7 +1290,7 @@ importers:
         version: 6.5.2
       '@codemirror/view':
         specifier: ^6.36.2
-        version: 6.37.2
+        version: 6.38.1
       '@emoji-mart/data':
         specifier: ^1.2.1
         version: 1.2.1
@@ -1311,13 +1311,13 @@ importers:
         version: 2.11.8
       '@replit/codemirror-emacs':
         specifier: ^6.1.0
-        version: 6.1.0(@codemirror/autocomplete@6.18.4)(@codemirror/commands@6.8.0)(@codemirror/search@6.5.6)(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)
+        version: 6.1.0(@codemirror/autocomplete@6.18.4)(@codemirror/commands@6.8.0)(@codemirror/search@6.5.6)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)
       '@replit/codemirror-vim':
         specifier: ^6.2.1
-        version: 6.2.1(@codemirror/commands@6.8.0)(@codemirror/language@6.11.1)(@codemirror/search@6.5.6)(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)
+        version: 6.2.1(@codemirror/commands@6.8.0)(@codemirror/language@6.11.2)(@codemirror/search@6.5.6)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)
       '@replit/codemirror-vscode-keymap':
         specifier: ^6.0.2
-        version: 6.0.2(@codemirror/autocomplete@6.18.4)(@codemirror/commands@6.8.0)(@codemirror/language@6.11.1)(@codemirror/lint@6.8.1)(@codemirror/search@6.5.6)(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)
+        version: 6.0.2(@codemirror/autocomplete@6.18.4)(@codemirror/commands@6.8.0)(@codemirror/language@6.11.2)(@codemirror/lint@6.8.1)(@codemirror/search@6.5.6)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)
       '@types/react':
         specifier: ^18.2.14
         version: 18.3.3
@@ -1326,28 +1326,28 @@ importers:
         version: 18.3.0
       '@uiw/codemirror-theme-eclipse':
         specifier: ^4.23.8
-        version: 4.23.8(@codemirror/language@6.11.1)(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)
+        version: 4.23.8(@codemirror/language@6.11.2)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)
       '@uiw/codemirror-theme-kimbie':
         specifier: ^4.23.8
-        version: 4.23.8(@codemirror/language@6.11.1)(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)
+        version: 4.23.8(@codemirror/language@6.11.2)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)
       '@uiw/codemirror-themes':
         specifier: ^4.23.8
-        version: 4.23.8(@codemirror/language@6.11.1)(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)
+        version: 4.23.8(@codemirror/language@6.11.2)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)
       '@uiw/react-codemirror':
         specifier: ^4.23.8
-        version: 4.23.8(@babel/runtime@7.25.4)(@codemirror/autocomplete@6.18.4)(@codemirror/language@6.11.1)(@codemirror/lint@6.8.1)(@codemirror/search@6.5.6)(@codemirror/state@6.5.2)(@codemirror/theme-one-dark@6.1.2)(@codemirror/view@6.37.2)(codemirror@6.0.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: 4.23.8(@babel/runtime@7.25.4)(@codemirror/autocomplete@6.18.4)(@codemirror/language@6.11.2)(@codemirror/lint@6.8.1)(@codemirror/search@6.5.6)(@codemirror/state@6.5.2)(@codemirror/theme-one-dark@6.1.2)(@codemirror/view@6.38.1)(codemirror@6.0.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       bootstrap:
         specifier: '=5.3.2'
         version: 5.3.2(@popperjs/core@2.11.8)
       cm6-theme-basic-light:
         specifier: ^0.2.0
-        version: 0.2.0(@codemirror/language@6.11.1)(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)(@lezer/highlight@1.2.1)
+        version: 0.2.0(@codemirror/language@6.11.2)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)(@lezer/highlight@1.2.1)
       cm6-theme-material-dark:
         specifier: ^0.2.0
-        version: 0.2.0(@codemirror/language@6.11.1)(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)(@lezer/highlight@1.2.1)
+        version: 0.2.0(@codemirror/language@6.11.2)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)(@lezer/highlight@1.2.1)
       cm6-theme-nord:
         specifier: ^0.2.0
-        version: 0.2.0(@codemirror/language@6.11.1)(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)(@lezer/highlight@1.2.1)
+        version: 0.2.0(@codemirror/language@6.11.2)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)(@lezer/highlight@1.2.1)
       codemirror:
         specifier: ^6.0.1
         version: 6.0.1
@@ -1395,7 +1395,7 @@ importers:
         version: 6.2.0
       y-codemirror.next:
         specifier: ^0.3.5
-        version: 0.3.5(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)(yjs@13.6.19)
+        version: 0.3.5(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)(yjs@13.6.19)
       y-socket.io:
         specifier: ^1.1.3
         version: 1.1.3(yjs@13.6.19)
@@ -2458,55 +2458,55 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
 
-  '@biomejs/biome@1.9.4':
-    resolution: {integrity: sha512-1rkd7G70+o9KkTn5KLmDYXihGoTaIGO9PIIN2ZB7UJxFrWw04CZHPYiMRjYsaDvVV7hP1dYNRLxSANLaBFGpog==}
+  '@biomejs/biome@2.0.6':
+    resolution: {integrity: sha512-RRP+9cdh5qwe2t0gORwXaa27oTOiQRQvrFf49x2PA1tnpsyU7FIHX4ZOFMtBC4QNtyWsN7Dqkf5EDbg4X+9iqA==}
     engines: {node: '>=14.21.3'}
     hasBin: true
 
-  '@biomejs/cli-darwin-arm64@1.9.4':
-    resolution: {integrity: sha512-bFBsPWrNvkdKrNCYeAp+xo2HecOGPAy9WyNyB/jKnnedgzl4W4Hb9ZMzYNbf8dMCGmUdSavlYHiR01QaYR58cw==}
+  '@biomejs/cli-darwin-arm64@2.0.6':
+    resolution: {integrity: sha512-AzdiNNjNzsE6LfqWyBvcL29uWoIuZUkndu+wwlXW13EKcBHbbKjNQEZIJKYDc6IL+p7bmWGx3v9ZtcRyIoIz5A==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [darwin]
 
-  '@biomejs/cli-darwin-x64@1.9.4':
-    resolution: {integrity: sha512-ngYBh/+bEedqkSevPVhLP4QfVPCpb+4BBe2p7Xs32dBgs7rh9nY2AIYUL6BgLw1JVXV8GlpKmb/hNiuIxfPfZg==}
+  '@biomejs/cli-darwin-x64@2.0.6':
+    resolution: {integrity: sha512-wJjjP4E7bO4WJmiQaLnsdXMa516dbtC6542qeRkyJg0MqMXP0fvs4gdsHhZ7p9XWTAmGIjZHFKXdsjBvKGIJJQ==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [darwin]
 
-  '@biomejs/cli-linux-arm64-musl@1.9.4':
-    resolution: {integrity: sha512-v665Ct9WCRjGa8+kTr0CzApU0+XXtRgwmzIf1SeKSGAv+2scAlW6JR5PMFo6FzqqZ64Po79cKODKf3/AAmECqA==}
+  '@biomejs/cli-linux-arm64-musl@2.0.6':
+    resolution: {integrity: sha512-CVPEMlin3bW49sBqLBg2x016Pws7eUXA27XYDFlEtponD0luYjg2zQaMJ2nOqlkKG9fqzzkamdYxHdMDc2gZFw==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
 
-  '@biomejs/cli-linux-arm64@1.9.4':
-    resolution: {integrity: sha512-fJIW0+LYujdjUgJJuwesP4EjIBl/N/TcOX3IvIHJQNsAqvV2CHIogsmA94BPG6jZATS4Hi+xv4SkBBQSt1N4/g==}
+  '@biomejs/cli-linux-arm64@2.0.6':
+    resolution: {integrity: sha512-ZSVf6TYo5rNMUHIW1tww+rs/krol7U5A1Is/yzWyHVZguuB0lBnIodqyFuwCNqG9aJGyk7xIMS8HG0qGUPz0SA==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
 
-  '@biomejs/cli-linux-x64-musl@1.9.4':
-    resolution: {integrity: sha512-gEhi/jSBhZ2m6wjV530Yy8+fNqG8PAinM3oV7CyO+6c3CEh16Eizm21uHVsyVBEB6RIM8JHIl6AGYCv6Q6Q9Tg==}
+  '@biomejs/cli-linux-x64-musl@2.0.6':
+    resolution: {integrity: sha512-mKHE/e954hR/hSnAcJSjkf4xGqZc/53Kh39HVW1EgO5iFi0JutTN07TSjEMg616julRtfSNJi0KNyxvc30Y4rQ==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
 
-  '@biomejs/cli-linux-x64@1.9.4':
-    resolution: {integrity: sha512-lRCJv/Vi3Vlwmbd6K+oQ0KhLHMAysN8lXoCI7XeHlxaajk06u7G+UsFSO01NAs5iYuWKmVZjmiOzJ0OJmGsMwg==}
+  '@biomejs/cli-linux-x64@2.0.6':
+    resolution: {integrity: sha512-geM1MkHTV1Kh2Cs/Xzot9BOF3WBacihw6bkEmxkz4nSga8B9/hWy5BDiOG3gHDGIBa8WxT0nzsJs2f/hPqQIQw==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
 
-  '@biomejs/cli-win32-arm64@1.9.4':
-    resolution: {integrity: sha512-tlbhLk+WXZmgwoIKwHIHEBZUwxml7bRJgk0X2sPyNR3S93cdRq6XulAZRQJ17FYGGzWne0fgrXBKpl7l4M87Hg==}
+  '@biomejs/cli-win32-arm64@2.0.6':
+    resolution: {integrity: sha512-290V4oSFoKaprKE1zkYVsDfAdn0An5DowZ+GIABgjoq1ndhvNxkJcpxPsiYtT7slbVe3xmlT0ncdfOsN7KruzA==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [win32]
 
-  '@biomejs/cli-win32-x64@1.9.4':
-    resolution: {integrity: sha512-8Y5wMhVIPaWe6jw2H+KlEm4wP/f7EW3810ZLmDlrEEy5KvBsb9ECEfu/kMWD484ijfQ8+nIi0giMgu9g1UAuuA==}
+  '@biomejs/cli-win32-x64@2.0.6':
+    resolution: {integrity: sha512-bfM1Bce0d69Ao7pjTjUS+AWSZ02+5UHdiAP85Th8e9yV5xzw6JrHXbL5YWlcEKQ84FIZMdDc7ncuti1wd2sdbw==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
@@ -2668,8 +2668,8 @@ packages:
   '@codemirror/language-data@6.5.1':
     resolution: {integrity: sha512-0sWxeUSNlBr6OmkqybUTImADFUP0M3P0IiSde4nc24bz/6jIYzqYSgkOSLS+CBIoW1vU8Q9KUWXscBXeoMVC9w==}
 
-  '@codemirror/language@6.11.1':
-    resolution: {integrity: sha512-5kS1U7emOGV84vxC+ruBty5sUgcD0te6dyupyRVG2zaSjhTDM73LhVKUtVwiqSe6QwmEoA4SCiU8AKPFyumAWQ==}
+  '@codemirror/language@6.11.2':
+    resolution: {integrity: sha512-p44TsNArL4IVXDTbapUmEkAlvWs2CFQbcfc0ymDsis1kH2wh0gcY96AS29c/vp2d0y2Tquk1EDSaawpzilUiAw==}
 
   '@codemirror/legacy-modes@6.4.1':
     resolution: {integrity: sha512-vdg3XY7OAs5uLDx2Iw+cGfnwtd7kM+Et/eMsqAGTfT/JKiVBQZXosTzjEbWAi/FrY6DcQIz8mQjBozFHZEUWQA==}
@@ -2689,8 +2689,8 @@ packages:
   '@codemirror/theme-one-dark@6.1.2':
     resolution: {integrity: sha512-F+sH0X16j/qFLMAfbciKTxVOwkdAS336b7AXTKOZhy8BR3eH/RelsnLgLFINrpST63mmN2OuwUt0W2ndUgYwUA==}
 
-  '@codemirror/view@6.37.2':
-    resolution: {integrity: sha512-XD3LdgQpxQs5jhOOZ2HRVT+Rj59O4Suc7g2ULvZ+Yi8eCkickrkZ5JFuoDhs2ST1mNI5zSsNYgR3NGa4OUrbnw==}
+  '@codemirror/view@6.38.1':
+    resolution: {integrity: sha512-RmTOkE7hRU3OVREqFVITWHz6ocgBjv08GoePscAakgVQfciA3SGCEk7mb9IzwW61cKKmlTpHXG6DUE5Ubx+MGQ==}
 
   '@colors/colors@1.5.0':
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
@@ -3114,6 +3114,7 @@ packages:
 
   '@handsontable/react@2.1.0':
     resolution: {integrity: sha512-Du73MFU2y1Bfe9m7mvxY70lB2R/VigFSpOwWZjDnUt/HwNPbNr+UQcY40w6u7acllQeee45H7jRdEExzsrvDKw==}
+    deprecated: Handsontable for React is now available as @handsontable/react-wrapper.
     peerDependencies:
       handsontable: '>=6.0.0'
 
@@ -3230,26 +3231,21 @@ packages:
     resolution: {integrity: sha512-u3UPsIilWKOM3F9CXtrG8LEJmNxwoCQC/XVj4IKYXvvpx7QIi/Kg1LI5uDmDpKlac62NUtX7eLjRh+jVZcLOzw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
 
-  '@jridgewell/gen-mapping@0.3.8':
-    resolution: {integrity: sha512-imAbBGkb+ebQyxKgzv5Hu2nmROxoDOXHh80evxdoXNOrvAnVx7zimzc1Oo5h9RlfV4vPXaE2iM5pOFbvOCClWA==}
-    engines: {node: '>=6.0.0'}
+  '@jridgewell/gen-mapping@0.3.12':
+    resolution: {integrity: sha512-OuLGC46TjB5BbN1dH8JULVVZY4WTdkF7tV9Ys6wLL1rubZnCMstOhNHueU5bLCrnRuDhKPDM4g6sw4Bel5Gzqg==}
 
   '@jridgewell/resolve-uri@3.1.2':
     resolution: {integrity: sha512-bRISgCIjP20/tbWSPWMEi54QVPRZExkuD9lJL+UIxUKtwVJA8wW1Trb1jMs1RFXo1CBTNZ/5hpC9QvmKWdopKw==}
     engines: {node: '>=6.0.0'}
 
-  '@jridgewell/set-array@1.2.1':
-    resolution: {integrity: sha512-R8gLRTZeyp03ymzP/6Lil/28tGeGEzhx1q2k703KGWRAI1VdvPIXdG70VJc2pAMw3NA6JKL5hhFu1sJX0Mnn/A==}
-    engines: {node: '>=6.0.0'}
+  '@jridgewell/source-map@0.3.10':
+    resolution: {integrity: sha512-0pPkgz9dY+bijgistcTTJ5mR+ocqRXLuhXHYdzoMmmoJ2C9S46RCm2GMUbatPEUK9Yjy26IrAy8D/M00lLkv+Q==}
 
-  '@jridgewell/source-map@0.3.6':
-    resolution: {integrity: sha512-1ZJTZebgqllO79ue2bm3rIGud/bOe0pP5BjSRCRxxYkEZS8STV7zN84UBbiYu7jy+eCKSnVIUgoWWE/tt+shMQ==}
+  '@jridgewell/sourcemap-codec@1.5.4':
+    resolution: {integrity: sha512-VT2+G1VQs/9oz078bLrYbecdZKs912zQlkelYpuf+SXF+QvZDYJlbx/LSx+meSAwdDFnF8FVXW92AVjjkVmgFw==}
 
-  '@jridgewell/sourcemap-codec@1.5.0':
-    resolution: {integrity: sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ==}
-
-  '@jridgewell/trace-mapping@0.3.25':
-    resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
+  '@jridgewell/trace-mapping@0.3.29':
+    resolution: {integrity: sha512-uw6guiW/gcAGPDhLmd77/6lW8QLeiV5RUTsAX46Db6oLhGaVj4lhnPwb184s1bkc8kdVg/+h988dro8GRDpmYQ==}
 
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
@@ -3412,8 +3408,8 @@ packages:
     resolution: {integrity: sha512-Hg7fZ8SqXwLjxeIFzSnlXkXEmt0ZXPeMJneEn9n1M495a34C4xtkgEgL8R1MW2IRCh4Yibn0xmGKcaf+GuqR2A==}
     engines: {node: '>=10'}
 
-  '@mermaid-js/parser@0.5.0':
-    resolution: {integrity: sha512-AiaN7+VjXC+3BYE+GwNezkpjIcCI2qIMB/K4S2/vMWe0q/XJCBbx5+K7iteuz7VyltX9iAK4FmVTvGc9kjOV4w==}
+  '@mermaid-js/parser@0.6.2':
+    resolution: {integrity: sha512-+PO02uGF6L6Cs0Bw8RpGhikVvMWEysfAyl27qTlroUB8jSWr1lL0Sf6zi78ZxlSnmgSY2AMMKVgghnN9jTtwkQ==}
 
   '@microsoft/api-extractor-model@7.28.13':
     resolution: {integrity: sha512-39v/JyldX4MS9uzHcdfmjjfS6cYGAoXV+io8B5a338pkHiSt+gy2eXQ0Q7cGFJ7quSa1VqqlMdlPrB6sLR/cAw==}
@@ -3932,6 +3928,7 @@ packages:
   '@opentelemetry/instrumentation-redis-4@0.49.0':
     resolution: {integrity: sha512-i+Wsl7M2LXEDA2yXouNJ3fttSzzb5AhlehvSBVRIFuinY51XrrKSH66biO0eox+pYQMwAlPxJ778XcMQffN78A==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use "@opentelemetry/instrumentation-redis", which (as of v0.50.0) includes support for instrumenting redis v4.
     peerDependencies:
       '@opentelemetry/api': ^1.3.0
 
@@ -5153,8 +5150,8 @@ packages:
   '@tsed/logger@6.7.8':
     resolution: {integrity: sha512-4VB4+nt7Ljihp7IEv7RmosxsRyXZGhnesqlcNEyE8r1WZCVdXvUn2YmyF+4zMkaX1pR5Vaf80i4IDp7WSW9gwg==}
 
-  '@tsed/logger@7.0.1':
-    resolution: {integrity: sha512-jasFFSi1O2QCEHBX925Ao8N10mqNGeQEMzvyncGU4dxBmeXzjnmX/00og5uMy2eX++7xSVE5YmH1qczSXM3TPg==}
+  '@tsed/logger@7.0.2':
+    resolution: {integrity: sha512-H27tRvCSf2T1FOsXtGevK18994L3KeQsh7ydeCdxOpX0riIv9Le1NdBsD8Nu5haAKcbnn44E402s/OHpcrpY6Q==}
 
   '@tsed/normalize-path@8.5.0':
     resolution: {integrity: sha512-+Hq9mWu+xi7/ZXk9Ub/6MwJI3BP6j5hf2r95A9TcURHe91fLs+sqGULwTCSZlu5UhWTxS3tp+6ejFagRiVHl1Q==}
@@ -6529,8 +6526,8 @@ packages:
     engines: {node: '>= 8.0.0'}
     hasBin: true
 
-  browserslist@4.25.0:
-    resolution: {integrity: sha512-PJ8gYKeS5e/whHBh8xrwYK+dAvEj7JXtz6uTucnMRB8OiGTsKccFekoRrjajPBHV8oOY+2tI4uxeceSimKwMFA==}
+  browserslist@4.25.1:
+    resolution: {integrity: sha512-KGj0KoOMXLpSNkkEI6Z6mShmQy0bc1I+T7K9N81k4WWMrfz+6fQ6es80B/YLAeRoKvjYE1YSHHOW1qe9xIVzHw==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
 
@@ -6626,6 +6623,10 @@ packages:
   cache-manager@3.6.3:
     resolution: {integrity: sha512-dS4DnV6c6cQcVH5OxzIU1XZaACXwvVIiUPkFytnRmLOACuBGv3GQgRQ1RJGRRw4/9DF14ZK2RFlZu1TUgDniMg==}
 
+  call-bind-apply-helpers@1.0.2:
+    resolution: {integrity: sha512-Sp1ablJ0ivDkSzjcaJdxEunN5/XvksFJ2sMBFfq6x0ryhQV/2b/KwFe21cMpmHtPOSij8K99/wSfoEuTObmuMQ==}
+    engines: {node: '>= 0.4'}
+
   call-bind@1.0.7:
     resolution: {integrity: sha512-GHTSNSYICQ7scH7sZ+M2rFopRoLh8t2bLSW6BbgrtLsahOIB5iyAVJf9GjWK3cYTDaMj4XdBpM1cA6pIS0Kv2w==}
     engines: {node: '>= 0.4'}
@@ -6670,8 +6671,8 @@ packages:
   can-use-dom@0.1.0:
     resolution: {integrity: sha512-ceOhN1DL7Y4O6M0j9ICgmTYziV89WMd96SvSl0REd8PMgrY0B/WBOPoed5S1KUmJqXgUXh8gzSe6E3ae27upsQ==}
 
-  caniuse-lite@1.0.30001723:
-    resolution: {integrity: sha512-1R/elMjtehrFejxwmexeXAtae5UO9iSyFn6G/I806CYC/BLyyBk1EPhrKBkWhy6wM6Xnm47dSJQec+tLJ39WHw==}
+  caniuse-lite@1.0.30001727:
+    resolution: {integrity: sha512-pB68nIHmbN6L/4C6MH1DokyR3bYqFwjaSs/sWDHGj4CTcFtQUQMuJftVwWkXq7mNWOybD3KhUv3oWHoGxgP14Q==}
 
   capital-case@1.0.4:
     resolution: {integrity: sha512-ds37W8CytHgwnhGGTi88pcPyR15qoNkOpYwmMMfnWqqWgESapLqvDx6huFjQ5vqWSn2Z06173XNA7LtMOeUh1A==}
@@ -8117,6 +8118,10 @@ packages:
     resolution: {integrity: sha512-b7Z7cNtHPhH9EJhNNbbeqTcXB8LGFFZhq1PGgEvpeHlzd36bhbdTWoE/Ba/YguqpBSlAPKnARWhVlhunCMwfxg==}
     engines: {node: '>=0.10'}
 
+  dunder-proto@1.0.1:
+    resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
+    engines: {node: '>= 0.4'}
+
   duplexer@0.1.2:
     resolution: {integrity: sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==}
 
@@ -8152,8 +8157,8 @@ packages:
     engines: {node: '>=0.10.0'}
     hasBin: true
 
-  electron-to-chromium@1.5.167:
-    resolution: {integrity: sha512-LxcRvnYO5ez2bMOFpbuuVuAI5QNeY1ncVytE/KXaL6ZNfzX1yPlAO0nSOyIHx2fVAuUprMqPs/TdVhUFZy7SIQ==}
+  electron-to-chromium@1.5.190:
+    resolution: {integrity: sha512-k4McmnB2091YIsdCgkS0fMVMPOJgxl93ltFzaryXqwip1AaxeDqKCGLxkXODDA5Ab/D+tV5EL5+aTx76RvLRxw==}
 
   emittery@0.13.1:
     resolution: {integrity: sha512-DeWwawk6r5yR9jFgnDKYt4sLS0LmHJJi3ZOnb5/JdbYwj3nW+FxQnHIjhBKz8YLC7oRNPVM9NQ47I3CVx34eqQ==}
@@ -8205,8 +8210,8 @@ packages:
     resolution: {integrity: sha512-gmNvsYi9C8iErnZdVcJnvCpSKbWTt1E8+JZo8b+daLninywUWi5NQ5STSHZ9rFjFO7imNcvb8Pc5pe/wMR5xEw==}
     engines: {node: '>=10.2.0'}
 
-  enhanced-resolve@5.18.1:
-    resolution: {integrity: sha512-ZSW3ma5GkcQBIpwZTSRAI8N71Uuwgs93IezB7mf7R60tC8ZbJideoDNKjHn2O9KIlx6rkGTTEk1xUCK2E1Y2Yg==}
+  enhanced-resolve@5.18.2:
+    resolution: {integrity: sha512-6Jw4sE1maoRJo3q8MsSIn2onJFbLTOjY9hlx4DZXmOKvLRd1Ok2kXmAGXaafL2+ijsJZ1ClYbl/pmqr9+k4iUQ==}
     engines: {node: '>=10.13.0'}
 
   enquirer@2.4.1:
@@ -8251,8 +8256,8 @@ packages:
     resolution: {integrity: sha512-KkzhUUuD2CUMqEc8JEqsXEMDHzDPE8RCjZeUBitsnB1eNcAJWQPiciKsMXe3Yytj4Flw1XLl46Qcf9OxvZha7A==}
     engines: {node: '>= 0.4'}
 
-  es-define-property@1.0.0:
-    resolution: {integrity: sha512-jxayLKShrEqqzJ0eumQbVhTYQM27CfT1T35+gCgDFoL82JLsXqTJ76zv6A0YLOgEnLUMvLzsDsGIrl8NFpT2gQ==}
+  es-define-property@1.0.1:
+    resolution: {integrity: sha512-e3nRfgfUZ4rNGL232gUgX06QNyyez04KdjFrF+LTRoOXmrOgFKDg4BCdsjW8EnT69eqdYGmRpJwiPVYNrCaW3g==}
     engines: {node: '>= 0.4'}
 
   es-errors@1.3.0:
@@ -8262,12 +8267,12 @@ packages:
   es-module-lexer@1.7.0:
     resolution: {integrity: sha512-jEQoCwk8hyb2AZziIOLhDqpm5+2ww5uIE6lkO/6jcOCusfk6LhMHpXXfBLXTZ7Ydyt0j4VoUQv6uGNYbdW+kBA==}
 
-  es-object-atoms@1.0.0:
-    resolution: {integrity: sha512-MZ4iQ6JwHOBQjahnjwaC1ZtIBH+2ohjamzAO3oaHcXYup7qxjF2fixyH+Q71voWHeOkI2q/TnJao/KfXYIZWbw==}
+  es-object-atoms@1.1.1:
+    resolution: {integrity: sha512-FGgH2h8zKNim9ljj7dankFPcICIK9Cp5bm+c2gQSYePhpaG5+esrLODihIorn+Pe6FGJzWhXQotPv73jTaldXA==}
     engines: {node: '>= 0.4'}
 
-  es-set-tostringtag@2.0.3:
-    resolution: {integrity: sha512-3T8uNMC3OQTHkFUsFq8r/BwAXLHvU/9O9mE0fBc/MY5iq/8H7ncvO947LmYA6ldWw9Uh8Yhf25zu6n7nML5QWQ==}
+  es-set-tostringtag@2.1.0:
+    resolution: {integrity: sha512-j6vWzfrGVfyXxge+O0x5sh6cvxAog0a/4Rdd2K36zCMV5eJ+/+tOAngRO8cODMNWbVRdVlmGZQL2YS3yR8bIUA==}
     engines: {node: '>= 0.4'}
 
   es-shim-unscopables@1.0.0:
@@ -8853,12 +8858,12 @@ packages:
     resolution: {integrity: sha512-1lLKB2Mu3aGP1Q/2eCOx0fNbRMe7XdwktwOruhfqqd0rIJWwN4Dh+E3hrPSlDCXnSR7UtZ1N38rVXm+6+MEhJQ==}
     engines: {node: '>= 0.12'}
 
-  form-data@2.5.1:
-    resolution: {integrity: sha512-m21N3WOmEEURgk6B9GLOE4RuWOFf28Lhh9qGYeNlGq4VDXUlJy2th2slBNU8Gp8EzloYZOibZJ7t5ecIrFSjVA==}
+  form-data@2.5.5:
+    resolution: {integrity: sha512-jqdObeR2rxZZbPSGL+3VckHMYtu+f9//KXBsVny6JSX/pa38Fy+bGjuG8eW/H6USNQWhLi8Num++cU2yOCNz4A==}
     engines: {node: '>= 0.12'}
 
-  form-data@4.0.0:
-    resolution: {integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==}
+  form-data@4.0.4:
+    resolution: {integrity: sha512-KrGhL9Q4zjj0kiUt5OO4Mr/A/jlI2jDYs5eHBpYHPcBEVSiipAvn2Ko2HnPe20rmcuuvMHNdZFp+4IlGTMF0Ow==}
     engines: {node: '>= 6'}
 
   format@0.2.2:
@@ -8989,13 +8994,17 @@ packages:
   get-func-name@2.0.2:
     resolution: {integrity: sha512-8vXOvuE167CtIc3OyItco7N/dpRtBbYOsPsXCz7X/PMnlGjYjSGuZJgM1Y7mmew7BKf9BqvLX2tnOVy1BBUsxQ==}
 
-  get-intrinsic@1.2.4:
-    resolution: {integrity: sha512-5uYhsJH8VJBTv7oslg4BznJYhDoRI6waYCxMmCdnTrcCrHA/fCFKoTFz2JKKE0HdDFUF7/oQuhzumXJK7paBRQ==}
+  get-intrinsic@1.3.0:
+    resolution: {integrity: sha512-9fSjSaos/fRIVIp+xSJlE6lfwhES7LNtKaCBIamHsjr2na1BiABJPo0mOjjz8GJDURarmCPGqaiVg5mfjb98CQ==}
     engines: {node: '>= 0.4'}
 
   get-package-type@0.1.0:
     resolution: {integrity: sha512-pjzuKtY64GYfWizNAJ0fr9VqttZkNiK2iS430LtIHzjBEr6bX8Am2zm4sW4Ro5wjWW5cAlRL1qAMTcXbjNAO2Q==}
     engines: {node: '>=8.0.0'}
+
+  get-proto@1.0.1:
+    resolution: {integrity: sha512-sTSfBjoXBp89JvIKIefqw7U2CCebsc74kiY6awiGogKtoSGbgjYE/G/+l9sF3MWFPNc9IcoOC4ODfKHfxFmp0g==}
+    engines: {node: '>= 0.4'}
 
   get-stdin@4.0.1:
     resolution: {integrity: sha512-F5aQMywwJ2n85s4hJPTT9RPxGmubonuB10MNYo17/xph174n2MIR33HRguhzVag10O/npM7SPk73LMZNP+FaWw==}
@@ -9134,8 +9143,9 @@ packages:
     deprecated: Package is no longer maintained
     hasBin: true
 
-  gopd@1.0.1:
-    resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
+  gopd@1.2.0:
+    resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
+    engines: {node: '>= 0.4'}
 
   graceful-fs@4.2.10:
     resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==}
@@ -9211,8 +9221,8 @@ packages:
     resolution: {integrity: sha512-SJ1amZAJUiZS+PhsVLf5tGydlaVB8EdFpaSO4gmiUKUOxk8qzn5AIy4ZeJUmh22znIdk/uMAUT2pl3FxzVUH+Q==}
     engines: {node: '>= 0.4'}
 
-  has-symbols@1.0.3:
-    resolution: {integrity: sha512-l3LCuF6MgDNwTDKkdYGEihYjt5pRPbEg46rtlmnSPlUbgmB8LOIrKJbYYFBSbnPaJexMKtiPO8hmeRjRz2Td+A==}
+  has-symbols@1.1.0:
+    resolution: {integrity: sha512-1cDNdwJ2Jaohmb3sg4OmKaMBwuC48sYni5HUw2DvsC8LjGTLK9h+eb1X6RyuOHe4hT0ULCW68iomhjUoKUqlPQ==}
     engines: {node: '>= 0.4'}
 
   has-tostringtag@1.0.2:
@@ -10233,6 +10243,10 @@ packages:
     resolution: {integrity: sha512-XvqR7FgOHtWupfMiigNzmh+MgUVmDGU2kXZm899ZkPfcuoPuFxyHmXsgATDpFZDAXCI8tvinaVcDo8PIIJSo4A==}
     hasBin: true
 
+  katex@0.16.22:
+    resolution: {integrity: sha512-XCHRdUw4lf3SKBaJe4EvgqIuWwkPSo9XoeO8GjQW94Bp7TWv9hNhzZjZ+OH9yf1UmLygb7DIT5GSFQiyt16zYg==}
+    hasBin: true
+
   keycloak-js@17.0.1:
     resolution: {integrity: sha512-mbLBSoogCBX5VYeKCdEz8BaRWVL9twzSqArRU3Mo3Z7vEO1mghGZJ5IzREfiMEi7kTUZtk5i9mu+Yc0koGkK6g==}
 
@@ -10663,13 +10677,17 @@ packages:
   markdown-table@3.0.3:
     resolution: {integrity: sha512-Z1NL3Tb1M9wH4XESsCDEksWoKTdlUafKc4pt0GRwjUyXaCFZ+dc3g2erqB6zm3szA2IUSi7VnPI+o/9jnxh9hw==}
 
-  marked@15.0.12:
-    resolution: {integrity: sha512-8dD6FusOQSrpv9Z1rdNMdlSgQOIP880DHqnohobOmYLElGEqAL/JvxvuxZO16r4HtjTlfPRDC1hbvxC9dPN2nA==}
-    engines: {node: '>= 18'}
+  marked@16.1.1:
+    resolution: {integrity: sha512-ij/2lXfCRT71L6u0M29tJPhP0bM5shLL3u5BePhFwPELj2blMJ6GDtD7PfJhRLhJ/c2UwrK17ySVcDzy2YHjHQ==}
+    engines: {node: '>= 20'}
     hasBin: true
 
   material-icons@1.13.12:
     resolution: {integrity: sha512-/2YoaB79IjUK2B2JB+vIXXYGtBfHb/XG66LvoKVM5ykHW7yfrV5SP6d7KLX6iijY6/G9GqwgtPQ/sbhFnOURVA==}
+
+  math-intrinsics@1.1.0:
+    resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
+    engines: {node: '>= 0.4'}
 
   mathjax-full@3.2.2:
     resolution: {integrity: sha512-+LfG9Fik+OuI8SLwsiR02IVdjcnRCy5MufYLi0C3TdMT56L/pjB0alMVGgoWJF8pN9Rc7FESycZB9BMNWIid5w==}
@@ -10799,8 +10817,8 @@ packages:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
 
-  mermaid@11.7.0:
-    resolution: {integrity: sha512-/1/5R0rt0Z1Ak0CuznAnCF3HtQgayRXUz6SguzOwN4L+DuCobz0UxnQ+ZdTSZ3AugKVVh78tiVmsHpHWV25TCw==}
+  mermaid@11.9.0:
+    resolution: {integrity: sha512-YdPXn9slEwO0omQfQIsW6vS84weVQftIyyTGAZCwM//MGhPzL1+l6vO6bkf0wnP4tHigH1alZ5Ooy3HXI2gOag==}
 
   method-override@3.0.0:
     resolution: {integrity: sha512-IJ2NNN/mSl9w3kzWB92rcdHpz+HjkxhDJWNDBqSlas+zQdP8wBiJzITPg08M/k2uVvMow7Sk41atndNtt/PHSA==}
@@ -13526,6 +13544,7 @@ packages:
   superagent@10.2.1:
     resolution: {integrity: sha512-O+PCv11lgTNJUzy49teNAWLjBZfc+A1enOwTpLlH6/rsvKcTwcdTT8m9azGkVqM7HBl5jpyZ7KTPhHweokBcdg==}
     engines: {node: '>=14.18.0'}
+    deprecated: Please upgrade to superagent v10.2.2+, see release notes at https://github.com/forwardemail/superagent/releases/tag/v10.2.2 - maintenance is supported by Forward Email @ https://forwardemail.net
 
   superjson@1.13.3:
     resolution: {integrity: sha512-mJiVjfd2vokfDxsQPOwJ/PtanO87LhpYY88ubI5dUB1Ab58Txbyje3+jpm+/83R/fevaq/107NNhtYBLuoTrFg==}
@@ -13534,6 +13553,7 @@ packages:
   supertest@7.1.1:
     resolution: {integrity: sha512-aI59HBTlG9e2wTjxGJV+DygfNLgnWbGdZxiA/sgrnNNikIW8lbDvCtF6RnhZoJ82nU7qv7ZLjrvWqCEm52fAmw==}
     engines: {node: '>=14.18.0'}
+    deprecated: Please upgrade to supertest v7.1.3+, see release notes at https://github.com/forwardemail/supertest/releases/tag/v7.1.3 - maintenance is supported by Forward Email @ https://forwardemail.net
 
   supports-color@10.0.0:
     resolution: {integrity: sha512-HRVVSbCCMbj7/kdWF9Q+bbckjBHLtHMEoJWlkmYzzdwhYMkjkOwubLM6t7NbWKjgKamGDrWL1++KrjUO1t9oAQ==}
@@ -13674,8 +13694,8 @@ packages:
       uglify-js:
         optional: true
 
-  terser@5.42.0:
-    resolution: {integrity: sha512-UYCvU9YQW2f/Vwl+P0GfhxJxbUGLwd+5QrrGgLajzWAtC/23AX0vcise32kkP7Eu0Wu9VlzzHAXkLObgjQfFlQ==}
+  terser@5.43.1:
+    resolution: {integrity: sha512-+6erLbBm0+LROX2sPXlUYx/ux5PyE9K/a92Wrt6oA+WDAoFTdpHE5tCYCI5PNzq2y8df4rA+QgHLJuR4jNymsg==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -14590,8 +14610,8 @@ packages:
     engines: {node: '>= 10.13.0'}
     hasBin: true
 
-  webpack-sources@3.3.2:
-    resolution: {integrity: sha512-ykKKus8lqlgXX/1WjudpIEjqsafjOTcOJqxnAbMLAu/KCsDCJ6GBtvscewvTkrn24HsnvFwrSCbenFrhtcCsAA==}
+  webpack-sources@3.3.3:
+    resolution: {integrity: sha512-yd1RBzSGanHkitROoPFd6qsrxt+oFhg/129YzheDGqeustzX0vTZJZsSsQjVQC4yzBQ56K55XU8gaNCtIzOnTg==}
     engines: {node: '>=10.13.0'}
 
   webpack-virtual-modules@0.6.2:
@@ -14967,8 +14987,8 @@ snapshots:
 
   '@ampproject/remapping@2.3.0':
     dependencies:
-      '@jridgewell/gen-mapping': 0.3.8
-      '@jridgewell/trace-mapping': 0.3.25
+      '@jridgewell/gen-mapping': 0.3.12
+      '@jridgewell/trace-mapping': 0.3.29
 
   '@antfu/install-pkg@1.1.0':
     dependencies:
@@ -16117,15 +16137,15 @@ snapshots:
   '@babel/generator@7.24.6':
     dependencies:
       '@babel/types': 7.25.6
-      '@jridgewell/gen-mapping': 0.3.8
-      '@jridgewell/trace-mapping': 0.3.25
+      '@jridgewell/gen-mapping': 0.3.12
+      '@jridgewell/trace-mapping': 0.3.29
       jsesc: 2.5.2
 
   '@babel/helper-compilation-targets@7.24.6':
     dependencies:
       '@babel/compat-data': 7.24.6
       '@babel/helper-validator-option': 7.24.6
-      browserslist: 4.25.0
+      browserslist: 4.25.1
       lru-cache: 5.1.1
       semver: 6.3.1
 
@@ -16296,39 +16316,39 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@biomejs/biome@1.9.4':
+  '@biomejs/biome@2.0.6':
     optionalDependencies:
-      '@biomejs/cli-darwin-arm64': 1.9.4
-      '@biomejs/cli-darwin-x64': 1.9.4
-      '@biomejs/cli-linux-arm64': 1.9.4
-      '@biomejs/cli-linux-arm64-musl': 1.9.4
-      '@biomejs/cli-linux-x64': 1.9.4
-      '@biomejs/cli-linux-x64-musl': 1.9.4
-      '@biomejs/cli-win32-arm64': 1.9.4
-      '@biomejs/cli-win32-x64': 1.9.4
+      '@biomejs/cli-darwin-arm64': 2.0.6
+      '@biomejs/cli-darwin-x64': 2.0.6
+      '@biomejs/cli-linux-arm64': 2.0.6
+      '@biomejs/cli-linux-arm64-musl': 2.0.6
+      '@biomejs/cli-linux-x64': 2.0.6
+      '@biomejs/cli-linux-x64-musl': 2.0.6
+      '@biomejs/cli-win32-arm64': 2.0.6
+      '@biomejs/cli-win32-x64': 2.0.6
 
-  '@biomejs/cli-darwin-arm64@1.9.4':
+  '@biomejs/cli-darwin-arm64@2.0.6':
     optional: true
 
-  '@biomejs/cli-darwin-x64@1.9.4':
+  '@biomejs/cli-darwin-x64@2.0.6':
     optional: true
 
-  '@biomejs/cli-linux-arm64-musl@1.9.4':
+  '@biomejs/cli-linux-arm64-musl@2.0.6':
     optional: true
 
-  '@biomejs/cli-linux-arm64@1.9.4':
+  '@biomejs/cli-linux-arm64@2.0.6':
     optional: true
 
-  '@biomejs/cli-linux-x64-musl@1.9.4':
+  '@biomejs/cli-linux-x64-musl@2.0.6':
     optional: true
 
-  '@biomejs/cli-linux-x64@1.9.4':
+  '@biomejs/cli-linux-x64@2.0.6':
     optional: true
 
-  '@biomejs/cli-win32-arm64@1.9.4':
+  '@biomejs/cli-win32-arm64@2.0.6':
     optional: true
 
-  '@biomejs/cli-win32-x64@1.9.4':
+  '@biomejs/cli-win32-x64@2.0.6':
     optional: true
 
   '@braintree/sanitize-url@7.1.0': {}
@@ -16529,36 +16549,36 @@ snapshots:
 
   '@codemirror/autocomplete@6.18.4':
     dependencies:
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.37.2
+      '@codemirror/view': 6.38.1
       '@lezer/common': 1.2.3
 
   '@codemirror/commands@6.8.0':
     dependencies:
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.37.2
+      '@codemirror/view': 6.38.1
       '@lezer/common': 1.2.3
 
   '@codemirror/lang-angular@0.1.2':
     dependencies:
       '@codemirror/lang-html': 6.4.5
       '@codemirror/lang-javascript': 6.1.9
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@lezer/common': 1.2.3
       '@lezer/highlight': 1.2.1
       '@lezer/lr': 1.4.2
 
   '@codemirror/lang-cpp@6.0.2':
     dependencies:
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@lezer/cpp': 1.1.1
 
   '@codemirror/lang-css@6.2.0':
     dependencies:
       '@codemirror/autocomplete': 6.18.4
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/state': 6.5.2
       '@lezer/common': 1.2.3
       '@lezer/css': 1.1.3
@@ -16566,7 +16586,7 @@ snapshots:
   '@codemirror/lang-go@6.0.1':
     dependencies:
       '@codemirror/autocomplete': 6.18.4
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/state': 6.5.2
       '@lezer/common': 1.2.3
       '@lezer/go': 1.0.0
@@ -16576,37 +16596,37 @@ snapshots:
       '@codemirror/autocomplete': 6.18.4
       '@codemirror/lang-css': 6.2.0
       '@codemirror/lang-javascript': 6.1.9
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.37.2
+      '@codemirror/view': 6.38.1
       '@lezer/common': 1.2.3
       '@lezer/css': 1.1.3
       '@lezer/html': 1.3.6
 
   '@codemirror/lang-java@6.0.1':
     dependencies:
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@lezer/java': 1.0.4
 
   '@codemirror/lang-javascript@6.1.9':
     dependencies:
       '@codemirror/autocomplete': 6.18.4
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/lint': 6.8.1
       '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.37.2
+      '@codemirror/view': 6.38.1
       '@lezer/common': 1.2.3
       '@lezer/javascript': 1.4.5
 
   '@codemirror/lang-json@6.0.1':
     dependencies:
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@lezer/json': 1.0.1
 
   '@codemirror/lang-less@6.0.1':
     dependencies:
       '@codemirror/lang-css': 6.2.0
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@lezer/highlight': 1.2.1
       '@lezer/lr': 1.4.2
 
@@ -16614,9 +16634,9 @@ snapshots:
     dependencies:
       '@codemirror/autocomplete': 6.18.4
       '@codemirror/lang-html': 6.4.5
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.37.2
+      '@codemirror/view': 6.38.1
       '@lezer/common': 1.2.3
       '@lezer/highlight': 1.2.1
       '@lezer/lr': 1.4.2
@@ -16625,16 +16645,16 @@ snapshots:
     dependencies:
       '@codemirror/autocomplete': 6.18.4
       '@codemirror/lang-html': 6.4.5
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.37.2
+      '@codemirror/view': 6.38.1
       '@lezer/common': 1.2.3
       '@lezer/markdown': 1.0.5
 
   '@codemirror/lang-php@6.0.1':
     dependencies:
       '@codemirror/lang-html': 6.4.5
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/state': 6.5.2
       '@lezer/common': 1.2.3
       '@lezer/php': 1.0.1
@@ -16642,18 +16662,18 @@ snapshots:
   '@codemirror/lang-python@6.1.3':
     dependencies:
       '@codemirror/autocomplete': 6.18.4
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@lezer/python': 1.1.8
 
   '@codemirror/lang-rust@6.0.1':
     dependencies:
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@lezer/rust': 1.0.1
 
   '@codemirror/lang-sass@6.0.2':
     dependencies:
       '@codemirror/lang-css': 6.2.0
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/state': 6.5.2
       '@lezer/common': 1.2.3
       '@lezer/sass': 1.0.3
@@ -16661,7 +16681,7 @@ snapshots:
   '@codemirror/lang-sql@6.5.2':
     dependencies:
       '@codemirror/autocomplete': 6.18.4
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/state': 6.5.2
       '@lezer/highlight': 1.2.1
       '@lezer/lr': 1.4.2
@@ -16670,21 +16690,21 @@ snapshots:
     dependencies:
       '@codemirror/lang-html': 6.4.5
       '@codemirror/lang-javascript': 6.1.9
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@lezer/common': 1.2.3
       '@lezer/highlight': 1.2.1
       '@lezer/lr': 1.4.2
 
   '@codemirror/lang-wast@6.0.1':
     dependencies:
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@lezer/highlight': 1.2.1
       '@lezer/lr': 1.4.2
 
   '@codemirror/lang-xml@6.0.2':
     dependencies:
       '@codemirror/autocomplete': 6.18.4
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/state': 6.5.2
       '@lezer/common': 1.2.3
       '@lezer/xml': 1.0.2
@@ -16692,7 +16712,7 @@ snapshots:
   '@codemirror/lang-yaml@6.1.1':
     dependencies:
       '@codemirror/autocomplete': 6.18.4
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/state': 6.5.2
       '@lezer/common': 1.2.3
       '@lezer/highlight': 1.2.1
@@ -16720,13 +16740,13 @@ snapshots:
       '@codemirror/lang-wast': 6.0.1
       '@codemirror/lang-xml': 6.0.2
       '@codemirror/lang-yaml': 6.1.1
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/legacy-modes': 6.4.1
 
-  '@codemirror/language@6.11.1':
+  '@codemirror/language@6.11.2':
     dependencies:
       '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.37.2
+      '@codemirror/view': 6.38.1
       '@lezer/common': 1.2.3
       '@lezer/highlight': 1.2.1
       '@lezer/lr': 1.4.2
@@ -16734,26 +16754,26 @@ snapshots:
 
   '@codemirror/legacy-modes@6.4.1':
     dependencies:
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
 
   '@codemirror/lint@6.8.1':
     dependencies:
       '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.37.2
+      '@codemirror/view': 6.38.1
       crelt: 1.0.6
 
   '@codemirror/merge@6.8.0':
     dependencies:
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.37.2
+      '@codemirror/view': 6.38.1
       '@lezer/highlight': 1.2.1
       style-mod: 4.1.2
 
   '@codemirror/search@6.5.6':
     dependencies:
       '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.37.2
+      '@codemirror/view': 6.38.1
       crelt: 1.0.6
 
   '@codemirror/state@6.5.2':
@@ -16762,12 +16782,12 @@ snapshots:
 
   '@codemirror/theme-one-dark@6.1.2':
     dependencies:
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.37.2
+      '@codemirror/view': 6.38.1
       '@lezer/highlight': 1.2.1
 
-  '@codemirror/view@6.37.2':
+  '@codemirror/view@6.38.1':
     dependencies:
       '@codemirror/state': 6.5.2
       crelt: 1.0.6
@@ -17246,7 +17266,7 @@ snapshots:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@jridgewell/trace-mapping': 0.3.25
+      '@jridgewell/trace-mapping': 0.3.29
       '@types/node': 22.15.21
       chalk: 4.1.2
       collect-v8-coverage: 1.0.2
@@ -17274,7 +17294,7 @@ snapshots:
 
   '@jest/source-map@29.6.3':
     dependencies:
-      '@jridgewell/trace-mapping': 0.3.25
+      '@jridgewell/trace-mapping': 0.3.29
       callsites: 3.0.0
       graceful-fs: 4.2.11
 
@@ -17296,7 +17316,7 @@ snapshots:
     dependencies:
       '@babel/core': 7.24.6
       '@jest/types': 29.6.3
-      '@jridgewell/trace-mapping': 0.3.25
+      '@jridgewell/trace-mapping': 0.3.29
       babel-plugin-istanbul: 6.1.1
       chalk: 4.1.2
       convert-source-map: 2.0.0
@@ -17321,32 +17341,29 @@ snapshots:
       '@types/yargs': 17.0.32
       chalk: 4.1.2
 
-  '@jridgewell/gen-mapping@0.3.8':
+  '@jridgewell/gen-mapping@0.3.12':
     dependencies:
-      '@jridgewell/set-array': 1.2.1
-      '@jridgewell/sourcemap-codec': 1.5.0
-      '@jridgewell/trace-mapping': 0.3.25
+      '@jridgewell/sourcemap-codec': 1.5.4
+      '@jridgewell/trace-mapping': 0.3.29
 
   '@jridgewell/resolve-uri@3.1.2': {}
 
-  '@jridgewell/set-array@1.2.1': {}
-
-  '@jridgewell/source-map@0.3.6':
+  '@jridgewell/source-map@0.3.10':
     dependencies:
-      '@jridgewell/gen-mapping': 0.3.8
-      '@jridgewell/trace-mapping': 0.3.25
+      '@jridgewell/gen-mapping': 0.3.12
+      '@jridgewell/trace-mapping': 0.3.29
 
-  '@jridgewell/sourcemap-codec@1.5.0': {}
+  '@jridgewell/sourcemap-codec@1.5.4': {}
 
-  '@jridgewell/trace-mapping@0.3.25':
+  '@jridgewell/trace-mapping@0.3.29':
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
-      '@jridgewell/sourcemap-codec': 1.5.0
+      '@jridgewell/sourcemap-codec': 1.5.4
 
   '@jridgewell/trace-mapping@0.3.9':
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
-      '@jridgewell/sourcemap-codec': 1.5.0
+      '@jridgewell/sourcemap-codec': 1.5.4
 
   '@js-sdsl/ordered-map@4.4.2': {}
 
@@ -17590,7 +17607,7 @@ snapshots:
       markdown-it-front-matter: 0.2.4
       postcss: 8.5.5
 
-  '@mermaid-js/parser@0.5.0':
+  '@mermaid-js/parser@0.6.2':
     dependencies:
       langium: 3.3.1
 
@@ -18751,31 +18768,31 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@replit/codemirror-emacs@6.1.0(@codemirror/autocomplete@6.18.4)(@codemirror/commands@6.8.0)(@codemirror/search@6.5.6)(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)':
+  '@replit/codemirror-emacs@6.1.0(@codemirror/autocomplete@6.18.4)(@codemirror/commands@6.8.0)(@codemirror/search@6.5.6)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)':
     dependencies:
       '@codemirror/autocomplete': 6.18.4
       '@codemirror/commands': 6.8.0
       '@codemirror/search': 6.5.6
       '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.37.2
+      '@codemirror/view': 6.38.1
 
-  '@replit/codemirror-vim@6.2.1(@codemirror/commands@6.8.0)(@codemirror/language@6.11.1)(@codemirror/search@6.5.6)(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)':
+  '@replit/codemirror-vim@6.2.1(@codemirror/commands@6.8.0)(@codemirror/language@6.11.2)(@codemirror/search@6.5.6)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)':
     dependencies:
       '@codemirror/commands': 6.8.0
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/search': 6.5.6
       '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.37.2
+      '@codemirror/view': 6.38.1
 
-  '@replit/codemirror-vscode-keymap@6.0.2(@codemirror/autocomplete@6.18.4)(@codemirror/commands@6.8.0)(@codemirror/language@6.11.1)(@codemirror/lint@6.8.1)(@codemirror/search@6.5.6)(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)':
+  '@replit/codemirror-vscode-keymap@6.0.2(@codemirror/autocomplete@6.18.4)(@codemirror/commands@6.8.0)(@codemirror/language@6.11.2)(@codemirror/lint@6.8.1)(@codemirror/search@6.5.6)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)':
     dependencies:
       '@codemirror/autocomplete': 6.18.4
       '@codemirror/commands': 6.8.0
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/lint': 6.8.1
       '@codemirror/search': 6.5.6
       '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.37.2
+      '@codemirror/view': 6.38.1
 
   '@restart/hooks@0.4.16(react@18.2.0)':
     dependencies:
@@ -18927,7 +18944,7 @@ snapshots:
       '@types/node': 22.15.21
       axios: 1.9.0
       eventemitter3: 3.1.2
-      form-data: 2.5.1
+      form-data: 2.5.5
       is-electron: 2.2.2
       is-stream: 1.1.0
       p-queue: 6.6.2
@@ -18943,7 +18960,7 @@ snapshots:
       '@types/retry': 0.12.0
       axios: 1.9.0
       eventemitter3: 5.0.1
-      form-data: 4.0.0
+      form-data: 4.0.4
       is-electron: 2.2.2
       is-stream: 2.0.0
       p-queue: 6.6.2
@@ -19906,13 +19923,13 @@ snapshots:
 
   '@tsconfig/node16@1.0.3': {}
 
-  '@tsed/cli-core@6.1.4(@babel/core@7.24.6)(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/hooks@8.5.0)(ejs@3.1.10)(hogan.js@3.0.2)(lodash@4.17.21)(mustache@4.2.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@tsed/cli-core@6.1.4(@babel/core@7.24.6)(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/hooks@8.5.0)(ejs@3.1.10)(hogan.js@3.0.2)(lodash@4.17.21)(mustache@4.2.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@npmcli/run-script': 9.0.0
       '@tsed/core': 8.5.0
-      '@tsed/di': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
+      '@tsed/di': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
       '@tsed/hooks': 8.5.0
-      '@tsed/logger': 7.0.1
+      '@tsed/logger': 7.0.2
       '@tsed/normalize-path': 8.5.0
       '@types/fs-extra': 11.0.4
       '@types/inquirer': 9.0.7
@@ -19996,10 +20013,10 @@ snapshots:
       - walrus
       - whiskers
 
-  '@tsed/cli-generate-swagger@6.1.4(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0))(@tsed/swagger@8.5.0(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0)))':
+  '@tsed/cli-generate-swagger@6.1.4(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0))(@tsed/swagger@8.5.0(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0)))':
     dependencies:
-      '@tsed/platform-http': 8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0)
-      '@tsed/swagger': 8.5.0(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0))
+      '@tsed/platform-http': 8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0)
+      '@tsed/swagger': 8.5.0(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0))
       change-case: 5.4.4
       tslib: 2.7.0
 
@@ -20075,11 +20092,11 @@ snapshots:
       - walrus
       - whiskers
 
-  '@tsed/common@8.5.0(@tsed/engines@8.5.0)(@tsed/logger-file@7.0.1(@tsed/logger@7.0.1))(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0)':
+  '@tsed/common@8.5.0(@tsed/engines@8.5.0)(@tsed/logger-file@7.0.1(@tsed/logger@7.0.2))(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0)':
     dependencies:
-      '@tsed/logger': 7.0.1
-      '@tsed/logger-file': 7.0.1(@tsed/logger@7.0.1)
-      '@tsed/platform-http': 8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0)
+      '@tsed/logger': 7.0.2
+      '@tsed/logger-file': 7.0.1(@tsed/logger@7.0.2)
+      '@tsed/platform-http': 8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0)
       tslib: 2.7.0
     transitivePeerDependencies:
       - '@tsed/engines'
@@ -20111,11 +20128,11 @@ snapshots:
       globby: 11.0.1
       tslib: 2.1.0
 
-  '@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))':
+  '@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))':
     dependencies:
       '@tsed/core': 8.5.0
       '@tsed/hooks': 8.5.0
-      '@tsed/logger': 7.0.1
+      '@tsed/logger': 7.0.2
       '@tsed/schema': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)
       tslib: 2.7.0
       uuid: 10.0.0
@@ -20152,9 +20169,9 @@ snapshots:
       '@tsed/schema': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)
       tslib: 2.7.0
 
-  '@tsed/logger-file@7.0.1(@tsed/logger@7.0.1)':
+  '@tsed/logger-file@7.0.1(@tsed/logger@7.0.2)':
     dependencies:
-      '@tsed/logger': 7.0.1
+      '@tsed/logger': 7.0.2
       streamroller: 3.1.5
       tslib: 2.6.2
     transitivePeerDependencies:
@@ -20178,7 +20195,7 @@ snapshots:
       semver: 7.6.3
       tslib: 2.6.2
 
-  '@tsed/logger@7.0.1':
+  '@tsed/logger@7.0.2':
     dependencies:
       colors: 1.4.0
       date-format: 4.0.14
@@ -20190,10 +20207,10 @@ snapshots:
       normalize-path: 3.0.0
       tslib: 2.7.0
 
-  '@tsed/openapi-utils@8.5.0(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0))':
+  '@tsed/openapi-utils@8.5.0(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0))':
     dependencies:
       '@tsed/openspec': 8.5.0
-      '@tsed/platform-http': 8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0)
+      '@tsed/platform-http': 8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0)
       micromatch: 4.0.8
       tslib: 2.7.0
 
@@ -20201,10 +20218,10 @@ snapshots:
 
   '@tsed/openspec@8.5.0': {}
 
-  '@tsed/platform-exceptions@8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))':
+  '@tsed/platform-exceptions@8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))':
     dependencies:
       '@tsed/core': 8.5.0
-      '@tsed/di': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
+      '@tsed/di': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
       '@tsed/exceptions': 8.5.0(@tsed/core@8.5.0)
       '@tsed/schema': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)
       tslib: 2.7.0
@@ -20218,14 +20235,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@tsed/platform-express@8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/json-mapper@8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0)(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0))(@tsed/platform-views@8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/engines@8.5.0)(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))(@types/multer@1.4.12)(body-parser@1.20.3)(cross-env@7.0.0)(multer@1.4.4)':
+  '@tsed/platform-express@8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/json-mapper@8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0)(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0))(@tsed/platform-views@8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/engines@8.5.0)(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))(@types/multer@1.4.12)(body-parser@1.20.3)(cross-env@7.0.0)(multer@1.4.4)':
     dependencies:
       '@tsed/core': 8.5.0
-      '@tsed/di': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
+      '@tsed/di': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
       '@tsed/json-mapper': 8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
-      '@tsed/logger': 7.0.1
+      '@tsed/logger': 7.0.2
       '@tsed/openspec': 8.5.0
-      '@tsed/platform-http': 8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0)
+      '@tsed/platform-http': 8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0)
       '@tsed/schema': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)
       '@types/multer': 1.4.12
       body-parser: 1.20.3
@@ -20234,24 +20251,24 @@ snapshots:
       multer: 1.4.4
       tslib: 2.7.0
     optionalDependencies:
-      '@tsed/platform-views': 8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/engines@8.5.0)(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
+      '@tsed/platform-views': 8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/engines@8.5.0)(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
     transitivePeerDependencies:
       - supports-color
 
-  '@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0)':
+  '@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0)':
     dependencies:
       '@tsed/core': 8.5.0
-      '@tsed/di': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
+      '@tsed/di': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
       '@tsed/exceptions': 8.5.0(@tsed/core@8.5.0)
       '@tsed/hooks': 8.5.0
       '@tsed/json-mapper': 8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
-      '@tsed/logger': 7.0.1
-      '@tsed/platform-exceptions': 8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
-      '@tsed/platform-middlewares': 8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
-      '@tsed/platform-params': 8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/json-mapper@8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
-      '@tsed/platform-response-filter': 8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/json-mapper@8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
-      '@tsed/platform-router': 8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/json-mapper@8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/platform-params@8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/json-mapper@8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
-      '@tsed/platform-views': 8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/engines@8.5.0)(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
+      '@tsed/logger': 7.0.2
+      '@tsed/platform-exceptions': 8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
+      '@tsed/platform-middlewares': 8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
+      '@tsed/platform-params': 8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/json-mapper@8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
+      '@tsed/platform-response-filter': 8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/json-mapper@8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
+      '@tsed/platform-router': 8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/json-mapper@8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/platform-params@8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/json-mapper@8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
+      '@tsed/platform-views': 8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/engines@8.5.0)(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
       '@tsed/schema': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)
       '@types/json-schema': 7.0.15
       accepts: 1.3.8
@@ -20261,46 +20278,46 @@ snapshots:
       - '@tsed/engines'
       - '@tsed/openspec'
 
-  '@tsed/platform-middlewares@8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))':
+  '@tsed/platform-middlewares@8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))':
     dependencies:
       tslib: 2.7.0
     optionalDependencies:
       '@tsed/core': 8.5.0
-      '@tsed/di': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
+      '@tsed/di': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
       '@tsed/schema': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)
 
-  '@tsed/platform-params@8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/json-mapper@8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))':
+  '@tsed/platform-params@8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/json-mapper@8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))':
     dependencies:
       '@tsed/core': 8.5.0
-      '@tsed/di': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
+      '@tsed/di': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
       '@tsed/exceptions': 8.5.0(@tsed/core@8.5.0)
       '@tsed/json-mapper': 8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
       '@tsed/schema': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)
       tslib: 2.7.0
 
-  '@tsed/platform-response-filter@8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/json-mapper@8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))':
+  '@tsed/platform-response-filter@8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/json-mapper@8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))':
     dependencies:
       '@tsed/core': 8.5.0
-      '@tsed/di': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
+      '@tsed/di': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
       '@tsed/exceptions': 8.5.0(@tsed/core@8.5.0)
       '@tsed/json-mapper': 8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
       '@tsed/schema': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)
       tslib: 2.7.0
 
-  '@tsed/platform-router@8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/json-mapper@8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/platform-params@8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/json-mapper@8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))':
+  '@tsed/platform-router@8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/json-mapper@8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/platform-params@8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/json-mapper@8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))':
     dependencies:
       '@tsed/core': 8.5.0
-      '@tsed/di': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
+      '@tsed/di': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
       '@tsed/exceptions': 8.5.0(@tsed/core@8.5.0)
       '@tsed/json-mapper': 8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
-      '@tsed/platform-params': 8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/json-mapper@8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
+      '@tsed/platform-params': 8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/json-mapper@8.5.0(@tsed/core@8.5.0)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
       '@tsed/schema': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)
       tslib: 2.7.0
 
-  '@tsed/platform-views@8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/engines@8.5.0)(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))':
+  '@tsed/platform-views@8.5.0(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/engines@8.5.0)(@tsed/exceptions@8.5.0(@tsed/core@8.5.0))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))':
     dependencies:
       '@tsed/core': 8.5.0
-      '@tsed/di': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
+      '@tsed/di': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
       '@tsed/engines': 8.5.0
       '@tsed/exceptions': 8.5.0(@tsed/core@8.5.0)
       '@tsed/schema': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)
@@ -20331,21 +20348,21 @@ snapshots:
       swagger-ui-dist: 3.52.5
       tslib: 2.1.0
 
-  '@tsed/swagger@8.5.0(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0))':
+  '@tsed/swagger@8.5.0(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0))':
     dependencies:
       '@tsed/normalize-path': 8.5.0
-      '@tsed/openapi-utils': 8.5.0(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0))
+      '@tsed/openapi-utils': 8.5.0(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0))
       '@tsed/openspec': 8.5.0
-      '@tsed/platform-http': 8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0)
+      '@tsed/platform-http': 8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0)
       swagger-ui-dist: 5.17.14
       tslib: 2.7.0
 
-  '@tsed/terminus@8.5.0(@godaddy/terminus@4.12.1)(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))':
+  '@tsed/terminus@8.5.0(@godaddy/terminus@4.12.1)(@tsed/core@8.5.0)(@tsed/di@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)))(@tsed/platform-http@8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0))(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))':
     dependencies:
       '@godaddy/terminus': 4.12.1
       '@tsed/core': 8.5.0
-      '@tsed/di': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.1)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
-      '@tsed/platform-http': 8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.1)(@tsed/openspec@8.5.0)
+      '@tsed/di': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/logger@7.0.2)(@tsed/schema@8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0))
+      '@tsed/platform-http': 8.5.0(@tsed/engines@8.5.0)(@tsed/logger@7.0.2)(@tsed/openspec@8.5.0)
       '@tsed/schema': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)
       tslib: 2.7.0
 
@@ -20699,7 +20716,7 @@ snapshots:
   '@types/node-fetch@2.6.11':
     dependencies:
       '@types/node': 22.15.21
-      form-data: 4.0.0
+      form-data: 4.0.4
 
   '@types/node@12.20.55': {}
 
@@ -20798,7 +20815,7 @@ snapshots:
       '@types/cookiejar': 2.1.5
       '@types/methods': 1.1.4
       '@types/node': 22.15.21
-      form-data: 4.0.0
+      form-data: 4.0.4
 
   '@types/supertest@6.0.3':
     dependencies:
@@ -21021,46 +21038,46 @@ snapshots:
       '@typescript-eslint/types': 5.59.7
       eslint-visitor-keys: 3.4.3
 
-  '@uiw/codemirror-extensions-basic-setup@4.23.8(@codemirror/autocomplete@6.18.4)(@codemirror/commands@6.8.0)(@codemirror/language@6.11.1)(@codemirror/lint@6.8.1)(@codemirror/search@6.5.6)(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)':
+  '@uiw/codemirror-extensions-basic-setup@4.23.8(@codemirror/autocomplete@6.18.4)(@codemirror/commands@6.8.0)(@codemirror/language@6.11.2)(@codemirror/lint@6.8.1)(@codemirror/search@6.5.6)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)':
     dependencies:
       '@codemirror/autocomplete': 6.18.4
       '@codemirror/commands': 6.8.0
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/lint': 6.8.1
       '@codemirror/search': 6.5.6
       '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.37.2
+      '@codemirror/view': 6.38.1
 
-  '@uiw/codemirror-theme-eclipse@4.23.8(@codemirror/language@6.11.1)(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)':
+  '@uiw/codemirror-theme-eclipse@4.23.8(@codemirror/language@6.11.2)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)':
     dependencies:
-      '@uiw/codemirror-themes': 4.23.8(@codemirror/language@6.11.1)(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)
+      '@uiw/codemirror-themes': 4.23.8(@codemirror/language@6.11.2)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)
     transitivePeerDependencies:
       - '@codemirror/language'
       - '@codemirror/state'
       - '@codemirror/view'
 
-  '@uiw/codemirror-theme-kimbie@4.23.8(@codemirror/language@6.11.1)(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)':
+  '@uiw/codemirror-theme-kimbie@4.23.8(@codemirror/language@6.11.2)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)':
     dependencies:
-      '@uiw/codemirror-themes': 4.23.8(@codemirror/language@6.11.1)(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)
+      '@uiw/codemirror-themes': 4.23.8(@codemirror/language@6.11.2)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)
     transitivePeerDependencies:
       - '@codemirror/language'
       - '@codemirror/state'
       - '@codemirror/view'
 
-  '@uiw/codemirror-themes@4.23.8(@codemirror/language@6.11.1)(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)':
+  '@uiw/codemirror-themes@4.23.8(@codemirror/language@6.11.2)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)':
     dependencies:
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.37.2
+      '@codemirror/view': 6.38.1
 
-  '@uiw/react-codemirror@4.23.8(@babel/runtime@7.25.4)(@codemirror/autocomplete@6.18.4)(@codemirror/language@6.11.1)(@codemirror/lint@6.8.1)(@codemirror/search@6.5.6)(@codemirror/state@6.5.2)(@codemirror/theme-one-dark@6.1.2)(@codemirror/view@6.37.2)(codemirror@6.0.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@uiw/react-codemirror@4.23.8(@babel/runtime@7.25.4)(@codemirror/autocomplete@6.18.4)(@codemirror/language@6.11.2)(@codemirror/lint@6.8.1)(@codemirror/search@6.5.6)(@codemirror/state@6.5.2)(@codemirror/theme-one-dark@6.1.2)(@codemirror/view@6.38.1)(codemirror@6.0.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.25.4
       '@codemirror/commands': 6.8.0
       '@codemirror/state': 6.5.2
       '@codemirror/theme-one-dark': 6.1.2
-      '@codemirror/view': 6.37.2
-      '@uiw/codemirror-extensions-basic-setup': 4.23.8(@codemirror/autocomplete@6.18.4)(@codemirror/commands@6.8.0)(@codemirror/language@6.11.1)(@codemirror/lint@6.8.1)(@codemirror/search@6.5.6)(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)
+      '@codemirror/view': 6.38.1
+      '@uiw/codemirror-extensions-basic-setup': 4.23.8(@codemirror/autocomplete@6.18.4)(@codemirror/commands@6.8.0)(@codemirror/language@6.11.2)(@codemirror/lint@6.8.1)(@codemirror/search@6.5.6)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)
       codemirror: 6.0.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -21074,14 +21091,14 @@ snapshots:
 
   '@unts/get-tsconfig@4.1.1': {}
 
-  '@vitejs/plugin-react@4.3.1(vite@5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.42.0))':
+  '@vitejs/plugin-react@4.3.1(vite@5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.43.1))':
     dependencies:
       '@babel/core': 7.24.6
       '@babel/plugin-transform-react-jsx-self': 7.24.6(@babel/core@7.24.6)
       '@babel/plugin-transform-react-jsx-source': 7.24.6(@babel/core@7.24.6)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.42.0)
+      vite: 5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.43.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -21099,7 +21116,7 @@ snapshots:
       std-env: 3.7.0
       test-exclude: 7.0.1
       tinyrainbow: 1.2.0
-      vitest: 2.1.1(@types/node@20.14.0)(@vitest/ui@2.1.1)(happy-dom@15.7.4)(sass@1.77.6)(terser@5.42.0)
+      vitest: 2.1.1(@types/node@20.14.0)(@vitest/ui@2.1.1)(happy-dom@15.7.4)(sass@1.77.6)(terser@5.43.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -21110,13 +21127,13 @@ snapshots:
       chai: 5.1.1
       tinyrainbow: 1.2.0
 
-  '@vitest/mocker@2.1.1(@vitest/spy@2.1.1)(vite@5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.42.0))':
+  '@vitest/mocker@2.1.1(@vitest/spy@2.1.1)(vite@5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.43.1))':
     dependencies:
       '@vitest/spy': 2.1.1
       estree-walker: 3.0.3
       magic-string: 0.30.11
     optionalDependencies:
-      vite: 5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.42.0)
+      vite: 5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.43.1)
 
   '@vitest/pretty-format@2.1.1':
     dependencies:
@@ -21146,7 +21163,7 @@ snapshots:
       sirv: 2.0.4
       tinyglobby: 0.2.6
       tinyrainbow: 1.2.0
-      vitest: 2.1.1(@types/node@20.14.0)(@vitest/ui@2.1.1)(happy-dom@15.7.4)(sass@1.77.6)(terser@5.42.0)
+      vitest: 2.1.1(@types/node@20.14.0)(@vitest/ui@2.1.1)(happy-dom@15.7.4)(sass@1.77.6)(terser@5.43.1)
 
   '@vitest/utils@2.1.1':
     dependencies:
@@ -21554,7 +21571,7 @@ snapshots:
       call-bind: 1.0.7
       define-properties: 1.2.1
       es-abstract: 1.23.3
-      get-intrinsic: 1.2.4
+      get-intrinsic: 1.3.0
       is-string: 1.0.7
 
   array-union@2.1.0: {}
@@ -21580,7 +21597,7 @@ snapshots:
       define-properties: 1.2.1
       es-abstract: 1.23.3
       es-errors: 1.3.0
-      get-intrinsic: 1.2.4
+      get-intrinsic: 1.3.0
       is-array-buffer: 3.0.4
       is-shared-array-buffer: 1.0.3
 
@@ -21713,7 +21730,7 @@ snapshots:
   axios@1.9.0:
     dependencies:
       follow-redirects: 1.15.9(debug@4.4.1)
-      form-data: 4.0.0
+      form-data: 4.0.4
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
@@ -21993,12 +22010,12 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  browserslist@4.25.0:
+  browserslist@4.25.1:
     dependencies:
-      caniuse-lite: 1.0.30001723
-      electron-to-chromium: 1.5.167
+      caniuse-lite: 1.0.30001727
+      electron-to-chromium: 1.5.190
       node-releases: 2.0.19
-      update-browserslist-db: 1.1.3(browserslist@4.25.0)
+      update-browserslist-db: 1.1.3(browserslist@4.25.1)
 
   bs-recipes@1.3.4: {}
 
@@ -22131,12 +22148,17 @@ snapshots:
       lodash.clonedeep: 4.5.0
       lru-cache: 6.0.0
 
-  call-bind@1.0.7:
+  call-bind-apply-helpers@1.0.2:
     dependencies:
-      es-define-property: 1.0.0
       es-errors: 1.3.0
       function-bind: 1.1.2
-      get-intrinsic: 1.2.4
+
+  call-bind@1.0.7:
+    dependencies:
+      es-define-property: 1.0.1
+      es-errors: 1.3.0
+      function-bind: 1.1.2
+      get-intrinsic: 1.3.0
       set-function-length: 1.2.2
 
   call-me-maybe@1.0.2: {}
@@ -22171,7 +22193,7 @@ snapshots:
 
   can-use-dom@0.1.0: {}
 
-  caniuse-lite@1.0.30001723: {}
+  caniuse-lite@1.0.30001727: {}
 
   capital-case@1.0.4:
     dependencies:
@@ -22408,25 +22430,25 @@ snapshots:
 
   clsx@1.2.1: {}
 
-  cm6-theme-basic-light@0.2.0(@codemirror/language@6.11.1)(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)(@lezer/highlight@1.2.1):
+  cm6-theme-basic-light@0.2.0(@codemirror/language@6.11.2)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)(@lezer/highlight@1.2.1):
     dependencies:
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.37.2
+      '@codemirror/view': 6.38.1
       '@lezer/highlight': 1.2.1
 
-  cm6-theme-material-dark@0.2.0(@codemirror/language@6.11.1)(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)(@lezer/highlight@1.2.1):
+  cm6-theme-material-dark@0.2.0(@codemirror/language@6.11.2)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)(@lezer/highlight@1.2.1):
     dependencies:
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.37.2
+      '@codemirror/view': 6.38.1
       '@lezer/highlight': 1.2.1
 
-  cm6-theme-nord@0.2.0(@codemirror/language@6.11.1)(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)(@lezer/highlight@1.2.1):
+  cm6-theme-nord@0.2.0(@codemirror/language@6.11.2)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)(@lezer/highlight@1.2.1):
     dependencies:
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.37.2
+      '@codemirror/view': 6.38.1
       '@lezer/highlight': 1.2.1
 
   co@4.6.0: {}
@@ -22435,11 +22457,11 @@ snapshots:
     dependencies:
       '@codemirror/autocomplete': 6.18.4
       '@codemirror/commands': 6.8.0
-      '@codemirror/language': 6.11.1
+      '@codemirror/language': 6.11.2
       '@codemirror/lint': 6.8.1
       '@codemirror/search': 6.5.6
       '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.37.2
+      '@codemirror/view': 6.38.1
 
   collect-v8-coverage@1.0.2: {}
 
@@ -23154,9 +23176,9 @@ snapshots:
 
   define-data-property@1.1.4:
     dependencies:
-      es-define-property: 1.0.0
+      es-define-property: 1.0.1
       es-errors: 1.3.0
-      gopd: 1.0.1
+      gopd: 1.2.0
 
   define-lazy-prop@2.0.0: {}
 
@@ -23353,6 +23375,12 @@ snapshots:
       nan: 2.20.0
     optional: true
 
+  dunder-proto@1.0.1:
+    dependencies:
+      call-bind-apply-helpers: 1.0.2
+      es-errors: 1.3.0
+      gopd: 1.2.0
+
   duplexer@0.1.2: {}
 
   duplexify@4.1.3:
@@ -23391,7 +23419,7 @@ snapshots:
     dependencies:
       jake: 10.9.1
 
-  electron-to-chromium@1.5.167: {}
+  electron-to-chromium@1.5.190: {}
 
   emittery@0.13.1: {}
 
@@ -23456,7 +23484,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  enhanced-resolve@5.18.1:
+  enhanced-resolve@5.18.2:
     dependencies:
       graceful-fs: 4.2.11
       tapable: 2.2.2
@@ -23497,19 +23525,19 @@ snapshots:
       data-view-buffer: 1.0.1
       data-view-byte-length: 1.0.1
       data-view-byte-offset: 1.0.0
-      es-define-property: 1.0.0
+      es-define-property: 1.0.1
       es-errors: 1.3.0
-      es-object-atoms: 1.0.0
-      es-set-tostringtag: 2.0.3
+      es-object-atoms: 1.1.1
+      es-set-tostringtag: 2.1.0
       es-to-primitive: 1.2.1
       function.prototype.name: 1.1.6
-      get-intrinsic: 1.2.4
+      get-intrinsic: 1.3.0
       get-symbol-description: 1.0.2
       globalthis: 1.0.4
-      gopd: 1.0.1
+      gopd: 1.2.0
       has-property-descriptors: 1.0.2
       has-proto: 1.0.3
-      has-symbols: 1.0.3
+      has-symbols: 1.1.0
       hasown: 2.0.2
       internal-slot: 1.0.7
       is-array-buffer: 3.0.4
@@ -23548,21 +23576,20 @@ snapshots:
       has-property-descriptors: 1.0.2
       set-function-name: 2.0.2
 
-  es-define-property@1.0.0:
-    dependencies:
-      get-intrinsic: 1.2.4
+  es-define-property@1.0.1: {}
 
   es-errors@1.3.0: {}
 
   es-module-lexer@1.7.0: {}
 
-  es-object-atoms@1.0.0:
+  es-object-atoms@1.1.1:
     dependencies:
       es-errors: 1.3.0
 
-  es-set-tostringtag@2.0.3:
+  es-set-tostringtag@2.1.0:
     dependencies:
-      get-intrinsic: 1.2.4
+      es-errors: 1.3.0
+      get-intrinsic: 1.3.0
       has-tostringtag: 1.0.2
       hasown: 2.0.2
 
@@ -23737,7 +23764,7 @@ snapshots:
   eslint-import-resolver-typescript@3.2.5(eslint-plugin-import@2.26.0)(eslint@8.41.0):
     dependencies:
       debug: 4.4.1(supports-color@5.5.0)
-      enhanced-resolve: 5.18.1
+      enhanced-resolve: 5.18.2
       eslint: 8.41.0
       eslint-plugin-import: 2.26.0(@typescript-eslint/parser@5.59.7(eslint@8.41.0)(typescript@5.0.4))(eslint-import-resolver-typescript@3.2.5)(eslint@8.41.0)
       get-tsconfig: '@unts/get-tsconfig@4.1.1'
@@ -24366,16 +24393,21 @@ snapshots:
       combined-stream: 1.0.8
       mime-types: 2.1.35
 
-  form-data@2.5.1:
+  form-data@2.5.5:
     dependencies:
       asynckit: 0.4.0
       combined-stream: 1.0.8
+      es-set-tostringtag: 2.1.0
+      hasown: 2.0.2
       mime-types: 2.1.35
+      safe-buffer: 5.2.1
 
-  form-data@4.0.0:
+  form-data@4.0.4:
     dependencies:
       asynckit: 0.4.0
       combined-stream: 1.0.8
+      es-set-tostringtag: 2.1.0
+      hasown: 2.0.2
       mime-types: 2.1.35
 
   format@0.2.2: {}
@@ -24529,15 +24561,25 @@ snapshots:
 
   get-func-name@2.0.2: {}
 
-  get-intrinsic@1.2.4:
+  get-intrinsic@1.3.0:
     dependencies:
+      call-bind-apply-helpers: 1.0.2
+      es-define-property: 1.0.1
       es-errors: 1.3.0
+      es-object-atoms: 1.1.1
       function-bind: 1.1.2
-      has-proto: 1.0.3
-      has-symbols: 1.0.3
+      get-proto: 1.0.1
+      gopd: 1.2.0
+      has-symbols: 1.1.0
       hasown: 2.0.2
+      math-intrinsics: 1.1.0
 
   get-package-type@0.1.0: {}
+
+  get-proto@1.0.1:
+    dependencies:
+      dunder-proto: 1.0.1
+      es-object-atoms: 1.1.1
 
   get-stdin@4.0.1: {}
 
@@ -24553,7 +24595,7 @@ snapshots:
     dependencies:
       call-bind: 1.0.7
       es-errors: 1.3.0
-      get-intrinsic: 1.2.4
+      get-intrinsic: 1.3.0
 
   get-uri@6.0.3:
     dependencies:
@@ -24667,7 +24709,7 @@ snapshots:
   globalthis@1.0.4:
     dependencies:
       define-properties: 1.2.1
-      gopd: 1.0.1
+      gopd: 1.2.0
 
   globalyzer@0.1.0: {}
 
@@ -24731,9 +24773,7 @@ snapshots:
     dependencies:
       node-forge: 1.3.1
 
-  gopd@1.0.1:
-    dependencies:
-      get-intrinsic: 1.2.4
+  gopd@1.2.0: {}
 
   graceful-fs@4.2.10: {}
 
@@ -24805,15 +24845,15 @@ snapshots:
 
   has-property-descriptors@1.0.2:
     dependencies:
-      es-define-property: 1.0.0
+      es-define-property: 1.0.1
 
   has-proto@1.0.3: {}
 
-  has-symbols@1.0.3: {}
+  has-symbols@1.1.0: {}
 
   has-tostringtag@1.0.2:
     dependencies:
-      has-symbols: 1.0.3
+      has-symbols: 1.1.0
 
   has-unicode@2.0.1: {}
 
@@ -25357,7 +25397,7 @@ snapshots:
   is-array-buffer@3.0.4:
     dependencies:
       call-bind: 1.0.7
-      get-intrinsic: 1.2.4
+      get-intrinsic: 1.3.0
 
   is-arrayish@0.2.1: {}
 
@@ -25502,7 +25542,7 @@ snapshots:
 
   is-symbol@1.0.4:
     dependencies:
-      has-symbols: 1.0.3
+      has-symbols: 1.1.0
 
   is-typed-array@1.1.13:
     dependencies:
@@ -25586,7 +25626,7 @@ snapshots:
 
   istanbul-lib-source-maps@5.0.6:
     dependencies:
-      '@jridgewell/trace-mapping': 0.3.25
+      '@jridgewell/trace-mapping': 0.3.29
       debug: 4.4.1(supports-color@5.5.0)
       istanbul-lib-coverage: 3.2.2
     transitivePeerDependencies:
@@ -26085,6 +26125,10 @@ snapshots:
     dependencies:
       commander: 8.3.0
 
+  katex@0.16.22:
+    dependencies:
+      commander: 8.3.0
+
   keycloak-js@17.0.1:
     dependencies:
       base64-js: 1.5.1
@@ -26462,7 +26506,7 @@ snapshots:
 
   magic-string@0.30.11:
     dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.0
+      '@jridgewell/sourcemap-codec': 1.5.4
 
   magicast@0.3.5:
     dependencies:
@@ -26541,9 +26585,11 @@ snapshots:
 
   markdown-table@3.0.3: {}
 
-  marked@15.0.12: {}
+  marked@16.1.1: {}
 
   material-icons@1.13.12: {}
+
+  math-intrinsics@1.1.0: {}
 
   mathjax-full@3.2.2:
     dependencies:
@@ -26827,11 +26873,11 @@ snapshots:
 
   merge2@1.4.1: {}
 
-  mermaid@11.7.0:
+  mermaid@11.9.0:
     dependencies:
       '@braintree/sanitize-url': 7.1.0
       '@iconify/utils': 2.3.0
-      '@mermaid-js/parser': 0.5.0
+      '@mermaid-js/parser': 0.6.2
       '@types/d3': 7.4.3
       cytoscape: 3.30.2
       cytoscape-cose-bilkent: 4.1.0(cytoscape@3.30.2)
@@ -26841,10 +26887,10 @@ snapshots:
       dagre-d3-es: 7.0.11
       dayjs: 1.11.13
       dompurify: 3.2.6
-      katex: 0.16.21
+      katex: 0.16.22
       khroma: 2.1.0
       lodash-es: 4.17.21
-      marked: 15.0.12
+      marked: 16.1.1
       roughjs: 4.6.6
       stylis: 4.3.6
       ts-dedent: 2.2.0
@@ -27505,7 +27551,7 @@ snapshots:
       '@next/env': 14.2.30
       '@swc/helpers': 0.5.5
       busboy: 1.6.0
-      caniuse-lite: 1.0.30001723
+      caniuse-lite: 1.0.30001727
       graceful-fs: 4.2.11
       postcss: 8.4.31
       react: 18.2.0
@@ -27775,7 +27821,7 @@ snapshots:
     dependencies:
       call-bind: 1.0.7
       define-properties: 1.2.1
-      has-symbols: 1.0.3
+      has-symbols: 1.1.0
       object-keys: 1.1.1
 
   object.entries@1.1.5:
@@ -29414,8 +29460,8 @@ snapshots:
   safe-array-concat@1.1.2:
     dependencies:
       call-bind: 1.0.7
-      get-intrinsic: 1.2.4
-      has-symbols: 1.0.3
+      get-intrinsic: 1.3.0
+      has-symbols: 1.1.0
       isarray: 2.0.5
 
   safe-buffer@5.1.2: {}
@@ -29577,8 +29623,8 @@ snapshots:
       define-data-property: 1.1.4
       es-errors: 1.3.0
       function-bind: 1.1.2
-      get-intrinsic: 1.2.4
-      gopd: 1.0.1
+      get-intrinsic: 1.3.0
+      gopd: 1.2.0
       has-property-descriptors: 1.0.2
 
   set-function-name@2.0.2:
@@ -29662,7 +29708,7 @@ snapshots:
     dependencies:
       call-bind: 1.0.7
       es-errors: 1.3.0
-      get-intrinsic: 1.2.4
+      get-intrinsic: 1.3.0
       object-inspect: 1.13.1
 
   sift@16.0.1: {}
@@ -30014,8 +30060,8 @@ snapshots:
       call-bind: 1.0.7
       define-properties: 1.2.1
       es-abstract: 1.23.3
-      get-intrinsic: 1.2.4
-      has-symbols: 1.0.3
+      get-intrinsic: 1.3.0
+      has-symbols: 1.1.0
       internal-slot: 1.0.7
       regexp.prototype.flags: 1.5.2
       side-channel: 1.0.6
@@ -30031,19 +30077,19 @@ snapshots:
       call-bind: 1.0.7
       define-properties: 1.2.1
       es-abstract: 1.23.3
-      es-object-atoms: 1.0.0
+      es-object-atoms: 1.1.1
 
   string.prototype.trimend@1.0.8:
     dependencies:
       call-bind: 1.0.7
       define-properties: 1.2.1
-      es-object-atoms: 1.0.0
+      es-object-atoms: 1.1.1
 
   string.prototype.trimstart@1.0.8:
     dependencies:
       call-bind: 1.0.7
       define-properties: 1.2.1
-      es-object-atoms: 1.0.0
+      es-object-atoms: 1.1.1
 
   string_decoder@0.10.31: {}
 
@@ -30205,7 +30251,7 @@ snapshots:
 
   sucrase@3.35.0:
     dependencies:
-      '@jridgewell/gen-mapping': 0.3.8
+      '@jridgewell/gen-mapping': 0.3.12
       commander: 4.1.1
       glob: 10.4.5
       lines-and-columns: 1.1.6
@@ -30219,7 +30265,7 @@ snapshots:
       cookiejar: 2.1.4
       debug: 4.4.1(supports-color@5.5.0)
       fast-safe-stringify: 2.1.1
-      form-data: 4.0.0
+      form-data: 4.0.4
       formidable: 3.5.4
       methods: 1.1.2
       mime: 2.6.0
@@ -30419,18 +30465,18 @@ snapshots:
 
   terser-webpack-plugin@5.3.14(@swc/core@1.10.7(@swc/helpers@0.5.15))(webpack@5.92.1(@swc/core@1.10.7(@swc/helpers@0.5.15))):
     dependencies:
-      '@jridgewell/trace-mapping': 0.3.25
+      '@jridgewell/trace-mapping': 0.3.29
       jest-worker: 27.5.1
       schema-utils: 4.3.2
       serialize-javascript: 6.0.2
-      terser: 5.42.0
+      terser: 5.43.1
       webpack: 5.92.1(@swc/core@1.10.7(@swc/helpers@0.5.15))
     optionalDependencies:
       '@swc/core': 1.10.7(@swc/helpers@0.5.15)
 
-  terser@5.42.0:
+  terser@5.43.1:
     dependencies:
-      '@jridgewell/source-map': 0.3.6
+      '@jridgewell/source-map': 0.3.10
       acorn: 8.15.0
       commander: 2.20.3
       source-map-support: 0.5.21
@@ -30787,7 +30833,7 @@ snapshots:
     dependencies:
       call-bind: 1.0.7
       for-each: 0.3.3
-      gopd: 1.0.1
+      gopd: 1.2.0
       has-proto: 1.0.3
       is-typed-array: 1.1.13
 
@@ -30796,7 +30842,7 @@ snapshots:
       available-typed-arrays: 1.0.7
       call-bind: 1.0.7
       for-each: 0.3.3
-      gopd: 1.0.1
+      gopd: 1.2.0
       has-proto: 1.0.3
       is-typed-array: 1.1.13
 
@@ -30804,7 +30850,7 @@ snapshots:
     dependencies:
       call-bind: 1.0.7
       for-each: 0.3.3
-      gopd: 1.0.1
+      gopd: 1.2.0
       has-proto: 1.0.3
       is-typed-array: 1.1.13
       possible-typed-array-names: 1.0.0
@@ -30882,7 +30928,7 @@ snapshots:
     dependencies:
       call-bind: 1.0.7
       has-bigints: 1.0.2
-      has-symbols: 1.0.3
+      has-symbols: 1.1.0
       which-boxed-primitive: 1.0.2
 
   unbzip2-stream@1.4.3:
@@ -31029,9 +31075,9 @@ snapshots:
       binary: 0.3.0
       mkdirp: 0.5.6
 
-  update-browserslist-db@1.1.3(browserslist@4.25.0):
+  update-browserslist-db@1.1.3(browserslist@4.25.1):
     dependencies:
-      browserslist: 4.25.0
+      browserslist: 4.25.1
       escalade: 3.2.0
       picocolors: 1.1.1
 
@@ -31106,7 +31152,7 @@ snapshots:
       call-bind: 1.0.7
       define-properties: 1.2.1
       for-each: 0.3.3
-      has-symbols: 1.0.3
+      has-symbols: 1.1.0
       object.getownpropertydescriptors: 2.1.3
 
   utility-types@3.11.0: {}
@@ -31136,7 +31182,7 @@ snapshots:
 
   v8-to-istanbul@9.2.0:
     dependencies:
-      '@jridgewell/trace-mapping': 0.3.25
+      '@jridgewell/trace-mapping': 0.3.29
       '@types/istanbul-lib-coverage': 2.0.6
       convert-source-map: 2.0.0
 
@@ -31194,12 +31240,12 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.2
 
-  vite-node@2.1.1(@types/node@20.14.0)(sass@1.77.6)(terser@5.42.0):
+  vite-node@2.1.1(@types/node@20.14.0)(sass@1.77.6)(terser@5.43.1):
     dependencies:
       cac: 6.7.14
       debug: 4.4.1(supports-color@5.5.0)
       pathe: 1.1.2
-      vite: 5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.42.0)
+      vite: 5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.43.1)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -31211,7 +31257,7 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-dts@3.9.1(@types/node@20.14.0)(rollup@4.41.0)(typescript@5.0.4)(vite@5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.42.0)):
+  vite-plugin-dts@3.9.1(@types/node@20.14.0)(rollup@4.41.0)(typescript@5.0.4)(vite@5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.43.1)):
     dependencies:
       '@microsoft/api-extractor': 7.43.0(@types/node@20.14.0)
       '@rollup/pluginutils': 5.1.4(rollup@4.41.0)
@@ -31222,24 +31268,24 @@ snapshots:
       typescript: 5.0.4
       vue-tsc: 1.8.27(typescript@5.0.4)
     optionalDependencies:
-      vite: 5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.42.0)
+      vite: 5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.43.1)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
       - supports-color
 
-  vite-tsconfig-paths@5.0.1(typescript@5.0.4)(vite@5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.42.0)):
+  vite-tsconfig-paths@5.0.1(typescript@5.0.4)(vite@5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.43.1)):
     dependencies:
       debug: 4.4.1(supports-color@5.5.0)
       globrex: 0.1.2
       tsconfck: 3.0.3(typescript@5.0.4)
     optionalDependencies:
-      vite: 5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.42.0)
+      vite: 5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.43.1)
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  vite@5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.42.0):
+  vite@5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.43.1):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.5.5
@@ -31248,18 +31294,18 @@ snapshots:
       '@types/node': 20.14.0
       fsevents: 2.3.3
       sass: 1.77.6
-      terser: 5.42.0
+      terser: 5.43.1
 
   vitest-mock-extended@2.0.2(typescript@5.0.4)(vitest@2.1.1):
     dependencies:
       ts-essentials: 10.0.2(typescript@5.0.4)
       typescript: 5.0.4
-      vitest: 2.1.1(@types/node@20.14.0)(@vitest/ui@2.1.1)(happy-dom@15.7.4)(sass@1.77.6)(terser@5.42.0)
+      vitest: 2.1.1(@types/node@20.14.0)(@vitest/ui@2.1.1)(happy-dom@15.7.4)(sass@1.77.6)(terser@5.43.1)
 
-  vitest@2.1.1(@types/node@20.14.0)(@vitest/ui@2.1.1)(happy-dom@15.7.4)(sass@1.77.6)(terser@5.42.0):
+  vitest@2.1.1(@types/node@20.14.0)(@vitest/ui@2.1.1)(happy-dom@15.7.4)(sass@1.77.6)(terser@5.43.1):
     dependencies:
       '@vitest/expect': 2.1.1
-      '@vitest/mocker': 2.1.1(@vitest/spy@2.1.1)(vite@5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.42.0))
+      '@vitest/mocker': 2.1.1(@vitest/spy@2.1.1)(vite@5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.43.1))
       '@vitest/pretty-format': 2.1.1
       '@vitest/runner': 2.1.1
       '@vitest/snapshot': 2.1.1
@@ -31274,8 +31320,8 @@ snapshots:
       tinyexec: 0.3.0
       tinypool: 1.0.1
       tinyrainbow: 1.2.0
-      vite: 5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.42.0)
-      vite-node: 2.1.1(@types/node@20.14.0)(sass@1.77.6)(terser@5.42.0)
+      vite: 5.4.19(@types/node@20.14.0)(sass@1.77.6)(terser@5.43.1)
+      vite-node: 2.1.1(@types/node@20.14.0)(sass@1.77.6)(terser@5.43.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 20.14.0
@@ -31389,7 +31435,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  webpack-sources@3.3.2: {}
+  webpack-sources@3.3.3: {}
 
   webpack-virtual-modules@0.6.2: {}
 
@@ -31402,9 +31448,9 @@ snapshots:
       '@webassemblyjs/wasm-parser': 1.14.1
       acorn: 8.15.0
       acorn-import-attributes: 1.9.5(acorn@8.15.0)
-      browserslist: 4.25.0
+      browserslist: 4.25.1
       chrome-trace-event: 1.0.4
-      enhanced-resolve: 5.18.1
+      enhanced-resolve: 5.18.2
       es-module-lexer: 1.7.0
       eslint-scope: 5.1.1
       events: 3.3.0
@@ -31418,7 +31464,7 @@ snapshots:
       tapable: 2.2.2
       terser-webpack-plugin: 5.3.14(@swc/core@1.10.7(@swc/helpers@0.5.15))(webpack@5.92.1(@swc/core@1.10.7(@swc/helpers@0.5.15)))
       watchpack: 2.4.4
-      webpack-sources: 3.3.2
+      webpack-sources: 3.3.3
     transitivePeerDependencies:
       - '@swc/core'
       - esbuild
@@ -31463,7 +31509,7 @@ snapshots:
       available-typed-arrays: 1.0.7
       call-bind: 1.0.7
       for-each: 0.3.3
-      gopd: 1.0.1
+      gopd: 1.2.0
       has-tostringtag: 1.0.2
 
   which@1.3.1:
@@ -31600,10 +31646,10 @@ snapshots:
 
   xtend@4.0.2: {}
 
-  y-codemirror.next@0.3.5(@codemirror/state@6.5.2)(@codemirror/view@6.37.2)(yjs@13.6.19):
+  y-codemirror.next@0.3.5(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)(yjs@13.6.19):
     dependencies:
       '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.37.2
+      '@codemirror/view': 6.38.1
       lib0: 0.2.94
       yjs: 13.6.19
 
