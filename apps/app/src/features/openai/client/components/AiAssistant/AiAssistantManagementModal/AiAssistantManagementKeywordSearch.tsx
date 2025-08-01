@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 
 import type { IPageHasId } from '@growi/core';
+import { isGlobPatternPath } from '@growi/core/dist/utils/page-path-utils';
 import { type TypeaheadRef, Typeahead } from 'react-bootstrap-typeahead';
 import { useTranslation } from 'react-i18next';
 import {
@@ -46,6 +47,26 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
     includeUserPages: true,
     includeTrashPages: false,
   });
+
+  const pagesWithGlobPath = useMemo((): IPageHasId[] | undefined => {
+    if (searchResult == null) {
+      return;
+    }
+
+    const pages = searchResult.data.map(item => item.data);
+    return pages.map((page) => {
+      if (page.path === '/') {
+        page.path = '/*';
+      }
+
+      if (!isGlobPatternPath(page.path)) {
+        page.path = `${page.path}/*`;
+      }
+
+      return page;
+    });
+
+  }, [searchResult]);
 
   const shownSearchResult = useMemo(() => {
     return selectedSearchKeywords.length > 0 && searchResult != null && searchResult.data.length > 0;
@@ -150,7 +171,7 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
             </h4>
             <div className="px-4">
               <SelectablePagePageList
-                pages={searchResult?.data.map(page => page.data) ?? []}
+                pages={pagesWithGlobPath ?? []}
                 method="add"
                 onClick={addPageHandler}
                 disablePageIds={selectedPages.map(page => page._id)}
