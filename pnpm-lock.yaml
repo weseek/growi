@@ -451,6 +451,9 @@ importers:
       jotai:
         specifier: ^2.12.3
         version: 2.12.3(@types/react@18.3.3)(react@18.2.0)
+      js-cookie:
+        specifier: ^3.0.5
+        version: 3.0.5
       js-tiktoken:
         specifier: ^1.0.15
         version: 1.0.15
@@ -833,6 +836,9 @@ importers:
       '@types/jest':
         specifier: ^29.5.2
         version: 29.5.12
+      '@types/js-cookie':
+        specifier: ^3.0.6
+        version: 3.0.6
       '@types/ldapjs':
         specifier: ^2.2.5
         version: 2.2.5
@@ -3135,6 +3141,7 @@ packages:
 
   '@handsontable/react@2.1.0':
     resolution: {integrity: sha512-Du73MFU2y1Bfe9m7mvxY70lB2R/VigFSpOwWZjDnUt/HwNPbNr+UQcY40w6u7acllQeee45H7jRdEExzsrvDKw==}
+    deprecated: Handsontable for React is now available as @handsontable/react-wrapper.
     peerDependencies:
       handsontable: '>=6.0.0'
 
@@ -5566,6 +5573,9 @@ packages:
 
   '@types/jest@29.5.12':
     resolution: {integrity: sha512-eDC8bTvT/QhYdxJAulQikueigY5AsdBRH2yDKW3yveW7svY3+DzN84/2NUgkw10RTiJbWqZrTtoGVdYlvFJdLw==}
+
+  '@types/js-cookie@3.0.6':
+    resolution: {integrity: sha512-wkw9yd1kEXOPnvEeEV1Go1MmxtBJL0RR79aOTAApecWFVu7w0NNXNqhcWgvw2YgZDYadliXkl14pa3WXw5jlCQ==}
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
@@ -10194,6 +10204,10 @@ packages:
 
   jpeg-js@0.4.4:
     resolution: {integrity: sha512-WZzeDOEtTOBK4Mdsar0IqEU5sMr3vSV2RqkAIzUEV2BHnUfKGyswWFPFwK5EeDo93K3FohSHbLAjj0s1Wzd+dg==}
+
+  js-cookie@3.0.5:
+    resolution: {integrity: sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==}
+    engines: {node: '>=14'}
 
   js-levenshtein@1.1.6:
     resolution: {integrity: sha512-X2BB11YZtrRqY4EnQcLX5Rh373zbK4alC1FW7D7MBhL2gtcC17cTnr6DmfHZeS0s2rTHjUTMMHfG7gO8SSdw+g==}
@@ -20921,6 +20935,8 @@ snapshots:
       expect: 29.7.0
       pretty-format: 29.7.0
 
+  '@types/js-cookie@3.0.6': {}
+
   '@types/json-schema@7.0.15': {}
 
   '@types/json-schema@7.0.6': {}
@@ -26284,6 +26300,8 @@ snapshots:
       react: 18.2.0
 
   jpeg-js@0.4.4: {}
+
+  js-cookie@3.0.5: {}
 
   js-levenshtein@1.1.6: {}
 

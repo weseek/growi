@@ -18,6 +18,7 @@ import { useHydrateGlobalAtoms } from '~/states/hydrate/global';
 import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
 import { getLocaleAtServerSide, type CommonProps } from './utils/commons';
+import { useNextjsRoutingPageRegister } from './utils/nextjs-routing-utils';
 import { registerTransformerForObjectId } from './utils/objectid-transformer';
 
 import '~/styles/prebuilt/vendor.css';
@@ -39,6 +40,14 @@ registerTransformerForObjectId();
 function GrowiApp({ Component, pageProps, userLocale }: GrowiAppProps): JSX.Element {
   const router = useRouter();
 
+  const commonPageProps = pageProps as CommonProps;
+
+  // Hydrate global atoms with server-side data
+  useHydrateGlobalAtoms(commonPageProps);
+  useAutoUpdateGlobalAtoms(commonPageProps);
+
+  useNextjsRoutingPageRegister(commonPageProps.nextjsRoutingPage);
+
   useEffect(() => {
     const updateLangAttribute = () => {
       if (document.documentElement.getAttribute('lang') !== userLocale) {
@@ -54,12 +63,6 @@ function GrowiApp({ Component, pageProps, userLocale }: GrowiAppProps): JSX.Elem
   useEffect(() => {
     import('bootstrap/dist/js/bootstrap');
   }, []);
-
-  const commonPageProps = pageProps as CommonProps;
-
-  // Hydrate global atoms with server-side data
-  useHydrateGlobalAtoms(commonPageProps);
-  useAutoUpdateGlobalAtoms(commonPageProps);
 
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? (page => page);

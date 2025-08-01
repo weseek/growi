@@ -1,5 +1,5 @@
 import type { ReactNode, JSX } from 'react';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 
 import EventEmitter from 'events';
 
@@ -66,6 +66,7 @@ import {
   getServerSidePageTitleCustomizationProps,
   getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, skipSSR, addActivity,
 } from './utils/commons';
+import { detectNextjsRoutingType } from './utils/nextjs-routing-utils';
 
 
 declare global {
@@ -628,9 +629,16 @@ const getAction = (props: Props): SupportedActionType => {
   return SupportedAction.ACTION_PAGE_VIEW;
 };
 
+const NEXT_JS_ROUTING_PAGE = '[[...path]]';
+
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest;
   const { user } = req;
+
+  // detect Next.js routing type
+  const nextjsRoutingType = detectNextjsRoutingType(context, NEXT_JS_ROUTING_PAGE);
+
+  console.log('=== getServerSideProps ===', { nextjsRoutingType });
 
   const commonPropsResult = await getServerSideCommonProps(context);
   const pageTitleCustomizeationPropsResult = await getServerSidePageTitleCustomizationProps(context);
@@ -644,6 +652,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const props: Props = {
     ...commonPropsResult.props,
     ...pageTitleCustomizeationPropsResult.props,
+    nextjsRoutingPage: NEXT_JS_ROUTING_PAGE,
   } as Props;
 
   if (props.redirectDestination != null) {

@@ -18,6 +18,7 @@ import { getGrowiVersion } from '~/utils/growi-version';
 export type CommonProps = {
   currentPathname: string,
   currentUser?: IUserHasId,
+  nextjsRoutingPage?: string,
   appTitle: string,
   siteUrl: string | undefined,
   csrfToken: string,
