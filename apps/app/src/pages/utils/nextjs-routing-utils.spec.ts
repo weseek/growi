@@ -12,9 +12,7 @@
 import { renderHook } from '@testing-library/react';
 import Cookies from 'js-cookie';
 import { type GetServerSidePropsContext } from 'next';
-import {
-  beforeEach, describe, expect, it, vi,
-} from 'vitest';
+import { mock } from 'vitest-mock-extended';
 
 import { useNextjsRoutingPageRegister, detectNextjsRoutingType } from './nextjs-routing-utils';
 
@@ -125,19 +123,49 @@ describe('nextjs-routing-utils', () => {
   });
 
   describe('detectNextjsRoutingType', () => {
+    // Type-safe helper function to create mock contexts using vitest-mock-extended
     const createMockContext = (
         hasNextjsHeader: boolean,
         cookieValue?: string,
-    ): GetServerSidePropsContext => ({
-      req: {
-        headers: hasNextjsHeader ? { 'x-nextjs-data': '1' } : {},
-        cookies: cookieValue ? { nextjsRoutingPage: cookieValue } : {},
-      } as unknown as GetServerSidePropsContext['req'],
-      res: {} as unknown as GetServerSidePropsContext['res'],
-      query: {},
-      params: {},
-      resolvedUrl: '/test',
-    });
+    ): GetServerSidePropsContext => {
+      const mockReq = mock<GetServerSidePropsContext['req']>();
+      const mockRes = mock<GetServerSidePropsContext['res']>();
+
+      // Configure mock request headers
+      mockReq.headers = hasNextjsHeader ? { 'x-nextjs-data': '1' } : {};
+
+      // Configure mock request cookies
+      mockReq.cookies = cookieValue ? { nextjsRoutingPage: cookieValue } : {};
+
+      return {
+        req: mockReq,
+        res: mockRes,
+        query: {},
+        params: {},
+        resolvedUrl: '/test',
+      };
+    };
+
+    // Helper function for special edge cases requiring type coercion
+    const createMockContextWithSpecialValues = (
+        headerValue: string | undefined,
+        cookieValue: string | null,
+    ): GetServerSidePropsContext => {
+      const mockReq = mock<GetServerSidePropsContext['req']>();
+      const mockRes = mock<GetServerSidePropsContext['res']>();
+
+      // For edge cases where we need to simulate invalid types that can occur at runtime
+      mockReq.headers = headerValue !== undefined ? { 'x-nextjs-data': headerValue } : {};
+      mockReq.cookies = cookieValue !== null ? { nextjsRoutingPage: cookieValue as string } : {};
+
+      return {
+        req: mockReq,
+        res: mockRes,
+        query: {},
+        params: {},
+        resolvedUrl: '/test',
+      };
+    };
 
     it('should return INITIAL when request is not CSR (no x-nextjs-data header)', () => {
       const context = createMockContext(false);
@@ -185,33 +213,19 @@ describe('nextjs-routing-utils', () => {
     });
 
     it('should handle x-nextjs-data header with different truthy values', () => {
-      const contextWithTruthyHeader: GetServerSidePropsContext = {
-        req: {
-          headers: { 'x-nextjs-data': 'some-value' },
-          cookies: { nextjsRoutingPage: '/test-page' },
-        } as unknown as GetServerSidePropsContext['req'],
-        res: {} as unknown as GetServerSidePropsContext['res'],
-        query: {},
-        params: {},
-        resolvedUrl: '/test',
-      };
+      const context = createMockContext(true, '/test-page');
+      // Override the header value to test different truthy values
+      const mockReq = context.req as typeof context.req & { headers: Record<string, string> };
+      mockReq.headers = { 'x-nextjs-data': 'some-value' };
 
-      const result = detectNextjsRoutingType(contextWithTruthyHeader, '/test-page');
+      const result = detectNextjsRoutingType(context, '/test-page');
 
       expect(result).toBe('same-route');
     });
 
     it('should handle edge case where cookie value is null but previousRoutingPage exists', () => {
-      const context: GetServerSidePropsContext = {
-        req: {
-          headers: { 'x-nextjs-data': '1' },
-          cookies: { nextjsRoutingPage: null as unknown as string }, // Simulating null value
-        } as unknown as GetServerSidePropsContext['req'],
-        res: {} as unknown as GetServerSidePropsContext['res'],
-        query: {},
-        params: {},
-        resolvedUrl: '/test',
-      };
+      // Using helper function for edge case where we need to simulate runtime null values
+      const context = createMockContextWithSpecialValues('1', null);
 
       const result = detectNextjsRoutingType(context, '/previous-page');
 
@@ -219,12 +233,15 @@ describe('nextjs-routing-utils', () => {
     });
 
     it('should handle missing x-nextjs-data header even when cookies are present', () => {
+      const mockReq = mock<GetServerSidePropsContext['req']>();
+      const mockRes = mock<GetServerSidePropsContext['res']>();
+
+      mockReq.headers = {}; // No x-nextjs-data header
+      mockReq.cookies = { nextjsRoutingPage: '/test-page' };
+
       const context: GetServerSidePropsContext = {
-        req: {
-          headers: {}, // No x-nextjs-data header
-          cookies: { nextjsRoutingPage: '/test-page' },
-        } as unknown as GetServerSidePropsContext['req'],
-        res: {} as unknown as GetServerSidePropsContext['res'],
+        req: mockReq,
+        res: mockRes,
         query: {},
         params: {},
         resolvedUrl: '/test',
@@ -236,16 +253,8 @@ describe('nextjs-routing-utils', () => {
     });
 
     it('should handle undefined x-nextjs-data header value', () => {
-      const context: GetServerSidePropsContext = {
-        req: {
-          headers: { 'x-nextjs-data': undefined as unknown as string },
-          cookies: { nextjsRoutingPage: '/test-page' },
-        } as unknown as GetServerSidePropsContext['req'],
-        res: {} as unknown as GetServerSidePropsContext['res'],
-        query: {},
-        params: {},
-        resolvedUrl: '/test',
-      };
+      // Using helper function for edge case where header value is undefined
+      const context = createMockContextWithSpecialValues(undefined, '/test-page');
 
       const result = detectNextjsRoutingType(context, '/test-page');
 
