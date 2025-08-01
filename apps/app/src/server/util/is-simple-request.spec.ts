@@ -13,17 +13,9 @@ describe('isSimpleRequest', () => {
     describe('When allowed method is given', () => {
       const allowedMethods = ['GET', 'HEAD', 'POST'];
       it.each(allowedMethods)('returns true for %s method', (method) => {
-        const reqMock = mock<Request>({
-          method,
-          headers: { 'content-type': 'text/plain' },
-        });
-
-        console.log('Method:', reqMock.method);
-        console.log('Headers:', reqMock.headers);
-        console.log('Object.keys(headers):', Object.keys(reqMock.headers));
-        console.log('Headers length:', Object.keys(reqMock.headers).length);
-        console.log('Result:', isSimpleRequest(reqMock));
-
+        const reqMock = mock<Request>();
+        reqMock.method = method;
+        reqMock.headers = { 'content-type': 'text/plain' };
         expect(isSimpleRequest(reqMock)).toBe(true);
       });
     });
@@ -31,12 +23,10 @@ describe('isSimpleRequest', () => {
     // disallow
     describe('When disallowed method is given', () => {
       const disallowedMethods = ['PUT', 'DELETE', 'PATCH', 'OPTIONS', 'TRACE'];
-
       it.each(disallowedMethods)('returns false for %s method', (method) => {
-        const reqMock = mock<Request>({
-          method,
-          headers: {},
-        });
+        const reqMock = mock<Request>();
+        reqMock.method = method;
+        reqMock.headers = {};
         expect(isSimpleRequest(reqMock)).toBe(false);
       });
     });
@@ -62,10 +52,11 @@ describe('isSimpleRequest', () => {
         'width',
       ];
       it.each(safeHeaders)('returns true for safe header: %s', (headerName) => {
-        const reqMock = mock<Request>({
-          method: 'POST',
-          headers: { [headerName]: 'test-value' },
-        });
+        const reqMock = mock<Request>();
+        reqMock.method = 'POST';
+        reqMock.headers = {
+          [headerName]: 'test-value',
+        };
         expect(isSimpleRequest(reqMock)).toBe(true);
       });
       // content-type
@@ -76,23 +67,21 @@ describe('isSimpleRequest', () => {
           'text/plain',
         ];
         validContentTypes.forEach((contentType) => {
-          const reqMock = mock<Request>({
-            method: 'POST',
-            headers: { 'content-type': contentType },
-          });
+          const reqMock = mock<Request>();
+          reqMock.method = 'POST';
+          reqMock.headers = { 'content-type': contentType };
           expect(isSimpleRequest(reqMock)).toBe(true);
         });
       });
       // combination
       it('returns true for combination of safe headers', () => {
-        const reqMock = mock<Request>({
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'text/plain',
-            'Accept-Language': 'en-US',
-          },
-        });
+        const reqMock = mock<Request>();
+        reqMock.method = 'POST';
+        reqMock.headers = {
+          Accept: 'application/json',
+          'content-Type': 'text/plain',
+          'Accept-Language': 'en-US',
+        };
         expect(isSimpleRequest(reqMock)).toBe(true);
       });
     });
@@ -114,13 +103,12 @@ describe('isSimpleRequest', () => {
       });
       // combination
       it('returns false when safe and unsafe headers are mixed', () => {
-        const reqMock = mock<Request>({
-          method: 'POST',
-          headers: {
-            Accept: 'application/json', // Safe
-            'X-Custom-Header': 'custom-value', // Unsafe
-          },
-        });
+        const reqMock = mock<Request>();
+        reqMock.method = 'POST';
+        reqMock.headers = {
+          Accept: 'application/json', // Safe
+          'X-Custom-Header': 'custom-value', // Unsafe
+        };
         expect(isSimpleRequest(reqMock)).toBe(false);
       });
     });
@@ -143,21 +131,20 @@ describe('isSimpleRequest', () => {
         'text/plain; charset=iso-8859-1',
       ];
       it.each(safeContentTypes)('returns true for %s', (contentType) => {
-        const reqMock = mock<Request>({
-          method: 'POST',
-          headers: { 'Content-Type': contentType },
-        });
+        const reqMock = mock<Request>();
+        reqMock.method = 'POST';
+        reqMock.headers = {
+          'content-type': contentType,
+        };
         expect(isSimpleRequest(reqMock)).toBe(true);
       });
     });
-
     // absent
     describe('When content-type is absent', () => {
       it('returns true when no content-type header is set', () => {
-        const reqMock = mock<Request>({
-          method: 'POST',
-          headers: {},
-        });
+        const reqMock = mock<Request>();
+        reqMock.method = 'POST';
+        reqMock.headers = {};
         expect(isSimpleRequest(reqMock)).toBe(true);
       });
     });
@@ -171,46 +158,41 @@ describe('isSimpleRequest', () => {
         'application/octet-stream',
       ];
       it.each(disallowedContentTypes)('returns false for %s', (contentType) => {
-        const reqMock = mock<Request>({
-          method: 'POST',
-          headers: { 'Content-Type': contentType },
-        });
+        const reqMock = mock<Request>();
+        reqMock.method = 'POST';
+        reqMock.headers = { 'content-type': contentType };
         expect(isSimpleRequest(reqMock)).toBe(false);
       });
     });
 
   });
 
-
   // integration
   describe('When multiple conditions are checked', () => {
 
     describe('When all conditions are met', () => {
       it('returns true', () => {
-        const reqMock = mock<Request>({
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        });
+        const reqMock = mock<Request>();
+        reqMock.method = 'POST';
+        reqMock.headers = { 'content-type': 'application/x-www-form-urlencoded' };
         expect(isSimpleRequest(reqMock)).toBe(true);
       });
     });
 
     describe('When method is disallowed but headers are safe', () => {
       it('returns false', () => {
-        const reqMock = mock<Request>({
-          method: 'PUT',
-          headers: { 'Content-Type': 'text/plain' },
-        });
+        const reqMock = mock<Request>();
+        reqMock.method = 'PUT';
+        reqMock.headers = { 'content-type': 'text/plain' };
         expect(isSimpleRequest(reqMock)).toBe(false);
       });
     });
 
     describe('When method is allowed but headers are non-safe', () => {
       it('returns false', () => {
-        const reqMock = mock<Request>({
-          method: 'POST',
-          headers: { 'X-Custom-Header': 'custom-value' },
-        });
+        const reqMock = mock<Request>();
+        reqMock.method = 'POST';
+        reqMock.headers = { 'X-Custom-Header': 'custom-value' };
         expect(isSimpleRequest(reqMock)).toBe(false);
       });
     });
