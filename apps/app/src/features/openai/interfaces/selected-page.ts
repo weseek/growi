@@ -1,6 +1,8 @@
+import type { IPageHasId } from '@growi/core';
+
 import type { IPageForItem } from '~/interfaces/page';
 
 export type SelectedPage = {
-  page: IPageForItem,
+  page: IPageForItem | IPageHasId,
   isIncludeSubPage: boolean,
 }

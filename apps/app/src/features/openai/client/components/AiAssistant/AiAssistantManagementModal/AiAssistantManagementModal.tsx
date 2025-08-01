@@ -2,9 +2,11 @@ import React, {
   useCallback, useState, useEffect, type JSX,
 } from 'react';
 
+import type { IPageHasId } from '@growi/core';
 import {
   type IGrantedGroup, isPopulated,
 } from '@growi/core';
+import { isGlobPatternPath } from '@growi/core/dist/utils/page-path-utils';
 import { useTranslation } from 'react-i18next';
 import { Modal, TabContent, TabPane } from 'reactstrap';
 
@@ -113,6 +115,28 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
       setSelectedPages(convertToSelectedPages(aiAssistant.pagePathPatterns, pagePathsWithDescendantCount));
     }
   }, [aiAssistant?.pagePathPatterns, pagePathsWithDescendantCount, shouldEdit]);
+
+
+  /*
+  *  For AiAssistantManagementKeywordSearch methods
+  */
+  const selectPageHandlerByKeywordSearch = useCallback((pages: IPageHasId[]) => {
+    if (pages.length === 0) {
+      return;
+    }
+
+    const convertedSelectedPages = pages.map((page) => {
+      const pagePath = page.path;
+      page.path = removeGlobPath([pagePath])[0];
+
+      return {
+        page,
+        isIncludeSubPage: isGlobPatternPath(pagePath),
+      };
+    });
+
+    setSelectedPages(convertedSelectedPages);
+  }, []);
 
 
   /*
@@ -246,7 +270,9 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
         </TabPane>
 
         <TabPane tabId={AiAssistantManagementModalPageMode.KEYWORD_SEARCH}>
-          <AiAssistantKeywordSearch />
+          <AiAssistantKeywordSearch
+            updateBaseSelectedPages={selectPageHandlerByKeywordSearch}
+          />
         </TabPane>
 
         <TabPane tabId={AiAssistantManagementModalPageMode.HOME}>

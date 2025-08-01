@@ -12,6 +12,7 @@ import {
 
 import { useSWRxSearch } from '~/stores/search';
 
+import type { SelectedPage } from '../../../../interfaces/selected-page';
 import {
   useAiAssistantManagementModal, AiAssistantManagementModalPageMode,
 } from '../../../stores/ai-assistant';
@@ -32,7 +33,10 @@ const isSelectedSearchKeyword = (value: unknown): value is SelectedSearchKeyword
   return (value as SelectedSearchKeyword).label != null;
 };
 
-export const AiAssistantKeywordSearch = (): JSX.Element => {
+
+export const AiAssistantKeywordSearch = (props: { updateBaseSelectedPages: (pages: IPageHasId[]) => void}): JSX.Element => {
+  const { updateBaseSelectedPages } = props;
+
   const [selectedSearchKeywords, setSelectedSearchKeywords] = useState<Array<SelectedSearchKeyword>>([]);
   const [selectedPages, setSelectedPages] = useState<Array<IPageHasId>>([]);
 
@@ -73,7 +77,7 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
   }, [searchResult, selectedSearchKeywords.length]);
 
 
-  const { data: aiAssistantManagementModalData } = useAiAssistantManagementModal();
+  const { data: aiAssistantManagementModalData, changePageMode } = useAiAssistantManagementModal();
   const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
 
   const typeaheadRef = useRef<TypeaheadRef>(null);
@@ -132,6 +136,11 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
       return prevSelectedPages.filter(selectedPage => selectedPage._id !== page._id);
     });
   }, []);
+
+  const nextButtonClickHandler = useCallback(() => {
+    updateBaseSelectedPages(selectedPages);
+    changePageMode(AiAssistantManagementModalPageMode.HOME);
+  }, [changePageMode, selectedPages, updateBaseSelectedPages]);
 
   return (
     <div className={moduleClass}>
@@ -208,7 +217,11 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
         </div>
 
         <div className="d-flex justify-content-center mt-4">
-          <button type="button" className="btn btn-primary rounded next-button">
+          <button
+            type="button"
+            className="btn btn-primary rounded next-button"
+            onClick={nextButtonClickHandler}
+          >
             {t('modal_ai_assistant.next')}
           </button>
         </div>
