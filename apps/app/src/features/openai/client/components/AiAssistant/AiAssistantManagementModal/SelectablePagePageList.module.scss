@@ -5,9 +5,9 @@
 // == Colors
 @include bs.color-mode(light) {
   .selectable-page-page-list :global {
-    .list-group-item {
+    .page-list-item {
       background-color: #{bs.$gray-100};
-        &:hover {
+        &:not(.card):hover {
           background-color: var(--grw-primary-100);
       }
     }
@@ -16,9 +16,9 @@
 
 @include bs.color-mode(dark) {
   .selectable-page-page-list :global {
-    .list-group-item {
+    .page-list-item {
       background-color: #{bs.$gray-900};
-      &:hover {
+      &:not(.card):hover {
         background-color: var(--grw-primary-800);
       }
     }

@@ -194,23 +194,11 @@ export const AiAssistantKeywordSearch = (props: { updateBaseSelectedPages: (page
         </h4>
 
         <div className="px-4">
-          { selectedPages.length > 0
-            ? (
-              <SelectablePagePageList
-                pages={selectedPages}
-                method="remove"
-                onClickMethodButton={removePageHandler}
-              />
-            )
-            : (
-              <div className="card bg-light border-0 text-center px-4">
-                <div className="card-body">
-                  <p className="text-muted mb-0">{t('modal_ai_assistant.no_pages_selected')}</p>
-                </div>
-              </div>
-            )
-          }
-
+          <SelectablePagePageList
+            pages={selectedPages}
+            method="remove"
+            onClickMethodButton={removePageHandler}
+          />
           <label className="form-text text-muted mt-2">
             {t('modal_ai_assistant.can_add_later')}
           </label>

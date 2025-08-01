@@ -1,4 +1,5 @@
 import type { IPageHasId } from '@growi/core';
+import { useTranslation } from 'react-i18next';
 
 import styles from './SelectablePagePageList.module.scss';
 
@@ -16,6 +17,20 @@ export const SelectablePagePageList = (props: Props): JSX.Element => {
     pages, method, disablePageIds, onClickMethodButton,
   } = props;
 
+  const { t } = useTranslation();
+
+  if (pages.length === 0) {
+    return (
+      <div className={moduleClass}>
+        <div className="card border-0 text-center page-list-item">
+          <div className="card-body">
+            <p className="text-muted mb-0">{t('modal_ai_assistant.no_pages_selected')}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`list-group ${moduleClass}`}>
       {pages.map((page) => {
@@ -23,7 +38,7 @@ export const SelectablePagePageList = (props: Props): JSX.Element => {
           <button
             key={page._id}
             type="button"
-            className="list-group-item border-0 list-group-item-action d-flex align-items-center p-1 mb-2 rounded"
+            className="list-group-item border-0 list-group-item-action page-list-item d-flex align-items-center p-1 mb-2 rounded"
             onClick={(e) => {
               e.stopPropagation();
             }}
