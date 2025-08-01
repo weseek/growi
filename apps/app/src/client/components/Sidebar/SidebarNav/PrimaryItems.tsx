@@ -3,12 +3,14 @@ import { memo } from 'react';
 import dynamic from 'next/dynamic';
 
 import { SidebarContentsType } from '~/interfaces/ui';
-import { useIsAiEnabled, useIsGuestUser } from '~/stores-universal/context';
+import { useIsGuestUser } from '~/states/context';
 import { useSidebarMode } from '~/states/ui/sidebar';
+import { useIsAiEnabled } from '~/stores-universal/context';
 
 import { PrimaryItem } from './PrimaryItem';
 
 import styles from './PrimaryItems.module.scss';
+
 
 // Do not SSR Socket.io to make it work
 const PrimaryItemForNotification = dynamic(
@@ -24,7 +26,7 @@ export const PrimaryItems = memo((props: Props) => {
 
   const { sidebarMode } = useSidebarMode();
   const { data: isAiEnabled } = useIsAiEnabled();
-  const { data: isGuestUser } = useIsGuestUser();
+  const [isGuestUser] = useIsGuestUser();
 
   if (sidebarMode == null) {
     return <></>;

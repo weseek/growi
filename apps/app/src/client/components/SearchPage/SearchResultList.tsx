@@ -11,7 +11,7 @@ import { useTranslation } from 'next-i18next';
 import type { ISelectable, ISelectableAll } from '~/client/interfaces/selectable-all';
 import { toastSuccess } from '~/client/util/toastr';
 import type { IPageSearchMeta, IPageWithSearchMeta } from '~/interfaces/search';
-import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
+import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
 import { mutatePageTree, useSWRxPageInfoForList, mutateRecentlyUpdated } from '~/stores/page-listing';
 import { mutateSearching } from '~/stores/search';
 
@@ -39,8 +39,8 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
     .filter(page => (page.meta?.elasticSearchResult?.snippet?.length ?? 0) === 0)
     .map(page => page.data._id);
 
-  const { data: isGuestUser } = useIsGuestUser();
-  const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const [isGuestUser] = useIsGuestUser();
+  const [isReadOnlyUser] = useIsReadOnlyUser();
   const { data: idToPageInfo } = useSWRxPageInfoForList(pageIdsWithNoSnippet, null, true, true);
 
   const itemsRef = useRef<(ISelectable|null)[]>([]);

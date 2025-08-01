@@ -9,9 +9,9 @@ import useSWRImmutable from 'swr/immutable';
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import type { SlackChannels } from '~/interfaces/user-trigger-notification';
-import {
-  useCurrentUser, useDefaultIndentSize, useIsGuestUser, useIsReadOnlyUser,
-} from '~/stores-universal/context';
+import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
+import { useCurrentUser } from '~/states/global';
+import { useDefaultIndentSize } from '~/stores-universal/context';
 
 // import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useSWRxTagsInfo } from './page';
@@ -35,9 +35,9 @@ type EditorSettingsOperation = {
 //   - Unabling localStorageMiddleware occurrs a flickering problem when loading theme.
 //   - see: https://github.com/weseek/growi/pull/6781#discussion_r1000285786
 export const useEditorSettings = (): SWRResponseWithUtils<EditorSettingsOperation, EditorSettings, Error> => {
-  const { data: currentUser } = useCurrentUser();
-  const { data: isGuestUser } = useIsGuestUser();
-  const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const [currentUser] = useCurrentUser();
+  const [isGuestUser] = useIsGuestUser();
+  const [isReadOnlyUser] = useIsReadOnlyUser();
 
   const swrResult = useSWRImmutable(
     (isGuestUser || isReadOnlyUser) ? null : ['/personal-setting/editor-settings', currentUser?.username],

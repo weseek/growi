@@ -9,8 +9,8 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import { toastSuccess } from '~/client/util/toastr';
 import type { OnDeletedFunction } from '~/interfaces/ui';
+import { useIsReadOnlyUser } from '~/states/context';
 import { useCurrentPageData } from '~/states/page';
-import { useIsReadOnlyUser } from '~/stores-universal/context';
 import {
   useSWRxUserBookmarks, useSWRMUTxCurrentUserBookmarks,
 } from '~/stores/bookmark';
@@ -42,7 +42,7 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const [isReadOnlyUser] = useIsReadOnlyUser();
   const [currentPage] = useCurrentPageData();
   const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild(userId);
   const { data: userBookmarks, mutate: mutateUserBookmarks } = useSWRxUserBookmarks(userId ?? null);

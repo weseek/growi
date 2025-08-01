@@ -7,7 +7,8 @@ import {
   apiv3Delete, apiv3PostForm, apiv3Put,
 } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { useIsDefaultLogo, useIsCustomizedLogoUploaded } from '~/stores-universal/context';
+import { useIsDefaultLogo } from '~/states/global';
+import { useIsCustomizedLogoUploaded } from '~/stores-universal/context';
 
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
@@ -18,7 +19,7 @@ const CUSTOMIZED_LOGO = '/attachment/brand-logo';
 const CustomizeLogoSetting = (): JSX.Element => {
 
   const { t } = useTranslation();
-  const { data: isDefaultLogo } = useIsDefaultLogo();
+  const [isDefaultLogo] = useIsDefaultLogo();
   const { data: isCustomizedLogoUploaded, mutate: mutateIsCustomizedLogoUploaded } = useIsCustomizedLogoUploaded();
 
   const [uploadLogoSrc, setUploadLogoSrc] = useState<ArrayBuffer | string | null>(null);

@@ -4,7 +4,7 @@ import type { SWRConfiguration, SWRResponse } from 'swr';
 import useSWR from 'swr';
 
 import type { IExternalAuthProviderType } from '~/interfaces/external-auth-provider';
-import { useIsGuestUser } from '~/stores-universal/context';
+import { useIsGuestUser } from '~/states/context';
 import loggerFactory from '~/utils/logger';
 
 import { apiv3Get, apiv3Put } from '../client/util/apiv3-client';
@@ -16,7 +16,7 @@ const logger = loggerFactory('growi:stores:personal-settings');
 
 
 export const useSWRxPersonalSettings = (config?: SWRConfiguration): SWRResponse<IUser, Error> => {
-  const { data: isGuestUser } = useIsGuestUser();
+  const [isGuestUser] = useIsGuestUser();
 
   const key = !isGuestUser ? '/personal-setting' : null;
 

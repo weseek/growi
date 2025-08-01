@@ -10,7 +10,8 @@ import { debounce } from 'throttle-debounce';
 
 import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
-import { useIsSearchServiceReachable, useSiteUrl } from '~/stores-universal/context';
+import { useSiteUrl } from '~/states/global';
+import { useIsSearchServiceReachable } from '~/stores-universal/context';
 import { usePageDuplicateModal } from '~/stores/modal';
 
 import DuplicatePathsTable from './DuplicatedPathsTable';
@@ -21,7 +22,7 @@ import PagePathAutoComplete from './PagePathAutoComplete';
 const PageDuplicateModal = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const { data: siteUrl } = useSiteUrl();
+  const [siteUrl] = useSiteUrl();
   const { data: isReachable } = useIsSearchServiceReachable();
 
   const { data: duplicateModalData, close: closeDuplicateModal } = usePageDuplicateModal();

@@ -24,11 +24,11 @@ import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import { usePageBulkExportSelectModal } from '~/features/page-bulk-export/client/stores/modal';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
+import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
+import { useCurrentPathname, useCurrentUser } from '~/states/global';
 import { useCurrentPageId, useFetchCurrentPage } from '~/states/page';
 import {
-  useCurrentPathname,
-  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsBulkExportPagesEnabled,
-  useIsLocalAccountRegistrationEnabled, useIsSharedUser, useShareLinkId, useIsUploadEnabled,
+  useIsBulkExportPagesEnabled, useIsLocalAccountRegistrationEnabled, useIsSharedUser, useShareLinkId, useIsUploadEnabled,
 } from '~/stores-universal/context';
 import { useEditorMode } from '~/stores-universal/ui';
 import {
@@ -77,8 +77,8 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
     pageId, revisionId, isLinkSharingDisabled,
   } = props;
 
-  const { data: isGuestUser } = useIsGuestUser();
-  const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const [isGuestUser] = useIsGuestUser();
+  const [isReadOnlyUser] = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: isBulkExportPagesEnabled } = useIsBulkExportPagesEnabled();
   const { data: isUploadEnabled } = useIsUploadEnabled();
@@ -257,7 +257,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: shareLinkId } = useShareLinkId();
   const { fetchCurrentPage } = useFetchCurrentPage();
 
-  const { data: currentPathname } = useCurrentPathname();
+  const [currentPathname] = useCurrentPathname();
   const isSharedPage = pagePathUtils.isSharedPage(currentPathname ?? '');
 
   const revision = currentPage?.revision;
@@ -265,9 +265,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const { data: editorMode } = useEditorMode();
   const [pageId] = useCurrentPageId();
-  const { data: currentUser } = useCurrentUser();
-  const { data: isGuestUser } = useIsGuestUser();
-  const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const [currentUser] = useCurrentUser();
+  const [isGuestUser] = useIsGuestUser();
+  const [isReadOnlyUser] = useIsReadOnlyUser();
   const { data: isLocalAccountRegistrationEnabled } = useIsLocalAccountRegistrationEnabled();
   const { data: isSharedUser } = useIsSharedUser();
 

@@ -5,8 +5,8 @@ import React, {
 import type { IAttachmentHasId } from '@growi/core';
 import { LoadingSpinner } from '@growi/ui/dist/components';
 
+import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
 import { useCurrentPageData, useCurrentPageId } from '~/states/page';
-import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
 import { useSWRxAttachments } from '~/stores/attachment';
 import { useDeleteAttachmentModal } from '~/stores/modal';
 
@@ -23,8 +23,8 @@ const PageAttachment = (): JSX.Element => {
   const [pageId] = useCurrentPageId();
   const [currentPage] = useCurrentPageData();
 
-  const { data: isGuestUser } = useIsGuestUser();
-  const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const [isGuestUser] = useIsGuestUser();
+  const [isReadOnlyUser] = useIsReadOnlyUser();
 
   const isPageAttachmentDisabled = !!isGuestUser || !!isReadOnlyUser;
 

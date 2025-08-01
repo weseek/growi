@@ -6,7 +6,8 @@ import dynamic from 'next/dynamic';
 
 import { toastSuccess } from '~/client/util/toastr';
 import type { IPagingResult } from '~/interfaces/paging-result';
-import { useIsReadOnlyUser, useShowPageLimitationXL } from '~/stores-universal/context';
+import { useIsReadOnlyUser } from '~/states/context';
+import { useShowPageLimitationXL } from '~/stores-universal/context';
 import { useEmptyTrashModal } from '~/stores/modal';
 import { useSWRxPageInfoForList, useSWRxPageList } from '~/stores/page-listing';
 
@@ -26,7 +27,7 @@ const useEmptyTrashButton = () => {
 
   const { t } = useTranslation();
   const { data: limit } = useShowPageLimitationXL();
-  const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const [isReadOnlyUser] = useIsReadOnlyUser();
   const { data: pagingResult, mutate: mutatePageLists } = useSWRxPageList('/trash', 1, limit);
   const { open: openEmptyTrashModal } = useEmptyTrashModal();
 

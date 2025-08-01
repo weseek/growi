@@ -11,8 +11,9 @@ import type { ISelectableAll } from '~/client/interfaces/selectable-all';
 import { toastSuccess } from '~/client/util/toastr';
 import type { IFormattedSearchResult, IPageWithSearchMeta } from '~/interfaces/search';
 import type { OnDeletedFunction } from '~/interfaces/ui';
+import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
 import {
-  useIsGuestUser, useIsReadOnlyUser, useIsSearchServiceConfigured, useIsSearchServiceReachable,
+  useIsSearchServiceConfigured, useIsSearchServiceReachable,
 } from '~/stores-universal/context';
 import { usePageDeleteModal } from '~/stores/modal';
 import { mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
@@ -65,8 +66,8 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
 
   const searchResultListRef = useRef<ISelectableAll|null>(null);
 
-  const { data: isGuestUser } = useIsGuestUser();
-  const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const [isGuestUser] = useIsGuestUser();
+  const [isReadOnlyUser] = useIsReadOnlyUser();
   const { data: isSearchServiceConfigured } = useIsSearchServiceConfigured();
   const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
 

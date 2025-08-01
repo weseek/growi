@@ -2,8 +2,8 @@ import React, { useCallback, type JSX } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
+import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
 import { useCurrentPageData, useRemoteRevisionId } from '~/states/page';
-import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
 import { useEditorMode } from '~/stores-universal/ui';
 import { usePageStatusAlert } from '~/stores/alert';
 import { useRemoteRevisionLastUpdateUser } from '~/stores/remote-latest-page';
@@ -16,8 +16,8 @@ export const PageStatusAlert = (): JSX.Element => {
   const { t } = useTranslation();
 
   const { data: editorMode } = useEditorMode();
-  const { data: isGuestUser } = useIsGuestUser();
-  const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const [isGuestUser] = useIsGuestUser();
+  const [isReadOnlyUser] = useIsReadOnlyUser();
   const { data: pageStatusAlertData } = usePageStatusAlert();
   const [remoteRevisionId] = useRemoteRevisionId();
   const { data: remoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();

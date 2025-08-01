@@ -2,8 +2,9 @@ import React, { memo, useMemo } from 'react';
 
 import { AiAssistant } from '~/features/openai/client/components/AiAssistant/Sidebar/AiAssistant';
 import { SidebarContentsType } from '~/interfaces/ui';
+import { useIsGuestUser } from '~/states/context';
 import { useSidebarMode, useCollapsedContentsOpened, useCurrentSidebarContents } from '~/states/ui/sidebar';
-import { useIsAiEnabled, useIsGuestUser } from '~/stores-universal/context';
+import { useIsAiEnabled } from '~/stores-universal/context';
 
 
 import { Bookmarks } from './Bookmarks';
@@ -18,7 +19,7 @@ import styles from './SidebarContents.module.scss';
 
 export const SidebarContents = memo(() => {
   const { isCollapsedMode } = useSidebarMode();
-  const { data: isGuestUser } = useIsGuestUser();
+  const [isGuestUser] = useIsGuestUser();
   const { data: isAiEnabled } = useIsAiEnabled();
 
   const [isCollapsedContentsOpened] = useCollapsedContentsOpened();

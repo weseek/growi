@@ -18,10 +18,9 @@ import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import type { IPagePathWithDescendantCount } from '~/interfaces/page';
 import type { IRecordApplicableGrant, IResCurrentGrantData } from '~/interfaces/page-grant';
+import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
 import { usePageNotFound } from '~/states/page';
-import {
-  useShareLinkId, useIsGuestUser, useIsReadOnlyUser,
-} from '~/stores-universal/context';
+import { useShareLinkId } from '~/stores-universal/context';
 import type { AxiosResponse } from '~/utils/axios';
 
 import type { IPageTagsInfo } from '../interfaces/tag';
@@ -84,7 +83,7 @@ export const useSWRxPageInfo = (
 ): SWRResponse<IPageInfo | IPageInfoForOperation> => {
 
   // Cache remains from guest mode when logging in via the Login lead, so add 'isGuestUser' key
-  const { data: isGuestUser } = useIsGuestUser();
+  const [isGuestUser] = useIsGuestUser();
 
   // assign null if shareLinkId is undefined in order to identify SWR key only by pageId
   const fixedShareLinkId = shareLinkId ?? null;
@@ -118,7 +117,7 @@ export const useSWRMUTxPageInfo = (
 ): SWRMutationResponse<IPageInfo | IPageInfoForOperation> => {
 
   // Cache remains from guest mode when logging in via the Login lead, so add 'isGuestUser' key
-  const { data: isGuestUser } = useIsGuestUser();
+  const [isGuestUser] = useIsGuestUser();
 
   // assign null if shareLinkId is undefined in order to identify SWR key only by pageId
   const fixedShareLinkId = shareLinkId ?? null;
@@ -174,8 +173,8 @@ export const useSWRxCurrentGrantData = (
     pageId: string | null | undefined,
 ): SWRResponse<IResCurrentGrantData, Error> => {
 
-  const { data: isGuestUser } = useIsGuestUser();
-  const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const [isGuestUser] = useIsGuestUser();
+  const [isReadOnlyUser] = useIsReadOnlyUser();
   const [isNotFound] = usePageNotFound();
 
   const key = !isGuestUser && !isReadOnlyUser && !isNotFound && pageId != null

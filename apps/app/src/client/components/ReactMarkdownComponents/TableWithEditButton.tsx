@@ -4,9 +4,10 @@ import type EventEmitter from 'events';
 
 import type { Element } from 'hast';
 
+import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
 import { useIsRevisionOutdated } from '~/states/page';
 import {
-  useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
+  useIsSharedUser, useShareLinkId,
 } from '~/stores-universal/context';
 import { useCurrentPageYjsData } from '~/stores/yjs';
 
@@ -26,8 +27,8 @@ type TableWithEditButtonProps = {
 const TableWithEditButtonNoMemorized = (props: TableWithEditButtonProps): JSX.Element => {
   const { children, node, className } = props;
 
-  const { data: isGuestUser } = useIsGuestUser();
-  const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const [isGuestUser] = useIsGuestUser();
+  const [isReadOnlyUser] = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
   const [isRevisionOutdated] = useIsRevisionOutdated();

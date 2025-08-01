@@ -8,7 +8,8 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { scroller } from 'react-scroll';
 
-import { useIsGuestUser, useIsReadOnlyUser, useShowPageSideAuthors } from '~/stores-universal/context';
+import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
+import { useShowPageSideAuthors } from '~/stores-universal/context';
 import { useDescendantsPageListModal, useTagEditModal } from '~/stores/modal';
 import { useSWRxPageInfo, useSWRxTagsInfo } from '~/stores/page';
 import { useIsAbleToShowTagLabel } from '~/stores/ui';
@@ -43,8 +44,8 @@ const Tags = (props: TagsProps): JSX.Element => {
   const { data: tagsInfoData } = useSWRxTagsInfo(pageId, { suspense: true });
 
   const { data: showTagLabel } = useIsAbleToShowTagLabel();
-  const { data: isGuestUser } = useIsGuestUser();
-  const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const [isGuestUser] = useIsGuestUser();
+  const [isReadOnlyUser] = useIsReadOnlyUser();
   const { open: openTagEditModal } = useTagEditModal();
 
   const onClickEditTagsButton = useCallback(() => {

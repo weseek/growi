@@ -18,9 +18,10 @@ import {
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
 import OpenDefaultAiAssistantButton from '~/features/openai/client/components/AiAssistant/OpenDefaultAiAssistantButton';
+import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
 import { useCurrentPagePath } from '~/states/page';
 import {
-  useIsGuestUser, useIsReadOnlyUser, useIsSearchPage, useIsUsersHomepageDeletionEnabled,
+  useIsSearchPage, useIsUsersHomepageDeletionEnabled,
 } from '~/stores-universal/context';
 import {
   EditorMode, useEditorMode,
@@ -133,8 +134,8 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     onClickEditTagsButton, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
   } = props;
 
-  const { data: isGuestUser } = useIsGuestUser();
-  const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const [isGuestUser] = useIsGuestUser();
+  const [isReadOnlyUser] = useIsReadOnlyUser();
   const { data: editorMode } = useEditorMode();
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
   const { data: isSearchPage } = useIsSearchPage();
