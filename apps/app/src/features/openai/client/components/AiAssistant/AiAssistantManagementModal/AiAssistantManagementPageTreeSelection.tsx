@@ -1,11 +1,44 @@
+import React from 'react';
+
 import { useTranslation } from 'react-i18next';
 import {
   ModalBody,
 } from 'reactstrap';
 
+import { ItemsTree } from '~/client/components/ItemsTree';
+import type { TreeItemProps, TreeItemToolProps } from '~/client/components/TreeItem';
+import { TreeItemLayout, useNewPageInput } from '~/client/components/TreeItem';
+
 import { AiAssistantManagementModalPageMode, useAiAssistantManagementModal } from '../../../stores/ai-assistant';
 
 import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
+
+
+const PageTreeItem = (props : TreeItemProps): JSX.Element => {
+  const { itemNode, targetPathOrId } = props;
+  const { page } = itemNode;
+
+  const SelectPageButton = () => {
+    return (
+      <button
+        id="page-create-button-in-page-tree"
+        type="button"
+        className="border-0 rounded btn btn-page-it p-0"
+      >
+        <span className="material-symbols-outlined p-0 text-primary">add_circle</span>
+      </button>
+    );
+  };
+
+  return (
+    <TreeItemLayout
+      {...props}
+      itemClass={PageTreeItem}
+      // itemClassName={itemClassNames.join(' ')}
+      customHoveredEndComponents={[SelectPageButton]}
+    />
+  );
+};
 
 
 export const AiAssistantManagementPageTreeSelection = (): JSX.Element => {
@@ -26,6 +59,12 @@ export const AiAssistantManagementPageTreeSelection = (): JSX.Element => {
           {t('modal_ai_assistant.search_reference_pages_by_keyword')}
         </h4>
 
+        <ItemsTree
+          isEnableActions
+          isReadOnlyUser={false}
+          targetPath="/"
+          CustomTreeItem={PageTreeItem}
+        />
 
         <div className="d-flex justify-content-center mt-4">
           <button
