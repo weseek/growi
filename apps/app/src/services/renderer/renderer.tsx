@@ -22,7 +22,6 @@ import loggerFactory from '~/utils/logger';
 
 import { tagNames as recommendedTagNames, attributes as recommendedAttributes } from './recommended-whitelist';
 import * as addClass from './rehype-plugins/add-class';
-import * as addInlineCodeAttribute from './rehype-plugins/add-inline-code-attribute';
 import { relativeLinks } from './rehype-plugins/relative-links';
 import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
 import * as codeBlock from './remark-plugins/codeblock';
@@ -114,7 +113,6 @@ export const generateCommonOptions = (pagePath: string|undefined): RendererOptio
       [addClass.rehypePlugin, {
         table: 'table table-bordered',
       }],
-      addInlineCodeAttribute.rehypePlugin,
     ],
     components: {
       a: NextLink,
