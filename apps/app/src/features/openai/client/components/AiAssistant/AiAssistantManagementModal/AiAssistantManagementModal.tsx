@@ -34,6 +34,7 @@ import { AiAssistantManagementEditShare } from './AiAssistantManagementEditShare
 import { AiAssistantManagementHome } from './AiAssistantManagementHome';
 import { AiAssistantKeywordSearch } from './AiAssistantManagementKeywordSearch';
 import { AiAssistantManagementPageSelectionMethod } from './AiAssistantManagementPageSelectionMethod';
+import { AiAssistantManagementPageTreeSelection } from './AiAssistantManagementPageTreeSelection';
 
 import styles from './AiAssistantManagementModal.module.scss';
 
@@ -274,6 +275,10 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
           <AiAssistantKeywordSearch
             updateBaseSelectedPages={selectPageHandlerByKeywordSearch}
           />
+        </TabPane>
+
+        <TabPane tabId={AiAssistantManagementModalPageMode.PAGE_TREE_SELECTION}>
+          <AiAssistantManagementPageTreeSelection />
         </TabPane>
 
         <TabPane tabId={AiAssistantManagementModalPageMode.HOME}>
