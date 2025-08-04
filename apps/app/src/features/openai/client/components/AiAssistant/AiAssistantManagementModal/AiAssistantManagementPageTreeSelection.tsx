@@ -16,6 +16,10 @@ import { AiAssistantManagementModalPageMode, useAiAssistantManagementModal } fro
 import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
 import { SelectablePagePageList } from './SelectablePagePageList';
 
+import styles from './AiAssistantManagementPageTreeSelection.module.scss';
+
+const moduleClass = styles['grw-ai-assistant-management-page-tree-selection'] ?? '';
+
 
 const SelectablePageTree = () => {
   const { data: isGuestUser } = useIsGuestUser();
@@ -41,7 +45,7 @@ const SelectablePageTree = () => {
       <TreeItemLayout
         {...props}
         itemClass={PageTreeItem}
-        // itemClassName={itemClassNames.join(' ')}
+        className=" text-muted"
         customHoveredEndComponents={[SelectPageButton]}
       />
     );
@@ -64,7 +68,7 @@ export const AiAssistantManagementPageTreeSelection = (): JSX.Element => {
   const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
 
   return (
-    <>
+    <div className={moduleClass}>
       <AiAssistantManagementHeader
         backButtonColor="secondary"
         backToPageMode={AiAssistantManagementModalPageMode.PAGE_SELECTION_METHOD}
@@ -77,7 +81,9 @@ export const AiAssistantManagementPageTreeSelection = (): JSX.Element => {
         </h4>
 
         <Suspense fallback={<ItemsTreeContentSkeleton />}>
-          <SelectablePageTree />
+          <div className="px-4">
+            <SelectablePageTree />
+          </div>
         </Suspense>
 
         <h4 className="text-center fw-bold mb-3 mt-4">
@@ -99,12 +105,11 @@ export const AiAssistantManagementPageTreeSelection = (): JSX.Element => {
           <button
             type="button"
             className="btn btn-primary rounded next-button"
-            style={{ width: '30%' }}
           >
             {t('modal_ai_assistant.next')}
           </button>
         </div>
       </ModalBody>
-    </>
+    </div>
   );
 };
