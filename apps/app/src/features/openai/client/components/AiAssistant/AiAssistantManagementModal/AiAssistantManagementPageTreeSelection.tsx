@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
@@ -6,6 +6,7 @@ import {
 } from 'reactstrap';
 
 import { ItemsTree } from '~/client/components/ItemsTree';
+import ItemsTreeContentSkeleton from '~/client/components/ItemsTree/ItemsTreeContentSkeleton';
 import type { TreeItemProps, TreeItemToolProps } from '~/client/components/TreeItem';
 import { TreeItemLayout, useNewPageInput } from '~/client/components/TreeItem';
 
@@ -60,12 +61,14 @@ export const AiAssistantManagementPageTreeSelection = (): JSX.Element => {
           {t('modal_ai_assistant.search_reference_pages_by_keyword')}
         </h4>
 
-        <ItemsTree
-          isEnableActions
-          isReadOnlyUser={false}
-          targetPath="/"
-          CustomTreeItem={PageTreeItem}
-        />
+        <Suspense fallback={<ItemsTreeContentSkeleton />}>
+          <ItemsTree
+            isEnableActions
+            isReadOnlyUser={false}
+            targetPath="/"
+            CustomTreeItem={PageTreeItem}
+          />
+        </Suspense>
 
         <h4 className="text-center fw-bold mb-3 mt-4">
           {t('modal_ai_assistant.reference_pages')}
