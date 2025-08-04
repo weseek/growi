@@ -13,7 +13,7 @@ import deepmerge from 'ts-deepmerge';
 import type { Pluggable, PluginTuple } from 'unified';
 
 
-import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
+import { CodeBlock, InlineCodeBlockSubstance } from '~/components/ReactMarkdownComponents/CodeBlock';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import { RehypeSanitizeType } from '~/interfaces/services/rehype-sanitize';
@@ -118,6 +118,8 @@ export const generateCommonOptions = (pagePath: string|undefined): RendererOptio
     ],
     components: {
       a: NextLink,
+      pre: CodeBlock,
+      code: InlineCodeBlockSubstance,
     },
   };
 };
