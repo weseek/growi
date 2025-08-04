@@ -12,6 +12,7 @@ import { TreeItemLayout, useNewPageInput } from '~/client/components/TreeItem';
 import { AiAssistantManagementModalPageMode, useAiAssistantManagementModal } from '../../../stores/ai-assistant';
 
 import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
+import { SelectablePagePageList } from './SelectablePagePageList';
 
 
 const PageTreeItem = (props : TreeItemProps): JSX.Element => {
@@ -66,6 +67,21 @@ export const AiAssistantManagementPageTreeSelection = (): JSX.Element => {
           CustomTreeItem={PageTreeItem}
         />
 
+        <h4 className="text-center fw-bold mb-3 mt-4">
+          {t('modal_ai_assistant.reference_pages')}
+        </h4>
+
+        <div className="px-4">
+          <SelectablePagePageList
+            pages={[]}
+            method="remove"
+            onClickMethodButton={() => {}}
+          />
+          <label className="form-text text-muted mt-2">
+            {t('modal_ai_assistant.can_add_later')}
+          </label>
+        </div>
+
         <div className="d-flex justify-content-center mt-4">
           <button
             type="button"
@@ -76,7 +92,6 @@ export const AiAssistantManagementPageTreeSelection = (): JSX.Element => {
           </button>
         </div>
       </ModalBody>
-
     </>
   );
 };
