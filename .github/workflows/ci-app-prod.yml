@@ -55,7 +55,7 @@ jobs:
 
 
   test-prod-node22:
-    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@fix/169947-playwright-tests
     if: |
       ( github.event_name == 'push'
         || github.base_ref == 'master'
