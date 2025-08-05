@@ -37,7 +37,7 @@ export const AiAssistantKeywordSearch = (props: { updateBaseSelectedPages: (page
   const { updateBaseSelectedPages } = props;
 
   const [selectedSearchKeywords, setSelectedSearchKeywords] = useState<Array<SelectedSearchKeyword>>([]);
-  const [selectedPages, setSelectedPages] = useState<Array<IPageHasId>>([]);
+  const [selectedPages, setSelectedPages] = useState<Map<string, IPageHasId>>(new Map());
 
   const joinedSelectedSearchKeywords = useMemo(() => {
     return selectedSearchKeywords.map(item => item.label).join(' ');
@@ -123,22 +123,23 @@ export const AiAssistantKeywordSearch = (props: { updateBaseSelectedPages: (page
   }, [selectedSearchKeywords]);
 
   const addPageHandler = useCallback((page: IPageHasId) => {
-    setSelectedPages((prevSelectedPages) => {
-      if (prevSelectedPages.some(selectedPage => selectedPage._id === page._id)) {
-        return prevSelectedPages;
-      }
-      return [...prevSelectedPages, page];
+    setSelectedPages((prev) => {
+      const newMap = new Map(prev);
+      newMap.set(page._id, page);
+      return newMap;
     });
   }, []);
 
   const removePageHandler = useCallback((page: IPageHasId) => {
-    setSelectedPages((prevSelectedPages) => {
-      return prevSelectedPages.filter(selectedPage => selectedPage._id !== page._id);
+    setSelectedPages((prev) => {
+      const newMap = new Map(prev);
+      newMap.delete(page._id);
+      return newMap;
     });
   }, []);
 
   const nextButtonClickHandler = useCallback(() => {
-    updateBaseSelectedPages(selectedPages);
+    updateBaseSelectedPages(Array.from(selectedPages.values()));
     changePageMode(AiAssistantManagementModalPageMode.HOME);
   }, [changePageMode, selectedPages, updateBaseSelectedPages]);
 
@@ -183,7 +184,7 @@ export const AiAssistantKeywordSearch = (props: { updateBaseSelectedPages: (page
                 pages={pagesWithGlobPath ?? []}
                 method="add"
                 onClickMethodButton={addPageHandler}
-                disablePageIds={selectedPages.map(page => page._id)}
+                disablePageIds={Array.from(selectedPages.keys())}
               />
             </div>
           </>
@@ -195,7 +196,7 @@ export const AiAssistantKeywordSearch = (props: { updateBaseSelectedPages: (page
 
         <div className="px-4">
           <SelectablePagePageList
-            pages={selectedPages}
+            pages={Array.from(selectedPages.values())}
             method="remove"
             onClickMethodButton={removePageHandler}
           />
@@ -206,7 +207,7 @@ export const AiAssistantKeywordSearch = (props: { updateBaseSelectedPages: (page
 
         <div className="d-flex justify-content-center mt-4">
           <button
-            disabled={selectedPages.length === 0}
+            disabled={selectedPages.size === 0}
             type="button"
             className="btn btn-primary rounded next-button"
             onClick={nextButtonClickHandler}
