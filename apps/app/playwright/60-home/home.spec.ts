@@ -98,7 +98,7 @@ test('Access Access Token setting', async({ page }) => {
   await page.getByTestId('grw-accesstoken-checkbox-read:*').check();
   await page.getByTestId('grw-accesstoken-create-button').click();
   await expect(page.locator('.Toastify__toast')).toBeVisible();
-  await expect(page.locator('grw-accesstoken-new-token-display')).toBeVisible();
+  await expect(page.getByTestId('grw-accesstoken-new-token-display')).toBeVisible();
 
   // Expect a success toaster to be displayed when the Access Token is deleted
   await page.getByTestId('grw-accesstoken-delete-button').click();
