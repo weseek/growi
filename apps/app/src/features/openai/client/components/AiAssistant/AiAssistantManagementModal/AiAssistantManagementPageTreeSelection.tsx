@@ -1,5 +1,5 @@
 import React, {
-  Suspense, useCallback, useState, memo,
+  Suspense, useCallback, memo,
 } from 'react';
 
 import type { IPageHasId } from '@growi/core';
@@ -15,6 +15,7 @@ import { TreeItemLayout } from '~/client/components/TreeItem';
 import type { IPageForItem } from '~/interfaces/page';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
 
+import { useSelectedPages } from '../../../services/use-selected-pages';
 import { AiAssistantManagementModalPageMode, useAiAssistantManagementModal } from '../../../stores/ai-assistant';
 
 import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
@@ -91,23 +92,7 @@ export const AiAssistantManagementPageTreeSelection = (): JSX.Element => {
   const { data: aiAssistantManagementModalData } = useAiAssistantManagementModal();
   const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
 
-  const [selectedPages, setSelectedPages] = useState<Map<string, IPageHasId>>(new Map());
-
-  const addPageHandler = useCallback((page: IPageHasId) => {
-    setSelectedPages((prev) => {
-      const newMap = new Map(prev);
-      newMap.set(page._id, page);
-      return newMap;
-    });
-  }, []);
-
-  const removePageHandler = useCallback((page: IPageHasId) => {
-    setSelectedPages((prev) => {
-      const newMap = new Map(prev);
-      newMap.delete(page._id);
-      return newMap;
-    });
-  }, []);
+  const { selectedPages, addPageHandler, removePageHandler } = useSelectedPages();
 
 
   return (

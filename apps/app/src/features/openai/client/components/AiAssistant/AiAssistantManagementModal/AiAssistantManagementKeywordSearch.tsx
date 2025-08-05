@@ -12,6 +12,7 @@ import {
 
 import { useSWRxSearch } from '~/stores/search';
 
+import { useSelectedPages } from '../../../services/use-selected-pages';
 import {
   useAiAssistantManagementModal, AiAssistantManagementModalPageMode,
 } from '../../../stores/ai-assistant';
@@ -37,7 +38,7 @@ export const AiAssistantKeywordSearch = (props: { updateBaseSelectedPages: (page
   const { updateBaseSelectedPages } = props;
 
   const [selectedSearchKeywords, setSelectedSearchKeywords] = useState<Array<SelectedSearchKeyword>>([]);
-  const [selectedPages, setSelectedPages] = useState<Map<string, IPageHasId>>(new Map());
+  const { selectedPages, addPageHandler, removePageHandler } = useSelectedPages();
 
   const joinedSelectedSearchKeywords = useMemo(() => {
     return selectedSearchKeywords.map(item => item.label).join(' ');
@@ -121,22 +122,6 @@ export const AiAssistantKeywordSearch = (props: { updateBaseSelectedPages: (page
 
     handleMenuItemSelect(initialItem, event);
   }, [selectedSearchKeywords]);
-
-  const addPageHandler = useCallback((page: IPageHasId) => {
-    setSelectedPages((prev) => {
-      const newMap = new Map(prev);
-      newMap.set(page._id, page);
-      return newMap;
-    });
-  }, []);
-
-  const removePageHandler = useCallback((page: IPageHasId) => {
-    setSelectedPages((prev) => {
-      const newMap = new Map(prev);
-      newMap.delete(page._id);
-      return newMap;
-    });
-  }, []);
 
   const nextButtonClickHandler = useCallback(() => {
     updateBaseSelectedPages(Array.from(selectedPages.values()));
