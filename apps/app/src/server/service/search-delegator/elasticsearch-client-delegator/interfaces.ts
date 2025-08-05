@@ -25,33 +25,6 @@ export const isES9ClientDelegator = (delegator: ElasticsearchClientDelegator): d
 
 
 // Official library-derived interface
-// export type SearchQuery = ES7types.SearchRequest | ES8typesWithBody.SearchRequest | ES9types.SearchRequest;
-// export interface ES7SearchQuery {
-//   index: ES7types.Indices
-//   _source: ES7types.Fields
-//   from?: number;
-//   size?: number;
-//   body: {
-//     query: ES7types.QueryDslQueryContainer;
-//     sort?: ES7types.Sort
-//     highlight?: ES7types.SearchHighlight;
-//   };
-// }
-
-// export interface ES7SearchQuery {
-//   index: ES7types.Indices
-//   _source: ES7types.Fields
-//   from?: number;
-//   size?: number;
-//   body: {
-//     query: ES7types.QueryDslQueryContainer
-//     sort?: ES7types.Sort
-//     highlight?: ES7types.SearchHighlight
-//   };
-// }
-
-// export type ES7SearchQuery = ES7types.SearchRequest;
-
 export type ES7SearchQuery = RequestParams.Search<{
     aggregations?: Record<string, ES7types.AggregationsAggregationContainer>
     aggs?: Record<string, ES7types.AggregationsAggregationContainer>
@@ -85,9 +58,6 @@ export type ES7SearchQuery = RequestParams.Search<{
     runtime_mappings?: ES7types.MappingRuntimeFields
     stats?: string[]
 }>
-
-// export type ES7SearchQuery = RequestParams.Search<ES7types.QueryDslQueryContainer>
-
 export interface ES8SearchQuery {
   index: ES8types.IndexName
   _source: ES8types.Fields
@@ -125,9 +95,3 @@ export const isES8SearchQuery = (clientDelegator: ElasticsearchClientDelegator, 
 export const isES9SearchQuery = (clientDelegator: ElasticsearchClientDelegator, query: SearchQuery): query is ES9SearchQuery => {
   return clientDelegator.delegatorVersion === 9;
 };
-
-// export type QueryDslMultiMatchQuery = ES7types.QueryDslMultiMatchQuery | ES8types.QueryDslMultiMatchQuery | ES9types.QueryDslMultiMatchQuery;
-// export type QueryDslQueryContainer = ES7types.QueryDslQueryContainer | ES8types.QueryDslQueryContainer | ES9types.QueryDslQueryContainer;
-
-// export type QueryDslMultiMatchQuery = ES9types.QueryDslMultiMatchQuery;
-// export type QueryDslQueryContainer = ES9types.QueryDslQueryContainer;
