@@ -2,6 +2,8 @@ import React, {
   useRef, useMemo, useCallback, useState, type KeyboardEvent,
 } from 'react';
 
+import type { IPageHasId } from '@growi/core';
+import { isGlobPatternPath } from '@growi/core/dist/utils/page-path-utils';
 import { type TypeaheadRef, Typeahead } from 'react-bootstrap-typeahead';
 import { useTranslation } from 'react-i18next';
 import {
@@ -15,6 +17,7 @@ import {
 } from '../../../stores/ai-assistant';
 
 import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
+import { SelectablePagePageList } from './SelectablePagePageList';
 
 import styles from './AiAssistantManagementKeywordSearch.module.scss';
 
@@ -29,8 +32,12 @@ const isSelectedSearchKeyword = (value: unknown): value is SelectedSearchKeyword
   return (value as SelectedSearchKeyword).label != null;
 };
 
-export const AiAssistantKeywordSearch = (): JSX.Element => {
+
+export const AiAssistantKeywordSearch = (props: { updateBaseSelectedPages: (pages: IPageHasId[]) => void}): JSX.Element => {
+  const { updateBaseSelectedPages } = props;
+
   const [selectedSearchKeywords, setSelectedSearchKeywords] = useState<Array<SelectedSearchKeyword>>([]);
+  const [selectedPages, setSelectedPages] = useState<Map<string, IPageHasId>>(new Map());
 
   const joinedSelectedSearchKeywords = useMemo(() => {
     return selectedSearchKeywords.map(item => item.label).join(' ');
@@ -44,11 +51,33 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
     includeTrashPages: false,
   });
 
+  // Search results will include subordinate pages by default
+  const pagesWithGlobPath = useMemo((): IPageHasId[] | undefined => {
+    if (searchResult == null) {
+      return;
+    }
+
+    const pages = searchResult.data.map(item => item.data);
+    return pages.map((page) => {
+      if (page.path === '/') {
+        page.path = '/*';
+      }
+
+      if (!isGlobPatternPath(page.path)) {
+        page.path = `${page.path}/*`;
+      }
+
+      return page;
+    });
+
+  }, [searchResult]);
+
   const shownSearchResult = useMemo(() => {
     return selectedSearchKeywords.length > 0 && searchResult != null && searchResult.data.length > 0;
   }, [searchResult, selectedSearchKeywords.length]);
 
-  const { data: aiAssistantManagementModalData } = useAiAssistantManagementModal();
+
+  const { data: aiAssistantManagementModalData, changePageMode } = useAiAssistantManagementModal();
   const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
 
   const typeaheadRef = useRef<TypeaheadRef>(null);
@@ -93,6 +122,27 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
     handleMenuItemSelect(initialItem, event);
   }, [selectedSearchKeywords]);
 
+  const addPageHandler = useCallback((page: IPageHasId) => {
+    setSelectedPages((prev) => {
+      const newMap = new Map(prev);
+      newMap.set(page._id, page);
+      return newMap;
+    });
+  }, []);
+
+  const removePageHandler = useCallback((page: IPageHasId) => {
+    setSelectedPages((prev) => {
+      const newMap = new Map(prev);
+      newMap.delete(page._id);
+      return newMap;
+    });
+  }, []);
+
+  const nextButtonClickHandler = useCallback(() => {
+    updateBaseSelectedPages(Array.from(selectedPages.values()));
+    changePageMode(AiAssistantManagementModalPageMode.HOME);
+  }, [changePageMode, selectedPages, updateBaseSelectedPages]);
+
   return (
     <div className={moduleClass}>
       <AiAssistantManagementHeader
@@ -126,47 +176,45 @@ export const AiAssistantKeywordSearch = (): JSX.Element => {
 
         { shownSearchResult && (
           <>
-            <h4 className="text-center fw-bold mb-4 mt-5">
+            <h4 className="text-center fw-bold mb-3 mt-4">
               {t('modal_ai_assistant.select_assistant_reference_pages')}
             </h4>
-
-            <div className="px-4 list-group">
-              {searchResult?.data.map((page) => {
-                return (
-                  <button
-                    type="button"
-                    className="list-group-item list-group-item-action d-flex align-items-center p-1 mb-2 rounded"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <button
-                      type="button"
-                      className="btn text-primary"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    >
-                      <span className="material-symbols-outlined">
-                        add_circle
-                      </span>
-                    </button>
-                    <div className="flex-grow-1">
-                      <span>
-                        {page.data.path}
-                      </span>
-                    </div>
-                    <span className="badge bg-body-secondary rounded-pill me-2">
-                      <span className="text-body-tertiary">
-                        {page.data.descendantCount}
-                      </span>
-                    </span>
-                  </button>
-                );
-              })}
+            <div className="px-4">
+              <SelectablePagePageList
+                pages={pagesWithGlobPath ?? []}
+                method="add"
+                onClickMethodButton={addPageHandler}
+                disablePageIds={Array.from(selectedPages.keys())}
+              />
             </div>
           </>
         )}
+
+        <h4 className="text-center fw-bold mb-3 mt-4">
+          {t('modal_ai_assistant.reference_pages')}
+        </h4>
+
+        <div className="px-4">
+          <SelectablePagePageList
+            pages={Array.from(selectedPages.values())}
+            method="remove"
+            onClickMethodButton={removePageHandler}
+          />
+          <label className="form-text text-muted mt-2">
+            {t('modal_ai_assistant.can_add_later')}
+          </label>
+        </div>
+
+        <div className="d-flex justify-content-center mt-4">
+          <button
+            disabled={selectedPages.size === 0}
+            type="button"
+            className="btn btn-primary rounded next-button"
+            onClick={nextButtonClickHandler}
+          >
+            {t('modal_ai_assistant.next')}
+          </button>
+        </div>
       </ModalBody>
     </div>
   );
