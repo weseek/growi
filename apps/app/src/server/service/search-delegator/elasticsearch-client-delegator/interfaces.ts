@@ -25,6 +25,7 @@ export const isES9ClientDelegator = (delegator: ElasticsearchClientDelegator): d
 
 
 // Official library-derived interface
+// TODO: https://redmine.weseek.co.jp/issues/168446
 export type ES7SearchQuery = RequestParams.Search<{
     aggregations?: Record<string, ES7types.AggregationsAggregationContainer>
     aggs?: Record<string, ES7types.AggregationsAggregationContainer>
