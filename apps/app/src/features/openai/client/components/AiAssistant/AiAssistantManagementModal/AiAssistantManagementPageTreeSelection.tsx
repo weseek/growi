@@ -39,7 +39,7 @@ const SelectablePageTree = memo((props: { onClickAddPageButton: (page: IPageHasI
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
 
-  const pageTreeItemHandler = useCallback((page: IPageForItem) => {
+  const pageTreeItemClickHandler = useCallback((page: IPageForItem) => {
     if (!isIPageHasId(page)) {
       return;
     }
@@ -58,7 +58,7 @@ const SelectablePageTree = memo((props: { onClickAddPageButton: (page: IPageHasI
           className="border-0 rounded btn p-0 me-2"
           onClick={(e) => {
             e.stopPropagation();
-            pageTreeItemHandler(page);
+            pageTreeItemClickHandler(page);
           }}
         >
           <span className="material-symbols-outlined p-0 me-2 text-primary">add_circle</span>
