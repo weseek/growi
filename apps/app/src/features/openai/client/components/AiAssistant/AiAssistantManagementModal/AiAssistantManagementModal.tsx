@@ -119,9 +119,9 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
 
 
   /*
-  *  For AiAssistantManagementKeywordSearch methods
+  *  For AiAssistantManagementKeywordSearch & AiAssistantManagementPageTreeSelection methods
   */
-  const selectPageHandlerByKeywordSearch = useCallback((pages: IPageHasId[]) => {
+  const selectPageHandlerForKeywordSearchOrPageTreeSelection = useCallback((pages: IPageHasId[]) => {
     if (pages.length === 0) {
       return;
     }
@@ -273,12 +273,14 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
 
         <TabPane tabId={AiAssistantManagementModalPageMode.KEYWORD_SEARCH}>
           <AiAssistantKeywordSearch
-            updateBaseSelectedPages={selectPageHandlerByKeywordSearch}
+            updateBaseSelectedPages={selectPageHandlerForKeywordSearchOrPageTreeSelection}
           />
         </TabPane>
 
         <TabPane tabId={AiAssistantManagementModalPageMode.PAGE_TREE_SELECTION}>
-          <AiAssistantManagementPageTreeSelection />
+          <AiAssistantManagementPageTreeSelection
+            updateBaseSelectedPages={selectPageHandlerForKeywordSearchOrPageTreeSelection}
+          />
         </TabPane>
 
         <TabPane tabId={AiAssistantManagementModalPageMode.HOME}>

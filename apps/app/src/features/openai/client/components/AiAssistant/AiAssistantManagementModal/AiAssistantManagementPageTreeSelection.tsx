@@ -89,12 +89,19 @@ const SelectablePageTree = memo((props: { onClickAddPageButton: (page: IPageHasI
 });
 
 
-export const AiAssistantManagementPageTreeSelection = (): JSX.Element => {
+export const AiAssistantManagementPageTreeSelection = (props: { updateBaseSelectedPages: (pages: IPageHasId[]) => void}): JSX.Element => {
+  const { updateBaseSelectedPages } = props;
+
   const { t } = useTranslation();
-  const { data: aiAssistantManagementModalData } = useAiAssistantManagementModal();
+  const { data: aiAssistantManagementModalData, changePageMode } = useAiAssistantManagementModal();
   const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
 
   const { selectedPages, addPageHandler, removePageHandler } = useSelectedPages();
+
+  const nextButtonClickHandler = useCallback(() => {
+    updateBaseSelectedPages(Array.from(selectedPages.values()));
+    changePageMode(AiAssistantManagementModalPageMode.HOME);
+  }, [changePageMode, selectedPages, updateBaseSelectedPages]);
 
   return (
     <div className={moduleClass}>
@@ -133,9 +140,10 @@ export const AiAssistantManagementPageTreeSelection = (): JSX.Element => {
 
         <div className="d-flex justify-content-center mt-4">
           <button
-            disabled={selectedPages.size === 0}
             type="button"
             className="btn btn-primary rounded next-button"
+            disabled={selectedPages.size === 0}
+            onClick={nextButtonClickHandler}
           >
             {t('modal_ai_assistant.next')}
           </button>
