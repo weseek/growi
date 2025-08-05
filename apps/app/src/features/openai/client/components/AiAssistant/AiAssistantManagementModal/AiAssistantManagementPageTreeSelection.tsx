@@ -1,5 +1,5 @@
 import React, {
-  Suspense, useCallback, memo,
+  Suspense, useCallback, memo, useMemo,
 } from 'react';
 
 import type { IPageHasId } from '@growi/core';
@@ -98,6 +98,24 @@ export const AiAssistantManagementPageTreeSelection = (props: { updateBaseSelect
 
   const { selectedPages, addPageHandler, removePageHandler } = useSelectedPages();
 
+  // SelectedPages will include subordinate pages by default
+  const pagesWithGlobPath = useMemo((): IPageHasId[] | undefined => {
+    if (selectedPages.size === 0) {
+      return;
+    }
+    return Array.from(selectedPages.values()).map((page) => {
+      if (page.path === '/') {
+        page.path = '/*';
+      }
+
+      if (!page.path.endsWith('/*')) {
+        page.path = `${page.path}/*`;
+      }
+
+      return page;
+    });
+  }, [selectedPages]);
+
   const nextButtonClickHandler = useCallback(() => {
     updateBaseSelectedPages(Array.from(selectedPages.values()));
     changePageMode(AiAssistantManagementModalPageMode.HOME);
@@ -128,9 +146,9 @@ export const AiAssistantManagementPageTreeSelection = (props: { updateBaseSelect
 
         <div className="px-4">
           <SelectablePagePageList
-            pages={Array.from(selectedPages.values())}
             method="remove"
             methodButtonPosition="right"
+            pages={pagesWithGlobPath ?? []}
             onClickMethodButton={removePageHandler}
           />
           <label className="form-text text-muted mt-2">
