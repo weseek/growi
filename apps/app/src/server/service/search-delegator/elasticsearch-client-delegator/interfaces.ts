@@ -27,9 +27,9 @@ export const isES9ClientDelegator = (delegator: ElasticsearchClientDelegator): d
 // Official library-derived interface
 // TODO: https://redmine.weseek.co.jp/issues/168446
 export type ES7SearchQuery = RequestParams.Search<{
-    query: ES7types.QueryDslQueryContainer
-    sort?: ES7types.Sort
-    highlight?: ES7types.SearchHighlight
+  query: ES7types.QueryDslQueryContainer
+  sort?: ES7types.Sort
+  highlight?: ES7types.SearchHighlight
 }>
 export interface ES8SearchQuery {
   index: ES8types.IndexName
