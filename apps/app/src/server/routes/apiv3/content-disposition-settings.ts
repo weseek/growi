@@ -21,7 +21,7 @@ const validator = {
       .bail()
       .matches(/^.+\/.+$/)
       .custom((value) => {
-        const mimeTypeDefaults = configManager.getConfig('attachments:contentDisposition:mimeTypeDefaults');
+        const mimeTypeDefaults = configManager.getConfig('attachments:contentDisposition:mimeTypeOverrides');
         return Object.keys(mimeTypeDefaults).includes(value);
       })
       .withMessage('Invalid or unconfigurable MIME type specified.'),
@@ -73,7 +73,7 @@ module.exports = (crowi) => {
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     try {
 
-      const mimeTypeDefaults = configManager.getConfig('attachments:contentDisposition:mimeTypeDefaults');
+      const mimeTypeDefaults = configManager.getConfig('attachments:contentDisposition:mimeTypeOverrides');
       const contentDispositionSettings: Record<string, 'inline' | 'attachment'> = mimeTypeDefaults;
 
       return res.apiv3({ contentDispositionSettings });
@@ -135,7 +135,7 @@ module.exports = (crowi) => {
       const { disposition } = req.body;
 
       try {
-        const currentMimeTypeDefaults = configManager.getConfig('attachments:contentDisposition:mimeTypeDefaults');
+        const currentMimeTypeDefaults = configManager.getConfig('attachments:contentDisposition:mimeTypeOverrides');
 
         const newDisposition: 'inline' | 'attachment' = disposition;
 
@@ -144,8 +144,8 @@ module.exports = (crowi) => {
           [mimeType]: newDisposition,
         };
 
-        await configManager.updateConfigs({ 'attachments:contentDisposition:mimeTypeDefaults': updatedMimeTypeDefaults });
-        const updatedDispositionFromDb = configManager.getConfig('attachments:contentDisposition:mimeTypeDefaults')[mimeType];
+        await configManager.updateConfigs({ 'attachments:contentDisposition:mimeTypeOverrides': updatedMimeTypeDefaults });
+        const updatedDispositionFromDb = configManager.getConfig('attachments:contentDisposition:mimeTypeOverrides')[mimeType];
 
         const parameters = {
           action: SupportedAction.ACTION_ADMIN_ATTACHMENT_DISPOSITION_UPDATE,

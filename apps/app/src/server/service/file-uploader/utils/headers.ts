@@ -5,6 +5,8 @@ import type { IAttachmentDocument } from '~/server/models/attachment';
 
 import { configManager } from '../../config-manager';
 
+import { defaultContentDispositionSettings } from './security';
+
 
 export class ContentHeaders implements IContentHeaders {
 
@@ -27,28 +29,34 @@ export class ContentHeaders implements IContentHeaders {
     const attachmentContentType = attachment.fileFormat;
     const filename = attachment.originalName;
 
-    const actualContentTypeString: string = attachmentContentType || 'application/octet-stream';
+    const mimeType: string = attachmentContentType || 'application/octet-stream';
 
     this.contentType = {
       field: 'Content-Type',
-      value: actualContentTypeString,
+      value: mimeType,
     };
 
+    let finalDispositionValue: string;
+
     const requestedInline = opts?.inline ?? false;
-    const mimeTypeDefaults = configManager.getConfig('attachments:contentDisposition:mimeTypeDefaults') as Record<string, 'inline' | 'attachment'>;
+    const mimeTypeOverrides = configManager.getConfig('attachments:contentDisposition:mimeTypeOverrides');
+    const overrideSetting = mimeTypeOverrides[mimeType];
 
-    let systemAllowsInline: boolean;
-    const defaultDispositionForType = mimeTypeDefaults[actualContentTypeString];
-
-    if (defaultDispositionForType === 'inline') {
-      systemAllowsInline = true;
+    if (overrideSetting) {
+      finalDispositionValue = overrideSetting;
     }
+
     else {
-      systemAllowsInline = false;
+      const defaultSetting = defaultContentDispositionSettings[mimeType];
+
+      if (defaultSetting === 'inline' && requestedInline) {
+        finalDispositionValue = 'inline';
+      }
+      else {
+        finalDispositionValue = 'attachment';
+      }
     }
 
-    // Determine the final disposition based on user request and system allowance
-    const finalDispositionValue: 'inline' | 'attachment' = (requestedInline && systemAllowsInline) ? 'inline' : 'attachment';
 
     this.contentDisposition = {
       field: 'Content-Disposition',
