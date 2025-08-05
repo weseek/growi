@@ -32,11 +32,10 @@ const SelectablePageTree = () => {
     const SelectPageButton = () => {
       return (
         <button
-          id="page-create-button-in-page-tree"
           type="button"
-          className="border-0 rounded btn btn-page-it p-0"
+          className="border-0 rounded btn p-0"
         >
-          <span className="material-symbols-outlined p-0 text-primary">add_circle</span>
+          <span className="material-symbols-outlined p-0 me-3 text-primary">add_circle</span>
         </button>
       );
     };
