@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useMemo, useRef, type JSX,
+  useEffect, useMemo, useRef, useState, type JSX,
 } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
@@ -70,22 +70,38 @@ export const PageView = (props: Props): JSX.Element => {
   const markdown = page?.revision?.body;
   const isSlide = useSlidesByFrontmatter(markdown, rendererConfig.isEnabledMarp);
 
+  const [currentPageId, setCurrentPageId] = useState<string | undefined>(page?._id);
+
+  useEffect(() => {
+    if (page?._id !== undefined) {
+      setCurrentPageId(page._id);
+    }
+  }, [page?._id]);
 
   // ***************************  Auto Scroll  ***************************
   useEffect(() => {
+    if (currentPageId == null) {
+      return;
+    }
+
     // do nothing if hash is empty
     const { hash } = window.location;
     if (hash.length === 0) {
       return;
     }
 
-    const contentContainer = document.getElementById('page-content-container');
+    const contentContainer = document.getElementById('page-view-content-container');
     if (contentContainer == null) return;
 
-    const observer = new MutationObserver(() => {
-      const targetId = decodeURIComponent(hash.slice(1));
-      const target = document.getElementById(targetId);
+    const targetId = decodeURIComponent(hash.slice(1));
+    const target = document.getElementById(targetId);
+    if (target != null) {
+      target.scrollIntoView();
+      return;
+    }
 
+    const observer = new MutationObserver(() => {
+      const target = document.getElementById(targetId);
       if (target != null) {
         target.scrollIntoView();
         observer.disconnect();
@@ -95,7 +111,7 @@ export const PageView = (props: Props): JSX.Element => {
     observer.observe(contentContainer, { childList: true, subtree: true });
 
     return () => observer.disconnect();
-  }, []);
+  }, [currentPageId]);
 
   // *******************************  end  *******************************
 
@@ -177,7 +193,7 @@ export const PageView = (props: Props): JSX.Element => {
       {specialContents == null && (
         <>
           {(isUsersHomepagePath && page?.creator != null) && <UserInfo author={page.creator} />}
-          <div id="page-content-container" className="flex-expand-vert">
+          <div id="page-view-content-container" className="flex-expand-vert">
             <Contents />
           </div>
         </>
