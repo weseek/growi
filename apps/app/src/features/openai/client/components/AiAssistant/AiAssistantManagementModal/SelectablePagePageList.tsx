@@ -8,16 +8,39 @@ const moduleClass = styles['selectable-page-page-list'] ?? '';
 type Props = {
   pages: IPageHasId[],
   method: 'add' | 'remove',
+  methodButtonPosition?: 'left' | 'right',
   disablePageIds?: string[],
   onClickMethodButton: (page: IPageHasId) => void,
 }
 
 export const SelectablePagePageList = (props: Props): JSX.Element => {
   const {
-    pages, method, disablePageIds, onClickMethodButton,
+    pages,
+    method,
+    methodButtonPosition = 'left',
+    disablePageIds,
+    onClickMethodButton,
   } = props;
 
   const { t } = useTranslation();
+
+  const methodButton = (page: IPageHasId) => {
+    return (
+      <button
+        type="button"
+        className={`btn border-0 ${method === 'add' ? 'text-primary' : 'text-secondary'}`}
+        disabled={disablePageIds?.includes(page._id)}
+        onClick={(e) => {
+          e.stopPropagation();
+          onClickMethodButton(page);
+        }}
+      >
+        <span className="material-symbols-outlined">
+          { method === 'add' ? 'add_circle' : 'do_not_disturb_on' }
+        </span>
+      </button>
+    );
+  };
 
   if (pages.length === 0) {
     return (
@@ -41,29 +64,22 @@ export const SelectablePagePageList = (props: Props): JSX.Element => {
               e.stopPropagation();
             }}
           >
-            <button
-              type="button"
-              className={`btn border-0 ${method === 'add' ? 'text-primary' : 'text-secondary'}`}
-              disabled={disablePageIds?.includes(page._id)}
-              onClick={(e) => {
-                e.stopPropagation();
-                onClickMethodButton(page);
-              }}
-            >
-              <span className="material-symbols-outlined">
-                { method === 'add' ? 'add_circle' : 'do_not_disturb_on' }
-              </span>
-            </button>
-            <div className="flex-grow-1">
+
+            {methodButtonPosition === 'left' && methodButton(page)}
+
+            <div className={`flex-grow-1 ${methodButtonPosition === 'left' ? 'me-4' : 'ms-2'}`}>
               <span>
                 {page.path}
               </span>
             </div>
-            <span className="badge bg-body-secondary rounded-pill me-2">
+
+            <span className={`badge bg-body-secondary rounded-pill ${methodButtonPosition === 'left' ? 'me-2' : ''}`}>
               <span className="text-body-tertiary">
                 {page.descendantCount}
               </span>
             </span>
+
+            {methodButtonPosition === 'right' && methodButton(page)}
           </button>
         );
       })}
