@@ -1,5 +1,9 @@
-import React, { Suspense } from 'react';
+import React, {
+  Suspense,
+  useRef, useMemo, useCallback, useState, type KeyboardEvent, memo,
+} from 'react';
 
+import type { IPageHasId } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import {
   ModalBody,
@@ -9,6 +13,7 @@ import { ItemsTree } from '~/client/components/ItemsTree';
 import ItemsTreeContentSkeleton from '~/client/components/ItemsTree/ItemsTreeContentSkeleton';
 import type { TreeItemProps, TreeItemToolProps } from '~/client/components/TreeItem';
 import { TreeItemLayout, useNewPageInput } from '~/client/components/TreeItem';
+import type { IPageForItem } from '~/interfaces/page';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
 
 import { AiAssistantManagementModalPageMode, useAiAssistantManagementModal } from '../../../stores/ai-assistant';
@@ -20,13 +25,30 @@ import styles from './AiAssistantManagementPageTreeSelection.module.scss';
 
 const moduleClass = styles['grw-ai-assistant-management-page-tree-selection'] ?? '';
 
+export const isIPageHasId = (value?: IPageForItem): value is IPageHasId => {
+  if (value == null) {
+    return false;
+  }
+  return value._id != null && value.path != null;
+};
 
-const SelectablePageTree = () => {
+
+const SelectablePageTree = (props: { onClickAddPageButton: (page: IPageHasId) => void }) => {
+  const { onClickAddPageButton } = props;
+
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
 
+  const pageTreeItemHandler = useCallback((page: IPageForItem) => {
+    if (!isIPageHasId(page)) {
+      return;
+    }
+
+    onClickAddPageButton(page);
+  }, [onClickAddPageButton]);
+
   const PageTreeItem = (props: TreeItemProps) => {
-    const { itemNode, targetPathOrId } = props;
+    const { itemNode } = props;
     const { page } = itemNode;
 
     const SelectPageButton = () => {
@@ -34,6 +56,10 @@ const SelectablePageTree = () => {
         <button
           type="button"
           className="border-0 rounded btn p-0"
+          onClick={(e) => {
+            e.stopPropagation();
+            pageTreeItemHandler(page);
+          }}
         >
           <span className="material-symbols-outlined p-0 me-3 text-primary">add_circle</span>
         </button>
@@ -66,6 +92,25 @@ export const AiAssistantManagementPageTreeSelection = (): JSX.Element => {
   const { data: aiAssistantManagementModalData, changePageMode } = useAiAssistantManagementModal();
   const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
 
+  const [selectedPages, setSelectedPages] = useState<Map<string, IPageHasId>>(new Map());
+
+  const addPageHandler = useCallback((page: IPageHasId) => {
+    setSelectedPages((prev) => {
+      const newMap = new Map(prev);
+      newMap.set(page._id, page);
+      return newMap;
+    });
+  }, []);
+
+  const removePageHandler = useCallback((page: IPageHasId) => {
+    setSelectedPages((prev) => {
+      const newMap = new Map(prev);
+      newMap.delete(page._id);
+      return newMap;
+    });
+  }, []);
+
+
   return (
     <div className={moduleClass}>
       <AiAssistantManagementHeader
@@ -81,7 +126,7 @@ export const AiAssistantManagementPageTreeSelection = (): JSX.Element => {
 
         <Suspense fallback={<ItemsTreeContentSkeleton />}>
           <div className="px-4">
-            <SelectablePageTree />
+            <SelectablePageTree onClickAddPageButton={addPageHandler} />
           </div>
         </Suspense>
 
@@ -91,9 +136,9 @@ export const AiAssistantManagementPageTreeSelection = (): JSX.Element => {
 
         <div className="px-4">
           <SelectablePagePageList
-            pages={[]}
+            pages={Array.from(selectedPages.values())}
             method="remove"
-            onClickMethodButton={() => {}}
+            onClickMethodButton={removePageHandler}
           />
           <label className="form-text text-muted mt-2">
             {t('modal_ai_assistant.can_add_later')}
