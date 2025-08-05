@@ -133,6 +133,7 @@ export const AiAssistantManagementPageTreeSelection = (): JSX.Element => {
 
         <div className="d-flex justify-content-center mt-4">
           <button
+            disabled={selectedPages.size === 0}
             type="button"
             className="btn btn-primary rounded next-button"
           >
