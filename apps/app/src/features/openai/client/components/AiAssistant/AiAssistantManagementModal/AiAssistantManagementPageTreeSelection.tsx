@@ -61,7 +61,7 @@ const SelectablePageTree = memo((props: { onClickAddPageButton: (page: IPageHasI
             pageTreeItemHandler(page);
           }}
         >
-          <span className="material-symbols-outlined p-0 me-3 text-primary">add_circle</span>
+          <span className="material-symbols-outlined p-0 me-2 text-primary">add_circle</span>
         </button>
       );
     };
@@ -122,6 +122,7 @@ export const AiAssistantManagementPageTreeSelection = (): JSX.Element => {
           <SelectablePagePageList
             pages={Array.from(selectedPages.values())}
             method="remove"
+            methodButtonPosition="right"
             onClickMethodButton={removePageHandler}
           />
           <label className="form-text text-muted mt-2">
