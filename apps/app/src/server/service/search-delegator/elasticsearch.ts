@@ -569,32 +569,30 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       const validateQueryResponse = await (async() => {
         if (isES7ClientDelegator(this.client)) {
           const es7SearchQuery = query as ES7SearchQuery;
-          const { body } = es7SearchQuery;
           return this.client.indices.validateQuery({
-            index: es7SearchQuery.index,
-            type: es7SearchQuery.type,
             explain: true,
-            ...body,
+            index: es7SearchQuery.index,
+            body: {
+              query: es7SearchQuery.body?.query,
+            },
           });
         }
 
         if (isES8ClientDelegator(this.client)) {
           const es8SearchQuery = query as ES8SearchQuery;
-          const { body } = es8SearchQuery;
           return this.client.indices.validateQuery({
-            index: es8SearchQuery.index,
             explain: true,
-            ...body,
+            index: es8SearchQuery.index,
+            query: es8SearchQuery.body.query,
           });
         }
 
         if (isES9ClientDelegator(this.client)) {
           const es9SearchQuery = query as ES9SearchQuery;
-          const { body } = es9SearchQuery;
           return this.client.indices.validateQuery({
-            index: es9SearchQuery.index,
             explain: true,
-            ...body,
+            index: es9SearchQuery.index,
+            query: es9SearchQuery.body.query,
           });
         }
 
@@ -661,7 +659,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const fields = ['path', 'bookmark_count', 'comment_count', 'seenUsers_count', 'updated_at', 'tag_names', 'comments'];
 
     // sort by score
-    const query = {
+    const query: SearchQuery = {
       index: this.aliasName,
       _source: fields,
       body: {

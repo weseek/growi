@@ -49,7 +49,8 @@ export class ES7ClientDelegator {
     updateAliases: (params: RequestParams.IndicesUpdateAliases['body']): Promise<ApiResponse<estypes.IndicesUpdateAliasesResponse>> => {
       return this.client.indices.updateAliases({ body: params });
     },
-    validateQuery: async(params:RequestParams.IndicesValidateQuery<ES7SearchQuery>): Promise<estypes.IndicesValidateQueryResponse> => {
+    validateQuery: async(params: RequestParams.IndicesValidateQuery<{ query?: estypes.QueryDslQueryContainer }>)
+      : Promise<estypes.IndicesValidateQueryResponse> => {
       return (await this.client.indices.validateQuery<estypes.IndicesValidateQueryResponse>(params)).body;
     },
     stats: async(params: RequestParams.IndicesStats): Promise<estypes.IndicesStatsResponse> => {

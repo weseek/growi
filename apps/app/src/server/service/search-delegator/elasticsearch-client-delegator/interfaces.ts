@@ -31,6 +31,7 @@ export type ES7SearchQuery = RequestParams.Search<{
   sort?: ES7types.Sort
   highlight?: ES7types.SearchHighlight
 }>
+
 export interface ES8SearchQuery {
   index: ES8types.IndexName
   _source: ES8types.Fields
