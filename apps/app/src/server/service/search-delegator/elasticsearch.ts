@@ -693,6 +693,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   }
 
   initializeBoolQuery(query: SearchQuery): SearchQuery {
+    // query is created by createSearchQuery()
     if (query?.body?.query?.bool == null) {
       throw new Error('query.body.query.bool is not initialized');
     }
@@ -756,9 +757,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       for (const phrase of parsedKeywords.phrase) {
         const phraseQuery = {
           multi_match: {
-            query: phrase,
+            query: phrase, // query is created by createSearchQuery()
             type: 'phrase' as const,
             fields: [
+              // Not use "*.ja" fields here, because we want to analyze (parse) search words
               'path.raw^2',
               'body',
               'comments',
