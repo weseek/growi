@@ -336,6 +336,8 @@
     "simplebar-react": "^2.3.6",
     "socket.io-client": "^4.7.5",
     "source-map-loader": "^4.0.1",
-    "swagger2openapi": "^7.0.8"
+    "swagger2openapi": "^7.0.8",
+    "unist-util-is": "^6.0.0",
+    "unist-util-visit-parents": "^6.0.0"
   }
 }
