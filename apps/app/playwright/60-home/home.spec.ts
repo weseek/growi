@@ -94,7 +94,7 @@ test('Access Access Token setting', async({ page }) => {
 
   // Expect a success toaster to be displayed when new Access Token is generated
   await page.getByTestId('btn-accesstoken-toggleform').click();
-  await page.getByTestId('grw-accesstoken-textare-description').fill('dummy');
+  await page.getByTestId('grw-accesstoken-textarea-description').fill('dummy');
   await page.getByTestId('grw-accesstoken-create-button').click();
   await expect(page.locator('.Toastify__toast')).toBeVisible();
   await expect(page.locator('grw-accesstokne-new-token-display')).toBeVisible();
