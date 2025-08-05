@@ -33,7 +33,7 @@ export const isIPageHasId = (value?: IPageForItem): value is IPageHasId => {
 };
 
 
-const SelectablePageTree = (props: { onClickAddPageButton: (page: IPageHasId) => void }) => {
+const SelectablePageTree = memo((props: { onClickAddPageButton: (page: IPageHasId) => void }) => {
   const { onClickAddPageButton } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -84,7 +84,7 @@ const SelectablePageTree = (props: { onClickAddPageButton: (page: IPageHasId) =>
       CustomTreeItem={PageTreeItem}
     />
   );
-};
+});
 
 
 export const AiAssistantManagementPageTreeSelection = (): JSX.Element => {
