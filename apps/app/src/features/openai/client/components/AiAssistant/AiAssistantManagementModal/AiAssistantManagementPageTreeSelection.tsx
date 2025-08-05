@@ -1,6 +1,5 @@
 import React, {
-  Suspense,
-  useRef, useMemo, useCallback, useState, type KeyboardEvent, memo,
+  Suspense, useCallback, useState, memo,
 } from 'react';
 
 import type { IPageHasId } from '@growi/core';
@@ -11,8 +10,8 @@ import {
 
 import { ItemsTree } from '~/client/components/ItemsTree';
 import ItemsTreeContentSkeleton from '~/client/components/ItemsTree/ItemsTreeContentSkeleton';
-import type { TreeItemProps, TreeItemToolProps } from '~/client/components/TreeItem';
-import { TreeItemLayout, useNewPageInput } from '~/client/components/TreeItem';
+import type { TreeItemProps } from '~/client/components/TreeItem';
+import { TreeItemLayout } from '~/client/components/TreeItem';
 import type { IPageForItem } from '~/interfaces/page';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
 
@@ -89,7 +88,7 @@ const SelectablePageTree = memo((props: { onClickAddPageButton: (page: IPageHasI
 
 export const AiAssistantManagementPageTreeSelection = (): JSX.Element => {
   const { t } = useTranslation();
-  const { data: aiAssistantManagementModalData, changePageMode } = useAiAssistantManagementModal();
+  const { data: aiAssistantManagementModalData } = useAiAssistantManagementModal();
   const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
 
   const [selectedPages, setSelectedPages] = useState<Map<string, IPageHasId>>(new Map());
