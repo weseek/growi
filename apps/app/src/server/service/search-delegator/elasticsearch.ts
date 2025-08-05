@@ -24,12 +24,15 @@ import type { UpdateOrInsertPagesOpts } from '../interfaces/search';
 
 import { aggregatePipelineToIndex } from './aggregate-to-index';
 import type { AggregatedPage, BulkWriteBody, BulkWriteCommand } from './bulk-write';
-import type { SearchQuery } from './elasticsearch-client-delegator';
 import {
   getClient,
   isES7ClientDelegator,
   isES8ClientDelegator,
   isES9ClientDelegator,
+  isES7SearchQuery,
+  isES8SearchQuery,
+  isES9SearchQuery,
+  type SearchQuery,
   type ElasticsearchClientDelegator,
 } from './elasticsearch-client-delegator';
 
@@ -556,26 +559,73 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
    *   data: [ pages ...],
    * }
    */
-  async searchKeyword(query): Promise<ISearchResult<ISearchResultData>> {
+  async searchKeyword(query: SearchQuery): Promise<ISearchResult<ISearchResultData>> {
 
     // for debug
     if (process.env.NODE_ENV === 'development') {
       logger.debug('query: ', JSON.stringify(query, null, 2));
 
-      const validateQueryResponse = await this.client.indices.validateQuery({
-        index: query.index,
-        type: query.type,
-        explain: true,
-        body: {
-          query: query.body.query,
-        },
-      });
+
+      const validateQueryResponse = await (async() => {
+        if (isES7ClientDelegator(this.client) && isES7SearchQuery(this.client, query)) {
+          const { body } = query;
+          return this.client.indices.validateQuery({
+            index: query.index,
+            type: query.type,
+            explain: true,
+            ...body,
+          });
+        }
+
+        if (isES8ClientDelegator(this.client) && isES8SearchQuery(this.client, query)) {
+          const { body } = query;
+          return this.client.indices.validateQuery({
+            index: query.index,
+            explain: true,
+            ...body,
+          });
+        }
+
+        if (isES9SearchQuery(this.client, query) && isES9ClientDelegator(this.client)) {
+          const { body } = query;
+          return this.client.indices.validateQuery({
+            index: query.index,
+            explain: true,
+            ...body,
+          });
+        }
+
+        throw new Error('Unsupported Elasticsearch version');
+      })();
+
 
       // for debug
       logger.debug('ES result: ', validateQueryResponse);
     }
 
-    const searchResponse = await this.client.search(query);
+    const searchResponse = await (async() => {
+      if (isES7ClientDelegator(this.client) && isES7SearchQuery(this.client, query)) {
+        return this.client.search(query);
+      }
+
+      if (isES8ClientDelegator(this.client) && isES8SearchQuery(this.client, query)) {
+        return this.client.search(query);
+      }
+
+      if (isES9ClientDelegator(this.client) && isES9SearchQuery(this.client, query)) {
+        const { body, ...rest } = query;
+        return this.client.search({
+          ...rest,
+          // Elimination of the body property since ES9
+          // https://raw.githubusercontent.com/elastic/elasticsearch-js/2f6200eb397df0e54d23848d769a93614ee1fb45/docs/release-notes/breaking-changes.md
+          query: body.query,
+          sort: body.sort,
+          highlight: body.highlight,
+        });
+      }
+
+      throw new Error('Unsupported Elasticsearch version');
+    })();
 
     const _total = searchResponse?.hits?.total;
     let total = 0;
@@ -714,7 +764,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
             ],
           },
         };
-        query.body.query.bool.must.push(phraseQuery); // TypeScript can track this better
+        query.body.query.bool.must.push(phraseQuery);
       }
     }
 
@@ -723,7 +773,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
         const notPhraseQuery = {
           multi_match: {
             query: phrase, // each phrase is quoteted words
-            type: 'phrase' as const, // Add 'as const' to fix type error
+            type: 'phrase' as const,
             fields: [
               // Not use "*.ja" fields here, because we want to analyze (parse) search words
               'path.raw^2',
