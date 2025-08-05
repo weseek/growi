@@ -67,13 +67,13 @@ export const SelectablePagePageList = (props: Props): JSX.Element => {
 
             {methodButtonPosition === 'left' && methodButton(page)}
 
-            <div className="flex-grow-1">
+            <div className={`flex-grow-1 ${methodButtonPosition === 'left' ? 'me-4' : 'ms-2'}`}>
               <span>
                 {page.path}
               </span>
             </div>
 
-            <span className="badge bg-body-secondary rounded-pill me-2">
+            <span className={`badge bg-body-secondary rounded-pill ${methodButtonPosition === 'left' ? 'me-2' : ''}`}>
               <span className="text-body-tertiary">
                 {page.descendantCount}
               </span>

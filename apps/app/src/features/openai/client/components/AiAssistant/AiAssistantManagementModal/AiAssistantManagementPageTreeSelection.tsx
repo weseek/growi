@@ -55,7 +55,7 @@ const SelectablePageTree = memo((props: { onClickAddPageButton: (page: IPageHasI
       return (
         <button
           type="button"
-          className="border-0 rounded btn p-0"
+          className="border-0 rounded btn p-0 me-2"
           onClick={(e) => {
             e.stopPropagation();
             pageTreeItemHandler(page);
@@ -95,7 +95,6 @@ export const AiAssistantManagementPageTreeSelection = (): JSX.Element => {
   const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
 
   const { selectedPages, addPageHandler, removePageHandler } = useSelectedPages();
-
 
   return (
     <div className={moduleClass}>
