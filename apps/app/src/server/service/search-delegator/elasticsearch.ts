@@ -29,10 +29,10 @@ import {
   isES7ClientDelegator,
   isES8ClientDelegator,
   isES9ClientDelegator,
-  isES7SearchQuery,
-  isES8SearchQuery,
-  isES9SearchQuery,
   type SearchQuery,
+  type ES7SearchQuery,
+  type ES8SearchQuery,
+  type ES9SearchQuery,
   type ElasticsearchClientDelegator,
 } from './elasticsearch-client-delegator';
 
@@ -567,29 +567,32 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
 
       const validateQueryResponse = await (async() => {
-        if (isES7ClientDelegator(this.client) && isES7SearchQuery(this.client, query)) {
-          const { body } = query;
+        if (isES7ClientDelegator(this.client)) {
+          const es7SearchQuery = query as ES7SearchQuery;
+          const { body } = es7SearchQuery;
           return this.client.indices.validateQuery({
-            index: query.index,
-            type: query.type,
+            index: es7SearchQuery.index,
+            type: es7SearchQuery.type,
             explain: true,
             ...body,
           });
         }
 
-        if (isES8ClientDelegator(this.client) && isES8SearchQuery(this.client, query)) {
-          const { body } = query;
+        if (isES8ClientDelegator(this.client)) {
+          const es8SearchQuery = query as ES8SearchQuery;
+          const { body } = es8SearchQuery;
           return this.client.indices.validateQuery({
-            index: query.index,
+            index: es8SearchQuery.index,
             explain: true,
             ...body,
           });
         }
 
-        if (isES9SearchQuery(this.client, query) && isES9ClientDelegator(this.client)) {
-          const { body } = query;
+        if (isES9ClientDelegator(this.client)) {
+          const es9SearchQuery = query as ES9SearchQuery;
+          const { body } = es9SearchQuery;
           return this.client.indices.validateQuery({
-            index: query.index,
+            index: es9SearchQuery.index,
             explain: true,
             ...body,
           });
@@ -604,16 +607,16 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     }
 
     const searchResponse = await (async() => {
-      if (isES7ClientDelegator(this.client) && isES7SearchQuery(this.client, query)) {
-        return this.client.search(query);
+      if (isES7ClientDelegator(this.client)) {
+        return this.client.search(query as ES7SearchQuery);
       }
 
-      if (isES8ClientDelegator(this.client) && isES8SearchQuery(this.client, query)) {
-        return this.client.search(query);
+      if (isES8ClientDelegator(this.client)) {
+        return this.client.search(query as ES8SearchQuery);
       }
 
-      if (isES9ClientDelegator(this.client) && isES9SearchQuery(this.client, query)) {
-        const { body, ...rest } = query;
+      if (isES9ClientDelegator(this.client)) {
+        const { body, ...rest } = query as ES9SearchQuery;
         return this.client.search({
           ...rest,
           // Elimination of the body property since ES9

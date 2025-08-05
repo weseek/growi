@@ -83,15 +83,3 @@ export interface ES9SearchQuery {
 }
 
 export type SearchQuery = ES7SearchQuery | ES8SearchQuery | ES9SearchQuery;
-
-export const isES7SearchQuery = (clientDelegator: ElasticsearchClientDelegator, query: SearchQuery): query is ES7SearchQuery => {
-  return clientDelegator.delegatorVersion === 7;
-};
-
-export const isES8SearchQuery = (clientDelegator: ElasticsearchClientDelegator, query: SearchQuery): query is ES8SearchQuery => {
-  return clientDelegator.delegatorVersion === 8;
-};
-
-export const isES9SearchQuery = (clientDelegator: ElasticsearchClientDelegator, query: SearchQuery): query is ES9SearchQuery => {
-  return clientDelegator.delegatorVersion === 9;
-};
