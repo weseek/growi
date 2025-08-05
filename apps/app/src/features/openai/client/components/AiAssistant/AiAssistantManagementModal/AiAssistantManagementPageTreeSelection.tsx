@@ -77,12 +77,14 @@ const SelectablePageTree = memo((props: { onClickAddPageButton: (page: IPageHasI
   };
 
   return (
-    <ItemsTree
-      isEnableActions={!isGuestUser}
-      isReadOnlyUser={!!isReadOnlyUser}
-      targetPath="/"
-      CustomTreeItem={PageTreeItem}
-    />
+    <div className="page-tree-item">
+      <ItemsTree
+        targetPath="/"
+        isEnableActions={!isGuestUser}
+        isReadOnlyUser={!!isReadOnlyUser}
+        CustomTreeItem={PageTreeItem}
+      />
+    </div>
   );
 });
 

@@ -3,7 +3,13 @@
     width: 30%;
   }
 
-  .list-group-item {
-    padding: 0.5rem 0 !important;
+  .page-tree-item {
+    .list-group-item {
+      padding: 0.4rem 0 !important;
+    }
+  }
+
+  .add-page-button {
+    background-color: yellow;
   }
 }
