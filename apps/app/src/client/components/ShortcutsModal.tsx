@@ -331,7 +331,7 @@ const ShortcutsModal = (): JSX.Element => {
             <ul className="list-unstyled m-0">
               {/* Simple List */}
               <li className="d-flex align-items-center p-3 border-bottom">
-                <div className="flex-grow-1">{t('modal_shortcuts.line_settings.Bullet List')}</div>
+                <div className="flex-grow-1">{t('modal_shortcuts.line_settings.Numbered List')}</div>
                 <div className="text-nowrap">
                   <span className={`key cmd-key ${additionalClassByOs}`}></span>
                   <span className="text-secondary mx-2">+</span>
@@ -342,7 +342,7 @@ const ShortcutsModal = (): JSX.Element => {
               </li>
               {/* Numbered List */}
               <li className="d-flex align-items-center p-3 border-bottom">
-                <div className="flex-grow-1">{t('modal_shortcuts.line_settings.Numbered List')}</div>
+                <div className="flex-grow-1">{t('modal_shortcuts.line_settings.Bullet List')}</div>
                 <div className="text-nowrap">
                   <span className={`key cmd-key ${additionalClassByOs}`}></span>
                   <span className="text-secondary mx-2">+</span>
