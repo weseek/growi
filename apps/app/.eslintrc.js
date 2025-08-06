@@ -16,6 +16,11 @@ module.exports = {
     'src/linter-checker/**',
     'tmp/**',
     'next-env.d.ts',
+    'test/integration/crowi/**',
+    'test/integration/middlewares/**',
+    'test/integration/migrations/**',
+    'test/integration/models/**',
+    'test/integration/setup.js',
   ],
   settings: {
     // resolve path aliases by eslint-import-resolver-typescript
