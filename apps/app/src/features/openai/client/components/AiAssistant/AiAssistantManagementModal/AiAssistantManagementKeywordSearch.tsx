@@ -132,7 +132,7 @@ export const AiAssistantKeywordSearch = (props: { updateBaseSelectedPages: (page
     <div className={moduleClass}>
       <AiAssistantManagementHeader
         backButtonColor="secondary"
-        backToPageMode={AiAssistantManagementModalPageMode.PAGE_SELECTION_METHOD}
+        backToPageMode={isNewAiAssistant ? AiAssistantManagementModalPageMode.PAGE_SELECTION_METHOD : AiAssistantManagementModalPageMode.PAGES}
         labelTranslationKey={isNewAiAssistant ? 'modal_ai_assistant.header.add_new_assistant' : 'modal_ai_assistant.header.update_assistant'}
       />
 
