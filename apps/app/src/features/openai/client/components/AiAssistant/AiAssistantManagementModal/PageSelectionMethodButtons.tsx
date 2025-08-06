@@ -14,7 +14,7 @@ const SelectionButton = (props: { icon: string, label: string, onClick: () => vo
   return (
     <button
       type="button"
-      className="btn p-4 text-center page-selection-method-btn"
+      className="btn text-center py-4 w-100 page-selection-method-btn"
       onClick={onClick}
     >
       <span
@@ -34,15 +34,15 @@ export const PageSelectionMethodButtons = (): JSX.Element => {
 
   return (
     <div className={moduleClass}>
-      <div className="row justify-content-center">
-        <div className="col-auto">
+      <div className="row g-3">
+        <div className="col">
           <SelectionButton
             icon="manage_search"
             label={t('modal_ai_assistant.search_by_keyword')}
             onClick={() => changePageMode(AiAssistantManagementModalPageMode.KEYWORD_SEARCH)}
           />
         </div>
-        <div className="col-auto">
+        <div className="col">
           <SelectionButton
             icon="account_tree"
             label={t('modal_ai_assistant.select_from_page_tree')}

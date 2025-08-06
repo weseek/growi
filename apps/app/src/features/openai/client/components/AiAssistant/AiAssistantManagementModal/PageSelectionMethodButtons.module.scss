@@ -1,12 +1,5 @@
 @use '@growi/core-styles/scss/bootstrap/init' as bs;
 
-.page-selection-method-buttons :global {
-  .page-selection-method-btn {
-      width: 280px;
-  }
-}
-
-
 // == Colors
 .page-selection-method-buttons :global {
   .page-selection-method-btn {
