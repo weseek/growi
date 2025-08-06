@@ -1,6 +1,6 @@
 @use '@growi/core-styles/scss/bootstrap/init' as bs;
 
-.grw-ai-assistant-management-page-selection-method :global {
+.page-selection-method-buttons :global {
   .page-selection-method-btn {
       width: 280px;
   }
@@ -8,7 +8,7 @@
 
 
 // == Colors
-.grw-ai-assistant-management-page-selection-method :global {
+.page-selection-method-buttons :global {
   .page-selection-method-btn {
       border: 2px solid bs.$gray-300;
       &:hover {
