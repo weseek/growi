@@ -22,7 +22,7 @@
 @include bs.color-mode(dark) {
   .page-selection-method-buttons :global {
     .page-selection-method-btn {
-      border: 2px solid bs.$gray-600;
+      border: 2px solid bs.$gray-700;
     }
   }
 }
