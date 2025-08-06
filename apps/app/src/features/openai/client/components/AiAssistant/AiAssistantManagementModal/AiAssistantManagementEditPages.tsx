@@ -1,5 +1,6 @@
-import React, { useCallback, type JSX } from 'react';
+import React, { useCallback, useMemo, type JSX } from 'react';
 
+import type { IPageHasId } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import { ModalBody } from 'reactstrap';
 
@@ -12,8 +13,14 @@ import type { SelectedPage } from '../../../../interfaces/selected-page';
 import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
 import { PageSelectionMethodButtons } from './PageSelectionMethodButtons'; // Importing for side effects, if needed
 import { SelectablePagePageList } from './SelectablePagePageList';
-import { SelectedPageList } from './SelectedPageList';
 
+// 後で消す
+const isIPageHasId = (value?: IPageForItem): value is IPageHasId => {
+  if (value == null) {
+    return false;
+  }
+  return value.path != null;
+};
 
 type Props = {
   selectedPages: SelectedPage[];
@@ -27,9 +34,17 @@ export const AiAssistantManagementEditPages = (props: Props): JSX.Element => {
 
   const { selectedPages, onSelect, onRemove } = props;
 
-  const pages = selectedPages.map(selectedPageData => selectedPageData.page);
+  const pages = useMemo(() => {
+    return selectedPages
+      .map(selectedPageData => selectedPageData.page)
+      .filter(isIPageHasId);
+  }, [selectedPages]);
 
   const { open: openPageSelectModal } = usePageSelectModal();
+
+  const removePageHandler = useCallback((page: IPageHasId) => {
+    onRemove(page.path);
+  }, [onRemove]);
 
   const clickOpenPageSelectModalHandler = useCallback(() => {
     openPageSelectModal({ onSelected: onSelect, isHierarchicalSelectionMode: true });
@@ -51,23 +66,12 @@ export const AiAssistantManagementEditPages = (props: Props): JSX.Element => {
             <PageSelectionMethodButtons />
           </div>
 
-          {/* <button
-            type="button"
-            onClick={clickOpenPageSelectModalHandler}
-            className="btn btn-outline-primary w-100 mb-3 d-flex align-items-center justify-content-center"
-          >
-            <span className="material-symbols-outlined me-2">add</span>
-            {t('modal_ai_assistant.add_page_button')}
-          </button> */}
-
-          {/* <SelectedPageList selectedPages={selectedPages} onRemove={onRemove} /> */}
-
           <div className="">
             <SelectablePagePageList
               method="delete"
               methodButtonPosition="right"
               pages={pages}
-              onClickMethodButton={() => {}}
+              onClickMethodButton={removePageHandler}
             />
           </div>
         </div>
