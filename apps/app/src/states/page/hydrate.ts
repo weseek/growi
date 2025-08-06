@@ -10,7 +10,8 @@ import {
   templateBodyAtom,
   remoteRevisionIdAtom,
   remoteRevisionBodyAtom,
-} from '../page/internal-atoms';
+  pageNotCreatableAtom,
+} from './internal-atoms';
 
 /**
  * Hook for hydrating page-related atoms with server-side data
@@ -39,6 +40,7 @@ export const useHydratePageAtoms = (
     page: IPagePopulatedToShowRevision | undefined,
     options?: {
       isNotFound?: boolean;
+      isNotCreatable?: boolean;
       isLatestRevision?: boolean;
       templateTags?: string[];
       templateBody?: string;
@@ -48,7 +50,8 @@ export const useHydratePageAtoms = (
     // Core page state - automatically extract from page object
     [currentPageIdAtom, page?._id],
     [currentPageDataAtom, page],
-    [pageNotFoundAtom, options?.isNotFound ?? (page == null)],
+    [pageNotFoundAtom, options?.isNotFound ?? (page == null || page.isEmpty)],
+    [pageNotCreatableAtom, options?.isNotCreatable ?? false],
     [latestRevisionAtom, options?.isLatestRevision ?? true],
 
     // Template data - from options (not auto-extracted from page)

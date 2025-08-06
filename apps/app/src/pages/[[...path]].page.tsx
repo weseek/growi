@@ -14,7 +14,6 @@ import ExtensibleCustomError from 'extensible-custom-error';
 import type {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -23,36 +22,26 @@ import superjson from 'superjson';
 import { BasicLayout } from '~/components/Layout/BasicLayout';
 import { PageView } from '~/components/PageView/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
-import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { RegistrationMode } from '~/interfaces/registration-mode';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
-import type { IUserUISettings } from '~/interfaces/user-ui-settings';
-import type { CurrentPageYjsData } from '~/interfaces/yjs';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
 import { useEditorModeClassName } from '~/services/layout/use-editor-mode-class-name';
-import { useHydratePageAtoms } from '~/states/hydrate/page';
 import { useHydrateSidebarAtoms } from '~/states/hydrate/sidebar';
 import {
-  useCurrentPageData, useFetchCurrentPage, useCurrentPageId, useCurrentPagePath,
+  useCurrentPageData, useFetchCurrentPage, useCurrentPageId, useCurrentPagePath, usePageNotFound,
 } from '~/states/page';
+import { useHydratePageAtoms } from '~/states/page/hydrate';
+import { ServerConfigurationInitialProps, useHydrateServerConfigurationAtoms } from '~/states/server-configurations/hydrate';
 import {
-  useIsForbidden, useIsSharedUser,
-  useIsEnabledStaleNotification, useIsIdenticalPath,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
-  useDefaultIndentSize, useIsIndentSizeForced,
-  useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
-  useIsSearchScopeChildrenAsDefault, useIsEnabledMarp,
-  useIsSlackConfigured, useRendererConfig,
-  useIsAllReplyShown, useShowPageSideAuthors, useIsContainerFluid, useIsNotCreatable,
-  useIsUploadAllFileAllowed, useIsUploadEnabled, useIsBulkExportPagesEnabled,
-  useElasticsearchMaxBodyLengthToIndex,
-  useIsLocalAccountRegistrationEnabled,
-  useIsRomUserAllowedToComment,
-  useIsPdfBulkExportEnabled,
-  useIsAiEnabled, useLimitLearnablePageCountPerAssistant, useIsUsersHomepageDeletionEnabled,
+  useDisableLinkSharing,
+  useRendererConfig,
+} from '~/states/server-configurations/server-configurations';
+import {
+  useIsSharedUser,
+  useIsSearchPage,
 } from '~/stores-universal/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import { useRedirectFrom } from '~/stores/page-redirect';
@@ -61,12 +50,16 @@ import { useCurrentPageYjsData, useSWRMUTxCurrentPageYjsData } from '~/stores/yj
 import loggerFactory from '~/utils/logger';
 
 import type { NextPageWithLayout } from './_app.page';
-import type { CommonProps, PageTitleCustomizationProps } from './utils/commons';
 import {
-  getServerSidePageTitleCustomizationProps,
-  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, skipSSR, addActivity,
+  CommonEachProps, CommonInitialProps, getServerSideCommonInitialProps,
 } from './utils/commons';
-import { detectNextjsRoutingType } from './utils/nextjs-routing-utils';
+
+import { NextjsRoutingType, detectNextjsRoutingType } from './utils/nextjs-routing-utils';
+import type { UserUISettingsProps } from './utils/user-ui-settings';
+import { PageTitleCustomizationProps, generateCustomTitleForPage, getServerSidePageTitleCustomizationProps } from './utils/page-title-customization';
+import { SSRProps, getServerSideSSRProps } from './utils/ssr';
+import { addActivity } from './utils/activity';
+import { SupportedAction, SupportedActionType } from '~/interfaces/activity';
 
 
 declare global {
@@ -143,25 +136,11 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   );
 };
 
-type Props = CommonProps & PageTitleCustomizationProps & {
+type InitialProps = CommonInitialProps & SSRProps & UserUISettingsProps & {
   pageWithMeta: IPageToShowRevisionWithMeta | null,
-  // pageUser?: any,
-  redirectDestination?: string,
-  redirectFrom?: string;
 
-  // shareLinkId?: string;
-  isLatestRevision?: boolean,
-
-  isIdenticalPathPage?: boolean,
-  isForbidden: boolean,
-  isNotFound: boolean,
-  isNotCreatable: boolean,
-  // isAbleToDeleteCompletely: boolean,
-
-  templateTagData?: string[],
-  templateBodyData?: string,
-
-  isLocalAccountRegistrationEnabled: boolean,
+  sidebarConfig: ISidebarConfig,
+  rendererConfig: RendererConfig,
 
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
@@ -171,17 +150,12 @@ type Props = CommonProps & PageTitleCustomizationProps & {
 
   isRomUserAllowedToComment: boolean,
 
-  sidebarConfig: ISidebarConfig,
-  userUISettings: IUserUISettings,
-
   isSlackConfigured: boolean,
-  // isMailerSetup: boolean,
   isAclEnabled: boolean,
-  // hasSlackConfig: boolean,
   drawioUri: string | null,
-  // highlightJsStyle: string,
   isAllReplyShown: boolean,
   showPageSideAuthors: boolean,
+
   isContainerFluid: boolean,
   isUploadEnabled: boolean,
   isUploadAllFileAllowed: boolean,
@@ -189,21 +163,32 @@ type Props = CommonProps & PageTitleCustomizationProps & {
   isPdfBulkExportEnabled: boolean,
   isEnabledStaleNotification: boolean,
   isEnabledAttachTitleHeader: boolean,
-  // isEnabledLinebreaks: boolean,
-  // isEnabledLinebreaksInComments: boolean,
+  isUsersHomepageDeletionEnabled: boolean,
+  isLocalAccountRegistrationEnabled: boolean,
+
   adminPreferredIndentSize: number,
   isIndentSizeForced: boolean,
   disableLinkSharing: boolean,
-  skipSSR: boolean,
-  ssrMaxRevisionBodyLength: number,
-
-  yjsData: CurrentPageYjsData,
-
-  rendererConfig: RendererConfig,
 
   aiEnabled: boolean,
   limitLearnablePageCountPerAssistant: number,
-  isUsersHomepageDeletionEnabled: boolean,
+}
+
+type SameRouteEachProps = CommonEachProps & PageTitleCustomizationProps & {
+  redirectFrom?: string;
+
+  isIdenticalPathPage?: boolean,
+  isForbidden: boolean,
+  isNotCreatable: boolean,
+
+  templateTagData?: string[],
+  templateBodyData?: string,
+}
+
+type Props = SameRouteEachProps | (InitialProps & SameRouteEachProps);
+
+const isInitialProps = (props: Props): props is (InitialProps & SameRouteEachProps) => {
+  return props.nextjsRoutingPage === NextjsRoutingType.INITIAL;
 };
 
 const Page: NextPageWithLayout<Props> = (props: Props) => {
@@ -214,79 +199,40 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const router = useRouter();
 
-  // page
-  useIsContainerFluid(props.isContainerFluid);
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
-  useIsForbidden(props.isForbidden);
-  useIsNotCreatable(props.isNotCreatable);
   useRedirectFrom(props.redirectFrom ?? null);
   useIsSharedUser(false); // this page cann't be routed for '/share'
-  useIsIdenticalPath(props.isIdenticalPathPage ?? false);
-  useIsEnabledStaleNotification(props.isEnabledStaleNotification);
   useIsSearchPage(false);
 
-  useIsEnabledAttachTitleHeader(props.isEnabledAttachTitleHeader);
-  useIsSearchServiceConfigured(props.isSearchServiceConfigured);
-  useIsSearchServiceReachable(props.isSearchServiceReachable);
-  useElasticsearchMaxBodyLengthToIndex(props.elasticsearchMaxBodyLengthToIndex);
-  useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
+  // Initialize server configuration atoms with props data
+  if (isInitialProps(props)) {
+    // Initialize Jotai atoms with initial data
+    useHydratePageAtoms(props.pageWithMeta?.data);
+    useHydrateServerConfigurationAtoms(props);
+  }
 
-  useIsSlackConfigured(props.isSlackConfigured);
-  // useIsMailerSetup(props.isMailerSetup);
-  useIsAclEnabled(props.isAclEnabled);
-  // useHasSlackConfig(props.hasSlackConfig);
-  useDefaultIndentSize(props.adminPreferredIndentSize);
-  useIsIndentSizeForced(props.isIndentSizeForced);
-  useDisableLinkSharing(props.disableLinkSharing);
-  useRendererConfig(props.rendererConfig);
-  useIsEnabledMarp(props.rendererConfig.isEnabledMarp);
-  // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
-  // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
-  useIsAllReplyShown(props.isAllReplyShown);
-  useShowPageSideAuthors(props.showPageSideAuthors);
-
-  useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
-  useIsUploadEnabled(props.isUploadEnabled);
-  useIsBulkExportPagesEnabled(props.isBulkExportPagesEnabled);
-  useIsPdfBulkExportEnabled(props.isPdfBulkExportEnabled);
-
-  useIsLocalAccountRegistrationEnabled(props.isLocalAccountRegistrationEnabled);
-  useIsRomUserAllowedToComment(props.isRomUserAllowedToComment);
-
-  useIsAiEnabled(props.aiEnabled);
-  useLimitLearnablePageCountPerAssistant(props.limitLearnablePageCountPerAssistant);
-
-  useIsUsersHomepageDeletionEnabled(props.isUsersHomepageDeletionEnabled);
-
-
-  const { pageWithMeta } = props;
-
-  const pageId = pageWithMeta?.data._id;
-  const revisionId = pageWithMeta?.data.revision?._id;
-  const revisionBody = pageWithMeta?.data.revision?.body;
-
-  // Initialize Jotai atoms with initial data
-  useHydratePageAtoms(pageWithMeta?.data);
+  const [currentPage] = useCurrentPageData();
+  const [pageId, setCurrentPageId] = useCurrentPageId();
+  const [currentPagePath] = useCurrentPagePath();
+  const [isNotFound] = usePageNotFound();
+  const [rendererConfig] = useRendererConfig();
+  const [disableLinkSharing] = useDisableLinkSharing();
 
   const { fetchCurrentPage } = useFetchCurrentPage();
   const { trigger: mutateCurrentPageYjsDataFromApi } = useSWRMUTxCurrentPageYjsData();
 
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
-  const [currentPageId, setCurrentPageId] = useCurrentPageId();
-  const [currentPagePath] = useCurrentPagePath();
-
-  const { mutate: mutateCurrentPageYjsData } = useCurrentPageYjsData();
 
   useSetupGlobalSocket();
   useSetupGlobalSocketForPage(pageId);
 
   // Store initial data (When revisionBody is not SSR)
   useEffect(() => {
-    if (!props.skipSSR) {
+    if (isInitialProps(props) && !props.skipSSR) {
       return;
     }
 
-    if (pageId != null && revisionId != null && !props.isNotFound) {
+    if (pageId != null && currentPage?.revision?._id != null && !isNotFound) {
       const mutatePageData = async() => {
         setCurrentPageId(pageId);
         const pageData = await fetchCurrentPage();
@@ -297,14 +243,14 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       // Because pageWIthMeta does not contain revision.body
       mutatePageData();
     }
-  }, [revisionId, currentPageId, mutateEditingMarkdown, props.isNotFound, props.skipSSR, fetchCurrentPage, pageId, setCurrentPageId]);
+  }, [pageId, currentPage?.revision?._id, isNotFound]);
 
   // Load current yjs data
   useEffect(() => {
-    if (currentPageId != null && revisionId != null && !props.isNotFound) {
+    if (pageId != null && currentPage?.revision?._id != null && !isNotFound) {
       mutateCurrentPageYjsDataFromApi();
     }
-  }, [currentPageId, mutateCurrentPageYjsDataFromApi, props.isNotFound, revisionId]);
+  }, [currentPage, mutateCurrentPageYjsDataFromApi, isNotFound, currentPage?.revision?._id]);
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
@@ -319,13 +265,13 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // need to include useCurrentPathname not useCurrentPagePath
   useEffect(() => {
     if (props.currentPathname != null) {
-      mutateEditingMarkdown(revisionBody);
+      mutateEditingMarkdown(currentPage?.revision?.body);
     }
-  }, [mutateEditingMarkdown, revisionBody, props.currentPathname]);
+  }, [mutateEditingMarkdown, currentPage?.revision?.body, props.currentPathname]);
 
-  useEffect(() => {
-    mutateCurrentPageYjsData(props.yjsData);
-  }, [mutateCurrentPageYjsData, props.yjsData]);
+  // useEffect(() => {
+  //   mutateCurrentPageYjsData(props.yjsData);
+  // }, [mutateCurrentPageYjsData, props.yjsData]);
 
   // If the data on the page changes without router.push, pageWithMeta remains old because getServerSideProps() is not executed
   // So preferentially take page data from useSWRxCurrentPage
@@ -341,12 +287,12 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       </Head>
       <div className="dynamic-layout-root justify-content-between">
 
-        <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
+        <GrowiContextualSubNavigation isLinkSharingDisabled={disableLinkSharing} />
 
         <PageView
           className="d-edit-none"
           pagePath={pagePath}
-          rendererConfig={props.rendererConfig}
+          rendererConfig={rendererConfig}
         />
 
         <EditablePageEffects />
@@ -369,17 +315,23 @@ type LayoutProps = Props & {
 }
 
 const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
-  // Hydrate sidebar atoms with server-side data
-  useHydrateSidebarAtoms(props.sidebarConfig, props.userUISettings);
-
+  if (isInitialProps(props)) {
+    // Hydrate sidebar atoms with server-side data
+    useHydrateSidebarAtoms(props.sidebarConfig, props.userUISettings);
+  }
   return <BasicLayoutWithEditor>{children}</BasicLayoutWithEditor>;
 };
 
+let drawioUri = '';
 Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
+  if (isInitialProps(page.props)) {
+    drawioUri = page.props.rendererConfig.drawioUri;
+  }
+
   return (
     <>
       <GrowiPluginsActivator />
-      <DrawioViewerScript drawioUri={page.props.rendererConfig.drawioUri} />
+      <DrawioViewerScript drawioUri={drawioUri} />
 
       <Layout {...page.props}>
         {page}
@@ -517,21 +469,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
   }
 }
 
-// async function injectPageUserInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
-//   const req: CrowiRequest = context.req as CrowiRequest;
-//   const { crowi } = req;
-//   const UserModel = crowi.model('User');
-
-//   if (isUserPage(props.currentPagePath)) {
-//     const user = await UserModel.findUserByUsername(UserModel.getUsernameByPath(props.currentPagePath));
-
-//     if (user != null) {
-//       props.pageUser = JSON.stringify(user.toObject());
-//     }
-//   }
-// }
-
-function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
+const getServerSideConfigurationProps: GetServerSideProps<ServerConfigurationInitialProps> = async (context: GetServerSidePropsContext) => {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
@@ -539,79 +477,65 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     slackIntegrationService, passportService,
   } = crowi;
 
-  props.aiEnabled = configManager.getConfig('app:aiEnabled');
-  props.limitLearnablePageCountPerAssistant = configManager.getConfig('openai:limitLearnablePageCountPerAssistant');
-  props.isUsersHomepageDeletionEnabled = configManager.getConfig('security:user-homepage-deletion:isEnabled');
-  props.isSearchServiceConfigured = searchService.isConfigured;
-  props.isSearchServiceReachable = searchService.isReachable;
-  props.isSearchScopeChildrenAsDefault = configManager.getConfig('customize:isSearchScopeChildrenAsDefault');
-  props.elasticsearchMaxBodyLengthToIndex = configManager.getConfig('app:elasticsearchMaxBodyLengthToIndex');
+  return {
+    props: {
+      aiEnabled: configManager.getConfig('app:aiEnabled'),
+      limitLearnablePageCountPerAssistant: configManager.getConfig('openai:limitLearnablePageCountPerAssistant'),
+      isUsersHomepageDeletionEnabled: configManager.getConfig('security:user-homepage-deletion:isEnabled'),
+      isSearchServiceConfigured: searchService.isConfigured,
+      isSearchServiceReachable: searchService.isReachable,
+      isSearchScopeChildrenAsDefault: configManager.getConfig('customize:isSearchScopeChildrenAsDefault'),
+      elasticsearchMaxBodyLengthToIndex: configManager.getConfig('app:elasticsearchMaxBodyLengthToIndex'),
 
-  props.isRomUserAllowedToComment = configManager.getConfig('security:isRomUserAllowedToComment');
+      isRomUserAllowedToComment: configManager.getConfig('security:isRomUserAllowedToComment'),
 
-  props.isSlackConfigured = slackIntegrationService.isSlackConfigured;
-  // props.isMailerSetup = mailService.isMailerSetup;
-  props.isAclEnabled = aclService.isAclEnabled();
-  // props.hasSlackConfig = slackNotificationService.hasSlackConfig();
-  props.drawioUri = configManager.getConfig('app:drawioUri');
-  // props.highlightJsStyle = configManager.getConfig('customize:highlightJsStyle');
-  props.isAllReplyShown = configManager.getConfig('customize:isAllReplyShown');
-  props.showPageSideAuthors = configManager.getConfig('customize:showPageSideAuthors');
-  props.isContainerFluid = configManager.getConfig('customize:isContainerFluid');
-  props.isEnabledStaleNotification = configManager.getConfig('customize:isEnabledStaleNotification');
-  props.disableLinkSharing = configManager.getConfig('security:disableLinkSharing');
-  props.isUploadAllFileAllowed = fileUploadService.getFileUploadEnabled();
-  props.isUploadEnabled = fileUploadService.getIsUploadable();
-  // TODO: remove growiCloudUri condition when bulk export can be relased for GROWI.cloud (https://redmine.weseek.co.jp/issues/163220)
-  props.isBulkExportPagesEnabled = configManager.getConfig('app:isBulkExportPagesEnabled') && configManager.getConfig('app:growiCloudUri') == null;
-  props.isPdfBulkExportEnabled = configManager.getConfig('app:pageBulkExportPdfConverterUri') != null;
+      isSlackConfigured: slackIntegrationService.isSlackConfigured,
+      isAclEnabled: aclService.isAclEnabled(),
+      drawioUri: configManager.getConfig('app:drawioUri'),
+      isAllReplyShown: configManager.getConfig('customize:isAllReplyShown'),
+      showPageSideAuthors: configManager.getConfig('customize:showPageSideAuthors'),
+      isContainerFluid: configManager.getConfig('customize:isContainerFluid'),
+      isEnabledStaleNotification: configManager.getConfig('customize:isEnabledStaleNotification'),
+      disableLinkSharing: configManager.getConfig('security:disableLinkSharing'),
+      isUploadAllFileAllowed: fileUploadService.getFileUploadEnabled(),
+      isUploadEnabled: fileUploadService.getIsUploadable(),
 
-  props.isLocalAccountRegistrationEnabled = passportService.isLocalStrategySetup
-  && configManager.getConfig('security:registrationMode') !== RegistrationMode.CLOSED;
+      // TODO: remove growiCloudUri condition when bulk export can be relased for GROWI.cloud (https://redmine.weseek.co.jp/issues/163220)
+      isBulkExportPagesEnabled: configManager.getConfig('app:isBulkExportPagesEnabled') && configManager.getConfig('app:growiCloudUri') == null,
+      isPdfBulkExportEnabled: configManager.getConfig('app:pageBulkExportPdfConverterUri') != null,
+      isLocalAccountRegistrationEnabled: passportService.isLocalStrategySetup
+        && configManager.getConfig('security:registrationMode') !== RegistrationMode.CLOSED,
 
-  props.adminPreferredIndentSize = configManager.getConfig('markdown:adminPreferredIndentSize');
-  props.isIndentSizeForced = configManager.getConfig('markdown:isIndentSizeForced');
+      adminPreferredIndentSize: configManager.getConfig('markdown:adminPreferredIndentSize'),
+      isIndentSizeForced: configManager.getConfig('markdown:isIndentSizeForced'),
+      isEnabledAttachTitleHeader: configManager.getConfig('customize:isEnabledAttachTitleHeader'),
+      sidebarConfig: {
+        isSidebarCollapsedMode: configManager.getConfig('customize:isSidebarCollapsedMode'),
+        isSidebarClosedAtDockMode: configManager.getConfig('customize:isSidebarClosedAtDockMode'),
+      },
+      rendererConfig: {
+        isEnabledLinebreaks: configManager.getConfig('markdown:isEnabledLinebreaks'),
+        isEnabledLinebreaksInComments: configManager.getConfig('markdown:isEnabledLinebreaksInComments'),
+        isEnabledMarp: configManager.getConfig('customize:isEnabledMarp'),
+        adminPreferredIndentSize: configManager.getConfig('markdown:adminPreferredIndentSize'),
+        isIndentSizeForced: configManager.getConfig('markdown:isIndentSizeForced'),
 
-  props.isEnabledAttachTitleHeader = configManager.getConfig('customize:isEnabledAttachTitleHeader');
+        drawioUri: configManager.getConfig('app:drawioUri'),
+        plantumlUri: configManager.getConfig('app:plantumlUri'),
 
-  props.sidebarConfig = {
-    isSidebarCollapsedMode: configManager.getConfig('customize:isSidebarCollapsedMode'),
-    isSidebarClosedAtDockMode: configManager.getConfig('customize:isSidebarClosedAtDockMode'),
-  };
-
-  props.rendererConfig = {
-    isEnabledLinebreaks: configManager.getConfig('markdown:isEnabledLinebreaks'),
-    isEnabledLinebreaksInComments: configManager.getConfig('markdown:isEnabledLinebreaksInComments'),
-    isEnabledMarp: configManager.getConfig('customize:isEnabledMarp'),
-    adminPreferredIndentSize: configManager.getConfig('markdown:adminPreferredIndentSize'),
-    isIndentSizeForced: configManager.getConfig('markdown:isIndentSizeForced'),
-
-    drawioUri: configManager.getConfig('app:drawioUri'),
-    plantumlUri: configManager.getConfig('app:plantumlUri'),
-
-    // XSS Options
-    isEnabledXssPrevention: configManager.getConfig('markdown:rehypeSanitize:isEnabledPrevention'),
-    sanitizeType: configManager.getConfig('markdown:rehypeSanitize:option'),
-    customTagWhitelist: configManager.getConfig('markdown:rehypeSanitize:tagNames'),
-    customAttrWhitelist: configManager.getConfig('markdown:rehypeSanitize:attributes') != null
-      ? JSON.parse(configManager.getConfig('markdown:rehypeSanitize:attributes'))
-      : undefined,
-    highlightJsStyleBorder: configManager.getConfig('customize:highlightJsStyleBorder'),
-  };
-
-  props.ssrMaxRevisionBodyLength = configManager.getConfig('app:ssrMaxRevisionBodyLength');
+        // XSS Options
+        isEnabledXssPrevention: configManager.getConfig('markdown:rehypeSanitize:isEnabledPrevention'),
+        sanitizeType: configManager.getConfig('markdown:rehypeSanitize:option'),
+        customTagWhitelist: configManager.getConfig('markdown:rehypeSanitize:tagNames'),
+        customAttrWhitelist: configManager.getConfig('markdown:rehypeSanitize:attributes') != null
+          ? JSON.parse(configManager.getConfig('markdown:rehypeSanitize:attributes'))
+          : undefined,
+        highlightJsStyleBorder: configManager.getConfig('customize:highlightJsStyleBorder'),
+      },
+    },
+  }
 }
 
-/**
- * for Server Side Translations
- * @param context
- * @param props
- * @param namespacesRequired
- */
-async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
-  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
-  props._nextI18Next = nextI18NextConfig._nextI18Next;
-}
 
 const getAction = (props: Props): SupportedActionType => {
   if (props.isNotCreatable) {
@@ -640,54 +564,73 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   console.log('=== getServerSideProps ===', { nextjsRoutingType });
 
-  const commonPropsResult = await getServerSideCommonProps(context);
-  const pageTitleCustomizeationPropsResult = await getServerSidePageTitleCustomizationProps(context);
+  let props: Props;
 
-  // check for presence
-  // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
-  if (!('props' in commonPropsResult) || !('props' in pageTitleCustomizeationPropsResult)) {
-    throw new Error('invalid getSSP result');
+  if (nextjsRoutingType === NextjsRoutingType.INITIAL) {
+    // props will be (InitialProps & SameRouteEachProps)
+
+    // await injectPageData(context, props);
+    // await injectRoutingInformation(context, props);
+    // await getServerSideCommonInitialProps(context),
+    // await getServerSidePageTitleCustomizationProps(context),
+    // await getServerSideConfigurationProps(context),
+    // await getServerSideSSRProps(context, page, ['translation']),
+    // await addActivity(context, getAction(props));
+  }
+  else {
+    // props will be SameRouteEachProps
   }
 
-  const props: Props = {
-    ...commonPropsResult.props,
-    ...pageTitleCustomizeationPropsResult.props,
-    nextjsRoutingPage: NEXT_JS_ROUTING_PAGE,
-  } as Props;
 
-  if (props.redirectDestination != null) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: props.redirectDestination,
-      },
-    };
-  }
+  /** Deprecated codes (start): */
 
-  if (user != null) {
-    props.currentUser = user.toObject();
-  }
+  // // check for presence
+  // // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
+  // if (!('props' in commonPropsResult) || !('props' in pageTitleCustomizeationPropsResult)) {
+  //   throw new Error('invalid getSSP result');
+  // }
 
-  try {
-    await injectPageData(context, props);
-  }
-  catch (err) {
-    if (err instanceof MultiplePagesHitsError) {
-      props.isIdenticalPathPage = true;
-    }
-    else {
-      throw err;
-    }
-  }
+  // const props: Props = {
+  //   ...commonPropsResult.props,
+  //   ...pageTitleCustomizeationPropsResult.props,
+  //   nextjsRoutingPage: NEXT_JS_ROUTING_PAGE,
+  // } as Props;
 
-  await injectRoutingInformation(context, props);
-  injectServerConfigurations(context, props);
-  await injectNextI18NextConfigurations(context, props, ['translation']);
+  // if (props.redirectDestination != null) {
+  //   return {
+  //     redirect: {
+  //       permanent: false,
+  //       destination: props.redirectDestination,
+  //     },
+  //   };
+  // }
 
-  addActivity(context, getAction(props));
-  return {
-    props,
-  };
+  // if (user != null) {
+  //   props.currentUser = user.toObject();
+  // }
+
+  // try {
+  //   await injectPageData(context, props);
+  // }
+  // catch (err) {
+  //   if (err instanceof MultiplePagesHitsError) {
+  //     props.isIdenticalPathPage = true;
+  //   }
+  //   else {
+  //     throw err;
+  //   }
+  // }
+
+  // await injectRoutingInformation(context, props);
+  // injectServerConfigurations(context, props);
+  // await getServerSideSSRProps(context, props, ['translation']);
+
+  // addActivity(context, getAction(props));
+  /** Deprecated codes (end): */
+
+  // return {
+  //   props,
+  // };
 };
 
 export default Page;

@@ -16,12 +16,12 @@ export const useNextjsRoutingPageRegister = (nextjsRoutingPage: string | undefin
   }, [nextjsRoutingPage]);
 };
 
-const NextjsRoutingType = {
+export const NextjsRoutingType = {
   INITIAL: 'initial',
   SAME_ROUTE: 'same-route',
   FROM_OUTSIDE: 'from-outside',
 } as const;
-type NextjsRoutingType = (typeof NextjsRoutingType)[keyof typeof NextjsRoutingType];
+export type NextjsRoutingType = (typeof NextjsRoutingType)[keyof typeof NextjsRoutingType];
 
 export const detectNextjsRoutingType = (context: GetServerSidePropsContext, previousRoutingPage: string): NextjsRoutingType => {
   const isCSR = !!context.req.headers['x-nextjs-data'];

@@ -11,6 +11,7 @@ import { atom } from 'jotai';
 export const currentPageIdAtom = atom<string>();
 export const currentPageDataAtom = atom<IPagePopulatedToShowRevision>();
 export const pageNotFoundAtom = atom(false);
+export const pageNotCreatableAtom = atom(false);
 export const latestRevisionAtom = atom(true);
 
 // Template data atoms (internal)
