@@ -1,4 +1,4 @@
-export const defaultContentDispositionSettings = {
+export const defaultContentDispositionSettings: Record<string, 'inline' | 'attachment'> = {
   // Image Types
   'image/jpeg': 'inline',
   'image/png': 'inline',
