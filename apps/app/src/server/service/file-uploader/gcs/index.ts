@@ -113,6 +113,7 @@ class GcsFileUploader extends AbstractFileUploader {
    * @inheritdoc
    */
   override determineResponseMode() {
+    // This is already correct in your provided code, using this.configManager
     return configManager.getConfig('gcs:referenceFileWithRelayMode')
       ? ResponseMode.RELAY
       : ResponseMode.REDIRECT;
@@ -132,7 +133,6 @@ class GcsFileUploader extends AbstractFileUploader {
     const myBucket = gcs.bucket(getGcsBucket());
     const filePath = getFilePathOnStorage(attachment);
     const contentHeaders = new ContentHeaders(attachment);
-
     const file = myBucket.file(filePath);
 
     await pipeline(readable, file.createWriteStream({
