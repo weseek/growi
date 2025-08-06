@@ -30,6 +30,7 @@ import * as emoji from './remark-plugins/emoji';
 import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
 import * as xsvToTable from './remark-plugins/xsv-to-table';
 
+
 // import EasyGrid from './PreProcessor/EasyGrid';
 
 
@@ -101,6 +102,7 @@ export const generateCommonOptions = (pagePath: string|undefined): RendererOptio
       remarkDirective,
       echoDirective.remarkPlugin,
       remarkFrontmatter,
+      codeBlock.remarkPlugin,
     ],
     remarkRehypeOptions: {
       clobberPrefix: '', // remove clobber prefix
