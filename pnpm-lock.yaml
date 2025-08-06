@@ -1135,8 +1135,8 @@ importers:
         specifier: '=6.43.0'
         version: 6.43.0(typeorm@0.2.45(mysql2@2.3.3)(redis@3.1.2))
       axios:
-        specifier: ^0.24.0
-        version: 0.24.0
+        specifier: ^1.11.0
+        version: 1.11.0
       body-parser:
         specifier: ^1.20.3
         version: 1.20.3
@@ -1786,8 +1786,8 @@ importers:
         specifier: ^4.0.2
         version: 4.0.3
       axios:
-        specifier: ^0.24.0
-        version: 0.24.0
+        specifier: ^1.11.0
+        version: 1.11.0
       browser-bunyan:
         specifier: ^1.6.3
         version: 1.8.0
@@ -6340,8 +6340,8 @@ packages:
   axios@0.26.1:
     resolution: {integrity: sha512-fPwcX4EvnSHuInCMItEhAGnaSEXRBjtzh9fOtsE6E1G6p7vl7edEeZe11QHf18+6+9gR5PbKV/sGKNaD8YaMeA==}
 
-  axios@1.9.0:
-    resolution: {integrity: sha512-re4CqKTJaURpzbLHtIi6XpDv20/CnpXOtjRY5/CU32L8gU8ek9UIivcfvSWvmKEngmVbrUtPpdDwWDWL7DNHvg==}
+  axios@1.11.0:
+    resolution: {integrity: sha512-1Lx3WLFQWm3ooKDYZD1eXmoGO9fxYQjrycfHFC8P0sCfQVXyROp0p9PFWBehewBOdCwHc+f/b8I0fMto5eSfwA==}
 
   axobject-query@2.2.0:
     resolution: {integrity: sha512-Td525n+iPOOyUQIeBfcASuG6uJsDOITl7Mds5gFyerkWiX7qhUTdYUBlSgNMyVqtSJqwpt1kXGLdUt6SykLMRA==}
@@ -18942,7 +18942,7 @@ snapshots:
       '@slack/types': 2.14.0
       '@types/is-stream': 1.1.0
       '@types/node': 22.15.21
-      axios: 1.9.0
+      axios: 1.11.0
       eventemitter3: 3.1.2
       form-data: 2.5.5
       is-electron: 2.2.2
@@ -18958,7 +18958,7 @@ snapshots:
       '@slack/types': 2.14.0
       '@types/node': 22.15.21
       '@types/retry': 0.12.0
-      axios: 1.9.0
+      axios: 1.11.0
       eventemitter3: 5.0.1
       form-data: 4.0.4
       is-electron: 2.2.2
@@ -19934,7 +19934,7 @@ snapshots:
       '@types/fs-extra': 11.0.4
       '@types/inquirer': 9.0.7
       ajv: 8.17.1
-      axios: 1.9.0
+      axios: 1.11.0
       chalk: 5.3.0
       change-case: 5.4.4
       commander: 12.1.0
@@ -21727,7 +21727,7 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  axios@1.9.0:
+  axios@1.11.0:
     dependencies:
       follow-redirects: 1.15.9(debug@4.4.1)
       form-data: 4.0.4
