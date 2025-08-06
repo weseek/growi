@@ -6,7 +6,6 @@ import { ModalBody } from 'reactstrap';
 
 import type { IPageForItem } from '~/interfaces/page';
 import { useLimitLearnablePageCountPerAssistant } from '~/stores-universal/context';
-import { usePageSelectModal } from '~/stores/modal';
 
 import type { SelectedPage } from '../../../../interfaces/selected-page';
 
@@ -40,15 +39,9 @@ export const AiAssistantManagementEditPages = (props: Props): JSX.Element => {
       .filter(isIPageHasId);
   }, [selectedPages]);
 
-  const { open: openPageSelectModal } = usePageSelectModal();
-
   const removePageHandler = useCallback((page: IPageHasId) => {
     onRemove(page.path);
   }, [onRemove]);
-
-  const clickOpenPageSelectModalHandler = useCallback(() => {
-    openPageSelectModal({ onSelected: onSelect, isHierarchicalSelectionMode: true });
-  }, [onSelect, openPageSelectModal]);
 
   return (
     <>
