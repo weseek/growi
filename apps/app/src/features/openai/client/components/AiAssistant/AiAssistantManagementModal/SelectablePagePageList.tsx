@@ -1,3 +1,5 @@
+import React, { useMemo } from 'react';
+
 import type { IPageHasId } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 
@@ -7,7 +9,7 @@ const moduleClass = styles['selectable-page-page-list'] ?? '';
 
 type Props = {
   pages: IPageHasId[],
-  method: 'add' | 'remove',
+  method: 'add' | 'remove' | 'delete'
   methodButtonPosition?: 'left' | 'right',
   disablePageIds?: string[],
   onClickMethodButton: (page: IPageHasId) => void,
@@ -24,11 +26,37 @@ export const SelectablePagePageList = (props: Props): JSX.Element => {
 
   const { t } = useTranslation();
 
+  const methodButtonName = useMemo(() => {
+    switch (method) {
+      case 'add':
+        return 'add_circle';
+      case 'remove':
+        return 'do_not_disturb_on';
+      case 'delete':
+        return 'delete';
+      default:
+        return '';
+    }
+  }, [method]);
+
+  const methodButtonColor = useMemo(() => {
+    switch (method) {
+      case 'add':
+        return 'text-primary';
+      case 'remove':
+        return 'text-secondary';
+      case 'delete':
+        return 'text-secondary';
+      default:
+        return '';
+    }
+  }, [method]);
+
   const methodButton = (page: IPageHasId) => {
     return (
       <button
         type="button"
-        className={`btn border-0 ${method === 'add' ? 'text-primary' : 'text-secondary'}`}
+        className={`btn border-0 ${methodButtonColor}`}
         disabled={disablePageIds?.includes(page._id)}
         onClick={(e) => {
           e.stopPropagation();
@@ -36,7 +64,7 @@ export const SelectablePagePageList = (props: Props): JSX.Element => {
         }}
       >
         <span className="material-symbols-outlined">
-          { method === 'add' ? 'add_circle' : 'do_not_disturb_on' }
+          {methodButtonName}
         </span>
       </button>
     );
