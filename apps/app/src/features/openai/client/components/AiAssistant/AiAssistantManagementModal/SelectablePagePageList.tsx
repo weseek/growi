@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, memo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -8,7 +8,42 @@ import styles from './SelectablePagePageList.module.scss';
 
 const moduleClass = styles['selectable-page-page-list'] ?? '';
 
-type Props = {
+type MethodButtonProps = {
+  page: SelectedPage;
+  disablePagePaths: string[];
+  methodButtonColor: string;
+  methodButtonIconName: string;
+  onClickMethodButton: (page: SelectedPage) => void;
+}
+
+const MethodButton = memo((props: MethodButtonProps) => {
+  const {
+    page,
+    disablePagePaths,
+    methodButtonColor,
+    methodButtonIconName,
+    onClickMethodButton,
+  } = props;
+
+  return (
+    <button
+      type="button"
+      className={`btn border-0 ${methodButtonColor}`}
+      disabled={disablePagePaths.includes(page.path)}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClickMethodButton(page);
+      }}
+    >
+      <span className="material-symbols-outlined">
+        {methodButtonIconName}
+      </span>
+    </button>
+  );
+});
+
+
+type SelectablePagePageListProps = {
   pages: SelectedPage[],
   method: 'add' | 'remove' | 'delete'
   methodButtonPosition?: 'left' | 'right',
@@ -16,12 +51,12 @@ type Props = {
   onClickMethodButton: (page: SelectedPage) => void,
 }
 
-export const SelectablePagePageList = (props: Props): JSX.Element => {
+export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.Element => {
   const {
     pages,
     method,
     methodButtonPosition = 'left',
-    disablePagePaths,
+    disablePagePaths = [],
     onClickMethodButton,
   } = props;
 
@@ -53,23 +88,6 @@ export const SelectablePagePageList = (props: Props): JSX.Element => {
     }
   }, [method]);
 
-  const methodButton = (page: SelectedPage) => {
-    return (
-      <button
-        type="button"
-        className={`btn border-0 ${methodButtonColor}`}
-        disabled={disablePagePaths?.includes(page.path)}
-        onClick={(e) => {
-          e.stopPropagation();
-          onClickMethodButton(page);
-        }}
-      >
-        <span className="material-symbols-outlined">
-          {methodButtonIconName}
-        </span>
-      </button>
-    );
-  };
 
   if (pages.length === 0) {
     return (
@@ -94,7 +112,17 @@ export const SelectablePagePageList = (props: Props): JSX.Element => {
             }}
           >
 
-            {methodButtonPosition === 'left' && methodButton(page)}
+            {methodButtonPosition === 'left'
+              && (
+                <MethodButton
+                  page={page}
+                  disablePagePaths={disablePagePaths}
+                  methodButtonColor={methodButtonColor}
+                  methodButtonIconName={methodButtonIconName}
+                  onClickMethodButton={onClickMethodButton}
+                />
+              )
+            }
 
             <div className={`flex-grow-1 ${methodButtonPosition === 'left' ? 'me-4' : 'ms-2'}`}>
               <span>
@@ -108,7 +136,17 @@ export const SelectablePagePageList = (props: Props): JSX.Element => {
               </span>
             </span>
 
-            {methodButtonPosition === 'right' && methodButton(page)}
+            {methodButtonPosition === 'right'
+              && (
+                <MethodButton
+                  page={page}
+                  disablePagePaths={disablePagePaths}
+                  methodButtonColor={methodButtonColor}
+                  methodButtonIconName={methodButtonIconName}
+                  onClickMethodButton={onClickMethodButton}
+                />
+              )
+            }
           </button>
         );
       })}
