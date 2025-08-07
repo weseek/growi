@@ -48,6 +48,7 @@ type SelectablePagePageListProps = {
   method: 'add' | 'remove' | 'delete'
   methodButtonPosition?: 'left' | 'right',
   disablePagePaths?: string[],
+  isEditable?: boolean,
   onClickMethodButton: (page: SelectablePage) => void,
 }
 
@@ -57,6 +58,7 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
     method,
     methodButtonPosition = 'left',
     disablePagePaths = [],
+    isEditable,
     onClickMethodButton,
   } = props;
 
@@ -125,7 +127,7 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
             }
 
             <div className={`flex-grow-1 ${methodButtonPosition === 'left' ? 'me-4' : 'ms-2'}`}>
-              <span>
+              <span className={`page-path ${isEditable ? 'page-path-editable' : ''}`}>
                 {page.path}
               </span>
             </div>
