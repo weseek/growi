@@ -9,7 +9,7 @@ import { useLimitLearnablePageCountPerAssistant } from '~/stores-universal/conte
 import type { SelectedPage } from '../../../../interfaces/selected-page';
 
 import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
-import { PageSelectionMethodButtons } from './PageSelectionMethodButtons'; // Importing for side effects, if needed
+import { PageSelectionMethodButtons } from './PageSelectionMethodButtons';
 import { SelectablePagePageList } from './SelectablePagePageList';
 
 type Props = {
