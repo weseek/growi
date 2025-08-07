@@ -68,6 +68,7 @@ export const AccessTokenScopeList: React.FC<AccessTokenScopeListProps> = ({
           <div key={scopeKey} className={`row my-1 ${moduleClass}`}>
             <div className="col-md-5 indentation">
               <input
+                data-testid={`grw-accesstoken-checkbox-${scopeValue}`}
                 className={`form-check-input indentation indentation-level-${level}`}
                 type="checkbox"
                 id={scopeValue as string}
