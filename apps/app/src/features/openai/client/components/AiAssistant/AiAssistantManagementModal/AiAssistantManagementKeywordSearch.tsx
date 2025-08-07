@@ -140,7 +140,7 @@ export const AiAssistantKeywordSearch = (props: Props): JSX.Element => {
     <div className={moduleClass}>
       <AiAssistantManagementHeader
         backButtonColor="secondary"
-        backToPageMode={isNewAiAssistant ? AiAssistantManagementModalPageMode.PAGE_SELECTION_METHOD : AiAssistantManagementModalPageMode.PAGES}
+        backToPageMode={baseSelectedPages.length === 0 ? AiAssistantManagementModalPageMode.PAGE_SELECTION_METHOD : AiAssistantManagementModalPageMode.PAGES}
         labelTranslationKey={isNewAiAssistant ? 'modal_ai_assistant.header.add_new_assistant' : 'modal_ai_assistant.header.update_assistant'}
       />
 

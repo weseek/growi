@@ -2,7 +2,6 @@ import React, {
   Suspense, useCallback, memo, useMemo,
 } from 'react';
 
-import type { IPageHasId } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import {
   ModalBody,
@@ -122,7 +121,7 @@ export const AiAssistantManagementPageTreeSelection = (props: Props): JSX.Elemen
     <div className={moduleClass}>
       <AiAssistantManagementHeader
         backButtonColor="secondary"
-        backToPageMode={isNewAiAssistant ? AiAssistantManagementModalPageMode.PAGE_SELECTION_METHOD : AiAssistantManagementModalPageMode.PAGES}
+        backToPageMode={baseSelectedPages.length === 0 ? AiAssistantManagementModalPageMode.PAGE_SELECTION_METHOD : AiAssistantManagementModalPageMode.PAGES}
         labelTranslationKey={isNewAiAssistant ? 'modal_ai_assistant.header.add_new_assistant' : 'modal_ai_assistant.header.update_assistant'}
       />
 
