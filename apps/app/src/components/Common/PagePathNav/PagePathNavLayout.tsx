@@ -60,7 +60,13 @@ export const PagePathNavLayout = (props: Props): JSX.Element => {
               <span className="badge text-bg-secondary">WIP</span>
             )}
             <span className="grw-page-path-nav-copydropdown">
-              <CopyDropdown pageId={pageId} pagePath={pagePath} dropdownToggleId={copyDropdownId} dropdownToggleClassName="p-2">
+              <CopyDropdown
+                pageId={pageId}
+                pagePath={pagePath}
+                dropdownToggleId={copyDropdownId}
+                dropdownToggleClassName="p-2"
+                dropdownMenuContainer="body"
+              >
                 <span className="material-symbols-outlined">content_paste</span>
               </CopyDropdown>
             </span>

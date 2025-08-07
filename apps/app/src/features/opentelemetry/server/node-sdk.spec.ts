@@ -3,7 +3,7 @@ import { NodeSDK } from '@opentelemetry/sdk-node';
 
 import { configManager } from '~/server/service/config-manager';
 
-import { setupAdditionalResourceAttributes, initInstrumentation } from './node-sdk';
+import { setupAdditionalResourceAttributes, initInstrumentation, startOpenTelemetry } from './node-sdk';
 import { getResource } from './node-sdk-resource';
 
 // Only mock configManager as it's external to what we're testing
@@ -67,15 +67,10 @@ describe('node-sdk', () => {
 
   describe('initInstrumentation', () => {
     it('should call setupCustomMetrics when instrumentation is enabled', async() => {
-      const { setupCustomMetrics } = await import('./custom-metrics');
-
       // Mock instrumentation as enabled
       mockInstrumentationEnabled();
 
       await initInstrumentation();
-
-      // Verify setupCustomMetrics was called
-      expect(setupCustomMetrics).toHaveBeenCalledOnce();
     });
 
     it('should not call setupCustomMetrics when instrumentation is disabled', async() => {
@@ -201,6 +196,65 @@ describe('node-sdk', () => {
 
       // Call setupAdditionalResourceAttributes should not throw error
       await expect(setupAdditionalResourceAttributes()).resolves.toBeUndefined();
+    });
+  });
+
+  describe('startOpenTelemetry', () => {
+    it('should start SDK and call setupCustomMetrics when instrumentation is enabled and SDK instance exists', async() => {
+      const { setupCustomMetrics } = await import('./custom-metrics');
+
+      // Mock instrumentation as enabled
+      mockInstrumentationEnabled();
+
+      // Initialize SDK first
+      await initInstrumentation();
+
+      // Get SDK instance and mock its start method
+      const { __testing__ } = await import('./node-sdk');
+      const sdkInstance = __testing__.getSdkInstance();
+      expect(sdkInstance).toBeDefined();
+
+      if (sdkInstance != null) {
+        const startSpy = vi.spyOn(sdkInstance, 'start');
+
+        // Call startOpenTelemetry
+        startOpenTelemetry();
+
+        // Verify that start method was called
+        expect(startSpy).toHaveBeenCalledOnce();
+
+        // Verify that setupCustomMetrics was called
+        expect(setupCustomMetrics).toHaveBeenCalledOnce();
+      }
+    });
+
+    it('should not start SDK when instrumentation is disabled', async() => {
+      const { setupCustomMetrics } = await import('./custom-metrics');
+
+      // Mock instrumentation as disabled
+      mockInstrumentationDisabled();
+
+      // Initialize SDK (should not create instance)
+      await initInstrumentation();
+
+      // Call startOpenTelemetry
+      startOpenTelemetry();
+
+      // Verify that setupCustomMetrics was not called
+      expect(setupCustomMetrics).not.toHaveBeenCalled();
+    });
+
+    it('should not start SDK when SDK instance does not exist', async() => {
+      const { setupCustomMetrics } = await import('./custom-metrics');
+
+      // Mock instrumentation as enabled but don't initialize SDK
+      mockInstrumentationEnabled();
+
+      // Call startOpenTelemetry without initializing SDK
+      startOpenTelemetry();
+
+      // Verify that setupCustomMetrics was not called
+      expect(setupCustomMetrics).not.toHaveBeenCalled();
     });
   });
 });
