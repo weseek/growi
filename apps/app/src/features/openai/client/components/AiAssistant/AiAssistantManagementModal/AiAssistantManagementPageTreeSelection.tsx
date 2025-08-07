@@ -15,6 +15,7 @@ import { TreeItemLayout } from '~/client/components/TreeItem';
 import type { IPageForItem } from '~/interfaces/page';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
 
+import { type SelectedPage, isSelectedPage } from '../../../../interfaces/selected-page';
 import { useSelectedPages } from '../../../services/use-selected-pages';
 import { AiAssistantManagementModalPageMode, useAiAssistantManagementModal } from '../../../stores/ai-assistant';
 
@@ -25,22 +26,14 @@ import styles from './AiAssistantManagementPageTreeSelection.module.scss';
 
 const moduleClass = styles['grw-ai-assistant-management-page-tree-selection'] ?? '';
 
-export const isIPageHasId = (value?: IPageForItem): value is IPageHasId => {
-  if (value == null) {
-    return false;
-  }
-  return value._id != null && value.path != null;
-};
-
-
-const SelectablePageTree = memo((props: { onClickAddPageButton: (page: IPageHasId) => void }) => {
+const SelectablePageTree = memo((props: { onClickAddPageButton: (page: SelectedPage) => void }) => {
   const { onClickAddPageButton } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
 
   const pageTreeItemClickHandler = useCallback((page: IPageForItem) => {
-    if (!isIPageHasId(page)) {
+    if (!isSelectedPage(page)) {
       return;
     }
 
@@ -88,21 +81,24 @@ const SelectablePageTree = memo((props: { onClickAddPageButton: (page: IPageHasI
   );
 });
 
+type Props = {
+  baseSelectedPages: SelectedPage[],
+  updateBaseSelectedPages: (pages: SelectedPage[]) => void;
+}
 
-export const AiAssistantManagementPageTreeSelection = (props: { updateBaseSelectedPages: (pages: IPageHasId[]) => void}): JSX.Element => {
-  const { updateBaseSelectedPages } = props;
+export const AiAssistantManagementPageTreeSelection = (props: Props): JSX.Element => {
+  const { baseSelectedPages, updateBaseSelectedPages } = props;
 
   const { t } = useTranslation();
   const { data: aiAssistantManagementModalData, changePageMode } = useAiAssistantManagementModal();
   const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
 
-  const { selectedPages, addPageHandler, removePageHandler } = useSelectedPages();
+  const {
+    selectedPages, addPage, removePage, clearPages,
+  } = useSelectedPages(baseSelectedPages);
 
   // SelectedPages will include subordinate pages by default
-  const pagesWithGlobPath = useMemo((): IPageHasId[] | undefined => {
-    if (selectedPages.size === 0) {
-      return;
-    }
+  const pagesWithGlobPath = useMemo(() => {
     return Array.from(selectedPages.values()).map((page) => {
       if (page.path === '/') {
         page.path = '/*';
@@ -118,8 +114,9 @@ export const AiAssistantManagementPageTreeSelection = (props: { updateBaseSelect
 
   const nextButtonClickHandler = useCallback(() => {
     updateBaseSelectedPages(Array.from(selectedPages.values()));
-    changePageMode(AiAssistantManagementModalPageMode.HOME);
-  }, [changePageMode, selectedPages, updateBaseSelectedPages]);
+    changePageMode(isNewAiAssistant ? AiAssistantManagementModalPageMode.HOME : AiAssistantManagementModalPageMode.PAGES);
+    clearPages();
+  }, [changePageMode, clearPages, isNewAiAssistant, selectedPages, updateBaseSelectedPages]);
 
   return (
     <div className={moduleClass}>
@@ -136,7 +133,7 @@ export const AiAssistantManagementPageTreeSelection = (props: { updateBaseSelect
 
         <Suspense fallback={<ItemsTreeContentSkeleton />}>
           <div className="px-4">
-            <SelectablePageTree onClickAddPageButton={addPageHandler} />
+            <SelectablePageTree onClickAddPageButton={addPage} />
           </div>
         </Suspense>
 
@@ -149,7 +146,7 @@ export const AiAssistantManagementPageTreeSelection = (props: { updateBaseSelect
             method="remove"
             methodButtonPosition="right"
             pages={pagesWithGlobPath ?? []}
-            onClickMethodButton={removePageHandler}
+            onClickMethodButton={removePage}
           />
           <label className="form-text text-muted mt-2">
             {t('modal_ai_assistant.can_add_later')}

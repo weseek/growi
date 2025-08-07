@@ -1,35 +1,58 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
-import type { IPageHasId } from '@growi/core';
+// import type { IPageHasId } from '@growi/core';
+import type { SelectedPage } from '../../interfaces/selected-page';
 
 type UseSelectedPages = {
-  selectedPages: Map<string, IPageHasId>,
-  addPageHandler: (page: IPageHasId) => void,
-  removePageHandler: (page: IPageHasId) => void,
+  selectedPages: Map<string, SelectedPage>,
+  addPage: (page: SelectedPage) => void,
+  removePage: (page: SelectedPage) => void,
+  clearPages: () => void,
 }
 
-export const useSelectedPages = (): UseSelectedPages => {
-  const [selectedPages, setSelectedPages] = useState<Map<string, IPageHasId>>(new Map());
+export const useSelectedPages = (initialPages?: SelectedPage[]): UseSelectedPages => {
+  const [selectedPages, setSelectedPages] = useState<Map<string, SelectedPage>>(new Map());
 
-  const addPageHandler = useCallback((page: IPageHasId) => {
+  useEffect(() => {
+    if (initialPages) {
+      const initialMap = new Map<string, SelectedPage>();
+      initialPages.forEach((page) => {
+        if (page.path != null) {
+          initialMap.set(page.path, page);
+        }
+      });
+      setSelectedPages(initialMap);
+    }
+  }, [initialPages]);
+
+  const addPage = useCallback((page: SelectedPage) => {
     setSelectedPages((prev) => {
       const newMap = new Map(prev);
-      newMap.set(page._id, page);
+      if (page.path != null) {
+        newMap.set(page.path, page);
+      }
       return newMap;
     });
   }, []);
 
-  const removePageHandler = useCallback((page: IPageHasId) => {
+  const removePage = useCallback((page: SelectedPage) => {
     setSelectedPages((prev) => {
       const newMap = new Map(prev);
-      newMap.delete(page._id);
+      if (page.path != null) {
+        newMap.delete(page.path);
+      }
       return newMap;
     });
+  }, []);
+
+  const clearPages = useCallback(() => {
+    setSelectedPages(new Map());
   }, []);
 
   return {
     selectedPages,
-    addPageHandler,
-    removePageHandler,
+    addPage,
+    removePage,
+    clearPages,
   };
 };

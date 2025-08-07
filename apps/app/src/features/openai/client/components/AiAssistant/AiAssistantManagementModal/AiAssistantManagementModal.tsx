@@ -13,7 +13,7 @@ import { Modal, TabContent, TabPane } from 'reactstrap';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import type { UpsertAiAssistantData } from '~/features/openai/interfaces/ai-assistant';
 import { AiAssistantAccessScope, AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant';
-import type { IPagePathWithDescendantCount, IPageForItem } from '~/interfaces/page';
+import type { IPagePathWithDescendantCount } from '~/interfaces/page';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import { useSWRxPagePathsWithDescendantCount } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
@@ -58,12 +58,11 @@ const convertToPopulatedGrantedGroups = (selectedGroups: IGrantedGroup[]): Popul
 
 const convertToSelectedPages = (pagePathPatterns: string[], pagePathsWithDescendantCount: IPagePathWithDescendantCount[]): SelectedPage[] => {
   return pagePathPatterns.map((pagePathPattern) => {
-    const isIncludeSubPage = pagePathPattern.endsWith('/*');
-    const path = isIncludeSubPage ? pagePathPattern.slice(0, -2) : pagePathPattern;
-    const page = pagePathsWithDescendantCount.find(page => page.path === path);
+    const pathWithoutGlob = isGlobPatternPath(pagePathPattern) ? pagePathPattern.slice(0, -2) : pagePathPattern;
+    const page = pagePathsWithDescendantCount.find(p => p.path === pathWithoutGlob);
     return {
-      page: page ?? { path },
-      isIncludeSubPage,
+      ...page,
+      path: pagePathPattern,
     };
   });
 };
@@ -121,23 +120,8 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   /*
   *  For AiAssistantManagementKeywordSearch & AiAssistantManagementPageTreeSelection methods
   */
-  const selectPageHandlerForKeywordSearchOrPageTreeSelection = useCallback((pages: IPageHasId[]) => {
-    if (pages.length === 0) {
-      return;
-    }
-
-    const convertedSelectedPages = pages.map((page) => {
-      const pagePath = page.path;
-      page.path = removeGlobPath([pagePath])[0];
-
-      return {
-        page,
-        // Determine whether to include subordinate pages from path
-        isIncludeSubPage: isGlobPatternPath(pagePath),
-      };
-    });
-
-    setSelectedPages(convertedSelectedPages);
+  const selectPageHandler = useCallback((pages: IPageHasId[]) => {
+    setSelectedPages(pages);
   }, []);
 
 
@@ -155,8 +139,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   const upsertAiAssistantHandler = useCallback(async() => {
     try {
       const pagePathPatterns = selectedPages
-        .map(selectedPage => (selectedPage.isIncludeSubPage ? `${selectedPage.page.path}/*` : selectedPage.page.path))
-        .filter((path): path is string => path !== undefined && path !== null);
+        .map(selectedPage => selectedPage.path);
 
       const grantedGroupsForShareScope = selectedShareScope === AiAssistantShareScope.GROUPS
         ? convertToGrantedGroups(selectedUserGroupsForShareScope)
@@ -241,15 +224,8 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   /*
   *  For AiAssistantManagementEditPages methods
   */
-  const selectPageHandler = useCallback((page: IPageForItem, isIncludeSubPage: boolean) => {
-    const selectedPageIds = selectedPages.map(selectedPage => selectedPage.page.path);
-    if (page.path != null && !selectedPageIds.includes(page.path)) {
-      setSelectedPages([...selectedPages, { page, isIncludeSubPage }]);
-    }
-  }, [selectedPages]);
-
   const removePageHandler = useCallback((pagePath: string) => {
-    setSelectedPages(selectedPages.filter(selectedPage => selectedPage.page.path !== pagePath));
+    setSelectedPages(selectedPages.filter(selectedPage => selectedPage.path !== pagePath));
   }, [selectedPages]);
 
 
@@ -273,13 +249,15 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
 
         <TabPane tabId={AiAssistantManagementModalPageMode.KEYWORD_SEARCH}>
           <AiAssistantKeywordSearch
-            updateBaseSelectedPages={selectPageHandlerForKeywordSearchOrPageTreeSelection}
+            baseSelectedPages={selectedPages}
+            updateBaseSelectedPages={selectPageHandler}
           />
         </TabPane>
 
         <TabPane tabId={AiAssistantManagementModalPageMode.PAGE_TREE_SELECTION}>
           <AiAssistantManagementPageTreeSelection
-            updateBaseSelectedPages={selectPageHandlerForKeywordSearchOrPageTreeSelection}
+            baseSelectedPages={selectedPages}
+            updateBaseSelectedPages={selectPageHandler}
           />
         </TabPane>
 
@@ -316,7 +294,6 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
         <TabPane tabId={AiAssistantManagementModalPageMode.PAGES}>
           <AiAssistantManagementEditPages
             selectedPages={selectedPages}
-            onSelect={selectPageHandler}
             onRemove={removePageHandler}
           />
         </TabPane>

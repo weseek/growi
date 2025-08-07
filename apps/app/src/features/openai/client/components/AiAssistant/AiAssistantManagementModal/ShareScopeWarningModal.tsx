@@ -48,8 +48,8 @@ export const ShareScopeWarningModal = (props: Props): JSX.Element => {
         <div className="mb-4">
           <p className="mb-2 text-secondary">{t('share_scope_warning_modal.selected_pages_label')}</p>
           {selectedPages.map(selectedPage => (
-            <code key={selectedPage.page.path}>
-              {selectedPage.page.path}
+            <code key={selectedPage.path}>
+              {selectedPage.path}
             </code>
           ))}
         </div>

@@ -58,9 +58,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
 
   const totalSelectedPageCount = useMemo(() => {
     return selectedPages.reduce((total, selectedPage) => {
-      const descendantCount = selectedPage.isIncludeSubPage
-        ? selectedPage.page.descendantCount ?? 0
-        : 0;
+      const descendantCount = selectedPage.descendantCount ?? 0;
       const pageCountWithDescendants = descendantCount + 1;
       return total + pageCountWithDescendants;
     }, 0);

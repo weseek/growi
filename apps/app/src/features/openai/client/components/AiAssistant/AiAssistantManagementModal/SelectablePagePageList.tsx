@@ -1,18 +1,19 @@
 import React, { useMemo } from 'react';
 
-import type { IPageHasId } from '@growi/core';
 import { useTranslation } from 'react-i18next';
+
+import { type SelectedPage } from '../../../../interfaces/selected-page';
 
 import styles from './SelectablePagePageList.module.scss';
 
 const moduleClass = styles['selectable-page-page-list'] ?? '';
 
 type Props = {
-  pages: IPageHasId[],
+  pages: SelectedPage[],
   method: 'add' | 'remove' | 'delete'
   methodButtonPosition?: 'left' | 'right',
-  disablePageIds?: string[],
-  onClickMethodButton: (page: IPageHasId) => void,
+  disablePagePaths?: string[],
+  onClickMethodButton: (page: SelectedPage) => void,
 }
 
 export const SelectablePagePageList = (props: Props): JSX.Element => {
@@ -20,7 +21,7 @@ export const SelectablePagePageList = (props: Props): JSX.Element => {
     pages,
     method,
     methodButtonPosition = 'left',
-    disablePageIds,
+    disablePagePaths,
     onClickMethodButton,
   } = props;
 
@@ -52,12 +53,12 @@ export const SelectablePagePageList = (props: Props): JSX.Element => {
     }
   }, [method]);
 
-  const methodButton = (page: IPageHasId) => {
+  const methodButton = (page: SelectedPage) => {
     return (
       <button
         type="button"
         className={`btn border-0 ${methodButtonColor}`}
-        disabled={disablePageIds?.includes(page._id)}
+        disabled={disablePagePaths?.includes(page.path)}
         onClick={(e) => {
           e.stopPropagation();
           onClickMethodButton(page);
@@ -85,7 +86,7 @@ export const SelectablePagePageList = (props: Props): JSX.Element => {
       {pages.map((page) => {
         return (
           <button
-            key={page._id}
+            key={page.path}
             type="button"
             className="list-group-item border-0 list-group-item-action page-list-item d-flex align-items-center p-1 mb-2 rounded"
             onClick={(e) => {
