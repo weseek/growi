@@ -24,7 +24,7 @@ import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { useEditorModeClassName } from '~/services/layout/use-editor-mode-class-name';
 import { useHydrateSidebarAtoms } from '~/states/hydrate/sidebar';
 import {
-  useCurrentPageData, useFetchCurrentPage, useCurrentPageId, useCurrentPagePath, usePageNotFound, usePageNotCreatable,
+  useCurrentPageData, useFetchCurrentPage, useCurrentPageId, useCurrentPagePath, usePageNotFound,
 } from '~/states/page';
 import { useHydratePageAtoms } from '~/states/page/hydrate';
 import {
@@ -231,7 +231,7 @@ type LayoutProps = Props & {
 
 const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
   // Hydrate sidebar atoms with server-side data - must be called unconditionally
-  const sidebarConfig = isInitialProps(props) ? props.sidebarConfig : { isSidebarCollapsedMode: false };
+  const sidebarConfig = isInitialProps(props) ? props.sidebarConfig : undefined;
   const userUISettings = isInitialProps(props) ? props.userUISettings : undefined;
   useHydrateSidebarAtoms(sidebarConfig, userUISettings);
 

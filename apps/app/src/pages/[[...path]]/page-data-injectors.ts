@@ -5,7 +5,7 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
 
-import type { ExtendedInitialProps, SameRouteEachProps } from './types.js';
+import type { ExtendedInitialProps, SameRouteEachProps } from './types';
 
 const { isPermalink: _isPermalink, isCreatablePage } = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;

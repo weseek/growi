@@ -13,11 +13,12 @@ import * as nextI18nConfig from '^/config/next-i18next.config';
 
 import { GlobalFonts } from '~/components/FontFamily/GlobalFonts';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import { useAutoUpdateGlobalAtoms } from '~/states/auto-update/global';
-import { useHydrateGlobalAtoms } from '~/states/hydrate/global';
+import { useAutoUpdateGlobalAtoms } from '~/states/global/auto-update';
+import { useHydrateGlobalInitialAtoms } from '~/states/global/hydrate';
 import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
-import { getLocaleAtServerSide, type CommonProps } from './utils/commons';
+import type { CommonEachProps, CommonInitialProps } from './utils/commons';
+import { getLocaleAtServerSide } from './utils/locale';
 import { useNextjsRoutingPageRegister } from './utils/nextjs-routing-utils';
 import { registerTransformerForObjectId } from './utils/objectid-transformer';
 
@@ -40,10 +41,10 @@ registerTransformerForObjectId();
 function GrowiApp({ Component, pageProps, userLocale }: GrowiAppProps): JSX.Element {
   const router = useRouter();
 
-  const commonPageProps = pageProps as CommonProps;
+  const commonPageProps = pageProps as CommonInitialProps & CommonEachProps;
 
   // Hydrate global atoms with server-side data
-  useHydrateGlobalAtoms(commonPageProps);
+  useHydrateGlobalInitialAtoms(commonPageProps);
   useAutoUpdateGlobalAtoms(commonPageProps);
 
   useNextjsRoutingPageRegister(commonPageProps.nextjsRoutingPage);

@@ -8,10 +8,10 @@ import { getServerSidePageTitleCustomizationProps } from '~/pages/utils/page-tit
 import { getServerSideSSRProps } from '~/pages/utils/ssr';
 import { getServerSideUserUISettingsProps } from '~/pages/utils/user-ui-settings';
 
-import { getServerSideConfigurationProps } from './configuration-props.js';
-import { injectPageDataForInitial, injectSameRoutePageData } from './page-data-injectors.js';
-import type { InitialProps, SameRouteEachProps } from './types.js';
-import { getAction } from './utils.js';
+import { getServerSideConfigurationProps } from './configuration-props';
+import { injectPageDataForInitial, injectSameRoutePageData } from './page-data-injectors';
+import type { InitialProps, SameRouteEachProps } from './types';
+import { getAction } from './utils';
 
 const NEXT_JS_ROUTING_PAGE = '[[...path]]';
 
@@ -24,12 +24,12 @@ async function createNextI18NextConfig(context: GetServerSidePropsContext, names
 }
 
 // Common props collection helper
-async function collectProps(context: GetServerSidePropsContext, includeConfiguration = true) {
+async function collectProps(context: GetServerSidePropsContext) {
   const propResults = await Promise.all([
     getServerSideCommonInitialProps(context),
     getServerSidePageTitleCustomizationProps(context),
     getServerSideUserUISettingsProps(context),
-    ...(includeConfiguration ? [getServerSideConfigurationProps(context)] : []),
+    getServerSideConfigurationProps(context),
   ]);
 
   // Validate all results have props
@@ -68,7 +68,7 @@ function handleUserAndRedirects(context: GetServerSidePropsContext, props: Recor
 }
 export async function getServerSidePropsForInitial(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<InitialProps & SameRouteEachProps>> {
   // Collect all required props
-  const collectedProps = await collectProps(context, true);
+  const collectedProps = await collectProps(context);
 
   const props: InitialProps & SameRouteEachProps = {
     ...collectedProps,
