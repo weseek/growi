@@ -1,6 +1,5 @@
 import React, { useCallback, type JSX } from 'react';
 
-import type { IPageHasId } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import { ModalBody } from 'reactstrap';
 
@@ -23,7 +22,7 @@ export const AiAssistantManagementEditPages = (props: Props): JSX.Element => {
 
   const { selectedPages, onRemove } = props;
 
-  const removePageHandler = useCallback((page: IPageHasId) => {
+  const removePageHandler = useCallback((page: SelectablePage) => {
     onRemove(page.path);
   }, [onRemove]);
 
