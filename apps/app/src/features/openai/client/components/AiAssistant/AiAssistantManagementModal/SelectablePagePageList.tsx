@@ -105,10 +105,9 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
     <div className={`list-group ${moduleClass}`}>
       {pages.map((page) => {
         return (
-          <button
+          <div
             key={page.path}
-            type="button"
-            className="list-group-item border-0 list-group-item-action page-list-item d-flex align-items-center p-1 mb-2 rounded"
+            className="list-group-item border-0 page-list-item d-flex align-items-center p-1 mb-2 rounded"
             onClick={(e) => {
               e.stopPropagation();
             }}
@@ -149,7 +148,7 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
                 />
               )
             }
-          </button>
+          </div>
         );
       })}
     </div>
