@@ -32,15 +32,15 @@ export const ActivityTable : FC<Props> = (props: Props) => {
   }, []);
 
   return (
-    <div className="table-responsive h-100">
-      <table className="table table-default table-bordered table-user-list" style={{ tableLayout: 'fixed' }}>
+    <div className="table-responsive">
+      <table className="table table-default table-bordered table-user-list">
         <thead>
           <tr>
             <th scope="col">{t('admin:audit_log_management.user')}</th>
             <th scope="col">{t('admin:audit_log_management.date')}</th>
             <th scope="col">{t('admin:audit_log_management.action')}</th>
             <th scope="col">{t('admin:audit_log_management.ip')}</th>
-            <th scope="col" style={{ width: '30%' }}>{t('admin:audit_log_management.url')}</th>
+            <th scope="col">{t('admin:audit_log_management.url')}</th>
           </tr>
         </thead>
         <tbody>
