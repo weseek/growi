@@ -1,46 +1,93 @@
-import type { IPageHasId } from '@growi/core';
+import React, { useMemo, memo } from 'react';
+
 import { useTranslation } from 'react-i18next';
+
+import { type SelectablePage } from '../../../../interfaces/selectable-page';
 
 import styles from './SelectablePagePageList.module.scss';
 
 const moduleClass = styles['selectable-page-page-list'] ?? '';
 
-type Props = {
-  pages: IPageHasId[],
-  method: 'add' | 'remove',
-  methodButtonPosition?: 'left' | 'right',
-  disablePageIds?: string[],
-  onClickMethodButton: (page: IPageHasId) => void,
+type MethodButtonProps = {
+  page: SelectablePage;
+  disablePagePaths: string[];
+  methodButtonColor: string;
+  methodButtonIconName: string;
+  onClickMethodButton: (page: SelectablePage) => void;
 }
 
-export const SelectablePagePageList = (props: Props): JSX.Element => {
+const MethodButton = memo((props: MethodButtonProps) => {
+  const {
+    page,
+    disablePagePaths,
+    methodButtonColor,
+    methodButtonIconName,
+    onClickMethodButton,
+  } = props;
+
+  return (
+    <button
+      type="button"
+      className={`btn border-0 ${methodButtonColor}`}
+      disabled={disablePagePaths.includes(page.path)}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClickMethodButton(page);
+      }}
+    >
+      <span className="material-symbols-outlined">
+        {methodButtonIconName}
+      </span>
+    </button>
+  );
+});
+
+
+type SelectablePagePageListProps = {
+  pages: SelectablePage[],
+  method: 'add' | 'remove' | 'delete'
+  methodButtonPosition?: 'left' | 'right',
+  disablePagePaths?: string[],
+  onClickMethodButton: (page: SelectablePage) => void,
+}
+
+export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.Element => {
   const {
     pages,
     method,
     methodButtonPosition = 'left',
-    disablePageIds,
+    disablePagePaths = [],
     onClickMethodButton,
   } = props;
 
   const { t } = useTranslation();
 
-  const methodButton = (page: IPageHasId) => {
-    return (
-      <button
-        type="button"
-        className={`btn border-0 ${method === 'add' ? 'text-primary' : 'text-secondary'}`}
-        disabled={disablePageIds?.includes(page._id)}
-        onClick={(e) => {
-          e.stopPropagation();
-          onClickMethodButton(page);
-        }}
-      >
-        <span className="material-symbols-outlined">
-          { method === 'add' ? 'add_circle' : 'do_not_disturb_on' }
-        </span>
-      </button>
-    );
-  };
+  const methodButtonIconName = useMemo(() => {
+    switch (method) {
+      case 'add':
+        return 'add_circle';
+      case 'remove':
+        return 'do_not_disturb_on';
+      case 'delete':
+        return 'delete';
+      default:
+        return '';
+    }
+  }, [method]);
+
+  const methodButtonColor = useMemo(() => {
+    switch (method) {
+      case 'add':
+        return 'text-primary';
+      case 'remove':
+        return 'text-secondary';
+      case 'delete':
+        return 'text-secondary';
+      default:
+        return '';
+    }
+  }, [method]);
+
 
   if (pages.length === 0) {
     return (
@@ -57,7 +104,7 @@ export const SelectablePagePageList = (props: Props): JSX.Element => {
       {pages.map((page) => {
         return (
           <button
-            key={page._id}
+            key={page.path}
             type="button"
             className="list-group-item border-0 list-group-item-action page-list-item d-flex align-items-center p-1 mb-2 rounded"
             onClick={(e) => {
@@ -65,7 +112,17 @@ export const SelectablePagePageList = (props: Props): JSX.Element => {
             }}
           >
 
-            {methodButtonPosition === 'left' && methodButton(page)}
+            {methodButtonPosition === 'left'
+              && (
+                <MethodButton
+                  page={page}
+                  disablePagePaths={disablePagePaths}
+                  methodButtonColor={methodButtonColor}
+                  methodButtonIconName={methodButtonIconName}
+                  onClickMethodButton={onClickMethodButton}
+                />
+              )
+            }
 
             <div className={`flex-grow-1 ${methodButtonPosition === 'left' ? 'me-4' : 'ms-2'}`}>
               <span>
@@ -79,7 +136,17 @@ export const SelectablePagePageList = (props: Props): JSX.Element => {
               </span>
             </span>
 
-            {methodButtonPosition === 'right' && methodButton(page)}
+            {methodButtonPosition === 'right'
+              && (
+                <MethodButton
+                  page={page}
+                  disablePagePaths={disablePagePaths}
+                  methodButtonColor={methodButtonColor}
+                  methodButtonIconName={methodButtonIconName}
+                  onClickMethodButton={onClickMethodButton}
+                />
+              )
+            }
           </button>
         );
       })}

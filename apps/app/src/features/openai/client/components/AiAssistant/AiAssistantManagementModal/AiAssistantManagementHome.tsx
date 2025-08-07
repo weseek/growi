@@ -11,7 +11,7 @@ import { AiAssistantShareScope, AiAssistantAccessScope } from '~/features/openai
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import { useCurrentUser, useLimitLearnablePageCountPerAssistant } from '~/stores-universal/context';
 
-import type { SelectedPage } from '../../../../interfaces/selected-page';
+import type { SelectablePage } from '../../../../interfaces/selectable-page';
 import { determineShareScope } from '../../../../utils/determine-share-scope';
 import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } from '../../../stores/ai-assistant';
 
@@ -25,7 +25,7 @@ type Props = {
   instruction: string;
   shareScope: AiAssistantShareScope,
   accessScope: AiAssistantAccessScope,
-  selectedPages: SelectedPage[];
+  selectedPages: SelectablePage[];
   selectedUserGroupsForAccessScope: PopulatedGrantedGroup[],
   selectedUserGroupsForShareScope: PopulatedGrantedGroup[],
   onNameChange: (value: string) => void;
@@ -58,9 +58,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
 
   const totalSelectedPageCount = useMemo(() => {
     return selectedPages.reduce((total, selectedPage) => {
-      const descendantCount = selectedPage.isIncludeSubPage
-        ? selectedPage.page.descendantCount ?? 0
-        : 0;
+      const descendantCount = selectedPage.descendantCount ?? 0;
       const pageCountWithDescendants = descendantCount + 1;
       return total + pageCountWithDescendants;
     }, 0);

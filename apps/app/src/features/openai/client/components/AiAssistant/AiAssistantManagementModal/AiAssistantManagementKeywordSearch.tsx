@@ -12,6 +12,7 @@ import {
 
 import { useSWRxSearch } from '~/stores/search';
 
+import type { SelectablePage } from '../../../../interfaces/selectable-page';
 import { useSelectedPages } from '../../../services/use-selected-pages';
 import {
   useAiAssistantManagementModal, AiAssistantManagementModalPageMode,
@@ -34,11 +35,18 @@ const isSelectedSearchKeyword = (value: unknown): value is SelectedSearchKeyword
 };
 
 
-export const AiAssistantKeywordSearch = (props: { updateBaseSelectedPages: (pages: IPageHasId[]) => void}): JSX.Element => {
-  const { updateBaseSelectedPages } = props;
+type Props = {
+  baseSelectedPages: SelectablePage[],
+  updateBaseSelectedPages: (pages: SelectablePage[]) => void;
+}
+
+export const AiAssistantKeywordSearch = (props: Props): JSX.Element => {
+  const { baseSelectedPages, updateBaseSelectedPages } = props;
 
   const [selectedSearchKeywords, setSelectedSearchKeywords] = useState<Array<SelectedSearchKeyword>>([]);
-  const { selectedPages, addPageHandler, removePageHandler } = useSelectedPages();
+  const {
+    selectedPages, addPage, removePage,
+  } = useSelectedPages(baseSelectedPages);
 
   const joinedSelectedSearchKeywords = useMemo(() => {
     return selectedSearchKeywords.map(item => item.label).join(' ');
@@ -60,17 +68,16 @@ export const AiAssistantKeywordSearch = (props: { updateBaseSelectedPages: (page
 
     const pages = searchResult.data.map(item => item.data);
     return pages.map((page) => {
-      if (page.path === '/') {
-        page.path = '/*';
+      const newPage = { ...page };
+      if (newPage.path === '/') {
+        newPage.path = '/*';
+        return newPage;
       }
-
-      if (!isGlobPatternPath(page.path)) {
-        page.path = `${page.path}/*`;
+      if (!isGlobPatternPath(newPage.path)) {
+        newPage.path = `${newPage.path}/*`;
       }
-
-      return page;
+      return newPage;
     });
-
   }, [searchResult]);
 
   const shownSearchResult = useMemo(() => {
@@ -125,14 +132,14 @@ export const AiAssistantKeywordSearch = (props: { updateBaseSelectedPages: (page
 
   const nextButtonClickHandler = useCallback(() => {
     updateBaseSelectedPages(Array.from(selectedPages.values()));
-    changePageMode(AiAssistantManagementModalPageMode.HOME);
-  }, [changePageMode, selectedPages, updateBaseSelectedPages]);
+    changePageMode(isNewAiAssistant ? AiAssistantManagementModalPageMode.HOME : AiAssistantManagementModalPageMode.PAGES);
+  }, [changePageMode, isNewAiAssistant, selectedPages, updateBaseSelectedPages]);
 
   return (
     <div className={moduleClass}>
       <AiAssistantManagementHeader
         backButtonColor="secondary"
-        backToPageMode={AiAssistantManagementModalPageMode.PAGE_SELECTION_METHOD}
+        backToPageMode={baseSelectedPages.length === 0 ? AiAssistantManagementModalPageMode.PAGE_SELECTION_METHOD : AiAssistantManagementModalPageMode.PAGES}
         labelTranslationKey={isNewAiAssistant ? 'modal_ai_assistant.header.add_new_assistant' : 'modal_ai_assistant.header.update_assistant'}
       />
 
@@ -168,8 +175,8 @@ export const AiAssistantKeywordSearch = (props: { updateBaseSelectedPages: (page
               <SelectablePagePageList
                 pages={pagesWithGlobPath ?? []}
                 method="add"
-                onClickMethodButton={addPageHandler}
-                disablePageIds={Array.from(selectedPages.keys())}
+                onClickMethodButton={addPage}
+                disablePagePaths={Array.from(selectedPages.values()).map(page => page.path)}
               />
             </div>
           </>
@@ -183,7 +190,7 @@ export const AiAssistantKeywordSearch = (props: { updateBaseSelectedPages: (page
           <SelectablePagePageList
             pages={Array.from(selectedPages.values())}
             method="remove"
-            onClickMethodButton={removePageHandler}
+            onClickMethodButton={removePage}
           />
           <label className="form-text text-muted mt-2">
             {t('modal_ai_assistant.can_add_later')}
