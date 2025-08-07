@@ -223,6 +223,9 @@
       "profile_image2": "アップロードできるようにするには、AWS またはローカルアップロードの設定をしてください。"
     }
   },
+  "API Token Settings": "API Token設定",
+  "Current API Token": "現在のAPI Token",
+  "Update API Token": "API Tokenを更新",
   "page_me_apitoken": {
     "api_token": "API Token",
     "notice": {
@@ -231,6 +234,35 @@
       "update_token2": "現在の Token を利用している処理は動かなくなります。"
     },
     "form_help": {}
+  },
+  "Access Token Settings": "Access token 設定",
+  "page_me_access_token": {
+    "access_token": "Access token",
+    "expiredAt": "有効期限",
+    "description": "説明",
+    "scope": "スコープ",
+    "scope_read": "Read",
+    "action": "アクション",
+    "create_token": "トークンを作成",
+    "no_tokens_found":"アクセストークンが見つかりません",
+    "new_token": {
+      "title": "新しいアクセストークン",
+      "copy_to_clipboard": "クリップボードにコピーしました",
+      "message": "このアクセストークンは一度しか表示されません。安全に保存してください"
+    },
+    "modal": {
+      "message": "このアクセストークンを削除しますか？",
+      "alert": "この操作は取り消せません",
+      "delete_token": "トークンを削除"
+    },
+    "form": {
+      "title": "アクセストークンを作成",
+      "expiredAt_desc": "アクセストークンの有効期限を選択します。",
+      "description_desc": "このトークンを後で識別するための説明を入力します。",
+      "description_max_length": "{{length}}文字以内で入力してください。",
+      "scope_desc": "スコープによって、このトークンで行える操作を制限します。"
+    },
+    "copy_to_clipboard": "Copy to clipboard"
   },
   "Password": "パスワード",
   "Password Settings": "パスワード設定",
@@ -262,9 +294,6 @@
   },
   "API Settings": "API設定",
   "Other Settings": "その他の設定",
-  "API Token Settings": "API Token設定",
-  "Current API Token": "現在のAPI Token",
-  "Update API Token": "API Tokenを更新",
   "in_app_notification_settings": {
     "in_app_notification_settings": "アプリ内通知設定",
     "subscribe_settings": "自動でページをサブスクライブする（通知を受け取る）設定",
@@ -1010,23 +1039,6 @@
   "v5_page_migration": {
     "page_tree_not_avaliable": "Page Tree 機能は現在使用できません。",
     "go_to_settings": "設定する"
-  },
-  "questionnaire": {
-    "give_us_feedback": "GROWI の改善のために、アンケートにご協力ください",
-    "thank_you_for_answering": "ご回答ありがとうございます",
-    "additional_feedback": "その他ご意見ご要望はユーザーアイコンのドロップダウンからお願い致します。",
-    "dont_show_again": "今後このアンケートを表示しない",
-    "deny": "回答しない",
-    "agree": "そう思う",
-    "disagree": "そう思わない",
-    "answer": "回答する",
-    "no_answer": "わからない",
-    "settings": "アンケート設定",
-    "failed_to_send": "回答送信に失敗しました",
-    "denied": "このアンケートは今後表示されません",
-    "personal_settings_explanation": "GROWI 改善のためのアンケートが表示されるようになります。ご意見ご要望はユーザーアイコンのドロップダウンからお願いいたします。",
-    "enable_questionnaire": "アンケートを有効にする",
-    "disabled_by_admin": "管理者によってアンケートは無効化されています"
   },
   "tag_edit_modal": {
     "edit_tags": "タグの編集",

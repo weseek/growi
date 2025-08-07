@@ -68,9 +68,6 @@ export const CONFIG_KEYS = [
   'app:auditLogActionGroupSize',
   'app:auditLogAdditionalActions',
   'app:auditLogExcludeActions',
-  'app:questionnaireServerOrigin',
-  'app:questionnaireCronSchedule',
-  'app:questionnaireCronMaxHoursUntilRequest',
   'app:serviceType',
   'app:deploymentType',
   'app:ssrMaxRevisionBodyLength',
@@ -282,10 +279,6 @@ export const CONFIG_KEYS = [
   's2cMessagingPubsub:connectionsLimitForAdmin',
   's2cMessagingPubsub:connectionsLimitForGuest',
 
-  // Questionnaire Settings
-  'questionnaire:isQuestionnaireEnabled',
-  'questionnaire:isAppSiteUrlHashed',
-
   // Notification Settings
   'notification:owner-page:isEnabled',
   'notification:group-page:isEnabled',
@@ -333,6 +326,8 @@ export const CONFIG_KEYS = [
   'app:isBulkExportPagesEnabled',
   'env:useOnlyEnvVars:app:isBulkExportPagesEnabled',
 
+  // Access Token Settings
+  'accessToken:deletionCronExpression',
 ] as const;
 
 
@@ -501,18 +496,6 @@ export const CONFIG_DEFINITIONS = {
   'app:auditLogExcludeActions': defineConfig<string | undefined>({
     envVarName: 'AUDIT_LOG_EXCLUDE_ACTIONS',
     defaultValue: undefined,
-  }),
-  'app:questionnaireServerOrigin': defineConfig<string>({
-    envVarName: 'QUESTIONNAIRE_SERVER_ORIGIN',
-    defaultValue: 'https://q.growi.org',
-  }),
-  'app:questionnaireCronSchedule': defineConfig<string>({
-    envVarName: 'QUESTIONNAIRE_CRON_SCHEDULE',
-    defaultValue: '0 22 * * *',
-  }),
-  'app:questionnaireCronMaxHoursUntilRequest': defineConfig<number>({
-    envVarName: 'QUESTIONNAIRE_CRON_MAX_HOURS_UNTIL_REQUEST',
-    defaultValue: 4,
   }),
   'app:serviceType': defineConfig<GrowiServiceType>({
     envVarName: 'SERVICE_TYPE',
@@ -1175,16 +1158,6 @@ export const CONFIG_DEFINITIONS = {
     defaultValue: 2000,
   }),
 
-  // Questionnaire Settings
-  'questionnaire:isQuestionnaireEnabled': defineConfig<boolean>({
-    envVarName: 'QUESTIONNAIRE_IS_ENABLE_QUESTIONNAIRE',
-    defaultValue: true,
-  }),
-  'questionnaire:isAppSiteUrlHashed': defineConfig<boolean>({
-    envVarName: 'QUESTIONNAIRE_IS_APP_SITE_URL_HASHED',
-    defaultValue: false,
-  }),
-
   // Notification Settings
   'notification:owner-page:isEnabled': defineConfig<boolean>({
     defaultValue: false,
@@ -1318,6 +1291,12 @@ export const CONFIG_DEFINITIONS = {
   'env:useOnlyEnvVars:app:isBulkExportPagesEnabled': defineConfig<boolean>({
     envVarName: 'BULK_EXPORT_PAGES_ENABLED_USES_ONLY_ENV_VARS',
     defaultValue: false,
+  }),
+
+  // Access Token Settings
+  'accessToken:deletionCronExpression': defineConfig<string>({
+    envVarName: 'ACCESS_TOKEN_DELETION_CRON_EXPRESSION',
+    defaultValue: '0 15 * * *',
   }),
 } as const;
 
