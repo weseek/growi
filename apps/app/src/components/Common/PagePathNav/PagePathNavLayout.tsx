@@ -42,7 +42,7 @@ export const PagePathNavLayout = (props: Props): JSX.Element => {
 
   const copyDropdownId = `copydropdown-in-pagepathnavlayout-${pageId}`;
 
-  const containerLayoutClass = inline ? 'mt-2' : 'd-flex align-items-center';
+  const containerLayoutClass = inline ? '' : 'd-flex align-items-center';
 
   return (
     <div
