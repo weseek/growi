@@ -39,6 +39,7 @@ async function getPageWritable(this: IPageBulkExportJobCronService, pageBulkExpo
   // define before the stream starts to avoid creating multiple instances
   const htmlConverter = unified()
     .use(remarkParse)
+    // !!! DO NOT DISABLE HTML ESCAPING WHILE --no-sandbox IS PASSED TO PUPPETEER INSIDE pdf-converter !!!
     .use(remarkHtml);
   return new Writable({
     objectMode: true,

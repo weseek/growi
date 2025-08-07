@@ -4,10 +4,8 @@ import createError from 'http-errors';
 import { mock } from 'vitest-mock-extended';
 
 import type { LsxApiParams, LsxApiResponseData } from '../../../interfaces/api';
-
-import type { PageQuery, PageQueryBuilder } from './generate-base-query';
-
 import { listPages } from '.';
+import type { PageQuery, PageQueryBuilder } from './generate-base-query';
 
 interface IListPagesRequest
   extends Request<undefined, undefined, undefined, LsxApiParams> {
