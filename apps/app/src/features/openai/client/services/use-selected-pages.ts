@@ -1,6 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
 
-// import type { IPageHasId } from '@growi/core';
 import type { SelectedPage } from '../../interfaces/selected-page';
 
 type UseSelectedPages = {
