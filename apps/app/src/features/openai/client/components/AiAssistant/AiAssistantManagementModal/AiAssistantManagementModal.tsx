@@ -18,7 +18,7 @@ import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import { useSWRxPagePathsWithDescendantCount } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
-import type { SelectedPage } from '../../../../interfaces/selected-page';
+import type { SelectablePage } from '../../../../interfaces/selectable-page';
 import { removeGlobPath } from '../../../../utils/remove-glob-path';
 import { createAiAssistant, updateAiAssistant } from '../../../services/ai-assistant';
 import {
@@ -56,7 +56,7 @@ const convertToPopulatedGrantedGroups = (selectedGroups: IGrantedGroup[]): Popul
   return populatedGrantedGroups;
 };
 
-const convertToSelectedPages = (pagePathPatterns: string[], pagePathsWithDescendantCount: IPagePathWithDescendantCount[]): SelectedPage[] => {
+const convertToSelectedPages = (pagePathPatterns: string[], pagePathsWithDescendantCount: IPagePathWithDescendantCount[]): SelectablePage[] => {
   return pagePathPatterns.map((pagePathPattern) => {
     const pathWithoutGlob = isGlobPatternPath(pagePathPattern) ? pagePathPattern.slice(0, -2) : pagePathPattern;
     const page = pagePathsWithDescendantCount.find(p => p.path === pathWithoutGlob);
@@ -92,7 +92,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   const [selectedAccessScope, setSelectedAccessScope] = useState<AiAssistantAccessScope>(AiAssistantAccessScope.OWNER);
   const [selectedUserGroupsForAccessScope, setSelectedUserGroupsForAccessScope] = useState<PopulatedGrantedGroup[]>([]);
   const [selectedUserGroupsForShareScope, setSelectedUserGroupsForShareScope] = useState<PopulatedGrantedGroup[]>([]);
-  const [selectedPages, setSelectedPages] = useState<SelectedPage[]>([]);
+  const [selectedPages, setSelectedPages] = useState<SelectablePage[]>([]);
   const [instruction, setInstruction] = useState<string>(t('modal_ai_assistant.default_instruction'));
 
 

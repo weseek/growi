@@ -14,7 +14,7 @@ import { TreeItemLayout } from '~/client/components/TreeItem';
 import type { IPageForItem } from '~/interfaces/page';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
 
-import { type SelectedPage, isSelectedPage } from '../../../../interfaces/selected-page';
+import { type SelectablePage, isSelectablePage } from '../../../../interfaces/selectable-page';
 import { useSelectedPages } from '../../../services/use-selected-pages';
 import { AiAssistantManagementModalPageMode, useAiAssistantManagementModal } from '../../../stores/ai-assistant';
 
@@ -25,14 +25,14 @@ import styles from './AiAssistantManagementPageTreeSelection.module.scss';
 
 const moduleClass = styles['grw-ai-assistant-management-page-tree-selection'] ?? '';
 
-const SelectablePageTree = memo((props: { onClickAddPageButton: (page: SelectedPage) => void }) => {
+const SelectablePageTree = memo((props: { onClickAddPageButton: (page: SelectablePage) => void }) => {
   const { onClickAddPageButton } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
 
   const pageTreeItemClickHandler = useCallback((page: IPageForItem) => {
-    if (!isSelectedPage(page)) {
+    if (!isSelectablePage(page)) {
       return;
     }
 
@@ -81,8 +81,8 @@ const SelectablePageTree = memo((props: { onClickAddPageButton: (page: SelectedP
 });
 
 type Props = {
-  baseSelectedPages: SelectedPage[],
-  updateBaseSelectedPages: (pages: SelectedPage[]) => void;
+  baseSelectedPages: SelectablePage[],
+  updateBaseSelectedPages: (pages: SelectablePage[]) => void;
 }
 
 export const AiAssistantManagementPageTreeSelection = (props: Props): JSX.Element => {

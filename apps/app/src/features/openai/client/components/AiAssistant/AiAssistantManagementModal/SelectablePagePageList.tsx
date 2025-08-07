@@ -2,18 +2,18 @@ import React, { useMemo, memo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { type SelectedPage } from '../../../../interfaces/selected-page';
+import { type SelectablePage } from '../../../../interfaces/selectable-page';
 
 import styles from './SelectablePagePageList.module.scss';
 
 const moduleClass = styles['selectable-page-page-list'] ?? '';
 
 type MethodButtonProps = {
-  page: SelectedPage;
+  page: SelectablePage;
   disablePagePaths: string[];
   methodButtonColor: string;
   methodButtonIconName: string;
-  onClickMethodButton: (page: SelectedPage) => void;
+  onClickMethodButton: (page: SelectablePage) => void;
 }
 
 const MethodButton = memo((props: MethodButtonProps) => {
@@ -44,11 +44,11 @@ const MethodButton = memo((props: MethodButtonProps) => {
 
 
 type SelectablePagePageListProps = {
-  pages: SelectedPage[],
+  pages: SelectablePage[],
   method: 'add' | 'remove' | 'delete'
   methodButtonPosition?: 'left' | 'right',
   disablePagePaths?: string[],
-  onClickMethodButton: (page: SelectedPage) => void,
+  onClickMethodButton: (page: SelectablePage) => void,
 }
 
 export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.Element => {

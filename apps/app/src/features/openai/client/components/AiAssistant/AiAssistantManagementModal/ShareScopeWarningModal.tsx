@@ -5,11 +5,11 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import type { SelectedPage } from '../../../../interfaces/selected-page';
+import type { SelectablePage } from '../../../../interfaces/selectable-page';
 
 type Props = {
   isOpen: boolean,
-  selectedPages: SelectedPage[],
+  selectedPages: SelectablePage[],
   closeModal: () => void,
   onSubmit: () => Promise<void>,
 }

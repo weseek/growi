@@ -6,14 +6,14 @@ import { ModalBody } from 'reactstrap';
 
 import { useLimitLearnablePageCountPerAssistant } from '~/stores-universal/context';
 
-import type { SelectedPage } from '../../../../interfaces/selected-page';
+import type { SelectablePage } from '../../../../interfaces/selectable-page';
 
 import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
 import { PageSelectionMethodButtons } from './PageSelectionMethodButtons';
 import { SelectablePagePageList } from './SelectablePagePageList';
 
 type Props = {
-  selectedPages: SelectedPage[];
+  selectedPages: SelectablePage[];
   onRemove: (pageId: string) => void;
 }
 

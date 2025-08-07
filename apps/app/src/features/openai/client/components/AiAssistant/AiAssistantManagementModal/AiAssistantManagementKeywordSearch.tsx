@@ -12,7 +12,7 @@ import {
 
 import { useSWRxSearch } from '~/stores/search';
 
-import type { SelectedPage } from '../../../../interfaces/selected-page';
+import type { SelectablePage } from '../../../../interfaces/selectable-page';
 import { useSelectedPages } from '../../../services/use-selected-pages';
 import {
   useAiAssistantManagementModal, AiAssistantManagementModalPageMode,
@@ -36,8 +36,8 @@ const isSelectedSearchKeyword = (value: unknown): value is SelectedSearchKeyword
 
 
 type Props = {
-  baseSelectedPages: SelectedPage[],
-  updateBaseSelectedPages: (pages: SelectedPage[]) => void;
+  baseSelectedPages: SelectablePage[],
+  updateBaseSelectedPages: (pages: SelectablePage[]) => void;
 }
 
 export const AiAssistantKeywordSearch = (props: Props): JSX.Element => {
