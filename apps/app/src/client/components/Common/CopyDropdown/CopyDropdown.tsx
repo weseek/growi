@@ -27,6 +27,7 @@ interface CopyDropdownProps {
   pagePath: string;
   pageId?: string;
   dropdownToggleClassName?: string;
+  dropdownMenuContainer?: string | HTMLElement | React.RefObject<HTMLElement>;
   isShareLinkMode?: boolean;
 }
 
@@ -120,7 +121,10 @@ export const CopyDropdown: React.FC<CopyDropdownProps> = (props) => {
    */
   const { t } = useTranslation('commons');
   const {
-    dropdownToggleId, pageId, dropdownToggleClassName, children, isShareLinkMode,
+    dropdownToggleId, pageId,
+    dropdownToggleClassName,
+    dropdownMenuContainer,
+    children, isShareLinkMode,
   } = props;
 
   const customSwitchForParamsId = `customSwitchForParams_${dropdownToggleId}`;
@@ -143,7 +147,7 @@ export const CopyDropdown: React.FC<CopyDropdownProps> = (props) => {
         <DropdownMenu
           className={`${styles['copy-clipboard-dropdown-menu']}`}
           strategy="fixed"
-          container="body"
+          container={dropdownMenuContainer}
         >
           <div className="d-flex align-items-center justify-content-between">
             <DropdownItem header className="px-3">
