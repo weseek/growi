@@ -6,7 +6,7 @@ import type { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import { getModelSafely } from '~/server/util/mongoose-utils';
 
 export type UserUISettingsProps = {
-  userUISettings: IUserUISettings,
+  userUISettings?: IUserUISettings,
 };
 
 export const getServerSideUserUISettingsProps: GetServerSideProps<UserUISettingsProps> = async(context: GetServerSidePropsContext) => {
@@ -16,8 +16,8 @@ export const getServerSideUserUISettingsProps: GetServerSideProps<UserUISettings
   // retrieve UserUISettings
   const UserUISettings = getModelSafely<UserUISettingsDocument>('UserUISettings');
   const userUISettings = user != null && UserUISettings != null
-    ? await UserUISettings.findOne({ user: user._id }).exec()
-    : req.session.uiSettings; // for guests
+    ? await UserUISettings.findOne({ user: user._id }).lean() ?? undefined
+    : req.session.uiSettings as IUserUISettings; // for guests
 
   return {
     props: {
