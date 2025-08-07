@@ -520,7 +520,7 @@ export const CONFIG_DEFINITIONS = {
   }),
   'app:deploymentType': defineConfig<GrowiDeploymentType>({
     envVarName: 'DEPLOYMENT_TYPE',
-    defaultValue: GrowiDeploymentType.others,
+    defaultValue: GrowiDeploymentType.node,
   }),
   'app:ssrMaxRevisionBodyLength': defineConfig<number>({
     envVarName: 'SSR_MAX_REVISION_BODY_LENGTH',
