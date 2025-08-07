@@ -27,7 +27,7 @@ export const SelectablePagePageList = (props: Props): JSX.Element => {
 
   const { t } = useTranslation();
 
-  const methodButtonName = useMemo(() => {
+  const methodButtonIconName = useMemo(() => {
     switch (method) {
       case 'add':
         return 'add_circle';
@@ -65,7 +65,7 @@ export const SelectablePagePageList = (props: Props): JSX.Element => {
         }}
       >
         <span className="material-symbols-outlined">
-          {methodButtonName}
+          {methodButtonIconName}
         </span>
       </button>
     );
