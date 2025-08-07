@@ -141,6 +141,7 @@ export const AiAssistantManagementPageTreeSelection = (props: Props): JSX.Elemen
 
         <div className="px-4">
           <SelectablePagePageList
+            isEditable
             method="remove"
             methodButtonPosition="right"
             pages={pagesWithGlobPath ?? []}

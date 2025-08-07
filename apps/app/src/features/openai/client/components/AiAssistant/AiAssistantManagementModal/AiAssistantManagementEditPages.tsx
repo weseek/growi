@@ -43,6 +43,7 @@ export const AiAssistantManagementEditPages = (props: Props): JSX.Element => {
           </div>
 
           <SelectablePagePageList
+            isEditable
             method="delete"
             methodButtonPosition="right"
             pages={selectedPages}

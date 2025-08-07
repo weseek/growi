@@ -173,6 +173,7 @@ export const AiAssistantKeywordSearch = (props: Props): JSX.Element => {
             </h4>
             <div className="px-4">
               <SelectablePagePageList
+                isEditable
                 pages={pagesWithGlobPath ?? []}
                 method="add"
                 onClickMethodButton={addPage}
