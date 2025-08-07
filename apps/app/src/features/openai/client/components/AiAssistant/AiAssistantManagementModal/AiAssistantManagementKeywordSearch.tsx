@@ -45,7 +45,7 @@ export const AiAssistantKeywordSearch = (props: Props): JSX.Element => {
 
   const [selectedSearchKeywords, setSelectedSearchKeywords] = useState<Array<SelectedSearchKeyword>>([]);
   const {
-    selectedPages, addPage, removePage, clearPages,
+    selectedPages, addPage, removePage,
   } = useSelectedPages(baseSelectedPages);
 
   const joinedSelectedSearchKeywords = useMemo(() => {
@@ -133,8 +133,7 @@ export const AiAssistantKeywordSearch = (props: Props): JSX.Element => {
   const nextButtonClickHandler = useCallback(() => {
     updateBaseSelectedPages(Array.from(selectedPages.values()));
     changePageMode(isNewAiAssistant ? AiAssistantManagementModalPageMode.HOME : AiAssistantManagementModalPageMode.PAGES);
-    clearPages();
-  }, [changePageMode, clearPages, isNewAiAssistant, selectedPages, updateBaseSelectedPages]);
+  }, [changePageMode, isNewAiAssistant, selectedPages, updateBaseSelectedPages]);
 
   return (
     <div className={moduleClass}>

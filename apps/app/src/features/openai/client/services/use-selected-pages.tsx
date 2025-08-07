@@ -8,7 +8,6 @@ type UseSelectedPages = {
   selectedPages: Map<string, SelectedPage>,
   addPage: (page: SelectedPage) => void,
   removePage: (page: SelectedPage) => void,
-  clearPages: () => void,
 }
 
 export const useSelectedPages = (initialPages?: SelectedPage[]): UseSelectedPages => {
@@ -48,14 +47,9 @@ export const useSelectedPages = (initialPages?: SelectedPage[]): UseSelectedPage
     });
   }, []);
 
-  const clearPages = useCallback(() => {
-    setSelectedPages(new Map());
-  }, []);
-
   return {
     selectedPages,
     addPage,
     removePage,
-    clearPages,
   };
 };

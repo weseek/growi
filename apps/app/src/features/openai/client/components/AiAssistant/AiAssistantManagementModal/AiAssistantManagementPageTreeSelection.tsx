@@ -93,7 +93,7 @@ export const AiAssistantManagementPageTreeSelection = (props: Props): JSX.Elemen
   const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
 
   const {
-    selectedPages, addPage, removePage, clearPages,
+    selectedPages, addPage, removePage,
   } = useSelectedPages(baseSelectedPages);
 
   // SelectedPages will include subordinate pages by default
@@ -114,8 +114,7 @@ export const AiAssistantManagementPageTreeSelection = (props: Props): JSX.Elemen
   const nextButtonClickHandler = useCallback(() => {
     updateBaseSelectedPages(Array.from(selectedPages.values()));
     changePageMode(isNewAiAssistant ? AiAssistantManagementModalPageMode.HOME : AiAssistantManagementModalPageMode.PAGES);
-    clearPages();
-  }, [changePageMode, clearPages, isNewAiAssistant, selectedPages, updateBaseSelectedPages]);
+  }, [changePageMode, isNewAiAssistant, selectedPages, updateBaseSelectedPages]);
 
   return (
     <div className={moduleClass}>
