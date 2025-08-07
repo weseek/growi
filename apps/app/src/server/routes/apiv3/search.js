@@ -1,7 +1,7 @@
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 
 import { SupportedAction } from '~/interfaces/activity';
-import { SCOPE } from '@growi/core/dist/interfaces';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import loggerFactory from '~/utils/logger';
 
@@ -139,6 +139,7 @@ module.exports = (crowi) => {
         return res.status(200).send({ info });
       }
       catch (err) {
+        logger.error(err);
         return res.apiv3Err(err, 503);
       }
     });
@@ -171,6 +172,7 @@ module.exports = (crowi) => {
         return res.status(200).send();
       }
       catch (err) {
+        logger.error(err);
         return res.apiv3Err(err, 503);
       }
     });
