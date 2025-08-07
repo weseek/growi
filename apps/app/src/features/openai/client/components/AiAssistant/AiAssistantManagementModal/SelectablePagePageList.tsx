@@ -1,6 +1,10 @@
-import React, { useMemo, memo } from 'react';
+import React, {
+  useMemo, memo, useState, useCallback,
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
+
+import { AutosizeSubmittableInput } from '~/client/components/Common/SubmittableInput/AutosizeSubmittableInput';
 
 import { type SelectablePage } from '../../../../interfaces/selectable-page';
 
@@ -64,6 +68,27 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
 
   const { t } = useTranslation();
 
+  const [editingPagePath, setEditingPagePath] = useState<string | null>(null);
+  const [inputValue, setInputValue] = useState('');
+
+  const handlePagePathClick = useCallback((page: SelectablePage) => {
+    if (!isEditable) {
+      return;
+    }
+    setEditingPagePath(page.path);
+    setInputValue(page.path);
+  }, [isEditable]);
+
+  const handleInputBlur = useCallback(() => {
+    setEditingPagePath(null);
+  }, []);
+
+  const handleInputKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleInputBlur();
+    }
+  }, [handleInputBlur]);
+
   const methodButtonIconName = useMemo(() => {
     switch (method) {
       case 'add':
@@ -104,13 +129,11 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
   return (
     <div className={`list-group ${moduleClass}`}>
       {pages.map((page) => {
+        const isEditing = isEditable && editingPagePath === page.path;
         return (
           <div
             key={page.path}
             className="list-group-item border-0 page-list-item d-flex align-items-center p-1 mb-2 rounded"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
           >
 
             {methodButtonPosition === 'left'
@@ -126,9 +149,26 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
             }
 
             <div className={`flex-grow-1 ${methodButtonPosition === 'left' ? 'me-4' : 'ms-2'}`}>
-              <span className={`page-path ${isEditable ? 'page-path-editable' : ''}`}>
-                {page.path}
-              </span>
+              {isEditing
+                ? (
+                  <AutosizeSubmittableInput
+                    autofocus
+                    id="page-path-input"
+                    type="text"
+                    inputClassName="page-path-input"
+                    value={inputValue}
+                    onChange={e => setInputValue(e.target.value)}
+                    onKeyDown={handleInputKeyDown}
+                  />
+                )
+                : (
+                  <span
+                    className={`page-path ${isEditable ? 'page-path-editable' : ''}`}
+                    onClick={() => handlePagePathClick(page)}
+                  >
+                    {page.path}
+                  </span>
+                )}
             </div>
 
             <span className={`badge bg-body-secondary rounded-pill ${methodButtonPosition === 'left' ? 'me-2' : ''}`}>
