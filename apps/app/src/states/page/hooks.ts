@@ -9,6 +9,7 @@ import {
   currentPageDataAtom,
   currentPagePathAtom,
   pageNotFoundAtom,
+  pageNotCreatableAtom,
   latestRevisionAtom,
   // New atoms for enhanced functionality
   remoteRevisionIdAtom,
@@ -37,6 +38,10 @@ export const useCurrentPageData = (): UseAtom<typeof currentPageDataAtom> => {
 
 export const usePageNotFound = (): UseAtom<typeof pageNotFoundAtom> => {
   return useAtom(pageNotFoundAtom);
+};
+
+export const usePageNotCreatable = (): UseAtom<typeof pageNotCreatableAtom> => {
+  return useAtom(pageNotCreatableAtom);
 };
 
 export const useLatestRevision = (): UseAtom<typeof latestRevisionAtom> => {

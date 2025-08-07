@@ -7,7 +7,9 @@ import { useAtomCallback } from 'jotai/utils';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { useShareLinkId } from '~/stores-universal/context';
 
-import { currentPageIdAtom, currentPageDataAtom } from './internal-atoms';
+import {
+  currentPageIdAtom, currentPageDataAtom, pageNotFoundAtom, pageNotCreatableAtom,
+} from './internal-atoms';
 
 
 /**
@@ -50,11 +52,42 @@ export const useFetchCurrentPage = (): {
         const newData = response.data.page;
         set(currentPageDataAtom, newData);
 
+        // Reset routing state when page is successfully fetched
+        set(pageNotFoundAtom, false);
+
         return newData;
       }
       catch (err) {
-        // TODO: Handle error properly
-        // ref: https://redmine.weseek.co.jp/issues/169797
+        // Handle page not found errors for same-route navigation
+        if (err instanceof Error) {
+          const errorMessage = err.message.toLowerCase();
+
+          // Check if it's a 404 or forbidden error
+          if (errorMessage.includes('not found') || errorMessage.includes('404')) {
+            set(pageNotFoundAtom, true);
+            set(pageNotCreatableAtom, false); // Will be determined by path analysis
+            set(currentPageDataAtom, undefined);
+
+            // For same route, we need to determine if page is creatable
+            // This should match the logic in injectPageDataForInitial
+            if (isClient()) {
+              const currentPath = window.location.pathname;
+              const { pagePathUtils } = await import('@growi/core/dist/utils');
+              const isCreatable = pagePathUtils.isCreatablePage(currentPath);
+              set(pageNotCreatableAtom, !isCreatable);
+            }
+
+            return null;
+          }
+
+          if (errorMessage.includes('forbidden') || errorMessage.includes('403')) {
+            set(pageNotFoundAtom, false);
+            set(pageNotCreatableAtom, true); // Forbidden means page exists but not accessible
+            set(currentPageDataAtom, undefined);
+            return null;
+          }
+        }
+
         setError(new Error('Failed to fetch current page'));
         return null;
       }

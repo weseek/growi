@@ -11,7 +11,10 @@ export {
   useCurrentPageData,
   useCurrentPagePath,
   usePageNotFound,
+  usePageNotCreatable,
   useLatestRevision,
+  useTemplateTags,
+  useTemplateBody,
   // Remote revision hooks (replacements for stores/remote-latest-page.ts)
   useRemoteRevisionId,
   useRemoteRevisionBody,
