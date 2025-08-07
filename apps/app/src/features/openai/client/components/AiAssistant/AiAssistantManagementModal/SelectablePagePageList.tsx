@@ -1,10 +1,9 @@
 import React, {
-  useMemo, memo, useState, useCallback,
+  useMemo, memo, useState, useCallback, useRef, useEffect,
 } from 'react';
 
 import { useTranslation } from 'react-i18next';
-
-import { AutosizeSubmittableInput } from '~/client/components/Common/SubmittableInput/AutosizeSubmittableInput';
+import AutosizeInput from 'react-input-autosize';
 
 import { type SelectablePage } from '../../../../interfaces/selectable-page';
 
@@ -70,6 +69,7 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
 
   const [editingPagePath, setEditingPagePath] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState('');
+  const inputRef = useRef<HTMLInputElement & AutosizeInput | null>(null);
 
   const handlePagePathClick = useCallback((page: SelectablePage) => {
     if (!isEditable) {
@@ -115,6 +115,12 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
     }
   }, [method]);
 
+  // Autofocus
+  useEffect(() => {
+    if (editingPagePath != null && inputRef.current != null) {
+      inputRef.current.focus();
+    }
+  }, [editingPagePath]);
 
   if (pages.length === 0) {
     return (
@@ -151,12 +157,13 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
             <div className={`flex-grow-1 ${methodButtonPosition === 'left' ? 'me-4' : 'ms-2'}`}>
               {isEditing
                 ? (
-                  <AutosizeSubmittableInput
-                    autofocus
+                  <AutosizeInput
                     id="page-path-input"
-                    type="text"
                     inputClassName="page-path-input"
+                    type="text"
+                    ref={inputRef}
                     value={inputValue}
+                    onBlur={handleInputBlur}
                     onChange={e => setInputValue(e.target.value)}
                     onKeyDown={handleInputKeyDown}
                   />
