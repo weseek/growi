@@ -6,7 +6,6 @@ import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'react-i18next';
 import AutosizeInput from 'react-input-autosize';
 
-
 import { getAdjustedMaxWidthForAutosizeInput } from '~/client/components/Common/SubmittableInput';
 
 import { type SelectablePage } from '../../../../interfaces/selectable-page';
@@ -50,6 +49,90 @@ const MethodButton = memo((props: MethodButtonProps) => {
 });
 
 
+type EditablePagePathProps = {
+  isEditable?: boolean;
+  page: SelectablePage;
+  methodButtonPosition?: 'left' | 'right';
+}
+
+const EditablePagePath = memo((props: EditablePagePathProps): JSX.Element => {
+  const { page, isEditable, methodButtonPosition = 'left' } = props;
+
+  const [editingPagePath, setEditingPagePath] = useState<string | null>(null);
+  const [inputValue, setInputValue] = useState('');
+
+  const inputRef = useRef<HTMLInputElement & AutosizeInput | null>(null);
+  const editingContainerRef = useRef<HTMLDivElement>(null);
+  const [editingContainerRect] = useRect(editingContainerRef);
+
+  const isEditing = isEditable && editingPagePath === page.path;
+
+  const maxWidth = useMemo(() => {
+    if (editingContainerRect == null) {
+      return undefined;
+    }
+    return getAdjustedMaxWidthForAutosizeInput(editingContainerRect.width, 'sm', true);
+  }, [editingContainerRect]);
+
+  const handlePagePathClick = useCallback((page: SelectablePage) => {
+    if (!isEditable) {
+      return;
+    }
+    setEditingPagePath(page.path);
+    setInputValue(page.path);
+  }, [isEditable]);
+
+  const handleInputBlur = useCallback(() => {
+    setEditingPagePath(null);
+  }, []);
+
+  const handleInputKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleInputBlur();
+    }
+  }, [handleInputBlur]);
+
+  // Autofocus
+  useEffect(() => {
+    if (editingPagePath != null && inputRef.current != null) {
+      inputRef.current.focus();
+    }
+  }, [editingPagePath]);
+
+  return (
+    <div
+      ref={editingContainerRef}
+      className={`flex-grow-1 ${methodButtonPosition === 'left' ? 'me-2' : 'mx-2'}`}
+      style={{ minWidth: 0 }}
+    >
+      {isEditing
+        ? (
+          <AutosizeInput
+            id="page-path-input"
+            inputClassName="page-path-input"
+            type="text"
+            ref={inputRef}
+            value={inputValue}
+            onBlur={handleInputBlur}
+            onChange={e => setInputValue(e.target.value)}
+            onKeyDown={handleInputKeyDown}
+            inputStyle={{ maxWidth }}
+          />
+        )
+        : (
+          <span
+            className={`page-path ${isEditable ? 'page-path-editable' : ''}`}
+            onClick={() => handlePagePathClick(page)}
+            title={page.path}
+          >
+            {page.path}
+          </span>
+        )}
+    </div>
+  );
+});
+
+
 type SelectablePagePageListProps = {
   pages: SelectablePage[],
   method: 'add' | 'remove' | 'delete'
@@ -70,39 +153,6 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
   } = props;
 
   const { t } = useTranslation();
-
-  const [editingPagePath, setEditingPagePath] = useState<string | null>(null);
-  const [inputValue, setInputValue] = useState('');
-
-  const inputRef = useRef<HTMLInputElement & AutosizeInput | null>(null);
-  const editingContainerRef = useRef<HTMLDivElement>(null);
-  const [editingContainerRect] = useRect(editingContainerRef);
-
-  const maxInputWidth = useMemo(() => {
-    if (editingContainerRect == null) {
-      return undefined;
-    }
-    return getAdjustedMaxWidthForAutosizeInput(editingContainerRect.width, 'sm', true);
-  }, [editingContainerRect]);
-
-
-  const handlePagePathClick = useCallback((page: SelectablePage) => {
-    if (!isEditable) {
-      return;
-    }
-    setEditingPagePath(page.path);
-    setInputValue(page.path);
-  }, [isEditable]);
-
-  const handleInputBlur = useCallback(() => {
-    setEditingPagePath(null);
-  }, []);
-
-  const handleInputKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleInputBlur();
-    }
-  }, [handleInputBlur]);
 
   const methodButtonIconName = useMemo(() => {
     switch (method) {
@@ -130,13 +180,6 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
     }
   }, [method]);
 
-  // Autofocus
-  useEffect(() => {
-    if (editingPagePath != null && inputRef.current != null) {
-      inputRef.current.focus();
-    }
-  }, [editingPagePath]);
-
   if (pages.length === 0) {
     return (
       <div className={moduleClass}>
@@ -150,7 +193,6 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
   return (
     <div className={`list-group ${moduleClass}`}>
       {pages.map((page) => {
-        const isEditing = isEditable && editingPagePath === page.path;
         return (
           <div
             key={page.path}
@@ -169,35 +211,11 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
               )
             }
 
-            <div
-              ref={editingContainerRef}
-              className={`flex-grow-1 ${methodButtonPosition === 'left' ? 'me-2' : 'mx-2'}`}
-              style={{ minWidth: 0 }}
-            >
-              {isEditing
-                ? (
-                  <AutosizeInput
-                    id="page-path-input"
-                    inputClassName="page-path-input"
-                    type="text"
-                    ref={inputRef}
-                    value={inputValue}
-                    onBlur={handleInputBlur}
-                    onChange={e => setInputValue(e.target.value)}
-                    onKeyDown={handleInputKeyDown}
-                    inputStyle={{ maxWidth: maxInputWidth }}
-                  />
-                )
-                : (
-                  <span
-                    className={`page-path ${isEditable ? 'page-path-editable' : ''}`}
-                    onClick={() => handlePagePathClick(page)}
-                    title={page.path}
-                  >
-                    {page.path}
-                  </span>
-                )}
-            </div>
+            <EditablePagePath
+              page={page}
+              isEditable={isEditable}
+              methodButtonPosition={methodButtonPosition}
+            />
 
             <span className={`badge bg-body-secondary rounded-pill ${methodButtonPosition === 'left' ? 'me-2' : ''}`}>
               <span className="text-body-tertiary">
