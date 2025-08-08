@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { NotAvailable } from '~/client/components/NotAvailable';
 import { NotAvailableForGuest } from '~/client/components/NotAvailableForGuest';
-import { useIsAiEnabled } from '~/stores-universal/context';
+import { useIsAiEnabled } from '~/states/server-configurations';
 
 import { useAiAssistantSidebar, useSWRxAiAssistants } from '../../stores/ai-assistant';
 
@@ -48,7 +48,7 @@ const OpenDefaultAiAssistantButtonSubstance = (): JSX.Element => {
 };
 
 const OpenDefaultAiAssistantButton = (): JSX.Element => {
-  const { data: isAiEnabled } = useIsAiEnabled();
+  const [isAiEnabled] = useIsAiEnabled();
 
   if (!isAiEnabled) {
     return <></>;
