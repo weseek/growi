@@ -238,16 +238,17 @@ const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
   return <BasicLayoutWithEditor>{children}</BasicLayoutWithEditor>;
 };
 
-let drawioUri = '';
 Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
-  if (isInitialProps(page.props)) {
-    drawioUri = page.props.rendererConfig.drawioUri;
-  }
+  // Get drawioUri from rendererConfig atom to ensure consistency across navigations
+  const DrawioViewerScriptWithAtom = (): JSX.Element => {
+    const [rendererConfig] = useRendererConfig();
+    return <DrawioViewerScript drawioUri={rendererConfig.drawioUri} />;
+  };
 
   return (
     <>
       <GrowiPluginsActivator />
-      <DrawioViewerScript drawioUri={drawioUri} />
+      <DrawioViewerScriptWithAtom />
 
       <Layout {...page.props}>
         {page}
