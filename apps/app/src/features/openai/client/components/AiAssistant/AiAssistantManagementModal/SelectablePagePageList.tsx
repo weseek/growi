@@ -2,8 +2,12 @@ import React, {
   useMemo, memo, useState, useCallback, useRef, useEffect,
 } from 'react';
 
+import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'react-i18next';
 import AutosizeInput from 'react-input-autosize';
+
+
+import { getAdjustedMaxWidthForAutosizeInput } from '~/client/components/Common/SubmittableInput';
 
 import { type SelectablePage } from '../../../../interfaces/selectable-page';
 
@@ -69,7 +73,18 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
 
   const [editingPagePath, setEditingPagePath] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState('');
+
   const inputRef = useRef<HTMLInputElement & AutosizeInput | null>(null);
+  const editingContainerRef = useRef<HTMLDivElement>(null);
+  const [editingContainerRect] = useRect(editingContainerRef);
+
+  const maxInputWidth = useMemo(() => {
+    if (editingContainerRect == null) {
+      return undefined;
+    }
+    return getAdjustedMaxWidthForAutosizeInput(editingContainerRect.width, 'sm', true);
+  }, [editingContainerRect]);
+
 
   const handlePagePathClick = useCallback((page: SelectablePage) => {
     if (!isEditable) {
@@ -154,7 +169,11 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
               )
             }
 
-            <div className={`flex-grow-1 ${methodButtonPosition === 'left' ? 'me-4' : 'ms-2'}`}>
+            <div
+              ref={editingContainerRef}
+              className={`flex-grow-1 ${methodButtonPosition === 'left' ? 'me-2' : 'mx-2'}`}
+              style={{ minWidth: 0 }}
+            >
               {isEditing
                 ? (
                   <AutosizeInput
@@ -166,12 +185,14 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
                     onBlur={handleInputBlur}
                     onChange={e => setInputValue(e.target.value)}
                     onKeyDown={handleInputKeyDown}
+                    inputStyle={{ maxWidth: maxInputWidth }}
                   />
                 )
                 : (
                   <span
                     className={`page-path ${isEditable ? 'page-path-editable' : ''}`}
                     onClick={() => handlePagePathClick(page)}
+                    title={page.path}
                   >
                     {page.path}
                   </span>

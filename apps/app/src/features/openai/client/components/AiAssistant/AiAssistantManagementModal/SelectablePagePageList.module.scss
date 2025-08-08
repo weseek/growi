@@ -3,21 +3,26 @@
 
  .selectable-page-page-list :global {
     .page-path {
+      display: inline-block;
+      max-width: 100%;
       padding: 0.25rem 0.5rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      vertical-align: middle;
     }
 
     .page-path-editable {
       cursor: pointer;
-      border-radius: var(--bs-border-radius);
+      border: 2px solid transparent;
 
       &:hover {
-        border: 2px solid var(--bs-border-color);
+        border-color: var(--bs-border-color);
       }
     }
 
     .page-path-input {
       border: 2px solid var(--bs-border-color);
-      border-radius: var(--bs-border-radius);
     }
 }
 
