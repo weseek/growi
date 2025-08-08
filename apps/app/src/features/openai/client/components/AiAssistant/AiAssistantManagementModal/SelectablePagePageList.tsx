@@ -76,11 +76,17 @@ const MethodButton = memo((props: MethodButtonProps) => {
 type EditablePagePathProps = {
   isEditable?: boolean;
   page: SelectablePage;
+  disablePagePaths: string[];
   methodButtonPosition?: 'left' | 'right';
 }
 
 const EditablePagePath = memo((props: EditablePagePathProps): JSX.Element => {
-  const { page, isEditable, methodButtonPosition = 'left' } = props;
+  const {
+    page,
+    isEditable,
+    disablePagePaths = [],
+    methodButtonPosition = 'left',
+  } = props;
 
   const [editingPagePath, setEditingPagePath] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState('');
@@ -99,12 +105,12 @@ const EditablePagePath = memo((props: EditablePagePathProps): JSX.Element => {
   }, [editingContainerRect]);
 
   const handlePagePathClick = useCallback((page: SelectablePage) => {
-    if (!isEditable) {
+    if (!isEditable || disablePagePaths.includes(page.path)) {
       return;
     }
     setEditingPagePath(page.path);
     setInputValue(page.path);
-  }, [isEditable]);
+  }, [disablePagePaths, isEditable]);
 
   const handleInputBlur = useCallback(() => {
     setEditingPagePath(null);
@@ -112,9 +118,15 @@ const EditablePagePath = memo((props: EditablePagePathProps): JSX.Element => {
 
   const handleInputKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
+
+      if (disablePagePaths.includes(inputValue)) {
+        return;
+      }
+
+      page.path = inputValue;
       handleInputBlur();
     }
-  }, [handleInputBlur]);
+  }, [disablePagePaths, handleInputBlur, inputValue, page]);
 
   // Autofocus
   useEffect(() => {
@@ -145,7 +157,7 @@ const EditablePagePath = memo((props: EditablePagePathProps): JSX.Element => {
         )
         : (
           <span
-            className={`page-path ${isEditable ? 'page-path-editable' : ''}`}
+            className={`page-path ${isEditable && !disablePagePaths.includes(page.path) ? 'page-path-editable' : ''}`}
             onClick={() => handlePagePathClick(page)}
             title={page.path}
           >
@@ -177,6 +189,22 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
   } = props;
 
   const { t } = useTranslation();
+
+  // SelectedPages will include subordinate pages by default
+  // const pagesWithGlobPath = useMemo(() => {
+  //   return pages.map((page) => {
+  //     if (page.path === '/') {
+  //       page.path = '/*';
+  //     }
+
+  //     if (!page.path.endsWith('/*')) {
+  //       page.path = `${page.path}/*`;
+  //     }
+
+  //     return page;
+  //   });
+  // }, [pages]);
+
 
   if (pages.length === 0) {
     return (
@@ -211,6 +239,7 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
             <EditablePagePath
               page={page}
               isEditable={isEditable}
+              disablePagePaths={disablePagePaths}
               methodButtonPosition={methodButtonPosition}
             />
 
