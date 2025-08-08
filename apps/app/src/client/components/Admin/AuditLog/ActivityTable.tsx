@@ -32,7 +32,7 @@ export const ActivityTable : FC<Props> = (props: Props) => {
   }, []);
 
   return (
-    <div className="table-responsive">
+    <div className="table-responsive admin-audit-log">
       <table className="table table-default table-bordered table-user-list">
         <thead>
           <tr>
