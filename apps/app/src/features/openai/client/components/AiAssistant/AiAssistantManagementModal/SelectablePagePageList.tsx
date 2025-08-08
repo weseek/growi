@@ -17,8 +17,7 @@ const moduleClass = styles['selectable-page-page-list'] ?? '';
 type MethodButtonProps = {
   page: SelectablePage;
   disablePagePaths: string[];
-  methodButtonColor: string;
-  methodButtonIconName: string;
+  method: 'add' | 'remove' | 'delete'
   onClickMethodButton: (page: SelectablePage) => void;
 }
 
@@ -26,15 +25,40 @@ const MethodButton = memo((props: MethodButtonProps) => {
   const {
     page,
     disablePagePaths,
-    methodButtonColor,
-    methodButtonIconName,
+    method,
     onClickMethodButton,
   } = props;
+
+  const iconName = useMemo(() => {
+    switch (method) {
+      case 'add':
+        return 'add_circle';
+      case 'remove':
+        return 'do_not_disturb_on';
+      case 'delete':
+        return 'delete';
+      default:
+        return '';
+    }
+  }, [method]);
+
+  const color = useMemo(() => {
+    switch (method) {
+      case 'add':
+        return 'text-primary';
+      case 'remove':
+        return 'text-secondary';
+      case 'delete':
+        return 'text-secondary';
+      default:
+        return '';
+    }
+  }, [method]);
 
   return (
     <button
       type="button"
-      className={`btn border-0 ${methodButtonColor}`}
+      className={`btn border-0 ${color}`}
       disabled={disablePagePaths.includes(page.path)}
       onClick={(e) => {
         e.stopPropagation();
@@ -42,7 +66,7 @@ const MethodButton = memo((props: MethodButtonProps) => {
       }}
     >
       <span className="material-symbols-outlined">
-        {methodButtonIconName}
+        {iconName}
       </span>
     </button>
   );
@@ -154,32 +178,6 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
 
   const { t } = useTranslation();
 
-  const methodButtonIconName = useMemo(() => {
-    switch (method) {
-      case 'add':
-        return 'add_circle';
-      case 'remove':
-        return 'do_not_disturb_on';
-      case 'delete':
-        return 'delete';
-      default:
-        return '';
-    }
-  }, [method]);
-
-  const methodButtonColor = useMemo(() => {
-    switch (method) {
-      case 'add':
-        return 'text-primary';
-      case 'remove':
-        return 'text-secondary';
-      case 'delete':
-        return 'text-secondary';
-      default:
-        return '';
-    }
-  }, [method]);
-
   if (pages.length === 0) {
     return (
       <div className={moduleClass}>
@@ -203,9 +201,8 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
               && (
                 <MethodButton
                   page={page}
+                  method={method}
                   disablePagePaths={disablePagePaths}
-                  methodButtonColor={methodButtonColor}
-                  methodButtonIconName={methodButtonIconName}
                   onClickMethodButton={onClickMethodButton}
                 />
               )
@@ -227,9 +224,8 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
               && (
                 <MethodButton
                   page={page}
+                  method={method}
                   disablePagePaths={disablePagePaths}
-                  methodButtonColor={methodButtonColor}
-                  methodButtonIconName={methodButtonIconName}
                   onClickMethodButton={onClickMethodButton}
                 />
               )
