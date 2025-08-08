@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 
 import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
 import { useCurrentPageData, useRemoteRevisionId } from '~/states/page';
-import { useEditorMode } from '~/stores-universal/ui';
+import { useEditorMode } from '~/states/ui/editor';
 import { usePageStatusAlert } from '~/stores/alert';
 import { useRemoteRevisionLastUpdateUser } from '~/stores/remote-latest-page';
 
@@ -15,7 +15,7 @@ import styles from './PageStatusAlert.module.scss';
 export const PageStatusAlert = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const { data: editorMode } = useEditorMode();
+  const { editorMode } = useEditorMode();
   const [isGuestUser] = useIsGuestUser();
   const [isReadOnlyUser] = useIsReadOnlyUser();
   const { data: pageStatusAlertData } = usePageStatusAlert();

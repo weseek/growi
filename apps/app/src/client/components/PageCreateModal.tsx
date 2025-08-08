@@ -19,9 +19,8 @@ import { useCreateTemplatePage } from '~/client/services/create-page';
 import { useCreatePage } from '~/client/services/create-page/use-create-page';
 import { useToastrOnError } from '~/client/services/use-toastr-on-error';
 import { useCurrentUser } from '~/states/global';
-import { useIsSearchServiceReachable } from '~/stores-universal/context';
+import { useIsSearchServiceReachable } from '~/states/server-configurations';
 import { usePageCreateModal } from '~/stores/modal';
-
 
 import PagePathAutoComplete from './PagePathAutoComplete';
 
@@ -43,7 +42,7 @@ const PageCreateModal: React.FC = () => {
   const { create } = useCreatePage();
   const { createTemplate } = useCreateTemplatePage();
 
-  const { data: isReachable } = useIsSearchServiceReachable();
+  const [isReachable] = useIsSearchServiceReachable();
   const pathname = pageCreateModalData?.path ?? '';
   const userHomepagePath = pagePathUtils.userHomepagePath(currentUser);
   const isCreatable = isCreatablePage(pathname) || isUsersHomepage(pathname);

@@ -11,7 +11,7 @@ import {
 } from 'reactstrap';
 
 import { useCurrentPageData } from '~/states/page';
-import { useIsEnabledMarp } from '~/stores-universal/context';
+import { useRendererConfig } from '~/states/server-configurations';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
 import { usePagePresentationModal } from '~/stores/modal';
 import { usePresentationViewOptions } from '~/stores/renderer';
@@ -41,7 +41,7 @@ const PagePresentationModal = (): JSX.Element => {
   const [currentPage] = useCurrentPageData();
   const { data: rendererOptions, isLoading } = usePresentationViewOptions();
 
-  const { data: isEnabledMarp } = useIsEnabledMarp();
+  const [{ isEnabledMarp }] = useRendererConfig();
 
   const markdown = currentPage?.revision?.body;
 

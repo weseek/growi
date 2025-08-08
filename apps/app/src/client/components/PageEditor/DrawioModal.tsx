@@ -12,7 +12,7 @@ import {
 } from 'reactstrap';
 
 import { replaceFocusedDrawioWithEditor, getMarkdownDrawioMxfile } from '~/client/components/PageEditor/markdown-drawio-util-for-editor';
-import { useRendererConfig } from '~/stores-universal/context';
+import { useRendererConfig } from '~/states/server-configurations';
 import { useDrawioModal } from '~/stores/modal';
 import { usePersonalSettings } from '~/stores/personal-settings';
 import loggerFactory from '~/utils/logger';
@@ -55,7 +55,7 @@ const drawioConfig: DrawioConfig = {
 
 
 export const DrawioModal = (): JSX.Element => {
-  const { data: rendererConfig } = useRendererConfig();
+  const [{ drawioUri }] = useRendererConfig();
   const { data: personalSettingsInfo } = usePersonalSettings({
     // make immutable
     revalidateIfStale: false,
@@ -72,13 +72,13 @@ export const DrawioModal = (): JSX.Element => {
   const isOpened = drawioModalData?.isOpened ?? false;
 
   const drawioUriWithParams = useMemo(() => {
-    if (rendererConfig == null) {
+    if (drawioUri === '') {
       return undefined;
     }
 
     let url;
     try {
-      url = new URL(rendererConfig.drawioUri);
+      url = new URL(drawioUri);
     }
     catch (err) {
       logger.debug(err);
@@ -93,10 +93,10 @@ export const DrawioModal = (): JSX.Element => {
     url.searchParams.append('configure', '1');
 
     return url;
-  }, [rendererConfig, personalSettingsInfo?.lang]);
+  }, [drawioUri, personalSettingsInfo?.lang]);
 
   const drawioCommunicationHelper = useMemo(() => {
-    if (rendererConfig == null) {
+    if (drawioUri === '') {
       return undefined;
     }
 
@@ -105,11 +105,11 @@ export const DrawioModal = (): JSX.Element => {
     } : drawioModalData?.onSave;
 
     return new DrawioCommunicationHelper(
-      rendererConfig.drawioUri,
+      drawioUri,
       drawioConfig,
       { onClose: isOpened ? closeDrawioModal : closeDrawioModalInEditor, onSave: save },
     );
-  }, [closeDrawioModal, closeDrawioModalInEditor, drawioModalData?.onSave, editor, isOpened, rendererConfig]);
+  }, [closeDrawioModal, closeDrawioModalInEditor, drawioModalData?.onSave, editor, isOpened, drawioUri]);
 
   const receiveMessageHandler = useCallback((event: MessageEvent) => {
     if (drawioModalData == null) {

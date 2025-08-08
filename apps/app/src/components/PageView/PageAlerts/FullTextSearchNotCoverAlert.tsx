@@ -3,13 +3,13 @@ import type { JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useCurrentPageData } from '~/states/page';
-import { useElasticsearchMaxBodyLengthToIndex } from '~/stores-universal/context';
+import { useElasticsearchMaxBodyLengthToIndex } from '~/states/server-configurations';
 
 
 export const FullTextSearchNotCoverAlert = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const { data: elasticsearchMaxBodyLengthToIndex } = useElasticsearchMaxBodyLengthToIndex();
+  const [elasticsearchMaxBodyLengthToIndex] = useElasticsearchMaxBodyLengthToIndex();
   const [data] = useCurrentPageData();
 
   const markdownLength = data?.revision?.body?.length;

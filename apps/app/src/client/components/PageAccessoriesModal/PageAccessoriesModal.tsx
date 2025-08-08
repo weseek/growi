@@ -7,9 +7,8 @@ import {
 } from 'reactstrap';
 
 import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
-import {
-  useDisableLinkSharing, useIsSharedUser,
-} from '~/stores-universal/context';
+import { useDisableLinkSharing } from '~/states/server-configurations';
+import { useIsSharedUser } from '~/stores-universal/context';
 import { usePageAccessoriesModal, PageAccessoriesModalContents } from '~/stores/modal';
 import { useIsDeviceLargerThanLg } from '~/stores/ui';
 
@@ -36,7 +35,7 @@ export const PageAccessoriesModal = (): JSX.Element => {
   const { data: isSharedUser } = useIsSharedUser();
   const [isGuestUser] = useIsGuestUser();
   const [isReadOnlyUser] = useIsReadOnlyUser();
-  const { data: isLinkSharingDisabled } = useDisableLinkSharing();
+  const [isLinkSharingDisabled] = useDisableLinkSharing();
   const { data: isDeviceLargerThanLg } = useIsDeviceLargerThanLg();
 
   const { data: status, close, selectContents } = usePageAccessoriesModal();

@@ -17,15 +17,15 @@ import useSWRImmutable from 'swr/immutable';
 
 import type { IPageSelectedGrant } from '~/interfaces/page';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
-import { useIsReadOnlyUser } from '~/states/context';
+import { useIsEditable, useIsIdenticalPath, useIsReadOnlyUser } from '~/states/context';
 import { useCurrentUser } from '~/states/global';
 import {
   usePageNotFound, useCurrentPagePath, useIsTrashPage, useCurrentPageId,
 } from '~/states/page';
+import { EditorMode, useEditorMode } from '~/states/ui/editor';
 import {
-  useIsEditable, useIsSharedUser, useIsIdenticalPath, useShareLinkId,
+  useIsSharedUser, useShareLinkId,
 } from '~/stores-universal/context';
-import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import loggerFactory from '~/utils/logger';
 
 import { useStaticSWR } from './use-static-swr';
@@ -277,8 +277,8 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const [pageId] = useCurrentPageId();
   const [isNotFound] = usePageNotFound();
   const [currentPagePath] = useCurrentPagePath();
-  const { data: isIdenticalPath } = useIsIdenticalPath();
-  const { data: editorMode } = useEditorMode();
+  const [isIdenticalPath] = useIsIdenticalPath();
+  const { editorMode } = useEditorMode();
   const { data: shareLinkId } = useShareLinkId();
 
   const includesUndefined = [currentPagePath, isIdenticalPath, isNotFound, editorMode].some(v => v === undefined);
@@ -295,7 +295,7 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
 
 export const useIsAbleToChangeEditorMode = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToChangeEditorMode';
-  const { data: isEditable } = useIsEditable();
+  const [isEditable] = useIsEditable();
   const { data: isSharedUser } = useIsSharedUser();
 
   const includesUndefined = [isEditable, isSharedUser].some(v => v === undefined);

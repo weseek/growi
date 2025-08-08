@@ -12,7 +12,7 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import { ExternalGroupManagement } from '~/features/external-user-group/client/components/ExternalUserGroup/ExternalUserGroupManagement';
 import { useSWRxExternalUserGroupList } from '~/features/external-user-group/client/stores/external-user-group';
 import type { PageActionOnGroupDelete } from '~/interfaces/user-group';
-import { useIsAclEnabled } from '~/stores-universal/context';
+import { useIsAclEnabled } from '~/states/server-configurations';
 import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
 
 
@@ -23,7 +23,7 @@ const UserGroupTable = dynamic(() => import('./UserGroupTable').then(mod => mod.
 export const UserGroupPage: FC = () => {
   const { t } = useTranslation();
 
-  const { data: isAclEnabled } = useIsAclEnabled();
+  const [isAclEnabled] = useIsAclEnabled();
 
   /*
    * Fetch

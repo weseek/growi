@@ -23,19 +23,24 @@ import { useUpdatePage, extractRemoteRevisionDataFromErrorObj } from '~/client/s
 import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
+import { useIsEditable } from '~/states/context';
+import { useCurrentPathname, useCurrentUser } from '~/states/global';
 import {
   useCurrentPagePath,
   useCurrentPageData,
   useCurrentPageId,
   usePageNotFound,
 } from '~/states/page';
+import { useTemplateBody } from '~/states/page/hooks';
 import {
   useDefaultIndentSize,
   useIsEnabledAttachTitleHeader,
-  useIsEditable, useIsIndentSizeForced,
+  useIsIndentSizeForced,
+} from '~/states/server-configurations';
+import { useEditorMode, EditorMode } from '~/states/ui/editor';
+import {
   useAcceptedUploadFileType, useIsEnableUnifiedMergeView,
 } from '~/stores-universal/context';
-import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
 import {
   useReservedNextCaretLine,
@@ -60,9 +65,6 @@ import { useScrollSync } from './ScrollSyncHelper';
 import { useConflictResolver, useConflictEffect, type ConflictHandler } from './conflict';
 
 import '@growi/editor/dist/style.css';
-import { useTemplateBody } from '~/states/page/hooks';
-import { useCurrentPathname, useCurrentUser } from '~/states/global';
-
 
 const logger = loggerFactory('growi:PageEditor');
 
@@ -103,15 +105,15 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
   const [currentPage] = useCurrentPageData();
   const { data: selectedGrant } = useSelectedGrant();
   const { data: editingMarkdown } = useEditingMarkdown();
-  const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
+  const [isEnabledAttachTitleHeader] = useIsEnabledAttachTitleHeader();
   const [templateBody] = useTemplateBody();
-  const { data: isEditable } = useIsEditable();
+  const [isEditable] = useIsEditable();
   const { mutate: mutateWaitingSaveProcessing } = useWaitingSaveProcessing();
-  const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
+  const { editorMode, setEditorMode } = useEditorMode();
   const { data: isUntitledPage } = useIsUntitledPage();
-  const { data: isIndentSizeForced } = useIsIndentSizeForced();
+  const [isIndentSizeForced] = useIsIndentSizeForced();
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
-  const { data: defaultIndentSize } = useDefaultIndentSize();
+  const [defaultIndentSize] = useDefaultIndentSize();
   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsGrantNormalized } = useSWRxCurrentGrantData(currentPage?._id);
@@ -232,9 +234,9 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
       return;
     }
 
-    mutateEditorMode(EditorMode.View);
+    setEditorMode(EditorMode.View);
     updateStateAfterSave?.();
-  }, [codeMirrorEditor, currentRevisionId, isRevisionIdRequiredForPageUpdate, mutateEditorMode, onConflict, save, updateStateAfterSave]);
+  }, [codeMirrorEditor, currentRevisionId, isRevisionIdRequiredForPageUpdate, setEditorMode, onConflict, save, updateStateAfterSave]);
 
   const saveWithShortcut = useCallback(async() => {
     const markdown = codeMirrorEditor?.getDocString();

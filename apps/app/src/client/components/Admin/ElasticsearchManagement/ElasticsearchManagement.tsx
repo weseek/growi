@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import { apiv3Get, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { SocketEventName } from '~/interfaces/websocket';
-import { useIsSearchServiceReachable } from '~/stores-universal/context';
+import { useIsSearchServiceReachable } from '~/states/server-configurations';
 import { useAdminSocket } from '~/stores/socket-io';
 
 import NormalizeIndicesControls from './NormalizeIndicesControls';
@@ -16,7 +16,7 @@ import StatusTable from './StatusTable';
 
 const ElasticsearchManagement = () => {
   const { t } = useTranslation('admin');
-  const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
+  const [isSearchServiceReachable] = useIsSearchServiceReachable();
   const { data: socket } = useAdminSocket();
 
   const [isInitialized, setIsInitialized] = useState(false);

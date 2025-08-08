@@ -7,7 +7,7 @@ import { getGrowiFacade } from '~/features/growi-plugin/client/utils/growi-facad
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import type { RendererConfigExt } from '~/interfaces/services/renderer';
 import { useCurrentPagePath } from '~/states/page';
-import { useRendererConfig } from '~/stores-universal/context';
+import { useRendererConfig } from '~/states/server-configurations';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
@@ -16,7 +16,7 @@ import { useCurrentPageTocNode } from './ui';
 const logger = loggerFactory('growi:cli:services:renderer');
 
 const useRendererConfigExt = (): RendererConfigExt | null => {
-  const { data: rendererConfig } = useRendererConfig();
+  const [rendererConfig] = useRendererConfig();
   const { isDarkMode } = useNextThemes();
 
   return rendererConfig == null ? null : {

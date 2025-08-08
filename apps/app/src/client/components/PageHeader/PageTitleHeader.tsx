@@ -13,7 +13,7 @@ import { useTranslation } from 'next-i18next';
 
 import type { InputValidationResult } from '~/client/util/use-input-validator';
 import { ValidationTarget, useInputValidator } from '~/client/util/use-input-validator';
-import { EditorMode, useEditorMode } from '~/stores-universal/ui';
+import { EditorMode, useEditorMode } from '~/states/ui/editor';
 import { useIsUntitledPage } from '~/stores/ui';
 
 import { CopyDropdown } from '../Common/CopyDropdown';
@@ -52,7 +52,7 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
 
   const editedPageTitle = nodePath.basename(editedPagePath);
 
-  const { data: editorMode } = useEditorMode();
+  const { editorMode } = useEditorMode();
   const { data: isUntitledPage } = useIsUntitledPage();
 
   const changeHandler = useCallback(async(e: ChangeEvent<HTMLInputElement>) => {

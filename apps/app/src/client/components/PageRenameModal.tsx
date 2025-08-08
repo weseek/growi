@@ -13,7 +13,7 @@ import { debounce } from 'throttle-debounce';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 import { useSiteUrl } from '~/states/global';
-import { useIsSearchServiceReachable } from '~/stores-universal/context';
+import { useIsSearchServiceReachable } from '~/states/server-configurations';
 import { usePageRenameModal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';
 
@@ -32,7 +32,7 @@ const PageRenameModal = (): JSX.Element => {
   const { isUsersHomepage } = pagePathUtils;
   const [siteUrl] = useSiteUrl();
   const { data: renameModalData, close: closeRenameModal } = usePageRenameModal();
-  const { data: isReachable } = useIsSearchServiceReachable();
+  const [isReachable] = useIsSearchServiceReachable();
 
   const isOpened = renameModalData?.isOpened ?? false;
   const page = renameModalData?.page;

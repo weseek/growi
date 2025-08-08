@@ -9,13 +9,13 @@ import { toastError, toastSuccess } from '~/client/util/toastr';
 import { usePageBulkExportSelectModal } from '~/features/page-bulk-export/client/stores/modal';
 import { PageBulkExportFormat } from '~/features/page-bulk-export/interfaces/page-bulk-export';
 import { useCurrentPagePath } from '~/states/page';
-import { useIsPdfBulkExportEnabled } from '~/stores-universal/context';
+import { useIsPdfBulkExportEnabled } from '~/states/server-configurations';
 
 const PageBulkExportSelectModal = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: status, close } = usePageBulkExportSelectModal();
   const [currentPagePath] = useCurrentPagePath();
-  const { data: isPdfBulkExportEnabled } = useIsPdfBulkExportEnabled();
+  const [isPdfBulkExportEnabled] = useIsPdfBulkExportEnabled();
 
   const [isRestartModalOpened, setIsRestartModalOpened] = useState(false);
   const [formatMemoForRestart, setFormatMemoForRestart] = useState<PageBulkExportFormat | undefined>(undefined);

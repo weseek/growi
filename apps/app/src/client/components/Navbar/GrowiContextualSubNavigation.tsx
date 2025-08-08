@@ -28,9 +28,10 @@ import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
 import { useCurrentPathname, useCurrentUser } from '~/states/global';
 import { useCurrentPageId, useFetchCurrentPage } from '~/states/page';
 import {
-  useIsBulkExportPagesEnabled, useIsLocalAccountRegistrationEnabled, useIsSharedUser, useShareLinkId, useIsUploadEnabled,
-} from '~/stores-universal/context';
-import { useEditorMode } from '~/stores-universal/ui';
+  useIsBulkExportPagesEnabled, useIsLocalAccountRegistrationEnabled, useIsUploadEnabled,
+} from '~/states/server-configurations';
+import { useEditorMode } from '~/states/ui/editor';
+import { useIsSharedUser, useShareLinkId } from '~/stores-universal/context';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, type IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
@@ -80,8 +81,8 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
   const [isGuestUser] = useIsGuestUser();
   const [isReadOnlyUser] = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
-  const { data: isBulkExportPagesEnabled } = useIsBulkExportPagesEnabled();
-  const { data: isUploadEnabled } = useIsUploadEnabled();
+  const [isBulkExportPagesEnabled] = useIsBulkExportPagesEnabled();
+  const [isUploadEnabled] = useIsUploadEnabled();
 
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
@@ -263,12 +264,12 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const revision = currentPage?.revision;
   const revisionId = (revision != null && isPopulated(revision)) ? revision._id : undefined;
 
-  const { data: editorMode } = useEditorMode();
+  const { editorMode } = useEditorMode();
   const [pageId] = useCurrentPageId();
   const [currentUser] = useCurrentUser();
   const [isGuestUser] = useIsGuestUser();
   const [isReadOnlyUser] = useIsReadOnlyUser();
-  const { data: isLocalAccountRegistrationEnabled } = useIsLocalAccountRegistrationEnabled();
+  const [isLocalAccountRegistrationEnabled] = useIsLocalAccountRegistrationEnabled();
   const { data: isSharedUser } = useIsSharedUser();
 
   const shouldExpandContent = useShouldExpandContent(currentPage);

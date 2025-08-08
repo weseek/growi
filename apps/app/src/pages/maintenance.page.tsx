@@ -25,7 +25,7 @@ const MaintenancePage: NextPage<CommonProps> = (props: Props) => {
       <div className="container">
         <div className="row justify-content-md-center">
           <div className="col-md-6 mt-5">
-            <Maintenance currentUser={props.currentUser} />
+            <Maintenance />
           </div>
         </div>
       </div>

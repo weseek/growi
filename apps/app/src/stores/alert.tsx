@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useSWRStatic } from '@growi/core/dist/swr';
 import type { SWRResponse } from 'swr';
 
-import type { EditorMode } from '../stores-universal/ui';
+import type { EditorMode } from '../states/ui/editor';
 
 /*
 * PageStatusAlert

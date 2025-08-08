@@ -11,9 +11,8 @@ import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import type { SlackChannels } from '~/interfaces/user-trigger-notification';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
 import { useCurrentUser } from '~/states/global';
-import { useDefaultIndentSize } from '~/stores-universal/context';
+import { useDefaultIndentSize } from '~/states/server-configurations';
 
-// import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useSWRxTagsInfo } from './page';
 
 
@@ -67,7 +66,7 @@ export const useEditorSettings = (): SWRResponseWithUtils<EditorSettingsOperatio
 };
 
 export const useCurrentIndentSize = (): SWRResponse<number, Error> => {
-  const { data: defaultIndentSize } = useDefaultIndentSize();
+  const [defaultIndentSize] = useDefaultIndentSize();
   return useSWRStatic<number, Error>(
     defaultIndentSize == null ? null : 'currentIndentSize',
     undefined,

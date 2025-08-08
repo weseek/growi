@@ -30,7 +30,7 @@ import { useHydratePageAtoms } from '~/states/page/hydrate';
 import {
   useDisableLinkSharing,
   useRendererConfig,
-} from '~/states/server-configurations/server-configurations';
+} from '~/states/server-configurations';
 import {
   useIsSharedUser,
   useIsSearchPage,

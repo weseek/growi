@@ -1,6 +1,7 @@
 import { useHydrateAtoms } from 'jotai/utils';
 
 import type { RendererConfig } from '~/interfaces/services/renderer';
+
 import {
   aiEnabledAtom,
   limitLearnablePageCountPerAssistantAtom,
@@ -27,7 +28,7 @@ import {
   isPdfBulkExportEnabledAtom,
   isLocalAccountRegistrationEnabledAtom,
   rendererConfigAtom,
-} from '~/states/server-configurations/server-configurations';
+} from './server-configurations';
 
 /**
  * Type for server configuration initial props

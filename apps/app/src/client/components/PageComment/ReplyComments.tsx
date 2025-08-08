@@ -6,7 +6,7 @@ import { Collapse } from 'reactstrap';
 
 import type { ICommentHasId, ICommentHasIdList } from '~/interfaces/comment';
 import type { RendererOptions } from '~/interfaces/renderer-options';
-import { useIsAllReplyShown } from '~/stores-universal/context';
+import { useIsAllReplyShown } from '~/states/server-configurations';
 
 
 import { Comment } from './Comment';
@@ -34,7 +34,7 @@ export const ReplyComments = (props: ReplycommentsProps): JSX.Element => {
     pageId, pagePath, deleteBtnClicked, onComment,
   } = props;
 
-  const { data: isAllReplyShown } = useIsAllReplyShown();
+  const [isAllReplyShown] = useIsAllReplyShown();
 
   const [isOlderRepliesShown, setIsOlderRepliesShown] = useState(false);
 

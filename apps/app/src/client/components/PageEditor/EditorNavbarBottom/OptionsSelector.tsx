@@ -11,7 +11,7 @@ import {
   Dropdown, DropdownToggle, DropdownMenu, Input, FormGroup,
 } from 'reactstrap';
 
-import { useIsIndentSizeForced } from '~/stores-universal/context';
+import { useIsIndentSizeForced } from '~/states/server-configurations';
 import { useEditorSettings, useCurrentIndentSize } from '~/stores/editor';
 import {
   useIsDeviceLargerThanMd,
@@ -305,7 +305,7 @@ export const OptionsSelector = (): JSX.Element => {
   const [status, setStatus] = useState<OptionStatus>(OptionsStatus.Home);
   const { data: editorSettings } = useEditorSettings();
   const { data: currentIndentSize } = useCurrentIndentSize();
-  const { data: isIndentSizeForced } = useIsIndentSizeForced();
+  const [isIndentSizeForced] = useIsIndentSizeForced();
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
 
   if (editorSettings == null || currentIndentSize == null || isIndentSizeForced == null) {

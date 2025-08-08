@@ -11,7 +11,7 @@ import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/toastr';
 import { SocketEventName } from '~/interfaces/websocket';
 import { useCurrentPageData, useCurrentPageId } from '~/states/page';
-import { EditorMode, useEditorMode } from '~/stores-universal/ui';
+import { EditorMode, useEditorMode } from '~/states/ui/editor';
 import { usePageStatusAlert } from '~/stores/alert';
 import { useConflictDiffModal } from '~/stores/modal';
 import { type RemoteRevisionData, useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
@@ -87,7 +87,7 @@ export const useConflictEffect = (): void => {
   const { open: openPageStatusAlert } = usePageStatusAlert();
   const { open: openConflictDiffModal } = useConflictDiffModal();
   const { data: socket } = useGlobalSocket();
-  const { data: editorMode } = useEditorMode();
+  const { editorMode } = useEditorMode();
 
   const conflictHandler = useCallback(() => {
     const onResolveConflict = () => {

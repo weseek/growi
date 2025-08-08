@@ -8,7 +8,7 @@ import {
 import { mock } from 'vitest-mock-extended';
 
 
-import { EditorMode } from '~/stores-universal/ui';
+import { EditorMode } from '~/states/ui/editor';
 
 import { PageTitleHeader } from './PageTitleHeader';
 
@@ -20,7 +20,7 @@ const mocks = vi.hoisted(() => ({
 vi.mock('~/stores/ui', () => ({
   useIsUntitledPage: mocks.useIsUntitledPageMock,
 }));
-vi.mock('~/stores-universal/ui', async importOriginal => ({
+vi.mock('~/states/ui/editor', async importOriginal => ({
   ...await importOriginal(),
   useEditorMode: mocks.useEditorModeMock,
 }));

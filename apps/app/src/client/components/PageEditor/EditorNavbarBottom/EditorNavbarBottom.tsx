@@ -2,8 +2,8 @@ import type { JSX } from 'react';
 
 import dynamic from 'next/dynamic';
 
+import { useIsAiEnabled } from '~/states/server-configurations';
 import { useDrawerOpened } from '~/states/ui/sidebar';
-import { useIsAiEnabled } from '~/stores-universal/context';
 
 import { EditorAssistantToggleButton } from './EditorAssistantToggleButton';
 
@@ -16,7 +16,7 @@ const SavePageControls = dynamic(() => import('./SavePageControls').then(mod => 
 const OptionsSelector = dynamic(() => import('./OptionsSelector').then(mod => mod.OptionsSelector), { ssr: false });
 
 export const EditorNavbarBottom = (): JSX.Element => {
-  const { data: isAiEnabled } = useIsAiEnabled();
+  const [isAiEnabled] = useIsAiEnabled();
   const [, setIsDrawerOpened] = useDrawerOpened();
 
   return (

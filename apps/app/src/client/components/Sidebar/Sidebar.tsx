@@ -17,7 +17,7 @@ import {
   useCurrentProductNavWidth,
 } from '~/states/ui/sidebar';
 import { useIsSearchPage } from '~/stores-universal/context';
-import { EditorMode, useEditorMode } from '~/stores-universal/ui';
+import { EditorMode, useEditorMode } from '~/states/ui/editor';
 import {
   useSidebarScrollerRef,
   useIsDeviceLargerThanMd,
@@ -233,7 +233,7 @@ export const Sidebar = (): JSX.Element => {
   } = useSidebarMode();
 
   const { data: isSearchPage } = useIsSearchPage();
-  const { data: editorMode } = useEditorMode();
+  const { editorMode } = useEditorMode();
   const { data: isMdSize } = useIsDeviceLargerThanMd();
   const [isXlSize] = useDeviceLargerThanXl();
 

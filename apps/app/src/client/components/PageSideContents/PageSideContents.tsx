@@ -9,7 +9,7 @@ import dynamic from 'next/dynamic';
 import { scroller } from 'react-scroll';
 
 import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
-import { useShowPageSideAuthors } from '~/stores-universal/context';
+import { useShowPageSideAuthors } from '~/states/server-configurations';
 import { useDescendantsPageListModal, useTagEditModal } from '~/stores/modal';
 import { useSWRxPageInfo, useSWRxTagsInfo } from '~/stores/page';
 import { useIsAbleToShowTagLabel } from '~/stores/ui';
@@ -88,7 +88,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
   const tagsRef = useRef<HTMLDivElement>(null);
 
   const { data: pageInfo } = useSWRxPageInfo(page._id);
-  const { data: showPageSideAuthors } = useShowPageSideAuthors();
+  const [showPageSideAuthors] = useShowPageSideAuthors();
 
   const {
     creator, lastUpdateUser, createdAt, updatedAt,

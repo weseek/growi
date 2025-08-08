@@ -5,13 +5,13 @@ import { useTranslation } from 'next-i18next';
 
 
 import { useCurrentPageData } from '~/states/page';
-import { useIsEnabledStaleNotification } from '~/stores-universal/context';
+import { useIsEnabledStaleNotification } from '~/states/server-configurations';
 import { useSWRxPageInfo } from '~/stores/page';
 
 
 export const PageStaleAlert = ():JSX.Element => {
   const { t } = useTranslation();
-  const { data: isEnabledStaleNotification } = useIsEnabledStaleNotification();
+  const [isEnabledStaleNotification] = useIsEnabledStaleNotification();
 
   // Todo: determine if it should fetch or not like useSWRxPageInfo below after https://redmine.weseek.co.jp/issues/96788
   const [pageData] = useCurrentPageData();

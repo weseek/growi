@@ -1,9 +1,9 @@
 import type { IPage, IPagePopulatedToShowRevision } from '@growi/core';
 
-import { useIsContainerFluid } from '~/stores-universal/context';
+import { useIsContainerFluid } from '~/states/server-configurations';
 
 const useDetermineExpandContent = (expandContentWidth?: boolean | null): boolean => {
-  const { data: dataIsContainerFluid } = useIsContainerFluid();
+  const [dataIsContainerFluid] = useIsContainerFluid();
 
   const isContainerFluidDefault = dataIsContainerFluid;
   return expandContentWidth ?? isContainerFluidDefault ?? false;

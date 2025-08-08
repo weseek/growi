@@ -18,10 +18,10 @@ import {
 
 import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError } from '~/client/util/toastr';
+import { useCurrentUser } from '~/states/global';
 import { useCurrentPagePath } from '~/states/page';
-import {
-  useIsSlackConfigured, useAcceptedUploadFileType,
-} from '~/stores-universal/context';
+import { useIsSlackConfigured } from '~/states/server-configurations';
+import { useAcceptedUploadFileType } from '~/stores-universal/context';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
@@ -39,8 +39,6 @@ import { SwitchingButtonGroup } from './SwitchingButtonGroup';
 
 import '@growi/editor/dist/style.css';
 import styles from './CommentEditor.module.scss';
-
-import { useCurrentUser } from '~/states/global';
 
 
 const logger = loggerFactory('growi:components:CommentEditor');
@@ -85,7 +83,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
-  const { data: isSlackConfigured } = useIsSlackConfigured();
+  const [isSlackConfigured] = useIsSlackConfigured();
   const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const {

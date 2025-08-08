@@ -14,7 +14,7 @@ import { apiv3Delete, apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import type { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 import type { PageActionOnGroupDelete } from '~/interfaces/user-group';
-import { useIsAclEnabled } from '~/stores-universal/context';
+import { useIsAclEnabled } from '~/states/server-configurations';
 import { useSWRxUserGroupList } from '~/stores/user-group';
 
 import { useSWRxChildExternalUserGroupList, useSWRxExternalUserGroupList, useSWRxExternalUserGroupRelationList } from '../../stores/external-user-group';
@@ -40,7 +40,7 @@ export const ExternalGroupManagement: FC = () => {
   const { data: childExternalUserGroupsList } = useSWRxChildExternalUserGroupList(externalUserGroupIds);
   const childExternalUserGroups = childExternalUserGroupsList?.childUserGroups != null ? childExternalUserGroupsList.childUserGroups : [];
 
-  const { data: isAclEnabled } = useIsAclEnabled();
+  const [isAclEnabled] = useIsAclEnabled();
 
   const [activeTab, setActiveTab] = useState('ldap');
   const [activeComponents, setActiveComponents] = useState(new Set(['ldap']));

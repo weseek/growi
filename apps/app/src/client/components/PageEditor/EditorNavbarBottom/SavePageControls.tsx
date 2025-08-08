@@ -13,12 +13,13 @@ import {
   DropdownToggle, DropdownMenu, DropdownItem, Modal,
 } from 'reactstrap';
 
+import { useIsEditable } from '~/states/context';
 import { useCurrentPageData, useCurrentPagePath } from '~/states/page';
 import {
-  useIsEditable, useIsAclEnabled,
+  useIsAclEnabled,
   useIsSlackConfigured,
-} from '~/stores-universal/context';
-import { useEditorMode } from '~/stores-universal/ui';
+} from '~/states/server-configurations';
+import { useEditorMode } from '~/states/ui/editor';
 import { useWaitingSaveProcessing, useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useIsDeviceLargerThanMd, useSelectedGrant } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
@@ -146,12 +147,12 @@ const SavePageButton = (props: {slackChannels: string, isSlackEnabled?: boolean,
 export const SavePageControls = (): JSX.Element | null => {
   const { t } = useTranslation('commons');
   const [currentPage] = useCurrentPageData();
-  const { data: isEditable } = useIsEditable();
-  const { data: isAclEnabled } = useIsAclEnabled();
+  const [isEditable] = useIsEditable();
+  const [isAclEnabled] = useIsAclEnabled();
 
-  const { data: editorMode } = useEditorMode();
+  const { editorMode } = useEditorMode();
   const [currentPagePath] = useCurrentPagePath();
-  const { data: isSlackConfigured } = useIsSlackConfigured();
+  const [isSlackConfigured] = useIsSlackConfigured();
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();

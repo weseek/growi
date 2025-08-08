@@ -20,12 +20,11 @@ import { toastError } from '~/client/util/toastr';
 import OpenDefaultAiAssistantButton from '~/features/openai/client/components/AiAssistant/OpenDefaultAiAssistantButton';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
 import { useCurrentPagePath } from '~/states/page';
-import {
-  useIsSearchPage, useIsUsersHomepageDeletionEnabled,
-} from '~/stores-universal/context';
+import { useIsUsersHomepageDeletionEnabled } from '~/states/server-configurations';
 import {
   EditorMode, useEditorMode,
-} from '~/stores-universal/ui';
+} from '~/states/ui/editor';
+import { useIsSearchPage } from '~/stores-universal/context';
 import { useTagEditModal, type IPageForPageDuplicateModal } from '~/stores/modal';
 import {
   useIsDeviceLargerThanMd, usePageControlsX,
@@ -136,10 +135,10 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
 
   const [isGuestUser] = useIsGuestUser();
   const [isReadOnlyUser] = useIsReadOnlyUser();
-  const { data: editorMode } = useEditorMode();
+  const { editorMode } = useEditorMode();
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
   const { data: isSearchPage } = useIsSearchPage();
-  const { data: isUsersHomepageDeletionEnabled } = useIsUsersHomepageDeletionEnabled();
+  const [isUsersHomepageDeletionEnabled] = useIsUsersHomepageDeletionEnabled();
   const [currentPagePath] = useCurrentPagePath();
 
   const isUsersHomepage = currentPagePath == null ? false : pagePathUtils.isUsersHomepage(currentPagePath);

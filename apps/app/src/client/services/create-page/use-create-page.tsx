@@ -7,7 +7,7 @@ import { exist, getIsNonUserRelatedGroupsGranted } from '~/client/services/page-
 import { toastWarning } from '~/client/util/toastr';
 import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
 import { useCurrentPagePath } from '~/states/page';
-import { EditorMode, useEditorMode } from '~/stores-universal/ui';
+import { useEditorMode, EditorMode } from '~/states/ui/editor';
 import { useGrantedGroupsInheritanceSelectModal } from '~/stores/modal';
 import { useIsUntitledPage } from '~/stores/ui';
 
@@ -51,7 +51,7 @@ export const useCreatePage: UseCreatePage = () => {
   const { t } = useTranslation();
 
   const [currentPagePath] = useCurrentPagePath();
-  const { mutate: mutateEditorMode } = useEditorMode();
+  const { setEditorMode } = useEditorMode();
   const { mutate: mutateIsUntitledPage } = useIsUntitledPage();
   const { open: openGrantedGroupsInheritanceSelectModal, close: closeGrantedGroupsInheritanceSelectModal } = useGrantedGroupsInheritanceSelectModal();
 
@@ -77,7 +77,7 @@ export const useCreatePage: UseCreatePage = () => {
             if (pagePath !== currentPagePath) {
               await router.push(`${pagePath}#edit`);
             }
-            mutateEditorMode(EditorMode.Editor);
+            setEditorMode(EditorMode.Editor);
           }
           else {
             toastWarning(t('duplicated_page_alert.same_page_name_exists', { pageName: pagePath }));
@@ -106,7 +106,7 @@ export const useCreatePage: UseCreatePage = () => {
 
         if (!skipTransition) {
           await router.push(`/${response.page._id}#edit`);
-          mutateEditorMode(EditorMode.Editor);
+          setEditorMode(EditorMode.Editor);
         }
 
         if (params.path == null) {
@@ -135,7 +135,7 @@ export const useCreatePage: UseCreatePage = () => {
     }
 
     await _create();
-  }, [currentPagePath, mutateEditorMode, router, t, closeGrantedGroupsInheritanceSelectModal, mutateIsUntitledPage, openGrantedGroupsInheritanceSelectModal]);
+  }, [currentPagePath, setEditorMode, router, t, closeGrantedGroupsInheritanceSelectModal, mutateIsUntitledPage, openGrantedGroupsInheritanceSelectModal]);
 
   return {
     isCreating,

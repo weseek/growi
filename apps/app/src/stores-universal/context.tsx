@@ -6,7 +6,7 @@ import type { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import type { SupportedActionType } from '~/interfaces/activity';
-import { useIsUploadEnabled, useIsUploadAllFileAllowed } from '~/states/server-configurations/server-configurations';
+import { useIsUploadEnabled, useIsUploadAllFileAllowed } from '~/states/server-configurations';
 
 import { useContextSWR } from './use-context-swr';
 

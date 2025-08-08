@@ -3,7 +3,7 @@ import React, { type JSX } from 'react';
 import { useTranslation } from 'next-i18next';
 
 import { useIsReadOnlyUser } from '~/states/context';
-import { useIsRomUserAllowedToComment } from '~/stores-universal/context';
+import { useIsRomUserAllowedToComment } from '~/states/server-configurations';
 
 import { NotAvailable } from './NotAvailable';
 
@@ -34,7 +34,7 @@ export const NotAvailableIfReadOnlyUserNotAllowedToComment: React.FC<{
   const { t } = useTranslation();
   const [isReadOnlyUser] = useIsReadOnlyUser();
 
-  const { data: isRomUserAllowedToComment } = useIsRomUserAllowedToComment();
+  const [isRomUserAllowedToComment] = useIsRomUserAllowedToComment();
 
   const isDisabled = !!isReadOnlyUser && !isRomUserAllowedToComment;
   const title = t('page_comment.comment_management_is_not_allowed');

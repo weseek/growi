@@ -14,7 +14,7 @@ import type { OnDeletedFunction } from '~/interfaces/ui';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
 import {
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
-} from '~/stores-universal/context';
+} from '~/states/server-configurations';
 import { usePageDeleteModal } from '~/stores/modal';
 import { mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 
@@ -68,8 +68,8 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
 
   const [isGuestUser] = useIsGuestUser();
   const [isReadOnlyUser] = useIsReadOnlyUser();
-  const { data: isSearchServiceConfigured } = useIsSearchServiceConfigured();
-  const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
+  const [isSearchServiceConfigured] = useIsSearchServiceConfigured();
+  const [isSearchServiceReachable] = useIsSearchServiceReachable();
 
   const [selectedPageIdsByCheckboxes] = useState<Set<string>>(new Set());
   // const [allPageIds] = useState<Set<string>>(new Set());

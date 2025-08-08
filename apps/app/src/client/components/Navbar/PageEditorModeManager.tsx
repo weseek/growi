@@ -9,7 +9,7 @@ import { useTranslation } from 'next-i18next';
 import { useCreatePage } from '~/client/services/create-page';
 import { toastError } from '~/client/util/toastr';
 import { usePageNotFound } from '~/states/page';
-import { EditorMode, useEditorMode } from '~/stores-universal/ui';
+import { useEditorMode, EditorMode } from '~/states/ui/editor';
 import { useIsDeviceLargerThanMd } from '~/stores/ui';
 import { useCurrentPageYjsData } from '~/stores/yjs';
 
@@ -67,7 +67,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
   const { t } = useTranslation('commons');
 
   const [isNotFound] = usePageNotFound();
-  const { mutate: mutateEditorMode } = useEditorMode();
+  const { setEditorMode } = useEditorMode();
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
   const { data: currentPageYjsData } = useCurrentPageYjsData();
 
@@ -75,7 +75,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
 
   const editButtonClickedHandler = useCallback(async() => {
     if (isNotFound == null || isNotFound === false) {
-      mutateEditorMode(EditorMode.Editor);
+      setEditorMode(EditorMode.Editor);
       return;
     }
 
@@ -90,7 +90,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
     catch (err) {
       toastError(t('toaster.create_failed', { target: path }));
     }
-  }, [create, isNotFound, mutateEditorMode, path, t]);
+  }, [create, isNotFound, setEditorMode, path, t]);
 
   const _isBtnDisabled = isCreating || isBtnDisabled;
 
@@ -118,7 +118,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
             currentEditorMode={editorMode}
             editorMode={EditorMode.View}
             isBtnDisabled={_isBtnDisabled}
-            onClick={() => mutateEditorMode(EditorMode.View)}
+            onClick={() => setEditorMode(EditorMode.View)}
           >
             <span className="material-symbols-outlined fs-4">play_arrow</span>{t('View')}
           </PageEditorModeButton>
