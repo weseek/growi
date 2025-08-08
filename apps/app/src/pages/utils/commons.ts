@@ -5,6 +5,7 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { getGrowiVersion } from '~/utils/growi-version';
 
 export type CommonInitialProps = {
+  isNextjsRoutingTypeInitial: true,
   appTitle: string,
   siteUrl: string | undefined,
   confidential: string,
@@ -27,6 +28,7 @@ export const getServerSideCommonInitialProps: GetServerSideProps<CommonInitialPr
 
   return {
     props: {
+      isNextjsRoutingTypeInitial: true,
       appTitle: appService.getAppTitle(),
       siteUrl: configManager.getConfig('app:siteUrl'), // DON'T USE growiInfoService.getSiteUrl()
       confidential: appService.getAppConfidential() || '',

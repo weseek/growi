@@ -113,7 +113,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 };
 
 const isInitialProps = (props: Props): props is (InitialProps & SameRouteEachProps) => {
-  return props.nextjsRoutingPage === NextjsRoutingType.INITIAL;
+  return 'isNextjsRoutingTypeInitial' in props && props.isNextjsRoutingTypeInitial;
 };
 
 const Page: NextPageWithLayout<Props> = (props: Props) => {
