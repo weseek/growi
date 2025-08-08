@@ -2,70 +2,21 @@ import type { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { addActivity } from '~/pages/utils/activity';
-import { getServerSideCommonInitialProps } from '~/pages/utils/commons';
 import type { PageTitleCustomizationProps } from '~/pages/utils/page-title-customization';
 import { getServerSidePageTitleCustomizationProps } from '~/pages/utils/page-title-customization';
 import { getServerSideSSRProps } from '~/pages/utils/ssr';
-import { getServerSideUserUISettingsProps } from '~/pages/utils/user-ui-settings';
 
-import { getServerSideConfigurationProps } from './configuration-props';
-import { injectPageDataForInitial, injectSameRoutePageData } from './page-data-injectors';
+import {
+  NEXT_JS_ROUTING_PAGE,
+  collectProps,
+  createNextI18NextConfig,
+  handleUserAndRedirects,
+  handlePageDataResult,
+} from './common-helpers';
+import { getPageDataForInitial, getPageDataForSameRoute } from './page-data-props';
 import type { InitialProps, SameRouteEachProps } from './types';
 import { getAction } from './utils';
 
-const NEXT_JS_ROUTING_PAGE = '[[...path]]';
-
-// Private helper function to create i18n config
-async function createNextI18NextConfig(context: GetServerSidePropsContext, namespacesRequired?: string[]) {
-  const { serverSideTranslations } = await import('next-i18next/serverSideTranslations');
-  const lang = 'en_US';
-  const namespaces = ['commons', ...(namespacesRequired ?? ['translation'])];
-  return serverSideTranslations(lang, namespaces);
-}
-
-// Common props collection helper
-async function collectProps(context: GetServerSidePropsContext) {
-  const propResults = await Promise.all([
-    getServerSideCommonInitialProps(context),
-    getServerSidePageTitleCustomizationProps(context),
-    getServerSideUserUISettingsProps(context),
-    getServerSideConfigurationProps(context),
-  ]);
-
-  // Validate all results have props
-  if (propResults.some(result => !('props' in result))) {
-    throw new Error('invalid getSSP result');
-  }
-
-  return propResults.reduce((acc, result) => ({
-    ...acc,
-    ...('props' in result ? result.props : {}),
-  }), {});
-}
-
-// Common user and redirect handling
-function handleUserAndRedirects(context: GetServerSidePropsContext, props: Record<string, unknown>) {
-  const req = context.req as CrowiRequest;
-  const { user } = req;
-
-  // Add current user if exists
-  if (user != null) {
-    props.currentUser = user.toObject();
-  }
-
-  // Check for redirect destination
-  const redirectDestination = props.redirectDestination;
-  if (typeof redirectDestination === 'string') {
-    return {
-      redirect: {
-        permanent: false,
-        destination: redirectDestination,
-      },
-    };
-  }
-
-  return null;
-}
 export async function getServerSidePropsForInitial(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<InitialProps & SameRouteEachProps>> {
   // Collect all required props
   const collectedProps = await collectProps(context);
@@ -76,32 +27,36 @@ export async function getServerSidePropsForInitial(context: GetServerSidePropsCo
     isNotFound: false,
     isForbidden: false,
     isNotCreatable: false,
-    isIdenticalPathPage: false, // Will be set by injectPageDataForInitial
+    isIdenticalPathPage: false,
   } as InitialProps & SameRouteEachProps;
 
   // Handle user and redirects
   const redirectResult = handleUserAndRedirects(context, props);
   if (redirectResult) return redirectResult;
 
-  // Inject page data - now handles isIdenticalPathPage internally
-  await injectPageDataForInitial(context, props);
+  // Get page data
+  const pageDataResult = await getPageDataForInitial(context);
+  const handleResult = handlePageDataResult(pageDataResult, props);
+  if ('earlyReturn' in handleResult) return handleResult.earlyReturn as GetServerSidePropsResult<InitialProps & SameRouteEachProps>;
+
+  // Use merged props from page data
+  const mergedProps = handleResult.mergedProps as InitialProps & SameRouteEachProps;
 
   // Handle SSR configuration
-  if (props.pageWithMeta?.data != null) {
-    const ssrPropsResult = await getServerSideSSRProps(context, props.pageWithMeta.data, ['translation']);
+  if (mergedProps.pageWithMeta?.data != null) {
+    const ssrPropsResult = await getServerSideSSRProps(context, mergedProps.pageWithMeta.data, ['translation']);
     if ('props' in ssrPropsResult) {
-      Object.assign(props, ssrPropsResult.props);
+      Object.assign(mergedProps, ssrPropsResult.props);
     }
   }
   else {
-    props.skipSSR = true;
+    mergedProps.skipSSR = true;
     const nextI18NextConfig = await createNextI18NextConfig(context, ['translation']);
-    props._nextI18Next = nextI18NextConfig._nextI18Next;
+    mergedProps._nextI18Next = nextI18NextConfig._nextI18Next;
   }
 
-  await addActivity(context, getAction(props));
-
-  return { props };
+  await addActivity(context, getAction(mergedProps));
+  return { props: mergedProps };
 }
 
 export async function getServerSidePropsForSameRoute(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<SameRouteEachProps>> {
@@ -121,7 +76,7 @@ export async function getServerSidePropsForSameRoute(context: GetServerSideProps
     nextjsRoutingPage: NEXT_JS_ROUTING_PAGE,
     csrfToken: req.csrfToken?.() ?? '',
     isMaintenanceMode: req.crowi.configManager.getConfig('app:isMaintenanceMode'),
-    isIdenticalPathPage: false, // Will be set by injectSameRoutePageData
+    isIdenticalPathPage: false,
   };
 
   // Handle user
@@ -130,8 +85,13 @@ export async function getServerSidePropsForSameRoute(context: GetServerSideProps
     props.currentUser = user.toObject();
   }
 
-  // Page data injection - now handles isIdenticalPathPage internally
-  await injectSameRoutePageData(context, props);
+  // Page data retrieval
+  const sameRouteDataResult = await getPageDataForSameRoute(context);
+  const handleResult = handlePageDataResult(sameRouteDataResult, props);
+  if ('earlyReturn' in handleResult) return handleResult.earlyReturn as GetServerSidePropsResult<SameRouteEachProps>;
 
-  return { props };
+  // Use merged props from same route data
+  const mergedProps = handleResult.mergedProps as SameRouteEachProps;
+
+  return { props: mergedProps };
 }
