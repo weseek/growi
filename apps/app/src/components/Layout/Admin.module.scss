@@ -235,11 +235,13 @@ $slack-work-space-name-card-border: #efc1f6;
     .jump-page-input {
       width: 50px;
     }
-    .table-user-list {
-      max-width: 50px;
-    }
 
   }
+
+  .table-bordered {
+      table-layout: fixed;
+    }
+
 
   .settings-table {
 
@@ -255,20 +257,6 @@ $slack-work-space-name-card-border: #efc1f6;
       background-color: rgba($info, 0.1);
     }
   }
-
-    .table {
-      table-layout: fixed;
-    }
-
-    .table-default {
-      table-layout: fixed;
-    }
-
-    .table-bordered {
-      table-layout: fixed;
-    }
-
-
 
 
 
