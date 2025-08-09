@@ -190,22 +190,6 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
 
   const { t } = useTranslation();
 
-  // SelectedPages will include subordinate pages by default
-  // const pagesWithGlobPath = useMemo(() => {
-  //   return pages.map((page) => {
-  //     if (page.path === '/') {
-  //       page.path = '/*';
-  //     }
-
-  //     if (!page.path.endsWith('/*')) {
-  //       page.path = `${page.path}/*`;
-  //     }
-
-  //     return page;
-  //   });
-  // }, [pages]);
-
-
   if (pages.length === 0) {
     return (
       <div className={moduleClass}>
