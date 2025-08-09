@@ -5,19 +5,17 @@
     .page-path {
       display: inline-block;
       max-width: 100%;
-      padding: 0.25rem 0.5rem;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       vertical-align: middle;
+      border: 2px solid transparent;
     }
 
     .page-path-editable {
       cursor: pointer;
-      border: 2px solid transparent;
-
       &:hover {
-        border-color: var(--bs-border-color);
+        border-color: var(--bs-primary-border-subtle);
       }
     }
 
