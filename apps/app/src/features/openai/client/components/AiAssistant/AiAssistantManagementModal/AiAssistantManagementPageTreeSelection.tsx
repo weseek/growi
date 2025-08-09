@@ -96,20 +96,17 @@ export const AiAssistantManagementPageTreeSelection = (props: Props): JSX.Elemen
     selectedPages, addPage, removePage,
   } = useSelectedPages(baseSelectedPages);
 
-  // SelectedPages will include subordinate pages by default
-  const pagesWithGlobPath = useMemo(() => {
-    return Array.from(selectedPages.values()).map((page) => {
-      if (page.path === '/') {
-        page.path = '/*';
-      }
+  const addPageButtonClickHandler = useCallback((page: SelectablePage) => {
+    const pagePathWithGlob = `${page.path}/*`;
+    if (selectedPages.has(pagePathWithGlob)) {
+      return;
+    }
 
-      if (!page.path.endsWith('/*')) {
-        page.path = `${page.path}/*`;
-      }
+    const clonedPage = structuredClone(page);
+    clonedPage.path = pagePathWithGlob;
 
-      return page;
-    });
-  }, [selectedPages]);
+    addPage(clonedPage);
+  }, [addPage, selectedPages]);
 
   const nextButtonClickHandler = useCallback(() => {
     updateBaseSelectedPages(Array.from(selectedPages.values()));
@@ -131,7 +128,7 @@ export const AiAssistantManagementPageTreeSelection = (props: Props): JSX.Elemen
 
         <Suspense fallback={<ItemsTreeContentSkeleton />}>
           <div className="px-4">
-            <SelectablePageTree onClickAddPageButton={addPage} />
+            <SelectablePageTree onClickAddPageButton={addPageButtonClickHandler} />
           </div>
         </Suspense>
 
@@ -143,7 +140,7 @@ export const AiAssistantManagementPageTreeSelection = (props: Props): JSX.Elemen
           <SelectablePagePageList
             method="remove"
             methodButtonPosition="right"
-            pages={pagesWithGlobPath ?? []}
+            pages={Array.from(selectedPages.values())}
             onClickMethodButton={removePage}
           />
           <label className="form-text text-muted mt-2">
