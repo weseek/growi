@@ -1,5 +1,5 @@
 import React, {
-  Suspense, useCallback, memo, useMemo,
+  Suspense, useCallback, memo,
 } from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -62,7 +62,7 @@ const SelectablePageTree = memo((props: { onClickAddPageButton: (page: Selectabl
       <TreeItemLayout
         {...props}
         itemClass={PageTreeItem}
-        className=" text-muted"
+        className="text-muted"
         customHoveredEndComponents={[SelectPageButton]}
       />
     );
@@ -93,7 +93,7 @@ export const AiAssistantManagementPageTreeSelection = (props: Props): JSX.Elemen
   const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
 
   const {
-    selectedPages, addPage, removePage,
+    selectedPages, selectedPagesArray, addPage, removePage,
   } = useSelectedPages(baseSelectedPages);
 
   const addPageButtonClickHandler = useCallback((page: SelectablePage) => {
@@ -140,7 +140,7 @@ export const AiAssistantManagementPageTreeSelection = (props: Props): JSX.Elemen
           <SelectablePagePageList
             method="remove"
             methodButtonPosition="right"
-            pages={Array.from(selectedPages.values())}
+            pages={selectedPagesArray}
             onClickMethodButton={removePage}
           />
           <label className="form-text text-muted mt-2">

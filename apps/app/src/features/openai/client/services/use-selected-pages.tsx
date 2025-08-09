@@ -1,4 +1,6 @@
-import { useState, useCallback, useEffect } from 'react';
+import {
+  useState, useCallback, useEffect, useMemo,
+} from 'react';
 
 import type { SelectablePage } from '../../interfaces/selectable-page';
 import { useAiAssistantManagementModal } from '../stores/ai-assistant';
@@ -6,6 +8,7 @@ import { useAiAssistantManagementModal } from '../stores/ai-assistant';
 
 type UseSelectedPages = {
   selectedPages: Map<string, SelectablePage>,
+  selectedPagesArray: SelectablePage[],
   addPage: (page: SelectablePage) => void,
   removePage: (page: SelectablePage) => void,
 }
@@ -13,6 +16,10 @@ type UseSelectedPages = {
 export const useSelectedPages = (initialPages?: SelectablePage[]): UseSelectedPages => {
   const [selectedPages, setSelectedPages] = useState<Map<string, SelectablePage>>(new Map());
   const { data: aiAssistantManagementModalData } = useAiAssistantManagementModal();
+
+  const selectedPagesArray = useMemo(() => {
+    return Array.from(selectedPages.values());
+  }, [selectedPages]);
 
   useEffect(() => {
     // Initialize each time PageMode is changed
@@ -47,8 +54,10 @@ export const useSelectedPages = (initialPages?: SelectablePage[]): UseSelectedPa
     });
   }, []);
 
+
   return {
     selectedPages,
+    selectedPagesArray,
     addPage,
     removePage,
   };

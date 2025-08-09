@@ -45,7 +45,7 @@ export const AiAssistantKeywordSearch = (props: Props): JSX.Element => {
 
   const [selectedSearchKeywords, setSelectedSearchKeywords] = useState<Array<SelectedSearchKeyword>>([]);
   const {
-    selectedPages, addPage, removePage,
+    selectedPages, selectedPagesArray, addPage, removePage,
   } = useSelectedPages(baseSelectedPages);
 
   const joinedSelectedSearchKeywords = useMemo(() => {
@@ -177,7 +177,7 @@ export const AiAssistantKeywordSearch = (props: Props): JSX.Element => {
                 pages={pagesWithGlobPath ?? []}
                 method="add"
                 onClickMethodButton={addPage}
-                disablePagePaths={Array.from(selectedPages.values()).map(page => page.path)}
+                disablePagePaths={selectedPagesArray.map(page => page.path)}
               />
             </div>
           </>
@@ -189,7 +189,7 @@ export const AiAssistantKeywordSearch = (props: Props): JSX.Element => {
 
         <div className="px-4">
           <SelectablePagePageList
-            pages={Array.from(selectedPages.values())}
+            pages={selectedPagesArray}
             method="remove"
             onClickMethodButton={removePage}
           />
