@@ -93,12 +93,13 @@ export const AiAssistantManagementPageTreeSelection = (props: Props): JSX.Elemen
   const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
 
   const {
-    selectedPages, selectedPagesArray, addPage, removePage,
+    selectedPages, selectedPagesRef, selectedPagesArray, addPage, removePage,
   } = useSelectedPages(baseSelectedPages);
+
 
   const addPageButtonClickHandler = useCallback((page: SelectablePage) => {
     const pagePathWithGlob = `${page.path}/*`;
-    if (selectedPages.has(pagePathWithGlob)) {
+    if (selectedPagesRef.current == null || selectedPagesRef.current.has(pagePathWithGlob)) {
       return;
     }
 
@@ -106,7 +107,10 @@ export const AiAssistantManagementPageTreeSelection = (props: Props): JSX.Elemen
     clonedPage.path = pagePathWithGlob;
 
     addPage(clonedPage);
-  }, [addPage, selectedPages]);
+  }, [
+    addPage,
+    selectedPagesRef, // Prevent flickering (use ref to avoid method recreation)
+  ]);
 
   const nextButtonClickHandler = useCallback(() => {
     updateBaseSelectedPages(Array.from(selectedPages.values()));
