@@ -2,6 +2,7 @@ import React, {
   useMemo, memo, useState, useCallback, useRef, useEffect,
 } from 'react';
 
+import { pagePathUtils } from '@growi/core/dist/utils';
 import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'react-i18next';
 import AutosizeInput from 'react-input-autosize';
@@ -119,7 +120,8 @@ const EditablePagePath = memo((props: EditablePagePathProps): JSX.Element => {
   const handleInputKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
 
-      if (disablePagePaths.includes(inputValue)) {
+      if (inputValue === '' || disablePagePaths.includes(inputValue) || !pagePathUtils.isCreatablePage(inputValue)) {
+        handleInputBlur();
         return;
       }
 
