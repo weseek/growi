@@ -103,7 +103,7 @@ export const AiAssistantManagementPageTreeSelection = (props: Props): JSX.Elemen
       return;
     }
 
-    const clonedPage = structuredClone(page);
+    const clonedPage = {...page };
     clonedPage.path = pagePathWithGlob;
 
     addPage(clonedPage);
