@@ -1,9 +1,11 @@
 import { addSeconds } from 'date-fns/addSeconds';
 import mongoose from 'mongoose';
 
-import { PageActionStage, PageActionType } from '../../../src/interfaces/page-operation';
+import {
+  PageActionStage,
+  PageActionType,
+} from '../../../src/interfaces/page-operation';
 import { getInstance } from '../setup-crowi';
-
 
 describe('Test page service methods', () => {
   let crowi;
@@ -32,7 +34,7 @@ describe('Test page service methods', () => {
   let pageOpId5;
   let pageOpId6;
 
-  beforeAll(async() => {
+  beforeAll(async () => {
     crowi = await getInstance();
     await crowi.configManager.updateConfig('app:isV5Compatible', true);
 
@@ -61,7 +63,6 @@ describe('Test page service methods', () => {
     globalGroupUser3 = await User.findOne({ username: 'gGroupUser3' });
     // page
     rootPage = await Page.findOne({ path: '/' });
-
 
     /**
      * pages
@@ -470,17 +471,26 @@ describe('Test page service methods', () => {
   });
 
   describe('restart renameOperation', () => {
-    const resumeRenameSubOperation = async(renamePage, pageOp, activity?) => {
-      const mockedPathsAndDescendantCountOfAncestors = jest.spyOn(crowi.pageService, 'fixPathsAndDescendantCountOfAncestors').mockReturnValue(null);
-      await crowi.pageService.resumeRenameSubOperation(renamePage, pageOp, activity);
+    const resumeRenameSubOperation = async (renamePage, pageOp, activity?) => {
+      const mockedPathsAndDescendantCountOfAncestors = jest
+        .spyOn(crowi.pageService, 'fixPathsAndDescendantCountOfAncestors')
+        .mockReturnValue(null);
+      await crowi.pageService.resumeRenameSubOperation(
+        renamePage,
+        pageOp,
+        activity,
+      );
 
-      const argsForRenameSubOperation = mockedPathsAndDescendantCountOfAncestors.mock.calls[0];
+      const argsForRenameSubOperation =
+        mockedPathsAndDescendantCountOfAncestors.mock.calls[0];
 
       mockedPathsAndDescendantCountOfAncestors.mockRestore();
-      await crowi.pageService.fixPathsAndDescendantCountOfAncestors(...argsForRenameSubOperation);
+      await crowi.pageService.fixPathsAndDescendantCountOfAncestors(
+        ...argsForRenameSubOperation,
+      );
     };
 
-    test('it should successfully restart rename operation', async() => {
+    test('it should successfully restart rename operation', async () => {
       // paths before renaming
       const _path0 = '/resume_rename_0'; // out of renaming scope
       const _path1 = '/resume_rename_0/resume_rename_1'; // renamed already
@@ -491,7 +501,8 @@ describe('Test page service methods', () => {
       const path0 = '/resume_rename_0';
       const path1 = '/resume_rename_0/resume_rename_1';
       const path2 = '/resume_rename_0/resume_rename_1/resume_rename_2';
-      const path3 = '/resume_rename_0/resume_rename_1/resume_rename_2/resume_rename_3';
+      const path3 =
+        '/resume_rename_0/resume_rename_1/resume_rename_2/resume_rename_3';
 
       // activity options
       const activity = 'randomActivityId';
@@ -515,7 +526,12 @@ describe('Test page service methods', () => {
       const fromPath = '/resume_rename_1';
       const toPath = '/resume_rename_0/resume_rename_1';
       const _pageOperation = await PageOperation.findOne({
-        _id: pageOpId1, fromPath, toPath, 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
+        _id: pageOpId1,
+        fromPath,
+        toPath,
+        'page._id': _page1._id,
+        actionType: PageActionType.Rename,
+        actionStage: PageActionStage.Sub,
       });
       expect(_pageOperation).toBeTruthy();
 
@@ -546,7 +562,7 @@ describe('Test page service methods', () => {
       expect(page2.descendantCount).toBe(1);
       expect(page3.descendantCount).toBe(0);
     });
-    test('it should successfully restart rename operation when unprocessableExpiryDate is null', async() => {
+    test('it should successfully restart rename operation when unprocessableExpiryDate is null', async () => {
       // paths before renaming
       const _path0 = '/resume_rename_8'; // out of renaming scope
       const _path1 = '/resume_rename_8/resume_rename_9'; // renamed already
@@ -580,12 +596,21 @@ describe('Test page service methods', () => {
       const fromPath = '/resume_rename_9';
       const toPath = '/resume_rename_8/resume_rename_9';
       const _pageOperation = await PageOperation.findOne({
-        _id: pageOpId4, fromPath, toPath, 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
+        _id: pageOpId4,
+        fromPath,
+        toPath,
+        'page._id': _page1._id,
+        actionType: PageActionType.Rename,
+        actionStage: PageActionStage.Sub,
       });
       expect(_pageOperation).toBeTruthy();
 
       // rename
-      await resumeRenameSubOperation(_page1, _pageOperation, activityParameters);
+      await resumeRenameSubOperation(
+        _page1,
+        _pageOperation,
+        activityParameters,
+      );
 
       // page
       const page0 = await Page.findById(_page0._id);
@@ -610,7 +635,7 @@ describe('Test page service methods', () => {
       expect(page1.descendantCount).toBe(1);
       expect(page2.descendantCount).toBe(0);
     });
-    test('it should fail and throw error if the current time is behind unprocessableExpiryDate', async() => {
+    test('it should fail and throw error if the current time is behind unprocessableExpiryDate', async () => {
       // path before renaming
       const _path0 = '/resume_rename_4'; // out of renaming scope
       const _path1 = '/resume_rename_4/resume_rename_5'; // renamed already
@@ -627,21 +652,34 @@ describe('Test page service methods', () => {
       const fromPath = '/resume_rename_5';
       const toPath = '/resume_rename_4/resume_rename_5';
       const _pageOperation = await PageOperation.findOne({
-        _id: pageOpId2, fromPath, toPath, 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
+        _id: pageOpId2,
+        fromPath,
+        toPath,
+        'page._id': _page1._id,
+        actionType: PageActionType.Rename,
+        actionStage: PageActionStage.Sub,
       });
       expect(_pageOperation).toBeTruthy();
 
       // Make `unprocessableExpiryDate` 15 seconds ahead of current time.
       // The number 15 seconds has no meaning other than placing time in the furue.
-      const pageOperation = await PageOperation.findByIdAndUpdate(_pageOperation._id, { unprocessableExpiryDate: addSeconds(new Date(), 15) }, { new: true });
+      const pageOperation = await PageOperation.findByIdAndUpdate(
+        _pageOperation._id,
+        { unprocessableExpiryDate: addSeconds(new Date(), 15) },
+        { new: true },
+      );
       expect(pageOperation).toBeTruthy();
 
-      await expect(resumeRenameSubOperation(_page1, pageOperation)).rejects.toThrow(new Error('This page operation is currently being processed'));
+      await expect(
+        resumeRenameSubOperation(_page1, pageOperation),
+      ).rejects.toThrow(
+        new Error('This page operation is currently being processed'),
+      );
 
       // cleanup
       await PageOperation.findByIdAndDelete(pageOperation._id);
     });
-    test('Missing property(toPath) for PageOperation should throw error', async() => {
+    test('Missing property(toPath) for PageOperation should throw error', async () => {
       // page
       const _path1 = '/resume_rename_7';
       const _page1 = await Page.findOne({ path: _path1 });
@@ -649,23 +687,31 @@ describe('Test page service methods', () => {
 
       // page operation
       const pageOperation = await PageOperation.findOne({
-        _id: pageOpId3, 'page._id': _page1._id, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
+        _id: pageOpId3,
+        'page._id': _page1._id,
+        actionType: PageActionType.Rename,
+        actionStage: PageActionStage.Sub,
       });
       expect(pageOperation).toBeTruthy();
 
       const promise = resumeRenameSubOperation(_page1, pageOperation);
-      await expect(promise).rejects.toThrow(new Error(`Property toPath is missing which is needed to resume rename operation(${pageOperation._id})`));
+      await expect(promise).rejects.toThrow(
+        new Error(
+          `Property toPath is missing which is needed to resume rename operation(${pageOperation._id})`,
+        ),
+      );
 
       // cleanup
       await PageOperation.findByIdAndDelete(pageOperation._id);
     });
   });
   describe('updateDescendantCountOfPagesWithPaths', () => {
-    test('should fix descendantCount of pages with one of the given paths', async() => {
+    test('should fix descendantCount of pages with one of the given paths', async () => {
       // path
       const _path1 = '/fix_descendantCount_1';
       const _path2 = '/fix_descendantCount_1/fix_descendantCount_2'; // empty
-      const _path3 = '/fix_descendantCount_1/fix_descendantCount_2/fix_descendantCount_3';
+      const _path3 =
+        '/fix_descendantCount_1/fix_descendantCount_2/fix_descendantCount_3';
       const _path4 = '/fix_descendantCount_4';
       const _path5 = '/fix_descendantCount_4/fix_descendantCount_5';
       // page
@@ -699,7 +745,13 @@ describe('Test page service methods', () => {
       expect(_page4.parent).toStrictEqual(rootPage._id);
       expect(_page5.parent).toStrictEqual(_page4._id);
 
-      await crowi.pageService.updateDescendantCountOfPagesWithPaths([_path1, _path2, _path3, _path4, _path5]);
+      await crowi.pageService.updateDescendantCountOfPagesWithPaths([
+        _path1,
+        _path2,
+        _path3,
+        _path4,
+        _path5,
+      ]);
 
       // page
       const page1 = await Page.findById(_page1._id);
