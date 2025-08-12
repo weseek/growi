@@ -2,6 +2,7 @@ import React, { useCallback, type JSX } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { ModalBody } from 'reactstrap';
+import SimpleBar from 'simplebar-react';
 
 import { useLimitLearnablePageCountPerAssistant } from '~/stores-universal/context';
 
@@ -42,12 +43,15 @@ export const AiAssistantManagementEditPages = (props: Props): JSX.Element => {
             <PageSelectionMethodButtons />
           </div>
 
-          <SelectablePagePageList
-            method="delete"
-            methodButtonPosition="right"
-            pages={selectedPages}
-            onClickMethodButton={removePageHandler}
-          />
+          <SimpleBar style={{ maxHeight: '300px' }}>
+            <SelectablePagePageList
+              isEditable
+              method="delete"
+              methodButtonPosition="right"
+              pages={selectedPages}
+              onClickMethodButton={removePageHandler}
+            />
+          </SimpleBar>
         </div>
       </ModalBody>
     </>

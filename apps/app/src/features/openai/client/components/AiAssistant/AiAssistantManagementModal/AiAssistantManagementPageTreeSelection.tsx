@@ -1,11 +1,12 @@
 import React, {
-  Suspense, useCallback, memo, useMemo,
+  Suspense, useCallback, memo,
 } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
   ModalBody,
 } from 'reactstrap';
+import SimpleBar from 'simplebar-react';
 
 import { ItemsTree } from '~/client/components/ItemsTree';
 import ItemsTreeContentSkeleton from '~/client/components/ItemsTree/ItemsTreeContentSkeleton';
@@ -62,7 +63,7 @@ const SelectablePageTree = memo((props: { onClickAddPageButton: (page: Selectabl
       <TreeItemLayout
         {...props}
         itemClass={PageTreeItem}
-        className=" text-muted"
+        className="text-muted"
         customHoveredEndComponents={[SelectPageButton]}
       />
     );
@@ -93,23 +94,24 @@ export const AiAssistantManagementPageTreeSelection = (props: Props): JSX.Elemen
   const isNewAiAssistant = aiAssistantManagementModalData?.aiAssistantData == null;
 
   const {
-    selectedPages, addPage, removePage,
+    selectedPages, selectedPagesRef, selectedPagesArray, addPage, removePage,
   } = useSelectedPages(baseSelectedPages);
 
-  // SelectedPages will include subordinate pages by default
-  const pagesWithGlobPath = useMemo(() => {
-    return Array.from(selectedPages.values()).map((page) => {
-      if (page.path === '/') {
-        page.path = '/*';
-      }
 
-      if (!page.path.endsWith('/*')) {
-        page.path = `${page.path}/*`;
-      }
+  const addPageButtonClickHandler = useCallback((page: SelectablePage) => {
+    const pagePathWithGlob = `${page.path}/*`;
+    if (selectedPagesRef.current == null || selectedPagesRef.current.has(pagePathWithGlob)) {
+      return;
+    }
 
-      return page;
-    });
-  }, [selectedPages]);
+    const clonedPage = { ...page };
+    clonedPage.path = pagePathWithGlob;
+
+    addPage(clonedPage);
+  }, [
+    addPage,
+    selectedPagesRef, // Prevent flickering (use ref to avoid method recreation)
+  ]);
 
   const nextButtonClickHandler = useCallback(() => {
     updateBaseSelectedPages(Array.from(selectedPages.values()));
@@ -131,7 +133,7 @@ export const AiAssistantManagementPageTreeSelection = (props: Props): JSX.Elemen
 
         <Suspense fallback={<ItemsTreeContentSkeleton />}>
           <div className="px-4">
-            <SelectablePageTree onClickAddPageButton={addPage} />
+            <SelectablePageTree onClickAddPageButton={addPageButtonClickHandler} />
           </div>
         </Suspense>
 
@@ -140,12 +142,14 @@ export const AiAssistantManagementPageTreeSelection = (props: Props): JSX.Elemen
         </h4>
 
         <div className="px-4">
-          <SelectablePagePageList
-            method="remove"
-            methodButtonPosition="right"
-            pages={pagesWithGlobPath ?? []}
-            onClickMethodButton={removePage}
-          />
+          <SimpleBar className="page-list-container" style={{ maxHeight: '300px' }}>
+            <SelectablePagePageList
+              method="remove"
+              methodButtonPosition="right"
+              pages={selectedPagesArray}
+              onClickMethodButton={removePage}
+            />
+          </SimpleBar>
           <label className="form-text text-muted mt-2">
             {t('modal_ai_assistant.can_add_later')}
           </label>
