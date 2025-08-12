@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { isClient } from '@growi/core/dist/utils';
-import { isPermalink } from '@growi/core/dist/utils/page-path-utils';
+import { isCreatablePage, isPermalink } from '@growi/core/dist/utils/page-path-utils';
 import { removeHeadingSlash } from '@growi/core/dist/utils/path-utils';
 import { useAtomCallback } from 'jotai/utils';
 
@@ -97,8 +97,7 @@ export const useFetchCurrentPage = (): {
 
           // Determine if page is creatable
           if (currentPath) {
-            const { pagePathUtils } = await import('@growi/core/dist/utils');
-            set(pageNotCreatableAtom, !pagePathUtils.isCreatablePage(currentPath));
+            set(pageNotCreatableAtom, !isCreatablePage(currentPath));
           }
           return null;
         }
