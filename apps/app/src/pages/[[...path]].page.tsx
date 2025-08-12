@@ -31,6 +31,7 @@ import {
   useDisableLinkSharing,
   useRendererConfig,
 } from '~/states/server-configurations';
+import { useHydrateServerConfigurationAtoms } from '~/states/server-configurations/hydrate';
 import {
   useIsSharedUser,
   useIsSearchPage,
@@ -231,9 +232,11 @@ type LayoutProps = Props & {
 
 const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
   // Hydrate sidebar atoms with server-side data - must be called unconditionally
-  const sidebarConfig = isInitialProps(props) ? props.sidebarConfig : undefined;
-  const userUISettings = isInitialProps(props) ? props.userUISettings : undefined;
+  const initialProps = isInitialProps(props) ? props : undefined;
+  const sidebarConfig = initialProps?.sidebarConfig;
+  const userUISettings = initialProps?.userUISettings;
   useHydrateSidebarAtoms(sidebarConfig, userUISettings);
+  useHydrateServerConfigurationAtoms(initialProps);
 
   return <BasicLayoutWithEditor>{children}</BasicLayoutWithEditor>;
 };

@@ -67,9 +67,9 @@ export type ServerConfigurationInitialProps = {
  *
  * @param serverConfigProps - Server-side server configuration properties
  */
-export const useHydrateServerConfigurationAtoms = (serverConfigProps: ServerConfigurationInitialProps): void => {
+export const useHydrateServerConfigurationAtoms = (serverConfigProps: ServerConfigurationInitialProps | undefined): void => {
   // Hydrate server configuration atoms with server-side data
-  useHydrateAtoms([
+  useHydrateAtoms(serverConfigProps == null ? [] : [
     [aiEnabledAtom, serverConfigProps.aiEnabled],
     [limitLearnablePageCountPerAssistantAtom, serverConfigProps.limitLearnablePageCountPerAssistant],
     [isUsersHomepageDeletionEnabledAtom, serverConfigProps.isUsersHomepageDeletionEnabled],
