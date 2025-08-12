@@ -234,19 +234,11 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
               methodButtonPosition={methodButtonPosition}
             />
 
-            { !page.edited  && (
-              <span className={`badge bg-body-secondary rounded-pill ${methodButtonPosition === 'left' ? 'me-2' : ''}`}>
-                <span className="text-body-tertiary">
-                  {page.descendantCount}
-                </span>
-              </span>
-            )}
-
-            {/* <span className={`badge bg-body-secondary rounded-pill ${methodButtonPosition === 'left' ? 'me-2' : ''}`}>
+            <span className={`badge bg-body-secondary rounded-pill ${methodButtonPosition === 'left' ? 'me-2' : ''}`}>
               <span className="text-body-tertiary">
                 {page.descendantCount}
               </span>
-            </span> */}
+            </span>
 
             {methodButtonPosition === 'right'
               && (
