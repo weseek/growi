@@ -47,7 +47,10 @@ describe('PageService page operations with only public pages', () => {
   let ShareLink: ShareLinkModel;
   let PageRedirect: PageRedirectModel;
   let PageOperation: PageOperationModel;
-  let generalXssFilterProcessSpy;
+  let generalXssFilterProcessSpy: jest.SpyInstance<
+    string,
+    [string | undefined]
+  >;
 
   let rootPage: PageDocument;
 

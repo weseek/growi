@@ -45,7 +45,10 @@ describe('PageService page operations with non-public pages', () => {
   let Revision: IRevisionModel;
   // biome-ignore lint/suspicious/noImplicitAnyLet: ignore
   let User;
-  let generalXssFilterProcessSpy;
+  let generalXssFilterProcessSpy: jest.SpyInstance<
+    string,
+    [string | undefined]
+  >;
 
   let rootPage: PageDocument;
 
