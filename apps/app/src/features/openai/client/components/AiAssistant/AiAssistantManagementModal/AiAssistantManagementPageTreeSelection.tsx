@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import {
   ModalBody,
 } from 'reactstrap';
+import SimpleBar from 'simplebar-react';
 
 import { ItemsTree } from '~/client/components/ItemsTree';
 import ItemsTreeContentSkeleton from '~/client/components/ItemsTree/ItemsTreeContentSkeleton';
@@ -141,12 +142,14 @@ export const AiAssistantManagementPageTreeSelection = (props: Props): JSX.Elemen
         </h4>
 
         <div className="px-4">
-          <SelectablePagePageList
-            method="remove"
-            methodButtonPosition="right"
-            pages={selectedPagesArray}
-            onClickMethodButton={removePage}
-          />
+          <SimpleBar className="page-list-container" style={{ maxHeight: '300px' }}>
+            <SelectablePagePageList
+              method="remove"
+              methodButtonPosition="right"
+              pages={selectedPagesArray}
+              onClickMethodButton={removePage}
+            />
+          </SimpleBar>
           <label className="form-text text-muted mt-2">
             {t('modal_ai_assistant.can_add_later')}
           </label>

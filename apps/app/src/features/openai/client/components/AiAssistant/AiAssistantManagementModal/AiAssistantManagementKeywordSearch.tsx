@@ -6,6 +6,7 @@ import type { IPageHasId } from '@growi/core';
 import { isGlobPatternPath } from '@growi/core/dist/utils/page-path-utils';
 import { type TypeaheadRef, Typeahead } from 'react-bootstrap-typeahead';
 import { useTranslation } from 'react-i18next';
+import SimpleBar from 'simplebar-react';
 import {
   ModalBody,
 } from 'reactstrap';
@@ -188,14 +189,17 @@ export const AiAssistantKeywordSearch = (props: Props): JSX.Element => {
         </h4>
 
         <div className="px-4">
-          <SelectablePagePageList
-            pages={selectedPagesArray}
-            method="remove"
-            onClickMethodButton={removePage}
-          />
+          <SimpleBar className="page-list-container" style={{ maxHeight: '300px' }}>
+            <SelectablePagePageList
+              pages={selectedPagesArray}
+              method="remove"
+              onClickMethodButton={removePage}
+            />
+          </SimpleBar>
           <label className="form-text text-muted mt-2">
             {t('modal_ai_assistant.can_add_later')}
           </label>
+
         </div>
 
         <div className="d-flex justify-content-center mt-4">
