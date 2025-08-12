@@ -1,48 +1,108 @@
 import type { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 
-import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { addActivity } from '~/pages/utils/activity';
 import type { PageTitleCustomizationProps } from '~/pages/utils/page-title-customization';
 import { getServerSidePageTitleCustomizationProps } from '~/pages/utils/page-title-customization';
 import { getServerSideSSRProps } from '~/pages/utils/ssr';
+import type { ServerConfigurationInitialProps } from '~/states/server-configurations/hydrate';
+
+import type { CommonInitialProps, CommonEachProps } from '../utils/commons';
+import { getServerSideCommonInitialProps, getServerSideCommonEachProps } from '../utils/commons';
+import type { UserUISettingsProps } from '../utils/user-ui-settings';
+import { getServerSideUserUISettingsProps } from '../utils/user-ui-settings';
 
 import {
   NEXT_JS_ROUTING_PAGE,
-  collectProps,
   createNextI18NextConfig,
-  handleUserAndRedirects,
   handlePageDataResult,
+  mergeGetServerSidePropsResults,
 } from './common-helpers';
+import { getServerSideConfigurationProps } from './configuration-props';
 import { getPageDataForInitial, getPageDataForSameRoute } from './page-data-props';
 import type { InitialProps, SameRouteEachProps } from './types';
+import { isValidInitialAndSameRouteProps, isValidSameRouteProps } from './types';
 import { getAction } from './utils';
 
-export async function getServerSidePropsForInitial(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<InitialProps & SameRouteEachProps>> {
-  // Collect all required props
-  const collectedProps = await collectProps(context);
+// Common props collection helper with improved type safety
+export async function collectCombinedProps(context: GetServerSidePropsContext): Promise<
+  CommonEachProps & CommonInitialProps & PageTitleCustomizationProps & UserUISettingsProps & ServerConfigurationInitialProps
+> {
+  const propResults = await Promise.all([
+    getServerSideCommonEachProps(context),
+    getServerSideCommonInitialProps(context),
+    getServerSidePageTitleCustomizationProps(context),
+    getServerSideUserUISettingsProps(context),
+    getServerSideConfigurationProps(context),
+  ]);
 
-  const props: InitialProps & SameRouteEachProps = {
-    ...collectedProps,
+  // Type-safe merging of GetServerSidePropsResult (5-way merge)
+  const [commonEachResult, commonInitialResult, pageTitleResult, userUIResult, configResult] = propResults;
+
+  // First merge pairs, then combine
+  const firstPairResult = mergeGetServerSidePropsResults(commonEachResult, commonInitialResult);
+  const secondPairResult = mergeGetServerSidePropsResults(pageTitleResult, userUIResult);
+  const thirdPairResult = mergeGetServerSidePropsResults(firstPairResult, secondPairResult);
+  const finalResult = mergeGetServerSidePropsResults(thirdPairResult, configResult);
+
+  // Handle early returns (redirect/notFound)
+  if ('redirect' in finalResult || 'notFound' in finalResult) {
+    throw new Error('Unexpected redirect or notFound in props collection');
+  }
+
+  // Return the merged props
+  return finalResult.props;
+}
+
+// Type-safe helper for creating base props
+type BaseInitialProps = {
+  nextjsRoutingPage: string;
+  isNotFound: boolean;
+  isForbidden: boolean;
+  isNotCreatable: boolean;
+  isIdenticalPathPage: boolean;
+};
+
+export async function getServerSidePropsForInitial(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<InitialProps & SameRouteEachProps>> {
+  // Collect all required props with type safety (includes CommonEachProps now)
+  const collectedProps = await collectCombinedProps(context);
+
+  // Handle redirect destination from common props
+  if (collectedProps.redirectDestination != null) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: collectedProps.redirectDestination,
+      },
+    };
+  }
+
+  const baseProps: BaseInitialProps = {
     nextjsRoutingPage: NEXT_JS_ROUTING_PAGE,
     isNotFound: false,
     isForbidden: false,
     isNotCreatable: false,
     isIdenticalPathPage: false,
-  } as InitialProps & SameRouteEachProps;
+  };
 
-  // Handle user and redirects
-  const redirectResult = handleUserAndRedirects(context, props);
-  if (redirectResult) return redirectResult;
+  // Combine all props in a type-safe manner
+  const initialProps = {
+    ...collectedProps,
+    ...baseProps,
+  };
 
-  // Get page data
+  // Get page data with proper error handling
   const pageDataResult = await getPageDataForInitial(context);
-  const handleResult = handlePageDataResult(pageDataResult, props);
-  if ('earlyReturn' in handleResult) return handleResult.earlyReturn as GetServerSidePropsResult<InitialProps & SameRouteEachProps>;
+  const handleResult = handlePageDataResult(pageDataResult, initialProps);
 
-  // Use merged props from page data
-  const mergedProps = handleResult.mergedProps as InitialProps & SameRouteEachProps;
+  // Check for early return (redirect/notFound)
+  if ('redirect' in handleResult || 'notFound' in handleResult) {
+    return handleResult as GetServerSidePropsResult<InitialProps & SameRouteEachProps>;
+  }
 
-  // Handle SSR configuration
+  // Type assertion to access properties before full validation
+  const mergedProps = handleResult.props as InitialProps & SameRouteEachProps;
+
+  // Handle SSR configuration with type safety BEFORE validation
   if (mergedProps.pageWithMeta?.data != null) {
     const ssrPropsResult = await getServerSideSSRProps(context, mergedProps.pageWithMeta.data, ['translation']);
     if ('props' in ssrPropsResult) {
@@ -55,43 +115,61 @@ export async function getServerSidePropsForInitial(context: GetServerSidePropsCo
     mergedProps._nextI18Next = nextI18NextConfig._nextI18Next;
   }
 
+  // Ensure skipSSR is always defined
+  if (mergedProps.skipSSR === undefined) {
+    mergedProps.skipSSR = false;
+  }
+
+  // Type-safe props validation AFTER skipSSR is properly set
+  if (!isValidInitialAndSameRouteProps(mergedProps)) {
+    throw new Error('Invalid merged props structure');
+  }
+
   await addActivity(context, getAction(mergedProps));
   return { props: mergedProps };
 }
 
 export async function getServerSidePropsForSameRoute(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<SameRouteEachProps>> {
-  // Get minimal props for same-route navigation
-  const pageTitleResult = await getServerSidePageTitleCustomizationProps(context);
-  if (!('props' in pageTitleResult)) {
-    throw new Error('invalid getSSP result');
+  // Get combined props but extract only what's needed for SameRoute
+  const collectedProps = await collectCombinedProps(context);
+
+  // Handle redirect destination from common props
+  if (collectedProps.redirectDestination != null) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: collectedProps.redirectDestination,
+      },
+    };
   }
 
-  const { appTitle, customTitleTemplate } = pageTitleResult.props as PageTitleCustomizationProps;
-  const req = context.req as CrowiRequest;
-
-  const props: SameRouteEachProps = {
-    appTitle,
-    customTitleTemplate,
-    currentPathname: decodeURIComponent(context.resolvedUrl?.split('?')[0] ?? '/'),
+  // Create base props for same route navigation
+  const baseProps: SameRouteEachProps = {
+    currentPathname: collectedProps.currentPathname,
+    currentUser: collectedProps.currentUser,
+    csrfToken: collectedProps.csrfToken,
+    isMaintenanceMode: collectedProps.isMaintenanceMode,
+    redirectDestination: collectedProps.redirectDestination,
+    appTitle: collectedProps.appTitle,
+    customTitleTemplate: collectedProps.customTitleTemplate,
     nextjsRoutingPage: NEXT_JS_ROUTING_PAGE,
-    csrfToken: req.csrfToken?.() ?? '',
-    isMaintenanceMode: req.crowi.configManager.getConfig('app:isMaintenanceMode'),
     isIdenticalPathPage: false,
   };
 
-  // Handle user
-  const { user } = req;
-  if (user != null) {
-    props.currentUser = user.toObject();
+  // Page data retrieval with improved error handling
+  const sameRouteDataResult = await getPageDataForSameRoute(context);
+  const handleResult = handlePageDataResult(sameRouteDataResult, baseProps);
+
+  // Check for early return (redirect/notFound)
+  if ('redirect' in handleResult || 'notFound' in handleResult) {
+    return handleResult as GetServerSidePropsResult<SameRouteEachProps>;
   }
 
-  // Page data retrieval
-  const sameRouteDataResult = await getPageDataForSameRoute(context);
-  const handleResult = handlePageDataResult(sameRouteDataResult, props);
-  if ('earlyReturn' in handleResult) return handleResult.earlyReturn as GetServerSidePropsResult<SameRouteEachProps>;
-
-  // Use merged props from same route data
-  const mergedProps = handleResult.mergedProps as SameRouteEachProps;
+  // Validate the merged props have all required properties
+  if (!isValidSameRouteProps(handleResult.props)) {
+    throw new Error('Invalid same route props structure');
+  }
+  const mergedProps = handleResult.props;
 
   return { props: mergedProps };
 }
