@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import { pathUtils } from '@growi/core/dist/utils';
-import { isCreatablePagePathPattern } from '../../../../utils/is-creatable-page-path-pattern'
+import { isCreatablePagePathPattern } from '../../../../utils/is-creatable-page-path-pattern';
 import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'react-i18next';
 import AutosizeInput from 'react-input-autosize';
