@@ -1004,6 +1004,12 @@ importers:
       swagger2openapi:
         specifier: ^7.0.8
         version: 7.0.8(encoding@0.1.13)
+      unist-util-is:
+        specifier: ^6.0.0
+        version: 6.0.0
+      unist-util-visit-parents:
+        specifier: ^6.0.0
+        version: 6.0.1
 
   apps/pdf-converter:
     dependencies:
