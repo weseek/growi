@@ -1,5 +1,4 @@
 import { GroupType } from '@growi/core';
-// import { isGlobPatternPath, isCreatablePage } from '@growi/core/dist/utils/page-path-utils';
 import { type ValidationChain, body } from 'express-validator';
 import { isCreatablePagePathPattern } from '../../../utils/is-creatable-page-path-pattern'
 
