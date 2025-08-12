@@ -8,8 +8,6 @@ import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'react-i18next';
 import AutosizeInput from 'react-input-autosize';
 
-import { getAdjustedMaxWidthForAutosizeInput } from '~/client/components/Common/SubmittableInput';
-
 import { type SelectablePage } from '../../../../interfaces/selectable-page';
 
 import styles from './SelectablePagePageList.module.scss';
@@ -99,13 +97,6 @@ const EditablePagePath = memo((props: EditablePagePathProps): JSX.Element => {
 
   const isEditing = isEditable && editingPagePath === page.path;
 
-  const maxWidth = useMemo(() => {
-    if (editingContainerRect == null) {
-      return undefined;
-    }
-    return getAdjustedMaxWidthForAutosizeInput(editingContainerRect.width, 'sm', true);
-  }, [editingContainerRect]);
-
   const handlePagePathClick = useCallback((page: SelectablePage) => {
     if (!isEditable || disablePagePaths.includes(page.path)) {
       return;
@@ -159,7 +150,7 @@ const EditablePagePath = memo((props: EditablePagePathProps): JSX.Element => {
             onBlur={handleInputBlur}
             onChange={e => setInputValue(e.target.value)}
             onKeyDown={handleInputKeyDown}
-            inputStyle={{ maxWidth }}
+            inputStyle={{ maxWidth: (editingContainerRect?.width ?? 0) - 10}}
           />
         )
         : (
