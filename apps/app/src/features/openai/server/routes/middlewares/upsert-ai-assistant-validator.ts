@@ -1,6 +1,6 @@
 import { GroupType } from '@growi/core';
 import { type ValidationChain, body } from 'express-validator';
-import { isCreatablePagePathPattern } from '../../../utils/is-creatable-page-path-pattern'
+import { isCreatablePagePathPattern } from '../../../utils/is-creatable-page-path-pattern';
 
 import { AiAssistantShareScope, AiAssistantAccessScope } from '../../../interfaces/ai-assistant';
 
