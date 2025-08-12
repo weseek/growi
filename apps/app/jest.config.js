@@ -40,7 +40,7 @@ module.exports = {
       transform: {
         '^.+\\.(t|j)sx?$': '@swc-node/jest',
       },
-      
+
       rootDir: '.',
       roots: ['<rootDir>'],
       testMatch: ['<rootDir>/test/integration/**/v5.*.test.ts', '<rootDir>/test/integration/**/v5.*.test.js'],
