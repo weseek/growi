@@ -10,6 +10,7 @@ import {
 import ExternalUserGroup from '../../../src/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '../../../src/features/external-user-group/server/models/external-user-group-relation';
 import ExternalUserGroupSyncService from '../../../src/features/external-user-group/server/service/external-user-group-sync';
+import type Crowi from '../../../src/server/crowi';
 import ExternalAccount from '../../../src/server/models/external-account';
 import { configManager } from '../../../src/server/service/config-manager';
 import instanciateExternalAccountService from '../../../src/server/service/external-account';
@@ -224,7 +225,7 @@ const checkSync = async (autoGenerateUserOnGroupSync = true) => {
 };
 
 describe('ExternalUserGroupSyncService.syncExternalUserGroups', () => {
-  let crowi;
+  let crowi: Crowi;
 
   beforeAll(async () => {
     crowi = await getInstance();
@@ -245,18 +246,16 @@ describe('ExternalUserGroupSyncService.syncExternalUserGroups', () => {
   afterEach(async () => {
     await ExternalUserGroup.deleteMany();
     await ExternalUserGroupRelation.deleteMany();
-    await mongoose
-      .model('User')
-      .deleteMany({
-        username: {
-          $in: [
-            'childGroupUser',
-            'parentGroupUser',
-            'grandParentGroupUser',
-            'previouslySyncedGroupUser',
-          ],
-        },
-      });
+    await mongoose.model('User').deleteMany({
+      username: {
+        $in: [
+          'childGroupUser',
+          'parentGroupUser',
+          'grandParentGroupUser',
+          'previouslySyncedGroupUser',
+        ],
+      },
+    });
     await ExternalAccount.deleteMany({
       accountId: {
         $in: [

@@ -1,13 +1,14 @@
 import ldap, { type Client } from 'ldapjs';
 
 import { LdapUserGroupSyncService } from '../../../src/features/external-user-group/server/service/ldap-user-group-sync';
+import type Crowi from '../../../src/server/crowi';
 import { configManager } from '../../../src/server/service/config-manager';
 import { ldapService } from '../../../src/server/service/ldap';
 import PassportService from '../../../src/server/service/passport';
 import { getInstance } from '../setup-crowi';
 
 describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
-  let crowi;
+  let crowi: Crowi;
   let ldapUserGroupSyncService: LdapUserGroupSyncService;
 
   const configParams = {

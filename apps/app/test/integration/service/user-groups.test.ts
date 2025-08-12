@@ -2,6 +2,7 @@ import type { IGrantedGroup } from '@growi/core';
 import { GroupType, getIdForRef, type IPage, PageGrant } from '@growi/core';
 import mongoose from 'mongoose';
 import { PageActionOnGroupDelete } from '../../../src/interfaces/user-group';
+import type Crowi from '../../../src/server/crowi';
 import type { PageDocument, PageModel } from '../../../src/server/models/page';
 import UserGroup from '../../../src/server/models/user-group';
 import UserGroupRelation from '../../../src/server/models/user-group-relation';
@@ -9,7 +10,8 @@ import type { IUserGroupService } from '../../../src/server/service/user-group';
 import { getInstance } from '../setup-crowi';
 
 describe('UserGroupService', () => {
-  let crowi;
+  let crowi: Crowi;
+  // biome-ignore lint/suspicious/noImplicitAnyLet: ignore
   let User;
   let Page: PageModel;
 
@@ -32,6 +34,7 @@ describe('UserGroupService', () => {
   const groupId15 = new mongoose.Types.ObjectId();
 
   const userId1 = new mongoose.Types.ObjectId();
+  // biome-ignore lint/suspicious/noImplicitAnyLet: ignore
   let user1;
 
   const pageId1 = new mongoose.Types.ObjectId();

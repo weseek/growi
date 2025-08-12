@@ -1,11 +1,17 @@
-import { GroupType, PageGrant } from '@growi/core';
+import { GroupType, type IPage, PageGrant } from '@growi/core';
 import mongoose from 'mongoose';
 
 import { ExternalGroupProviderType } from '../../../src/features/external-user-group/interfaces/external-user-group';
-import ExternalUserGroup from '../../../src/features/external-user-group/server/models/external-user-group';
+import ExternalUserGroup, {
+  type ExternalUserGroupDocument,
+} from '../../../src/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '../../../src/features/external-user-group/server/models/external-user-group-relation';
 import { UserGroupPageGrantStatus } from '../../../src/interfaces/page';
-import UserGroup from '../../../src/server/models/user-group';
+import type Crowi from '../../../src/server/crowi';
+import type { PageDocument, PageModel } from '../../../src/server/models/page';
+import UserGroup, {
+  type UserGroupDocument,
+} from '../../../src/server/models/user-group';
 import UserGroupRelation from '../../../src/server/models/user-group-relation';
 import type { IPageGrantService } from '../../../src/server/service/page-grant';
 import { getInstance } from '../setup-crowi';
@@ -18,43 +24,44 @@ describe('PageGrantService', () => {
   /*
    * models
    */
+  // biome-ignore lint/suspicious/noImplicitAnyLet: ignore
   let User;
-  let Page;
+  let Page: PageModel;
 
   /*
    * global instances
    */
-  let crowi;
+  let crowi: Crowi;
   let pageGrantService: IPageGrantService;
 
+  // biome-ignore lint/suspicious/noImplicitAnyLet: ignore
   let user1;
+  // biome-ignore lint/suspicious/noImplicitAnyLet: ignore
   let user2;
 
-  let groupParent;
-  let groupChild;
-  let differentTreeGroup;
+  let groupParent: UserGroupDocument;
+  let groupChild: UserGroupDocument;
+  let differentTreeGroup: UserGroupDocument;
 
-  let externalGroupParent;
-  let externalGroupChild;
+  let externalGroupParent: ExternalUserGroupDocument;
+  let externalGroupChild: ExternalUserGroupDocument;
 
   const userGroupIdParent = new mongoose.Types.ObjectId();
   const externalUserGroupIdParent = new mongoose.Types.ObjectId();
 
-  let rootPage;
-  let rootPublicPage;
-  let rootOnlyMePage;
-  let rootOnlyInsideTheGroup;
-  let emptyPage1;
-  let emptyPage2;
-  let emptyPage3;
+  let rootPage: PageDocument;
+  let rootPublicPage: PageDocument;
+  let rootOnlyMePage: PageDocument;
+  let rootOnlyInsideTheGroup: PageDocument;
+  let emptyPage1: PageDocument;
+  let emptyPage2: PageDocument;
+  let emptyPage3: PageDocument;
   const emptyPagePath1 = '/E1';
   const emptyPagePath2 = '/E2';
   const emptyPagePath3 = '/E3';
 
-  let multipleGroupTreesAndUsersPage;
+  let multipleGroupTreesAndUsersPage: PageDocument;
 
-  let pageRootPublic;
-  let pageRootGroupParent;
   const pageRootPublicPath = '/Public';
   const pageRootGroupParentPath = '/GroupParent';
   const pageMultipleGroupTreesAndUsersPath = '/MultipleGroupTreesAndUsers';
@@ -74,11 +81,6 @@ describe('PageGrantService', () => {
   const pageOnlyInsideTheGroupPublicPath = `${v4PageRootOnlyInsideTheGroupPagePath}/Public`;
   const pageOnlyInsideTheGroupOnlyMePath = `${v4PageRootOnlyInsideTheGroupPagePath}/OnlyMe`;
   const pageOnlyInsideTheGroupAnyoneWithTheLinkPath = `${v4PageRootOnlyInsideTheGroupPagePath}/AnyoneWithTheLink`;
-  let pageE1Public;
-  let pageE2User1;
-  let pageE3GroupParent;
-  let pageE3GroupChild;
-  let pageE3User1;
   const pageE1PublicPath = '/E1/Public';
   const pageE2User1Path = '/E2/User1';
   const pageE3GroupParentPath = '/E3/GroupParent';
@@ -86,12 +88,13 @@ describe('PageGrantService', () => {
   const pageE3User1Path = '/E3/User1';
 
   // getPageGroupGrantData test data
+  // biome-ignore lint/suspicious/noImplicitAnyLet: ignore
   let user3;
-  let groupGrantDataTestChildPagePath;
-  let groupGrantDataTestParentUserGroupId;
-  let groupGrantDataTestChildUserGroupId;
-  let groupGrantDataTestExternalUserGroupId;
-  let groupGrantDataTestExternalUserGroupId2;
+  let groupGrantDataTestChildPagePath: string;
+  let groupGrantDataTestParentUserGroupId: mongoose.Types.ObjectId;
+  let groupGrantDataTestChildUserGroupId: mongoose.Types.ObjectId;
+  let groupGrantDataTestExternalUserGroupId: mongoose.Types.ObjectId;
+  let groupGrantDataTestExternalUserGroupId2: mongoose.Types.ObjectId;
 
   const createDocumentsToTestIsGrantNormalized = async () => {
     // Users
@@ -119,11 +122,11 @@ describe('PageGrantService', () => {
       },
     ]);
 
-    groupParent = await UserGroup.findOne({ name: 'GroupParent' });
-    groupChild = await UserGroup.findOne({ name: 'GroupChild' });
-    differentTreeGroup = await UserGroup.findOne({
+    groupParent = (await UserGroup.findOne({ name: 'GroupParent' }))!;
+    groupChild = (await UserGroup.findOne({ name: 'GroupChild' }))!;
+    differentTreeGroup = (await UserGroup.findOne({
       name: 'DifferentTreeGroup',
-    });
+    }))!;
 
     // UserGroupRelations
     await UserGroupRelation.insertMany([
@@ -184,7 +187,7 @@ describe('PageGrantService', () => {
     ]);
 
     // Root page (Depth: 0)
-    rootPage = await Page.findOne({ path: '/' });
+    rootPage = (await Page.findOne({ path: '/' }))!;
 
     // Empty pages (Depth: 1)
     await Page.insertMany([
@@ -241,9 +244,9 @@ describe('PageGrantService', () => {
       },
     ]);
 
-    multipleGroupTreesAndUsersPage = await Page.findOne({
+    multipleGroupTreesAndUsersPage = (await Page.findOne({
       path: pageMultipleGroupTreesAndUsersPath,
-    });
+    }))!;
 
     await Page.insertMany([
       // Root Page
@@ -277,11 +280,11 @@ describe('PageGrantService', () => {
       },
     ]);
 
-    rootPublicPage = await Page.findOne({ path: pageRootPublicPath });
-    rootOnlyMePage = await Page.findOne({ path: v4PageRootOnlyMePagePath });
-    rootOnlyInsideTheGroup = await Page.findOne({
+    rootPublicPage = (await Page.findOne({ path: pageRootPublicPath }))!;
+    rootOnlyMePage = (await Page.findOne({ path: v4PageRootOnlyMePagePath }))!;
+    rootOnlyInsideTheGroup = (await Page.findOne({
       path: v4PageRootOnlyInsideTheGroupPagePath,
-    });
+    }))!;
 
     // Leaf pages (Depth: 2)
     await Page.insertMany([
@@ -341,9 +344,9 @@ describe('PageGrantService', () => {
       },
     ]);
 
-    emptyPage1 = await Page.findOne({ path: emptyPagePath1 });
-    emptyPage2 = await Page.findOne({ path: emptyPagePath2 });
-    emptyPage3 = await Page.findOne({ path: emptyPagePath3 });
+    emptyPage1 = (await Page.findOne({ path: emptyPagePath1 }))!;
+    emptyPage2 = (await Page.findOne({ path: emptyPagePath2 }))!;
+    emptyPage3 = (await Page.findOne({ path: emptyPagePath3 }))!;
 
     // Leaf pages (Depth: 2)
     await Page.insertMany([
@@ -399,11 +402,6 @@ describe('PageGrantService', () => {
         parent: emptyPage3._id,
       },
     ]);
-    pageE1Public = await Page.findOne({ path: pageE1PublicPath });
-    pageE2User1 = await Page.findOne({ path: pageE2User1Path });
-    pageE3GroupParent = await Page.findOne({ path: pageE3GroupParentPath });
-    pageE3GroupChild = await Page.findOne({ path: pageE3GroupChildPath });
-    pageE3User1 = await Page.findOne({ path: pageE3User1Path });
   };
 
   const createDocumentsToTestGetPageGroupGrantData = async () => {
@@ -522,9 +520,9 @@ describe('PageGrantService', () => {
     pageGrantService = crowi.pageGrantService;
 
     User = mongoose.model('User');
-    Page = mongoose.model('Page');
+    Page = mongoose.model<IPage, PageModel>('Page');
 
-    rootPage = await Page.findOne({ path: '/' });
+    rootPage = (await Page.findOne({ path: '/' }))!;
 
     await createDocumentsToTestIsGrantNormalized();
     await createDocumentsToTestGetPageGroupGrantData();

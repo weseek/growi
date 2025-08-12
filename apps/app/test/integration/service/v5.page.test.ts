@@ -1,52 +1,44 @@
+import type { IPage } from '@growi/core';
 import { addSeconds } from 'date-fns/addSeconds';
 import mongoose from 'mongoose';
-
 import {
   PageActionStage,
   PageActionType,
 } from '../../../src/interfaces/page-operation';
+import type Crowi from '../../../src/server/crowi';
+import type { PageDocument, PageModel } from '../../../src/server/models/page';
+import type {
+  IPageOperation,
+  PageOperationModel,
+} from '../../../src/server/models/page-operation';
 import { getInstance } from '../setup-crowi';
 
 describe('Test page service methods', () => {
-  let crowi;
-  let Page;
-  let Revision;
+  let crowi: Crowi;
+  let Page: PageModel;
+  // biome-ignore lint/suspicious/noImplicitAnyLet: ignore
   let User;
-  let Tag;
-  let Bookmark;
-  let Comment;
-  let ShareLink;
-  let PageRedirect;
-  let PageOperation;
+  let PageOperation: PageOperationModel;
 
-  let rootPage;
+  let rootPage: PageDocument;
 
+  // biome-ignore lint/suspicious/noImplicitAnyLet: ignore
   let dummyUser1;
-  let dummyUser2;
-  let globalGroupUser1;
-  let globalGroupUser2;
-  let globalGroupUser3;
 
-  let pageOpId1;
-  let pageOpId2;
-  let pageOpId3;
-  let pageOpId4;
-  let pageOpId5;
-  let pageOpId6;
+  let pageOpId1: mongoose.Types.ObjectId;
+  let pageOpId2: mongoose.Types.ObjectId;
+  let pageOpId3: mongoose.Types.ObjectId;
+  let pageOpId4: mongoose.Types.ObjectId;
 
   beforeAll(async () => {
     crowi = await getInstance();
     await crowi.configManager.updateConfig('app:isV5Compatible', true);
 
     User = mongoose.model('User');
-    Page = mongoose.model('Page');
-    Revision = mongoose.model('Revision');
-    Tag = mongoose.model('Tag');
-    Bookmark = mongoose.model('Bookmark');
-    Comment = mongoose.model('Comment');
-    ShareLink = mongoose.model('ShareLink');
-    PageRedirect = mongoose.model('PageRedirect');
-    PageOperation = mongoose.model('PageOperation');
+    Page = mongoose.model<IPage, PageModel>('Page');
+    PageOperation = mongoose.model<IPageOperation, PageOperationModel>(
+      'PageOperation',
+    );
 
     /*
      * Common
@@ -57,12 +49,8 @@ describe('Test page service methods', () => {
     // ***********************************************************************************************************
     // users
     dummyUser1 = await User.findOne({ username: 'v5DummyUser1' });
-    dummyUser2 = await User.findOne({ username: 'v5DummyUser2' });
-    globalGroupUser1 = await User.findOne({ username: 'gGroupUser1' });
-    globalGroupUser2 = await User.findOne({ username: 'gGroupUser2' });
-    globalGroupUser3 = await User.findOne({ username: 'gGroupUser3' });
     // page
-    rootPage = await Page.findOne({ path: '/' });
+    rootPage = (await Page.findOne({ path: '/' }))!;
 
     /**
      * pages
@@ -517,10 +505,10 @@ describe('Test page service methods', () => {
       expect(_page2).toBeTruthy();
       expect(_page3).toBeTruthy();
 
-      expect(_page0.descendantCount).toBe(1);
-      expect(_page1.descendantCount).toBe(2);
-      expect(_page2.descendantCount).toBe(1);
-      expect(_page3.descendantCount).toBe(0);
+      expect(_page0?.descendantCount).toBe(1);
+      expect(_page1?.descendantCount).toBe(2);
+      expect(_page2?.descendantCount).toBe(1);
+      expect(_page3?.descendantCount).toBe(0);
 
       // page operation
       const fromPath = '/resume_rename_1';
@@ -529,7 +517,7 @@ describe('Test page service methods', () => {
         _id: pageOpId1,
         fromPath,
         toPath,
-        'page._id': _page1._id,
+        'page._id': _page1?._id,
         actionType: PageActionType.Rename,
         actionStage: PageActionStage.Sub,
       });
@@ -539,28 +527,28 @@ describe('Test page service methods', () => {
       await resumeRenameSubOperation(_page1, _pageOperation, activity);
 
       // page
-      const page0 = await Page.findById(_page0._id);
-      const page1 = await Page.findById(_page1._id);
-      const page2 = await Page.findById(_page2._id);
-      const page3 = await Page.findById(_page3._id);
+      const page0 = await Page.findById(_page0?._id);
+      const page1 = await Page.findById(_page1?._id);
+      const page2 = await Page.findById(_page2?._id);
+      const page3 = await Page.findById(_page3?._id);
       expect(page0).toBeTruthy();
       expect(page1).toBeTruthy();
       expect(page2).toBeTruthy();
       expect(page3).toBeTruthy();
       // check paths after renaming
-      expect(page0.path).toBe(path0);
-      expect(page1.path).toBe(path1);
-      expect(page2.path).toBe(path2);
-      expect(page3.path).toBe(path3);
+      expect(page0?.path).toBe(path0);
+      expect(page1?.path).toBe(path1);
+      expect(page2?.path).toBe(path2);
+      expect(page3?.path).toBe(path3);
 
       // page operation
-      const pageOperation = await PageOperation.findById(_pageOperation._id);
+      const pageOperation = await PageOperation.findById(_pageOperation?._id);
       expect(pageOperation).toBeNull(); // should not exist
 
-      expect(page0.descendantCount).toBe(3);
-      expect(page1.descendantCount).toBe(2);
-      expect(page2.descendantCount).toBe(1);
-      expect(page3.descendantCount).toBe(0);
+      expect(page0?.descendantCount).toBe(3);
+      expect(page1?.descendantCount).toBe(2);
+      expect(page2?.descendantCount).toBe(1);
+      expect(page3?.descendantCount).toBe(0);
     });
     test('it should successfully restart rename operation when unprocessableExpiryDate is null', async () => {
       // paths before renaming
@@ -588,9 +576,9 @@ describe('Test page service methods', () => {
       expect(_page1).toBeTruthy();
       expect(_page2).toBeTruthy();
 
-      expect(_page0.descendantCount).toBe(1);
-      expect(_page1.descendantCount).toBe(1);
-      expect(_page2.descendantCount).toBe(0);
+      expect(_page0?.descendantCount).toBe(1);
+      expect(_page1?.descendantCount).toBe(1);
+      expect(_page2?.descendantCount).toBe(0);
 
       // page operation
       const fromPath = '/resume_rename_9';
@@ -599,7 +587,7 @@ describe('Test page service methods', () => {
         _id: pageOpId4,
         fromPath,
         toPath,
-        'page._id': _page1._id,
+        'page._id': _page1?._id,
         actionType: PageActionType.Rename,
         actionStage: PageActionStage.Sub,
       });
@@ -613,27 +601,27 @@ describe('Test page service methods', () => {
       );
 
       // page
-      const page0 = await Page.findById(_page0._id);
-      const page1 = await Page.findById(_page1._id);
-      const page2 = await Page.findById(_page2._id);
+      const page0 = await Page.findById(_page0?._id);
+      const page1 = await Page.findById(_page1?._id);
+      const page2 = await Page.findById(_page2?._id);
       expect(page0).toBeTruthy();
       expect(page1).toBeTruthy();
       expect(page2).toBeTruthy();
       // check paths after renaming
-      expect(page0.path).toBe(path0);
-      expect(page1.path).toBe(path1);
-      expect(page2.path).toBe(path2);
+      expect(page0?.path).toBe(path0);
+      expect(page1?.path).toBe(path1);
+      expect(page2?.path).toBe(path2);
 
       // page operation
-      const pageOperation = await PageOperation.findById(_pageOperation._id);
+      const pageOperation = await PageOperation.findById(_pageOperation?._id);
       expect(pageOperation).toBeNull(); // should not exist
 
       // others
-      expect(page1.parent).toStrictEqual(page0._id);
-      expect(page2.parent).toStrictEqual(page1._id);
-      expect(page0.descendantCount).toBe(2);
-      expect(page1.descendantCount).toBe(1);
-      expect(page2.descendantCount).toBe(0);
+      expect(page1?.parent).toStrictEqual(page0?._id);
+      expect(page2?.parent).toStrictEqual(page1?._id);
+      expect(page0?.descendantCount).toBe(2);
+      expect(page1?.descendantCount).toBe(1);
+      expect(page2?.descendantCount).toBe(0);
     });
     test('it should fail and throw error if the current time is behind unprocessableExpiryDate', async () => {
       // path before renaming
@@ -655,7 +643,7 @@ describe('Test page service methods', () => {
         _id: pageOpId2,
         fromPath,
         toPath,
-        'page._id': _page1._id,
+        'page._id': _page1?._id,
         actionType: PageActionType.Rename,
         actionStage: PageActionStage.Sub,
       });
@@ -664,7 +652,7 @@ describe('Test page service methods', () => {
       // Make `unprocessableExpiryDate` 15 seconds ahead of current time.
       // The number 15 seconds has no meaning other than placing time in the furue.
       const pageOperation = await PageOperation.findByIdAndUpdate(
-        _pageOperation._id,
+        _pageOperation?._id,
         { unprocessableExpiryDate: addSeconds(new Date(), 15) },
         { new: true },
       );
@@ -677,7 +665,7 @@ describe('Test page service methods', () => {
       );
 
       // cleanup
-      await PageOperation.findByIdAndDelete(pageOperation._id);
+      await PageOperation.findByIdAndDelete(pageOperation?._id);
     });
     test('Missing property(toPath) for PageOperation should throw error', async () => {
       // page
@@ -688,7 +676,7 @@ describe('Test page service methods', () => {
       // page operation
       const pageOperation = await PageOperation.findOne({
         _id: pageOpId3,
-        'page._id': _page1._id,
+        'page._id': _page1?._id,
         actionType: PageActionType.Rename,
         actionStage: PageActionStage.Sub,
       });
@@ -697,12 +685,12 @@ describe('Test page service methods', () => {
       const promise = resumeRenameSubOperation(_page1, pageOperation);
       await expect(promise).rejects.toThrow(
         new Error(
-          `Property toPath is missing which is needed to resume rename operation(${pageOperation._id})`,
+          `Property toPath is missing which is needed to resume rename operation(${pageOperation?._id})`,
         ),
       );
 
       // cleanup
-      await PageOperation.findByIdAndDelete(pageOperation._id);
+      await PageOperation.findByIdAndDelete(pageOperation?._id);
     });
   });
   describe('updateDescendantCountOfPagesWithPaths', () => {
@@ -727,23 +715,23 @@ describe('Test page service methods', () => {
       expect(_page4).toBeTruthy();
       expect(_page5).toBeTruthy();
       // check descendantCount (all broken)
-      expect(_page1.descendantCount).toBe(100);
-      expect(_page2.descendantCount).toBe(100);
-      expect(_page3.descendantCount).toBe(100);
-      expect(_page4.descendantCount).toBe(100);
-      expect(_page5.descendantCount).toBe(100);
+      expect(_page1?.descendantCount).toBe(100);
+      expect(_page2?.descendantCount).toBe(100);
+      expect(_page3?.descendantCount).toBe(100);
+      expect(_page4?.descendantCount).toBe(100);
+      expect(_page5?.descendantCount).toBe(100);
       // check isEmpty
-      expect(_page1.isEmpty).toBe(false);
-      expect(_page2.isEmpty).toBe(true);
-      expect(_page3.isEmpty).toBe(false);
-      expect(_page4.isEmpty).toBe(false);
-      expect(_page5.isEmpty).toBe(false);
+      expect(_page1?.isEmpty).toBe(false);
+      expect(_page2?.isEmpty).toBe(true);
+      expect(_page3?.isEmpty).toBe(false);
+      expect(_page4?.isEmpty).toBe(false);
+      expect(_page5?.isEmpty).toBe(false);
       // check parent
-      expect(_page1.parent).toStrictEqual(rootPage._id);
-      expect(_page2.parent).toStrictEqual(_page1._id);
-      expect(_page3.parent).toStrictEqual(_page2._id);
-      expect(_page4.parent).toStrictEqual(rootPage._id);
-      expect(_page5.parent).toStrictEqual(_page4._id);
+      expect(_page1?.parent).toStrictEqual(rootPage._id);
+      expect(_page2?.parent).toStrictEqual(_page1?._id);
+      expect(_page3?.parent).toStrictEqual(_page2?._id);
+      expect(_page4?.parent).toStrictEqual(rootPage._id);
+      expect(_page5?.parent).toStrictEqual(_page4?._id);
 
       await crowi.pageService.updateDescendantCountOfPagesWithPaths([
         _path1,
@@ -754,11 +742,11 @@ describe('Test page service methods', () => {
       ]);
 
       // page
-      const page1 = await Page.findById(_page1._id);
-      const page2 = await Page.findById(_page2._id);
-      const page3 = await Page.findById(_page3._id);
-      const page4 = await Page.findById(_page4._id);
-      const page5 = await Page.findById(_page5._id);
+      const page1 = await Page.findById(_page1?._id);
+      const page2 = await Page.findById(_page2?._id);
+      const page3 = await Page.findById(_page3?._id);
+      const page4 = await Page.findById(_page4?._id);
+      const page5 = await Page.findById(_page5?._id);
 
       // check existance
       expect(page1).toBeTruthy();
@@ -767,23 +755,23 @@ describe('Test page service methods', () => {
       expect(page4).toBeTruthy();
       expect(page5).toBeTruthy();
       // check descendantCount (all fixed)
-      expect(page1.descendantCount).toBe(1);
-      expect(page2.descendantCount).toBe(1);
-      expect(page3.descendantCount).toBe(0);
-      expect(page4.descendantCount).toBe(1);
-      expect(page5.descendantCount).toBe(0);
+      expect(page1?.descendantCount).toBe(1);
+      expect(page2?.descendantCount).toBe(1);
+      expect(page3?.descendantCount).toBe(0);
+      expect(page4?.descendantCount).toBe(1);
+      expect(page5?.descendantCount).toBe(0);
       // check isEmpty
-      expect(page1.isEmpty).toBe(false);
-      expect(page2.isEmpty).toBe(true);
-      expect(page3.isEmpty).toBe(false);
-      expect(page4.isEmpty).toBe(false);
-      expect(page5.isEmpty).toBe(false);
+      expect(page1?.isEmpty).toBe(false);
+      expect(page2?.isEmpty).toBe(true);
+      expect(page3?.isEmpty).toBe(false);
+      expect(page4?.isEmpty).toBe(false);
+      expect(page5?.isEmpty).toBe(false);
       // check parent
-      expect(page1.parent).toStrictEqual(rootPage._id);
-      expect(page2.parent).toStrictEqual(page1._id);
-      expect(page3.parent).toStrictEqual(page2._id);
-      expect(page4.parent).toStrictEqual(rootPage._id);
-      expect(page5.parent).toStrictEqual(page4._id);
+      expect(page1?.parent).toStrictEqual(rootPage._id);
+      expect(page2?.parent).toStrictEqual(page1?._id);
+      expect(page3?.parent).toStrictEqual(page2?._id);
+      expect(page4?.parent).toStrictEqual(rootPage._id);
+      expect(page5?.parent).toStrictEqual(page4?._id);
     });
   });
 });
