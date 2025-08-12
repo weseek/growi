@@ -150,7 +150,7 @@ const EditablePagePath = memo((props: EditablePagePathProps): JSX.Element => {
             onBlur={handleInputBlur}
             onChange={e => setInputValue(e.target.value)}
             onKeyDown={handleInputKeyDown}
-            inputStyle={{ maxWidth: (editingContainerRect?.width ?? 0) - 10}}
+            inputStyle={{ maxWidth: (editingContainerRect?.width ?? 0) - 10 }}
           />
         )
         : (
