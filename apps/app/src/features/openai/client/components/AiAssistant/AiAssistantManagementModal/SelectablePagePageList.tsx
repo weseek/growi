@@ -2,7 +2,8 @@ import React, {
   useMemo, memo, useState, useCallback, useRef, useEffect,
 } from 'react';
 
-import { pagePathUtils } from '@growi/core/dist/utils';
+import { pathUtils } from '@growi/core/dist/utils';
+import { isCreatablePageWithGlob } from '../../../../utils/is-creatable-page-with-glob'
 import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'react-i18next';
 import AutosizeInput from 'react-input-autosize';
@@ -120,12 +121,16 @@ const EditablePagePath = memo((props: EditablePagePathProps): JSX.Element => {
   const handleInputKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
 
-      if (inputValue === '' || disablePagePaths.includes(inputValue) || !pagePathUtils.isCreatablePage(inputValue)) {
+      // Validate page path
+      const pagePathWithSlash = pathUtils.addHeadingSlash(inputValue);
+      if (inputValue === '' || disablePagePaths.includes(pagePathWithSlash) || !isCreatablePageWithGlob(pagePathWithSlash)) {
         handleInputBlur();
         return;
       }
 
-      page.path = inputValue;
+      // Update page path
+      page.path = pagePathWithSlash;
+
       handleInputBlur();
     }
   }, [disablePagePaths, handleInputBlur, inputValue, page]);
@@ -229,11 +234,19 @@ export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.
               methodButtonPosition={methodButtonPosition}
             />
 
-            <span className={`badge bg-body-secondary rounded-pill ${methodButtonPosition === 'left' ? 'me-2' : ''}`}>
+            { !page.edited  && (
+              <span className={`badge bg-body-secondary rounded-pill ${methodButtonPosition === 'left' ? 'me-2' : ''}`}>
+                <span className="text-body-tertiary">
+                  {page.descendantCount}
+                </span>
+              </span>
+            )}
+
+            {/* <span className={`badge bg-body-secondary rounded-pill ${methodButtonPosition === 'left' ? 'me-2' : ''}`}>
               <span className="text-body-tertiary">
                 {page.descendantCount}
               </span>
-            </span>
+            </span> */}
 
             {methodButtonPosition === 'right'
               && (
