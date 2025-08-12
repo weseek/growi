@@ -30,68 +30,42 @@ export const useFetchCurrentPage = (): {
 
   const fetchCurrentPage = useAtomCallback(
     useCallback(async(get, set, currentPathname?: string) => {
+      const currentPath = currentPathname || (isClient() ? decodeURIComponent(window.location.pathname) : '');
+
+      // Determine target pageId from current path
+      const targetPageId = isPermalink(currentPath) ? removeHeadingSlash(currentPath) : null;
       let currentPageId = get(currentPageIdAtom);
 
-      // Get current path - prefer provided pathname, fallback to URL
-      const currentPath = currentPathname
-        || (isClient() ? decodeURIComponent(window.location.pathname) : '');
-
-      // Validate pageId against current URL to prevent fetching wrong page on browser back/forward
-      if (currentPageId) {
-        const expectedPageId = isPermalink(currentPath) ? removeHeadingSlash(currentPath) : null;
-
-        // If we have a pageId but it doesn't match the current URL, clear it
-        if (expectedPageId && currentPageId !== expectedPageId) {
-          currentPageId = expectedPageId;
-          set(currentPageIdAtom, currentPageId);
-        }
-        // If current path is not a permalink but we have a pageId, it's likely a mismatch
-        else if (!expectedPageId && isPermalink(`/${currentPageId}`)) {
-          // Current URL is path-based but we have a pageId from previous navigation
-          currentPageId = undefined;
-          set(currentPageIdAtom, undefined);
-        }
+      // Sync pageId with current path - single atomic update
+      if (currentPageId !== targetPageId) {
+        currentPageId = targetPageId || undefined;
+        set(currentPageIdAtom, currentPageId);
       }
 
-      // If no pageId in atom, try to extract from current path
-      if (!currentPageId && currentPath) {
-        if (isPermalink(currentPath)) {
-          currentPageId = removeHeadingSlash(currentPath);
-          // Update the atom with the extracted pageId
-          set(currentPageIdAtom, currentPageId);
-        }
-      }
-
-      // Get URL parameter for specific revisionId
-      let revisionId: string | undefined;
-      if (isClient()) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const requestRevisionId = urlParams.get('revisionId');
-        revisionId = requestRevisionId != null ? requestRevisionId : undefined;
-      }
+      // Get URL parameter for specific revisionId - only when needed
+      const revisionId = isClient() && window.location.search
+        ? new URLSearchParams(window.location.search).get('revisionId') || undefined
+        : undefined;
 
       setIsLoading(true);
       setError(null);
 
       try {
-        // Build API parameters - prefer pageId if available, fallback to path
-        const apiParams: { pageId?: string; path?: string; shareLinkId?: string; revisionId?: string } = { shareLinkId };
+        // Build API parameters efficiently
+        const apiParams: Record<string, string> = {};
 
+        if (shareLinkId) apiParams.shareLinkId = shareLinkId;
+        if (revisionId) apiParams.revisionId = revisionId;
+
+        // Use pageId when available, fallback to path
         if (currentPageId) {
           apiParams.pageId = currentPageId;
         }
         else if (currentPath) {
-          // For path-based navigation when pageId is not available
-          // Use the provided/decoded path to avoid double encoding
           apiParams.path = currentPath;
         }
         else {
-          // No pageId and no path, cannot proceed
-          return null;
-        }
-
-        if (revisionId) {
-          apiParams.revisionId = revisionId;
+          return null; // No valid identifier
         }
 
         const response = await apiv3Get<{ page: IPagePopulatedToShowRevision }>(
@@ -100,46 +74,41 @@ export const useFetchCurrentPage = (): {
         );
 
         const newData = response.data.page;
+
+        // Batch atom updates to minimize re-renders
         set(currentPageDataAtom, newData);
-
-        // Update pageId atom if we got the page data (important for path-based navigation)
-        if (newData?._id && newData._id !== currentPageId) {
-          set(currentPageIdAtom, newData._id);
-        }
-
-        // Reset routing state when page is successfully fetched
         set(pageNotFoundAtom, false);
+
+        // Update pageId atom if data differs from current
+        if (newData?._id !== currentPageId) {
+          set(currentPageIdAtom, newData?._id);
+        }
 
         return newData;
       }
       catch (err) {
-        // Handle page not found errors for same-route navigation
-        if (err instanceof Error) {
-          const errorMessage = err.message.toLowerCase();
+        const errorMsg = err instanceof Error ? err.message.toLowerCase() : '';
 
-          // Check if it's a 404 or forbidden error
-          if (errorMessage.includes('not found') || errorMessage.includes('404')) {
-            set(pageNotFoundAtom, true);
-            set(pageNotCreatableAtom, false); // Will be determined by path analysis
-            set(currentPageDataAtom, undefined);
+        // Handle specific error types with batch updates
+        if (errorMsg.includes('not found') || errorMsg.includes('404')) {
+          // Batch update for 404 errors
+          set(pageNotFoundAtom, true);
+          set(currentPageDataAtom, undefined);
 
-            // For same route, we need to determine if page is creatable
-            // This should match the logic in injectPageDataForInitial
-            if (currentPath) {
-              const { pagePathUtils } = await import('@growi/core/dist/utils');
-              const isCreatable = pagePathUtils.isCreatablePage(currentPath);
-              set(pageNotCreatableAtom, !isCreatable);
-            }
-
-            return null;
+          // Determine if page is creatable
+          if (currentPath) {
+            const { pagePathUtils } = await import('@growi/core/dist/utils');
+            set(pageNotCreatableAtom, !pagePathUtils.isCreatablePage(currentPath));
           }
+          return null;
+        }
 
-          if (errorMessage.includes('forbidden') || errorMessage.includes('403')) {
-            set(pageNotFoundAtom, false);
-            set(pageNotCreatableAtom, true); // Forbidden means page exists but not accessible
-            set(currentPageDataAtom, undefined);
-            return null;
-          }
+        if (errorMsg.includes('forbidden') || errorMsg.includes('403')) {
+          // Batch update for 403 errors
+          set(pageNotFoundAtom, false);
+          set(pageNotCreatableAtom, true);
+          set(currentPageDataAtom, undefined);
+          return null;
         }
 
         setError(new Error('Failed to fetch current page'));

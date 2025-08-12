@@ -9,8 +9,6 @@ import type {
   IDataWithMeta,
 } from '@growi/core';
 import { isClient } from '@growi/core/dist/utils';
-import { isPermalink } from '@growi/core/dist/utils/page-path-utils';
-import { removeHeadingSlash } from '@growi/core/dist/utils/path-utils';
 import type {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -42,6 +40,7 @@ import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/webs
 import { useSWRMUTxCurrentPageYjsData } from '~/stores/yjs';
 
 import { useSameRouteNavigation, useShallowRouting } from './[[...path]]/hooks';
+import { extractPageIdFromPathname } from './[[...path]]/navigation-utils';
 import { getServerSidePropsForInitial, getServerSidePropsForSameRoute } from './[[...path]]/server-side-props';
 import type {
   Props, InitialProps, SameRouteEachProps, IPageToShowRevisionWithMeta,
@@ -114,13 +113,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   );
 };
 
-const extractPageIdFromPathname = (pathname: string): string | null => {
-  if (isPermalink(pathname)) {
-    return removeHeadingSlash(pathname);
-  }
-  return null;
-};
-
 const isInitialProps = (props: Props): props is (InitialProps & SameRouteEachProps) => {
   return 'isNextjsRoutingTypeInitial' in props && props.isNextjsRoutingTypeInitial;
 };
@@ -157,20 +149,20 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useSameRouteNavigation(props, extractPageIdFromPathname, isInitialProps);
   useShallowRouting(props);
 
-  // Load current yjs data - optimize to avoid unnecessary calls
+  // Optimized effects with minimal dependencies
   useEffect(() => {
-    if (pageId != null && currentPage?.revision?._id != null && !isNotFound) {
+    // Load YJS data only when revision changes and page exists
+    if (pageId && currentPage?.revision?._id && !isNotFound) {
       mutateCurrentPageYjsDataFromApi();
     }
   }, [currentPage?.revision?._id, mutateCurrentPageYjsDataFromApi, isNotFound, pageId]);
 
-  // Initialize mutateEditingMarkdown only once per page change
-  // Use currentPagePath not props.currentPathname to avoid unnecessary updates
   useEffect(() => {
-    if (currentPagePath != null) {
+    // Initialize editing markdown only when page path changes
+    if (currentPagePath) {
       mutateEditingMarkdown(currentPage?.revision?.body);
     }
-  }, [mutateEditingMarkdown, currentPage?.revision?.body, currentPagePath]);
+  }, [currentPagePath, currentPage?.revision?.body, mutateEditingMarkdown]);
 
   // If the data on the page changes without router.push, pageWithMeta remains old because getServerSideProps() is not executed
   // So preferentially take page data from useSWRxCurrentPage

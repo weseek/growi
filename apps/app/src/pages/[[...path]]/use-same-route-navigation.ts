@@ -1,19 +1,20 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import {
   useCurrentPageData, useFetchCurrentPage, useCurrentPageId,
 } from '../../states/page';
 import { useEditingMarkdown } from '../../stores/editor';
 
+import { extractPageIdFromPathname, createNavigationState } from './navigation-utils';
 import type { Props, InitialProps, SameRouteEachProps } from './types';
 
 /**
  * Custom hook for handling same-route navigation and fetching page data when needed
- * Handles permalink navigation, path-based navigation, and browser back/forward scenarios
+ * Optimized for minimal re-renders and efficient state updates using centralized navigation state
  */
 export const useSameRouteNavigation = (
     props: Props,
-    extractPageIdFromPathname: (pathname: string) => string | null,
+    _extractPageIdFromPathname: (pathname: string) => string | null, // Legacy parameter for backward compatibility
     isInitialProps: (props: Props) => props is (InitialProps & SameRouteEachProps),
 ): void => {
   const [currentPage] = useCurrentPageData();
@@ -21,58 +22,50 @@ export const useSameRouteNavigation = (
   const { fetchCurrentPage } = useFetchCurrentPage();
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
 
-  // Handle same-route navigation: fetch page data when needed
-  useEffect(() => {
-    const currentPathname = props.currentPathname;
-    const newPageId = extractPageIdFromPathname(currentPathname);
+  // Memoize navigation state using centralized logic
+  const navigationState = useMemo(() => {
+    const targetPathname = props.currentPathname;
+    const targetPageId = extractPageIdFromPathname(targetPathname);
     const skipSSR = isInitialProps(props) ? props.skipSSR : false;
+    const hasInitialData = isInitialProps(props) && !skipSSR;
 
-    // Skip if we have initial props with complete data
-    if (isInitialProps(props) && !skipSSR) {
-      return;
-    }
+    return createNavigationState({
+      pageId,
+      currentPagePath: currentPage?.path,
+      targetPathname,
+      targetPageId,
+      hasInitialData,
+      skipSSR,
+    });
+  }, [props, isInitialProps, pageId, currentPage?.path]);
 
-    // Check if current pageId matches the URL (important for browser back/forward)
-    const isPageIdMismatch = pageId != null && newPageId != null && pageId !== newPageId;
-    const isPathMismatch = pageId != null && newPageId == null && currentPage?.path !== currentPathname;
+  // Handle same-route navigation with optimized batch operations
+  useEffect(() => {
+    if (!navigationState.shouldFetch) return;
 
-    // Determine if we need to fetch new page data based on different scenarios:
-    const needsFetch = (
-      // 1. Permalink navigation with different pageId (includes browser back/forward)
-      isPageIdMismatch
-      // 2. Path-based navigation mismatch (includes browser back/forward to path-based pages)
-      || isPathMismatch
-      // 3. Path-based navigation (no pageId) or forced client-side rendering
-      || (newPageId == null && !isPathMismatch && (
-        // Force fetch if skipSSR is true
-        skipSSR
-        // Or if we don't have current page data for this path
-        || (!currentPage || currentPage.path !== currentPathname)
-      ))
-    );
+    // Batch state updates for optimal performance
+    const updatePageState = async(): Promise<void> => {
+      const targetPageId = extractPageIdFromPathname(props.currentPathname);
 
-    if (needsFetch) {
-      const mutatePageData = async() => {
-        // Clear old data first to prevent using stale pageId
-        if (isPageIdMismatch || isPathMismatch) {
-          setCurrentPageId(undefined);
-        }
+      // Clear stale pageId atomically when needed
+      if (navigationState.isPageIdMismatch || navigationState.isPathMismatch) {
+        setCurrentPageId(undefined);
+      }
 
-        // Update pageId if we have a new one from permalink
-        if (newPageId != null) {
-          setCurrentPageId(newPageId);
-        }
+      // Set new pageId if available
+      if (targetPageId) {
+        setCurrentPageId(targetPageId);
+      }
 
-        // fetchCurrentPage will handle both pageId and path-based navigation
-        const pageData = await fetchCurrentPage(currentPathname);
-        mutateEditingMarkdown(pageData?.revision?.body);
-      };
+      // Fetch and update page data
+      const pageData = await fetchCurrentPage(props.currentPathname);
+      if (pageData?.revision?.body !== undefined) {
+        mutateEditingMarkdown(pageData.revision.body);
+      }
+    };
 
-      mutatePageData();
-    }
-  // Remove fetchCurrentPage, mutateEditingMarkdown, setCurrentPageId from deps to prevent infinite loop
-  // They are stable functions and don't need to be in dependencies
-  // Use currentPage?.path instead of currentPage to be more specific
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.currentPathname, pageId, currentPage?.path]);
+    updatePageState();
+    // Stable functions from hooks are omitted from dependencies to prevent infinite loops
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigationState.shouldFetch, navigationState.isPageIdMismatch, navigationState.isPathMismatch, props.currentPathname]);
 };
