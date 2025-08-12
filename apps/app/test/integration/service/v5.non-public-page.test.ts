@@ -14,7 +14,10 @@ import type { IPageTagRelation } from '../../../src/interfaces/page-tag-relation
 import type Crowi from '../../../src/server/crowi';
 import type { PageDocument, PageModel } from '../../../src/server/models/page';
 import PageTagRelation from '../../../src/server/models/page-tag-relation';
-import type { IRevisionModel } from '../../../src/server/models/revision';
+import type {
+  IRevisionDocument,
+  IRevisionModel,
+} from '../../../src/server/models/revision';
 import Tag from '../../../src/server/models/tag';
 import UserGroup from '../../../src/server/models/user-group';
 import UserGroupRelation from '../../../src/server/models/user-group-relation';
@@ -1496,7 +1499,10 @@ describe('PageService page operations with non-public pages', () => {
       const _page = await Page.findOne({
         path: '/np_duplicate1',
         grant: Page.GRANT_RESTRICTED,
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       const _revision = _page?.revision;
       expect(_page).toBeTruthy();
       expect(_revision).toBeTruthy();
@@ -1525,12 +1531,18 @@ describe('PageService page operations with non-public pages', () => {
         path: _path1,
         parent: rootPage._id,
         grantedGroups: { $elemMatch: { item: groupIdA } },
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       const _page2 = await Page.findOne({
         path: _path2,
         parent: _page1?._id,
         grantedGroups: { $elemMatch: { item: groupIdB } },
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       const _revision1 = _page1?.revision;
       const _revision2 = _page2?.revision;
       expect(_page1).toBeTruthy();
@@ -1543,10 +1555,16 @@ describe('PageService page operations with non-public pages', () => {
 
       const duplicatedPage1 = await Page.findOne({
         path: newPagePath,
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       const duplicatedPage2 = await Page.findOne({
         path: '/dup_np_duplicate2/np_duplicate3',
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       const duplicatedRevision1 = duplicatedPage1?.revision;
       const duplicatedRevision2 = duplicatedPage2?.revision;
       expect(generalXssFilterProcessSpy).toHaveBeenCalled();
@@ -1581,15 +1599,24 @@ describe('PageService page operations with non-public pages', () => {
         path: _path1,
         parent: rootPage._id,
         grant: Page.GRANT_PUBLIC,
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       const _page2 = await Page.findOne({
         path: _path2,
         grant: Page.GRANT_RESTRICTED,
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       const _page3 = await Page.findOne({
         path: _path3,
         grant: Page.GRANT_PUBLIC,
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       const baseRevision1 = _page1?.revision;
       const baseRevision2 = _page2?.revision;
       const baseRevision3 = _page3?.revision;
@@ -1604,13 +1631,22 @@ describe('PageService page operations with non-public pages', () => {
 
       const duplicatedPage1 = await Page.findOne({
         path: newPagePath,
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       const duplicatedPage2 = await Page.findOne({
         path: '/dup_np_duplicate4/np_duplicate5',
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       const duplicatedPage3 = await Page.findOne({
         path: '/dup_np_duplicate4/np_duplicate6',
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       const duplicatedRevision1 = duplicatedPage1?.revision;
       const duplicatedRevision3 = duplicatedPage3?.revision;
       expect(generalXssFilterProcessSpy).toHaveBeenCalled();
@@ -1635,7 +1671,10 @@ describe('PageService page operations with non-public pages', () => {
       const _page1 = await Page.findOne({
         path: _path1,
         parent: rootPage._id,
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       const _page2 = await Page.findOne({ path: _path2, parent: _page1?._id });
       const _page3 = await Page.findOne({ path: _path3, parent: _page1?._id });
       const _revision1 = _page1?.revision;
@@ -1649,13 +1688,22 @@ describe('PageService page operations with non-public pages', () => {
 
       const duplicatedPage1 = await Page.findOne({
         path: newPagePath,
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       const duplicatedPage2 = await Page.findOne({
         path: '/dup_np_duplicate7/np_duplicate8',
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       const duplicatedPage3 = await Page.findOne({
         path: '/dup_np_duplicate7/np_duplicate9',
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       const duplicatedRevision1 = duplicatedPage1?.revision;
       expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(duplicatedPage1).toBeTruthy();
@@ -1679,15 +1727,24 @@ describe('PageService page operations with non-public pages', () => {
       const _page1 = await Page.findOne({
         path: _path1,
         parent: rootPage._id,
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       const _page2 = await Page.findOne({
         path: _path2,
         parent: _page1?._id,
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       const _page3 = await Page.findOne({
         path: _path3,
         parent: _page1?._id,
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       const _revision1 = _page1?.revision;
       const _revision2 = _page2?.revision;
       const _revision3 = _page3?.revision;
@@ -1703,13 +1760,22 @@ describe('PageService page operations with non-public pages', () => {
 
       const duplicatedPage1 = await Page.findOne({
         path: newPagePath,
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       const duplicatedPage2 = await Page.findOne({
         path: '/dup2_np_duplicate7/np_duplicate8',
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       const duplicatedPage3 = await Page.findOne({
         path: '/dup2_np_duplicate7/np_duplicate9',
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       const duplicatedRevision1 = duplicatedPage1?.revision;
       const duplicatedRevision2 = duplicatedPage2?.revision;
       const duplicatedRevision3 = duplicatedPage3?.revision;
