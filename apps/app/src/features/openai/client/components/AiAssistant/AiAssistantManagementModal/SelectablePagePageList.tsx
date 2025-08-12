@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import { pathUtils } from '@growi/core/dist/utils';
-import { isCreatablePageWithGlob } from '../../../../utils/is-creatable-page-with-glob'
+import { isCreatablePagePathPattern } from '../../../../utils/is-creatable-page-path-pattern'
 import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'react-i18next';
 import AutosizeInput from 'react-input-autosize';
@@ -123,7 +123,7 @@ const EditablePagePath = memo((props: EditablePagePathProps): JSX.Element => {
 
       // Validate page path
       const pagePathWithSlash = pathUtils.addHeadingSlash(inputValue);
-      if (inputValue === '' || disablePagePaths.includes(pagePathWithSlash) || !isCreatablePageWithGlob(pagePathWithSlash)) {
+      if (inputValue === '' || disablePagePaths.includes(pagePathWithSlash) || !isCreatablePagePathPattern(pagePathWithSlash)) {
         handleInputBlur();
         return;
       }
