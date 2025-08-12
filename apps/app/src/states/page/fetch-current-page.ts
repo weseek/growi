@@ -2,6 +2,8 @@ import { useCallback, useState } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { isClient } from '@growi/core/dist/utils';
+import { isPermalink } from '@growi/core/dist/utils/page-path-utils';
+import { removeHeadingSlash } from '@growi/core/dist/utils/path-utils';
 import { useAtomCallback } from 'jotai/utils';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
@@ -17,7 +19,7 @@ import {
  * Replaces the complex useSWRMUTxCurrentPage with cleaner state management
  */
 export const useFetchCurrentPage = (): {
-  fetchCurrentPage: () => Promise<IPagePopulatedToShowRevision | null>,
+  fetchCurrentPage: (currentPathname?: string) => Promise<IPagePopulatedToShowRevision | null>,
   isLoading: boolean,
   error: Error | null,
 } => {
@@ -27,10 +29,38 @@ export const useFetchCurrentPage = (): {
   const [error, setError] = useState<Error | null>(null);
 
   const fetchCurrentPage = useAtomCallback(
-    useCallback(async(get, set) => {
-      const currentPageId = get(currentPageIdAtom);
+    useCallback(async(get, set, currentPathname?: string) => {
+      let currentPageId = get(currentPageIdAtom);
 
-      if (!currentPageId) return null;
+      // Get current path - prefer provided pathname, fallback to URL
+      const currentPath = currentPathname
+        || (isClient() ? decodeURIComponent(window.location.pathname) : '');
+
+      // Validate pageId against current URL to prevent fetching wrong page on browser back/forward
+      if (currentPageId) {
+        const expectedPageId = isPermalink(currentPath) ? removeHeadingSlash(currentPath) : null;
+
+        // If we have a pageId but it doesn't match the current URL, clear it
+        if (expectedPageId && currentPageId !== expectedPageId) {
+          currentPageId = expectedPageId;
+          set(currentPageIdAtom, currentPageId);
+        }
+        // If current path is not a permalink but we have a pageId, it's likely a mismatch
+        else if (!expectedPageId && isPermalink(`/${currentPageId}`)) {
+          // Current URL is path-based but we have a pageId from previous navigation
+          currentPageId = undefined;
+          set(currentPageIdAtom, undefined);
+        }
+      }
+
+      // If no pageId in atom, try to extract from current path
+      if (!currentPageId && currentPath) {
+        if (isPermalink(currentPath)) {
+          currentPageId = removeHeadingSlash(currentPath);
+          // Update the atom with the extracted pageId
+          set(currentPageIdAtom, currentPageId);
+        }
+      }
 
       // Get URL parameter for specific revisionId
       let revisionId: string | undefined;
@@ -44,13 +74,38 @@ export const useFetchCurrentPage = (): {
       setError(null);
 
       try {
+        // Build API parameters - prefer pageId if available, fallback to path
+        const apiParams: { pageId?: string; path?: string; shareLinkId?: string; revisionId?: string } = { shareLinkId };
+
+        if (currentPageId) {
+          apiParams.pageId = currentPageId;
+        }
+        else if (currentPath) {
+          // For path-based navigation when pageId is not available
+          // Use the provided/decoded path to avoid double encoding
+          apiParams.path = currentPath;
+        }
+        else {
+          // No pageId and no path, cannot proceed
+          return null;
+        }
+
+        if (revisionId) {
+          apiParams.revisionId = revisionId;
+        }
+
         const response = await apiv3Get<{ page: IPagePopulatedToShowRevision }>(
           '/page',
-          { pageId: currentPageId, shareLinkId, revisionId },
+          apiParams,
         );
 
         const newData = response.data.page;
         set(currentPageDataAtom, newData);
+
+        // Update pageId atom if we got the page data (important for path-based navigation)
+        if (newData?._id && newData._id !== currentPageId) {
+          set(currentPageIdAtom, newData._id);
+        }
 
         // Reset routing state when page is successfully fetched
         set(pageNotFoundAtom, false);
@@ -70,8 +125,7 @@ export const useFetchCurrentPage = (): {
 
             // For same route, we need to determine if page is creatable
             // This should match the logic in injectPageDataForInitial
-            if (isClient()) {
-              const currentPath = window.location.pathname;
+            if (currentPath) {
               const { pagePathUtils } = await import('@growi/core/dist/utils');
               const isCreatable = pagePathUtils.isCreatablePage(currentPath);
               set(pageNotCreatableAtom, !isCreatable);

@@ -1,21 +1,21 @@
 import type { ReactNode, JSX } from 'react';
 import React, { useEffect } from 'react';
 
+
 import EventEmitter from 'events';
 
 import { isIPageInfo } from '@growi/core';
 import type {
   IDataWithMeta,
 } from '@growi/core';
-import {
-  isClient,
-} from '@growi/core/dist/utils';
+import { isClient } from '@growi/core/dist/utils';
+import { isPermalink } from '@growi/core/dist/utils/page-path-utils';
+import { removeHeadingSlash } from '@growi/core/dist/utils/path-utils';
 import type {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { BasicLayout } from '~/components/Layout/BasicLayout';
@@ -24,7 +24,7 @@ import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { useEditorModeClassName } from '~/services/layout/use-editor-mode-class-name';
 import { useHydrateSidebarAtoms } from '~/states/hydrate/sidebar';
 import {
-  useCurrentPageData, useFetchCurrentPage, useCurrentPageId, useCurrentPagePath, usePageNotFound,
+  useCurrentPageData, useCurrentPageId, useCurrentPagePath, usePageNotFound,
 } from '~/states/page';
 import { useHydratePageAtoms } from '~/states/page/hydrate';
 import {
@@ -41,6 +41,7 @@ import { useRedirectFrom } from '~/stores/page-redirect';
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
 import { useSWRMUTxCurrentPageYjsData } from '~/stores/yjs';
 
+import { useSameRouteNavigation, useShallowRouting } from './[[...path]]/hooks';
 import { getServerSidePropsForInitial, getServerSidePropsForSameRoute } from './[[...path]]/server-side-props';
 import type {
   Props, InitialProps, SameRouteEachProps, IPageToShowRevisionWithMeta,
@@ -113,6 +114,13 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   );
 };
 
+const extractPageIdFromPathname = (pathname: string): string | null => {
+  if (isPermalink(pathname)) {
+    return removeHeadingSlash(pathname);
+  }
+  return null;
+};
+
 const isInitialProps = (props: Props): props is (InitialProps & SameRouteEachProps) => {
   return 'isNextjsRoutingTypeInitial' in props && props.isNextjsRoutingTypeInitial;
 };
@@ -123,8 +131,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
     window.globalEmitter = new EventEmitter();
   }
 
-  const router = useRouter();
-
   useRedirectFrom(props.redirectFrom ?? null);
   useIsSharedUser(false); // this page can't be routed for '/share'
   useIsSearchPage(false);
@@ -134,13 +140,12 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useHydratePageAtoms(pageData);
 
   const [currentPage] = useCurrentPageData();
-  const [pageId, setCurrentPageId] = useCurrentPageId();
+  const [pageId] = useCurrentPageId();
   const [currentPagePath] = useCurrentPagePath();
   const [isNotFound] = usePageNotFound();
   const [rendererConfig] = useRendererConfig();
   const [disableLinkSharing] = useDisableLinkSharing();
 
-  const { fetchCurrentPage } = useFetchCurrentPage();
   const { trigger: mutateCurrentPageYjsDataFromApi } = useSWRMUTxCurrentPageYjsData();
 
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
@@ -148,48 +153,24 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useSetupGlobalSocket();
   useSetupGlobalSocketForPage(pageId);
 
-  // Handle same-route navigation: fetch page data when needed
-  useEffect(() => {
-    // Skip if we have initial props with complete data
-    if (isInitialProps(props) && !props.skipSSR) {
-      return;
-    }
+  // Use custom hooks for navigation and routing
+  useSameRouteNavigation(props, extractPageIdFromPathname, isInitialProps);
+  useShallowRouting(props);
 
-    // For same-route or when skipSSR is true, fetch page data client-side
-    if (pageId != null) {
-      const mutatePageData = async() => {
-        setCurrentPageId(pageId);
-        const pageData = await fetchCurrentPage();
-        mutateEditingMarkdown(pageData?.revision?.body);
-      };
-
-      mutatePageData();
-    }
-  }, [pageId, fetchCurrentPage, mutateEditingMarkdown, props, setCurrentPageId]);
-
-  // Load current yjs data
+  // Load current yjs data - optimize to avoid unnecessary calls
   useEffect(() => {
     if (pageId != null && currentPage?.revision?._id != null && !isNotFound) {
       mutateCurrentPageYjsDataFromApi();
     }
-  }, [currentPage, mutateCurrentPageYjsDataFromApi, isNotFound, currentPage?.revision?._id, pageId]);
+  }, [currentPage?.revision?._id, mutateCurrentPageYjsDataFromApi, isNotFound, pageId]);
 
-  // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
+  // Initialize mutateEditingMarkdown only once per page change
+  // Use currentPagePath not props.currentPathname to avoid unnecessary updates
   useEffect(() => {
-    const decodedURI = decodeURI(window.location.pathname);
-    if (isClient() && decodedURI !== props.currentPathname) {
-      const { search, hash } = window.location;
-      router.replace(`${props.currentPathname}${search}${hash}`, undefined, { shallow: true });
-    }
-  }, [props.currentPathname, router]);
-
-  // initialize mutateEditingMarkdown only once per page
-  // need to include useCurrentPathname not useCurrentPagePath
-  useEffect(() => {
-    if (props.currentPathname != null) {
+    if (currentPagePath != null) {
       mutateEditingMarkdown(currentPage?.revision?.body);
     }
-  }, [mutateEditingMarkdown, currentPage?.revision?.body, props.currentPathname]);
+  }, [mutateEditingMarkdown, currentPage?.revision?.body, currentPagePath]);
 
   // If the data on the page changes without router.push, pageWithMeta remains old because getServerSideProps() is not executed
   // So preferentially take page data from useSWRxCurrentPage
