@@ -317,7 +317,7 @@ export const AiAssistantManagementModal = (): JSX.Element => {
   const isOpened = aiAssistantManagementModalData?.isOpened ?? false;
 
   return (
-    <Modal size="lg" isOpen={isOpened} toggle={closeAiAssistantManagementModal} className={moduleClass} scrollable>
+    <Modal size="lg" isOpen={isOpened} toggle={closeAiAssistantManagementModal} className={moduleClass}>
       { isOpened && (
         <AiAssistantManagementModalSubstance />
       ) }
