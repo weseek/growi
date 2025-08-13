@@ -30,7 +30,6 @@
       "!apps/app/public/**",
       "!apps/app/resource/**",
       "!apps/app/src/**",
-      "!apps/app/test/integration/service/**",
       "!apps/app/test-with-vite/**",
       "!apps/app/tmp/**"
     ]
