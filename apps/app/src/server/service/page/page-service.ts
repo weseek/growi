@@ -54,6 +54,7 @@ export interface IPageService {
     page: PageDocument, creatorId: ObjectIdLike | null, operator: any | null, userRelatedGroups: PopulatedGrantedGroup[]
   ): boolean,
   getYjsData(pageId: string, revisionBody?: string): Promise<CurrentPageYjsData>,
+  updateDescendantCountOfPagesWithPaths(paths: string[]): Promise<void>,
   revertRecursivelyMainOperation(page, user, options, pageOpId: ObjectIdLike, activity?): Promise<void>,
   revertDeletedPage(page, user, options, isRecursively: boolean, activityParameters?),
   deleteCompletelyRecursivelyMainOperation(page, user, options, pageOpId: ObjectIdLike, activity?): Promise<void>,

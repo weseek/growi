@@ -60,7 +60,7 @@ describe('UserGroupService', () => {
     Page = mongoose.model<IPage, PageModel>('Page');
 
     rootPage = await Page.findOne({ path: '/' });
-    userGroupService = crowi.userGroupService;
+    userGroupService = crowi.userGroupService!;
 
     await User.insertMany([
       // ug -> User Group

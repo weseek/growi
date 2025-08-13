@@ -47,10 +47,7 @@ describe('PageService page operations with only public pages', () => {
   let ShareLink: ShareLinkModel;
   let PageRedirect: PageRedirectModel;
   let PageOperation: PageOperationModel;
-  let generalXssFilterProcessSpy: jest.SpyInstance<
-    string,
-    [string | undefined]
-  >;
+  let generalXssFilterProcessSpy: jest.SpyInstance;
 
   let rootPage: PageDocument;
 
@@ -73,7 +70,11 @@ describe('PageService page operations with only public pages', () => {
 
     mockedCreateSubOperation.mockRestore();
 
-    await crowi.pageService.createSubOperation(...argsForCreateSubOperation);
+    await crowi.pageService.createSubOperation(
+      ...(argsForCreateSubOperation as Parameters<
+        typeof crowi.pageService.createSubOperation
+      >),
+    );
 
     return createdPage;
   };
@@ -1297,7 +1298,11 @@ describe('PageService page operations with only public pages', () => {
       mockedRenameSubOperation.mockRestore();
 
       // rename descendants
-      await crowi.pageService.renameSubOperation(...argsForRenameSubOperation);
+      await crowi.pageService.renameSubOperation(
+        ...(argsForRenameSubOperation as Parameters<
+          typeof crowi.pageService.renameSubOperation
+        >),
+      );
 
       return renamedPage;
     };
@@ -2007,7 +2012,9 @@ describe('PageService page operations with only public pages', () => {
       // duplicate descendants
       if (isRecursively) {
         await crowi.pageService.duplicateRecursivelyMainOperation(
-          ...argsForDuplicateRecursivelyMainOperation,
+          ...(argsForDuplicateRecursivelyMainOperation as Parameters<
+            typeof crowi.pageService.duplicateRecursivelyMainOperation
+          >),
         );
       }
 
@@ -2329,7 +2336,9 @@ describe('PageService page operations with only public pages', () => {
 
       if (isRecursively) {
         await crowi.pageService.deleteRecursivelyMainOperation(
-          ...argsForDeleteRecursivelyMainOperation,
+          ...(argsForDeleteRecursivelyMainOperation as Parameters<
+            typeof crowi.pageService.deleteRecursivelyMainOperation
+          >),
         );
       }
 
@@ -2526,7 +2535,9 @@ describe('PageService page operations with only public pages', () => {
 
       if (isRecursively) {
         await crowi.pageService.deleteCompletelyRecursivelyMainOperation(
-          ...argsForDeleteCompletelyRecursivelyMainOperation,
+          ...(argsForDeleteCompletelyRecursivelyMainOperation as Parameters<
+            typeof crowi.pageService.deleteCompletelyRecursivelyMainOperation
+          >),
         );
       }
 
@@ -2661,7 +2672,7 @@ describe('PageService page operations with only public pages', () => {
         endpoint: '/_api/v3/pages/deletecompletely',
       });
       const deltedPage = await Page.findOne({ _id: page?._id });
-      const deltedRevision = await Revision.findOne({ _id: revision._id });
+      const deltedRevision = await Revision.findOne({ _id: revision?._id });
 
       expect(deltedPage).toBeNull();
       expect(deltedRevision).toBeNull();
@@ -2734,7 +2745,9 @@ describe('PageService page operations with only public pages', () => {
       mockedRevertRecursivelyMainOperation.mockRestore();
       if (isRecursively) {
         await crowi.pageService.revertRecursivelyMainOperation(
-          ...argsForRecursivelyMainOperation,
+          ...(argsForRecursivelyMainOperation as Parameters<
+            typeof crowi.pageService.revertRecursivelyMainOperation
+          >),
         );
       }
 
