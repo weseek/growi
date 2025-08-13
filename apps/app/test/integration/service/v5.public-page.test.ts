@@ -2035,8 +2035,8 @@ describe('PageService page operations with only public pages', () => {
       expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(duplicatedPage.path).toBe(newPagePath);
       expect(duplicatedPage._id).not.toStrictEqual(page?._id);
-      expect(duplicatedPage.revision).toStrictEqual(duplicatedRevision._id);
-      expect(duplicatedRevision.body).toEqual(baseRevision.body);
+      expect(duplicatedPage.revision).toStrictEqual(duplicatedRevision?._id);
+      expect(duplicatedRevision?.body).toEqual(baseRevision?.body);
     });
 
     test('Should NOT duplicate single empty page', async () => {
@@ -2077,8 +2077,8 @@ describe('PageService page operations with only public pages', () => {
       expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(duplicatedPage.path).toBe(newPagePath);
       expect(duplicatedPage._id).not.toStrictEqual(page?._id);
-      expect(duplicatedPage.revision).toStrictEqual(duplicatedRevision._id);
-      expect(duplicatedRevision.body).toEqual(baseRevision.body);
+      expect(duplicatedPage.revision).toStrictEqual(duplicatedRevision?._id);
+      expect(duplicatedRevision?.body).toEqual(baseRevision?.body);
     });
 
     test('Should duplicate multiple pages', async () => {
@@ -2243,10 +2243,16 @@ describe('PageService page operations with only public pages', () => {
       });
       const basePageChild = await Page.findOne({
         parent: basePage?._id,
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       const basePageGrandhild = await Page.findOne({
         parent: basePageChild?._id,
-      }).populate({ path: 'revision', model: 'Revision' });
+      }).populate<{ revision: IRevisionDocument }>({
+        path: 'revision',
+        model: 'Revision',
+      });
       expect(basePage).toBeTruthy();
       expect(basePageChild).toBeTruthy();
       expect(basePageGrandhild).toBeTruthy();
