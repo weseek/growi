@@ -8,8 +8,7 @@ import loggerFactory from '~/utils/logger';
 
 import type { AccessTokenParserReq } from './interfaces';
 
-const logger = loggerFactory('growi:middleware:access-token-parser');
-
+const logger = loggerFactory('growi:middleware:access-token-parser:api-token');
 
 const extractBearerToken = (authHeader: string | undefined): string | null => {
   if (authHeader == null) {
@@ -23,7 +22,8 @@ const extractBearerToken = (authHeader: string | undefined): string | null => {
   return authHeader.substring(7); // Remove 'Bearer ' prefix
 };
 
-export const accessTokenParser = async(req: AccessTokenParserReq, res: Response, next: NextFunction): Promise<void> => {
+
+export const parserForApiToken = async(req: AccessTokenParserReq, res: Response): Promise<void> => {
   // Extract token from Authorization header first
   const bearerToken = extractBearerToken(req.headers.authorization);
 
@@ -31,24 +31,23 @@ export const accessTokenParser = async(req: AccessTokenParserReq, res: Response,
   const accessToken = bearerToken ?? req.query.access_token ?? req.body.access_token;
 
   if (accessToken == null || typeof accessToken !== 'string') {
-    return next();
+    return;
   }
-
-  const User = mongoose.model<HydratedDocument<IUser>, { findUserByApiToken }>('User');
 
   logger.debug('accessToken is', accessToken);
 
-  const user: IUserHasId = await User.findUserByApiToken(accessToken);
+  const User = mongoose.model<HydratedDocument<IUser>, { findUserByApiToken }>('User');
+  const userByApiToken: IUserHasId = await User.findUserByApiToken(accessToken);
 
-  if (user == null) {
-    logger.debug('The access token is invalid');
-    return next();
+  if (userByApiToken == null) {
+    return;
   }
 
-  // transforming attributes
-  req.user = serializeUserSecurely(user);
+  req.user = serializeUserSecurely(userByApiToken);
+  if (req.user == null) {
+    return;
+  }
 
   logger.debug('Access token parsed.');
-
-  return next();
+  return;
 };
