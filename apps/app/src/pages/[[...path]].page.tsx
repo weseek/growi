@@ -14,6 +14,7 @@ import type {
 } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { BasicLayout } from '~/components/Layout/BasicLayout';
@@ -118,6 +119,31 @@ const isInitialProps = (props: Props): props is (InitialProps & SameRouteEachPro
 };
 
 const Page: NextPageWithLayout<Props> = (props: Props) => {
+  const router = useRouter();
+
+  // DEBUG: Log props changes to track browser back behavior
+  console.debug('Page component render:', {
+    currentPathname: props.currentPathname,
+    routerAsPath: router.asPath,
+    timestamp: new Date().toISOString(),
+  });
+
+  // DEBUG: Monitor router changes
+  useEffect(() => {
+    const handleRouteChange = (url: string) => {
+      console.debug('Router route change:', {
+        url,
+        propsCurrentPathname: props.currentPathname,
+        timestamp: new Date().toISOString(),
+      });
+    };
+
+    router.events.on('routeChangeComplete', handleRouteChange);
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [router.events, props.currentPathname]);
+
   // register global EventEmitter
   if (isClient() && window.globalEmitter == null) {
     window.globalEmitter = new EventEmitter();

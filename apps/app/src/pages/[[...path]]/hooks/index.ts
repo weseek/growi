@@ -8,4 +8,4 @@
 
 export { useSameRouteNavigation } from '../use-same-route-navigation';
 export { useShallowRouting } from '../use-shallow-routing';
-export { extractPageIdFromPathname, createNavigationState, isSamePage } from '../navigation-utils';
+export { extractPageIdFromPathname } from '../navigation-utils';

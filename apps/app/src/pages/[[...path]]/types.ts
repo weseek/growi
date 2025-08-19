@@ -78,8 +78,6 @@ export type ExtendedInitialProps = InitialProps & SameRouteEachProps;
  * Lightweight validation for same-route navigation
  */
 export function isValidSameRouteProps(props: unknown): props is SameRouteEachProps {
-  logger.warn('isValidSameRouteProps');
-
   if (typeof props !== 'object' || props === null) {
     logger.warn('isValidSameRouteProps: props is not an object or is null');
     return false;
@@ -117,8 +115,6 @@ export function isValidSameRouteProps(props: unknown): props is SameRouteEachPro
  * First validates SameRouteEachProps, then checks InitialProps-specific properties
  */
 export function isValidInitialAndSameRouteProps(props: unknown): props is InitialProps & SameRouteEachProps {
-  logger.warn('isValidInitialAndSameRouteProps');
-
   // First, validate SameRouteEachProps
   if (!isValidSameRouteProps(props)) {
     logger.warn('isValidInitialAndSameRouteProps: SameRouteEachProps validation failed');

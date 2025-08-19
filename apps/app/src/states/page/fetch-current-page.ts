@@ -2,8 +2,7 @@ import { useCallback, useState } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { isClient } from '@growi/core/dist/utils';
-import { isCreatablePage, isPermalink } from '@growi/core/dist/utils/page-path-utils';
-import { removeHeadingSlash } from '@growi/core/dist/utils/path-utils';
+import { isCreatablePage } from '@growi/core/dist/utils/page-path-utils';
 import { useAtomCallback } from 'jotai/utils';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
@@ -33,14 +32,14 @@ export const useFetchCurrentPage = (): {
       const currentPath = currentPathname || (isClient() ? decodeURIComponent(window.location.pathname) : '');
 
       // Determine target pageId from current path
-      const targetPageId = isPermalink(currentPath) ? removeHeadingSlash(currentPath) : null;
-      let currentPageId = get(currentPageIdAtom);
+      // const targetPageId = isPermalink(currentPath) ? removeHeadingSlash(currentPath) : null;
+      const currentPageId = get(currentPageIdAtom);
 
-      // Sync pageId with current path - single atomic update
-      if (currentPageId !== targetPageId) {
-        currentPageId = targetPageId || undefined;
-        set(currentPageIdAtom, currentPageId);
-      }
+      // NOTE: PageId sync is now handled by useSameRouteNavigation to prevent conflicts
+      // if (currentPageId !== targetPageId) {
+      //   currentPageId = targetPageId || undefined;
+      //   set(currentPageIdAtom, currentPageId);
+      // }
 
       // Get URL parameter for specific revisionId - only when needed
       const revisionId = isClient() && window.location.search
