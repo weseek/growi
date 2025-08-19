@@ -45,9 +45,6 @@ describe('useSameRouteNavigation - Essential Bug Fix Verification', () => {
     return { currentPathname } as Parameters<typeof useSameRouteNavigation>[0];
   };
 
-  // Simple isInitialProps - testing runtime behavior, not type checking
-  const isInitialProps = (props: Parameters<typeof useSameRouteNavigation>[0]): props is never => false; // Always use client-side logic
-
   beforeEach(() => {
     vi.clearAllMocks();
 
@@ -79,7 +76,7 @@ describe('useSameRouteNavigation - Essential Bug Fix Verification', () => {
       const props = createProps('/stale/props/path');
       mockRouter.asPath = '/actual/browser/path'; // Browser is actually here
 
-      renderHook(() => useSameRouteNavigation(props, extractPageIdFromPathname, isInitialProps));
+      renderHook(() => useSameRouteNavigation(props));
 
       await act(async() => {
         await new Promise(resolve => setTimeout(resolve, 0));
@@ -98,7 +95,7 @@ describe('useSameRouteNavigation - Essential Bug Fix Verification', () => {
       mockUseCurrentPageData.mockReturnValue([{ path: '/different/path' }]);
       mockUseCurrentPageId.mockReturnValue(['different-id', mockSetCurrentPageId]);
 
-      const { rerender } = renderHook(() => useSameRouteNavigation(props, extractPageIdFromPathname, isInitialProps));
+      const { rerender } = renderHook(() => useSameRouteNavigation(props));
 
       // Initial render should trigger fetch (mismatched state)
       await act(async() => {
@@ -129,7 +126,7 @@ describe('useSameRouteNavigation - Essential Bug Fix Verification', () => {
       const props = createProps('/some/page');
       mockRouter.asPath = '/some/page';
 
-      renderHook(() => useSameRouteNavigation(props, extractPageIdFromPathname, isInitialProps));
+      renderHook(() => useSameRouteNavigation(props));
 
       await act(async() => {
         await new Promise(resolve => setTimeout(resolve, 0));
@@ -142,7 +139,7 @@ describe('useSameRouteNavigation - Essential Bug Fix Verification', () => {
       const props = createProps('/page/path');
       mockRouter.asPath = '/page/path';
 
-      renderHook(() => useSameRouteNavigation(props, extractPageIdFromPathname, isInitialProps));
+      renderHook(() => useSameRouteNavigation(props));
 
       await act(async() => {
         await new Promise(resolve => setTimeout(resolve, 0));
@@ -159,7 +156,7 @@ describe('useSameRouteNavigation - Essential Bug Fix Verification', () => {
       mockUseCurrentPageData.mockReturnValue([{ path: '/current/page' }]);
       mockUseCurrentPageId.mockReturnValue(['id-for--current-page', mockSetCurrentPageId]);
 
-      renderHook(() => useSameRouteNavigation(props, extractPageIdFromPathname, isInitialProps));
+      renderHook(() => useSameRouteNavigation(props));
 
       // Should not fetch when everything is already in sync
       expect(mockFetchCurrentPage).not.toHaveBeenCalled();
@@ -177,7 +174,7 @@ describe('useSameRouteNavigation - Essential Bug Fix Verification', () => {
       });
       mockFetchCurrentPage.mockReturnValue(slowFetchPromise);
 
-      const { rerender } = renderHook(() => useSameRouteNavigation(props, extractPageIdFromPathname, isInitialProps));
+      const { rerender } = renderHook(() => useSameRouteNavigation(props));
 
       // Start first fetch
       await act(async() => {
@@ -217,7 +214,7 @@ describe('useSameRouteNavigation - Essential Bug Fix Verification', () => {
       // Start with existing page
       mockUseCurrentPageId.mockReturnValue(['old-page-id', mockSetCurrentPageId]);
 
-      renderHook(() => useSameRouteNavigation(props, extractPageIdFromPathname, isInitialProps));
+      renderHook(() => useSameRouteNavigation(props));
 
       await act(async() => {
         await new Promise(resolve => setTimeout(resolve, 0));

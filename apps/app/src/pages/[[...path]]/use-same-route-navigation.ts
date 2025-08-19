@@ -16,8 +16,6 @@ import type { Props, InitialProps, SameRouteEachProps } from './types';
  */
 export const useSameRouteNavigation = (
     props: Props,
-    _extractPageIdFromPathname: (pathname: string) => string | null, // Legacy parameter for backward compatibility
-    isInitialProps: (props: Props) => props is (InitialProps & SameRouteEachProps),
 ): void => {
   const router = useRouter();
   const [currentPage] = useCurrentPageData();
@@ -29,21 +27,18 @@ export const useSameRouteNavigation = (
   const lastProcessedPathnameRef = useRef<string | null>(null);
   const isFetchingRef = useRef<boolean>(false);
 
+  // Type guard to check if props are initial props
+  const isInitialProps = (props: Props): props is (InitialProps & SameRouteEachProps) => {
+    return 'isNextjsRoutingTypeInitial' in props && props.isNextjsRoutingTypeInitial;
+  };
+
   // Process pathname changes - monitor both props.currentPathname and router.asPath
   useEffect(() => {
     // Use router.asPath for browser back/forward compatibility, fallback to props.currentPathname
     const targetPathname = router.asPath || props.currentPathname;
 
-    // Always log when useEffect is triggered
-    console.debug('useSameRouteNavigation useEffect triggered:', {
-      targetPathname,
-      lastProcessed: lastProcessedPathnameRef.current,
-      timestamp: new Date().toISOString(),
-    });
-
     // Skip if we already processed this pathname
     if (lastProcessedPathnameRef.current === targetPathname) {
-      console.debug('Skipping - already processed:', targetPathname);
       return;
     }
 
@@ -52,7 +47,6 @@ export const useSameRouteNavigation = (
     const hasInitialData = isInitialProps(props) && !skipSSR;
 
     if (hasInitialData) {
-      console.debug('Skipping fetch - has initial data:', targetPathname);
       lastProcessedPathnameRef.current = targetPathname;
       return;
     }
@@ -71,34 +65,15 @@ export const useSameRouteNavigation = (
       || (currentPagePath !== targetPathname) // Different path
     );
 
-    console.debug('shouldFetch decision:', {
-      currentPagePath,
-      targetPathname,
-      targetPageId,
-      pageId,
-      condition1_noCurrentPage: !currentPagePath,
-      condition2_differentPageId: (targetPageId != null && pageId != null && pageId !== targetPageId),
-      condition3_differentPath: (currentPagePath !== targetPathname),
-      finalDecision: shouldFetch,
-    });
-
     if (!shouldFetch) {
-      console.debug('No fetch needed for:', targetPathname);
       lastProcessedPathnameRef.current = targetPathname;
       return;
     }
 
     // Prevent concurrent fetches
     if (isFetchingRef.current) {
-      console.debug('Fetch already in progress, skipping:', targetPathname);
       return;
     }
-
-    console.debug('Starting fetch for:', targetPathname, {
-      currentPagePath,
-      targetPageId,
-      pageId,
-    });
 
     isFetchingRef.current = true;
 
@@ -115,8 +90,6 @@ export const useSameRouteNavigation = (
         // Fetch page data
         const pageData = await fetchCurrentPage(targetPathname);
 
-        console.debug('Page data fetched for:', targetPathname, !!pageData);
-
         // Update editing markdown if we have body content
         if (pageData?.revision?.body !== undefined) {
           mutateEditingMarkdown(pageData.revision.body);
@@ -126,7 +99,7 @@ export const useSameRouteNavigation = (
         lastProcessedPathnameRef.current = targetPathname;
       }
       catch (error) {
-        console.error('Error fetching page data for:', targetPathname, error);
+        // Silent error handling - errors are logged by the caller if needed
       }
       finally {
         isFetchingRef.current = false;

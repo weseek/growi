@@ -41,7 +41,6 @@ import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/webs
 import { useSWRMUTxCurrentPageYjsData } from '~/stores/yjs';
 
 import { useSameRouteNavigation, useShallowRouting } from './[[...path]]/hooks';
-import { extractPageIdFromPathname } from './[[...path]]/navigation-utils';
 import { getServerSidePropsForInitial, getServerSidePropsForSameRoute } from './[[...path]]/server-side-props';
 import type {
   Props, InitialProps, SameRouteEachProps, IPageToShowRevisionWithMeta,
@@ -121,27 +120,9 @@ const isInitialProps = (props: Props): props is (InitialProps & SameRouteEachPro
 const Page: NextPageWithLayout<Props> = (props: Props) => {
   const router = useRouter();
 
-  // DEBUG: Log props changes to track browser back behavior
-  console.debug('Page component render:', {
-    currentPathname: props.currentPathname,
-    routerAsPath: router.asPath,
-    timestamp: new Date().toISOString(),
-  });
-
-  // DEBUG: Monitor router changes
+  // Monitor router changes - cleaned up empty handler
   useEffect(() => {
-    const handleRouteChange = (url: string) => {
-      console.debug('Router route change:', {
-        url,
-        propsCurrentPathname: props.currentPathname,
-        timestamp: new Date().toISOString(),
-      });
-    };
-
-    router.events.on('routeChangeComplete', handleRouteChange);
-    return () => {
-      router.events.off('routeChangeComplete', handleRouteChange);
-    };
+    // router.events handlers removed as they were only for debugging
   }, [router.events, props.currentPathname]);
 
   // register global EventEmitter
@@ -172,7 +153,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useSetupGlobalSocketForPage(pageId);
 
   // Use custom hooks for navigation and routing
-  useSameRouteNavigation(props, extractPageIdFromPathname, isInitialProps);
+  useSameRouteNavigation(props);
   useShallowRouting(props);
 
   // Optimized effects with minimal dependencies
