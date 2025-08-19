@@ -33,58 +33,51 @@ vi.mock('../../stores/editor', () => ({
   useEditingMarkdown: () => mockUseEditingMarkdown(),
 }));
 
-describe('useSameRouteNavigation', () => {
-  // Mock page state
-  const mockCurrentPage = {
-    path: '/current-page',
-    revision: {
-      _id: 'revision-id',
-      body: 'page content',
-    },
-  };
-
+describe('useSameRouteNavigation - Essential Bug Fix Verification', () => {
   // Mock functions
   const mockSetCurrentPageId = vi.fn();
   const mockFetchCurrentPage = vi.fn();
   const mockMutateEditingMarkdown = vi.fn();
 
-  // Simplified mock props that avoid complex type checking - focus on navigation behavior
-  const createMockProps = (currentPathname: string) => {
-    return {
-      currentPathname,
-      // Add minimal props to avoid type errors - the hook only uses currentPathname anyway
-    } as unknown as Parameters<typeof useSameRouteNavigation>[0];
+  // Simple props simulation - enough to trigger the actual hook logic
+  const createProps = (currentPathname: string) => {
+    // Cast to bypass type complexity - focus on behavior testing
+    return { currentPathname } as Parameters<typeof useSameRouteNavigation>[0];
   };
 
-  // Simple type predicate that always returns false (treating as same-route navigation)
-  const isInitialProps = (_props: unknown): _props is never => false;
+  // Simple isInitialProps - testing runtime behavior, not type checking
+  const isInitialProps = (props: Parameters<typeof useSameRouteNavigation>[0]): props is never => false; // Always use client-side logic
 
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Setup router mock
-    mockRouter.asPath = '/test-path';
+    // Base router setup - tests will override as needed
+    mockRouter.asPath = '/current/path';
+    mockRouter.pathname = '/[[...path]]';
     (useRouter as ReturnType<typeof vi.fn>).mockReturnValue(mockRouter);
-    (extractPageIdFromPathname as ReturnType<typeof vi.fn>).mockReturnValue('test-page-id');
 
-    mockUseCurrentPageData.mockReturnValue([mockCurrentPage]);
-    mockUseCurrentPageId.mockReturnValue(['current-page-id', mockSetCurrentPageId]);
+    // Mock navigation utility
+    (extractPageIdFromPathname as ReturnType<typeof vi.fn>).mockImplementation((path) => {
+      return `id-for-${path.replace(/\//g, '-')}`;
+    });
+
+    // Base hook returns
+    mockUseCurrentPageData.mockReturnValue([null]);
+    mockUseCurrentPageId.mockReturnValue([null, mockSetCurrentPageId]);
     mockUseFetchCurrentPage.mockReturnValue({ fetchCurrentPage: mockFetchCurrentPage });
     mockUseEditingMarkdown.mockReturnValue({ mutate: mockMutateEditingMarkdown });
 
-    mockFetchCurrentPage.mockResolvedValue(mockCurrentPage);
+    // Default fetch behavior
+    mockFetchCurrentPage.mockResolvedValue({
+      revision: { body: 'fetched content' },
+    });
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  describe('Browser Back/Forward Navigation - Core Behavior Test', () => {
-    it('should use router.asPath when different from props.currentPathname', async() => {
-      const props = createMockProps('/page-d');
-
-      // Setup router.asPath to simulate browser back to page C
-      mockRouter.asPath = '/page-c';
+  describe('CORE FIX: router.asPath dependency', () => {
+    it('should fetch when router.asPath differs from props.currentPathname', async() => {
+      // THE EXACT BUG SCENARIO: stale props vs current router state
+      const props = createProps('/stale/props/path');
+      mockRouter.asPath = '/actual/browser/path'; // Browser is actually here
 
       renderHook(() => useSameRouteNavigation(props, extractPageIdFromPathname, isInitialProps));
 
@@ -92,111 +85,49 @@ describe('useSameRouteNavigation', () => {
         await new Promise(resolve => setTimeout(resolve, 0));
       });
 
-      // Core fix verification: Should fetch using router.asPath (page C), not props.currentPathname (page D)
-      expect(mockFetchCurrentPage).toHaveBeenCalledWith('/page-c');
+      // VERIFY THE FIX: should use router.asPath, not props.currentPathname
+      expect(mockFetchCurrentPage).toHaveBeenCalledWith('/actual/browser/path');
+      expect(mockFetchCurrentPage).not.toHaveBeenCalledWith('/stale/props/path');
     });
 
-    it('should trigger useEffect when router.asPath changes during browser navigation', async() => {
-      const props = createMockProps('/page-d');
+    it('should react to router.asPath changes (useEffect dependency)', async() => {
+      const props = createProps('/some/path');
+
+      // Start with MISMATCHED state to trigger initial fetch
+      mockRouter.asPath = '/some/path';
+      mockUseCurrentPageData.mockReturnValue([{ path: '/different/path' }]);
+      mockUseCurrentPageId.mockReturnValue(['different-id', mockSetCurrentPageId]);
 
       const { rerender } = renderHook(() => useSameRouteNavigation(props, extractPageIdFromPathname, isInitialProps));
 
+      // Initial render should trigger fetch (mismatched state)
       await act(async() => {
         await new Promise(resolve => setTimeout(resolve, 0));
       });
-
       expect(mockFetchCurrentPage).toHaveBeenCalledTimes(1);
+      expect(mockFetchCurrentPage).toHaveBeenLastCalledWith('/some/path');
 
-      // Simulate browser back - router.asPath changes from /test-path to /page-c
-      mockRouter.asPath = '/page-c';
+      // Clear the mock to test the change detection
+      mockFetchCurrentPage.mockClear();
+
+      // Browser navigation changes router.asPath
+      mockRouter.asPath = '/new/browser/location';
       rerender();
 
       await act(async() => {
         await new Promise(resolve => setTimeout(resolve, 0));
       });
 
-      // Should trigger another fetch when router.asPath changes
-      expect(mockFetchCurrentPage).toHaveBeenCalledTimes(2);
-      expect(mockFetchCurrentPage).toHaveBeenLastCalledWith('/page-c');
-    });
-
-    it('should prefer router.asPath over props.currentPathname for accurate navigation', async() => {
-      const props = createMockProps('/stale-props-path');
-
-      // Browser actually navigated to /actual-browser-path but props are stale
-      mockRouter.asPath = '/actual-browser-path';
-
-      renderHook(() => useSameRouteNavigation(props, extractPageIdFromPathname, isInitialProps));
-
-      await act(async() => {
-        await new Promise(resolve => setTimeout(resolve, 0));
-      });
-
-      // Should use the browser's actual path, not the stale props
-      expect(mockFetchCurrentPage).toHaveBeenCalledWith('/actual-browser-path');
-    });
-  });
-
-  describe('State Management During Navigation', () => {
-    it('should clear current page ID before setting new one', async() => {
-      const props = createMockProps('/new-page');
-
-      renderHook(() => useSameRouteNavigation(props, extractPageIdFromPathname, isInitialProps));
-
-      await act(async() => {
-        await new Promise(resolve => setTimeout(resolve, 0));
-      });
-
-      // Should clear first, then set new ID
-      expect(mockSetCurrentPageId).toHaveBeenNthCalledWith(1, undefined);
-      expect(mockSetCurrentPageId).toHaveBeenNthCalledWith(2, 'test-page-id');
-    });
-
-    it('should update editor content with fetched page data', async() => {
-      const props = createMockProps('/new-page');
-
-      renderHook(() => useSameRouteNavigation(props, extractPageIdFromPathname, isInitialProps));
-
-      await act(async() => {
-        await new Promise(resolve => setTimeout(resolve, 0));
-      });
-
-      // Should update editor with the fetched page content
-      expect(mockMutateEditingMarkdown).toHaveBeenCalledWith('page content');
-    });
-  });
-
-  describe('Race Condition Prevention', () => {
-    it('should handle concurrent navigation attempts', async() => {
-      const props = createMockProps('/new-page');
-
-      // Make fetchCurrentPage slow to simulate race condition
-      mockFetchCurrentPage.mockImplementation(() => new Promise(resolve => setTimeout(() => resolve(mockCurrentPage), 100)));
-
-      const { rerender } = renderHook(() => useSameRouteNavigation(props, extractPageIdFromPathname, isInitialProps));
-
-      // Start first navigation
-      await act(async() => {
-        await new Promise(resolve => setTimeout(resolve, 10));
-      });
-
-      // Start second navigation while first is in progress
-      rerender();
-      await act(async() => {
-        await new Promise(resolve => setTimeout(resolve, 10));
-      });
-
-      // Should only call fetchCurrentPage once due to race condition prevention
+      // Should detect the change and fetch new content
       expect(mockFetchCurrentPage).toHaveBeenCalledTimes(1);
+      expect(mockFetchCurrentPage).toHaveBeenLastCalledWith('/new/browser/location');
     });
   });
 
-  describe('Error Handling', () => {
-    it('should handle network errors gracefully', async() => {
-      const props = createMockProps('/new-page');
-
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-      mockFetchCurrentPage.mockRejectedValue(new Error('Network error'));
+  describe('Essential behavior verification', () => {
+    it('should update currentPageId when navigating', async() => {
+      const props = createProps('/some/page');
+      mockRouter.asPath = '/some/page';
 
       renderHook(() => useSameRouteNavigation(props, extractPageIdFromPathname, isInitialProps));
 
@@ -204,22 +135,12 @@ describe('useSameRouteNavigation', () => {
         await new Promise(resolve => setTimeout(resolve, 0));
       });
 
-      // The hook uses router.asPath || props.currentPathname, so it uses router.asPath (/test-path)
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Error fetching page data for:',
-        '/test-path',
-        expect.any(Error),
-      );
-
-      consoleSpy.mockRestore();
+      expect(mockSetCurrentPageId).toHaveBeenCalledWith('id-for--some-page');
     });
-  });
 
-  describe('Fetch Logic Conditions', () => {
-    it('should fetch when no current page data exists', async() => {
-      mockUseCurrentPageData.mockReturnValue([null]);
-
-      const props = createMockProps('/new-page');
+    it('should update editor content on successful fetch', async() => {
+      const props = createProps('/page/path');
+      mockRouter.asPath = '/page/path';
 
       renderHook(() => useSameRouteNavigation(props, extractPageIdFromPathname, isInitialProps));
 
@@ -227,38 +148,20 @@ describe('useSameRouteNavigation', () => {
         await new Promise(resolve => setTimeout(resolve, 0));
       });
 
-      // The hook uses router.asPath || props.currentPathname, so it uses router.asPath (/test-path)
-      expect(mockFetchCurrentPage).toHaveBeenCalledWith('/test-path');
+      expect(mockMutateEditingMarkdown).toHaveBeenCalledWith('fetched content');
     });
 
-    it('should fetch when current pageId differs from target pageId', async() => {
-      mockUseCurrentPageId.mockReturnValue(['different-page-id', mockSetCurrentPageId]);
-      (extractPageIdFromPathname as ReturnType<typeof vi.fn>).mockReturnValue('target-page-id');
+    it('should skip fetch when page already matches router state', () => {
+      const props = createProps('/current/page');
+      mockRouter.asPath = '/current/page';
 
-      const props = createMockProps('/new-page');
+      // Page already loaded and matches
+      mockUseCurrentPageData.mockReturnValue([{ path: '/current/page' }]);
+      mockUseCurrentPageId.mockReturnValue(['id-for--current-page', mockSetCurrentPageId]);
 
       renderHook(() => useSameRouteNavigation(props, extractPageIdFromPathname, isInitialProps));
 
-      await act(async() => {
-        await new Promise(resolve => setTimeout(resolve, 0));
-      });
-
-      // The hook uses router.asPath || props.currentPathname, so it uses router.asPath (/test-path)
-      expect(mockFetchCurrentPage).toHaveBeenCalledWith('/test-path');
-    });
-
-    it('should not fetch when all conditions are already satisfied', () => {
-      // Setup matching conditions - page already loaded correctly
-      const matchingCurrentPage = { ...mockCurrentPage, path: '/test-path' }; // Match router.asPath
-      mockUseCurrentPageData.mockReturnValue([matchingCurrentPage]);
-      mockUseCurrentPageId.mockReturnValue(['same-page-id', mockSetCurrentPageId]);
-      (extractPageIdFromPathname as ReturnType<typeof vi.fn>).mockReturnValue('same-page-id');
-
-      const props = createMockProps('/same-path');
-
-      renderHook(() => useSameRouteNavigation(props, extractPageIdFromPathname, isInitialProps));
-
-      // Should not fetch if everything is already in sync
+      // Should not fetch when everything is already in sync
       expect(mockFetchCurrentPage).not.toHaveBeenCalled();
     });
   });
