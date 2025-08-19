@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { useRouter } from 'next/router';
 
@@ -7,8 +7,8 @@ import {
 } from '../../states/page';
 import { useEditingMarkdown } from '../../stores/editor';
 
-import { extractPageIdFromPathname } from './navigation-utils';
-import type { Props, InitialProps, SameRouteEachProps } from './types';
+import { extractPageIdFromPathname, isInitialProps } from './navigation-utils';
+import type { Props } from './types';
 
 /**
  * Custom hook for handling same-route navigation and fetching page data when needed
@@ -26,11 +26,6 @@ export const useSameRouteNavigation = (
   // Track the last processed pathname to prevent unnecessary operations
   const lastProcessedPathnameRef = useRef<string | null>(null);
   const isFetchingRef = useRef<boolean>(false);
-
-  // Type guard to check if props are initial props
-  const isInitialProps = (props: Props): props is (InitialProps & SameRouteEachProps) => {
-    return 'isNextjsRoutingTypeInitial' in props && props.isNextjsRoutingTypeInitial;
-  };
 
   // Process pathname changes - monitor both props.currentPathname and router.asPath
   useEffect(() => {
