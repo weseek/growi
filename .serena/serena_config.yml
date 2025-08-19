@@ -1,0 +1,4 @@
+web_dashboard: false
+# whether to open the Serena web dashboard (which will be accessible through your web browser) that
+# shows Serena's current session logs - as an alternative to the GUI log window which
+# is supported on all platforms.
