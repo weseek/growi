@@ -303,17 +303,16 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
+   *                  type: object
    *                  properties:
-   *                    type: object
-   *                    properties:
-   *                      page:
-   *                        $ref: '#/components/schemas/Page'
-   *                      tags:
-   *                        type: array
-   *                        items:
-   *                          $ref: '#/components/schemas/Tags'
-   *                      revision:
-   *                        $ref: '#/components/schemas/Revision'
+   *                    page:
+   *                      $ref: '#/components/schemas/Page'
+   *                    tags:
+   *                      type: array
+   *                      items:
+   *                        $ref: '#/components/schemas/Tags'
+   *                    revision:
+   *                       $ref: '#/components/schemas/Revision'
    *          409:
    *            description: page path is already existed
    */
