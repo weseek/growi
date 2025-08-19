@@ -164,5 +164,70 @@ describe('useSameRouteNavigation - Essential Bug Fix Verification', () => {
       // Should not fetch when everything is already in sync
       expect(mockFetchCurrentPage).not.toHaveBeenCalled();
     });
+
+    // CRITICAL: Race condition prevention - THE CORE BUG FIX
+    it('should prevent concurrent fetches during rapid navigation', async() => {
+      const props = createProps('/first/page');
+      mockRouter.asPath = '/first/page';
+
+      // Simulate slow network request
+      let resolveFetch: (value: { revision: { body: string } }) => void = () => {};
+      const slowFetchPromise = new Promise((resolve) => {
+        resolveFetch = resolve;
+      });
+      mockFetchCurrentPage.mockReturnValue(slowFetchPromise);
+
+      const { rerender } = renderHook(() => useSameRouteNavigation(props, extractPageIdFromPathname, isInitialProps));
+
+      // Start first fetch
+      await act(async() => {
+        await new Promise(resolve => setTimeout(resolve, 0));
+      });
+      expect(mockFetchCurrentPage).toHaveBeenCalledTimes(1);
+
+      // Rapid navigation - should be prevented
+      mockRouter.asPath = '/second/page';
+      rerender();
+
+      // Should NOT start second fetch due to race condition protection
+      expect(mockFetchCurrentPage).toHaveBeenCalledTimes(1); // Still only 1 call
+
+      // Complete the first fetch
+      resolveFetch({ revision: { body: 'content' } });
+      await act(async() => {
+        await slowFetchPromise;
+      });
+
+      // Now second navigation should work
+      mockRouter.asPath = '/third/page';
+      rerender();
+
+      await act(async() => {
+        await new Promise(resolve => setTimeout(resolve, 0));
+      });
+
+      expect(mockFetchCurrentPage).toHaveBeenCalledTimes(2); // Now second call
+    });
+
+    // CRITICAL: State clearing sequence - prevents stale data
+    it('should clear pageId before setting new one', async() => {
+      const props = createProps('/new/page');
+      mockRouter.asPath = '/new/page';
+
+      // Start with existing page
+      mockUseCurrentPageId.mockReturnValue(['old-page-id', mockSetCurrentPageId]);
+
+      renderHook(() => useSameRouteNavigation(props, extractPageIdFromPathname, isInitialProps));
+
+      await act(async() => {
+        await new Promise(resolve => setTimeout(resolve, 0));
+      });
+
+      // Verify clearing sequence: undefined first, then new ID
+      expect(mockSetCurrentPageId).toHaveBeenCalledWith(undefined);
+      expect(mockSetCurrentPageId).toHaveBeenCalledWith('id-for--new-page');
+      expect(mockSetCurrentPageId.mock.calls[0][0]).toBe(undefined);
+      expect(mockSetCurrentPageId.mock.calls[1][0]).toBe('id-for--new-page');
+    });
   });
 });
