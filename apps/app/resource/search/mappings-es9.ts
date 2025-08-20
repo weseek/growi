@@ -3,15 +3,15 @@ import type { estypes } from '@elastic/elasticsearch9';
 type Mappings = {
   settings: estypes.IndicesCreateRequest['settings'];
   mappings: estypes.IndicesCreateRequest['mappings'];
-}
+};
 
 export const mappings: Mappings = {
   settings: {
     analysis: {
       filter: {
         english_stop: {
-          type:       'stop',
-          stopwords:  '_english_',
+          type: 'stop',
+          stopwords: '_english_',
         },
       },
       tokenizer: {
@@ -31,10 +31,7 @@ export const mappings: Mappings = {
         english_edge_ngram: {
           type: 'custom',
           tokenizer: 'edge_ngram_tokenizer',
-          filter: [
-            'lowercase',
-            'english_stop',
-          ],
+          filter: ['lowercase', 'english_stop'],
         },
       },
     },

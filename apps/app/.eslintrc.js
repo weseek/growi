@@ -26,6 +26,8 @@ module.exports = {
     'test/integration/migrations/**',
     'test/integration/models/**',
     'test/integration/setup.js',
+    'bin/**',
+    'config/**',
   ],
   settings: {
     // resolve path aliases by eslint-import-resolver-typescript
