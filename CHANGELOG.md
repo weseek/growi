@@ -1,8 +1,21 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.2.8...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.2.9...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.2.9](https://github.com/weseek/growi/compare/v7.2.8...v7.2.9) - 2025-07-01
+
+### 🚀 Improvement
+
+* imprv(ai): Assistant instructions (#10129) @yuki-takei
+* imprv: OpenTelemetry phase 2 (#10095) @yuki-takei
+* imprv: Adjust margin-top for .main at md and lg breakpoints (#10131) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Sharelink expiration date parsing when the date is cleared by the calendar UI (#10132) @yuki-takei
+* fix: Cannot change file upload destination to "MongoDB (GridFS)" or "local" for dev/7.2.x (#10119) @miya
 
 ## [v7.2.8](https://github.com/weseek/growi/compare/v7.2.7...v7.2.8) - 2025-06-26
 
