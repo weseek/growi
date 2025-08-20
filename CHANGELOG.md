@@ -1,8 +1,21 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.2.9...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.2.10...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.2.10](https://github.com/weseek/growi/compare/v7.2.9...v7.2.10) - 2025-08-20
+
+### 🐛 Bug Fixes
+
+* fix: Auto-scroll to anchor for page view (for v7.2.x) (#10241) @miya
+* fix: OpenTelemetry metrics setup (#10219) @yuki-takei
+* fix: Share link copy button couldn't be pressed (#10221) @yuki-takei
+* fix: Mermaid diagrams are not displayed when svg ids are duplicated (for v7.2.x) (#10184) @miya
+
+### 🧰 Maintenance
+
+* support: Change OpenTelemetry configuration (#10218) @yuki-takei
 
 ## [v7.2.9](https://github.com/weseek/growi/compare/v7.2.8...v7.2.9) - 2025-07-01
 
