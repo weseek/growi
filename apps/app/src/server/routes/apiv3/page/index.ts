@@ -341,8 +341,16 @@ module.exports = (crowi) => {
    *                  userRelatedGrantUserGroupIds:
    *                    type: array
    *                    items:
-   *                      type: string
-   *                      description: UserGroup ID
+   *                      type: object
+   *                      properties:
+   *                        type:
+   *                          type: string
+   *                          description: Group type
+   *                          example: 'UserGroup'
+   *                        item:
+   *                          type: string
+   *                          description: UserGroup ID
+   *                          example: '5ae5fccfc5577b0004dbd8ab'
    *                  overwriteScopesOfDescendants:
    *                    type: boolean
    *                    description: Determine whether the scopes of descendants should be overwritten
@@ -368,14 +376,12 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
+   *                  type: object
    *                  properties:
-   *                    data:
-   *                      type: object
-   *                      properties:
-   *                        page:
-   *                          $ref: '#/components/schemas/Page'
-   *                        revision:
-   *                          $ref: '#/components/schemas/Revision'
+   *                    page:
+   *                      $ref: '#/components/schemas/Page'
+   *                    revision:
+   *                      $ref: '#/components/schemas/Revision'
    *          403:
    *            $ref: '#/components/responses/Forbidden'
    *          500:
