@@ -26,6 +26,7 @@ module.exports = {
     'test/integration/migrations/**',
     'test/integration/models/**',
     'test/integration/setup.js',
+    'playwright/**',
   ],
   settings: {
     // resolve path aliases by eslint-import-resolver-typescript

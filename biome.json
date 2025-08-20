@@ -26,7 +26,6 @@
       "!apps/app/bin/**",
       "!apps/app/config/**",
       "!apps/app/docker/**",
-      "!apps/app/playwright/**",
       "!apps/app/public/**",
       "!apps/app/resource/**",
       "!apps/app/src/**",
