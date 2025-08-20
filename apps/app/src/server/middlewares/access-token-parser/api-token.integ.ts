@@ -17,6 +17,7 @@ vi.mock('@growi/core/dist/models/serializers', { spy: true });
 describe('access-token-parser middleware', () => {
 
   let User;
+  const dummyAccessToken = 'd4+pf06KZPt71C9RdyekTtgaOPQNvGnYJWVWDowJvp4=';
 
   beforeAll(async() => {
     const crowiMock = mock<Crowi>({
@@ -42,7 +43,7 @@ describe('access-token-parser middleware', () => {
     expect(reqMock.user).toBeUndefined();
 
     // act
-    await parserForApiToken(reqMock, resMock);
+    await parserForApiToken(dummyAccessToken)(reqMock, resMock);
 
     // assert
     expect(reqMock.user).toBeUndefined();
@@ -60,7 +61,7 @@ describe('access-token-parser middleware', () => {
 
     // act
     reqMock.query.access_token = 'invalidToken';
-    await parserForApiToken(reqMock, resMock);
+    await parserForApiToken(dummyAccessToken)(reqMock, resMock);
 
     // assert
     expect(reqMock.user).toBeUndefined();
@@ -88,7 +89,7 @@ describe('access-token-parser middleware', () => {
 
     // act
     reqMock.query.access_token = targetUser.apiToken;
-    await parserForApiToken(reqMock, resMock);
+    await parserForApiToken(dummyAccessToken)(reqMock, resMock);
 
     // assert
     expect(reqMock.user).toBeDefined();
@@ -116,7 +117,7 @@ describe('access-token-parser middleware', () => {
 
     // act
     reqMock.body.access_token = targetUser.apiToken;
-    await parserForApiToken(reqMock, resMock);
+    await parserForApiToken(dummyAccessToken)(reqMock, resMock);
 
     // assert
     expect(reqMock.user).toBeDefined();
@@ -147,7 +148,7 @@ describe('access-token-parser middleware', () => {
 
     // act
     reqMock.headers.authorization = `Bearer ${targetUser.apiToken}`;
-    await parserForApiToken(reqMock, resMock);
+    await parserForApiToken(dummyAccessToken)(reqMock, resMock);
 
     // assert
     expect(reqMock.user).toBeDefined();
@@ -172,7 +173,7 @@ describe('access-token-parser middleware', () => {
 
     // act
     reqMock.headers.authorization = `Basic ${randomString}`; // Basic auth header with random string
-    await parserForApiToken(reqMock, resMock);
+    await parserForApiToken(dummyAccessToken)(reqMock, resMock);
 
     // assert
     expect(reqMock.user).toBeUndefined();

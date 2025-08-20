@@ -1,9 +1,9 @@
 import { faker } from '@faker-js/faker';
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import type { Response } from 'express';
 import { mock } from 'vitest-mock-extended';
 
-import { SCOPE } from '@growi/core/dist/interfaces';
 import type Crowi from '~/server/crowi';
 import type UserEvent from '~/server/events/user';
 import { AccessToken } from '~/server/models/access-token';
@@ -17,6 +17,7 @@ vi.mock('@growi/core/dist/models/serializers', { spy: true });
 describe('access-token-parser middleware for access token with scopes', () => {
 
   let User;
+  const dummyAccessToken = 'cb51d35793fc5fd4a0aaae354b106045d7a774620ecf8068c147d1780f3573fc';
 
   beforeAll(async() => {
     const crowiMock = mock<Crowi>({
@@ -39,7 +40,7 @@ describe('access-token-parser middleware for access token with scopes', () => {
     });
     const resMock = mock<Response>();
 
-    await parserForAccessToken([])(reqMock, resMock);
+    await parserForAccessToken(dummyAccessToken, [])(reqMock, resMock);
 
     expect(reqMock.user).toBeUndefined();
   });
@@ -69,7 +70,7 @@ describe('access-token-parser middleware for access token with scopes', () => {
 
     // act
     reqMock.query.access_token = token;
-    await parserForAccessToken([])(reqMock, resMock);
+    await parserForAccessToken(dummyAccessToken, [])(reqMock, resMock);
 
     // assert
     expect(reqMock.user).toBeUndefined();
@@ -102,7 +103,7 @@ describe('access-token-parser middleware for access token with scopes', () => {
 
     // act
     reqMock.query.access_token = token;
-    await parserForAccessToken([SCOPE.READ.USER_SETTINGS.INFO])(reqMock, resMock);
+    await parserForAccessToken(dummyAccessToken, [SCOPE.READ.USER_SETTINGS.INFO])(reqMock, resMock);
 
     // assert
     expect(reqMock.user).toBeDefined();
@@ -137,7 +138,7 @@ describe('access-token-parser middleware for access token with scopes', () => {
 
     // act - try to access with write:user:info scope
     reqMock.query.access_token = token;
-    await parserForAccessToken([SCOPE.WRITE.USER_SETTINGS.INFO])(reqMock, resMock);
+    await parserForAccessToken(dummyAccessToken, [SCOPE.WRITE.USER_SETTINGS.INFO])(reqMock, resMock);
 
     // // assert
     expect(reqMock.user).toBeUndefined();
@@ -170,7 +171,7 @@ describe('access-token-parser middleware for access token with scopes', () => {
 
     // act - try to access with read:user:info scope
     reqMock.query.access_token = token;
-    await parserForAccessToken([SCOPE.READ.USER_SETTINGS.INFO])(reqMock, resMock);
+    await parserForAccessToken(dummyAccessToken, [SCOPE.READ.USER_SETTINGS.INFO])(reqMock, resMock);
 
     // assert
     expect(reqMock.user).toBeDefined();
@@ -202,7 +203,7 @@ describe('access-token-parser middleware for access token with scopes', () => {
 
     // act - try to access with read:user:info scope
     reqMock.query.access_token = token;
-    await parserForAccessToken([SCOPE.READ.USER_SETTINGS.INFO, SCOPE.READ.USER_SETTINGS.API.ACCESS_TOKEN])(reqMock, resMock);
+    await parserForAccessToken(dummyAccessToken, [SCOPE.READ.USER_SETTINGS.INFO, SCOPE.READ.USER_SETTINGS.API.ACCESS_TOKEN])(reqMock, resMock);
 
     // assert
     expect(reqMock.user).toBeDefined();
