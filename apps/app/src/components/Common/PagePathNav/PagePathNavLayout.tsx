@@ -49,7 +49,11 @@ export const PagePathNavLayout = (props: Props): JSX.Element => {
       className={`${className} ${moduleClass}`}
       style={{ maxWidth }}
     >
-      <span className={`${formerLinkClassName ?? ''} ${styles['grw-former-link']}`}>{formerLink}</span>
+      {formerLink && (
+        <span className={`${formerLinkClassName ?? ''} ${styles['grw-former-link']} mb-2 d-block`}>
+          {formerLink}
+        </span>
+      )}
       <div className={containerLayoutClass}>
         <h1 className={`m-0 d-inline align-bottom ${latterLinkClassName}`}>
           {latterLink}
