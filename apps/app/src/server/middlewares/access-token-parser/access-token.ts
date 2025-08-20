@@ -5,14 +5,17 @@ import type { Response } from 'express';
 import { AccessToken } from '~/server/models/access-token';
 import loggerFactory from '~/utils/logger';
 
+import { extractBearerToken } from './extract-bearer-token';
 import type { AccessTokenParserReq } from './interfaces';
 
 const logger = loggerFactory('growi:middleware:access-token-parser:access-token');
 
 export const parserForAccessToken = (scopes: Scope[]) => {
   return async(req: AccessTokenParserReq, res: Response): Promise<void> => {
+    // Extract token from Authorization header first
+    const bearerToken = extractBearerToken(req.headers.authorization);
 
-    const accessToken = req.query.access_token ?? req.body.access_token;
+    const accessToken = bearerToken ?? req.query.access_token ?? req.body.access_token;
     if (accessToken == null || typeof accessToken !== 'string') {
       return;
     }
