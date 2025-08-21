@@ -6,10 +6,10 @@ import type { IPageHasId } from '@growi/core';
 import { isGlobPatternPath } from '@growi/core/dist/utils/page-path-utils';
 import { type TypeaheadRef, Typeahead } from 'react-bootstrap-typeahead';
 import { useTranslation } from 'react-i18next';
-import SimpleBar from 'simplebar-react';
 import {
   ModalBody,
 } from 'reactstrap';
+import SimpleBar from 'simplebar-react';
 
 import { useSWRxSearch } from '~/stores/search';
 
@@ -173,13 +173,15 @@ export const AiAssistantKeywordSearch = (props: Props): JSX.Element => {
               {t('modal_ai_assistant.select_assistant_reference_pages')}
             </h4>
             <div className="px-4">
-              <SelectablePagePageList
-                isEditable
-                pages={pagesWithGlobPath ?? []}
-                method="add"
-                onClickMethodButton={addPage}
-                disablePagePaths={selectedPagesArray.map(page => page.path)}
-              />
+              <SimpleBar className="page-list-container" style={{ maxHeight: '300px' }}>
+                <SelectablePagePageList
+                  isEditable
+                  pages={pagesWithGlobPath ?? []}
+                  method="add"
+                  onClickMethodButton={addPage}
+                  disablePagePaths={selectedPagesArray.map(page => page.path)}
+                />
+              </SimpleBar>
             </div>
           </>
         )}
