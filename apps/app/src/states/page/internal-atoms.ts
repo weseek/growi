@@ -14,6 +14,10 @@ export const pageNotFoundAtom = atom(false);
 export const pageNotCreatableAtom = atom(false);
 export const latestRevisionAtom = atom(true);
 
+// Fetch state atoms (internal)
+export const pageLoadingAtom = atom(false);
+export const pageErrorAtom = atom<Error | null>(null);
+
 // Template data atoms (internal)
 export const templateTagsAtom = atom<string[]>([]);
 export const templateBodyAtom = atom<string>('');

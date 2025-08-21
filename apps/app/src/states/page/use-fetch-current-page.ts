@@ -1,8 +1,9 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { isClient } from '@growi/core/dist/utils';
 import { isCreatablePage } from '@growi/core/dist/utils/page-path-utils';
+import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
@@ -10,12 +11,21 @@ import { useShareLinkId } from '~/stores-universal/context';
 
 import {
   currentPageIdAtom, currentPageDataAtom, pageNotFoundAtom, pageNotCreatableAtom,
+  pageLoadingAtom, pageErrorAtom,
 } from './internal-atoms';
+
+// API parameter types for better type safety
+interface PageApiParams {
+  pageId?: string;
+  path?: string;
+  shareLinkId?: string;
+  revisionId?: string;
+}
 
 
 /**
- * Simplified page fetching hook using Jotai + SWR
- * Replaces the complex useSWRMUTxCurrentPage with cleaner state management
+ * Simplified page fetching hook using Jotai state management
+ * All state is managed through atoms for consistent global state
  */
 export const useFetchCurrentPage = (): {
   fetchCurrentPage: (currentPathname?: string) => Promise<IPagePopulatedToShowRevision | null>,
@@ -24,37 +34,30 @@ export const useFetchCurrentPage = (): {
 } => {
   const { data: shareLinkId } = useShareLinkId();
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+  // Use atoms for state instead of local state
+  const isLoading = useAtomValue(pageLoadingAtom);
+  const error = useAtomValue(pageErrorAtom);
 
   const fetchCurrentPage = useAtomCallback(
     useCallback(async(get, set, currentPathname?: string) => {
       const currentPath = currentPathname || (isClient() ? decodeURIComponent(window.location.pathname) : '');
 
-      // Determine target pageId from current path
-      // const targetPageId = isPermalink(currentPath) ? removeHeadingSlash(currentPath) : null;
       const currentPageId = get(currentPageIdAtom);
-
-      // NOTE: PageId sync is now handled by useSameRouteNavigation to prevent conflicts
-      // if (currentPageId !== targetPageId) {
-      //   currentPageId = targetPageId || undefined;
-      //   set(currentPageIdAtom, currentPageId);
-      // }
 
       // Get URL parameter for specific revisionId - only when needed
       const revisionId = isClient() && window.location.search
         ? new URLSearchParams(window.location.search).get('revisionId') || undefined
         : undefined;
 
-      setIsLoading(true);
-      setError(null);
+      set(pageLoadingAtom, true);
+      set(pageErrorAtom, null);
 
       try {
-        // Build API parameters efficiently
-        const apiParams: Record<string, string> = {};
-
-        if (shareLinkId) apiParams.shareLinkId = shareLinkId;
-        if (revisionId) apiParams.revisionId = revisionId;
+        // Build API parameters with type safety
+        const apiParams: PageApiParams = {
+          ...(shareLinkId && { shareLinkId }),
+          ...(revisionId && { revisionId }),
+        };
 
         // Use pageId when available, fallback to path
         if (currentPageId) {
@@ -86,15 +89,14 @@ export const useFetchCurrentPage = (): {
         return newData;
       }
       catch (err) {
-        const errorMsg = err instanceof Error ? err.message.toLowerCase() : '';
+        const error = err instanceof Error ? err : new Error('Unknown error occurred');
+        const errorMsg = error.message.toLowerCase();
 
         // Handle specific error types with batch updates
         if (errorMsg.includes('not found') || errorMsg.includes('404')) {
-          // Batch update for 404 errors
           set(pageNotFoundAtom, true);
           set(currentPageDataAtom, undefined);
 
-          // Determine if page is creatable
           if (currentPath) {
             set(pageNotCreatableAtom, !isCreatablePage(currentPath));
           }
@@ -102,18 +104,17 @@ export const useFetchCurrentPage = (): {
         }
 
         if (errorMsg.includes('forbidden') || errorMsg.includes('403')) {
-          // Batch update for 403 errors
           set(pageNotFoundAtom, false);
           set(pageNotCreatableAtom, true);
           set(currentPageDataAtom, undefined);
           return null;
         }
 
-        setError(new Error('Failed to fetch current page'));
+        set(pageErrorAtom, new Error(`Failed to fetch current page: ${error.message}`));
         return null;
       }
       finally {
-        setIsLoading(false);
+        set(pageLoadingAtom, false);
       }
     }, [shareLinkId]),
   );

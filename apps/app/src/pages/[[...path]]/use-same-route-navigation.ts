@@ -1,4 +1,6 @@
-import { useEffect, useRef, useMemo } from 'react';
+import {
+  useEffect, useRef, useMemo, useCallback,
+} from 'react';
 
 import { useRouter } from 'next/router';
 
@@ -16,22 +18,58 @@ const logger = loggerFactory('growi:hooks:useSameRouteNavigation');
 
 /**
  * Custom hook to calculate the target pathname for navigation
- * Memoizes the result to prevent unnecessary recalculations
+ * Uses router.asPath as the primary source of truth for current location
  */
 const useNavigationTarget = (router: ReturnType<typeof useRouter>, props: Props): string => {
   return useMemo(() => {
-    // Use router.asPath for browser back/forward compatibility, fallback to props.currentPathname
+    // Always prefer router.asPath for accurate browser state
     return router.asPath || props.currentPathname;
   }, [router.asPath, props.currentPathname]);
 };
 
 /**
+ * Handles page state updates during navigation
+ * Centralizes all page-related state management logic
+ */
+const usePageStateManager = () => {
+  const [pageId, setCurrentPageId] = useCurrentPageId();
+  const { fetchCurrentPage } = useFetchCurrentPage();
+  const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
+
+  const updatePageState = useCallback(async(targetPathname: string, targetPageId: string | null) => {
+    try {
+      // Clear current state for clean transition
+      setCurrentPageId(undefined);
+
+      // Set new pageId if available
+      if (targetPageId) {
+        setCurrentPageId(targetPageId);
+      }
+
+      // Fetch page data
+      const pageData = await fetchCurrentPage(targetPathname);
+
+      // Update editing markdown if we have body content
+      if (pageData?.revision?.body !== undefined) {
+        mutateEditingMarkdown(pageData.revision.body);
+      }
+
+      return true; // Success
+    }
+    catch (error) {
+      logger.error('Navigation failed for pathname:', targetPathname, error);
+      return false; // Failure
+    }
+  }, [setCurrentPageId, fetchCurrentPage, mutateEditingMarkdown]);
+
+  return { pageId, updatePageState };
+};
+
+/**
  * Custom hook to check if initial data should be used
- * Memoizes the result to prevent unnecessary recalculations
  */
 const useInitialDataCheck = (props: Props): boolean => {
   return useMemo(() => {
-    // Skip if we have initial data and don't need to refetch
     const skipSSR = isInitialProps(props) ? props.skipSSR : false;
     return isInitialProps(props) && !skipSSR;
   }, [props]);
@@ -41,18 +79,14 @@ const useInitialDataCheck = (props: Props): boolean => {
  * Custom hook for handling same-route navigation and fetching page data when needed
  * Optimized for minimal re-renders and efficient state updates using centralized navigation state
  */
-export const useSameRouteNavigation = (
-    props: Props,
-): void => {
+export const useSameRouteNavigation = (props: Props): void => {
   const router = useRouter();
   const [currentPage] = useCurrentPageData();
-  const [pageId, setCurrentPageId] = useCurrentPageId();
-  const { fetchCurrentPage } = useFetchCurrentPage();
-  const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
 
   // Use custom hooks for better separation of concerns
   const targetPathname = useNavigationTarget(router, props);
   const hasInitialData = useInitialDataCheck(props);
+  const { pageId, updatePageState } = usePageStateManager();
 
   // Track the last processed pathname to prevent unnecessary operations
   const lastProcessedPathnameRef = useRef<string | null>(null);
@@ -95,44 +129,21 @@ export const useSameRouteNavigation = (
 
     isFetchingRef.current = true;
 
-    const updatePageState = async(): Promise<void> => {
-      try {
-        // Clear current state to ensure clean transition
-        setCurrentPageId(undefined);
+    const performNavigation = async(): Promise<void> => {
+      await updatePageState(targetPathname, targetPageId);
 
-        // Set new pageId if available
-        if (targetPageId) {
-          setCurrentPageId(targetPageId);
-        }
-
-        // Fetch page data
-        const pageData = await fetchCurrentPage(targetPathname);
-
-        // Update editing markdown if we have body content
-        if (pageData?.revision?.body !== undefined) {
-          mutateEditingMarkdown(pageData.revision.body);
-        }
-
-        // Mark as processed
-        lastProcessedPathnameRef.current = targetPathname;
-      }
-      catch (error) {
-        // Log error for debugging while preventing UI disruption
-        logger.error('Navigation failed for pathname:', targetPathname, error);
-        // Keep the last processed pathname to prevent retry loops
-        lastProcessedPathnameRef.current = targetPathname;
-      }
-      finally {
-        isFetchingRef.current = false;
-      }
+      // Mark as processed regardless of success to prevent retry loops
+      lastProcessedPathnameRef.current = targetPathname;
+      isFetchingRef.current = false;
     };
 
-    updatePageState();
+    performNavigation();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     targetPathname, // Memoized value that includes both router.asPath and props.currentPathname
     hasInitialData, // Memoized value for initial data check
+    pageId, // Page ID changes
   ]);
 
   // Cleanup on unmount
