@@ -72,8 +72,6 @@ For more information, see https://docs.growi.org/en/admin-guide/admin-cookbook/t
 
     const sdkConfig = generateNodeSDKConfiguration({ enableAnonymization });
 
-    setupCustomMetrics();
-
     sdkInstance = new NodeSDK(sdkConfig);
   }
 };
@@ -106,6 +104,9 @@ export const startOpenTelemetry = (): void => {
       throw new Error('OpenTelemetry instrumentation is not initialized');
     }
     sdkInstance.start();
+
+    // setup custom metrics after SDK start
+    setupCustomMetrics();
   }
 };
 

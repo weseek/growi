@@ -4,7 +4,7 @@ import { pipeline } from 'stream/promises';
 
 import type { IPage, IRevision } from '@growi/core';
 import {
-  AllSubscriptionStatusType, PageGrant, SubscriptionStatusType,
+  AllSubscriptionStatusType, PageGrant, SCOPE, SubscriptionStatusType,
   getIdForRef,
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
@@ -16,7 +16,6 @@ import sanitize from 'sanitize-filename';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import type { IPageGrantData } from '~/interfaces/page';
-import { SCOPE } from '@growi/core/dist/interfaces';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
@@ -279,9 +278,18 @@ module.exports = (crowi) => {
    *                  grant:
    *                    $ref: '#/components/schemas/PageGrant'
    *                  grantUserGroupIds:
-   *                    type: string
-   *                    description: UserGroup ID
-   *                    example: 5ae5fccfc5577b0004dbd8ab
+   *                    type: array
+   *                    items:
+   *                      type: object
+   *                      properties:
+   *                        type:
+   *                          type: string
+   *                          description: Group type
+   *                          example: 'UserGroup'
+   *                        item:
+   *                          type: string
+   *                          description: UserGroup ID
+   *                          example: '5ae5fccfc5577b0004dbd8ab'
    *                  pageTags:
    *                    type: array
    *                    items:
@@ -295,18 +303,16 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
+   *                  type: object
    *                  properties:
-   *                    data:
-   *                      type: object
-   *                      properties:
-   *                        page:
-   *                          $ref: '#/components/schemas/Page'
-   *                        tags:
-   *                          type: array
-   *                          items:
-   *                            $ref: '#/components/schemas/Tags'
-   *                        revision:
-   *                          $ref: '#/components/schemas/Revision'
+   *                    page:
+   *                      $ref: '#/components/schemas/Page'
+   *                    tags:
+   *                      type: array
+   *                      items:
+   *                        $ref: '#/components/schemas/Tags'
+   *                    revision:
+   *                       $ref: '#/components/schemas/Revision'
    *          409:
    *            description: page path is already existed
    */
@@ -335,8 +341,16 @@ module.exports = (crowi) => {
    *                  userRelatedGrantUserGroupIds:
    *                    type: array
    *                    items:
-   *                      type: string
-   *                      description: UserGroup ID
+   *                      type: object
+   *                      properties:
+   *                        type:
+   *                          type: string
+   *                          description: Group type
+   *                          example: 'UserGroup'
+   *                        item:
+   *                          type: string
+   *                          description: UserGroup ID
+   *                          example: '5ae5fccfc5577b0004dbd8ab'
    *                  overwriteScopesOfDescendants:
    *                    type: boolean
    *                    description: Determine whether the scopes of descendants should be overwritten
@@ -362,14 +376,12 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
+   *                  type: object
    *                  properties:
-   *                    data:
-   *                      type: object
-   *                      properties:
-   *                        page:
-   *                          $ref: '#/components/schemas/Page'
-   *                        revision:
-   *                          $ref: '#/components/schemas/Revision'
+   *                    page:
+   *                      $ref: '#/components/schemas/Page'
+   *                    revision:
+   *                      $ref: '#/components/schemas/Revision'
    *          403:
    *            $ref: '#/components/responses/Forbidden'
    *          500:
@@ -1077,7 +1089,7 @@ module.exports = (crowi) => {
 
   /**
    * @swagger
-   *   /{pageId}/publish:
+   *   /page/{pageId}/publish:
    *     put:
    *       tags: [Page]
    *       summary: Publish page
@@ -1101,7 +1113,7 @@ module.exports = (crowi) => {
 
   /**
    * @swagger
-   *   /{pageId}/unpublish:
+   *   /page/{pageId}/unpublish:
    *     put:
    *       tags: [Page]
    *       summary: Unpublish page
