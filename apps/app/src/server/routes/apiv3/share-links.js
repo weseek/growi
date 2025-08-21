@@ -185,23 +185,21 @@ module.exports = (crowi) => {
    *        security:
    *          - cookieAuth: []
    *        description: Create new share link
-   *        parameters:
-   *          - name: relatedPage
-   *            in: query
-   *            required: true
-   *            description: page id of share link
-   *            schema:
-   *              type: string
-   *          - name: expiredAt
-   *            in: query
-   *            description: expiration date of share link
-   *            schema:
-   *              type: string
-   *          - name: description
-   *            in: query
-   *            description: description of share link
-   *            schema:
-   *              type: string
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  relatedPage:
+   *                    required: true
+   *                    description: page id of share link
+   *                    type: string
+   *                  expiredAt:
+   *                    description: expiration date of share link
+   *                    type: string
+   *                  description:
+   *                    description: description of share link
+   *                    type: string
    *        responses:
    *          200:
    *            description: Succeeded to create one share link
