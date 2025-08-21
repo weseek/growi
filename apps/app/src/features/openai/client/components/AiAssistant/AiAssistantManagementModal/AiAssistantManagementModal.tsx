@@ -264,6 +264,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
 
         <TabPane tabId={AiAssistantManagementModalPageMode.HOME}>
           <AiAssistantManagementHome
+            isActivePane={pageMode === AiAssistantManagementModalPageMode.HOME}
             shouldEdit={shouldEdit}
             name={name}
             description={description}

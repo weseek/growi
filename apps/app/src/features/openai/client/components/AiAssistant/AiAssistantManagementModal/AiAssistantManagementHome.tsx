@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useState, useMemo, type JSX,
+  useCallback, useState, useMemo, useRef, useEffect, type JSX,
 } from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -19,6 +19,7 @@ import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
 import { ShareScopeWarningModal } from './ShareScopeWarningModal';
 
 type Props = {
+  isActivePane: boolean;
   shouldEdit: boolean;
   name: string;
   description: string;
@@ -35,6 +36,7 @@ type Props = {
 
 export const AiAssistantManagementHome = (props: Props): JSX.Element => {
   const {
+    isActivePane,
     shouldEdit,
     name,
     description,
@@ -55,6 +57,8 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
   const { close: closeAiAssistantManagementModal, changePageMode } = useAiAssistantManagementModal();
 
   const [isShareScopeWarningModalOpen, setIsShareScopeWarningModalOpen] = useState(false);
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const totalSelectedPageCount = useMemo(() => {
     return selectedPages.reduce((total, selectedPage) => {
@@ -113,6 +117,14 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
     await onUpsertAiAssistant();
   }, [accessScope, onUpsertAiAssistant, selectedUserGroupsForAccessScope, selectedUserGroupsForShareScope, shareScope]);
 
+  // Autofocus
+  useEffect(() => {
+    // Only when creating a new assistant
+    if (isActivePane && !shouldEdit) {
+      inputRef.current?.focus();
+    }
+  }, [isActivePane, shouldEdit]);
+
   return (
     <>
       <AiAssistantManagementHeader
@@ -130,6 +142,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
               className="border-0 border-bottom border-2 px-0 rounded-0"
               value={name}
               onChange={e => onNameChange(e.target.value)}
+              innerRef={inputRef}
             />
           </div>
 
