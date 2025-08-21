@@ -1,5 +1,5 @@
 import React, {
-  useRef, useMemo, useCallback, useState, type KeyboardEvent,
+  useRef, useMemo, useCallback, useState, useEffect, type KeyboardEvent,
 } from 'react';
 
 import type { IPageHasId } from '@growi/core';
@@ -37,12 +37,13 @@ const isSelectedSearchKeyword = (value: unknown): value is SelectedSearchKeyword
 
 
 type Props = {
+  isActivePane: boolean
   baseSelectedPages: SelectablePage[],
   updateBaseSelectedPages: (pages: SelectablePage[]) => void;
 }
 
 export const AiAssistantKeywordSearch = (props: Props): JSX.Element => {
-  const { baseSelectedPages, updateBaseSelectedPages } = props;
+  const { isActivePane, baseSelectedPages, updateBaseSelectedPages } = props;
 
   const [selectedSearchKeywords, setSelectedSearchKeywords] = useState<Array<SelectedSearchKeyword>>([]);
   const {
@@ -135,6 +136,13 @@ export const AiAssistantKeywordSearch = (props: Props): JSX.Element => {
     updateBaseSelectedPages(Array.from(selectedPages.values()));
     changePageMode(isNewAiAssistant ? AiAssistantManagementModalPageMode.HOME : AiAssistantManagementModalPageMode.PAGES);
   }, [changePageMode, isNewAiAssistant, selectedPages, updateBaseSelectedPages]);
+
+  // Autofocus
+  useEffect(() => {
+    if (isActivePane) {
+      typeaheadRef.current?.focus();
+    }
+  }, [isActivePane]);
 
   return (
     <div className={moduleClass}>
