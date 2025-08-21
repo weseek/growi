@@ -1,15 +1,15 @@
 import React, {
-  useRef, useMemo, useCallback, useState, type KeyboardEvent,
+  useRef, useMemo, useCallback, useState, useEffect, type KeyboardEvent,
 } from 'react';
 
 import type { IPageHasId } from '@growi/core';
 import { isGlobPatternPath } from '@growi/core/dist/utils/page-path-utils';
 import { type TypeaheadRef, Typeahead } from 'react-bootstrap-typeahead';
 import { useTranslation } from 'react-i18next';
-import SimpleBar from 'simplebar-react';
 import {
   ModalBody,
 } from 'reactstrap';
+import SimpleBar from 'simplebar-react';
 
 import { useSWRxSearch } from '~/stores/search';
 
@@ -37,12 +37,13 @@ const isSelectedSearchKeyword = (value: unknown): value is SelectedSearchKeyword
 
 
 type Props = {
+  isActivePane: boolean
   baseSelectedPages: SelectablePage[],
   updateBaseSelectedPages: (pages: SelectablePage[]) => void;
 }
 
 export const AiAssistantKeywordSearch = (props: Props): JSX.Element => {
-  const { baseSelectedPages, updateBaseSelectedPages } = props;
+  const { isActivePane, baseSelectedPages, updateBaseSelectedPages } = props;
 
   const [selectedSearchKeywords, setSelectedSearchKeywords] = useState<Array<SelectedSearchKeyword>>([]);
   const {
@@ -136,6 +137,13 @@ export const AiAssistantKeywordSearch = (props: Props): JSX.Element => {
     changePageMode(isNewAiAssistant ? AiAssistantManagementModalPageMode.HOME : AiAssistantManagementModalPageMode.PAGES);
   }, [changePageMode, isNewAiAssistant, selectedPages, updateBaseSelectedPages]);
 
+  // Autofocus
+  useEffect(() => {
+    if (isActivePane) {
+      typeaheadRef.current?.focus();
+    }
+  }, [isActivePane]);
+
   return (
     <div className={moduleClass}>
       <AiAssistantManagementHeader
@@ -173,13 +181,15 @@ export const AiAssistantKeywordSearch = (props: Props): JSX.Element => {
               {t('modal_ai_assistant.select_assistant_reference_pages')}
             </h4>
             <div className="px-4">
-              <SelectablePagePageList
-                isEditable
-                pages={pagesWithGlobPath ?? []}
-                method="add"
-                onClickMethodButton={addPage}
-                disablePagePaths={selectedPagesArray.map(page => page.path)}
-              />
+              <SimpleBar className="page-list-container" style={{ maxHeight: '300px' }}>
+                <SelectablePagePageList
+                  isEditable
+                  pages={pagesWithGlobPath ?? []}
+                  method="add"
+                  onClickMethodButton={addPage}
+                  disablePagePaths={selectedPagesArray.map(page => page.path)}
+                />
+              </SimpleBar>
             </div>
           </>
         )}

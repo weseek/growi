@@ -48,7 +48,7 @@ const SelectablePageTree = memo((props: { onClickAddPageButton: (page: Selectabl
       return (
         <button
           type="button"
-          className="border-0 rounded btn p-0 me-2"
+          className="border-0 rounded btn p-0"
           onClick={(e) => {
             e.stopPropagation();
             pageTreeItemClickHandler(page);

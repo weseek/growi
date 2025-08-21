@@ -249,6 +249,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
 
         <TabPane tabId={AiAssistantManagementModalPageMode.KEYWORD_SEARCH}>
           <AiAssistantKeywordSearch
+            isActivePane={pageMode === AiAssistantManagementModalPageMode.KEYWORD_SEARCH}
             baseSelectedPages={selectedPages}
             updateBaseSelectedPages={selectPageHandler}
           />
@@ -263,6 +264,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
 
         <TabPane tabId={AiAssistantManagementModalPageMode.HOME}>
           <AiAssistantManagementHome
+            isActivePane={pageMode === AiAssistantManagementModalPageMode.HOME}
             shouldEdit={shouldEdit}
             name={name}
             description={description}
