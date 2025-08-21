@@ -189,9 +189,10 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
+   *                required:
+   *                  - relatedPage
    *                properties:
    *                  relatedPage:
-   *                    required: true
    *                    description: page id of share link
    *                    type: string
    *                  expiredAt:
