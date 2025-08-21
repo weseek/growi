@@ -2,12 +2,12 @@ import { useEffect, useRef, useMemo } from 'react';
 
 import { useRouter } from 'next/router';
 
-import loggerFactory from '~/utils/logger';
 
 import {
   useCurrentPageData, useFetchCurrentPage, useCurrentPageId,
-} from '../../states/page';
-import { useEditingMarkdown } from '../../stores/editor';
+} from '~/states/page';
+import { useEditingMarkdown } from '~/stores/editor';
+import loggerFactory from '~/utils/logger';
 
 import { extractPageIdFromPathname, isInitialProps, shouldFetchPage } from './navigation-utils';
 import type { Props } from './types';

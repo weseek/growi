@@ -12,8 +12,8 @@ vi.mock('next/router', () => ({
 }));
 
 // Mock other dependencies
-vi.mock('../../states/page');
-vi.mock('../../stores/editor');
+vi.mock('~/states/page');
+vi.mock('~/stores/editor');
 
 // Mock hook implementations
 const mockUseCurrentPageData = vi.fn();
@@ -21,13 +21,13 @@ const mockUseCurrentPageId = vi.fn();
 const mockUseFetchCurrentPage = vi.fn();
 const mockUseEditingMarkdown = vi.fn();
 
-vi.mock('../../states/page', () => ({
+vi.mock('~/states/page', () => ({
   useCurrentPageData: () => mockUseCurrentPageData(),
   useCurrentPageId: () => mockUseCurrentPageId(),
   useFetchCurrentPage: () => mockUseFetchCurrentPage(),
 }));
 
-vi.mock('../../stores/editor', () => ({
+vi.mock('~/stores/editor', () => ({
   useEditingMarkdown: () => mockUseEditingMarkdown(),
 }));
 
