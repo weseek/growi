@@ -40,7 +40,6 @@
     "test:vitest": "vitest run --coverage",
     "jest:run": "cross-env NODE_ENV=test TS_NODE_PROJECT=test/integration/tsconfig.json jest --passWithNoTests -- ",
     "reg:run": "reg-suit run",
-    "previtest:run:integ": "vitest run -c test-with-vite/download-mongo-binary/vitest.config.ts test-with-vite/download-mongo-binary",
     "//// misc": "",
     "console": "npm run repl",
     "repl": "cross-env NODE_ENV=development npm run ts-node src/server/repl.ts",
