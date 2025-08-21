@@ -7,7 +7,7 @@ import {
 } from '../../states/page';
 import { useEditingMarkdown } from '../../stores/editor';
 
-import { extractPageIdFromPathname, isInitialProps } from './navigation-utils';
+import { extractPageIdFromPathname, isInitialProps, shouldFetchPage } from './navigation-utils';
 import type { Props } from './types';
 
 /**
@@ -50,15 +50,13 @@ export const useSameRouteNavigation = (
     const targetPageId = extractPageIdFromPathname(targetPathname);
     const currentPagePath = currentPage?.path;
 
-    // Always fetch if:
-    // 1. No current page data
-    // 2. Different page ID (only if both are defined)
-    // 3. Different path
-    const shouldFetch = (
-      !currentPagePath // No current page
-      || (targetPageId != null && pageId != null && pageId !== targetPageId) // Different page ID (strict comparison)
-      || (currentPagePath !== targetPathname) // Different path
-    );
+    // Use extracted shouldFetchPage function
+    const shouldFetch = shouldFetchPage({
+      targetPageId,
+      targetPathname,
+      currentPageId: pageId,
+      currentPagePath,
+    });
 
     if (!shouldFetch) {
       lastProcessedPathnameRef.current = targetPathname;

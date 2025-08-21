@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import type { NextRouter } from 'next/router';
 import { mockDeep } from 'vitest-mock-extended';
 
-import { extractPageIdFromPathname } from './navigation-utils';
 import { useSameRouteNavigation } from './use-same-route-navigation';
 
 // Mock Next.js router first
@@ -15,7 +14,6 @@ vi.mock('next/router', () => ({
 // Mock other dependencies
 vi.mock('../../states/page');
 vi.mock('../../stores/editor');
-vi.mock('./navigation-utils');
 
 // Mock hook implementations
 const mockUseCurrentPageData = vi.fn();
@@ -53,11 +51,6 @@ describe('useSameRouteNavigation - Essential Bug Fix Verification', () => {
     mockRouter.pathname = '/[[...path]]';
     (useRouter as ReturnType<typeof vi.fn>).mockReturnValue(mockRouter);
 
-    // Mock navigation utility
-    (extractPageIdFromPathname as ReturnType<typeof vi.fn>).mockImplementation((path) => {
-      return `id-for-${path.replace(/\//g, '-')}`;
-    });
-
     // Base hook returns
     mockUseCurrentPageData.mockReturnValue([null]);
     mockUseCurrentPageId.mockReturnValue([null, mockSetCurrentPageId]);
@@ -93,7 +86,7 @@ describe('useSameRouteNavigation - Essential Bug Fix Verification', () => {
       // Start with MISMATCHED state to trigger initial fetch
       mockRouter.asPath = '/some/path';
       mockUseCurrentPageData.mockReturnValue([{ path: '/different/path' }]);
-      mockUseCurrentPageId.mockReturnValue(['different-id', mockSetCurrentPageId]);
+      mockUseCurrentPageId.mockReturnValue([null, mockSetCurrentPageId]); // null for non-permalink
 
       const { rerender } = renderHook(() => useSameRouteNavigation(props));
 
@@ -132,7 +125,11 @@ describe('useSameRouteNavigation - Essential Bug Fix Verification', () => {
         await new Promise(resolve => setTimeout(resolve, 0));
       });
 
-      expect(mockSetCurrentPageId).toHaveBeenCalledWith('id-for--some-page');
+      expect(mockSetCurrentPageId).toHaveBeenCalledWith(undefined);
+      // Since extractPageIdFromPathname returns null for non-permalink paths,
+      // but the hook uses: if (targetPageId) { setCurrentPageId(targetPageId); }
+      // When targetPageId is null, setCurrentPageId is not called with null
+      // Only the clearing call with undefined happens
     });
 
     it('should update editor content on successful fetch', async() => {
@@ -154,7 +151,7 @@ describe('useSameRouteNavigation - Essential Bug Fix Verification', () => {
 
       // Page already loaded and matches
       mockUseCurrentPageData.mockReturnValue([{ path: '/current/page' }]);
-      mockUseCurrentPageId.mockReturnValue(['id-for--current-page', mockSetCurrentPageId]);
+      mockUseCurrentPageId.mockReturnValue([null, mockSetCurrentPageId]); // null for non-permalink
 
       renderHook(() => useSameRouteNavigation(props));
 
@@ -212,7 +209,7 @@ describe('useSameRouteNavigation - Essential Bug Fix Verification', () => {
       mockRouter.asPath = '/new/page';
 
       // Start with existing page
-      mockUseCurrentPageId.mockReturnValue(['old-page-id', mockSetCurrentPageId]);
+      mockUseCurrentPageId.mockReturnValue([null, mockSetCurrentPageId]); // null for non-permalink
 
       renderHook(() => useSameRouteNavigation(props));
 
@@ -220,11 +217,11 @@ describe('useSameRouteNavigation - Essential Bug Fix Verification', () => {
         await new Promise(resolve => setTimeout(resolve, 0));
       });
 
-      // Verify clearing sequence: undefined first, then new ID
+      // Verify clearing sequence: undefined first, but no second call for null
+      // because the hook only calls setCurrentPageId(targetPageId) if targetPageId is truthy
       expect(mockSetCurrentPageId).toHaveBeenCalledWith(undefined);
-      expect(mockSetCurrentPageId).toHaveBeenCalledWith('id-for--new-page');
+      expect(mockSetCurrentPageId).toHaveBeenCalledTimes(1); // Only the clear call
       expect(mockSetCurrentPageId.mock.calls[0][0]).toBe(undefined);
-      expect(mockSetCurrentPageId.mock.calls[1][0]).toBe('id-for--new-page');
     });
   });
 });

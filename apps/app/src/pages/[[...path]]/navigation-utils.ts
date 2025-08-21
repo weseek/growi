@@ -17,3 +17,29 @@ export const extractPageIdFromPathname = (pathname: string): string | null => {
 export const isInitialProps = (props: Props): props is (InitialProps & SameRouteEachProps) => {
   return 'isNextjsRoutingTypeInitial' in props && props.isNextjsRoutingTypeInitial;
 };
+/**
+ * Determines if page data should be fetched based on current state
+ * Pure function with no side effects for better testability
+ */
+export interface ShouldFetchPageParams {
+  targetPageId: string | null;
+  targetPathname: string;
+  currentPageId?: string | null;
+  currentPagePath?: string | null;
+}
+
+export const shouldFetchPage = (params: ShouldFetchPageParams): boolean => {
+  const {
+    currentPagePath, targetPageId, currentPageId, targetPathname,
+  } = params;
+
+  // Always fetch if:
+  // 1. No current page data
+  // 2. Different page ID (only if both are defined)
+  // 3. Different path
+  return (
+    !currentPagePath // No current page
+    || (targetPageId != null && currentPageId != null && currentPageId !== targetPageId) // Different page ID (strict comparison)
+    || (currentPagePath !== targetPathname) // Different path
+  );
+};
