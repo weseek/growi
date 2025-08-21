@@ -66,14 +66,14 @@ expect(mockFunction).toHaveBeenCalledWith(
 
 ### 基本テスト実行
 ```bash
-# Vitest単体（coverageあり）
+# Vitest単体
 pnpm run test:vitest
+
+# Vitest単体（coverageあり）
+pnpm run test:vitest:coverage
 
 # 特定ファイルのみ実行（coverageあり）
 pnpm run test:vitest src/path/to/test.spec.tsx
-
-# Coverage出力を見やすくフィルタリング
-pnpm run test:vitest src/path/to/test.spec.tsx 2>&1 | grep -v "^[[:space:]]*|"
 ```
 
 ### package.jsonスクリプト参照
