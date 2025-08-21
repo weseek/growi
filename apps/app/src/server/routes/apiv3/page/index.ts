@@ -1089,7 +1089,7 @@ module.exports = (crowi) => {
 
   /**
    * @swagger
-   *   /{pageId}/publish:
+   *   /page/{pageId}/publish:
    *     put:
    *       tags: [Page]
    *       summary: Publish page
@@ -1113,7 +1113,7 @@ module.exports = (crowi) => {
 
   /**
    * @swagger
-   *   /{pageId}/unpublish:
+   *   /page/{pageId}/unpublish:
    *     put:
    *       tags: [Page]
    *       summary: Unpublish page
