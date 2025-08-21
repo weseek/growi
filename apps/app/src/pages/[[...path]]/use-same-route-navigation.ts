@@ -1,6 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 
 import { useRouter } from 'next/router';
+
+import loggerFactory from '~/utils/logger';
 
 import {
   useCurrentPageData, useFetchCurrentPage, useCurrentPageId,
@@ -9,6 +11,31 @@ import { useEditingMarkdown } from '../../stores/editor';
 
 import { extractPageIdFromPathname, isInitialProps, shouldFetchPage } from './navigation-utils';
 import type { Props } from './types';
+
+const logger = loggerFactory('growi:hooks:useSameRouteNavigation');
+
+/**
+ * Custom hook to calculate the target pathname for navigation
+ * Memoizes the result to prevent unnecessary recalculations
+ */
+const useNavigationTarget = (router: ReturnType<typeof useRouter>, props: Props): string => {
+  return useMemo(() => {
+    // Use router.asPath for browser back/forward compatibility, fallback to props.currentPathname
+    return router.asPath || props.currentPathname;
+  }, [router.asPath, props.currentPathname]);
+};
+
+/**
+ * Custom hook to check if initial data should be used
+ * Memoizes the result to prevent unnecessary recalculations
+ */
+const useInitialDataCheck = (props: Props): boolean => {
+  return useMemo(() => {
+    // Skip if we have initial data and don't need to refetch
+    const skipSSR = isInitialProps(props) ? props.skipSSR : false;
+    return isInitialProps(props) && !skipSSR;
+  }, [props]);
+};
 
 /**
  * Custom hook for handling same-route navigation and fetching page data when needed
@@ -23,24 +50,22 @@ export const useSameRouteNavigation = (
   const { fetchCurrentPage } = useFetchCurrentPage();
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
 
+  // Use custom hooks for better separation of concerns
+  const targetPathname = useNavigationTarget(router, props);
+  const hasInitialData = useInitialDataCheck(props);
+
   // Track the last processed pathname to prevent unnecessary operations
   const lastProcessedPathnameRef = useRef<string | null>(null);
   const isFetchingRef = useRef<boolean>(false);
 
   // Process pathname changes - monitor both props.currentPathname and router.asPath
   useEffect(() => {
-    // Use router.asPath for browser back/forward compatibility, fallback to props.currentPathname
-    const targetPathname = router.asPath || props.currentPathname;
-
     // Skip if we already processed this pathname
     if (lastProcessedPathnameRef.current === targetPathname) {
       return;
     }
 
     // Skip if we have initial data and don't need to refetch
-    const skipSSR = isInitialProps(props) ? props.skipSSR : false;
-    const hasInitialData = isInitialProps(props) && !skipSSR;
-
     if (hasInitialData) {
       lastProcessedPathnameRef.current = targetPathname;
       return;
@@ -92,7 +117,10 @@ export const useSameRouteNavigation = (
         lastProcessedPathnameRef.current = targetPathname;
       }
       catch (error) {
-        // Silent error handling - errors are logged by the caller if needed
+        // Log error for debugging while preventing UI disruption
+        logger.error('Navigation failed for pathname:', targetPathname, error);
+        // Keep the last processed pathname to prevent retry loops
+        lastProcessedPathnameRef.current = targetPathname;
       }
       finally {
         isFetchingRef.current = false;
@@ -103,8 +131,8 @@ export const useSameRouteNavigation = (
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    props.currentPathname, // Always trigger on pathname change
-    router.asPath, // Also trigger on browser back/forward navigation
+    targetPathname, // Memoized value that includes both router.asPath and props.currentPathname
+    hasInitialData, // Memoized value for initial data check
   ]);
 
   // Cleanup on unmount
