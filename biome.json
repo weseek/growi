@@ -23,16 +23,11 @@
       "!apps/slackbot-proxy/src/public/bootstrap/**",
       "!packages/editor/**",
       "!packages/pdf-converter-client/src/index.ts",
-      "!apps/app/bin/**",
-      "!apps/app/config/**",
-      "!apps/app/docker/**",
       "!apps/app/playwright/**",
       "!apps/app/public/**",
-      "!apps/app/resource/**",
       "!apps/app/src/**",
       "!apps/app/test/integration/service/**",
-      "!apps/app/test-with-vite/**",
-      "!apps/app/tmp/**"
+      "!apps/app/test-with-vite/**"
     ]
   },
   "formatter": {

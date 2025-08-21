@@ -14,7 +14,6 @@ export type AccessTokenParser = (scopes?: Scope[], opts?: {acceptLegacy: boolean
 
 export const accessTokenParser: AccessTokenParser = (scopes, opts) => {
   return async(req, res, next): Promise<void> => {
-    // TODO: comply HTTP header of RFC6750 / Authorization: Bearer
     if (scopes == null || scopes.length === 0) {
       logger.warn('scopes is empty');
       return next();
