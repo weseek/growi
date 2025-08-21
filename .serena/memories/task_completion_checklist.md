@@ -26,7 +26,7 @@ pnpm run test
 
 # 個別実行
 pnpm run test:jest        # Jest（廃止予定）
-vitest run --coverage     # Vitestカバレッジ付き
+pnpm run test:vitest {target-file-name}     # Vitest
 ```
 
 ### 3. E2Eテストの実行（重要な機能変更時）
