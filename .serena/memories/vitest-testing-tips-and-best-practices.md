@@ -62,6 +62,31 @@ expect(mockFunction).toHaveBeenCalledWith(
 );
 ```
 
+## 実行コマンド
+
+### 基本テスト実行
+```bash
+# Vitest単体（coverageあり）
+pnpm run test:vitest
+
+# 特定ファイルのみ実行（coverageあり）
+pnpm run test:vitest src/path/to/test.spec.tsx
+
+# Coverage出力を見やすくフィルタリング
+pnpm run test:vitest src/path/to/test.spec.tsx 2>&1 | grep -v "^[[:space:]]*|"
+```
+
+### package.jsonスクリプト参照
+```json
+{
+  "scripts": {
+    "test": "run-p test:*",
+    "test:jest": "cross-env NODE_ENV=test TS_NODE_PROJECT=test/integration/tsconfig.json jest",
+    "test:vitest": "vitest run --coverage"
+  }
+}
+```
+
 ## Jest→Vitest移行要点
 - `jest.config.js` → `vitest.config.ts`
 - `@types/jest` → `vitest/globals`
