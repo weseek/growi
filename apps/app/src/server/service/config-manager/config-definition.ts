@@ -78,6 +78,9 @@ export const CONFIG_KEYS = [
   'app:openaiThreadDeletionCronMaxMinutesUntilRequest',
   'app:openaiVectorStoreFileDeletionCronMaxMinutesUntilRequest',
 
+  // Content-Disposition settings for MIME types
+  'attachments:contentDisposition:mimeTypeOverrides',
+
   // Security Settings
   'security:wikiMode',
   'security:sessionMaxAge',
@@ -537,6 +540,19 @@ export const CONFIG_DEFINITIONS = {
     envVarName: 'OPENAI_VECTOR_STORE_FILE_DELETION_CRON_MAX_MINUTES_UNTIL_REQUEST',
     defaultValue: 30,
   }),
+
+  // Attachment Content-Disposition settings
+  'attachments:contentDisposition:mimeTypeOverrides': defineConfig<Record<string, 'inline' | 'attachment'>>({
+    defaultValue: {
+      'text/html': 'attachment',
+      'image/svg+xml': 'attachment',
+      'application/pdf': 'attachment',
+      'application/json': 'attachment',
+      'text/csv': 'attachment',
+      'font/*': 'attachment',
+    },
+  }),
+
 
   // Security Settings
   'security:wikiMode': defineConfig<string | undefined>({
