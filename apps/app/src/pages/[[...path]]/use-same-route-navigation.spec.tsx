@@ -11,7 +11,6 @@ import { mockDeep } from 'vitest-mock-extended';
 
 // eslint-disable-next-line no-restricted-imports
 import * as apiv3Client from '~/client/util/apiv3-client';
-import type { Props } from '~/pages/[[...path]]/types';
 import { useSameRouteNavigation } from '~/pages/[[...path]]/use-same-route-navigation';
 import { currentPageDataAtom, currentPageIdAtom } from '~/states/page/internal-atoms';
 
@@ -96,15 +95,10 @@ describe('useSameRouteNavigation - Integration Test', () => {
   let store: ReturnType<typeof createStore>;
 
   // Helper to render the hook with Jotai provider
-  const renderHookWithProvider = (props: Props) => {
-    return renderHook(() => useSameRouteNavigation(props), {
+  const renderHookWithProvider = () => {
+    return renderHook(() => useSameRouteNavigation(), {
       wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
     });
-  };
-
-  const createProps = (currentPathname: string): Props => {
-    // Create a minimal props object that satisfies the type checker
-    return { currentPathname, ...{ isNextjsRoutingTypeInitial: false } } as unknown as Props;
   };
 
   const mockApiResponse = (page: IPagePopulatedToShowRevision): AxiosResponse<{ page: IPagePopulatedToShowRevision }> => {
@@ -143,8 +137,8 @@ describe('useSameRouteNavigation - Integration Test', () => {
     mockedApiv3Get.mockResolvedValue(mockApiResponse(newPageData));
 
     // Act
-    const { rerender } = renderHookWithProvider(createProps('/initial/path'));
-    rerender(createProps('/new/page')); // Rerender with new props to simulate navigation
+    const { rerender } = renderHookWithProvider();
+    rerender(); // Rerender to simulate navigation
 
     // Assert: Wait for state updates
     await waitFor(() => {
@@ -160,26 +154,7 @@ describe('useSameRouteNavigation - Integration Test', () => {
     });
   });
 
-  it('should use router.asPath as the source of truth, not stale props.currentPathname', async() => {
-    // Arrange: props.currentPathname is stale
-    const props = createProps('/stale/props/path');
-    // Arrange: router.asPath is the current, correct path
-    mockRouter.asPath = '/actual/browser/path';
-    const actualPageData = createPageDataMock('actualPageId', '/actual/browser/path', 'actual content');
-    mockedApiv3Get.mockResolvedValue(mockApiResponse(actualPageData));
-
-    // Act
-    renderHookWithProvider(props);
-
-    // Assert
-    await waitFor(() => {
-      expect(mockedApiv3Get).toHaveBeenCalledWith('/page', expect.objectContaining({ path: '/actual/browser/path' }));
-      expect(mockedApiv3Get).not.toHaveBeenCalledWith('/page', expect.objectContaining({ path: '/stale/props/path' }));
-      expect(store.get(currentPageIdAtom)).toBe(actualPageData._id);
-    });
-  });
-
-  it('should not re-fetch if target path and page id are the same as current', async() => {
+  it('should not re-fetch if target path is the same as current', async() => {
     // Arrange: Current state is set
     const currentPageData = createPageDataMock('page1', '/same/path', 'current content');
     store.set(currentPageIdAtom, currentPageData._id);
@@ -187,8 +162,8 @@ describe('useSameRouteNavigation - Integration Test', () => {
     mockRouter.asPath = '/same/path';
 
     // Act
-    const { rerender } = renderHookWithProvider(createProps('/same/path'));
-    rerender(createProps('/same/path')); // Rerender with same props
+    const { rerender } = renderHookWithProvider();
+    rerender(); // Rerender with same path
 
     // Assert
     // Use a short timeout to ensure no fetch is initiated
@@ -201,9 +176,10 @@ describe('useSameRouteNavigation - Integration Test', () => {
     // Arrange: Start on a regular page
     const regularPageData = createPageDataMock('regularPageId', '/some/page', 'Regular page content');
     mockedApiv3Get.mockResolvedValue(mockApiResponse(regularPageData));
-    mockRouter.asPath = '/some/page';
 
-    const { rerender } = renderHookWithProvider(createProps('/some/page'));
+    // Set initial router path and render
+    mockRouter.asPath = '/some/page';
+    const { rerender } = renderHookWithProvider();
 
     await waitFor(() => {
       expect(store.get(currentPageIdAtom)).toBe('regularPageId');
@@ -217,7 +193,7 @@ describe('useSameRouteNavigation - Integration Test', () => {
     mockRouter.asPath = '/';
 
     // Act
-    rerender(createProps('/'));
+    rerender();
 
     // Assert: Navigation to root works
     await waitFor(() => {

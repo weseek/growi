@@ -2,7 +2,8 @@ import { useCallback } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { isClient } from '@growi/core/dist/utils';
-import { isCreatablePage } from '@growi/core/dist/utils/page-path-utils';
+import { isCreatablePage, isPermalink } from '@growi/core/dist/utils/page-path-utils';
+import { removeHeadingSlash } from '@growi/core/dist/utils/path-utils';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
 
@@ -10,25 +11,21 @@ import { apiv3Get } from '~/client/util/apiv3-client';
 import { useShareLinkId } from '~/stores-universal/context';
 
 import {
-  currentPageIdAtom, currentPageDataAtom, pageNotFoundAtom, pageNotCreatableAtom,
-  pageLoadingAtom, pageErrorAtom,
+  currentPageDataAtom, currentPageIdAtom, pageErrorAtom, pageLoadingAtom, pageNotCreatableAtom, pageNotFoundAtom,
 } from './internal-atoms';
 
-// API parameter types for better type safety
-interface PageApiParams {
-  pageId?: string;
-  path?: string;
-  shareLinkId?: string;
-  revisionId?: string;
+type FetchPageArgs = {
+  path?: string,
+  pageId?: string,
+  revisionId?: string,
 }
-
 
 /**
  * Simplified page fetching hook using Jotai state management
  * All state is managed through atoms for consistent global state
  */
 export const useFetchCurrentPage = (): {
-  fetchCurrentPage: (currentPathname?: string) => Promise<IPagePopulatedToShowRevision | null>,
+  fetchCurrentPage: (args?: FetchPageArgs) => Promise<IPagePopulatedToShowRevision | null>,
   isLoading: boolean,
   error: Error | null,
 } => {
@@ -39,70 +36,68 @@ export const useFetchCurrentPage = (): {
   const error = useAtomValue(pageErrorAtom);
 
   const fetchCurrentPage = useAtomCallback(
-    useCallback(async(get, set, currentPathname?: string) => {
-      const fetchStartTime = performance.now();
-      const currentPath = currentPathname || (isClient() ? decodeURIComponent(window.location.pathname) : '');
-
-      const currentPageId = get(currentPageIdAtom);
-
-      // DEBUG: Log detailed navigation state
-      console.log('[FETCH-DEBUG] useFetchCurrentPage called:', {
-        currentPathname,
-        currentPath,
-        currentPageId,
-        timestamp: new Date().toISOString(),
-        performanceStart: fetchStartTime,
-        isRootPage: currentPath === '/',
-      });
-
-      // Get URL parameter for specific revisionId - only when needed
-      const revisionId = isClient() && window.location.search
-        ? new URLSearchParams(window.location.search).get('revisionId') || undefined
-        : undefined;
-
+    useCallback(async(get, set, args?: FetchPageArgs) => {
       set(pageLoadingAtom, true);
       set(pageErrorAtom, null);
 
+      const currentPageId = get(currentPageIdAtom);
+
+      // determine parameters
+      const path = args?.path;
+      const pageId = args?.pageId;
+      const revisionId = args?.revisionId ?? (isClient() ? new URLSearchParams(window.location.search).get('revisionId') : undefined);
+
+      // params for API
+      const params: { path?: string, pageId?: string, revisionId?: string, shareLinkId?: string } = {};
+      if (shareLinkId != null) {
+        params.shareLinkId = shareLinkId;
+      }
+      if (revisionId != null) {
+        params.revisionId = revisionId;
+      }
+
+      // Process path first to handle permalinks
+      let decodedPath: string | undefined;
+      if (path != null) {
+        try {
+          decodedPath = decodeURIComponent(path);
+        }
+        catch (e) {
+          decodedPath = path;
+        }
+      }
+
+      // priority: pageId > permalink > path
+      if (pageId != null) {
+        params.pageId = pageId;
+      }
+      else if (decodedPath != null && isPermalink(decodedPath)) {
+        params.pageId = removeHeadingSlash(decodedPath);
+      }
+      else if (decodedPath != null) {
+        params.path = decodedPath;
+      }
+      // if args is empty, get from global state
+      else if (currentPageId != null) {
+        params.pageId = currentPageId;
+      }
+      else if (isClient()) {
+        try {
+          params.path = decodeURIComponent(window.location.pathname);
+        }
+        catch (e) {
+          params.path = window.location.pathname;
+        }
+      }
+      else {
+        // TODO: https://github.com/weseek/growi/pull/9118
+        // throw new Error('Either path or pageId must be provided when not in a browser environment');
+        return null;
+      }
+
       try {
-        // Build API parameters with type safety
-        const apiParams: PageApiParams = {
-          ...(shareLinkId && { shareLinkId }),
-          ...(revisionId && { revisionId }),
-        };
-
-        // Use pageId when available, fallback to path
-        if (currentPageId) {
-          apiParams.pageId = currentPageId;
-          console.log('[FETCH-DEBUG] Using pageId:', currentPageId);
-        }
-        else if (currentPath) {
-          apiParams.path = currentPath;
-          console.log('[FETCH-DEBUG] Using path:', currentPath);
-        }
-        else {
-          console.log('[FETCH-DEBUG] No valid identifier, returning null');
-          return null; // No valid identifier
-        }
-
-        const apiStartTime = performance.now();
-        const response = await apiv3Get<{ page: IPagePopulatedToShowRevision }>(
-          '/page',
-          apiParams,
-        );
-        const apiEndTime = performance.now();
-
-        const newData = response.data.page;
-
-        // DEBUG: Log successful fetch result
-        console.log('[FETCH-DEBUG] Page fetched successfully:', {
-          pageId: newData?._id,
-          path: newData?.path,
-          isRootPage: newData?.path === '/',
-          previousPageId: currentPageId,
-          pageIdChanged: newData?._id !== currentPageId,
-          apiDuration: apiEndTime - apiStartTime,
-          totalDuration: apiEndTime - fetchStartTime,
-        });
+        const { data } = await apiv3Get<{ page: IPagePopulatedToShowRevision }>('/page', params);
+        const { page: newData } = data;
 
         // Batch atom updates to minimize re-renders
         set(currentPageDataAtom, newData);
@@ -110,10 +105,6 @@ export const useFetchCurrentPage = (): {
 
         // Update pageId atom if data differs from current
         if (newData?._id !== currentPageId) {
-          console.log('[FETCH-DEBUG] Updating pageId atom:', {
-            from: currentPageId,
-            to: newData?._id,
-          });
           set(currentPageIdAtom, newData?._id);
         }
 
@@ -128,8 +119,8 @@ export const useFetchCurrentPage = (): {
           set(pageNotFoundAtom, true);
           set(currentPageDataAtom, undefined);
 
-          if (currentPath) {
-            set(pageNotCreatableAtom, !isCreatablePage(currentPath));
+          if (path != null) {
+            set(pageNotCreatableAtom, !isCreatablePage(path));
           }
           return null;
         }

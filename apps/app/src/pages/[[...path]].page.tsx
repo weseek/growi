@@ -153,7 +153,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useSetupGlobalSocketForPage(pageId);
 
   // Use custom hooks for navigation and routing
-  useSameRouteNavigation(props);
+  useSameRouteNavigation();
   useShallowRouting(props);
 
   // Optimized effects with minimal dependencies
