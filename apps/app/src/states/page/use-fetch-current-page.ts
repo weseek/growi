@@ -44,6 +44,15 @@ export const useFetchCurrentPage = (): {
 
       const currentPageId = get(currentPageIdAtom);
 
+      // DEBUG: Log detailed navigation state
+      console.log('[FETCH-DEBUG] useFetchCurrentPage called:', {
+        currentPathname,
+        currentPath,
+        currentPageId,
+        timestamp: new Date().toISOString(),
+        isRootPage: currentPath === '/',
+      });
+
       // Get URL parameter for specific revisionId - only when needed
       const revisionId = isClient() && window.location.search
         ? new URLSearchParams(window.location.search).get('revisionId') || undefined
@@ -62,11 +71,14 @@ export const useFetchCurrentPage = (): {
         // Use pageId when available, fallback to path
         if (currentPageId) {
           apiParams.pageId = currentPageId;
+          console.log('[FETCH-DEBUG] Using pageId:', currentPageId);
         }
         else if (currentPath) {
           apiParams.path = currentPath;
+          console.log('[FETCH-DEBUG] Using path:', currentPath);
         }
         else {
+          console.log('[FETCH-DEBUG] No valid identifier, returning null');
           return null; // No valid identifier
         }
 
@@ -77,12 +89,25 @@ export const useFetchCurrentPage = (): {
 
         const newData = response.data.page;
 
+        // DEBUG: Log successful fetch result
+        console.log('[FETCH-DEBUG] Page fetched successfully:', {
+          pageId: newData?._id,
+          path: newData?.path,
+          isRootPage: newData?.path === '/',
+          previousPageId: currentPageId,
+          pageIdChanged: newData?._id !== currentPageId,
+        });
+
         // Batch atom updates to minimize re-renders
         set(currentPageDataAtom, newData);
         set(pageNotFoundAtom, false);
 
         // Update pageId atom if data differs from current
         if (newData?._id !== currentPageId) {
+          console.log('[FETCH-DEBUG] Updating pageId atom:', {
+            from: currentPageId,
+            to: newData?._id,
+          });
           set(currentPageIdAtom, newData?._id);
         }
 

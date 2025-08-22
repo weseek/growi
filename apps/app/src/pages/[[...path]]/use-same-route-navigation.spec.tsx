@@ -163,4 +163,62 @@ describe('useSameRouteNavigation - Essential Bug Fix Verification', () => {
       expect(mockMutateEditingMarkdown).toHaveBeenCalledWith('Second page content');
     });
   });
+
+  describe('Root page navigation debugging', () => {
+    it('should handle navigation to root page correctly', async() => {
+      // Test navigation to root page specifically to debug the reported issue
+      const props = createProps('/');
+      mockRouter.asPath = '/';
+
+      const rootPageData = createPageDataMock('rootPageId', '/', 'Root page content');
+      mockFetchCurrentPage.mockResolvedValue(rootPageData);
+
+      renderHook(() => useSameRouteNavigation(props));
+
+      await act(async() => {
+        await new Promise(resolve => setTimeout(resolve, 0));
+      });
+
+      // Check if root page navigation works correctly
+      expect(mockFetchCurrentPage).toHaveBeenCalledWith('/');
+      expect(mockMutateEditingMarkdown).toHaveBeenCalledWith('Root page content');
+    });
+
+    it('should handle navigation from other page to root page', async() => {
+      // Start from a regular page
+      const props = createProps('/some/page');
+      mockRouter.asPath = '/some/page';
+
+      const regularPageData = createPageDataMock('regularPageId', '/some/page', 'Regular page content');
+      mockFetchCurrentPage.mockResolvedValue(regularPageData);
+
+      const { rerender } = renderHook(() => useSameRouteNavigation(props));
+
+      await act(async() => {
+        await new Promise(resolve => setTimeout(resolve, 0));
+      });
+
+      // Verify initial page was loaded
+      expect(mockFetchCurrentPage).toHaveBeenCalledWith('/some/page');
+
+      // Clear mocks and prepare for root page navigation
+      mockFetchCurrentPage.mockClear();
+      mockMutateEditingMarkdown.mockClear();
+
+      const rootPageData = createPageDataMock('rootPageId', '/', 'Root page content');
+      mockFetchCurrentPage.mockResolvedValue(rootPageData);
+
+      // Navigate to root page
+      mockRouter.asPath = '/';
+      rerender();
+
+      await act(async() => {
+        await new Promise(resolve => setTimeout(resolve, 0));
+      });
+
+      // This should work correctly - the reported bug scenario
+      expect(mockFetchCurrentPage).toHaveBeenCalledWith('/');
+      expect(mockMutateEditingMarkdown).toHaveBeenCalledWith('Root page content');
+    });
+  });
 });
