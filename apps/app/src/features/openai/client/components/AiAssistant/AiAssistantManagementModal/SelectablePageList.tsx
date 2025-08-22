@@ -3,16 +3,16 @@ import React, {
 } from 'react';
 
 import { pathUtils } from '@growi/core/dist/utils';
-import { isCreatablePagePathPattern } from '../../../../utils/is-creatable-page-path-pattern';
 import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'react-i18next';
 import AutosizeInput from 'react-input-autosize';
 
 import { type SelectablePage } from '../../../../interfaces/selectable-page';
+import { isCreatablePagePathPattern } from '../../../../utils/is-creatable-page-path-pattern';
 
-import styles from './SelectablePagePageList.module.scss';
+import styles from './SelectablePageList.module.scss';
 
-const moduleClass = styles['selectable-page-page-list'] ?? '';
+const moduleClass = styles['selectable-page-list'] ?? '';
 
 type MethodButtonProps = {
   page: SelectablePage;
@@ -167,7 +167,7 @@ const EditablePagePath = memo((props: EditablePagePathProps): JSX.Element => {
 });
 
 
-type SelectablePagePageListProps = {
+type SelectablePageListProps = {
   pages: SelectablePage[],
   method: 'add' | 'remove' | 'delete'
   methodButtonPosition?: 'left' | 'right',
@@ -176,7 +176,7 @@ type SelectablePagePageListProps = {
   onClickMethodButton: (page: SelectablePage) => void,
 }
 
-export const SelectablePagePageList = (props: SelectablePagePageListProps): JSX.Element => {
+export const SelectablePageList = (props: SelectablePageListProps): JSX.Element => {
   const {
     pages,
     method,
