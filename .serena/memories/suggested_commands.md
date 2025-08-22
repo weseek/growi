@@ -58,8 +58,8 @@ pnpm run test:jest
 # 全てのテスト実行（過渡期対応）
 pnpm run test
 
-# Vitestをカバレッジ付きで実行
-vitest run --coverage
+# Vitestで特定のファイルに絞って実行
+pnpm run test:vitest {target-file-name}
 
 # E2Eテスト（Playwright）
 npx playwright test
