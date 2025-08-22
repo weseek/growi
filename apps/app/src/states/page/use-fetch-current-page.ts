@@ -36,14 +36,38 @@ export const useFetchCurrentPage = (): {
   const error = useAtomValue(pageErrorAtom);
 
   const fetchCurrentPage = useAtomCallback(
-    useCallback(async(get, set, args?: FetchPageArgs) => {
+    useCallback(async(get, set, args?: FetchPageArgs): Promise<IPagePopulatedToShowRevision | null> => {
+      const currentPageId = get(currentPageIdAtom);
+      const currentPageData = get(currentPageDataAtom);
+
+      // Process path first to handle permalinks
+      let decodedPath: string | undefined;
+      if (args?.path != null) {
+        try {
+          decodedPath = decodeURIComponent(args.path);
+        }
+        catch (e) {
+          decodedPath = args.path;
+        }
+      }
+
+      // Guard clause to prevent unnecessary fetching
+      if (args?.pageId != null && args.pageId === currentPageId) {
+        return currentPageData ?? null;
+      }
+      if (decodedPath != null) {
+        if (isPermalink(decodedPath) && removeHeadingSlash(decodedPath) === currentPageId) {
+          return currentPageData ?? null;
+        }
+        if (decodedPath === currentPageData?.path) {
+          return currentPageData ?? null;
+        }
+      }
+
       set(pageLoadingAtom, true);
       set(pageErrorAtom, null);
 
-      const currentPageId = get(currentPageIdAtom);
-
       // determine parameters
-      const path = args?.path;
       const pageId = args?.pageId;
       const revisionId = args?.revisionId ?? (isClient() ? new URLSearchParams(window.location.search).get('revisionId') : undefined);
 
@@ -54,17 +78,6 @@ export const useFetchCurrentPage = (): {
       }
       if (revisionId != null) {
         params.revisionId = revisionId;
-      }
-
-      // Process path first to handle permalinks
-      let decodedPath: string | undefined;
-      if (path != null) {
-        try {
-          decodedPath = decodeURIComponent(path);
-        }
-        catch (e) {
-          decodedPath = path;
-        }
       }
 
       // priority: pageId > permalink > path
@@ -92,6 +105,7 @@ export const useFetchCurrentPage = (): {
       else {
         // TODO: https://github.com/weseek/growi/pull/9118
         // throw new Error('Either path or pageId must be provided when not in a browser environment');
+        set(pageLoadingAtom, false);
         return null;
       }
 
@@ -99,48 +113,31 @@ export const useFetchCurrentPage = (): {
         const { data } = await apiv3Get<{ page: IPagePopulatedToShowRevision }>('/page', params);
         const { page: newData } = data;
 
-        // Batch atom updates to minimize re-renders
         set(currentPageDataAtom, newData);
+        set(currentPageIdAtom, newData._id);
         set(pageNotFoundAtom, false);
-
-        // Update pageId atom if data differs from current
-        if (newData?._id !== currentPageId) {
-          set(currentPageIdAtom, newData?._id);
-        }
+        set(pageNotCreatableAtom, false);
 
         return newData;
       }
       catch (err) {
-        const error = err instanceof Error ? err : new Error('Unknown error occurred');
-        const errorMsg = error.message.toLowerCase();
+        set(pageErrorAtom, err as Error);
 
-        // Handle specific error types with batch updates
-        if (errorMsg.includes('not found') || errorMsg.includes('404')) {
+        const apiError = err as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+        if (apiError.response?.status === 404) {
           set(pageNotFoundAtom, true);
-          set(currentPageDataAtom, undefined);
-
-          if (path != null) {
-            set(pageNotCreatableAtom, !isCreatablePage(path));
+          if (params.path != null) {
+            set(pageNotCreatableAtom, !isCreatablePage(params.path));
           }
-          return null;
         }
-
-        if (errorMsg.includes('forbidden') || errorMsg.includes('403')) {
-          set(pageNotFoundAtom, false);
-          set(pageNotCreatableAtom, true);
-          set(currentPageDataAtom, undefined);
-          return null;
-        }
-
-        set(pageErrorAtom, new Error(`Failed to fetch current page: ${error.message}`));
-        return null;
       }
       finally {
         set(pageLoadingAtom, false);
       }
+
+      return null;
     }, [shareLinkId]),
   );
 
   return { fetchCurrentPage, isLoading, error };
-
 };

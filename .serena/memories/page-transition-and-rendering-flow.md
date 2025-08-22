@@ -1,50 +1,58 @@
-### ページ遷移とレンダリングフローの分析（リファクタリング後）
+# ページ遷移とレンダリングのデータフロー
 
-このドキュメントは、リファクタリング後のページ遷移から `PageView` コンポーネントのレンダリングまでのデータフローを、Jotai atom の役割に焦点を当てて概説します。
+このドキュメントは、GROWIのページ遷移からレンダリングまでのデータフローを解説します。
 
-#### 登場人物
+## 登場人物
 
-1.  **`[[...path]].page.tsx`**: Next.js の動的ルーティングを担うメインコンポーネント。
-2.  **`useSameRouteNavigation.ts`**: クライアントサイドでのパス変更を検知し、データ取得をトリガーするフック。
-3.  **`useFetchCurrentPage.ts`**: データ取得と関連する Jotai atom の更新を一元管理する、本リファクタリングの心臓部。
+1.  **`[[...path]].page.tsx`**: Next.js の動的ルーティングを担うメインコンポーネント。サーバーサイドとクライアントサイドの両方で動作します。
+2.  **`useSameRouteNavigation.ts`**: クライアントサイドでのパス変更を検知し、データ取得を**トリガー**するフック。
+3.  **`useFetchCurrentPage.ts`**: データ取得と関連する Jotai atom の更新を一元管理するフック。データ取得が本当に必要かどうかの最終判断も担います。
 4.  **`useShallowRouting.ts`**: サーバーサイドで正規化されたパスとブラウザのURLを同期させるフック。
-5.  **`server-side-props.ts`**: サーバーサイドレンダリング（SSR）時にページデータを取得し、`props` としてページコンポーネントに渡す。
+5.  **`server-side-props.ts`**: サーバーサイドレンダリング（SSR）時にページデータを取得し、`props` としてページコンポーネントに渡します。
 
 ---
 
-#### フロー1: サーバーサイドレンダリング（初回アクセス時）
+## フロー1: サーバーサイドレンダリング（初回アクセス時）
 
-1.  **リクエスト受信**: ユーザーがURL（例: `/user/sotarok/memo`）に直接アクセスします。
+ユーザーがURLに直接アクセスするか、ページをリロードした際のフローです。
+
+1.  **リクエスト受信**: サーバーがユーザーからのリクエスト（例: `/user/username/memo`）を受け取ります。
 2.  **`getServerSideProps` の実行**:
     - `server-side-props.ts` の `getServerSidePropsForInitial` が実行されます。
-    - `retrievePageData` が呼び出され、パスの正規化（例: `/user/sotarok` → `/user/sotarok/`）が行われ、APIからページデータを取得します。
+    - `retrievePageData` が呼び出され、パスの正規化（例: `/user/username` → `/user/username/`）が行われ、APIからページデータを取得します。
     - 取得したデータと、正規化後のパス (`currentPathname`) を `props` として `[[...path]].page.tsx` に渡します。
-3.  **コンポーネントのレンダリング**:
-    - `[[...path]].page.tsx` は `props` を受け取り、`PageView` などのコンポーネントをレンダリングします。
-    - 同時に **`useShallowRouting`** が実行されます。
-4.  **URLの正規化**:
-    - `useShallowRouting` は、ブラウザのURL (`/user/sotarok/memo`) と `props.currentPathname` (`/user/sotarok/memo/`) を比較します。
+3.  **コンポーネントのレンダリングとJotai Atomの初期化**:
+    - `[[...path]].page.tsx` は `props` を受け取り、そのデータで `currentPageDataAtom` などのJotai Atomを初期化します。
+    - `PageView` などのコンポーネントがサーバーサイドでレンダリングされます。
+4.  **クライアントサイドでのハイドレーションとURL正規化**:
+    - レンダリングされたHTMLがブラウザに送信され、Reactがハイドレーションを行います。
+    - **`useShallowRouting`** が実行され、ブラウザのURL (`/user/username/memo`) と `props.currentPathname` (`/user/username/memo/`) を比較します。
     - 差異がある場合、`router.replace` を `shallow: true` で実行し、ブラウザのURLをサーバーが認識している正規化後のパスに静かに更新します。
 
 ---
 
-#### フロー2: クライアントサイドナビゲーション（`<Link>` クリック時）
+## フロー2: クライアントサイドナビゲーション（`<Link>` クリック時）
+
+アプリケーション内でページ間を移動する際のフローです。
 
 1.  **ナビゲーション開始**:
     - ユーザーが `<Link href="/new/page">` をクリックします。
     - Next.js の `useRouter` がURLの変更を検出し、`[[...path]].page.tsx` が再評価されます。
 2.  **`useSameRouteNavigation` によるトリガー**:
     - このフックの `useEffect` が `router.asPath` の変更 (`/new/page`) を検知します。
-    - **`fetchCurrentPage({ path: '/new/page' })`** を呼び出します。このフックの役割は、データ取得の「トリガー」に専念します。
-3.  **`useFetchCurrentPage` によるデータ取得と状態更新**:
+    - **`fetchCurrentPage({ path: '/new/page' })`** を呼び出します。このフックは常にデータ取得を試みます。
+3.  **`useFetchCurrentPage` によるデータ取得の判断と実行**:
     - `fetchCurrentPage` 関数が実行されます。
-    - **3a. 読み込み状態開始**: `pageLoadingAtom` を `true` に設定。
-    - **3b. パス解析**: 引数の `path` をデコードし、パーマリンクかどうかを判定します。
-    - **3c. APIパラメータ構築**: パスがパーマリンクなら `pageId`、通常パスなら `path` を使ってAPIリクエストのパラメータを組み立てます。
-    - **3d. API通信**: `apiv3Get('/page', ...)` を実行します。
+    - **3a. 重複取得の防止（ガード節）**:
+        - これから取得しようとしているパス（またはパーマリンクから抽出したページID）が、現在Jotaiで管理されているページのパスやIDと同じでないかチェックします。
+        - 同じであれば、APIを叩かずに処理を中断し、現在のページデータを返します。
+    - **3b. 読み込み状態開始**: `pageLoadingAtom` を `true` に設定します。
+    - **3c. API通信**: `apiv3Get('/page', ...)` を実行してサーバーから新しいページデータを取得します。
 4.  **アトミックな状態更新**:
     - APIからデータが返ってきた後、関連する **すべてのatomを一度に更新** します。
         - `currentPageDataAtom`, `currentPageIdAtom`, `pageNotFoundAtom`, `pageLoadingAtom` など。
     - これにより、中間的な状態（`pageId`が`undefined`になるなど）が発生することなく、データが完全に揃った状態で一度だけ状態が更新されます。
 5.  **`PageView` の最終レンダリング**:
     - `currentPageDataAtom` の更新がトリガーとなり、`PageView` コンポーネントが新しいデータで再レンダリングされます。
+6.  **副作用の実行**:
+    - `useSameRouteNavigation` 内で `fetchCurrentPage` が完了した後、`mutateEditingMarkdown` が呼び出され、エディタの状態が更新されます。
