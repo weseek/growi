@@ -7,5 +7,10 @@ export default defineConfig({
     environment: 'node',
     clearMocks: true,
     globals: true,
+    environmentMatchGlobs: [
+      // Use jsdom for client-side tests
+      ['**/client/**/*.spec.ts', 'jsdom'],
+      ['**/client/**/*.test.ts', 'jsdom'],
+    ],
   },
 });
