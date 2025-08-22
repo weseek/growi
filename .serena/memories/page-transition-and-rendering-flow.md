@@ -43,15 +43,23 @@
     - **`fetchCurrentPage({ path: '/new/page' })`** を呼び出します。このフックは常にデータ取得を試みます。
 3.  **`useFetchCurrentPage` によるデータ取得の判断と実行**:
     - `fetchCurrentPage` 関数が実行されます。
-    - **3a. 重複取得の防止（ガード節）**:
-        - これから取得しようとしているパス（またはパーマリンクから抽出したページID）が、現在Jotaiで管理されているページのパスやIDと同じでないかチェックします。
+    - **3a. パスの前処理**:
+        - まず、引数で渡された `path` をデコードします（例: `encoded%2Fpath` → `encoded/path`）。
+        - 次に、パスがパーマリンク形式（例: `/65d4e0a0f7b7b2e5a8652e86`）かどうかを判定します。
+    - **3b. 重複取得の防止（ガード節）**:
+        - 前処理したパスや、パーマリンクから抽出したページIDが、現在Jotaiで管理されているページのパスやIDと同じでないかチェックします。
         - 同じであれば、APIを叩かずに処理を中断し、現在のページデータを返します。
-    - **3b. 読み込み状態開始**: `pageLoadingAtom` を `true` に設定します。
-    - **3c. API通信**: `apiv3Get('/page', ...)` を実行してサーバーから新しいページデータを取得します。
+    - **3c. 読み込み状態開始**: `pageLoadingAtom` を `true` に設定します。
+    - **3d. API通信**: `apiv3Get('/page', ...)` を実行してサーバーから新しいページデータを取得します。パラメータには、パス、ページID、リビジョンIDなどが含まれます。
 4.  **アトミックな状態更新**:
-    - APIからデータが返ってきた後、関連する **すべてのatomを一度に更新** します。
-        - `currentPageDataAtom`, `currentPageIdAtom`, `pageNotFoundAtom`, `pageLoadingAtom` など。
-    - これにより、中間的な状態（`pageId`が`undefined`になるなど）が発生することなく、データが完全に揃った状態で一度だけ状態が更新されます。
+    - **API成功時**:
+        - 関連する **すべてのatomを一度に更新** します (`currentPageDataAtom`, `currentPageIdAtom`, `pageNotFoundAtom`, `pageLoadingAtom` など)。
+        - これにより、中間的な状態（`pageId`が`undefined`になるなど）が発生することなく、データが完全に揃った状態で一度だけ状態が更新されます。
+    - **APIエラー時 (例: 404 Not Found)**:
+        - `pageErrorAtom` にエラーオブジェクトを設定します。
+        - `pageNotFoundAtom` を `true` に設定します。
+        - パスがユーザー作成可能でない場合 (`/user` など) は `pageNotCreatableAtom` も `true` に設定します。
+        - 最後に `pageLoadingAtom` を `false` に設定します。
 5.  **`PageView` の最終レンダリング**:
     - `currentPageDataAtom` の更新がトリガーとなり、`PageView` コンポーネントが新しいデータで再レンダリングされます。
 6.  **副作用の実行**:

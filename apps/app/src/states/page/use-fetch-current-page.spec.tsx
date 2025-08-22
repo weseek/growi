@@ -14,7 +14,7 @@ import { mockDeep } from 'vitest-mock-extended';
 import * as apiv3Client from '~/client/util/apiv3-client';
 import { useFetchCurrentPage } from '~/states/page';
 import {
-  currentPageDataAtom, currentPageIdAtom, pageErrorAtom, pageLoadingAtom, pageNotFoundAtom,
+  currentPageDataAtom, currentPageIdAtom, pageErrorAtom, pageLoadingAtom, pageNotCreatableAtom, pageNotFoundAtom,
 } from '~/states/page/internal-atoms';
 
 // Mock Next.js router
@@ -191,6 +191,63 @@ describe('useFetchCurrentPage - Integration Test', () => {
     await waitFor(() => {
       expect(mockedApiv3Get).toHaveBeenCalledWith('/page', expect.objectContaining({ path: '/' }));
       expect(store.get(currentPageIdAtom)).toBe('rootPageId');
+    });
+  });
+
+  it('should handle encoded URI path', async() => {
+    // Arrange
+    const encodedPath = '/encoded%2Fpath'; // /encoded/path
+    const decodedPath = decodeURIComponent(encodedPath);
+    const newPageData = createPageDataMock('encodedPageId', decodedPath, 'encoded content');
+    mockedApiv3Get.mockResolvedValue(mockApiResponse(newPageData));
+
+    // Act
+    const { result } = renderHookWithProvider();
+    await result.current.fetchCurrentPage({ path: encodedPath });
+
+    // Assert
+    await waitFor(() => {
+      expect(mockedApiv3Get).toHaveBeenCalledWith('/page', expect.objectContaining({ path: decodedPath }));
+      expect(store.get(currentPageIdAtom)).toBe('encodedPageId');
+    });
+  });
+
+  it('should handle permalink path', async() => {
+    // Arrange
+    const permalink = '/65d4e0a0f7b7b2e5a8652e86';
+    const newPageData = createPageDataMock('65d4e0a0f7b7b2e5a8652e86', '/any/path', 'permalink content');
+    mockedApiv3Get.mockResolvedValue(mockApiResponse(newPageData));
+
+    // Act
+    const { result } = renderHookWithProvider();
+    await result.current.fetchCurrentPage({ path: permalink });
+
+    // Assert
+    await waitFor(() => {
+      expect(mockedApiv3Get).toHaveBeenCalledWith('/page', expect.objectContaining({ pageId: '65d4e0a0f7b7b2e5a8652e86' }));
+      expect(store.get(currentPageIdAtom)).toBe('65d4e0a0f7b7b2e5a8652e86');
+    });
+  });
+
+  it('should set pageNotFoundAtom and pageNotCreatableAtom on 404 error for a non-creatable path', async() => {
+    // Arrange
+    const notCreatablePath = '/user';
+    const apiError = {
+      response: {
+        status: 404,
+      },
+    };
+    mockedApiv3Get.mockRejectedValue(apiError);
+
+    // Act
+    const { result } = renderHookWithProvider();
+    await result.current.fetchCurrentPage({ path: notCreatablePath });
+
+    // Assert
+    await waitFor(() => {
+      expect(store.get(pageNotFoundAtom)).toBe(true);
+      expect(store.get(pageNotCreatableAtom)).toBe(true);
+      expect(store.get(pageErrorAtom)).toEqual(apiError);
     });
   });
 
