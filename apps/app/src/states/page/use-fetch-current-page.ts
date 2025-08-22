@@ -40,6 +40,7 @@ export const useFetchCurrentPage = (): {
 
   const fetchCurrentPage = useAtomCallback(
     useCallback(async(get, set, currentPathname?: string) => {
+      const fetchStartTime = performance.now();
       const currentPath = currentPathname || (isClient() ? decodeURIComponent(window.location.pathname) : '');
 
       const currentPageId = get(currentPageIdAtom);
@@ -50,6 +51,7 @@ export const useFetchCurrentPage = (): {
         currentPath,
         currentPageId,
         timestamp: new Date().toISOString(),
+        performanceStart: fetchStartTime,
         isRootPage: currentPath === '/',
       });
 
@@ -82,10 +84,12 @@ export const useFetchCurrentPage = (): {
           return null; // No valid identifier
         }
 
+        const apiStartTime = performance.now();
         const response = await apiv3Get<{ page: IPagePopulatedToShowRevision }>(
           '/page',
           apiParams,
         );
+        const apiEndTime = performance.now();
 
         const newData = response.data.page;
 
@@ -96,6 +100,8 @@ export const useFetchCurrentPage = (): {
           isRootPage: newData?.path === '/',
           previousPageId: currentPageId,
           pageIdChanged: newData?._id !== currentPageId,
+          apiDuration: apiEndTime - apiStartTime,
+          totalDuration: apiEndTime - fetchStartTime,
         });
 
         // Batch atom updates to minimize re-renders

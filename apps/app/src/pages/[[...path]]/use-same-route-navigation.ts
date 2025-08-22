@@ -45,7 +45,7 @@ const usePageStateManager = () => {
     });
 
     try {
-      // OPTIMIZATION: Only update pageId if it actually changes
+      // BACK TO ORIGINAL: Only update pageId if it actually changes
       const currentPageId = pageId;
       if (currentPageId !== targetPageId) {
         console.log('[NAV-DEBUG] Updating pageId:', { from: currentPageId, to: targetPageId });
@@ -56,13 +56,19 @@ const usePageStateManager = () => {
       }
 
       // Fetch page data
-      console.log('[NAV-DEBUG] Calling fetchCurrentPage with:', targetPathname);
+      const fetchStartTime = performance.now();
+      console.log('[NAV-DEBUG] Calling fetchCurrentPage with:', targetPathname, 'at', fetchStartTime, 'ms');
       const pageData = await fetchCurrentPage(targetPathname);
+      const fetchEndTime = performance.now();
+      console.log('[NAV-DEBUG] fetchCurrentPage completed in:', fetchEndTime - fetchStartTime, 'ms');
 
       // Update editing markdown if we have body content
       if (pageData?.revision?.body !== undefined) {
+        const markdownUpdateStartTime = performance.now();
         console.log('[NAV-DEBUG] Updating editing markdown, body length:', pageData.revision.body.length);
         mutateEditingMarkdown(pageData.revision.body);
+        const markdownUpdateEndTime = performance.now();
+        console.log('[NAV-DEBUG] Markdown update completed in:', markdownUpdateEndTime - markdownUpdateStartTime, 'ms');
       }
 
       console.log('[NAV-DEBUG] Navigation successful for:', targetPathname);
@@ -103,10 +109,12 @@ export const useSameRouteNavigation = (props: Props): void => {
 
   // Track the last processed pathname to prevent unnecessary operations
   const lastProcessedPathnameRef = useRef<string | null>(null);
+  const lastProcessedPageIdRef = useRef<string | null>(null);
   const isFetchingRef = useRef<boolean>(false);
 
   // Process pathname changes - monitor both props.currentPathname and router.asPath
   useEffect(() => {
+    const startTime = performance.now();
     console.log('[NAV-DEBUG] useEffect triggered:', {
       targetPathname,
       lastProcessedPathname: lastProcessedPathnameRef.current,
@@ -114,6 +122,8 @@ export const useSameRouteNavigation = (props: Props): void => {
       currentPageId: pageId,
       currentPagePath: currentPage?.path,
       isFetching: isFetchingRef.current,
+      timestamp: new Date().toISOString(),
+      performanceStart: startTime,
     });
 
     // Skip if we already processed this pathname
@@ -140,6 +150,26 @@ export const useSameRouteNavigation = (props: Props): void => {
       currentPagePath,
     });
 
+    // Enhanced duplicate check: prevent navigation to same page by both pathname and pageId
+    const isSamePathname = lastProcessedPathnameRef.current === targetPathname;
+    const isSamePageId = targetPageId && lastProcessedPageIdRef.current === targetPageId;
+    const isCurrentPageSame = pageId && pageId === targetPageId;
+
+    if (isSamePathname || isSamePageId || isCurrentPageSame) {
+      console.log('[NAV-DEBUG] Skipping - same page detected:', {
+        isSamePathname,
+        isSamePageId,
+        isCurrentPageSame,
+        lastProcessedPathname: lastProcessedPathnameRef.current,
+        lastProcessedPageId: lastProcessedPageIdRef.current,
+        currentPageId: pageId,
+      });
+      // Update tracking refs even when skipping
+      lastProcessedPathnameRef.current = targetPathname;
+      if (targetPageId) lastProcessedPageIdRef.current = targetPageId;
+      return;
+    }
+
     // Use extracted shouldFetchPage function
     const shouldFetch = shouldFetchPage({
       targetPageId,
@@ -163,15 +193,22 @@ export const useSameRouteNavigation = (props: Props): void => {
     }
 
     isFetchingRef.current = true;
-    console.log('[NAV-DEBUG] Starting navigation for:', targetPathname);
+    console.log('[NAV-DEBUG] Starting navigation for:', targetPathname, 'at', performance.now() - startTime, 'ms');
 
     const performNavigation = async(): Promise<void> => {
+      const navigationStartTime = performance.now();
       await updatePageState(targetPathname, targetPageId);
+      const navigationEndTime = performance.now();
 
       // Mark as processed regardless of success to prevent retry loops
       lastProcessedPathnameRef.current = targetPathname;
+      if (targetPageId) lastProcessedPageIdRef.current = targetPageId;
       isFetchingRef.current = false;
-      console.log('[NAV-DEBUG] Navigation completed for:', targetPathname);
+      console.log('[NAV-DEBUG] Navigation completed for:', targetPathname, {
+        navigationDuration: navigationEndTime - navigationStartTime,
+        totalDuration: navigationEndTime - startTime,
+        timestamp: new Date().toISOString(),
+      });
     };
 
     performNavigation();
@@ -180,7 +217,7 @@ export const useSameRouteNavigation = (props: Props): void => {
   }, [
     targetPathname, // Memoized value that includes both router.asPath and props.currentPathname
     hasInitialData, // Memoized value for initial data check
-    pageId, // Page ID changes
+    // pageId removed to prevent infinite loops when fetchCurrentPage updates the pageId atom
   ]);
 
   // Cleanup on unmount
