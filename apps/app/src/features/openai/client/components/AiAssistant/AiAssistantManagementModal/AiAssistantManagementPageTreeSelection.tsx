@@ -20,7 +20,7 @@ import { useSelectedPages } from '../../../services/use-selected-pages';
 import { AiAssistantManagementModalPageMode, useAiAssistantManagementModal } from '../../../stores/ai-assistant';
 
 import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
-import { SelectablePagePageList } from './SelectablePagePageList';
+import { SelectablePageList } from './SelectablePageList';
 
 import styles from './AiAssistantManagementPageTreeSelection.module.scss';
 
@@ -143,7 +143,7 @@ export const AiAssistantManagementPageTreeSelection = (props: Props): JSX.Elemen
 
         <div className="px-4">
           <SimpleBar className="page-list-container" style={{ maxHeight: '300px' }}>
-            <SelectablePagePageList
+            <SelectablePageList
               method="remove"
               methodButtonPosition="right"
               pages={selectedPagesArray}

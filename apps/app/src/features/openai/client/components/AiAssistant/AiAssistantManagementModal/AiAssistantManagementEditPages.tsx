@@ -10,7 +10,7 @@ import type { SelectablePage } from '../../../../interfaces/selectable-page';
 
 import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
 import { PageSelectionMethodButtons } from './PageSelectionMethodButtons';
-import { SelectablePagePageList } from './SelectablePagePageList';
+import { SelectablePageList } from './SelectablePageList';
 
 type Props = {
   selectedPages: SelectablePage[];
@@ -44,7 +44,7 @@ export const AiAssistantManagementEditPages = (props: Props): JSX.Element => {
           </div>
 
           <SimpleBar style={{ maxHeight: '300px' }}>
-            <SelectablePagePageList
+            <SelectablePageList
               isEditable
               method="delete"
               methodButtonPosition="right"

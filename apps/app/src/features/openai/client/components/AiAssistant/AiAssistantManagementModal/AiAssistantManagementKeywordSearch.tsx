@@ -20,7 +20,7 @@ import {
 } from '../../../stores/ai-assistant';
 
 import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
-import { SelectablePagePageList } from './SelectablePagePageList';
+import { SelectablePageList } from './SelectablePageList';
 
 import styles from './AiAssistantManagementKeywordSearch.module.scss';
 
@@ -182,7 +182,7 @@ export const AiAssistantKeywordSearch = (props: Props): JSX.Element => {
             </h4>
             <div className="px-4">
               <SimpleBar className="page-list-container" style={{ maxHeight: '300px' }}>
-                <SelectablePagePageList
+                <SelectablePageList
                   isEditable
                   pages={pagesWithGlobPath ?? []}
                   method="add"
@@ -200,7 +200,7 @@ export const AiAssistantKeywordSearch = (props: Props): JSX.Element => {
 
         <div className="px-4">
           <SimpleBar className="page-list-container" style={{ maxHeight: '300px' }}>
-            <SelectablePagePageList
+            <SelectablePageList
               pages={selectedPagesArray}
               method="remove"
               onClickMethodButton={removePage}
