@@ -40,7 +40,7 @@ type Props = {
   className?: string,
 }
 
-export const PageView = (props: Props): JSX.Element => {
+export const PageView = React.memo((props: Props): JSX.Element => {
   const renderStartTime = performance.now();
 
   const commentsContainerRef = useRef<HTMLDivElement>(null);
@@ -238,4 +238,4 @@ export const PageView = (props: Props): JSX.Element => {
 
     </PageViewLayout>
   );
-};
+});
