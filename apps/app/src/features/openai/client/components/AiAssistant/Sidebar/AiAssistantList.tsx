@@ -183,7 +183,7 @@ export const AiAssistantList: React.FC<AiAssistantListProps> = ({
         </h3>
         <span
           className="material-symbols-outlined"
-        >{`keyboard_arrow_${isCollapsed ? 'up' : 'down'}`}
+        >{`keyboard_arrow_${isCollapsed ? 'down' : 'right'}`}
         </span>
       </button>
 
