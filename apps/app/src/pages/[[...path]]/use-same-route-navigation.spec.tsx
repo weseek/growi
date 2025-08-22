@@ -1,9 +1,19 @@
-import { renderHook, act } from '@testing-library/react';
-import { useRouter } from 'next/router';
+import type {
+  IPagePopulatedToShowRevision, IRevisionHasId, IUserHasId, Lang, PageGrant, PageStatus,
+} from '@growi/core';
+import { renderHook, waitFor } from '@testing-library/react';
+import type { AxiosResponse } from 'axios';
+import { Provider, createStore } from 'jotai';
 import type { NextRouter } from 'next/router';
+import { useRouter } from 'next/router';
+import { vi } from 'vitest';
 import { mockDeep } from 'vitest-mock-extended';
 
-import { useSameRouteNavigation } from './use-same-route-navigation';
+// eslint-disable-next-line no-restricted-imports
+import * as apiv3Client from '~/client/util/apiv3-client';
+import type { Props } from '~/pages/[[...path]]/types';
+import { useSameRouteNavigation } from '~/pages/[[...path]]/use-same-route-navigation';
+import { currentPageDataAtom, currentPageIdAtom } from '~/states/page/internal-atoms';
 
 // Mock Next.js router
 const mockRouter = mockDeep<NextRouter>();
@@ -11,214 +21,210 @@ vi.mock('next/router', () => ({
   useRouter: vi.fn(() => mockRouter),
 }));
 
-// Mock dependencies - only mock fetchCurrentPage to test the integration
-const mockFetchCurrentPage = vi.fn();
+// Mock API client
+vi.mock('~/client/util/apiv3-client');
+const mockedApiv3Get = vi.spyOn(apiv3Client, 'apiv3Get');
+
+// Mock dependencies
 const mockMutateEditingMarkdown = vi.fn();
-
-vi.mock('~/states/page', async() => ({
-  // Use real implementations for state hooks to get closer to actual behavior
-  ...(await vi.importActual('~/states/page')),
-  // Only mock the fetch function since that's what we want to test
-  useFetchCurrentPage: () => ({ fetchCurrentPage: mockFetchCurrentPage }),
-}));
-
 vi.mock('~/stores/editor', () => ({
   useEditingMarkdown: () => ({ mutate: mockMutateEditingMarkdown }),
 }));
 
-describe('useSameRouteNavigation - Essential Bug Fix Verification', () => {
-  // Create realistic page data mock
-  const createPageDataMock = (pageId: string, path: string, body: string) => ({
-    _id: pageId,
-    path,
-    revision: {
-      _id: `rev_${pageId}`,
-      body,
-      author: { _id: 'user1', name: 'Test User' },
-      createdAt: new Date(),
-    },
-    creator: { _id: 'user1', name: 'Test User' },
-    lastUpdateUser: { _id: 'user1', name: 'Test User' },
-    grant: 1, // GRANT_PUBLIC
+const mockUser: IUserHasId = {
+  _id: 'user1',
+  name: 'Test User',
+  username: 'testuser',
+  email: 'test@example.com',
+  password: 'password',
+  introduction: '',
+  lang: 'en-US' as Lang,
+  status: 1,
+  admin: false,
+  readOnly: false,
+  isInvitationEmailSended: false,
+  isEmailPublished: false,
+  createdAt: new Date(),
+  imageUrlCached: '',
+  isGravatarEnabled: false,
+};
+
+// This is a minimal mock to satisfy the IPagePopulatedToShowRevision type.
+// It is based on the type definition in packages/core/src/interfaces/page.ts
+const createPageDataMock = (pageId: string, path: string, body: string): IPagePopulatedToShowRevision => {
+  const revision: IRevisionHasId = {
+    _id: `rev_${pageId}`,
+    pageId,
+    body,
+    format: 'markdown',
+    author: mockUser,
     createdAt: new Date(),
     updatedAt: new Date(),
-  });
+  };
 
-  // Test helper to create props
-  const createProps = (currentPathname: string) => {
-    return { currentPathname } as Parameters<typeof useSameRouteNavigation>[0];
+  return {
+    _id: pageId,
+    path,
+    revision,
+    tags: [],
+    creator: mockUser,
+    lastUpdateUser: mockUser,
+    deleteUser: mockUser,
+    author: mockUser,
+    grant: 1 as PageGrant,
+    grantedUsers: [],
+    grantedGroups: [],
+    parent: null,
+    descendantCount: 0,
+    isEmpty: false,
+    status: 'published' as PageStatus,
+    wip: false,
+    commentCount: 0,
+    seenUsers: [],
+    liker: [],
+    expandContentWidth: false,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    slackChannels: '',
+    deletedAt: new Date(),
+  };
+};
+
+
+describe('useSameRouteNavigation - Integration Test', () => {
+
+  let store: ReturnType<typeof createStore>;
+
+  // Helper to render the hook with Jotai provider
+  const renderHookWithProvider = (props: Props) => {
+    return renderHook(() => useSameRouteNavigation(props), {
+      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+    });
+  };
+
+  const createProps = (currentPathname: string): Props => {
+    // Create a minimal props object that satisfies the type checker
+    return { currentPathname, ...{ isNextjsRoutingTypeInitial: false } } as unknown as Props;
+  };
+
+  const mockApiResponse = (page: IPagePopulatedToShowRevision): AxiosResponse<{ page: IPagePopulatedToShowRevision }> => {
+    return {
+      data: { page },
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      config: {} as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+    };
   };
 
   beforeEach(() => {
+    store = createStore();
     vi.clearAllMocks();
 
     // Base router setup
-    mockRouter.asPath = '/current/path';
+    mockRouter.asPath = '/initial/path';
     mockRouter.pathname = '/[[...path]]';
     (useRouter as ReturnType<typeof vi.fn>).mockReturnValue(mockRouter);
 
-    // Default fetch behavior with realistic page data
-    const defaultPageData = createPageDataMock('page123', '/current/path', 'fetched content');
-    mockFetchCurrentPage.mockResolvedValue(defaultPageData);
+    // Default API response
+    const defaultPageData = createPageDataMock('defaultPageId', '/initial/path', 'default content');
+    mockedApiv3Get.mockResolvedValue(mockApiResponse(defaultPageData));
   });
 
-  describe('CORE FIX: router.asPath dependency', () => {
-    it('should fetch when router.asPath differs from props.currentPathname', async() => {
-      // Bug scenario: stale props vs current router state
-      const props = createProps('/stale/props/path');
-      mockRouter.asPath = '/actual/browser/path';
+  it('should fetch data, update atoms, and update editor on navigation', async() => {
+    // Arrange: Start at an initial page
+    const initialPageData = createPageDataMock('initialPageId', '/initial/path', 'initial content');
+    store.set(currentPageIdAtom, initialPageData._id);
+    store.set(currentPageDataAtom, initialPageData);
 
-      renderHook(() => useSameRouteNavigation(props));
+    // Arrange: Navigate to a new page
+    mockRouter.asPath = '/new/page';
+    const newPageData = createPageDataMock('newPageId', '/new/page', 'new content');
+    mockedApiv3Get.mockResolvedValue(mockApiResponse(newPageData));
 
-      await act(async() => {
-        await new Promise(resolve => setTimeout(resolve, 0));
-      });
+    // Act
+    const { rerender } = renderHookWithProvider(createProps('/initial/path'));
+    rerender(createProps('/new/page')); // Rerender with new props to simulate navigation
 
-      // Verify fix: should use router.asPath, not props.currentPathname
-      expect(mockFetchCurrentPage).toHaveBeenCalledWith('/actual/browser/path');
-      expect(mockFetchCurrentPage).not.toHaveBeenCalledWith('/stale/props/path');
-    });
+    // Assert: Wait for state updates
+    await waitFor(() => {
+      // 1. API was called correctly
+      expect(mockedApiv3Get).toHaveBeenCalledWith('/page', expect.objectContaining({ path: '/new/page' }));
 
-    it('should always fetch when navigating to check for content changes', async() => {
-      // This test exposes the core bug: not fetching when we should
-      const props = createProps('/same/path');
-      mockRouter.asPath = '/same/path';
+      // 2. Atoms were updated
+      expect(store.get(currentPageIdAtom)).toBe(newPageData._id);
+      expect(store.get(currentPageDataAtom)).toEqual(newPageData);
 
-      // Set up different page data to simulate the scenario where:
-      // - Current loaded page has different content than what should be loaded
-      // - Same path but different page ID/content
-
-      const currentPageData = createPageDataMock('oldPageId', '/same/path', 'Old content');
-      const newPageData = createPageDataMock('newPageId', '/same/path', 'New content');
-
-      mockFetchCurrentPage.mockResolvedValue(newPageData);
-
-      renderHook(() => useSameRouteNavigation(props));
-
-      await act(async() => {
-        await new Promise(resolve => setTimeout(resolve, 0));
-      });
-
-      // CRITICAL: Should always fetch to ensure we have the latest content
-      // This will currently fail because the implementation doesn't fetch
-      // when it thinks the page is already loaded for the same path
-      expect(mockFetchCurrentPage).toHaveBeenCalledWith('/same/path');
-      expect(mockMutateEditingMarkdown).toHaveBeenCalledWith('New content');
+      // 3. Side effects were triggered
+      expect(mockMutateEditingMarkdown).toHaveBeenCalledWith(newPageData.revision?.body);
     });
   });
 
-  describe('Essential behavior verification', () => {
-    it('should fetch and update editor content', async() => {
-      const props = createProps('/some/page');
-      mockRouter.asPath = '/some/page';
+  it('should use router.asPath as the source of truth, not stale props.currentPathname', async() => {
+    // Arrange: props.currentPathname is stale
+    const props = createProps('/stale/props/path');
+    // Arrange: router.asPath is the current, correct path
+    mockRouter.asPath = '/actual/browser/path';
+    const actualPageData = createPageDataMock('actualPageId', '/actual/browser/path', 'actual content');
+    mockedApiv3Get.mockResolvedValue(mockApiResponse(actualPageData));
 
-      const pageData = createPageDataMock('page456', '/some/page', 'page content');
-      mockFetchCurrentPage.mockResolvedValue(pageData);
+    // Act
+    renderHookWithProvider(props);
 
-      renderHook(() => useSameRouteNavigation(props));
-
-      await act(async() => {
-        await new Promise(resolve => setTimeout(resolve, 0));
-      });
-
-      expect(mockFetchCurrentPage).toHaveBeenCalledWith('/some/page');
-      expect(mockMutateEditingMarkdown).toHaveBeenCalledWith('page content');
-    });
-
-    it('should handle navigation between different pages', async() => {
-      const props = createProps('/first/page');
-      mockRouter.asPath = '/first/page';
-
-      // First page data
-      const firstPageData = createPageDataMock('page1', '/first/page', 'First page content');
-      mockFetchCurrentPage.mockResolvedValue(firstPageData);
-
-      const { rerender } = renderHook(() => useSameRouteNavigation(props));
-
-      await act(async() => {
-        await new Promise(resolve => setTimeout(resolve, 0));
-      });
-
-      expect(mockFetchCurrentPage).toHaveBeenCalledWith('/first/page');
-      expect(mockMutateEditingMarkdown).toHaveBeenCalledWith('First page content');
-
-      // Clear mocks and navigate to second page
-      mockFetchCurrentPage.mockClear();
-      mockMutateEditingMarkdown.mockClear();
-
-      // Second page data - different ID and content
-      const secondPageData = createPageDataMock('page2', '/second/page', 'Second page content');
-      mockFetchCurrentPage.mockResolvedValue(secondPageData);
-
-      // Simulate navigation to different page
-      mockRouter.asPath = '/second/page';
-      rerender();
-
-      await act(async() => {
-        await new Promise(resolve => setTimeout(resolve, 0));
-      });
-
-      // Should fetch new page and update content
-      expect(mockFetchCurrentPage).toHaveBeenCalledWith('/second/page');
-      expect(mockMutateEditingMarkdown).toHaveBeenCalledWith('Second page content');
+    // Assert
+    await waitFor(() => {
+      expect(mockedApiv3Get).toHaveBeenCalledWith('/page', expect.objectContaining({ path: '/actual/browser/path' }));
+      expect(mockedApiv3Get).not.toHaveBeenCalledWith('/page', expect.objectContaining({ path: '/stale/props/path' }));
+      expect(store.get(currentPageIdAtom)).toBe(actualPageData._id);
     });
   });
 
-  describe('Root page navigation debugging', () => {
-    it('should handle navigation to root page correctly', async() => {
-      // Test navigation to root page specifically to debug the reported issue
-      const props = createProps('/');
-      mockRouter.asPath = '/';
+  it('should not re-fetch if target path and page id are the same as current', async() => {
+    // Arrange: Current state is set
+    const currentPageData = createPageDataMock('page1', '/same/path', 'current content');
+    store.set(currentPageIdAtom, currentPageData._id);
+    store.set(currentPageDataAtom, currentPageData);
+    mockRouter.asPath = '/same/path';
 
-      const rootPageData = createPageDataMock('rootPageId', '/', 'Root page content');
-      mockFetchCurrentPage.mockResolvedValue(rootPageData);
+    // Act
+    const { rerender } = renderHookWithProvider(createProps('/same/path'));
+    rerender(createProps('/same/path')); // Rerender with same props
 
-      renderHook(() => useSameRouteNavigation(props));
+    // Assert
+    // Use a short timeout to ensure no fetch is initiated
+    await new Promise(resolve => setTimeout(resolve, 100));
+    expect(mockedApiv3Get).not.toHaveBeenCalled();
+  });
 
-      await act(async() => {
-        await new Promise(resolve => setTimeout(resolve, 0));
-      });
 
-      // Check if root page navigation works correctly
-      expect(mockFetchCurrentPage).toHaveBeenCalledWith('/');
-      expect(mockMutateEditingMarkdown).toHaveBeenCalledWith('Root page content');
+  it('should handle navigation to and from the root page', async() => {
+    // Arrange: Start on a regular page
+    const regularPageData = createPageDataMock('regularPageId', '/some/page', 'Regular page content');
+    mockedApiv3Get.mockResolvedValue(mockApiResponse(regularPageData));
+    mockRouter.asPath = '/some/page';
+
+    const { rerender } = renderHookWithProvider(createProps('/some/page'));
+
+    await waitFor(() => {
+      expect(store.get(currentPageIdAtom)).toBe('regularPageId');
     });
 
-    it('should handle navigation from other page to root page', async() => {
-      // Start from a regular page
-      const props = createProps('/some/page');
-      mockRouter.asPath = '/some/page';
+    // Arrange: Navigate to the root page
+    mockedApiv3Get.mockClear();
+    mockMutateEditingMarkdown.mockClear();
+    const rootPageData = createPageDataMock('rootPageId', '/', 'Root page content');
+    mockedApiv3Get.mockResolvedValue(mockApiResponse(rootPageData));
+    mockRouter.asPath = '/';
 
-      const regularPageData = createPageDataMock('regularPageId', '/some/page', 'Regular page content');
-      mockFetchCurrentPage.mockResolvedValue(regularPageData);
+    // Act
+    rerender(createProps('/'));
 
-      const { rerender } = renderHook(() => useSameRouteNavigation(props));
-
-      await act(async() => {
-        await new Promise(resolve => setTimeout(resolve, 0));
-      });
-
-      // Verify initial page was loaded
-      expect(mockFetchCurrentPage).toHaveBeenCalledWith('/some/page');
-
-      // Clear mocks and prepare for root page navigation
-      mockFetchCurrentPage.mockClear();
-      mockMutateEditingMarkdown.mockClear();
-
-      const rootPageData = createPageDataMock('rootPageId', '/', 'Root page content');
-      mockFetchCurrentPage.mockResolvedValue(rootPageData);
-
-      // Navigate to root page
-      mockRouter.asPath = '/';
-      rerender();
-
-      await act(async() => {
-        await new Promise(resolve => setTimeout(resolve, 0));
-      });
-
-      // This should work correctly - the reported bug scenario
-      expect(mockFetchCurrentPage).toHaveBeenCalledWith('/');
-      expect(mockMutateEditingMarkdown).toHaveBeenCalledWith('Root page content');
+    // Assert: Navigation to root works
+    await waitFor(() => {
+      expect(mockedApiv3Get).toHaveBeenCalledWith('/page', expect.objectContaining({ path: '/' }));
+      expect(store.get(currentPageIdAtom)).toBe('rootPageId');
+      expect(mockMutateEditingMarkdown).toHaveBeenCalledWith(rootPageData.revision?.body);
     });
   });
+
 });
