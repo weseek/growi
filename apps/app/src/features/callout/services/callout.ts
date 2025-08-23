@@ -10,7 +10,10 @@ export const remarkPlugin: Plugin = () => {
     visit(tree, 'containerDirective', (node: ContainerDirective) => {
       if (AllCallout.some((name) => name === node.name.toLowerCase())) {
         const type = node.name.toLowerCase();
-        const data = node.data ?? (node.data = {});
+        if (node.data == null) {
+          node.data = {};
+        }
+        const data = node.data;
 
         // extract directive label
         const paragraphs = (node.children ?? []).filter(

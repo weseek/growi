@@ -23,7 +23,7 @@ This is an info callout.
     const tree = processor.parse(markdown);
     processor.runSync(tree);
 
-    let calloutNode;
+    let calloutNode: ContainerDirective | undefined;
     visit(tree, 'containerDirective', (node) => {
       calloutNode = node;
     });
