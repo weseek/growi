@@ -13,6 +13,9 @@ vi.mock('../../../server/routes/list-pages/generate-base-query', () => ({
       skip: vi.fn().mockReturnThis(),
       limit: vi.fn().mockReturnThis(),
       sort: vi.fn().mockReturnThis(),
+      and: vi.fn().mockReturnThis(), // Add and method for depth/filter conditions
+      clone: vi.fn().mockReturnThis(), // Add clone method
+      count: vi.fn().mockResolvedValue(10), // Add count method
       exec: vi.fn().mockResolvedValue([]),
     },
     addConditionToListOnlyDescendants: vi.fn().mockReturnThis(),
@@ -27,9 +30,13 @@ vi.mock('mongoose', () => ({
       skip: vi.fn().mockReturnThis(),
       limit: vi.fn().mockReturnThis(),
       sort: vi.fn().mockReturnThis(),
+      and: vi.fn().mockReturnThis(), // Add and method
+      clone: vi.fn().mockReturnThis(), // Add clone method
+      count: vi.fn().mockResolvedValue(10), // Add count method
       exec: vi.fn().mockResolvedValue([]),
     }),
     countDocuments: vi.fn().mockResolvedValue(0),
+    aggregate: vi.fn().mockResolvedValue([{ count: 5 }]), // Add aggregate method for getToppageViewersCount
   }),
 }));
 
@@ -46,10 +53,25 @@ describe('useSWRxLsx integration tests', () => {
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
+    // Add CORS headers to prevent cross-origin issues
+    app.use((req, res, next) => {
+      res.header('Access-Control-Allow-Origin', '*');
+      res.header(
+        'Access-Control-Allow-Methods',
+        'GET, POST, PUT, DELETE, OPTIONS',
+      );
+      res.header(
+        'Access-Control-Allow-Headers',
+        'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+      );
+      next();
+    });
+
+
     // Mock minimal GROWI-like structure for the middleware
     const mockCrowi = {
-      require: () => () => (req: any, res: any, next: any) => next(), // Mock login middleware
-      accessTokenParser: () => (req: any, res: any, next: any) => next(), // Mock access token parser
+      require: () => () => (req: any, res: any, next: any) => next(),
+      accessTokenParser: () => (req: any, res: any, next: any) => next(),
     };
 
     // Import and setup the LSX middleware
@@ -58,7 +80,6 @@ describe('useSWRxLsx integration tests', () => {
     // Start test server
     return new Promise<void>((resolve) => {
       server = app.listen(TEST_PORT, () => {
-        console.log(`Test server running on port ${TEST_PORT}`);
         resolve();
       });
     });
@@ -97,7 +118,10 @@ describe('useSWRxLsx integration tests', () => {
     // Wait for either data or error to be defined
     await waitFor(
       () => {
-        expect(result.current.data !== undefined || result.current.error !== undefined).toBe(true);
+        expect(
+          result.current.data !== undefined ||
+            result.current.error !== undefined,
+        ).toBe(true);
       },
       { timeout: 5000 },
     );
@@ -115,8 +139,9 @@ describe('useSWRxLsx integration tests', () => {
       }),
     );
 
-    // Verify we got a successful response (data) or proper error handling
-    expect(result.current.data !== undefined || result.current.error !== undefined).toBe(true);
+    // Verify we got a successful 2xx response with data
+    expect(result.current.data).toBeDefined();
+    expect(result.current.error).toBeUndefined();
 
     axiosGetSpy.mockRestore();
   });
@@ -147,10 +172,7 @@ describe('useSWRxLsx integration tests', () => {
 
     await waitFor(
       () => {
-        expect(
-          result.current.data !== undefined ||
-            result.current.error !== undefined,
-        ).toBe(true);
+        expect(result.current.data).toBeDefined();
       },
       { timeout: 5000 },
     );
@@ -169,6 +191,10 @@ describe('useSWRxLsx integration tests', () => {
         }),
       }),
     );
+
+    // Verify we got a successful 2xx response with data
+    expect(result.current.data).toBeDefined();
+    expect(result.current.error).toBeUndefined();
 
     axiosGetSpy.mockRestore();
   });
