@@ -32,6 +32,7 @@ module.exports = {
     'src/migrations/**',
     'src/features/callout/**',
     'src/features/comment/**',
+    'src/features/templates/**',
   ],
   settings: {
     // resolve path aliases by eslint-import-resolver-typescript
