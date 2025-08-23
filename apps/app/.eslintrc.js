@@ -30,6 +30,7 @@ module.exports = {
     'config/**',
     'src/linter-checker/**',
     'src/migrations/**',
+    'src/features/callout/**',
   ],
   settings: {
     // resolve path aliases by eslint-import-resolver-typescript
