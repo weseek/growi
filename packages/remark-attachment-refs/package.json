@@ -41,7 +41,7 @@
     "lint:styles": "stylelint \"src/**/*.scss\" \"src/**/*.css\"",
     "lint:typecheck": "vue-tsc --noEmit",
     "lint": "run-p lint:*",
-    "test": "vitest"
+    "test": "vitest run --coverage"
   },
   "dependencies": {
     "@growi/core": "workspace:^",
