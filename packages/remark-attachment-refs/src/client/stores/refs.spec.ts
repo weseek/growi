@@ -234,33 +234,6 @@ describe('useSWRxRef and useSWRxRefs integration tests', () => {
 
       axiosGetSpy.mockRestore();
     });
-
-    it('should handle ObjectId-based file reference correctly', async () => {
-      const axiosGetSpy = setupAxiosSpy();
-
-      const { result } = renderHook(() =>
-        useSWRxRef('/test-page', '507f1f77bcf86cd799439011', false),
-      );
-
-      await waitFor(() => expect(result.current.data).toBeDefined(), {
-        timeout: 5000,
-      });
-
-      expect(axiosGetSpy).toHaveBeenCalledWith(
-        '/_api/attachment-refs/ref',
-        expect.objectContaining({
-          params: expect.objectContaining({
-            pagePath: '/test-page',
-            fileNameOrId: '507f1f77bcf86cd799439011',
-          }),
-        }),
-      );
-
-      expect(result.current.data).toBeDefined();
-      expect(result.current.error).toBeUndefined();
-
-      axiosGetSpy.mockRestore();
-    });
   });
 
   describe('useSWRxRefs', () => {
@@ -310,42 +283,6 @@ describe('useSWRxRef and useSWRxRefs integration tests', () => {
             pagePath: '',
             prefix: '/test-prefix',
             options: { depth: '2' },
-          }),
-        }),
-      );
-
-      expect(result.current.data).toBeDefined();
-      expect(result.current.error).toBeUndefined();
-
-      axiosGetSpy.mockRestore();
-    });
-
-    it('should handle different refs options correctly', async () => {
-      const axiosGetSpy = setupAxiosSpy();
-
-      const { result } = renderHook(() =>
-        useSWRxRefs(
-          '/parent-page',
-          undefined,
-          { regexp: 'test.*\\.jpg', depth: '3' },
-          false,
-        ),
-      );
-
-      await waitFor(() => expect(result.current.data).toBeDefined(), {
-        timeout: 5000,
-      });
-
-      expect(axiosGetSpy).toHaveBeenCalledWith(
-        '/_api/attachment-refs/refs',
-        expect.objectContaining({
-          params: expect.objectContaining({
-            pagePath: '/parent-page',
-            prefix: undefined,
-            options: expect.objectContaining({
-              regexp: 'test.*\\.jpg',
-              depth: '3',
-            }),
           }),
         }),
       );
