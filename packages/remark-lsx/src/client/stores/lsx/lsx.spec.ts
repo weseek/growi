@@ -51,7 +51,9 @@ describe('useSWRxLsx integration tests', () => {
   const setupAxiosSpy = () => {
     const originalAxios = axios.create();
     return vi.spyOn(axios, 'get').mockImplementation((url, config) => {
-      const fullUrl = url.startsWith('/_api') ? `${TEST_SERVER_URL}${url}` : url;
+      const fullUrl = url.startsWith('/_api')
+        ? `${TEST_SERVER_URL}${url}`
+        : url;
       return originalAxios.get(fullUrl, config);
     });
   };
@@ -112,7 +114,9 @@ describe('useSWRxLsx integration tests', () => {
       useSWRxLsx('/test-page', { depth: '1' }, false),
     );
 
-    await waitFor(() => expect(result.current.data).toBeDefined(), { timeout: 5000 });
+    await waitFor(() => expect(result.current.data).toBeDefined(), {
+      timeout: 5000,
+    });
 
     expect(axiosGetSpy).toHaveBeenCalledWith(
       '/_api/lsx',
@@ -134,10 +138,16 @@ describe('useSWRxLsx integration tests', () => {
     const axiosGetSpy = setupAxiosSpy();
 
     const { result } = renderHook(() =>
-      useSWRxLsx('/parent-page', { depth: '2', filter: 'test', sort: 'createdAt' }, false),
+      useSWRxLsx(
+        '/parent-page',
+        { depth: '2', filter: 'test', sort: 'createdAt' },
+        false,
+      ),
     );
 
-    await waitFor(() => expect(result.current.data).toBeDefined(), { timeout: 5000 });
+    await waitFor(() => expect(result.current.data).toBeDefined(), {
+      timeout: 5000,
+    });
 
     expect(axiosGetSpy).toHaveBeenCalledWith(
       '/_api/lsx',
@@ -164,7 +174,9 @@ describe('useSWRxLsx integration tests', () => {
 
     const { result } = renderHook(() => useSWRxLsx('', {}, false));
 
-    await waitFor(() => expect(result.current.error).toBeDefined(), { timeout: 5000 });
+    await waitFor(() => expect(result.current.error).toBeDefined(), {
+      timeout: 5000,
+    });
 
     expect(result.current.error).toBeDefined();
     expect(result.current.data).toBeUndefined();
