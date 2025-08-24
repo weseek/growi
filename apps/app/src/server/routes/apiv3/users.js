@@ -1,5 +1,6 @@
 import path from 'path';
 
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import { userHomepagePath } from '@growi/core/dist/utils/page-path-utils';
@@ -11,7 +12,6 @@ import { isEmail } from 'validator';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { deleteUserAiAssistant } from '~/features/openai/server/services/delete-ai-assistant';
 import { SupportedAction } from '~/interfaces/activity';
-import { SCOPE } from '@growi/core/dist/interfaces';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import Activity from '~/server/models/activity';
 import ExternalAccount from '~/server/models/external-account';
@@ -371,7 +371,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /{id}/recent:
+   *    /users/{id}/recent:
    *      get:
    *        tags: [Users]
    *        summary: /usersIdReacent
