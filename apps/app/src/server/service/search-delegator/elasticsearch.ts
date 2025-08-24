@@ -327,7 +327,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   async createIndex(index: string) {
     // TODO: https://redmine.weseek.co.jp/issues/168446
     if (isES7ClientDelegator(this.client)) {
-      const { mappings } = await import('^/resource/search/mappings-es7');
+      const { mappings } = await import('./mappings/mappings-es7');
       return this.client.indices.create({
         index,
         body: {
@@ -337,7 +337,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     }
 
     if (isES8ClientDelegator(this.client)) {
-      const { mappings } = await import('^/resource/search/mappings-es8');
+      const { mappings } = await import('./mappings/mappings-es8');
       return this.client.indices.create({
         index,
         ...mappings,
@@ -346,8 +346,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     if (isES9ClientDelegator(this.client)) {
       const { mappings } = process.env.CI == null
-        ? await import('^/resource/search/mappings-es9')
-        : await import('^/resource/search/mappings-es9-for-ci');
+        ? await import('./mappings/mappings-es9')
+        : await import('./mappings/mappings-es9-for-ci');
 
       return this.client.indices.create({
         index,

@@ -28,6 +28,8 @@ module.exports = {
     'test/integration/setup.js',
     'bin/**',
     'config/**',
+    'src/linter-checker/**',
+    'src/migrations/**',
   ],
   settings: {
     // resolve path aliases by eslint-import-resolver-typescript
