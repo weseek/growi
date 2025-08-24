@@ -180,7 +180,9 @@ export const routesFactory = (crowi): any => {
       const user = req.user;
       const { prefix, pagePath } = req.query;
       const options: Record<string, string | undefined> =
-        req.query.options ?? {};
+        typeof req.query.options === 'string'
+          ? JSON.parse(req.query.options)
+          : (req.query.options ?? {});
 
       // check either 'prefix' or 'pagePath ' is specified
       if (prefix == null && pagePath == null) {
