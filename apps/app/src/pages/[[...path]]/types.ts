@@ -5,9 +5,9 @@ import type {
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { CommonEachProps, CommonInitialProps } from '~/pages/utils/commons';
-import type { PageTitleCustomizationProps } from '~/pages/utils/page-title-customization';
 import type { UserUISettingsProps } from '~/pages/utils/user-ui-settings';
 import type { PageDocument } from '~/server/models/page';
+import type { ServerConfigurationHyderateArgs } from '~/states/server-configurations/hydrate';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:pages:[[...path]]:types');
@@ -15,43 +15,21 @@ const logger = loggerFactory('growi:pages:[[...path]]:types');
 
 export type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfo>;
 
-export type InitialProps = CommonInitialProps & UserUISettingsProps & {
+export type SidebarConfigProps = {
+  sidebarConfig: ISidebarConfig,
+}
+
+export type RendererConfigProps = {
+  rendererConfig: RendererConfig,
+}
+
+export type ServerConfigurationProps = {
+  serverConfig: ServerConfigurationHyderateArgs,
+}
+
+export type InitialProps = CommonInitialProps & UserUISettingsProps & SidebarConfigProps & RendererConfigProps & ServerConfigurationProps & {
   pageWithMeta: IPageToShowRevisionWithMeta | null,
   skipSSR?: boolean,
-
-  sidebarConfig: ISidebarConfig,
-  rendererConfig: RendererConfig,
-
-  isSearchServiceConfigured: boolean,
-  isSearchServiceReachable: boolean,
-  isSearchScopeChildrenAsDefault: boolean,
-  elasticsearchMaxBodyLengthToIndex: number,
-  isEnabledMarp: boolean,
-
-  isRomUserAllowedToComment: boolean,
-
-  isSlackConfigured: boolean,
-  isAclEnabled: boolean,
-  drawioUri: string | null,
-  isAllReplyShown: boolean,
-  showPageSideAuthors: boolean,
-
-  isContainerFluid: boolean,
-  isUploadEnabled: boolean,
-  isUploadAllFileAllowed: boolean,
-  isBulkExportPagesEnabled: boolean,
-  isPdfBulkExportEnabled: boolean,
-  isEnabledStaleNotification: boolean,
-  isEnabledAttachTitleHeader: boolean,
-  isUsersHomepageDeletionEnabled: boolean,
-  isLocalAccountRegistrationEnabled: boolean,
-
-  adminPreferredIndentSize: number,
-  isIndentSizeForced: boolean,
-  disableLinkSharing: boolean,
-
-  aiEnabled: boolean,
-  limitLearnablePageCountPerAssistant: number,
 
   // Page state information determined on server-side
   isNotFound: boolean,
@@ -59,7 +37,7 @@ export type InitialProps = CommonInitialProps & UserUISettingsProps & {
   isNotCreatable: boolean,
 }
 
-export type SameRouteEachProps = CommonEachProps & PageTitleCustomizationProps & {
+export type SameRouteEachProps = CommonEachProps & {
   redirectFrom?: string;
 
   isIdenticalPathPage: boolean,
@@ -86,8 +64,8 @@ export function isValidSameRouteProps(props: unknown): props is SameRouteEachPro
   const p = props as Record<string, unknown>;
 
   // Essential properties validation
-  if (typeof p.appTitle !== 'string') {
-    logger.warn('isValidSameRouteProps: appTitle is not a string', { appTitle: p.appTitle });
+  if (typeof p.nextjsRoutingPage !== 'string' && p.nextjsRoutingPage !== null) {
+    logger.warn('isValidSameRouteProps: nextjsRoutingPage is not a string or null', { nextjsRoutingPage: p.nextjsRoutingPage });
     return false;
   }
   if (typeof p.currentPathname !== 'string') {

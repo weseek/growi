@@ -9,7 +9,10 @@ import type { InitialProps, SameRouteEachProps } from './types';
 // Page data retrieval for initial load - returns GetServerSidePropsResult
 export async function getPageDataForInitial(
     context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<Partial<InitialProps & SameRouteEachProps>>> {
+): Promise<GetServerSidePropsResult<
+    Pick<InitialProps, 'pageWithMeta' | 'isNotFound' | 'isNotCreatable' | 'isForbidden' | 'skipSSR'> &
+    Pick<SameRouteEachProps, 'currentPathname' | 'isIdenticalPathPage'>
+  >> {
   const { pagePathUtils, pathUtils } = await import('@growi/core/dist/utils');
   const { model: mongooseModel } = await import('mongoose');
 
@@ -57,6 +60,7 @@ export async function getPageDataForInitial(
         isNotFound: false,
         isNotCreatable: true,
         isForbidden: false,
+        skipSSR: false,
       },
     };
   }
@@ -121,6 +125,7 @@ export async function getPageDataForInitial(
       isNotFound: true,
       isNotCreatable: !isCreatablePage(currentPathname),
       isForbidden: count > 0,
+      skipSSR: false,
     },
   };
 }
@@ -128,7 +133,7 @@ export async function getPageDataForInitial(
 // Page data retrieval for same-route navigation
 export async function getPageDataForSameRoute(
     context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<Partial<SameRouteEachProps>>> {
+): Promise<GetServerSidePropsResult<Pick<SameRouteEachProps, 'currentPathname' | 'isIdenticalPathPage' | 'redirectFrom'>>> {
   const { pagePathUtils, pathUtils } = await import('@growi/core/dist/utils');
   const { model: mongooseModel } = await import('mongoose');
 

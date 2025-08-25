@@ -27,6 +27,12 @@ export const useAppTitle = (): UseAtom<typeof appTitleAtom> => {
   return useAtom(appTitleAtom);
 };
 
+// Custom Title Template atom (no persistence needed as it's server-provided)
+export const customTitleTemplateAtom = atom<string>('');
+export const useCustomTitleTemplate = (): UseAtom<typeof customTitleTemplateAtom> => {
+  return useAtom(customTitleTemplateAtom);
+};
+
 // Site URL atom (no persistence needed as it's server-provided)
 export const siteUrlAtom = atom<string | undefined>(undefined);
 export const useSiteUrl = (): UseAtom<typeof siteUrlAtom> => {

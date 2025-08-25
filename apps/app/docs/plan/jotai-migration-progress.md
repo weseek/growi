@@ -21,7 +21,7 @@
 - `states/ui/sidebar.ts`: サイドバー状態の完全実装
 - `states/ui/device.ts`: デバイス状態
 - `states/ui/editor.ts`: エディター状態（部分）
-- `states/hydrate/sidebar.ts`: SSRハイドレーション
+- `states/sidebar/hydrate.ts`: SSRハイドレーション
 
 ## 🚧 次の実装ステップ（優先度順）
 

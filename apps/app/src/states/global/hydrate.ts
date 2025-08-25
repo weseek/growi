@@ -8,6 +8,7 @@ import {
   confidentialAtom,
   growiVersionAtom,
   isDefaultLogoAtom,
+  customTitleTemplateAtom,
   growiCloudUriAtom,
   forcedColorSchemeAtom,
 } from './global';
@@ -26,6 +27,7 @@ export const useHydrateGlobalInitialAtoms = (commonInitialProps: CommonInitialPr
     [confidentialAtom, commonInitialProps.confidential],
     [growiVersionAtom, commonInitialProps.growiVersion],
     [isDefaultLogoAtom, commonInitialProps.isDefaultLogo],
+    [customTitleTemplateAtom, commonInitialProps.customTitleTemplate],
     [growiCloudUriAtom, commonInitialProps.growiCloudUri],
     [forcedColorSchemeAtom, commonInitialProps.forcedColorScheme],
   ]);

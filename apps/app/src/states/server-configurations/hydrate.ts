@@ -33,11 +33,13 @@ import {
 /**
  * Type for server configuration initial props
  */
-export type ServerConfigurationInitialProps = {
+export type ServerConfigurationHyderateArgs = {
   aiEnabled: boolean;
   limitLearnablePageCountPerAssistant: number;
   isUsersHomepageDeletionEnabled: boolean;
   adminPreferredIndentSize: number;
+  isSearchServiceConfigured: boolean;
+  isSearchServiceReachable: boolean;
   isSearchScopeChildrenAsDefault: boolean;
   elasticsearchMaxBodyLengthToIndex: number;
   isRomUserAllowedToComment: boolean;
@@ -49,51 +51,51 @@ export type ServerConfigurationInitialProps = {
   disableLinkSharing: boolean;
   isIndentSizeForced: boolean;
   isEnabledAttachTitleHeader: boolean;
-  isSearchServiceConfigured: boolean;
-  isSearchServiceReachable: boolean;
   isSlackConfigured: boolean;
   isAclEnabled: boolean;
-  isUploadAllFileAllowed: boolean;
   isUploadEnabled: boolean;
+  isUploadAllFileAllowed: boolean;
   isBulkExportPagesEnabled: boolean;
   isPdfBulkExportEnabled: boolean;
   isLocalAccountRegistrationEnabled: boolean;
-  rendererConfig: RendererConfig;
 };
 
 /**
  * Hook for hydrating server configuration atoms with server-side data
  * This should be called early in the app component to ensure atoms are properly initialized before rendering
  *
- * @param serverConfigProps - Server-side server configuration properties
+ * @param serverConfigs - Server-side server configuration properties
  */
-export const useHydrateServerConfigurationAtoms = (serverConfigProps: ServerConfigurationInitialProps | undefined): void => {
+export const useHydrateServerConfigurationAtoms = (
+    serverConfigs: ServerConfigurationHyderateArgs | undefined,
+    rendererConfigs: RendererConfig | undefined,
+): void => {
   // Hydrate server configuration atoms with server-side data
-  useHydrateAtoms(serverConfigProps == null ? [] : [
-    [aiEnabledAtom, serverConfigProps.aiEnabled],
-    [limitLearnablePageCountPerAssistantAtom, serverConfigProps.limitLearnablePageCountPerAssistant],
-    [isUsersHomepageDeletionEnabledAtom, serverConfigProps.isUsersHomepageDeletionEnabled],
-    [defaultIndentSizeAtom, serverConfigProps.adminPreferredIndentSize],
-    [isSearchScopeChildrenAsDefaultAtom, serverConfigProps.isSearchScopeChildrenAsDefault],
-    [elasticsearchMaxBodyLengthToIndexAtom, serverConfigProps.elasticsearchMaxBodyLengthToIndex],
-    [isRomUserAllowedToCommentAtom, serverConfigProps.isRomUserAllowedToComment],
-    [drawioUriAtom, serverConfigProps.drawioUri],
-    [isAllReplyShownAtom, serverConfigProps.isAllReplyShown],
-    [showPageSideAuthorsAtom, serverConfigProps.showPageSideAuthors],
-    [isContainerFluidAtom, serverConfigProps.isContainerFluid],
-    [isEnabledStaleNotificationAtom, serverConfigProps.isEnabledStaleNotification],
-    [disableLinkSharingAtom, serverConfigProps.disableLinkSharing],
-    [isIndentSizeForcedAtom, serverConfigProps.isIndentSizeForced],
-    [isEnabledAttachTitleHeaderAtom, serverConfigProps.isEnabledAttachTitleHeader],
-    [isSearchServiceConfiguredAtom, serverConfigProps.isSearchServiceConfigured],
-    [isSearchServiceReachableAtom, serverConfigProps.isSearchServiceReachable],
-    [isSlackConfiguredAtom, serverConfigProps.isSlackConfigured],
-    [isAclEnabledAtom, serverConfigProps.isAclEnabled],
-    [isUploadAllFileAllowedAtom, serverConfigProps.isUploadAllFileAllowed],
-    [isUploadEnabledAtom, serverConfigProps.isUploadEnabled],
-    [isBulkExportPagesEnabledAtom, serverConfigProps.isBulkExportPagesEnabled],
-    [isPdfBulkExportEnabledAtom, serverConfigProps.isPdfBulkExportEnabled],
-    [isLocalAccountRegistrationEnabledAtom, serverConfigProps.isLocalAccountRegistrationEnabled],
-    [rendererConfigAtom, serverConfigProps.rendererConfig],
+  useHydrateAtoms(serverConfigs == null || rendererConfigs == null ? [] : [
+    [aiEnabledAtom, serverConfigs.aiEnabled],
+    [limitLearnablePageCountPerAssistantAtom, serverConfigs.limitLearnablePageCountPerAssistant],
+    [isUsersHomepageDeletionEnabledAtom, serverConfigs.isUsersHomepageDeletionEnabled],
+    [defaultIndentSizeAtom, serverConfigs.adminPreferredIndentSize],
+    [isSearchScopeChildrenAsDefaultAtom, serverConfigs.isSearchScopeChildrenAsDefault],
+    [elasticsearchMaxBodyLengthToIndexAtom, serverConfigs.elasticsearchMaxBodyLengthToIndex],
+    [isRomUserAllowedToCommentAtom, serverConfigs.isRomUserAllowedToComment],
+    [drawioUriAtom, serverConfigs.drawioUri],
+    [isAllReplyShownAtom, serverConfigs.isAllReplyShown],
+    [showPageSideAuthorsAtom, serverConfigs.showPageSideAuthors],
+    [isContainerFluidAtom, serverConfigs.isContainerFluid],
+    [isEnabledStaleNotificationAtom, serverConfigs.isEnabledStaleNotification],
+    [disableLinkSharingAtom, serverConfigs.disableLinkSharing],
+    [isIndentSizeForcedAtom, serverConfigs.isIndentSizeForced],
+    [isEnabledAttachTitleHeaderAtom, serverConfigs.isEnabledAttachTitleHeader],
+    [isSearchServiceConfiguredAtom, serverConfigs.isSearchServiceConfigured],
+    [isSearchServiceReachableAtom, serverConfigs.isSearchServiceReachable],
+    [isSlackConfiguredAtom, serverConfigs.isSlackConfigured],
+    [isAclEnabledAtom, serverConfigs.isAclEnabled],
+    [isUploadAllFileAllowedAtom, serverConfigs.isUploadAllFileAllowed],
+    [isUploadEnabledAtom, serverConfigs.isUploadEnabled],
+    [isBulkExportPagesEnabledAtom, serverConfigs.isBulkExportPagesEnabled],
+    [isPdfBulkExportEnabledAtom, serverConfigs.isPdfBulkExportEnabled],
+    [isLocalAccountRegistrationEnabledAtom, serverConfigs.isLocalAccountRegistrationEnabled],
+    [rendererConfigAtom, rendererConfigs],
   ]);
 };

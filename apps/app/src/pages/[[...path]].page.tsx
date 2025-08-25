@@ -21,7 +21,6 @@ import { BasicLayout } from '~/components/Layout/BasicLayout';
 import { PageView } from '~/components/PageView/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { useEditorModeClassName } from '~/services/layout/use-editor-mode-class-name';
-import { useHydrateSidebarAtoms } from '~/states/hydrate/sidebar';
 import {
   useCurrentPageData, useCurrentPageId, useCurrentPagePath, usePageNotFound,
 } from '~/states/page';
@@ -31,6 +30,7 @@ import {
   useRendererConfig,
 } from '~/states/server-configurations';
 import { useHydrateServerConfigurationAtoms } from '~/states/server-configurations/hydrate';
+import { useHydrateSidebarAtoms } from '~/states/sidebar/hydrate';
 import {
   useIsSharedUser,
   useIsSearchPage,
@@ -48,7 +48,7 @@ import type {
 } from './[[...path]]/types';
 import type { NextPageWithLayout } from './_app.page';
 import { NextjsRoutingType, detectNextjsRoutingType } from './utils/nextjs-routing-utils';
-import { generateCustomTitleForPage } from './utils/page-title-customization';
+import { useCustomTitleForPage } from './utils/page-title-customization';
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
@@ -176,7 +176,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // So preferentially take page data from useSWRxCurrentPage
   const pagePath = currentPagePath ?? props.currentPathname;
 
-  const title = generateCustomTitleForPage(props, pagePath);
+  const title = useCustomTitleForPage(pagePath);
 
   return (
     <>
@@ -217,7 +217,7 @@ const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
   const sidebarConfig = initialProps?.sidebarConfig;
   const userUISettings = initialProps?.userUISettings;
   useHydrateSidebarAtoms(sidebarConfig, userUISettings);
-  useHydrateServerConfigurationAtoms(initialProps);
+  useHydrateServerConfigurationAtoms(initialProps?.serverConfig, initialProps?.rendererConfig);
 
   return <BasicLayoutWithEditor>{children}</BasicLayoutWithEditor>;
 };

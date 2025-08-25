@@ -11,6 +11,7 @@ export type CommonInitialProps = {
   confidential: string,
   growiVersion: string,
   isDefaultLogo: boolean,
+  customTitleTemplate: string,
   growiCloudUri: string | undefined,
   forcedColorScheme?: ColorScheme,
 };
@@ -19,7 +20,7 @@ export const getServerSideCommonInitialProps: GetServerSideProps<CommonInitialPr
   const req = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    appService, configManager, attachmentService,
+    appService, configManager, attachmentService, customizeService,
   } = crowi;
 
   const isCustomizedLogoUploaded = await attachmentService.isBrandLogoExist();
@@ -34,6 +35,7 @@ export const getServerSideCommonInitialProps: GetServerSideProps<CommonInitialPr
       confidential: appService.getAppConfidential() || '',
       growiVersion: getGrowiVersion(),
       isDefaultLogo,
+      customTitleTemplate: customizeService.customTitleTemplate,
       growiCloudUri: configManager.getConfig('app:growiCloudUri'),
       forcedColorScheme,
     },
@@ -42,15 +44,15 @@ export const getServerSideCommonInitialProps: GetServerSideProps<CommonInitialPr
 
 export type CommonEachProps = {
   currentPathname: string,
+  nextjsRoutingPage: string | null, // must be set by each page
   currentUser?: IUserHasId,
-  nextjsRoutingPage?: string,
   csrfToken: string,
   isMaintenanceMode: boolean,
   redirectDestination?: string | null,
 };
 
 
-export const getServerSideCommonEachProps: GetServerSideProps<CommonEachProps> = async(context: GetServerSidePropsContext) => {
+export const getServerSideCommonEachProps: GetServerSideProps<Omit<CommonEachProps, 'nextjsRoutingPage'>> = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest;
   const { crowi, user } = req;
   const { appService } = crowi;
