@@ -111,10 +111,9 @@ export async function getServerSidePropsForInitial(context: GetServerSidePropsCo
     getServerSideI18nProps(context, ['translation']),
   ]);
 
-  // Merge all results in a type-safe manner
+  // Merge all results in a type-safe manner (using sequential merging)
   const mergedResult = mergeGetServerSidePropsResults(
-    initialPropsResult,
-    pageDataResult,
+    mergeGetServerSidePropsResults(initialPropsResult, pageDataResult),
     i18nPropsResult,
   );
 

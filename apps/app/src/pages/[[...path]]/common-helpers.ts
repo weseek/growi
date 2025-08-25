@@ -41,97 +41,30 @@ export async function createNextI18NextConfig(
   );
 }
 
-// Type-safe GetServerSidePropsResult merger with overloads
+// Type-safe GetServerSidePropsResult merger for two results
 export function mergeGetServerSidePropsResults<T1, T2>(
     result1: GetServerSidePropsResult<T1>,
     result2: GetServerSidePropsResult<T2>,
-): GetServerSidePropsResult<T1 & T2>;
-export function mergeGetServerSidePropsResults<T1, T2, T3>(
-    result1: GetServerSidePropsResult<T1>,
-    result2: GetServerSidePropsResult<T2>,
-    result3: GetServerSidePropsResult<T3>,
-): GetServerSidePropsResult<T1 & T2 & T3>;
-export function mergeGetServerSidePropsResults<T1, T2, T3, T4>(
-    result1: GetServerSidePropsResult<T1>,
-    result2: GetServerSidePropsResult<T2>,
-    result3: GetServerSidePropsResult<T3>,
-    result4: GetServerSidePropsResult<T4>,
-): GetServerSidePropsResult<T1 & T2 & T3 & T4>;
-export function mergeGetServerSidePropsResults<T1, T2, T3, T4>(
-    result1: GetServerSidePropsResult<T1>,
-    result2: GetServerSidePropsResult<T2>,
-    result3?: GetServerSidePropsResult<T3>,
-    result4?: GetServerSidePropsResult<T4>,
-): GetServerSidePropsResult<T1 & T2> | GetServerSidePropsResult<T1 & T2 & T3> | GetServerSidePropsResult<T1 & T2 & T3 & T4> {
-  // Handle 2-argument case
-  if (result3 === undefined && result4 === undefined) {
-    if ('redirect' in result1) return result1;
-    if ('redirect' in result2) return result2;
-    if ('notFound' in result1) return result1;
-    if ('notFound' in result2) return result2;
+): GetServerSidePropsResult<T1 & T2> {
+  // Check for redirect responses (return the first one found)
+  if ('redirect' in result1) return result1;
+  if ('redirect' in result2) return result2;
 
-    if (!('props' in result1) || !('props' in result2)) {
-      throw new Error('Invalid GetServerSidePropsResult - missing props');
-    }
+  // Check for notFound responses (return the first one found)
+  if ('notFound' in result1) return result1;
+  if ('notFound' in result2) return result2;
 
-    return {
-      props: {
-        ...result1.props,
-        ...result2.props,
-      } as T1 & T2,
-    };
+  // Both results must have props for successful merge
+  if (!('props' in result1) || !('props' in result2)) {
+    throw new Error('Invalid GetServerSidePropsResult - missing props');
   }
 
-  // Handle 3-argument case
-  if (result4 === undefined && result3 !== undefined) {
-    if ('redirect' in result1) return result1;
-    if ('redirect' in result2) return result2;
-    if ('redirect' in result3) return result3;
-    if ('notFound' in result1) return result1;
-    if ('notFound' in result2) return result2;
-    if ('notFound' in result3) return result3;
-
-    if (!('props' in result1) || !('props' in result2) || !('props' in result3)) {
-      throw new Error('Invalid GetServerSidePropsResult - missing props');
-    }
-
-    return {
-      props: {
-        ...result1.props,
-        ...result2.props,
-        ...result3.props,
-      } as T1 & T2 & T3,
-    };
-  }
-
-  // Handle 4-argument case
-  if (result3 !== undefined && result4 !== undefined) {
-    if ('redirect' in result1) return result1;
-    if ('redirect' in result2) return result2;
-    if ('redirect' in result3) return result3;
-    if ('redirect' in result4) return result4;
-
-    if ('notFound' in result1) return result1;
-    if ('notFound' in result2) return result2;
-    if ('notFound' in result3) return result3;
-    if ('notFound' in result4) return result4;
-
-    if (!('props' in result1) || !('props' in result2)
-        || !('props' in result3) || !('props' in result4)) {
-      throw new Error('Invalid GetServerSidePropsResult - missing props');
-    }
-
-    return {
-      props: {
-        ...result1.props,
-        ...result2.props,
-        ...result3.props,
-        ...result4.props,
-      } as T1 & T2 & T3 & T4,
-    };
-  }
-
-  throw new Error('Invalid arguments for mergeGetServerSidePropsResults');
+  return {
+    props: {
+      ...result1.props,
+      ...result2.props,
+    } as T1 & T2,
+  };
 }
 
 // Type-safe property extraction helper
