@@ -33,16 +33,17 @@ function addFilterCondition(
   }
 
   const pagePathForRegexp = escapeStringRegexp(addTrailingSlash(pagePath));
+  const sanitizedFilter = escapeStringRegexp(optionsFilter);
 
   let filterPath: RegExp;
   try {
     if (optionsFilter.charAt(0) === '^') {
       // move '^' to the first of path
       filterPath = new RegExp(
-        `^${pagePathForRegexp}${optionsFilter.slice(1, optionsFilter.length)}`,
+        `^${pagePathForRegexp}${optionsFilter.slice(1, sanitizedFilter.length)}`,
       );
     } else {
-      filterPath = new RegExp(`^${pagePathForRegexp}.*${optionsFilter}`);
+      filterPath = new RegExp(`^${pagePathForRegexp}.*${sanitizedFilter}`);
     }
   } catch (err) {
     throw createError(400, err);
