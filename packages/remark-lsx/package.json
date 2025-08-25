@@ -45,7 +45,6 @@
     "xss": "^1.0.15"
   },
   "devDependencies": {
-    "@testing-library/react": "^16.0.1",
     "@types/express": "^4",
     "@types/hast": "^3.0.4",
     "axios": "^1.10.0",
