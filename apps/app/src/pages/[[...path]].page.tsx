@@ -46,6 +46,7 @@ import { getServerSidePropsForInitial, getServerSidePropsForSameRoute } from './
 import type {
   Props, InitialProps, SameRouteEachProps, IPageToShowRevisionWithMeta,
 } from './[[...path]]/types';
+import { useInitialCSRFetch } from './[[...path]]/use-initial-skip-ssr-fetch';
 import type { NextPageWithLayout } from './_app.page';
 import { NextjsRoutingType, detectNextjsRoutingType } from './utils/nextjs-routing-utils';
 import { useCustomTitleForPage } from './utils/page-title-customization';
@@ -156,6 +157,9 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // Use custom hooks for navigation and routing
   useSameRouteNavigation();
   useShallowRouting(props);
+
+  // If initial props and skipSSR, fetch page data on client-side
+  useInitialCSRFetch(isInitialProps(props) && props.skipSSR);
 
   // Optimized effects with minimal dependencies
   useEffect(() => {
