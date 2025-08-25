@@ -40,6 +40,7 @@ import { useRedirectFrom } from '~/stores/page-redirect';
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
 import { useSWRMUTxCurrentPageYjsData } from '~/stores/yjs';
 
+import { NEXT_JS_ROUTING_PAGE } from './[[...path]]/common-helpers';
 import { useSameRouteNavigation, useShallowRouting } from './[[...path]]/hooks';
 import { getServerSidePropsForInitial, getServerSidePropsForSameRoute } from './[[...path]]/server-side-props';
 import type {
@@ -247,8 +248,6 @@ Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
     </>
   );
 };
-
-const NEXT_JS_ROUTING_PAGE = '[[...path]]';
 
 export const getServerSideProps: GetServerSideProps<Props> = async(context: GetServerSidePropsContext) => {
   // detect Next.js routing type

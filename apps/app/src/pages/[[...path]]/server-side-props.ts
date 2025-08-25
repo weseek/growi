@@ -22,10 +22,16 @@ import { isValidInitialAndSameRouteProps, isValidSameRouteProps } from './types'
 import { getAction } from './utils';
 
 // Common props collection helper with improved type safety
-export async function collectCombinedProps(context: GetServerSidePropsContext): Promise<
-  CommonEachProps & CommonInitialProps & PageTitleCustomizationProps & UserUISettingsProps & ServerConfigurationInitialProps
+async function getServerSideBasisProps(context: GetServerSidePropsContext): Promise<
+  GetServerSidePropsResult<CommonEachProps & CommonInitialProps & PageTitleCustomizationProps & UserUISettingsProps & ServerConfigurationInitialProps>
 > {
-  const propResults = await Promise.all([
+  const [
+    commonEachResult,
+    commonInitialResult,
+    pageTitleResult,
+    userUIResult,
+    configResult,
+  ] = await Promise.all([
     getServerSideCommonEachProps(context),
     getServerSideCommonInitialProps(context),
     getServerSidePageTitleCustomizationProps(context),
@@ -33,32 +39,17 @@ export async function collectCombinedProps(context: GetServerSidePropsContext): 
     getServerSideConfigurationProps(context),
   ]);
 
-  // Type-safe merging of GetServerSidePropsResult (5-way merge)
-  const [commonEachResult, commonInitialResult, pageTitleResult, userUIResult, configResult] = propResults;
+  const nextjsRoutingProps = {
+    props: { nextjsRoutingPage: NEXT_JS_ROUTING_PAGE },
+  };
 
-  // First merge pairs, then combine
-  const firstPairResult = mergeGetServerSidePropsResults(commonEachResult, commonInitialResult);
-  const secondPairResult = mergeGetServerSidePropsResults(pageTitleResult, userUIResult);
-  const thirdPairResult = mergeGetServerSidePropsResults(firstPairResult, secondPairResult);
-  const finalResult = mergeGetServerSidePropsResults(thirdPairResult, configResult);
-
-  // Handle early returns (redirect/notFound)
-  if ('redirect' in finalResult || 'notFound' in finalResult) {
-    throw new Error('Unexpected redirect or notFound in props collection');
-  }
-
-  // Return the merged props
-  return finalResult.props;
+  // Return the merged result
+  return mergeGetServerSidePropsResults(commonEachResult,
+    mergeGetServerSidePropsResults(commonInitialResult,
+      mergeGetServerSidePropsResults(pageTitleResult,
+        mergeGetServerSidePropsResults(userUIResult,
+          mergeGetServerSidePropsResults(configResult, nextjsRoutingProps)))));
 }
-
-// Type-safe helper for creating base props
-type BaseInitialProps = {
-  nextjsRoutingPage: string;
-  isNotFound: boolean;
-  isForbidden: boolean;
-  isNotCreatable: boolean;
-  isIdenticalPathPage: boolean;
-};
 
 export async function getServerSidePropsForInitial(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<InitialProps & SameRouteEachProps>> {
   //
@@ -66,14 +57,21 @@ export async function getServerSidePropsForInitial(context: GetServerSidePropsCo
   //
 
   // Collect all required props with type safety (includes CommonEachProps now)
-  const collectedProps = await collectCombinedProps(context);
+  const basisPropsResult = await getServerSideBasisProps(context);
+
+  // Handle early return cases (redirect/notFound)
+  if ('redirect' in basisPropsResult || 'notFound' in basisPropsResult) {
+    return basisPropsResult;
+  }
+
+  const basisProps = await basisPropsResult.props;
 
   // Handle redirect destination from common props
-  if (collectedProps.redirectDestination != null) {
+  if (basisProps.redirectDestination != null) {
     return {
       redirect: {
         permanent: false,
-        destination: collectedProps.redirectDestination,
+        destination: basisProps.redirectDestination,
       },
     };
   }
@@ -81,29 +79,20 @@ export async function getServerSidePropsForInitial(context: GetServerSidePropsCo
   //
   // STAGE 2
   //
-
-  const baseProps: BaseInitialProps = {
-    nextjsRoutingPage: NEXT_JS_ROUTING_PAGE,
-    isNotFound: false,
-    isForbidden: false,
-    isNotCreatable: false,
-    isIdenticalPathPage: false,
-  };
-
-  // Combine all props in a type-safe manner
-  const initialProps = {
-    ...collectedProps,
-    ...baseProps,
-  };
+  const initialPropsResult = mergeGetServerSidePropsResults(
+    basisPropsResult,
+    {
+      props: {
+        isNotFound: false,
+        isForbidden: false,
+        isNotCreatable: false,
+      },
+    },
+  );
 
   //
   // STAGE 3
   //
-
-  // Create a result with initial props
-  const initialPropsResult: GetServerSidePropsResult<typeof initialProps> = {
-    props: initialProps,
-  };
 
   // Get page data and i18n props concurrently
   const [pageDataResult, i18nPropsResult] = await Promise.all([
@@ -112,10 +101,8 @@ export async function getServerSidePropsForInitial(context: GetServerSidePropsCo
   ]);
 
   // Merge all results in a type-safe manner (using sequential merging)
-  const mergedResult = mergeGetServerSidePropsResults(
-    mergeGetServerSidePropsResults(initialPropsResult, pageDataResult),
-    i18nPropsResult,
-  );
+  const mergedResult = mergeGetServerSidePropsResults(initialPropsResult,
+    mergeGetServerSidePropsResults(pageDataResult, i18nPropsResult));
 
   // Check for early return (redirect/notFound)
   if ('redirect' in mergedResult || 'notFound' in mergedResult) {
@@ -132,46 +119,53 @@ export async function getServerSidePropsForInitial(context: GetServerSidePropsCo
 }
 
 export async function getServerSidePropsForSameRoute(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<SameRouteEachProps>> {
+  //
+  // STAGE 1
+  //
+
   // Get combined props but extract only what's needed for SameRoute
-  const collectedProps = await collectCombinedProps(context);
+  const basisPropsResult = await getServerSideBasisProps(context);
+
+  // Handle early return cases (redirect/notFound)
+  if ('redirect' in basisPropsResult || 'notFound' in basisPropsResult) {
+    return basisPropsResult;
+  }
+
+  const basisProps = await basisPropsResult.props;
 
   // Handle redirect destination from common props
-  if (collectedProps.redirectDestination != null) {
+  if (basisProps.redirectDestination != null) {
     return {
       redirect: {
         permanent: false,
-        destination: collectedProps.redirectDestination,
+        destination: basisProps.redirectDestination,
       },
     };
   }
 
-  // Create base props for same route navigation
-  const baseProps: SameRouteEachProps = {
-    currentPathname: collectedProps.currentPathname,
-    currentUser: collectedProps.currentUser,
-    csrfToken: collectedProps.csrfToken,
-    isMaintenanceMode: collectedProps.isMaintenanceMode,
-    redirectDestination: collectedProps.redirectDestination,
-    appTitle: collectedProps.appTitle,
-    customTitleTemplate: collectedProps.customTitleTemplate,
-    nextjsRoutingPage: NEXT_JS_ROUTING_PAGE,
-    isIdenticalPathPage: false,
-  };
+  //
+  // STAGE 2
+  //
+  const sameRoutePropsResult = mergeGetServerSidePropsResults(
+    basisPropsResult,
+    {
+      props: {},
+    },
+  );
 
-  // Create a result with base props
-  const basePropsResult: GetServerSidePropsResult<SameRouteEachProps> = {
-    props: baseProps,
-  };
+  //
+  // STAGE 3
+  //
 
   // Get page data
   const sameRouteDataResult = await getPageDataForSameRoute(context);
 
   // Merge results in a type-safe manner
-  const mergedResult = mergeGetServerSidePropsResults(basePropsResult, sameRouteDataResult);
+  const mergedResult = mergeGetServerSidePropsResults(sameRoutePropsResult, sameRouteDataResult);
 
   // Check for early return (redirect/notFound)
   if ('redirect' in mergedResult || 'notFound' in mergedResult) {
-    return mergedResult as GetServerSidePropsResult<SameRouteEachProps>;
+    return mergedResult;
   }
 
   // Validate the merged props have all required properties
