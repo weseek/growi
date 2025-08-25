@@ -6,7 +6,6 @@ import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { CommonEachProps, CommonInitialProps } from '~/pages/utils/commons';
 import type { PageTitleCustomizationProps } from '~/pages/utils/page-title-customization';
-import type { SSRProps } from '~/pages/utils/ssr';
 import type { UserUISettingsProps } from '~/pages/utils/user-ui-settings';
 import type { PageDocument } from '~/server/models/page';
 import loggerFactory from '~/utils/logger';
@@ -16,8 +15,9 @@ const logger = loggerFactory('growi:pages:[[...path]]:types');
 
 export type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfo>;
 
-export type InitialProps = CommonInitialProps & SSRProps & UserUISettingsProps & {
+export type InitialProps = CommonInitialProps & UserUISettingsProps & {
   pageWithMeta: IPageToShowRevisionWithMeta | null,
+  skipSSR?: boolean,
 
   sidebarConfig: ISidebarConfig,
   rendererConfig: RendererConfig,
