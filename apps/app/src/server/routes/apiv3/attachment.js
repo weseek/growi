@@ -1,3 +1,4 @@
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import express from 'express';
@@ -5,7 +6,6 @@ import multer from 'multer';
 import autoReap from 'multer-autoreap';
 
 import { SupportedAction } from '~/interfaces/activity';
-import { SCOPE } from '@growi/core/dist/interfaces';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { Attachment } from '~/server/models/attachment';
@@ -158,7 +158,7 @@ module.exports = (crowi) => {
       query('fileSize').isNumeric().exists({ checkNull: true }).withMessage('fileSize is required'),
     ],
     retrieveAddAttachment: [
-      body('page_id').isString().exists({ checkNull: true }).withMessage('page_id is required'),
+      body('page_id').isMongoId().exists({ checkNull: true }).withMessage('page_id is required'),
     ],
   };
 
