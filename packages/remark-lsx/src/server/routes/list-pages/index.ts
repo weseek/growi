@@ -73,7 +73,7 @@ export const listPages = async (
 ): Promise<Response> => {
   const user = req.user;
 
-  if (req.query.pagePath != null) {
+  if (req.query.pagePath == null) {
     return res
       .status(400)
       .json({ message: "the 'pagePath' query must not be null." });
