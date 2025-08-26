@@ -2,6 +2,7 @@ import type { ReactNode, JSX } from 'react';
 import React, { useEffect } from 'react';
 
 import type { Locale } from '@growi/core/dist/interfaces';
+import { Provider } from 'jotai';
 import type { NextPage } from 'next';
 import { appWithTranslation } from 'next-i18next';
 import type { AppContext, AppProps } from 'next/app';
@@ -72,7 +73,9 @@ function GrowiApp({ Component, pageProps, userLocale }: GrowiAppProps): JSX.Elem
     <>
       <GlobalFonts />
       <SWRConfig value={swrGlobalConfiguration}>
-        {getLayout(<Component {...pageProps} />)}
+        <Provider>
+          {getLayout(<Component {...pageProps} />)}
+        </Provider>
       </SWRConfig>
     </>
   );
