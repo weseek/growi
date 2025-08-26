@@ -73,8 +73,10 @@ export const listPages = async (
 ): Promise<Response> => {
   const user = req.user;
 
-  if (req.query.pagePath == null) {
-    return res.status(400).send("the 'pagepath' query must not be null.");
+  if (req.query.pagePath != null) {
+    return res
+      .status(400)
+      .json({ message: "the 'pagePath' query must not be null." });
   }
 
   const params: LsxApiParams = {
@@ -93,7 +95,9 @@ export const listPages = async (
     toppageViewersCount = await getToppageViewersCount();
   } catch (error) {
     console.error('Error occurred in getToppageViewersCount:', error);
-    return res.status(500).send('An internal server error occurred.');
+    return res
+      .status(500)
+      .json({ message: 'An internal server error occurred.' });
   }
 
   let query = builder.query;
