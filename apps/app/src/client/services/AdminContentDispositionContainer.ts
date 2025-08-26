@@ -15,6 +15,7 @@ export default class AdminContentDispositionContainer extends Container<AdminCon
     this.appContainer = appContainer;
 
     this.state = {
+      currentMode: 'strict',
       contentDispositionSettings: {
         'text/html': 'attachment',
         'image/svg+xml': 'attachment',
@@ -25,8 +26,8 @@ export default class AdminContentDispositionContainer extends Container<AdminCon
         'font/woff': 'attachment',
         'font/ttf': 'attachment',
         'font/otf': 'attachment',
-  },
-};
+      },
+    };
 
 
   }
@@ -43,9 +44,10 @@ export default class AdminContentDispositionContainer extends Container<AdminCon
    */
   async retrieveContentDispositionSettings() {
     const response = await apiv3Get('/content-disposition-settings/');
-    const { contentDispositionSettings } = response.data;
+    const { currentMode, contentDispositionSettings } = response.data;
 
     this.setState({
+      currentMode,
       contentDispositionSettings
     });
   }
@@ -53,11 +55,25 @@ export default class AdminContentDispositionContainer extends Container<AdminCon
   async setStrictMode() {
     const response = await apiv3Put('/content-disposition-settings/strict');
 
+    const { currentMode, contentDispositionSettings } = response;
+
+    this.setState({
+      currentMode: currentMode,
+      contentDispositionSettings: contentDispositionSettings
+    })
+
     return response;
   }
 
   async setLaxMode() {
     const response = await apiv3Put('/content-disposition-settings/lax');
+
+    const { currentMode, contentDispositionSettings } = response;
+
+    this.setState({
+      currentMode: currentMode,
+      contentDispositionSettings: contentDispositionSettings
+    })
 
     return response;
   }
