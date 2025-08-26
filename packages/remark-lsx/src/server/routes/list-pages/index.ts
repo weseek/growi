@@ -135,8 +135,10 @@ export const listPages = async (
   } catch (error) {
     console.error('Error occurred while processing listPages request:', error);
     if (isHttpError(error)) {
-      return res.status(error.status).send(error.message);
+      return res.status(error.status).json(error);
     }
-    return res.status(500).send('An internal server error occurred.');
+    return res
+      .status(500)
+      .send({ message: 'An internal server error occurred.' });
   }
 };
