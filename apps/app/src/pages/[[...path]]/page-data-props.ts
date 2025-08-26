@@ -38,31 +38,31 @@ export async function getPageDataForInitial(
 
   let currentPathname = pathFromUrl;
 
-  // Check for redirects
+  // Check for redirects and whether the path is identical
   if (!isPermalink) {
     const chains = await PageRedirect.retrievePageRedirectEndpoints(pathFromUrl);
     if (chains != null) {
       currentPathname = chains.end.toPath;
     }
-  }
 
-  // Check multiple pages hits
-  const multiplePagesCount = await Page.countByPathAndViewer(currentPathname, user, null, true);
-  const isIdenticalPathPage = multiplePagesCount > 1;
+    // Check multiple pages hits
+    const multiplePagesCount = await Page.countByPathAndViewer(currentPathname, user, null, true);
+    const isIdenticalPathPage = multiplePagesCount > 1;
 
-  // Early return for identical path pages
-  if (isIdenticalPathPage) {
-    return {
-      props: {
-        currentPathname,
-        isIdenticalPathPage: true,
-        pageWithMeta: null,
-        isNotFound: false,
-        isNotCreatable: true,
-        isForbidden: false,
-        skipSSR: false,
-      },
-    };
+    // Early return for identical path pages
+    if (isIdenticalPathPage) {
+      return {
+        props: {
+          currentPathname,
+          isIdenticalPathPage: true,
+          pageWithMeta: null,
+          isNotFound: false,
+          isNotCreatable: true,
+          isForbidden: false,
+          skipSSR: false,
+        },
+      };
+    }
   }
 
   // Get full page data
@@ -154,27 +154,28 @@ export async function getPageDataForSameRoute(
   let resolvedPathname = currentPathname;
   let redirectFrom: string | undefined;
 
+  // Check for redirects and whether the path is identical
   if (!isPermalink) {
     const chains = await PageRedirect.retrievePageRedirectEndpoints(currentPathname);
     if (chains != null) {
       resolvedPathname = chains.end.toPath;
       redirectFrom = chains.start.fromPath;
     }
-  }
 
-  // Check multiple pages hits
-  const multiplePagesCount = await Page.countByPathAndViewer(resolvedPathname, user, null, true);
-  const isIdenticalPathPage = multiplePagesCount > 1;
+    // Check multiple pages hits
+    const multiplePagesCount = await Page.countByPathAndViewer(resolvedPathname, user, null, true);
+    const isIdenticalPathPage = multiplePagesCount > 1;
 
-  // Early return for identical path pages
-  if (isIdenticalPathPage) {
-    return {
-      props: {
-        currentPathname: resolvedPathname,
-        isIdenticalPathPage: true,
-        redirectFrom,
-      },
-    };
+    // Early return for identical path pages
+    if (isIdenticalPathPage) {
+      return {
+        props: {
+          currentPathname: resolvedPathname,
+          isIdenticalPathPage: true,
+          redirectFrom,
+        },
+      };
+    }
   }
 
   // For same route access, do minimal page lookup
