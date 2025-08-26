@@ -155,9 +155,7 @@ describe('listPages', () => {
       expect(mocks.addNumConditionMock).toHaveBeenCalledOnce(); // throw an error
       expect(mocks.addSortConditionMock).not.toHaveBeenCalledOnce(); // does not called
       expect(resMock.status).toHaveBeenCalledOnce();
-      expect(resStatusMock.json).toHaveBeenCalledWith({
-        message: 'error for test',
-      });
+      expect(resStatusMock.json).toHaveBeenCalledWith(error);
     });
   });
 
