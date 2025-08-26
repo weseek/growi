@@ -2,6 +2,7 @@ import { Origin, allOrigin, getIdForRef } from '@growi/core';
 import type {
   IPage, IRevisionHasId, IUserHasId,
 } from '@growi/core';
+import { SCOPE } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import { isTopPage, isUsersProtectedPages } from '@growi/core/dist/utils/page-path-utils';
@@ -15,7 +16,6 @@ import { isAiEnabled } from '~/features/openai/server/services';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { type IApiv3PageUpdateParams, PageUpdateErrorCode } from '~/interfaces/apiv3';
 import type { IOptionsForUpdate } from '~/interfaces/page';
-import { SCOPE } from '@growi/core/dist/interfaces';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
@@ -52,7 +52,8 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
 
   // define validators for req.body
   const validator: ValidationChain[] = [
-    body('pageId').exists().not().isEmpty({ ignore_whitespace: true })
+    body('pageId').isMongoId().exists().not()
+      .isEmpty({ ignore_whitespace: true })
       .withMessage("'pageId' must be specified"),
     body('revisionId').optional().exists().not()
       .isEmpty({ ignore_whitespace: true })
