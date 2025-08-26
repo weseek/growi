@@ -52,7 +52,7 @@ export default class AdminContentDispositionContainer extends Container<AdminCon
     });
   }
 
-  async setStrictMode() {
+  async setStrictMode(): Promise<Response>  {
     const response = await apiv3Put('/content-disposition-settings/strict');
 
     const { currentMode, contentDispositionSettings } = response.data;
@@ -65,7 +65,7 @@ export default class AdminContentDispositionContainer extends Container<AdminCon
     return response;
   }
 
-  async setLaxMode() {
+  async setLaxMode(): Promise<Response>  {
     const response = await apiv3Put('/content-disposition-settings/lax');
 
     const { currentMode, contentDispositionSettings } = response.data;
@@ -78,7 +78,7 @@ export default class AdminContentDispositionContainer extends Container<AdminCon
     return response;
   }
 
-  async setHighRiskMimeType(mimeType, disposition) {
+  async setHighRiskMimeType(mimeType: 'text/html' | 'image/svg+xml', disposition: 'inline' | 'attachment'): Promise<Response> {
     // double check if valid admin
 
     const body = {
