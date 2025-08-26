@@ -139,6 +139,6 @@ export const listPages = async (
     }
     return res
       .status(500)
-      .send({ message: 'An internal server error occurred.' });
+      .json({ message: 'An internal server error occurred.' });
   }
 };
