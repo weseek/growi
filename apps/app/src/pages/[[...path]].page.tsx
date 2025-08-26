@@ -14,7 +14,6 @@ import type {
 } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { BasicLayout } from '~/components/Layout/BasicLayout';
@@ -22,21 +21,21 @@ import { PageView } from '~/components/PageView/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { useEditorModeClassName } from '~/services/layout/use-editor-mode-class-name';
 import {
+  useIsSharedUser,
+  useIsSearchPage,
+} from '~/states/context';
+import {
   useCurrentPageData, useCurrentPageId, useCurrentPagePath, usePageNotFound,
 } from '~/states/page';
 import { useHydratePageAtoms } from '~/states/page/hydrate';
+import { useRedirectFrom } from '~/states/page/redirect';
 import {
   useDisableLinkSharing,
   useRendererConfig,
 } from '~/states/server-configurations';
 import { useHydrateServerConfigurationAtoms } from '~/states/server-configurations/hydrate';
 import { useHydrateSidebarAtoms } from '~/states/sidebar/hydrate';
-import {
-  useIsSharedUser,
-  useIsSearchPage,
-} from '~/stores-universal/context';
-import { useEditingMarkdown } from '~/stores/editor';
-import { useRedirectFrom } from '~/stores/page-redirect';
+import { useEditingMarkdown } from '~/states/ui/editor';
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
 import { useSWRMUTxCurrentPageYjsData } from '~/stores/yjs';
 
@@ -120,21 +119,11 @@ const isInitialProps = (props: Props): props is (InitialProps & SameRouteEachPro
 };
 
 const Page: NextPageWithLayout<Props> = (props: Props) => {
-  const router = useRouter();
-
-  // Monitor router changes - cleaned up empty handler
-  useEffect(() => {
-    // router.events handlers removed as they were only for debugging
-  }, [router.events, props.currentPathname]);
 
   // register global EventEmitter
   if (isClient() && window.globalEmitter == null) {
     window.globalEmitter = new EventEmitter();
   }
-
-  useRedirectFrom(props.redirectFrom ?? null);
-  useIsSharedUser(false); // this page can't be routed for '/share'
-  useIsSearchPage(false);
 
   // Initialize Jotai atoms with initial data - must be called unconditionally
   const pageData = isInitialProps(props) ? props.pageWithMeta?.data : undefined;
@@ -146,10 +135,13 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const [isNotFound] = usePageNotFound();
   const [rendererConfig] = useRendererConfig();
   const [disableLinkSharing] = useDisableLinkSharing();
+  const [, setRedirectFrom] = useRedirectFrom();
+  const [, setIsSharedUser] = useIsSharedUser();
+  const [, setIsSearchPage] = useIsSearchPage();
+  const [, setEditingMarkdown] = useEditingMarkdown();
 
   const { trigger: mutateCurrentPageYjsDataFromApi } = useSWRMUTxCurrentPageYjsData();
 
-  const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
 
   useSetupGlobalSocket();
   useSetupGlobalSocketForPage(pageId);
@@ -160,6 +152,13 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   // If initial props and skipSSR, fetch page data on client-side
   useInitialCSRFetch(isInitialProps(props) && props.skipSSR);
+
+  // Initialize atom values
+  useEffect(() => {
+    setRedirectFrom(props.redirectFrom ?? null);
+    setIsSharedUser(false); // this page can't be routed for '/share'
+    setIsSearchPage(false);
+  }, [props.redirectFrom, setRedirectFrom, setIsSharedUser, setIsSearchPage]);
 
   // Optimized effects with minimal dependencies
   useEffect(() => {
@@ -172,9 +171,9 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useEffect(() => {
     // Initialize editing markdown only when page path changes
     if (currentPagePath) {
-      mutateEditingMarkdown(currentPage?.revision?.body);
+      setEditingMarkdown(currentPage?.revision?.body || '');
     }
-  }, [currentPagePath, currentPage?.revision?.body, mutateEditingMarkdown]);
+  }, [currentPagePath, currentPage?.revision?.body, setEditingMarkdown]);
 
   // If the data on the page changes without router.push, pageWithMeta remains old because getServerSideProps() is not executed
   // So preferentially take page data from useSWRxCurrentPage

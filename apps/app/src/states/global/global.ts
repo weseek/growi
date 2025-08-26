@@ -1,7 +1,7 @@
 import type { ColorScheme, IUserHasId } from '@growi/core';
 import { atom, useAtom } from 'jotai';
 
-import type { UseAtom } from '../ui/helper';
+import type { UseAtom } from '../helper';
 
 // CSRF Token atom (no persistence needed as it's server-provided)
 export const csrfTokenAtom = atom<string>('');

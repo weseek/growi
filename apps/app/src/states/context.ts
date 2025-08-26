@@ -1,7 +1,7 @@
 import { atom, useAtom } from 'jotai';
 
 import { currentUserAtom, growiCloudUriAtom } from './global';
-import type { UseAtom } from './ui/helper';
+import type { UseAtom } from './helper';
 
 /**
  * Atom for checking if current path is identical
@@ -72,6 +72,24 @@ export const useIsAdmin = (): UseAtom<typeof isAdminAtom> => {
 };
 
 /**
+ * Atom for checking if current user is a shared user
+ */
+const isSharedUserAtom = atom<boolean>(false);
+
+export const useIsSharedUser = (): UseAtom<typeof isSharedUserAtom> => {
+  return useAtom(isSharedUserAtom);
+};
+
+/**
+ * Atom for checking if current page is a search page
+ */
+const isSearchPageAtom = atom<boolean | null>(null);
+
+export const useIsSearchPage = (): UseAtom<typeof isSearchPageAtom> => {
+  return useAtom(isSearchPageAtom);
+};
+
+/**
  * Computed atom for GROWI documentation URL
  * Depends on growiCloudUri atom
  */
@@ -86,7 +104,9 @@ const growiDocumentationUrlAtom = atom((get) => {
   return 'https://docs.growi.org';
 });
 
-export const useGrowiDocumentationUrl = (): UseAtom<typeof growiDocumentationUrlAtom> => {
+export const useGrowiDocumentationUrl = (): UseAtom<
+  typeof growiDocumentationUrlAtom
+> => {
   return useAtom(growiDocumentationUrlAtom);
 };
 
@@ -101,7 +121,13 @@ const isEditableAtom = atom((get) => {
   const isNotCreatable = get(isNotCreatableAtom);
   const isIdenticalPath = get(isIdenticalPathAtom);
 
-  return (!isForbidden && !isIdenticalPath && !isNotCreatable && !isGuestUser && !isReadOnlyUser);
+  return (
+    !isForbidden &&
+    !isIdenticalPath &&
+    !isNotCreatable &&
+    !isGuestUser &&
+    !isReadOnlyUser
+  );
 });
 
 export const useIsEditable = (): UseAtom<typeof isEditableAtom> => {

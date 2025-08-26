@@ -2,7 +2,7 @@ import { atom, useAtom } from 'jotai';
 
 import type { RendererConfig } from '~/interfaces/services/renderer';
 
-import type { UseAtom } from '../ui/helper';
+import type { UseAtom } from '../helper';
 
 /**
  * Atom for AI feature enabled status

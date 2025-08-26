@@ -24,10 +24,18 @@ export const editorModeAtom = atom(
     // Update URL hash when mode changes (client-side only)
     if (!isServer()) {
       const { pathname, search } = window.location;
-      const hash = newMode === EditorMode.Editor ? EditorModeHash.Edit : EditorModeHash.View;
+      const hash =
+        newMode === EditorMode.Editor
+          ? EditorModeHash.Edit
+          : EditorModeHash.View;
       window.history.replaceState(null, '', `${pathname}${search}${hash}`);
     }
 
     set(editorModeBaseAtom, newMode);
   },
 );
+
+/**
+ * Atom for editing markdown content
+ */
+export const editingMarkdownAtom = atom<string>('');

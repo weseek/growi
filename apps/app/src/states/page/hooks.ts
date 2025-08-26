@@ -2,7 +2,7 @@ import { pagePathUtils } from '@growi/core/dist/utils';
 import { useAtom } from 'jotai';
 
 import { useCurrentPathname } from '../global';
-import type { UseAtom } from '../ui/helper';
+import type { UseAtom } from '../helper';
 
 import {
   currentPageIdAtom,

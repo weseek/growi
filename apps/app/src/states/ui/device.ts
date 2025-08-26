@@ -5,7 +5,7 @@ import { Breakpoint } from '@growi/ui/dist/interfaces';
 import { addBreakpointListener, cleanupBreakpointListener } from '@growi/ui/dist/utils';
 import { atom, useAtom } from 'jotai';
 
-import type { UseAtom } from './helper';
+import type { UseAtom } from '../helper';
 
 
 // Device state atoms

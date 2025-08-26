@@ -6,7 +6,7 @@ import { EditorMode } from '~/states/ui/editor';
 import { editorModeAtom } from '~/states/ui/editor/atoms'; // import the atom directly
 
 import { isDeviceLargerThanXlAtom } from './device';
-import type { UseAtom } from './helper';
+import type { UseAtom } from '../helper';
 
 
 const isDrawerOpenedAtom = atom(false);
