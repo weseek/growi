@@ -48,8 +48,11 @@ describe('listPages', () => {
 
     // then
     expect(resMock.status).toHaveBeenCalledOnce();
-    expect(resStatusMock.send).toHaveBeenCalledOnce();
     expect(mocks.generateBaseQueryMock).not.toHaveBeenCalled();
+    expect(resStatusMock.json).toHaveBeenCalledOnce();
+    expect(resStatusMock.json).toHaveBeenCalledWith({
+      message: "the 'pagePath' query must not be null.",
+    });
   });
 
   describe('with num option', () => {
