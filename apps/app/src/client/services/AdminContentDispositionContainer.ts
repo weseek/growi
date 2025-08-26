@@ -55,7 +55,7 @@ export default class AdminContentDispositionContainer extends Container<AdminCon
   async setStrictMode() {
     const response = await apiv3Put('/content-disposition-settings/strict');
 
-    const { currentMode, contentDispositionSettings } = response;
+    const { currentMode, contentDispositionSettings } = response.data;
 
     this.setState({
       currentMode: currentMode,
@@ -68,7 +68,7 @@ export default class AdminContentDispositionContainer extends Container<AdminCon
   async setLaxMode() {
     const response = await apiv3Put('/content-disposition-settings/lax');
 
-    const { currentMode, contentDispositionSettings } = response;
+    const { currentMode, contentDispositionSettings } = response.data;
 
     this.setState({
       currentMode: currentMode,
@@ -76,5 +76,23 @@ export default class AdminContentDispositionContainer extends Container<AdminCon
     })
 
     return response;
+  }
+
+  async setHighRiskMimeType(mimeType, disposition) {
+    // double check if valid admin
+
+    const body = {
+      [mimeType]: disposition,
+    };
+
+    const response = await apiv3Put('/content-disposition-settings/admin-override', body);
+
+    const { contentDispositionSettings } = response.data;
+
+    this.setState({
+      contentDispositionSettings: contentDispositionSettings
+    })
+
+    return respone;
   }
 }
