@@ -49,4 +49,16 @@ export default class AdminContentDispositionContainer extends Container<AdminCon
       contentDispositionSettings
     });
   }
+
+  async setStrictMode() {
+    const response = await apiv3Put('/content-disposition-settings/strict');
+
+    return response;
+  }
+
+  async setLaxMode() {
+    const response = await apiv3Put('/content-disposition-settings/lax');
+
+    return response;
+  }
 }
