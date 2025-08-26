@@ -18,7 +18,7 @@ const { addTrailingSlash, removeTrailingSlash } = pathUtils;
 /**
  * add filter condition that filter fetched pages
  */
-function addFilterCondition(
+export function addFilterCondition(
   query,
   pagePath,
   optionsFilter,
