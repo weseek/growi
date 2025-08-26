@@ -3,11 +3,6 @@ import { Container } from 'unstated';
 
 import { apiv3Get, apiv3Put } from '../util/apiv3-client';
 
-interface AdminContentDispositionState {
-
-}
-
-
 export default class AdminContentDispositionContainer extends Container<AdminContentDispositionContainer> {
 
   constructor(appContainer) {
@@ -17,11 +12,21 @@ export default class AdminContentDispositionContainer extends Container<AdminCon
       return;
     }
 
-    // this.appContainer = appContainer;
+    this.appContainer = appContainer;
 
-    // this.state = {
-
-    // };
+    this.state = {
+      contentDispositionSettings: {
+        'text/html': 'attachment',
+        'image/svg+xml': 'attachment',
+        'application/pdf': 'attachment',
+        'application/json': 'attachment',
+        'text/csv': 'attachment',
+        'font/woff2': 'attachment',
+        'font/woff': 'attachment',
+        'font/ttf': 'attachment',
+        'font/otf': 'attachment',
+  },
+};
 
 
   }
@@ -41,11 +46,7 @@ export default class AdminContentDispositionContainer extends Container<AdminCon
     const { contentDispositionSettings } = response.data;
 
     this.setState({
-
+      contentDispositionSettings
     });
   }
-
-
-
-
 }
