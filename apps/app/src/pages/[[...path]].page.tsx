@@ -35,8 +35,8 @@ import {
 } from '~/states/server-configurations';
 import { useHydrateServerConfigurationAtoms } from '~/states/server-configurations/hydrate';
 import { useHydrateSidebarAtoms } from '~/states/sidebar/hydrate';
+import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/states/socket-io';
 import { useEditingMarkdown } from '~/states/ui/editor';
-import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
 import { useSWRMUTxCurrentPageYjsData } from '~/stores/yjs';
 
 import { NEXT_JS_ROUTING_PAGE } from './[[...path]]/common-helpers';
@@ -142,9 +142,9 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const { trigger: mutateCurrentPageYjsDataFromApi } = useSWRMUTxCurrentPageYjsData();
 
-
+  // setup socket.io
   useSetupGlobalSocket();
-  useSetupGlobalSocketForPage(pageId);
+  useSetupGlobalSocketForPage();
 
   // Use custom hooks for navigation and routing
   useSameRouteNavigation();
