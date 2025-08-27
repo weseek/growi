@@ -27,7 +27,7 @@ export const DeleteAiAssistantModal: React.FC<DeleteAiAssistantModalProps> = ({
     return (
       <>
         <span className="material-symbols-outlined me-1">delete_forever</span>
-        {t('ai_assistant_substance.delete_modal.title')}
+        <span className="fw-bold">{t('ai_assistant_substance.delete_modal.title')}</span>
       </>
     );
   };
@@ -36,7 +36,7 @@ export const DeleteAiAssistantModal: React.FC<DeleteAiAssistantModalProps> = ({
     if (!isShown || aiAssistant == null) {
       return null;
     }
-    return <p>{t('ai_assistant_substance.delete_modal.confirm_message')}</p>;
+    return <p className="fw-bold mb-0">{t('ai_assistant_substance.delete_modal.confirm_message')}</p>;
   };
 
   const footerContent = () => {
@@ -46,7 +46,7 @@ export const DeleteAiAssistantModal: React.FC<DeleteAiAssistantModalProps> = ({
     return (
       <>
         {errorMessage && <span className="text-danger">{errorMessage}</span>}
-        <Button color="secondary" onClick={onCancel}>
+        <Button color="outline-neutral-secondary" onClick={onCancel}>
           {t('Cancel')}
         </Button>
         <Button color="danger" onClick={onConfirm}>
@@ -57,14 +57,14 @@ export const DeleteAiAssistantModal: React.FC<DeleteAiAssistantModalProps> = ({
   };
 
   return (
-    <Modal isOpen={isShown} toggle={onCancel}>
-      <ModalHeader tag="h4" toggle={onCancel} className="text-danger">
+    <Modal isOpen={isShown} toggle={onCancel} centered>
+      <ModalHeader tag="h5" toggle={onCancel} className="text-danger px-4">
         {headerContent()}
       </ModalHeader>
-      <ModalBody>
+      <ModalBody className="px-4">
         {bodyContent()}
       </ModalBody>
-      <ModalFooter>
+      <ModalFooter className="px-4 gap-2">
         {footerContent()}
       </ModalFooter>
     </Modal>
