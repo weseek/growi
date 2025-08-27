@@ -14,8 +14,8 @@ const validator = {
   updateInlineMimeMode: [
     body('mode')
       .exists()
-      .isIn(['strict', 'moderate', 'lax'])
-      .withMessage('`mode` must be one of "strict", "moderate", or "lax"'),
+      .isIn(['strict', 'lax'])
+      .withMessage('`mode` must be one of "strict" or "lax"'),
   ],
 };
 

@@ -457,9 +457,7 @@
     "inline_file_type_desc": "You can set the file types that allow inline display.",
     "inline_file_type_options": {
       "strict": "Strict (Recommended)",
-      "moderate": "Moderate",
       "lax": "Lax",
-      "manual": "Manual",
       "permitted_file_types": "Permitted file types",
       "inline_mime_mode_update_success": "Successfully updated the settings for file types allowed to be displayed inline.",
       "inline_mime_mode_update_failed": "Failed to update the settings for file types allowed to be displayed inline."

@@ -1,21 +1,10 @@
-export const ALL_MIME_TYPES = [
-  // Images
+export const LAX_MIME_TYPES = new Set([
   'image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp', 'image/bmp',
-  'image/x-icon', 'image/vnd.microsoft.icon', 'image/tiff', 'image/svg+xml', 'image/heif', 'image/heic',
-
-  // Documents
+  'image/x-icon', 'image/vnd.microsoft.icon', 'image/tiff',
+  'image/heif', 'image/heic',
   'application/pdf', 'application/json',
-
-  // Audio
   'audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/webm', 'audio/aac', 'audio/flac',
-
-  // Video
   'video/mp4', 'video/webm', 'video/ogg', 'video/x-msvideo', 'video/quicktime',
-
-  // Code
-  'text/html', 'text/csv', 'text/plain',
-
-  // Fonts
+  'text/csv', 'text/plain',
   'font/otf', 'font/ttf', 'font/woff2',
-
-] as const;
+]);

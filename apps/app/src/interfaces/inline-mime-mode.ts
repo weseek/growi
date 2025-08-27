@@ -1,6 +1,5 @@
 export const InlineMimeModes = {
   STRICT: 'strict',
-  MODERATE: 'moderate',
   LAX: 'lax',
 } as const;
 

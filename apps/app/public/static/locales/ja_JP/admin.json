@@ -466,7 +466,6 @@
     "inline_file_type_desc": "インライン表示を許可するファイルタイプを設定できます",
     "inline_file_type_options": {
       "strict": "厳格（推奨）",
-      "moderate": "中程度",
       "lax": "緩め",
       "permitted_file_types": "許可するファイルタイプ",
       "inline_mime_mode_update_success": "インライン表示を許可するファイルタイプの設定を更新しました",

@@ -11,7 +11,7 @@ import { InlineMimeModes } from '../../../../interfaces/inline-mime-mode';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 import { ALL_MIME_TYPES } from './inlineMimeTypes/allMimeTypes';
-import { MODERATE_MIME_TYPES } from './inlineMimeTypes/moderate';
+import { LAX_MIME_TYPES } from './inlineMimeTypes/lax';
 import { STRICT_MIME_TYPES } from './inlineMimeTypes/strict';
 
 const logger = loggerFactory('growi:importer');
@@ -33,11 +33,8 @@ export const InlineFileTypeSelector = (): JSX.Element => {
           case InlineMimeModes.STRICT:
             setSelected(new Set(STRICT_MIME_TYPES));
             break;
-          case InlineMimeModes.MODERATE:
-            setSelected(new Set(MODERATE_MIME_TYPES));
-            break;
           case InlineMimeModes.LAX:
-            setSelected(new Set(ALL_MIME_TYPES));
+            setSelected(new Set(LAX_MIME_TYPES));
             break;
           default:
             break;
@@ -59,11 +56,8 @@ export const InlineFileTypeSelector = (): JSX.Element => {
       case InlineMimeModes.STRICT:
         setSelected(new Set(STRICT_MIME_TYPES));
         break;
-      case InlineMimeModes.MODERATE:
-        setSelected(new Set(MODERATE_MIME_TYPES));
-        break;
       case InlineMimeModes.LAX:
-        setSelected(new Set(ALL_MIME_TYPES));
+        setSelected(new Set(LAX_MIME_TYPES));
         break;
       default:
         break;

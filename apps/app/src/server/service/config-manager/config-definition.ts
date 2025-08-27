@@ -541,7 +541,7 @@ export const CONFIG_DEFINITIONS = {
   }),
 
   // Markdown Settings
-  'markdown:inlineMimeMode': defineConfig<'strict' | 'moderate' | 'lax'>({
+  'markdown:inlineMimeMode': defineConfig<'strict' | 'lax'>({
     defaultValue: 'strict',
   }),
 

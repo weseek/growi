@@ -457,9 +457,7 @@
     "inline_file_type_desc": "Vous pouvez définir les types de fichiers autorisés pour l'affichage en ligne.",
     "inline_file_type_options": {
       "strict": "Strict (Recommandé)",
-      "moderate": "Modéré",
       "lax": "Laxiste",
-      "manual": "Manuel",
       "permitted_file_types": "Types de fichiers autorisés",
       "inline_mime_mode_update_success": "Les paramètres des types de fichiers autorisés à être affichés en ligne ont été mis à jour avec succès.",
       "inline_mime_mode_update_failed": "Échec de la mise à jour des paramètres des types de fichiers autorisés à être affichés en ligne."
