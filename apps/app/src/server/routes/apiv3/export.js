@@ -18,6 +18,13 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 const logger = loggerFactory('growi:routes:apiv3:export');
 const router = express.Router();
 
+
+/**
+   * @type {string[]}
+   * @description Cache of all collection names in the database
+   */
+let allCollectionNames = [];
+
 /**
  * @swagger
  *
@@ -156,10 +163,14 @@ module.exports = (crowi) => {
         .bail()
 
         .custom(async(value) => {
-          // check if all the collections in the request body exist in the database
-          const listCollectionsResult = await mongoose.connection.db.listCollections().toArray();
-          const collections = listCollectionsResult.map(collectionObj => collectionObj.name);
-          if (!value.every(v => collections.includes(v))) {
+          // Cache all collection names if not already cached
+          if (allCollectionNames.length === 0) {
+            const listCollectionsResult = await mongoose.connection.db.listCollections().toArray();
+            allCollectionNames = listCollectionsResult.map(collectionObj => collectionObj.name);
+          }
+
+          // Check if all the collections in the request body exist in the database
+          if (!value.every(v => allCollectionNames.includes(v))) {
             throw new Error('Invalid collections');
           }
         }),
