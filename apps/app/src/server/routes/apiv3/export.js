@@ -1,4 +1,7 @@
+import fs from 'fs';
+
 import { SCOPE } from '@growi/core/dist/interfaces';
+import express from 'express';
 import { param, body } from 'express-validator';
 import mongoose from 'mongoose';
 import sanitize from 'sanitize-filename';
@@ -11,11 +14,8 @@ import loggerFactory from '~/utils/logger';
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
+
 const logger = loggerFactory('growi:routes:apiv3:export');
-const fs = require('fs');
-
-const express = require('express');
-
 const router = express.Router();
 
 /**
