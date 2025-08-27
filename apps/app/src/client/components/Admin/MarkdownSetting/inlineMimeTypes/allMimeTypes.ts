@@ -1,7 +1,7 @@
 export const ALL_MIME_TYPES = [
   // Images
   'image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp', 'image/bmp',
-  'image/x-icon', 'image/vnd.microsoft.icon', 'image/tiff', 'image/svg+xml', 'image/heif', 'image/heic',
+  'image/x-icon', 'image/vnd.microsoft.icon', 'image/tiff', 'image/heif', 'image/heic',
 
   // Documents
   'application/pdf', 'application/json',
@@ -13,7 +13,7 @@ export const ALL_MIME_TYPES = [
   'video/mp4', 'video/webm', 'video/ogg', 'video/x-msvideo', 'video/quicktime',
 
   // Code
-  'text/html', 'text/csv', 'text/plain',
+  'text/csv', 'text/plain',
 
   // Fonts
   'font/otf', 'font/ttf', 'font/woff2',
