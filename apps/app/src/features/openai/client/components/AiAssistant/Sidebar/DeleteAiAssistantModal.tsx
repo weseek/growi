@@ -27,7 +27,7 @@ export const DeleteAiAssistantModal: React.FC<DeleteAiAssistantModalProps> = ({
     return (
       <>
         <span className="material-symbols-outlined me-1">delete_forever</span>
-        {t('ai_assistant_tree.delete_modal.title')}
+        {t('ai_assistant_substance.delete_modal.title')}
       </>
     );
   };
@@ -36,7 +36,7 @@ export const DeleteAiAssistantModal: React.FC<DeleteAiAssistantModalProps> = ({
     if (!isShown || aiAssistant == null) {
       return null;
     }
-    return <p>{t('ai_assistant_tree.delete_modal.confirm_message')}</p>;
+    return <p>{t('ai_assistant_substance.delete_modal.confirm_message')}</p>;
   };
 
   const footerContent = () => {
