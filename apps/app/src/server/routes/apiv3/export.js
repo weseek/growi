@@ -155,11 +155,11 @@ module.exports = (crowi) => {
     generateZipFile: [
       body('collections')
         .isArray()
-        .withMessage('collections must be an array')
+        .withMessage('"collections" must be an array')
         .bail()
 
         .notEmpty()
-        .withMessage('Collections array cannot be empty')
+        .withMessage('"collections" array cannot be empty')
         .bail()
 
         .custom(async(value) => {
