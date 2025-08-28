@@ -93,10 +93,11 @@ jobs:
     strategy:
       matrix:
         node-version: [20.x]
+        mongodb-version: ['6.0', '8.0']
 
     services:
       mongodb:
-        image: mongo:8.0
+        image: mongo:${{ matrix.mongodb-version }}
         ports:
           - 27017/tcp
 
@@ -157,10 +158,11 @@ jobs:
     strategy:
       matrix:
         node-version: [20.x]
+        mongodb-version: ['6.0', '8.0']
 
     services:
       mongodb:
-        image: mongo:8.0
+        image: mongo:${{ matrix.mongodb-version }}
         ports:
           - 27017/tcp
 
