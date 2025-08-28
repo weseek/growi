@@ -96,7 +96,7 @@ jobs:
 
     services:
       mongodb:
-        image: mongo:6.0
+        image: mongo:8.0
         ports:
           - 27017/tcp
 
@@ -160,7 +160,7 @@ jobs:
 
     services:
       mongodb:
-        image: mongo:6.0
+        image: mongo:8.0
         ports:
           - 27017/tcp
 
