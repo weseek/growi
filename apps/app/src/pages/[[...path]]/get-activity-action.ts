@@ -5,7 +5,7 @@ import type { SupportedActionType } from '~/interfaces/activity';
 
 import type { IPageToShowRevisionWithMeta } from './types';
 
-export const getAction = (props: {
+export const getActivityAction = (props: {
   isNotCreatable: boolean;
   isForbidden: boolean;
   isNotFound: boolean;

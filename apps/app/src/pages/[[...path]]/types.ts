@@ -48,9 +48,6 @@ export type SameRouteEachProps = CommonEachProps & {
 
 export type Props = SameRouteEachProps | (InitialProps & SameRouteEachProps);
 
-// Helper types for extended props
-export type ExtendedInitialProps = InitialProps & SameRouteEachProps;
-
 /**
  * Type guard for SameRouteEachProps validation
  * Lightweight validation for same-route navigation

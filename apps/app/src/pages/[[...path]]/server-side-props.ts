@@ -11,10 +11,10 @@ import {
   mergeGetServerSidePropsResults,
 } from './common-helpers';
 import { getServerSideConfigurationProps, getServerSideRendererConfigProps, getServerSideSidebarConfigProps } from './configuration-props';
+import { getActivityAction } from './get-activity-action';
 import { getPageDataForInitial, getPageDataForSameRoute } from './page-data-props';
 import type { InitialProps, SameRouteEachProps } from './types';
 import { isValidInitialAndSameRouteProps, isValidSameRouteProps } from './types';
-import { getAction } from './utils';
 
 const nextjsRoutingProps = {
   props: {
@@ -88,7 +88,7 @@ export async function getServerSidePropsForInitial(context: GetServerSidePropsCo
     throw new Error('Invalid merged props structure');
   }
 
-  await addActivity(context, getAction(mergedProps));
+  await addActivity(context, getActivityAction(mergedProps));
   return mergedResult;
 }
 
@@ -135,5 +135,15 @@ export async function getServerSidePropsForSameRoute(context: GetServerSideProps
     throw new Error('Invalid same route props structure');
   }
 
+  // -- TODO: persist activity
+
+  // const mergedProps = await mergedResult.props;
+
+  // // Type-safe props validation AFTER skipSSR is properly set
+  // if (!isValidSameRouteProps(mergedProps)) {
+  //   throw new Error('Invalid same route props structure');
+  // }
+
+  // await addActivity(context, getActivityAction(mergedProps));
   return mergedResult;
 }
