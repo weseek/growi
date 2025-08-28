@@ -107,9 +107,13 @@ jobs:
     needs: [build-prod]
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        mongodb-version: ['6.0', '8.0']
+
     services:
       mongodb:
-        image: mongo:8.0
+        image: mongo:${{ matrix.mongodb-version }}
         ports:
         - 27017/tcp
       elasticsearch:
@@ -173,8 +177,6 @@ jobs:
 
     runs-on: ubuntu-latest
     container:
-      # Match the Playwright version
-      # https://github.com/microsoft/playwright/issues/20010
       image: mcr.microsoft.com/playwright:v1.49.1-jammy
 
     strategy:
@@ -182,10 +184,11 @@ jobs:
       matrix:
         browser: [chromium, firefox, webkit]
         shard: [1/2, 2/2]
+        mongodb-version: ['6.0', '8.0']
 
     services:
       mongodb:
-        image: mongo:8.0
+        image: mongo:${{ matrix.mongodb-version }}
         ports:
         - 27017/tcp
       elasticsearch:
@@ -279,7 +282,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: blob-report-${{ matrix.browser }}-${{ steps.shard-id.outputs.shard_id }}
+        name: blob-report-${{ matrix.browser }}-mongo${{ matrix.mongodb-version }}-${{ steps.shard-id.outputs.shard_id }}
         path: ./apps/app/blob-report
         retention-days: 30
 
@@ -288,7 +291,7 @@ jobs:
       if: failure()
       with:
         type: ${{ job.status }}
-        job_name: '*Node CI for growi - run-playwright*'
+        job_name: '*Node CI for growi - run-playwright (${{ matrix.browser }}, MongoDB ${{ matrix.mongodb-version }})*'
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
