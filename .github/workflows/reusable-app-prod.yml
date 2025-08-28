@@ -177,6 +177,8 @@ jobs:
 
     runs-on: ubuntu-latest
     container:
+      # Match the Playwright version
+      # https://github.com/microsoft/playwright/issues/20010
       image: mcr.microsoft.com/playwright:v1.49.1-jammy
 
     strategy:
