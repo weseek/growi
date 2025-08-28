@@ -258,7 +258,7 @@
       "title": "Créer un nouveau jeton d'accès",
       "expiredAt_desc": "Sélectionnez la date d'expiration de ce jeton d'accès.",
       "description_desc": "Fournissez une description pour vous aider à identifier ce jeton ultérieurement.",
-      "description_max_length": "Veuillez saisir jusqu'à {{length}} caractères."
+      "description_max_length": "Veuillez saisir jusqu'à {{length}} caractères.",
       "scope_desc": "Sélectionnez la portée du jeton d'accès."
     },
     "copy_to_clipboard": "Copier dans le presse-papiers"
@@ -669,6 +669,10 @@
       "thread_deleted_failed": "Échec de la suppression de la discussion",
       "ai_assistant_set_default_success": "Assistant par défaut défini avec succès",
       "ai_assistant_set_default_failed": "Échec de la définition de l'assistant par défaut"
+    },
+    "delete_modal": {
+      "title": "Supprimer l'assistant",
+      "confirm_message": "Êtes-vous sûr de vouloir supprimer cet assistant ?"
     }
   },
   "link_edit": {

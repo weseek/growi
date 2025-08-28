@@ -708,6 +708,10 @@
       "thread_deleted_failed": "スレッドの削除に失敗しました",
       "ai_assistant_set_default_success": "デフォルトアシスタントを設定しました",
       "ai_assistant_set_default_failed": "デフォルトアシスタントの設定に失敗しました"
+      },
+    "delete_modal": {
+      "title": "アシスタントを削除する",
+      "confirm_message": "本当にアシスタントを削除しますか？"
     }
   },
   "link_edit": {
