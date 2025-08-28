@@ -6,15 +6,13 @@ import { getServerSideI18nProps } from '~/pages/utils/i18n';
 import { getServerSideCommonInitialProps, getServerSideCommonEachProps } from '../utils/commons';
 import { getServerSideUserUISettingsProps } from '../utils/user-ui-settings';
 
-import {
-  NEXT_JS_ROUTING_PAGE,
-  mergeGetServerSidePropsResults,
-} from './common-helpers';
-import { getServerSideConfigurationProps, getServerSideRendererConfigProps, getServerSideSidebarConfigProps } from './configuration-props';
-import { getActivityAction } from './get-activity-action';
+import { mergeGetServerSidePropsResults } from '../general-page/common-helpers';
+import { getServerSideConfigurationProps, getServerSideRendererConfigProps, getServerSideSidebarConfigProps } from '../general-page/configuration-props';
+import { NEXT_JS_ROUTING_PAGE } from './consts';
+import { getActivityAction } from '../general-page/get-activity-action';
 import { getPageDataForInitial, getPageDataForSameRoute } from './page-data-props';
-import type { InitialProps, SameRouteEachProps } from './types';
-import { isValidInitialAndSameRouteProps, isValidSameRouteProps } from './types';
+import type { InitialProps, SameRouteEachProps } from '../general-page/types';
+import { isValidInitialAndSameRouteProps, isValidSameRouteProps } from '../general-page/types';
 
 const nextjsRoutingProps = {
   props: {

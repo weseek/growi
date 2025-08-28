@@ -8,7 +8,7 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { PageModel } from '~/server/models/page';
 import type { IPageRedirect, PageRedirectModel } from '~/server/models/page-redirect';
 
-import type { InitialProps, SameRouteEachProps } from './types';
+import type { InitialProps, SameRouteEachProps } from '../general-page/types';
 
 // Utility to resolve path, redirect, and identical path page check
 type PathResolutionResult = {

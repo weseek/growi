@@ -5,8 +5,6 @@ import type { SSRConfig } from 'next-i18next';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { getLangAtServerSide } from '~/pages/utils/locale';
 
-export const NEXT_JS_ROUTING_PAGE = '[[...path]]';
-
 // Shared helper function to create i18n config with proper configuration
 export async function createNextI18NextConfig(
     context: GetServerSidePropsContext,

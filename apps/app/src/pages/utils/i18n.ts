@@ -1,7 +1,7 @@
 import type { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import type { SSRConfig } from 'next-i18next';
 
-import { createNextI18NextConfig } from '../[[...path]]/common-helpers';
+import { createNextI18NextConfig } from '../general-page/common-helpers';
 
 export const getServerSideI18nProps = async(
     context: GetServerSidePropsContext,

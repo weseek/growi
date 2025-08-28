@@ -35,17 +35,18 @@ import { useEditingMarkdown } from '~/states/ui/editor';
 import { useSWRMUTxCurrentPageYjsData } from '~/stores/yjs';
 
 import type { NextPageWithLayout } from '../_app.page';
+import { registerPageToShowRevisionWithMeta } from '../general-page/superjson/page-to-show-revision-with-meta';
+import type {
+  Props, InitialProps, SameRouteEachProps,
+} from '../general-page/types';
+import { useInitialCSRFetch } from '../general-page/use-initial-skip-ssr-fetch';
+import { useSameRouteNavigation } from '../general-page/use-same-route-navigation';
 import { NextjsRoutingType, detectNextjsRoutingType } from '../utils/nextjs-routing-utils';
 import { useCustomTitleForPage } from '../utils/page-title-customization';
 
-import { NEXT_JS_ROUTING_PAGE } from './common-helpers';
-import { useSameRouteNavigation, useShallowRouting } from './hooks';
+import { NEXT_JS_ROUTING_PAGE } from './consts';
 import { getServerSidePropsForInitial, getServerSidePropsForSameRoute } from './server-side-props';
-import { registerPageToShowRevisionWithMeta } from './superjson/page-to-show-revision-with-meta';
-import type {
-  Props, InitialProps, SameRouteEachProps,
-} from './types';
-import { useInitialCSRFetch } from './use-initial-skip-ssr-fetch';
+import { useShallowRouting } from './use-shallow-routing';
 
 // call superjson custom register
 registerPageToShowRevisionWithMeta();
