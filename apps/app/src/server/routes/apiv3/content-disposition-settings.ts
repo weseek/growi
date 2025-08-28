@@ -166,5 +166,46 @@ module.exports = (crowi) => {
     },
   );
 
+  router.put(
+    '/strict',
+    loginRequiredStrictly,
+    adminRequired,
+    addActivity,
+    apiV3FormValidator,
+
+    async(req, res) => {
+
+      try {
+        const strictMimeTypeSettings: Record<string, 'inline' | 'attachment'> = {
+          'application/pdf': 'attachment',
+          'application/json': 'attachment',
+          'text/csv': 'attachment',
+          'font/woff2': 'attachment',
+          'font/woff': 'attachment',
+          'font/ttf': 'attachment',
+          'font/otf': 'attachment',
+        };
+
+        await configManager.updateConfigs({ 'attachments:contentDisposition:mimeTypeOverrides': strictMimeTypeSettings });
+
+        const parameters = {
+          action: SupportedAction.ACTION_ADMIN_ATTACHMENT_DISPOSITION_UPDATE,
+          contentDispositionSettings: strictMimeTypeSettings,
+          currentMode: 'strict',
+        };
+        activityEvent.emit('update', res.locals.activity._id, parameters);
+
+        return res.apiv3({ currentMode: 'strict', contentDispositionSettings: strictMimeTypeSettings });
+      }
+      catch (err) {
+        const msg = 'Error occurred in updating content disposition for MIME types';
+        logger.error(msg, err);
+        return res.apiv3Err(
+          new ErrorV3(msg, 'update-content-disposition-failed'),
+        );
+      }
+    },
+  );
+
   return router;
 };
