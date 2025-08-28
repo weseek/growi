@@ -2,12 +2,10 @@ import { atom, useAtom } from 'jotai';
 
 import { scheduleToPut } from '~/client/services/user-ui-settings';
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
-import { EditorMode } from '~/states/ui/editor';
-import { editorModeAtom } from '~/states/ui/editor/atoms'; // import the atom directly
-
-import { isDeviceLargerThanXlAtom } from './device';
-import type { UseAtom } from '../helper';
-
+import type { UseAtom } from '../../helper';
+import { isDeviceLargerThanXlAtom } from '../device';
+import { EditorMode } from '../editor';
+import { editorModeAtom } from '../editor/atoms'; // import the atom directly
 
 const isDrawerOpenedAtom = atom(false);
 
@@ -18,49 +16,59 @@ export const useDrawerOpened = (): UseAtom<typeof isDrawerOpenedAtom> => {
 const preferCollapsedModeAtom = atom(false);
 // define a derived atom to call scheduleToPut when the value changes
 const preferCollapsedModeAtomExt = atom(
-  get => get(preferCollapsedModeAtom),
+  (get) => get(preferCollapsedModeAtom),
   (get, set, update: boolean) => {
     set(preferCollapsedModeAtom, update);
     scheduleToPut({ preferCollapsedModeByUser: update });
   },
 );
 
-export const usePreferCollapsedMode = (): UseAtom<typeof preferCollapsedModeAtom> => {
+export const usePreferCollapsedMode = (): UseAtom<
+  typeof preferCollapsedModeAtom
+> => {
   return useAtom(preferCollapsedModeAtomExt);
 };
 
 // Collapsed contents opened state (temporary UI state, no persistence needed)
 const isCollapsedContentsOpenedAtom = atom(false);
 
-export const useCollapsedContentsOpened = (): UseAtom<typeof isCollapsedContentsOpenedAtom> => {
+export const useCollapsedContentsOpened = (): UseAtom<
+  typeof isCollapsedContentsOpenedAtom
+> => {
   return useAtom(isCollapsedContentsOpenedAtom);
 };
 
 // Current sidebar contents state (with persistence)
-const currentSidebarContentsAtom = atom<SidebarContentsType>(SidebarContentsType.TREE);
+const currentSidebarContentsAtom = atom<SidebarContentsType>(
+  SidebarContentsType.TREE,
+);
 const currentSidebarContentsAtomExt = atom(
-  get => get(currentSidebarContentsAtom),
+  (get) => get(currentSidebarContentsAtom),
   (get, set, update: SidebarContentsType) => {
     set(currentSidebarContentsAtom, update);
     scheduleToPut({ currentSidebarContents: update });
   },
 );
 
-export const useCurrentSidebarContents = (): UseAtom<typeof currentSidebarContentsAtom> => {
+export const useCurrentSidebarContents = (): UseAtom<
+  typeof currentSidebarContentsAtom
+> => {
   return useAtom(currentSidebarContentsAtomExt);
 };
 
 // Current product navigation width state (with persistence)
 const currentProductNavWidthAtom = atom<number>(320);
 const currentProductNavWidthAtomExt = atom(
-  get => get(currentProductNavWidthAtom),
+  (get) => get(currentProductNavWidthAtom),
   (get, set, update: number) => {
     set(currentProductNavWidthAtom, update);
     scheduleToPut({ currentProductNavWidth: update });
   },
 );
 
-export const useCurrentProductNavWidth = (): UseAtom<typeof currentProductNavWidthAtom> => {
+export const useCurrentProductNavWidth = (): UseAtom<
+  typeof currentProductNavWidthAtom
+> => {
   return useAtom(currentProductNavWidthAtomExt);
 };
 
@@ -72,28 +80,28 @@ export {
   currentProductNavWidthAtom,
 };
 
-const sidebarModeAtom = atom(
-  (get) => {
-    const isDeviceLargerThanXl = get(isDeviceLargerThanXlAtom);
-    const editorMode = get(editorModeAtom);
-    const isCollapsedModeUnderDockMode = get(preferCollapsedModeAtom);
+const sidebarModeAtom = atom((get) => {
+  const isDeviceLargerThanXl = get(isDeviceLargerThanXlAtom);
+  const editorMode = get(editorModeAtom);
+  const isCollapsedModeUnderDockMode = get(preferCollapsedModeAtom);
 
-    if (!isDeviceLargerThanXl) {
-      return SidebarMode.DRAWER;
-    }
-    return (editorMode === EditorMode.Editor || isCollapsedModeUnderDockMode)
-      ? SidebarMode.COLLAPSED
-      : SidebarMode.DOCK;
-  },
-);
+  if (!isDeviceLargerThanXl) {
+    return SidebarMode.DRAWER;
+  }
+  return editorMode === EditorMode.Editor || isCollapsedModeUnderDockMode
+    ? SidebarMode.COLLAPSED
+    : SidebarMode.DOCK;
+});
 
 type DetectSidebarModeUtils = {
-  isDrawerMode(): boolean
-  isCollapsedMode(): boolean
-  isDockMode(): boolean
-}
+  isDrawerMode(): boolean;
+  isCollapsedMode(): boolean;
+  isDockMode(): boolean;
+};
 
-export const useSidebarMode = (): { sidebarMode: SidebarMode } & DetectSidebarModeUtils => {
+export const useSidebarMode = (): {
+  sidebarMode: SidebarMode;
+} & DetectSidebarModeUtils => {
   const [sidebarMode] = useAtom(sidebarModeAtom);
 
   const isDrawerMode = () => sidebarMode === SidebarMode.DRAWER;

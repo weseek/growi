@@ -29,7 +29,7 @@ import {
   useRendererConfig,
 } from '~/states/server-configurations';
 import { useHydrateServerConfigurationAtoms } from '~/states/server-configurations/hydrate';
-import { useHydrateSidebarAtoms } from '~/states/sidebar/hydrate';
+import { useHydrateSidebarAtoms } from '~/states/ui/sidebar/hydrate';
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/states/socket-io';
 import { useEditingMarkdown } from '~/states/ui/editor';
 import { useSWRMUTxCurrentPageYjsData } from '~/stores/yjs';
