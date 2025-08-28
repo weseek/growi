@@ -4,17 +4,12 @@ import React, { useEffect } from 'react';
 
 import EventEmitter from 'events';
 
-import { isIPageInfo } from '@growi/core';
-import type {
-  IDataWithMeta,
-} from '@growi/core';
 import { isClient } from '@growi/core/dist/utils';
 import type {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import superjson from 'superjson';
 
 import { BasicLayout } from '~/components/Layout/BasicLayout';
 import { PageView } from '~/components/PageView/PageView';
@@ -46,10 +41,14 @@ import { useCustomTitleForPage } from '../utils/page-title-customization';
 import { NEXT_JS_ROUTING_PAGE } from './common-helpers';
 import { useSameRouteNavigation, useShallowRouting } from './hooks';
 import { getServerSidePropsForInitial, getServerSidePropsForSameRoute } from './server-side-props';
+import { registerPageToShowRevisionWithMeta } from './superjson/page-to-show-revision-with-meta';
 import type {
-  Props, InitialProps, SameRouteEachProps, IPageToShowRevisionWithMeta,
+  Props, InitialProps, SameRouteEachProps,
 } from './types';
 import { useInitialCSRFetch } from './use-initial-skip-ssr-fetch';
+
+// call superjson custom register
+registerPageToShowRevisionWithMeta();
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
@@ -76,31 +75,6 @@ const TagEditModal = dynamic(() => import('~/client/components/PageTags/TagEditM
 const ConflictDiffModal = dynamic(() => import('~/client/components/PageEditor/ConflictDiffModal').then(mod => mod.ConflictDiffModal), { ssr: false });
 
 const EditablePageEffects = dynamic(() => import('~/client/components/Page/EditablePageEffects').then(mod => mod.EditablePageEffects), { ssr: false });
-
-type IPageToShowRevisionWithMetaSerialized = IDataWithMeta<string, string>;
-
-superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMetaSerialized>(
-  {
-    isApplicable: (v): v is IPageToShowRevisionWithMeta => {
-      return v?.data != null
-        && v?.data.toObject != null
-        && isIPageInfo(v.meta);
-    },
-    serialize: (v) => {
-      return {
-        data: superjson.stringify(v.data.toObject()),
-        meta: superjson.stringify(v.meta),
-      };
-    },
-    deserialize: (v) => {
-      return {
-        data: superjson.parse(v.data),
-        meta: v.meta != null ? superjson.parse(v.meta) : undefined,
-      };
-    },
-  },
-  'IPageToShowRevisionWithMetaTransformer',
-);
 
 // GrowiContextualSubNavigation for NOT shared page
 type GrowiContextualSubNavigationProps = {
