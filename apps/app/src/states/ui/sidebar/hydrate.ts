@@ -16,17 +16,33 @@ import {
  * @param sidebarConfig - Server-side sidebar configuration
  * @param userUISettings - User's UI settings from database (optional)
  */
-export const useHydrateSidebarAtoms = (sidebarConfig?: ISidebarConfig, userUISettings?: IUserUISettings): void => {
-  useHydrateAtoms(sidebarConfig == null || userUISettings == null
-    ? []
-    : [
-      // Use user preference from DB if available, otherwise use system default
-      [preferCollapsedModeAtom, userUISettings?.preferCollapsedModeByUser ?? sidebarConfig?.isSidebarCollapsedMode ?? false],
+export const useHydrateSidebarAtoms = (
+  sidebarConfig?: ISidebarConfig,
+  userUISettings?: IUserUISettings,
+): void => {
+  useHydrateAtoms(
+    sidebarConfig == null || userUISettings == null
+      ? []
+      : [
+          // Use user preference from DB if available, otherwise use system default
+          [
+            preferCollapsedModeAtom,
+            userUISettings?.preferCollapsedModeByUser ??
+              sidebarConfig?.isSidebarCollapsedMode ??
+              false,
+          ],
 
-      // Sidebar contents type (with default fallback)
-      [currentSidebarContentsAtom, userUISettings?.currentSidebarContents ?? SidebarContentsType.TREE],
+          // Sidebar contents type (with default fallback)
+          [
+            currentSidebarContentsAtom,
+            userUISettings?.currentSidebarContents ?? SidebarContentsType.TREE,
+          ],
 
-      // Product navigation width (with default fallback)
-      [currentProductNavWidthAtom, userUISettings?.currentProductNavWidth ?? 320],
-    ]);
+          // Product navigation width (with default fallback)
+          [
+            currentProductNavWidthAtom,
+            userUISettings?.currentProductNavWidth ?? 320,
+          ],
+        ],
+  );
 };
