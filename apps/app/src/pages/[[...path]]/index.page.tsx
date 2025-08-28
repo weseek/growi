@@ -35,12 +35,11 @@ import { useEditingMarkdown } from '~/states/ui/editor';
 import { useSWRMUTxCurrentPageYjsData } from '~/stores/yjs';
 
 import type { NextPageWithLayout } from '../_app.page';
-import { registerPageToShowRevisionWithMeta } from '../general-page/superjson/page-to-show-revision-with-meta';
 import type {
   Props, InitialProps, SameRouteEachProps,
-} from '../general-page/types';
-import { useInitialCSRFetch } from '../general-page/use-initial-skip-ssr-fetch';
-import { useSameRouteNavigation } from '../general-page/use-same-route-navigation';
+} from '../general-page';
+import { useInitialCSRFetch, useSameRouteNavigation } from '../general-page';
+import { registerPageToShowRevisionWithMeta } from '../general-page/superjson';
 import { NextjsRoutingType, detectNextjsRoutingType } from '../utils/nextjs-routing-utils';
 import { useCustomTitleForPage } from '../utils/page-title-customization';
 

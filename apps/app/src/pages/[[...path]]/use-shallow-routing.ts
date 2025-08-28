@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import { isClient } from '@growi/core/dist/utils';
 import { useRouter } from 'next/router';
 
-import type { Props } from '../general-page/types';
+import type { Props } from '../general-page';
 
 /**
  * Custom hook for syncing pathname by Shallow Routing
