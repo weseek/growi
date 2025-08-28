@@ -16,7 +16,7 @@ docker run --rm \
   -v "$(pwd)"/src:/opt \
   -w /opt \
   -e MIGRATION_MODULE=v60x \
-  mongo:6.0 \
+  mongo:8.0 \
   /bin/mongosh $MONGO_URI index.js
 ```
 
@@ -87,6 +87,6 @@ docker run --rm \
   -v "$(pwd)"/src:/opt \
   -w /opt \
   -e MIGRATION_MODULE=custom \
-  mongo:6.0 \
+  mongo:8.0 \
   /bin/mongosh $MONGO_URI index.js
 ```
