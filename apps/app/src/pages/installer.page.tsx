@@ -14,8 +14,8 @@ import {
   useCsrfToken, useAppTitle, useSiteUrl, useConfidential, useGrowiCloudUri,
 } from '~/stores-universal/context';
 
-import type { CommonProps } from './utils/commons';
-import { getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle } from './utils/commons';
+import type { CommonProps } from './common-props';
+import { getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle } from './common-props';
 
 
 const InstallerForm = dynamic(() => import('~/client/components/InstallerForm'), { ssr: false });

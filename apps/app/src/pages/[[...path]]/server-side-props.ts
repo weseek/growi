@@ -1,16 +1,15 @@
 import type { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 
-import { addActivity } from '~/pages/utils/activity';
-import { getServerSideI18nProps } from '~/pages/utils/i18n';
-
+import {
+  getServerSideI18nProps, getServerSideUserUISettingsProps, getServerSideCommonInitialProps, getServerSideCommonEachProps,
+} from '../common-props';
 import type { InitialProps, SameRouteEachProps } from '../general-page';
 import {
   getServerSideConfigurationProps, getServerSideRendererConfigProps, getServerSideSidebarConfigProps,
   getActivityAction, isValidInitialAndSameRouteProps, isValidSameRouteProps,
 } from '../general-page';
-import { getServerSideCommonInitialProps, getServerSideCommonEachProps } from '../utils/commons';
-import { mergeGetServerSidePropsResults } from '../utils/get-server-side-props';
-import { getServerSideUserUISettingsProps } from '../utils/user-ui-settings';
+import { addActivity } from '../utils/activity';
+import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
 
 import { NEXT_JS_ROUTING_PAGE } from './consts';
 import { getPageDataForInitial, getPageDataForSameRoute } from './page-data-props';

@@ -26,10 +26,10 @@ import { useSWRxTagsList } from '~/stores/tag';
 
 
 import type { NextPageWithLayout } from './_app.page';
-import type { CommonProps } from './utils/commons';
+import type { CommonProps } from './common-props';
 import {
   getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle,
-} from './utils/commons';
+} from './common-props';
 
 const PAGING_LIMIT = 10;
 

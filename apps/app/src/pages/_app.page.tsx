@@ -18,7 +18,7 @@ import { useAutoUpdateGlobalAtoms } from '~/states/global/auto-update';
 import { useHydrateGlobalInitialAtoms } from '~/states/global/hydrate';
 import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
-import type { CommonEachProps, CommonInitialProps } from './utils/commons';
+import type { CommonEachProps, CommonInitialProps } from './common-props';
 import { getLocaleAtServerSide } from './utils/locale';
 import { useNextjsRoutingPageRegister } from './utils/nextjs-routing-utils';
 import { registerTransformerForObjectId } from './utils/objectid-transformer';

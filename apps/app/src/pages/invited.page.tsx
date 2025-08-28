@@ -12,8 +12,8 @@ import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { useCsrfToken, useCurrentPathname, useCurrentUser } from '~/stores-universal/context';
 
-import type { CommonProps } from './utils/commons';
-import { getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig } from './utils/commons';
+import type { CommonProps } from './common-props';
+import { getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig } from './common-props';
 
 const InvitedForm = dynamic(() => import('~/client/components/InvitedForm').then(mod => mod.InvitedForm), { ssr: false });
 

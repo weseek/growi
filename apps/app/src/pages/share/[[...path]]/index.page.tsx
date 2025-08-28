@@ -30,10 +30,10 @@ import {
 import loggerFactory from '~/utils/logger';
 
 import type { NextPageWithLayout } from '../../_app.page';
-import type { CommonProps } from '../../utils/commons';
+import type { CommonProps } from '../../common-props';
 import {
   getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig, skipSSR, addActivity,
-} from '../../utils/commons';
+} from '../../common-props';
 
 
 const GrowiContextualSubNavigationSubstance = dynamic(() => import('~/client/components/Navbar/GrowiContextualSubNavigation'), { ssr: false });

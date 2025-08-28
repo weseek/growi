@@ -11,10 +11,10 @@ import type { RegistrationMode } from '~/interfaces/registration-mode';
 import type { ReqWithUserRegistrationOrder } from '~/server/middlewares/inject-user-registration-order-by-token-middleware';
 
 
-import type { CommonProps } from './utils/commons';
+import type { CommonProps } from './common-props';
 import {
   getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle,
-} from './utils/commons';
+} from './common-props';
 
 
 const CompleteUserRegistrationForm = dynamic(() => import('~/client/components/CompleteUserRegistrationForm')

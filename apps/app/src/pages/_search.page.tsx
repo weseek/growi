@@ -20,10 +20,10 @@ import {
 } from '~/stores-universal/context';
 
 import type { NextPageWithLayout } from './_app.page';
-import type { CommonProps } from './utils/commons';
+import type { CommonProps } from './common-props';
 import {
   getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
-} from './utils/commons';
+} from './common-props';
 
 
 const SearchPage = dynamic(() => import('~/client/components/SearchPage').then(mod => mod.SearchPage), { ssr: false });

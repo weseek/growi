@@ -18,10 +18,10 @@ import {
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useGrowiCloudUri, useIsEnabledMarp, useCurrentPathname,
 } from '~/stores-universal/context';
 
-import type { CommonProps } from './utils/commons';
+import type { CommonProps } from './common-props';
 import {
   getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
-} from './utils/commons';
+} from './common-props';
 
 const SearchResultLayout = dynamic(() => import('~/components/Layout/SearchResultLayout'), { ssr: false });
 

@@ -25,10 +25,10 @@ import {
 import loggerFactory from '~/utils/logger';
 
 import type { NextPageWithLayout } from '../../_app.page';
-import type { CommonProps } from '../../utils/commons';
+import type { CommonProps } from '../../common-props';
 import {
   getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
-} from '../../utils/commons';
+} from '../../common-props';
 
 
 const logger = loggerFactory('growi:pages:me');

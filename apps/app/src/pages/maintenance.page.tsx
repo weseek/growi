@@ -6,8 +6,8 @@ import dynamic from 'next/dynamic';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { useCurrentUser } from '~/stores-universal/context';
 
-import type { CommonProps } from './utils/commons';
-import { getServerSideCommonProps, getNextI18NextConfig } from './utils/commons';
+import type { CommonProps } from './common-props';
+import { getServerSideCommonProps, getNextI18NextConfig } from './common-props';
 
 
 const Maintenance = dynamic(() => import('~/client/components/Maintenance').then(mod => mod.Maintenance), { ssr: false });

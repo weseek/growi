@@ -8,8 +8,8 @@ import { RawLayout } from '~/components/Layout/RawLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { useIsMailerSetup } from '~/stores-universal/context';
 
-import type { CommonProps } from './utils/commons';
-import { getNextI18NextConfig, getServerSideCommonProps } from './utils/commons';
+import type { CommonProps } from './common-props';
+import { getNextI18NextConfig, getServerSideCommonProps } from './common-props';
 
 const PasswordResetRequestForm = dynamic(() => import('~/client/components/PasswordResetRequestForm'), { ssr: false });
 

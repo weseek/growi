@@ -22,10 +22,10 @@ import {
 
 
 import type { NextPageWithLayout } from './_app.page';
-import type { CommonProps } from './utils/commons';
+import type { CommonProps } from './common-props';
 import {
   getServerSideCommonProps, getNextI18NextConfig, generateCustomTitleForPage,
-} from './utils/commons';
+} from './common-props';
 
 
 const TrashPageList = dynamic(() => import('~/client/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
