@@ -185,13 +185,13 @@ export const AiAssistantList: React.FC<AiAssistantListProps> = ({
     try {
       await deleteAiAssistant(aiAssistantToBeDeleted._id);
       onDeleteAiAssistantAfterOperation(aiAssistantToBeDeleted._id);
-      toastSuccess(t('ai_assistant_tree.toaster.ai_assistant_deleted_success'));
+      toastSuccess(t('ai_assistant_substance.toaster.ai_assistant_deleted_success'));
     }
     catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       setErrorMessageOnDelete(message);
       logger.error(err);
-      toastError(t('ai_assistant_tree.toaster.ai_assistant_deleted_failed'));
+      toastError(t('ai_assistant_substance.toaster.ai_assistant_deleted_failed'));
     }
   }, [aiAssistantToBeDeleted, onDeleteAiAssistantAfterOperation, t]);
 
