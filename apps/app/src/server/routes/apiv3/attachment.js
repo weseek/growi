@@ -356,7 +356,7 @@ module.exports = (crowi) => {
       }
 
       try {
-        const page = await Page.findById(pageId);
+        const page = await Page.findOne({ _id: { $eq: pageId } });
 
         // check the user is accessible
         const isAccessible = await Page.isAccessiblePageByViewer(page.id, req.user);

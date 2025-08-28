@@ -1,7 +1,12 @@
+import fs from 'fs';
+
+import { SCOPE } from '@growi/core/dist/interfaces';
+import express from 'express';
+import { param, body } from 'express-validator';
+import mongoose from 'mongoose';
 import sanitize from 'sanitize-filename';
 
 import { SupportedAction } from '~/interfaces/activity';
-import { SCOPE } from '@growi/core/dist/interfaces';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { exportService } from '~/server/service/export';
 import loggerFactory from '~/utils/logger';
@@ -11,11 +16,6 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 
 const logger = loggerFactory('growi:routes:apiv3:export');
-const fs = require('fs');
-
-const express = require('express');
-const { param } = require('express-validator');
-
 const router = express.Router();
 
 /**
@@ -145,6 +145,25 @@ module.exports = (crowi) => {
   });
 
   const validator = {
+    generateZipFile: [
+      body('collections')
+        .isArray()
+        .withMessage('"collections" must be an array')
+        .bail()
+
+        .notEmpty()
+        .withMessage('"collections" array cannot be empty')
+        .bail()
+
+        .custom(async(value) => {
+          // Check if all the collections in the request body exist in the database
+          const listCollectionsResult = await mongoose.connection.db.listCollections().toArray();
+          const allCollectionNames = listCollectionsResult.map(collectionObj => collectionObj.name);
+          if (!value.every(v => allCollectionNames.includes(v))) {
+            throw new Error('Invalid collections');
+          }
+        }),
+    ],
     deleteFile: [
       // https://regex101.com/r/mD4eZs/6
       // prevent from unexpecting attack doing delete file (path traversal attack)
@@ -214,27 +233,28 @@ module.exports = (crowi) => {
    *                    type: boolean
    *                    description: whether the request is succeeded
    */
-  router.post('/', accessTokenParser([SCOPE.WRITE.ADMIN.EXPORT_DATA], { acceptLegacy: true }), loginRequired, adminRequired, addActivity, async(req, res) => {
+  router.post('/', accessTokenParser([SCOPE.WRITE.ADMIN.EXPORT_DATA], { acceptLegacy: true }), loginRequired, adminRequired,
+    validator.generateZipFile, apiV3FormValidator, addActivity, async(req, res) => {
     // TODO: add express validator
-    try {
-      const { collections } = req.body;
+      try {
+        const { collections } = req.body;
 
-      exportService.export(collections);
+        exportService.export(collections);
 
-      const parameters = { action: SupportedAction.ACTION_ADMIN_ARCHIVE_DATA_CREATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
+        const parameters = { action: SupportedAction.ACTION_ADMIN_ARCHIVE_DATA_CREATE };
+        activityEvent.emit('update', res.locals.activity._id, parameters);
 
-      // TODO: use res.apiv3
-      return res.status(200).json({
-        ok: true,
-      });
-    }
-    catch (err) {
+        // TODO: use res.apiv3
+        return res.status(200).json({
+          ok: true,
+        });
+      }
+      catch (err) {
       // TODO: use ApiV3Error
-      logger.error(err);
-      return res.status(500).send({ status: 'ERROR' });
-    }
-  });
+        logger.error(err);
+        return res.status(500).send({ status: 'ERROR' });
+      }
+    });
 
   /**
    * @swagger
