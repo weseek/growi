@@ -29,11 +29,11 @@ import {
 } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
-import type { NextPageWithLayout } from '../_app.page';
-import type { CommonProps } from '../utils/commons';
+import type { NextPageWithLayout } from '../../_app.page';
+import type { CommonProps } from '../../utils/commons';
 import {
   getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig, skipSSR, addActivity,
-} from '../utils/commons';
+} from '../../utils/commons';
 
 
 const GrowiContextualSubNavigationSubstance = dynamic(() => import('~/client/components/Navbar/GrowiContextualSubNavigation'), { ssr: false });

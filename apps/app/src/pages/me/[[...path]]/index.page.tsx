@@ -24,11 +24,11 @@ import {
 } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
-import type { NextPageWithLayout } from '../_app.page';
-import type { CommonProps } from '../utils/commons';
+import type { NextPageWithLayout } from '../../_app.page';
+import type { CommonProps } from '../../utils/commons';
 import {
   getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
-} from '../utils/commons';
+} from '../../utils/commons';
 
 
 const logger = loggerFactory('growi:pages:me');

@@ -39,16 +39,17 @@ import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/states/sock
 import { useEditingMarkdown } from '~/states/ui/editor';
 import { useSWRMUTxCurrentPageYjsData } from '~/stores/yjs';
 
-import { NEXT_JS_ROUTING_PAGE } from './[[...path]]/common-helpers';
-import { useSameRouteNavigation, useShallowRouting } from './[[...path]]/hooks';
-import { getServerSidePropsForInitial, getServerSidePropsForSameRoute } from './[[...path]]/server-side-props';
+import type { NextPageWithLayout } from '../_app.page';
+import { NextjsRoutingType, detectNextjsRoutingType } from '../utils/nextjs-routing-utils';
+import { useCustomTitleForPage } from '../utils/page-title-customization';
+
+import { NEXT_JS_ROUTING_PAGE } from './common-helpers';
+import { useSameRouteNavigation, useShallowRouting } from './hooks';
+import { getServerSidePropsForInitial, getServerSidePropsForSameRoute } from './server-side-props';
 import type {
   Props, InitialProps, SameRouteEachProps, IPageToShowRevisionWithMeta,
-} from './[[...path]]/types';
-import { useInitialCSRFetch } from './[[...path]]/use-initial-skip-ssr-fetch';
-import type { NextPageWithLayout } from './_app.page';
-import { NextjsRoutingType, detectNextjsRoutingType } from './utils/nextjs-routing-utils';
-import { useCustomTitleForPage } from './utils/page-title-customization';
+} from './types';
+import { useInitialCSRFetch } from './use-initial-skip-ssr-fetch';
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
