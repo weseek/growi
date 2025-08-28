@@ -44,8 +44,8 @@ describe('nextjs-routing-utils', () => {
       );
     });
 
-    it('should remove cookie when nextjsRoutingPage is undefined', () => {
-      renderHook(() => useNextjsRoutingPageRegister(undefined));
+    it('should remove cookie when nextjsRoutingPage is null', () => {
+      renderHook(() => useNextjsRoutingPageRegister(null));
 
       expect(mockCookies.remove).toHaveBeenCalledWith('nextjsRoutingPage');
     });
@@ -93,8 +93,8 @@ describe('nextjs-routing-utils', () => {
 
     it('should handle rapid prop changes correctly', () => {
       const { rerender } = renderHook(
-        ({ page }: { page: string | undefined }) => useNextjsRoutingPageRegister(page),
-        { initialProps: { page: '/page1' as string | undefined } },
+        ({ page }: { page: string | null }) => useNextjsRoutingPageRegister(page),
+        { initialProps: { page: '/page1' as string | null } },
       );
 
       expect(mockCookies.set).toHaveBeenLastCalledWith(
@@ -110,7 +110,7 @@ describe('nextjs-routing-utils', () => {
         { path: '/', expires: 1 / 24 },
       );
 
-      rerender({ page: undefined });
+      rerender({ page: null });
       expect(mockCookies.remove).toHaveBeenLastCalledWith('nextjsRoutingPage');
 
       rerender({ page: '/page3' });
