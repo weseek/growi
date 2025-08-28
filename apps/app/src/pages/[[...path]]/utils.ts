@@ -1,21 +1,9 @@
 import { pagePathUtils } from '@growi/core/dist/utils';
-import ExtensibleCustomError from 'extensible-custom-error';
 
 import { SupportedAction } from '~/interfaces/activity';
 import type { SupportedActionType } from '~/interfaces/activity';
 
 import type { IPageToShowRevisionWithMeta } from './types';
-
-export class MultiplePagesHitsError extends ExtensibleCustomError {
-
-  pagePath: string;
-
-  constructor(pagePath: string) {
-    super(`MultiplePagesHitsError occured by '${pagePath}'`);
-    this.pagePath = pagePath;
-  }
-
-}
 
 export const getAction = (props: {
   isNotCreatable: boolean;
