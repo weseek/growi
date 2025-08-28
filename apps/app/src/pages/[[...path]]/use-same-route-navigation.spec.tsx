@@ -6,7 +6,7 @@ import { vi } from 'vitest';
 import { mock } from 'vitest-mock-extended';
 
 import { useFetchCurrentPage } from '~/states/page';
-import { useEditingMarkdown } from '~/stores/editor';
+import { useEditingMarkdown } from '~/states/ui/editor';
 
 import { useSameRouteNavigation } from './use-same-route-navigation';
 
@@ -15,11 +15,11 @@ vi.mock('next/router', () => ({
   useRouter: vi.fn(),
 }));
 vi.mock('~/states/page');
-vi.mock('~/stores/editor');
+vi.mock('~/states/ui/editor');
 
 // Define stable mock functions outside of describe/beforeEach
 const mockFetchCurrentPage = vi.fn();
-const mockMutateEditingMarkdown = vi.fn();
+const mockSetEditingMarkdown = vi.fn();
 
 const pageDataMock = mock<IPagePopulatedToShowRevision>({
   revision: {
@@ -47,9 +47,7 @@ describe('useSameRouteNavigation', () => {
       fetchCurrentPage: mockFetchCurrentPage,
     });
 
-    (useEditingMarkdown as ReturnType<typeof vi.fn>).mockReturnValue({
-      mutate: mockMutateEditingMarkdown,
-    });
+    (useEditingMarkdown as ReturnType<typeof vi.fn>).mockReturnValue(['', mockSetEditingMarkdown]);
 
     mockFetchCurrentPage.mockResolvedValue(pageDataMock);
   });
@@ -69,7 +67,7 @@ describe('useSameRouteNavigation', () => {
       expect(mockFetchCurrentPage).toHaveBeenCalledWith({ path: '/new-path' });
 
       // 2. mutateEditingMarkdown is called with the content from the fetched page
-      expect(mockMutateEditingMarkdown).toHaveBeenCalledWith(pageDataMock.revision?.body);
+      expect(mockSetEditingMarkdown).toHaveBeenCalledWith(pageDataMock.revision?.body);
     });
   });
 
@@ -80,7 +78,7 @@ describe('useSameRouteNavigation', () => {
     // call on initial render
     await waitFor(() => {
       expect(mockFetchCurrentPage).toHaveBeenCalledTimes(1);
-      expect(mockMutateEditingMarkdown).toHaveBeenCalledTimes(1);
+      expect(mockSetEditingMarkdown).toHaveBeenCalledTimes(1);
     });
 
     // Act: Rerender with the same path
@@ -90,7 +88,7 @@ describe('useSameRouteNavigation', () => {
     // A short delay to ensure no async operations are triggered
     await new Promise(resolve => setTimeout(resolve, 100));
     expect(mockFetchCurrentPage).toHaveBeenCalledTimes(1); // Should not be called again
-    expect(mockMutateEditingMarkdown).toHaveBeenCalledTimes(1);
+    expect(mockSetEditingMarkdown).toHaveBeenCalledTimes(1);
   });
 
   it('should not call mutateEditingMarkdown if pageData or revision is null', async() => {
@@ -99,7 +97,7 @@ describe('useSameRouteNavigation', () => {
     const { rerender } = renderHook(() => useSameRouteNavigation());
     await waitFor(() => {
       expect(mockFetchCurrentPage).toHaveBeenCalledTimes(1);
-      expect(mockMutateEditingMarkdown).toHaveBeenCalledTimes(1);
+      expect(mockSetEditingMarkdown).toHaveBeenCalledTimes(1);
     });
 
     // Arrange: next, fetch fails (returns null)
@@ -114,7 +112,7 @@ describe('useSameRouteNavigation', () => {
       // fetch should be called again
       expect(mockFetchCurrentPage).toHaveBeenCalledWith({ path: '/path-with-no-data' });
       // but mutate should not be called again
-      expect(mockMutateEditingMarkdown).toHaveBeenCalledTimes(1);
+      expect(mockSetEditingMarkdown).toHaveBeenCalledTimes(1);
     });
   });
 });

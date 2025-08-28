@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 import { useFetchCurrentPage } from '~/states/page';
-import { useEditingMarkdown } from '~/stores/editor';
+import { useEditingMarkdown } from '~/states/ui/editor';
 
 /**
  * This hook is a trigger to fetch page data on client-side navigation.
@@ -14,16 +14,16 @@ import { useEditingMarkdown } from '~/stores/editor';
 export const useSameRouteNavigation = (): void => {
   const router = useRouter();
   const { fetchCurrentPage } = useFetchCurrentPage();
-  const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
+  const [, setEditingMarkdown] = useEditingMarkdown();
 
   // useEffect to trigger data fetching when the path changes
   useEffect(() => {
     const fetch = async() => {
       const pageData = await fetchCurrentPage({ path: router.asPath });
       if (pageData?.revision?.body != null) {
-        mutateEditingMarkdown(pageData.revision.body);
+        setEditingMarkdown(pageData.revision.body);
       }
     };
     fetch();
-  }, [router.asPath, fetchCurrentPage, mutateEditingMarkdown]);
+  }, [router.asPath, fetchCurrentPage, setEditingMarkdown]);
 };

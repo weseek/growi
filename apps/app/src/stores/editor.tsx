@@ -21,11 +21,6 @@ export const useWaitingSaveProcessing = (): SWRResponse<boolean, Error> => {
 };
 
 
-export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Error> => {
-  return useSWRStatic('editingMarkdown', initialData);
-};
-
-
 type EditorSettingsOperation = {
   update: (updateData: Partial<EditorSettings>) => Promise<void>,
 }

@@ -37,7 +37,7 @@ import {
   useIsEnabledAttachTitleHeader,
   useIsIndentSizeForced,
 } from '~/states/server-configurations';
-import { useEditorMode, EditorMode } from '~/states/ui/editor';
+import { useEditorMode, EditorMode, useEditingMarkdown } from '~/states/ui/editor';
 import {
   useAcceptedUploadFileType, useIsEnableUnifiedMergeView,
 } from '~/stores-universal/context';
@@ -46,7 +46,6 @@ import {
   useReservedNextCaretLine,
   useEditorSettings,
   useCurrentIndentSize,
-  useEditingMarkdown,
   useWaitingSaveProcessing,
 } from '~/stores/editor';
 import {
@@ -104,7 +103,7 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
   const [currentPathname] = useCurrentPathname();
   const [currentPage] = useCurrentPageData();
   const { data: selectedGrant } = useSelectedGrant();
-  const { data: editingMarkdown } = useEditingMarkdown();
+  const [editingMarkdown] = useEditingMarkdown();
   const [isEnabledAttachTitleHeader] = useIsEnabledAttachTitleHeader();
   const [templateBody] = useTemplateBody();
   const [isEditable] = useIsEditable();

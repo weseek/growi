@@ -7,7 +7,8 @@ import urljoin from 'url-join';
 import type { SyncLatestRevisionBody } from '~/interfaces/yjs';
 import { useIsGuestUser } from '~/states/context';
 import { useCurrentPageId, useFetchCurrentPage } from '~/states/page';
-import { useEditingMarkdown, usePageTagsForEditors } from '~/stores/editor';
+import { useEditingMarkdown } from '~/states/ui/editor';
+import { usePageTagsForEditors } from '~/stores/editor';
 import {
   useSWRxApplicableGrant, useSWRxTagsInfo,
   useSWRxCurrentGrantData,
@@ -104,7 +105,7 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
-  const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
+  const [, setEditingMarkdown] = useEditingMarkdown();
   const [isGuestUser] = useIsGuestUser();
   const { mutate: mutateCurrentGrantData } = useSWRxCurrentGrantData(isGuestUser ? null : pageId);
   const { mutate: mutateApplicableGrant } = useSWRxApplicableGrant(isGuestUser ? null : pageId);
@@ -127,7 +128,7 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
     // and see: https://github.com/weseek/growi/pull/7118
     const supressEditingMarkdownMutation = opts?.supressEditingMarkdownMutation ?? false;
     if (!supressEditingMarkdownMutation) {
-      mutateEditingMarkdown(updatedPage.revision.body);
+      setEditingMarkdown(updatedPage.revision.body);
     }
 
     mutateCurrentGrantData();
@@ -143,7 +144,7 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
     setRemoteLatestPageData(remoterevisionData);
   },
   // eslint-disable-next-line max-len
-  [pageId, mutateTagsInfo, syncTagsInfoForEditor, setCurrentPageId, fetchCurrentPage, opts?.supressEditingMarkdownMutation, mutateCurrentGrantData, mutateApplicableGrant, setRemoteLatestPageData, mutateEditingMarkdown]);
+  [pageId, mutateTagsInfo, syncTagsInfoForEditor, setCurrentPageId, fetchCurrentPage, opts?.supressEditingMarkdownMutation, mutateCurrentGrantData, mutateApplicableGrant, setRemoteLatestPageData, setEditingMarkdown]);
 };
 
 export const unlink = async(path: string): Promise<void> => {
