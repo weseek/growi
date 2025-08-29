@@ -85,7 +85,7 @@ Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/mig
 - npm 10.x
 - pnpm 10.x
 - [Turborepo](https://turbo.build/repo)
-- MongoDB 8.0 以上
+- MongoDB v6.x or v8.x
 
 ### オプションの依存関係
 

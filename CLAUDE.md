@@ -70,7 +70,7 @@ GROWI is a team collaboration software using markdown - a wiki platform with hie
 ### Development Dependencies
 - Node.js v20.x or v22.x
 - pnpm 10.x  
-- MongoDB 8.0+
+- MongoDB v6.x or v8.x
 - Optional: Redis 3.x, Elasticsearch 7.x/8.x/9.x (for full-text search)
 
 ## File Organization Patterns
