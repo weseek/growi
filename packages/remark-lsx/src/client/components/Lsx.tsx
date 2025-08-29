@@ -66,6 +66,8 @@ const LsxSubstance = React.memo(
             <span className="material-symbols-outlined me-1">warning</span>{' '}
             {lsxContext.toString()}
           </summary>
+          {/* Since error messages may contain user-input strings, use JSX embedding as shown below */}
+          {/* https://legacy.reactjs.org/docs/introducing-jsx.html#jsx-prevents-injection-attacks */}
           <small className="ms-3 text-muted">{errorMessage}</small>
         </details>
       );
