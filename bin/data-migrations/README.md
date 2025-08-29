@@ -9,7 +9,7 @@ git clone https://github.com/weseek/growi
 cd growi/bin/data-migrations
 
 NETWORK=growi_devcontainer_default
-MONGO_URI=mongodb://growi_devcontainer_mongo_1/growi
+MONGO_URI=mongodb://growi-devcontainer_mongo-1/growi
 
 docker run --rm \
   --network $NETWORK \
@@ -81,7 +81,7 @@ git clone https://github.com/weseek/growi
 cd growi/bin/data-migrations
 
 NETWORK=growi_devcontainer_default \
-MONGO_URI=mongodb://growi_devcontainer_mongo_1/growi \
+MONGO_URI=mongodb://growi-devcontainer_mongo-1/growi
 docker run --rm \
   --network $NETWORK \
   -v "$(pwd)"/src:/opt \
