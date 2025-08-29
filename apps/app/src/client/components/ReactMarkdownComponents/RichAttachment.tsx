@@ -4,6 +4,7 @@ import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import prettyBytes from 'pretty-bytes';
 
+import { useIsGuestUser, useIsReadOnlyUser, useIsSharedUser } from '~/stores-universal/context';
 import { useSWRxAttachment } from '~/stores/attachment';
 import { useDeleteAttachmentModal } from '~/stores/modal';
 
@@ -20,6 +21,12 @@ export const RichAttachment = React.memo((props: RichAttachmentProps) => {
   const { t } = useTranslation();
   const { data: attachment, remove } = useSWRxAttachment(attachmentId);
   const { open: openDeleteAttachmentModal } = useDeleteAttachmentModal();
+
+  const { data: isGuestUser } = useIsGuestUser();
+  const { data: isSharedUser } = useIsSharedUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
+
+  const showTrashButton = !isGuestUser && !isSharedUser && !isReadOnlyUser;
 
   const onClickTrashButtonHandler = useCallback(() => {
     if (attachment == null) {
@@ -69,9 +76,13 @@ export const RichAttachment = React.memo((props: RichAttachmentProps) => {
               <a className="ms-2 attachment-download" href={downloadPathProxied}>
                 <span className="material-symbols-outlined">cloud_download</span>
               </a>
-              <a className="ml-2 text-danger attachment-delete d-share-link-none" type="button" onClick={onClickTrashButtonHandler}>
-                <span className="material-symbols-outlined">delete</span>
-              </a>
+
+              {showTrashButton && (
+                <a className="ml-2 text-danger attachment-delete d-share-link-none" type="button" onClick={onClickTrashButtonHandler}>
+                  <span className="material-symbols-outlined">delete</span>
+                </a>
+              )}
+
             </div>
             <div className="d-flex align-items-center">
               <UserPicture user={creator} size="sm" />
