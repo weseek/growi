@@ -20,6 +20,9 @@ docker run --rm \
   /bin/mongosh $MONGO_URI index.js
 ```
 
+> **Note**
+> This script uses MongoDB 8.0 Docker image, but mongosh has backward compatibility and can connect to any MongoDB server version 4.2 or greater. See [MongoDB Shell documentation](https://www.mongodb.com/docs/mongodb-shell/install/) for details.
+
 ## Variables
 | Variable              | Description                                                                    | Default |
 | --------------------- | ------------------------------------------------------------------------------ | ------- |
