@@ -20,7 +20,7 @@ import type { IPagePathWithDescendantCount } from '~/interfaces/page';
 import type { IRecordApplicableGrant, IResCurrentGrantData } from '~/interfaces/page-grant';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
 import { usePageNotFound } from '~/states/page';
-import { useShareLinkId } from '~/stores-universal/context';
+import { useShareLinkId } from '~/states/page/hooks';
 import type { AxiosResponse } from '~/utils/axios';
 
 import type { IPageTagsInfo } from '../interfaces/tag';
@@ -53,7 +53,7 @@ export const useSWRxPageByPath = (path?: string, config?: SWRConfiguration): SWR
 };
 
 export const useSWRxTagsInfo = (pageId: Nullable<string>, config?: SWRConfiguration): SWRResponse<IPageTagsInfo | null, Error> => {
-  const { data: shareLinkId } = useShareLinkId();
+  const [shareLinkId] = useShareLinkId();
 
   const endpoint = `/pages.getPageTag?pageId=${pageId}`;
 

@@ -8,10 +8,8 @@ import type { Element } from 'hast';
 import { useRouter } from 'next/router';
 
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
-import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
-import {
-  useIsSharedUser, useShareLinkId,
-} from '~/stores-universal/context';
+import { useIsGuestUser, useIsReadOnlyUser, useIsSharedUser } from '~/states/context';
+import { useShareLinkId } from '~/states/page/hooks';
 import { useCurrentPageYjsData } from '~/stores/yjs';
 import loggerFactory from '~/utils/logger';
 
@@ -67,8 +65,8 @@ export const Header = (props: HeaderProps): JSX.Element => {
 
   const [isGuestUser] = useIsGuestUser();
   const [isReadOnlyUser] = useIsReadOnlyUser();
-  const { data: isSharedUser } = useIsSharedUser();
-  const { data: shareLinkId } = useShareLinkId();
+  const [isSharedUser] = useIsSharedUser();
+  const [shareLinkId] = useShareLinkId();
   const { data: currentPageYjsData, isLoading: isLoadingCurrentPageYjsData } = useCurrentPageYjsData();
 
   const router = useRouter();

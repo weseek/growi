@@ -14,6 +14,9 @@ export const pageNotFoundAtom = atom(false);
 export const pageNotCreatableAtom = atom(false);
 export const latestRevisionAtom = atom(true);
 
+// ShareLink page state atoms (internal)
+export const shareLinkIdAtom = atom<string>();
+
 // Fetch state atoms (internal)
 export const pageLoadingAtom = atom(false);
 export const pageErrorAtom = atom<Error | null>(null);
@@ -84,12 +87,16 @@ export const setTemplateContentAtom = atom(
 
 export const setRemoteRevisionDataAtom = atom(
   null,
-  (get, set, data: {
-    id?: string;
-    body?: string;
-    lastUpdateUser?: IUserHasId;
-    lastUpdatedAt?: Date;
-  }) => {
+  (
+    get,
+    set,
+    data: {
+      id?: string;
+      body?: string;
+      lastUpdateUser?: IUserHasId;
+      lastUpdatedAt?: Date;
+    },
+  ) => {
     if (data.id !== undefined) {
       set(remoteRevisionIdAtom, data.id);
     }

@@ -1,5 +1,5 @@
-import React, {
-  useEffect, useMemo, useRef, type JSX,
+import {
+  useEffect, useMemo, useRef, memo, type JSX,
 } from 'react';
 
 import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
@@ -40,7 +40,7 @@ type Props = {
   className?: string,
 }
 
-export const PageView = React.memo((props: Props): JSX.Element => {
+export const PageView = memo((props: Props): JSX.Element => {
   const renderStartTime = performance.now();
 
   const commentsContainerRef = useRef<HTMLDivElement>(null);

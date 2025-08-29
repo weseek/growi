@@ -24,14 +24,15 @@ import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import { usePageBulkExportSelectModal } from '~/features/page-bulk-export/client/stores/modal';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
-import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
+import { useIsGuestUser, useIsReadOnlyUser, useIsSharedUser } from '~/states/context';
 import { useCurrentPathname, useCurrentUser } from '~/states/global';
 import { useCurrentPageId, useFetchCurrentPage } from '~/states/page';
+import { useShareLinkId } from '~/states/page/hooks';
 import {
+  useDisableLinkSharing,
   useIsBulkExportPagesEnabled, useIsLocalAccountRegistrationEnabled, useIsUploadEnabled,
 } from '~/states/server-configurations';
 import { useEditorMode } from '~/states/ui/editor';
-import { useIsSharedUser, useShareLinkId } from '~/stores-universal/context';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, type IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
@@ -80,7 +81,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
 
   const [isGuestUser] = useIsGuestUser();
   const [isReadOnlyUser] = useIsReadOnlyUser();
-  const { data: isSharedUser } = useIsSharedUser();
+  const [isSharedUser] = useIsSharedUser();
   const [isBulkExportPagesEnabled] = useIsBulkExportPagesEnabled();
   const [isUploadEnabled] = useIsUploadEnabled();
 
@@ -244,7 +245,6 @@ const CreateTemplateMenuItems = (props: CreateTemplateMenuItemsProps): JSX.Eleme
 
 type GrowiContextualSubNavigationProps = {
   currentPage?: IPagePopulatedToShowRevision | null,
-  isLinkSharingDisabled?: boolean,
 };
 
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
@@ -255,7 +255,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const router = useRouter();
 
-  const { data: shareLinkId } = useShareLinkId();
+  const [shareLinkId] = useShareLinkId();
   const { fetchCurrentPage } = useFetchCurrentPage();
 
   const [currentPathname] = useCurrentPathname();
@@ -270,7 +270,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const [isGuestUser] = useIsGuestUser();
   const [isReadOnlyUser] = useIsReadOnlyUser();
   const [isLocalAccountRegistrationEnabled] = useIsLocalAccountRegistrationEnabled();
-  const { data: isSharedUser } = useIsSharedUser();
+  const [isLinkSharingDisabled] = useDisableLinkSharing();
+  const [isSharedUser] = useIsSharedUser();
 
   const shouldExpandContent = useShouldExpandContent(currentPage);
 
@@ -291,8 +292,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   // const grantUserGroupId = currentPage?.grantedGroup?._id ?? grantData?.grantedGroup?.id;
 
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
-
-  const { isLinkSharingDisabled } = props;
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {

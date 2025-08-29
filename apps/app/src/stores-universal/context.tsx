@@ -18,20 +18,8 @@ declare global {
 type Nullable<T> = T | null;
 
 
-export const useIsSharedUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useContextSWR<boolean, Error>('isSharedUser', initialData);
-};
-
-export const useShareLinkId = (initialData?: string): SWRResponse<string, Error> => {
-  return useContextSWR('shareLinkId', initialData);
-};
-
 export const useRegistrationWhitelist = (initialData?: Nullable<string[]>): SWRResponse<Nullable<string[]>, Error> => {
   return useContextSWR<Nullable<string[]>, Error>('registrationWhitelist', initialData);
-};
-
-export const useIsSearchPage = (initialData?: Nullable<boolean>) : SWRResponse<Nullable<boolean>, Error> => {
-  return useContextSWR<Nullable<boolean>, Error>('isSearchPage', initialData);
 };
 
 export const useIsMailerSetup = (initialData?: boolean): SWRResponse<boolean, Error> => {

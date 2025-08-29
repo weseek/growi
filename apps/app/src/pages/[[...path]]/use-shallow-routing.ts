@@ -3,13 +3,13 @@ import { useEffect, useRef } from 'react';
 import { isClient } from '@growi/core/dist/utils';
 import { useRouter } from 'next/router';
 
-import type { Props } from '../general-page';
+import type { CommonEachProps } from '../common-props';
 
 /**
  * Custom hook for syncing pathname by Shallow Routing
  * Optimized to minimize unnecessary router operations and re-renders
  */
-export const useShallowRouting = (props: Props): void => {
+export const useShallowRouting = (props: CommonEachProps): void => {
   const router = useRouter();
   const lastPathnameRef = useRef<string>();
 

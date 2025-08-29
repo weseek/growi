@@ -5,21 +5,21 @@ import { useCurrentPathname } from '../global';
 import type { UseAtom } from '../helper';
 
 import {
-  currentPageIdAtom,
   currentPageDataAtom,
+  currentPageIdAtom,
   currentPagePathAtom,
-  pageNotFoundAtom,
-  pageNotCreatableAtom,
-  latestRevisionAtom,
-  // New atoms for enhanced functionality
-  remoteRevisionIdAtom,
-  remoteRevisionBodyAtom,
-  remoteRevisionLastUpdateUserAtom,
-  remoteRevisionLastUpdatedAtAtom,
-  isTrashPageAtom,
   isRevisionOutdatedAtom,
-  templateTagsAtom,
+  isTrashPageAtom,
+  latestRevisionAtom,
+  pageNotCreatableAtom,
+  pageNotFoundAtom,
+  remoteRevisionBodyAtom,
+  remoteRevisionIdAtom,
+  remoteRevisionLastUpdatedAtAtom,
+  remoteRevisionLastUpdateUserAtom,
+  shareLinkIdAtom,
   templateBodyAtom,
+  templateTagsAtom,
 } from './internal-atoms';
 
 /**
@@ -48,6 +48,10 @@ export const useLatestRevision = (): UseAtom<typeof latestRevisionAtom> => {
   return useAtom(latestRevisionAtom);
 };
 
+export const useShareLinkId = (): UseAtom<typeof shareLinkIdAtom> => {
+  return useAtom(shareLinkIdAtom);
+};
+
 export const useTemplateTags = (): UseAtom<typeof templateTagsAtom> => {
   return useAtom(templateTagsAtom);
 };
@@ -61,15 +65,21 @@ export const useRemoteRevisionId = (): UseAtom<typeof remoteRevisionIdAtom> => {
   return useAtom(remoteRevisionIdAtom);
 };
 
-export const useRemoteRevisionBody = (): UseAtom<typeof remoteRevisionBodyAtom> => {
+export const useRemoteRevisionBody = (): UseAtom<
+  typeof remoteRevisionBodyAtom
+> => {
   return useAtom(remoteRevisionBodyAtom);
 };
 
-export const useRemoteRevisionLastUpdateUser = (): UseAtom<typeof remoteRevisionLastUpdateUserAtom> => {
+export const useRemoteRevisionLastUpdateUser = (): UseAtom<
+  typeof remoteRevisionLastUpdateUserAtom
+> => {
   return useAtom(remoteRevisionLastUpdateUserAtom);
 };
 
-export const useRemoteRevisionLastUpdatedAt = (): UseAtom<typeof remoteRevisionLastUpdatedAtAtom> => {
+export const useRemoteRevisionLastUpdatedAt = (): UseAtom<
+  typeof remoteRevisionLastUpdatedAtAtom
+> => {
   return useAtom(remoteRevisionLastUpdatedAtAtom);
 };
 

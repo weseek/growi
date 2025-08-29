@@ -6,9 +6,8 @@ import {
   Modal, ModalBody, ModalHeader,
 } from 'reactstrap';
 
-import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
+import { useIsGuestUser, useIsReadOnlyUser, useIsSharedUser } from '~/states/context';
 import { useDisableLinkSharing } from '~/states/server-configurations';
-import { useIsSharedUser } from '~/stores-universal/context';
 import { usePageAccessoriesModal, PageAccessoriesModalContents } from '~/stores/modal';
 import { useIsDeviceLargerThanLg } from '~/stores/ui';
 
@@ -32,7 +31,7 @@ export const PageAccessoriesModal = (): JSX.Element => {
 
   const [isWindowExpanded, setIsWindowExpanded] = useState(false);
 
-  const { data: isSharedUser } = useIsSharedUser();
+  const [isSharedUser] = useIsSharedUser();
   const [isGuestUser] = useIsGuestUser();
   const [isReadOnlyUser] = useIsReadOnlyUser();
   const [isLinkSharingDisabled] = useDisableLinkSharing();

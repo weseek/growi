@@ -8,7 +8,7 @@ import type { DrawioEditByViewerProps } from '@growi/remark-drawio';
 import { replaceDrawioInMarkdown } from '~/client/components/Page/markdown-drawio-util-for-view';
 import { extractRemoteRevisionDataFromErrorObj, useUpdatePage } from '~/client/services/update-page';
 import { useCurrentPageData } from '~/states/page';
-import { useShareLinkId } from '~/stores-universal/context';
+import { useShareLinkId } from '~/states/page/hooks';
 import { useConflictDiffModal, useDrawioModal } from '~/stores/modal';
 import { type RemoteRevisionData, useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
@@ -28,7 +28,7 @@ export const useDrawioModalLauncherForView = (opts?: {
   onSaveError?: (error: any) => void,
 }): void => {
 
-  const { data: shareLinkId } = useShareLinkId();
+  const [shareLinkId] = useShareLinkId();
 
   const [currentPage] = useCurrentPageData();
 

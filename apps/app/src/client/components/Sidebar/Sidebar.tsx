@@ -8,7 +8,9 @@ import SimpleBar from 'simplebar-react';
 import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import { SidebarMode } from '~/interfaces/ui';
+import { useIsSearchPage } from '~/states/context';
 import { useDeviceLargerThanXl } from '~/states/ui/device';
+import { EditorMode, useEditorMode } from '~/states/ui/editor';
 import {
   useDrawerOpened,
   usePreferCollapsedMode,
@@ -16,8 +18,6 @@ import {
   useCollapsedContentsOpened,
   useCurrentProductNavWidth,
 } from '~/states/ui/sidebar';
-import { useIsSearchPage } from '~/stores-universal/context';
-import { EditorMode, useEditorMode } from '~/states/ui/editor';
 import {
   useSidebarScrollerRef,
   useIsDeviceLargerThanMd,
@@ -232,7 +232,7 @@ export const Sidebar = (): JSX.Element => {
     isDrawerMode, isCollapsedMode, isDockMode,
   } = useSidebarMode();
 
-  const { data: isSearchPage } = useIsSearchPage();
+  const [isSearchPage] = useIsSearchPage();
   const { editorMode } = useEditorMode();
   const { data: isMdSize } = useIsDeviceLargerThanMd();
   const [isXlSize] = useDeviceLargerThanXl();
