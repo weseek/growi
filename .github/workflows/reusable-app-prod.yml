@@ -348,6 +348,6 @@ jobs:
     - name: Upload HTML report
       uses: actions/upload-artifact@v4
       with:
-        name: html-report
+        name: html-report-node${{ inputs.node-version }}
         path: playwright-report
         retention-days: 30
