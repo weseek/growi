@@ -237,6 +237,9 @@ jobs:
       working-directory: ./apps/app
       run: |
         pnpm playwright test --project=chromium/installer
+        # Move results to a unique directory
+        mkdir -p test-results/installer
+        mv blob-report/* test-results/installer/ || true
       env:
         DEBUG: pw:api
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
@@ -252,6 +255,9 @@ jobs:
       working-directory: ./apps/app
       run: |
         pnpm playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}
+        # Move results to a unique directory
+        mkdir -p test-results/main
+        mv blob-report/* test-results/main/ || true
       env:
         DEBUG: pw:api
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
@@ -267,6 +273,9 @@ jobs:
       working-directory: ./apps/app
       run: |
         pnpm playwright test --project=${{ matrix.browser }}/guest-mode --shard=${{ matrix.shard }}
+        # Move results to a unique directory
+        mkdir -p test-results/guest-mode
+        mv blob-report/* test-results/guest-mode/ || true
       env:
         DEBUG: pw:api
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
@@ -280,12 +289,12 @@ jobs:
         SHARD_ID=$(echo "${{ matrix.shard }}" | tr '/' '-')
         echo "shard_id=${SHARD_ID}" >> $GITHUB_OUTPUT
 
-    - name: Upload test results
+    - name: Upload all test results
       uses: actions/upload-artifact@v4
       if: always()
       with:
         name: blob-report-${{ matrix.browser }}-mongo${{ matrix.mongodb-version }}-${{ steps.shard-id.outputs.shard_id }}
-        path: ./apps/app/blob-report
+        path: ./apps/app/test-results
         retention-days: 30
 
     - name: Slack Notification
