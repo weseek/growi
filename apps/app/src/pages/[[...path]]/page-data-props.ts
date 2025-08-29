@@ -60,8 +60,7 @@ export async function getPageDataForInitial(
     context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<
   Pick<InitialProps, 'pageWithMeta' | 'isNotFound' | 'isNotCreatable' | 'isForbidden' | 'skipSSR'> &
-  Pick<CommonEachProps, 'currentPathname'> &
-  EachProps
+  Pick<EachProps, 'currentPathname' | 'isIdenticalPathPage' | 'redirectFrom'>
 >> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi, user } = req;
@@ -167,7 +166,7 @@ export async function getPageDataForSameRoute(
     context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<
     Pick<CommonEachProps, 'currentPathname'> &
-    EachProps
+    Pick<EachProps, 'currentPathname' | 'isIdenticalPathPage' | 'redirectFrom'>
 >> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { user } = req;

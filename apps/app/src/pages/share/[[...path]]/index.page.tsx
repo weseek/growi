@@ -10,8 +10,6 @@ import Head from 'next/head';
 import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { ShareLinkPageView } from '~/components/ShareLinkPageView';
-import type { SupportedActionType } from '~/interfaces/activity';
-import { SupportedAction } from '~/interfaces/activity';
 import type { CommonEachProps } from '~/pages/common-props';
 import { NextjsRoutingType, detectNextjsRoutingType } from '~/pages/utils/nextjs-routing-utils';
 import { useCustomTitleForPage } from '~/pages/utils/page-title-customization';
@@ -31,7 +29,7 @@ import { registerPageToShowRevisionWithMeta } from '../../general-page/superjson
 
 import { NEXT_JS_ROUTING_PAGE } from './consts';
 import { getServerSidePropsForInitial, getServerSidePropsForSameRoute } from './server-side-props';
-import type { ShareLinkPageProps } from './types';
+import type { ShareLinkInitialProps } from './types';
 
 // call superjson custom register
 registerPageToShowRevisionWithMeta();
@@ -42,21 +40,20 @@ const GrowiContextualSubNavigation = dynamic(() => import('~/client/components/N
 
 const logger = loggerFactory('growi:next-page:share');
 
-type Props = ShareLinkPageProps &
-  (CommonEachProps | (CommonEachProps & InitialProps));
+type Props = CommonEachProps | (CommonEachProps & InitialProps & ShareLinkInitialProps);
 
-const isInitialProps = (props: Props): props is (ShareLinkPageProps & InitialProps & CommonEachProps) => {
+const isInitialProps = (props: Props): props is (ShareLinkInitialProps & InitialProps & CommonEachProps) => {
   return 'isNextjsRoutingTypeInitial' in props && props.isNextjsRoutingTypeInitial;
 };
 
 const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
 
-  const { shareLink, isExpired } = props;
-
   // Initialize Jotai atoms with initial data - must be called unconditionally
+  const shareLink = isInitialProps(props) ? props.shareLink : undefined;
+  const isExpired = isInitialProps(props) ? props.isExpired : undefined;
   const pageData = isInitialProps(props) ? props.pageWithMeta?.data : undefined;
   useHydratePageAtoms(pageData, {
-    shareLinkId: props.shareLink?._id,
+    shareLinkId: shareLink?._id,
   });
 
   const [currentPage] = useCurrentPageData();
@@ -130,22 +127,22 @@ SharedPage.getLayout = function getLayout(page) {
   );
 };
 
-function getAction(props: Props): SupportedActionType {
-  let action: SupportedActionType;
-  if (props.isExpired) {
-    action = SupportedAction.ACTION_SHARE_LINK_EXPIRED_PAGE_VIEW;
-  }
-  else if (props.shareLink == null) {
-    action = SupportedAction.ACTION_SHARE_LINK_NOT_FOUND;
-  }
-  else {
-    action = SupportedAction.ACTION_SHARE_LINK_PAGE_VIEW;
-  }
+// function getAction(props: Props): SupportedActionType {
+//   let action: SupportedActionType;
+//   if (props.isExpired) {
+//     action = SupportedAction.ACTION_SHARE_LINK_EXPIRED_PAGE_VIEW;
+//   }
+//   else if (props.shareLink == null) {
+//     action = SupportedAction.ACTION_SHARE_LINK_NOT_FOUND;
+//   }
+//   else {
+//     action = SupportedAction.ACTION_SHARE_LINK_PAGE_VIEW;
+//   }
 
-  return action;
-}
+//   return action;
+// }
 
-export const getServerSideProps: GetServerSideProps<ShareLinkPageProps> = async(context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps<Props> = async(context: GetServerSidePropsContext) => {
   // detect Next.js routing type
   const nextjsRoutingType = detectNextjsRoutingType(context, NEXT_JS_ROUTING_PAGE);
 

@@ -1,6 +1,6 @@
 import type { IShareLinkHasId } from '~/interfaces/share-link';
 
-export type ShareLinkPageProps = {
+export type ShareLinkInitialProps = {
   isNotFound: true,
   isExpired: undefined
   shareLink: undefined,

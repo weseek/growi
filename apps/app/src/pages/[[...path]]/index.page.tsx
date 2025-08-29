@@ -32,9 +32,9 @@ import { useHydrateSidebarAtoms } from '~/states/ui/sidebar/hydrate';
 import { useSWRMUTxCurrentPageYjsData } from '~/stores/yjs';
 
 import type { NextPageWithLayout } from '../_app.page';
-import type { CommonEachProps, UserUISettingsProps } from '../common-props';
+import type { UserUISettingsProps } from '../common-props';
 import type { InitialProps, SidebarConfigProps } from '../general-page';
-import { useInitialCSRFetch, useSameRouteNavigation } from '../general-page';
+import { useInitialCSRFetch } from '../general-page';
 import { registerPageToShowRevisionWithMeta } from '../general-page/superjson';
 import { NextjsRoutingType, detectNextjsRoutingType } from '../utils/nextjs-routing-utils';
 import { useCustomTitleForPage } from '../utils/page-title-customization';
@@ -42,6 +42,7 @@ import { useCustomTitleForPage } from '../utils/page-title-customization';
 import { NEXT_JS_ROUTING_PAGE } from './consts';
 import { getServerSidePropsForInitial, getServerSidePropsForSameRoute } from './server-side-props';
 import type { EachProps } from './types';
+import { useSameRouteNavigation } from './use-same-route-navigation';
 import { useShallowRouting } from './use-shallow-routing';
 
 // call superjson custom register
@@ -74,10 +75,9 @@ const ConflictDiffModal = dynamic(() => import('~/client/components/PageEditor/C
 const EditablePageEffects = dynamic(() => import('~/client/components/Page/EditablePageEffects').then(mod => mod.EditablePageEffects), { ssr: false });
 
 
-type SameRouteEachProps = CommonEachProps & EachProps;
-type Props = SameRouteEachProps | (SameRouteEachProps & InitialProps & UserUISettingsProps & SidebarConfigProps);
+type Props = EachProps | (EachProps & InitialProps & UserUISettingsProps & SidebarConfigProps);
 
-const isInitialProps = (props: Props): props is (UserUISettingsProps & SidebarConfigProps & InitialProps & SameRouteEachProps) => {
+const isInitialProps = (props: Props): props is (UserUISettingsProps & SidebarConfigProps & InitialProps & EachProps) => {
   return 'isNextjsRoutingTypeInitial' in props && props.isNextjsRoutingTypeInitial;
 };
 

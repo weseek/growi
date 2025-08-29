@@ -1,5 +1,6 @@
 import type { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 
+import type { CommonEachProps } from '../../common-props';
 import {
   getServerSideI18nProps, getServerSideCommonInitialProps, getServerSideCommonEachProps,
 } from '../../common-props';
@@ -13,7 +14,7 @@ import { mergeGetServerSidePropsResults } from '../../utils/server-side-props';
 
 import { NEXT_JS_ROUTING_PAGE } from './consts';
 import { getPageDataForInitial } from './page-data-props';
-import type { ShareLinkPageProps } from './types';
+import type { ShareLinkInitialProps } from './types';
 
 
 const nextjsRoutingProps = {
@@ -31,7 +32,7 @@ const basisProps = {
 };
 
 export async function getServerSidePropsForInitial(context: GetServerSidePropsContext):
-    Promise<GetServerSidePropsResult<InitialProps & ShareLinkPageProps>> {
+    Promise<GetServerSidePropsResult<InitialProps & ShareLinkInitialProps & CommonEachProps>> {
 
   //
   // STAGE 1
@@ -97,7 +98,7 @@ export async function getServerSidePropsForInitial(context: GetServerSidePropsCo
   return mergedResult;
 }
 
-export async function getServerSidePropsForSameRoute(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<SameRouteEachProps>> {
+export async function getServerSidePropsForSameRoute(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<CommonEachProps>> {
   //
   // STAGE 1
   //
@@ -124,12 +125,7 @@ export async function getServerSidePropsForSameRoute(context: GetServerSideProps
   //
 
   // Merge results in a type-safe manner
-  const mergedResult = mergeGetServerSidePropsResults(commonEachPropsResult,
-    mergeGetServerSidePropsResults({
-      props: {
-        isIdenticalPathPage: false,
-      },
-    }, nextjsRoutingProps));
+  const mergedResult = mergeGetServerSidePropsResults(commonEachPropsResult, nextjsRoutingProps);
 
   // -- TODO: persist activity
 
