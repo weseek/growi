@@ -4,11 +4,10 @@ import type {
 
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
-import type { CommonEachProps, CommonInitialProps } from '~/pages/utils/commons';
-import type { UserUISettingsProps } from '~/pages/utils/user-ui-settings';
 import type { PageDocument } from '~/server/models/page';
 import type { ServerConfigurationHyderateArgs } from '~/states/server-configurations/hydrate';
 
+import type { CommonEachProps, CommonInitialProps, UserUISettingsProps } from '../common-props';
 
 export type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfo>;
 

@@ -24,14 +24,11 @@ import {
 } from '~/states/page';
 import { useHydratePageAtoms } from '~/states/page/hydrate';
 import { useRedirectFrom } from '~/states/page/redirect';
-import {
-  useDisableLinkSharing,
-  useRendererConfig,
-} from '~/states/server-configurations';
+import { useRendererConfig } from '~/states/server-configurations';
 import { useHydrateServerConfigurationAtoms } from '~/states/server-configurations/hydrate';
-import { useHydrateSidebarAtoms } from '~/states/ui/sidebar/hydrate';
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/states/socket-io';
 import { useEditingMarkdown } from '~/states/ui/editor';
+import { useHydrateSidebarAtoms } from '~/states/ui/sidebar/hydrate';
 import { useSWRMUTxCurrentPageYjsData } from '~/stores/yjs';
 
 import type { NextPageWithLayout } from '../_app.page';
@@ -55,7 +52,7 @@ declare global {
   var globalEmitter: EventEmitter;
 }
 
-const GrowiContextualSubNavigationSubstance = dynamic(() => import('~/client/components/Navbar/GrowiContextualSubNavigation'), { ssr: false });
+const GrowiContextualSubNavigation = dynamic(() => import('~/client/components/Navbar/GrowiContextualSubNavigation'), { ssr: false });
 
 const GrowiPluginsActivator = dynamic(() => import('~/features/growi-plugin/client/components').then(mod => mod.GrowiPluginsActivator), { ssr: false });
 
@@ -76,18 +73,6 @@ const ConflictDiffModal = dynamic(() => import('~/client/components/PageEditor/C
 
 const EditablePageEffects = dynamic(() => import('~/client/components/Page/EditablePageEffects').then(mod => mod.EditablePageEffects), { ssr: false });
 
-// GrowiContextualSubNavigation for NOT shared page
-type GrowiContextualSubNavigationProps = {
-  isLinkSharingDisabled: boolean,
-}
-
-const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
-  const { isLinkSharingDisabled } = props;
-  const [currentPage] = useCurrentPageData();
-  return (
-    <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled} />
-  );
-};
 
 const isInitialProps = (props: Props): props is (InitialProps & SameRouteEachProps) => {
   return 'isNextjsRoutingTypeInitial' in props && props.isNextjsRoutingTypeInitial;
@@ -109,7 +94,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const [currentPagePath] = useCurrentPagePath();
   const [isNotFound] = usePageNotFound();
   const [rendererConfig] = useRendererConfig();
-  const [disableLinkSharing] = useDisableLinkSharing();
   const [, setRedirectFrom] = useRedirectFrom();
   const [, setIsSharedUser] = useIsSharedUser();
   const [, setIsSearchPage] = useIsSearchPage();
@@ -163,7 +147,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       </Head>
       <div className="dynamic-layout-root justify-content-between">
 
-        <GrowiContextualSubNavigation isLinkSharingDisabled={disableLinkSharing} />
+        <GrowiContextualSubNavigation currentPage={currentPage} />
 
         <PageView
           className="d-edit-none"
