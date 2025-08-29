@@ -175,6 +175,10 @@ jobs:
     #   github.event_name == 'workflow_dispatch' ||
     #   (!inputs.skip-e2e-test && startsWith(github.head_ref, 'mergify/merge-queue/'))
 
+    # for debugging
+    if: |
+      github.event_name == 'workflow_dispatch' || !inputs.skip-e2e-test
+
     runs-on: ubuntu-latest
     container:
       # Match the Playwright version
@@ -237,9 +241,6 @@ jobs:
       working-directory: ./apps/app
       run: |
         pnpm playwright test --project=chromium/installer
-        # Move results to a unique directory
-        mkdir -p test-results/installer
-        mv blob-report/* test-results/installer/ || true
       env:
         DEBUG: pw:api
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
@@ -255,9 +256,6 @@ jobs:
       working-directory: ./apps/app
       run: |
         pnpm playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}
-        # Move results to a unique directory
-        mkdir -p test-results/main
-        mv blob-report/* test-results/main/ || true
       env:
         DEBUG: pw:api
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
@@ -273,9 +271,6 @@ jobs:
       working-directory: ./apps/app
       run: |
         pnpm playwright test --project=${{ matrix.browser }}/guest-mode --shard=${{ matrix.shard }}
-        # Move results to a unique directory
-        mkdir -p test-results/guest-mode
-        mv blob-report/* test-results/guest-mode/ || true
       env:
         DEBUG: pw:api
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
@@ -293,8 +288,8 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: blob-report-node${{ inputs.node-version }}-${{ matrix.browser }}-mongo${{ matrix.mongodb-version }}-${{ steps.shard-id.outputs.shard_id }}
-        path: ./apps/app/test-results
+        name: blob-report-${{ matrix.browser }}-mongo${{ matrix.mongodb-version }}-${{ steps.shard-id.outputs.shard_id }}
+        path: ./apps/app/blob-report
         retention-days: 30
 
     - name: Slack Notification
@@ -332,7 +327,7 @@ jobs:
     - name: Download blob reports
       uses: actions/download-artifact@v4
       with:
-        pattern: blob-report-node${{ inputs.node-version }}-*
+        pattern: blob-report-*
         path: all-blob-reports
         merge-multiple: true
 
@@ -348,6 +343,6 @@ jobs:
     - name: Upload HTML report
       uses: actions/upload-artifact@v4
       with:
-        name: html-report-node${{ inputs.node-version }}
+        name: html-report
         path: playwright-report
         retention-days: 30
