@@ -289,11 +289,11 @@ jobs:
         SHARD_ID=$(echo "${{ matrix.shard }}" | tr '/' '-')
         echo "shard_id=${SHARD_ID}" >> $GITHUB_OUTPUT
 
-    - name: Upload all test results
+    - name: Upload test results
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: blob-report-${{ matrix.browser }}-mongo${{ matrix.mongodb-version }}-${{ steps.shard-id.outputs.shard_id }}
+        name: blob-report-node${{ inputs.node-version }}-${{ matrix.browser }}-mongo${{ matrix.mongodb-version }}-${{ steps.shard-id.outputs.shard_id }}
         path: ./apps/app/test-results
         retention-days: 30
 
@@ -332,7 +332,7 @@ jobs:
     - name: Download blob reports
       uses: actions/download-artifact@v4
       with:
-        pattern: blob-report-*
+        pattern: blob-report-node${{ inputs.node-version }}-*
         path: all-blob-reports
         merge-multiple: true
 
