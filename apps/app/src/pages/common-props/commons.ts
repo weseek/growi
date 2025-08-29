@@ -61,7 +61,7 @@ export type CommonEachProps = {
  */
 export function isValidCommonEachRouteProps(props: unknown): props is CommonEachProps {
   if (typeof props !== 'object' || props === null) {
-    logger.warn('isValidSameRouteProps: props is not an object or is null');
+    logger.warn('isValidCommonEachRouteProps: props is not an object or is null');
     return false;
   }
 
@@ -69,23 +69,23 @@ export function isValidCommonEachRouteProps(props: unknown): props is CommonEach
 
   // Essential properties validation
   if (typeof p.nextjsRoutingPage !== 'string' && p.nextjsRoutingPage !== null) {
-    logger.warn('isValidSameRouteProps: nextjsRoutingPage is not a string or null', { nextjsRoutingPage: p.nextjsRoutingPage });
+    logger.warn('isValidCommonEachRouteProps: nextjsRoutingPage is not a string or null', { nextjsRoutingPage: p.nextjsRoutingPage });
     return false;
   }
   if (typeof p.currentPathname !== 'string') {
-    logger.warn('isValidSameRouteProps: currentPathname is not a string', { currentPathname: p.currentPathname });
+    logger.warn('isValidCommonEachRouteProps: currentPathname is not a string', { currentPathname: p.currentPathname });
     return false;
   }
   if (typeof p.csrfToken !== 'string') {
-    logger.warn('isValidSameRouteProps: csrfToken is not a string', { csrfToken: p.csrfToken });
+    logger.warn('isValidCommonEachRouteProps: csrfToken is not a string', { csrfToken: p.csrfToken });
     return false;
   }
   if (typeof p.isMaintenanceMode !== 'boolean') {
-    logger.warn('isValidSameRouteProps: isMaintenanceMode is not a boolean', { isMaintenanceMode: p.isMaintenanceMode });
+    logger.warn('isValidCommonEachRouteProps: isMaintenanceMode is not a boolean', { isMaintenanceMode: p.isMaintenanceMode });
     return false;
   }
   if (typeof p.isIdenticalPathPage !== 'boolean') {
-    logger.warn('isValidSameRouteProps: isIdenticalPathPage is not a boolean', { isIdenticalPathPage: p.isIdenticalPathPage });
+    logger.warn('isValidCommonEachRouteProps: isIdenticalPathPage is not a boolean', { isIdenticalPathPage: p.isIdenticalPathPage });
     return false;
   }
 

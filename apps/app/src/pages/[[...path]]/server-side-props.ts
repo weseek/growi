@@ -1,18 +1,19 @@
 import type { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 
 import {
-  getServerSideI18nProps, getServerSideUserUISettingsProps, getServerSideCommonInitialProps, getServerSideCommonEachProps,
+  getServerSideI18nProps, getServerSideUserUISettingsProps, getServerSideCommonInitialProps, getServerSideCommonEachProps, isValidCommonEachRouteProps,
 } from '../common-props';
-import type { InitialProps, SameRouteEachProps } from '../general-page';
+import type { InitialProps } from '../general-page';
 import {
   getServerSideConfigurationProps, getServerSideRendererConfigProps, getServerSideSidebarConfigProps,
-  getActivityAction, isValidInitialAndSameRouteProps, isValidSameRouteProps,
+  getActivityAction, isValidInitialAndSameRouteProps,
 } from '../general-page';
 import { addActivity } from '../utils/activity';
 import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
 
 import { NEXT_JS_ROUTING_PAGE } from './consts';
 import { getPageDataForInitial, getPageDataForSameRoute } from './page-data-props';
+import type { EachProps } from './types';
 
 
 const nextjsRoutingProps = {
@@ -21,7 +22,7 @@ const nextjsRoutingProps = {
   },
 };
 
-export async function getServerSidePropsForInitial(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<InitialProps & SameRouteEachProps>> {
+export async function getServerSidePropsForInitial(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<InitialProps & EachProps>> {
   //
   // STAGE 1
   //
@@ -91,7 +92,7 @@ export async function getServerSidePropsForInitial(context: GetServerSidePropsCo
   return mergedResult;
 }
 
-export async function getServerSidePropsForSameRoute(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<SameRouteEachProps>> {
+export async function getServerSidePropsForSameRoute(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<EachProps>> {
   //
   // STAGE 1
   //
@@ -130,7 +131,7 @@ export async function getServerSidePropsForSameRoute(context: GetServerSideProps
   }
 
   // Validate the merged props have all required properties
-  if (!isValidSameRouteProps(mergedResult.props)) {
+  if (!isValidCommonEachRouteProps(mergedResult.props)) {
     throw new Error('Invalid same route props structure');
   }
 
