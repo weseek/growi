@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
+import Image from 'next/image';
 import prettyBytes from 'pretty-bytes';
 
 import { useIsGuestUser, useIsReadOnlyUser, useIsSharedUser } from '~/stores-universal/context';
@@ -64,7 +65,13 @@ export const RichAttachment = React.memo((props: RichAttachmentProps) => {
       <div className="my-2 p-2 card">
         <div className="p-1 card-body d-flex align-items-center">
           <div className="me-2 px-0 d-flex align-items-center justify-content-center">
-            <img src="/images/icons/editor/attachment.svg" className="attachment-icon" alt="attachment icon" />
+            <Image
+              width={20}
+              height={20}
+              src="/images/icons/editor/attachment.svg"
+              className="attachment-icon"
+              alt="attachment icon"
+            />
           </div>
           <div className="ps-0">
             <div className="d-inline-block">
