@@ -171,9 +171,9 @@ jobs:
   run-playwright:
     needs: [build-prod]
 
-    if: |
-      github.event_name == 'workflow_dispatch' ||
-      (!inputs.skip-e2e-test && startsWith(github.head_ref, 'mergify/merge-queue/'))
+    # if: |
+    #   github.event_name == 'workflow_dispatch' ||
+    #   (!inputs.skip-e2e-test && startsWith(github.head_ref, 'mergify/merge-queue/'))
 
     runs-on: ubuntu-latest
     container:
