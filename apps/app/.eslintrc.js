@@ -34,6 +34,7 @@ module.exports = {
     'src/features/comment/**',
     'src/features/templates/**',
     'src/features/mermaid/**',
+    'src/features/search/**',
   ],
   settings: {
     // resolve path aliases by eslint-import-resolver-typescript
