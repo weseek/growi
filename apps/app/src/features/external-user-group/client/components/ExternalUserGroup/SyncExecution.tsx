@@ -114,7 +114,7 @@ export const SyncExecution = ({
   const renderProgressBar = () => {
     if (syncStatus === SyncStatus.beforeSync) return null;
 
-    let header;
+    let header: string;
     if (syncStatus === SyncStatus.syncExecuting) {
       header = 'Processing..';
     } else if (syncStatus === SyncStatus.syncCompleted) {

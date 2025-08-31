@@ -29,7 +29,7 @@ export const KeycloakGroupSyncSettingsForm: FC = () => {
     if (keycloakGroupSyncSettings != null) {
       setFormValues(keycloakGroupSyncSettings);
     }
-  }, [keycloakGroupSyncSettings, setFormValues]);
+  }, [keycloakGroupSyncSettings]);
 
   const submitHandler = useCallback(
     async (e) => {
@@ -202,9 +202,7 @@ export const KeycloakGroupSyncSettingsForm: FC = () => {
           </div>
         </div>
         <div className="row form-group">
-          <label className="text-left text-md-end col-md-3 col-form-label">
-            {/* {t('external_user_group.auto_generate_user_on_sync')} */}
-          </label>
+          <div className="col-md-3"></div>
           <div className="col-md-9">
             <div className="custom-control custom-checkbox custom-checkbox-info">
               <input
@@ -231,9 +229,7 @@ export const KeycloakGroupSyncSettingsForm: FC = () => {
           </div>
         </div>
         <div className="row form-group">
-          <label className="text-left text-md-end col-md-3 col-form-label">
-            {/* {t('external_user_group.keycloak.preserve_deleted_keycloak_groups')} */}
-          </label>
+          <div className="col-md-3"></div>
           <div className="col-md-9">
             <div className="custom-control custom-checkbox custom-checkbox-info">
               <input

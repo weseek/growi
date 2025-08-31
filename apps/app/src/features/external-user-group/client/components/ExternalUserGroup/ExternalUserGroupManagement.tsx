@@ -67,18 +67,15 @@ export const ExternalGroupManagement: FC = () => {
 
   const { t } = useTranslation('admin');
 
-  const showUpdateModal = useCallback(
-    (group: IExternalUserGroupHasId) => {
-      setUpdateModalShown(true);
-      setSelectedExternalUserGroup(group);
-    },
-    [setUpdateModalShown],
-  );
+  const showUpdateModal = useCallback((group: IExternalUserGroupHasId) => {
+    setUpdateModalShown(true);
+    setSelectedExternalUserGroup(group);
+  }, []);
 
   const hideUpdateModal = useCallback(() => {
     setUpdateModalShown(false);
     setSelectedExternalUserGroup(undefined);
-  }, [setUpdateModalShown]);
+  }, []);
 
   const syncUserGroupAndRelations = useCallback(async () => {
     try {

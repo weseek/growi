@@ -18,9 +18,11 @@ const userSchema = new mongoose.Schema(
 const User = mongoose.model('User', userSchema);
 
 describe('ExternalUserGroupRelation model', () => {
+  // biome-ignore lint/suspicious/noImplicitAnyLet: ignore
   let user1;
   const userId1 = new mongoose.Types.ObjectId();
 
+  // biome-ignore lint/suspicious/noImplicitAnyLet: ignore
   let user2;
   const userId2 = new mongoose.Types.ObjectId();
 
