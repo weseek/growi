@@ -35,6 +35,7 @@ module.exports = {
     'src/features/templates/**',
     'src/features/mermaid/**',
     'src/features/search/**',
+    'src/features/plantuml/**',
   ],
   settings: {
     // resolve path aliases by eslint-import-resolver-typescript

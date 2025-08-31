@@ -32,7 +32,6 @@
       "!apps/app/src/features/openai/**",
       "!apps/app/src/features/opentelemetry/**",
       "!apps/app/src/features/page-bulk-export/**",
-      "!apps/app/src/features/plantuml/**",
       "!apps/app/src/features/rate-limiter/**",
       "!apps/app/src/interfaces/**",
       "!apps/app/src/models/**",
