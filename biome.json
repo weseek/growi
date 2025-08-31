@@ -29,7 +29,6 @@
       "!apps/app/src/components/**",
       "!apps/app/src/features/external-user-group/**",
       "!apps/app/src/features/growi-plugin/**",
-      "!apps/app/src/features/mermaid/**",
       "!apps/app/src/features/openai/**",
       "!apps/app/src/features/opentelemetry/**",
       "!apps/app/src/features/page-bulk-export/**",

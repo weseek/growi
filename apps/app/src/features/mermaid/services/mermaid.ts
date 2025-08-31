@@ -12,14 +12,12 @@ function rewriteNode(node: Code) {
   };
 }
 
-export const remarkPlugin: Plugin = function() {
-  return (tree) => {
-    visit(tree, 'code', (node: Code) => {
-      if (node.lang === 'mermaid') {
-        rewriteNode(node);
-      }
-    });
-  };
+export const remarkPlugin: Plugin = () => (tree) => {
+  visit(tree, 'code', (node: Code) => {
+    if (node.lang === 'mermaid') {
+      rewriteNode(node);
+    }
+  });
 };
 
 export const sanitizeOption: SanitizeOption = {

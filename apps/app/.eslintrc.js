@@ -33,6 +33,7 @@ module.exports = {
     'src/features/callout/**',
     'src/features/comment/**',
     'src/features/templates/**',
+    'src/features/mermaid/**',
   ],
   settings: {
     // resolve path aliases by eslint-import-resolver-typescript
