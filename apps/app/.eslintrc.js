@@ -39,6 +39,7 @@ module.exports = {
     'src/features/external-user-group/**',
     'src/features/page-bulk-export/**',
     'src/features/opentelemetry/**',
+    'src/interfaces/**',
     'src/states/**',
   ],
   settings: {
