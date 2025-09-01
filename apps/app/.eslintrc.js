@@ -36,6 +36,7 @@ module.exports = {
     'src/features/mermaid/**',
     'src/features/search/**',
     'src/features/plantuml/**',
+    'src/features/external-user-group/**',
   ],
   settings: {
     // resolve path aliases by eslint-import-resolver-typescript
