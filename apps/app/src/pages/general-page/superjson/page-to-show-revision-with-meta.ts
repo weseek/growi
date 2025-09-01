@@ -1,4 +1,3 @@
-import { isIPageInfo } from '@growi/core';
 import type {
   IDataWithMeta,
 } from '@growi/core';
@@ -6,7 +5,7 @@ import superjson from 'superjson';
 
 import type { IPageToShowRevisionWithMeta } from '../types';
 
-type IPageToShowRevisionWithMetaSerialized = IDataWithMeta<string, string>;
+type IPageToShowRevisionWithMetaSerialized = IDataWithMeta<string, string | undefined>;
 
 let isRegistered = false;
 
@@ -16,14 +15,15 @@ export const registerPageToShowRevisionWithMeta = (): void => {
   superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMetaSerialized>(
     {
       isApplicable: (v): v is IPageToShowRevisionWithMeta => {
-        return v?.data != null
-          && v?.data.toObject != null
-          && isIPageInfo(v.meta);
+        const data = v?.data;
+        return data != null
+          && data.toObject != null
+          && data.revision != null && typeof data.revision === 'object';
       },
       serialize: (v) => {
         return {
           data: superjson.stringify(v.data.toObject()),
-          meta: superjson.stringify(v.meta),
+          meta: v.meta != null ? superjson.stringify(v.meta) : undefined,
         };
       },
       deserialize: (v) => {

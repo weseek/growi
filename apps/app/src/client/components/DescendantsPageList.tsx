@@ -11,8 +11,7 @@ import { useTranslation } from 'next-i18next';
 import { toastSuccess } from '~/client/util/toastr';
 import type { IPagingResult } from '~/interfaces/paging-result';
 import type { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
-import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
-import { useIsSharedUser } from '~/stores-universal/context';
+import { useIsGuestUser, useIsReadOnlyUser, useIsSharedUser } from '~/states/context';
 import {
   mutatePageTree,
   useSWRxPageInfoForList, useSWRxPageList, mutateRecentlyUpdated,
@@ -134,7 +133,7 @@ export const DescendantsPageList = (props: DescendantsPageListProps): JSX.Elemen
 
   const [activePage, setActivePage] = useState(1);
 
-  const { data: isSharedUser } = useIsSharedUser();
+  const [isSharedUser] = useIsSharedUser();
 
   const { data: pagingResult, error, mutate } = useSWRxPageList(isSharedUser ? null : path, activePage, limit);
 

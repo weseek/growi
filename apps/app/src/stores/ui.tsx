@@ -17,15 +17,15 @@ import useSWRImmutable from 'swr/immutable';
 
 import type { IPageSelectedGrant } from '~/interfaces/page';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
-import { useIsEditable, useIsIdenticalPath, useIsReadOnlyUser } from '~/states/context';
+import {
+  useIsEditable, useIsIdenticalPath, useIsReadOnlyUser, useIsSharedUser,
+} from '~/states/context';
 import { useCurrentUser } from '~/states/global';
 import {
   usePageNotFound, useCurrentPagePath, useIsTrashPage, useCurrentPageId,
 } from '~/states/page';
+import { useShareLinkId } from '~/states/page/hooks';
 import { EditorMode, useEditorMode } from '~/states/ui/editor';
-import {
-  useIsSharedUser, useShareLinkId,
-} from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
 import { useStaticSWR } from './use-static-swr';
@@ -257,7 +257,7 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
   const [currentPageId] = useCurrentPageId();
   const [isNotFound] = usePageNotFound();
   const [_isTrashPage] = useIsTrashPage();
-  const { data: _isSharedUser } = useIsSharedUser();
+  const [_isSharedUser] = useIsSharedUser();
 
   const pageId = currentPageId;
   const includesUndefined = [pageId, _isTrashPage, _isSharedUser, isNotFound].some(v => v === undefined);
@@ -279,7 +279,8 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const [currentPagePath] = useCurrentPagePath();
   const [isIdenticalPath] = useIsIdenticalPath();
   const { editorMode } = useEditorMode();
-  const { data: shareLinkId } = useShareLinkId();
+  const [shareLinkId] = useShareLinkId();
+
 
   const includesUndefined = [currentPagePath, isIdenticalPath, isNotFound, editorMode].some(v => v === undefined);
 
@@ -296,7 +297,7 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
 export const useIsAbleToChangeEditorMode = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToChangeEditorMode';
   const [isEditable] = useIsEditable();
-  const { data: isSharedUser } = useIsSharedUser();
+  const [isSharedUser] = useIsSharedUser();
 
   const includesUndefined = [isEditable, isSharedUser].some(v => v === undefined);
 

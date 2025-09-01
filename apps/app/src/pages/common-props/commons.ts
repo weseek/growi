@@ -3,6 +3,10 @@ import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { getGrowiVersion } from '~/utils/growi-version';
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:pages:common-props:commons');
+
 
 export type CommonInitialProps = {
   isNextjsRoutingTypeInitial: true,
@@ -51,6 +55,42 @@ export type CommonEachProps = {
   redirectDestination?: string | null,
 };
 
+/**
+ * Type guard for SameRouteEachProps validation
+ * Lightweight validation for same-route navigation
+ */
+export function isValidCommonEachRouteProps(props: unknown): props is CommonEachProps {
+  if (typeof props !== 'object' || props === null) {
+    logger.warn('isValidCommonEachRouteProps: props is not an object or is null');
+    return false;
+  }
+
+  const p = props as Record<string, unknown>;
+
+  // Essential properties validation
+  if (typeof p.nextjsRoutingPage !== 'string' && p.nextjsRoutingPage !== null) {
+    logger.warn('isValidCommonEachRouteProps: nextjsRoutingPage is not a string or null', { nextjsRoutingPage: p.nextjsRoutingPage });
+    return false;
+  }
+  if (typeof p.currentPathname !== 'string') {
+    logger.warn('isValidCommonEachRouteProps: currentPathname is not a string', { currentPathname: p.currentPathname });
+    return false;
+  }
+  if (typeof p.csrfToken !== 'string') {
+    logger.warn('isValidCommonEachRouteProps: csrfToken is not a string', { csrfToken: p.csrfToken });
+    return false;
+  }
+  if (typeof p.isMaintenanceMode !== 'boolean') {
+    logger.warn('isValidCommonEachRouteProps: isMaintenanceMode is not a boolean', { isMaintenanceMode: p.isMaintenanceMode });
+    return false;
+  }
+  if (typeof p.isIdenticalPathPage !== 'boolean') {
+    logger.warn('isValidCommonEachRouteProps: isIdenticalPathPage is not a boolean', { isIdenticalPathPage: p.isIdenticalPathPage });
+    return false;
+  }
+
+  return true;
+}
 
 export const getServerSideCommonEachProps: GetServerSideProps<Omit<CommonEachProps, 'nextjsRoutingPage'>> = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest;

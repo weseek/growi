@@ -4,11 +4,9 @@ import type EventEmitter from 'events';
 
 import type { Element } from 'hast';
 
-import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
+import { useIsGuestUser, useIsReadOnlyUser, useIsSharedUser } from '~/states/context';
 import { useIsRevisionOutdated } from '~/states/page';
-import {
-  useIsSharedUser, useShareLinkId,
-} from '~/stores-universal/context';
+import { useShareLinkId } from '~/states/page/hooks';
 import { useCurrentPageYjsData } from '~/stores/yjs';
 
 import styles from './TableWithEditButton.module.scss';
@@ -29,8 +27,8 @@ const TableWithEditButtonNoMemorized = (props: TableWithEditButtonProps): JSX.El
 
   const [isGuestUser] = useIsGuestUser();
   const [isReadOnlyUser] = useIsReadOnlyUser();
-  const { data: isSharedUser } = useIsSharedUser();
-  const { data: shareLinkId } = useShareLinkId();
+  const [isSharedUser] = useIsSharedUser();
+  const [shareLinkId] = useShareLinkId();
   const [isRevisionOutdated] = useIsRevisionOutdated();
   const { data: currentPageYjsData } = useCurrentPageYjsData();
 

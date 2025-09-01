@@ -8,7 +8,10 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { PageModel } from '~/server/models/page';
 import type { IPageRedirect, PageRedirectModel } from '~/server/models/page-redirect';
 
-import type { InitialProps, SameRouteEachProps } from '../general-page';
+import type { CommonEachProps } from '../common-props';
+import type { InitialProps } from '../general-page';
+
+import type { EachProps } from './types';
 
 // Utility to resolve path, redirect, and identical path page check
 type PathResolutionResult = {
@@ -57,7 +60,7 @@ export async function getPageDataForInitial(
     context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<
   Pick<InitialProps, 'pageWithMeta' | 'isNotFound' | 'isNotCreatable' | 'isForbidden' | 'skipSSR'> &
-  Pick<SameRouteEachProps, 'currentPathname' | 'isIdenticalPathPage'>
+  Pick<EachProps, 'currentPathname' | 'isIdenticalPathPage' | 'redirectFrom'>
 >> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi, user } = req;
@@ -74,7 +77,7 @@ export async function getPageDataForInitial(
   const pageId = _isPermalink(pathFromUrl) ? removeHeadingSlash(pathFromUrl) : null;
   const isPermalink = _isPermalink(pathFromUrl);
 
-  const { resolvedPathname, isIdenticalPathPage } = await resolvePathAndCheckIdentical(pathFromUrl, user);
+  const { resolvedPathname, isIdenticalPathPage, redirectFrom } = await resolvePathAndCheckIdentical(pathFromUrl, user);
 
   if (isIdenticalPathPage) {
     return {
@@ -86,6 +89,7 @@ export async function getPageDataForInitial(
         isNotCreatable: true,
         isForbidden: false,
         skipSSR: false,
+        redirectFrom,
       },
     };
   }
@@ -133,6 +137,7 @@ export async function getPageDataForInitial(
         isNotCreatable: false,
         isForbidden: false,
         skipSSR,
+        redirectFrom,
       },
     };
   }
@@ -151,6 +156,7 @@ export async function getPageDataForInitial(
       isNotCreatable: !isCreatablePage(resolvedPathname),
       isForbidden: count > 0,
       skipSSR: false,
+      redirectFrom,
     },
   };
 }
@@ -158,7 +164,10 @@ export async function getPageDataForInitial(
 // Page data retrieval for same-route navigation
 export async function getPageDataForSameRoute(
     context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<Pick<SameRouteEachProps, 'currentPathname' | 'isIdenticalPathPage' | 'redirectFrom'>>> {
+): Promise<GetServerSidePropsResult<
+    Pick<CommonEachProps, 'currentPathname'> &
+    Pick<EachProps, 'currentPathname' | 'isIdenticalPathPage' | 'redirectFrom'>
+>> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { user } = req;
 

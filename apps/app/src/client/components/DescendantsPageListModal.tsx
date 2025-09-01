@@ -10,7 +10,7 @@ import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
-import { useIsSharedUser } from '~/stores-universal/context';
+import { useIsSharedUser } from '~/states/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useIsDeviceLargerThanLg } from '~/stores/ui';
 
@@ -31,7 +31,7 @@ export const DescendantsPageListModal = (): JSX.Element => {
   const [activeTab, setActiveTab] = useState('pagelist');
   const [isWindowExpanded, setIsWindowExpanded] = useState(false);
 
-  const { data: isSharedUser } = useIsSharedUser();
+  const [isSharedUser] = useIsSharedUser();
 
   const { data: status, close } = useDescendantsPageListModal();
 

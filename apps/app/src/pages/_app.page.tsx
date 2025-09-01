@@ -18,13 +18,26 @@ import { useAutoUpdateGlobalAtoms } from '~/states/global/auto-update';
 import { useHydrateGlobalInitialAtoms } from '~/states/global/hydrate';
 import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
-import type { CommonEachProps, CommonInitialProps } from './common-props';
 import { getLocaleAtServerSide } from './utils/locale';
 import { useNextjsRoutingPageRegister } from './utils/nextjs-routing-utils';
 import { registerTransformerForObjectId } from './utils/objectid-transformer';
 
 import '~/styles/prebuilt/vendor.css';
 import '~/styles/style-app.scss';
+
+// register custom serializer
+registerTransformerForObjectId();
+
+const StateManagementContainer = ({ children }: { children: ReactNode }): JSX.Element => {
+  return (
+    <SWRConfig value={swrGlobalConfiguration}>
+      <Provider>
+        {children}
+      </Provider>
+    </SWRConfig>
+  );
+};
+
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -36,19 +49,14 @@ type GrowiAppProps = AppProps & {
   userLocale: Locale,
 };
 
-// register custom serializer
-registerTransformerForObjectId();
-
-function GrowiApp({ Component, pageProps, userLocale }: GrowiAppProps): JSX.Element {
+const GrowiAppSubstance = ({ Component, pageProps, userLocale }: GrowiAppProps): JSX.Element => {
   const router = useRouter();
 
-  const commonPageProps = pageProps as CommonInitialProps & CommonEachProps;
-
   // Hydrate global atoms with server-side data
-  useHydrateGlobalInitialAtoms(commonPageProps);
-  useAutoUpdateGlobalAtoms(commonPageProps);
+  useHydrateGlobalInitialAtoms(pageProps);
+  useAutoUpdateGlobalAtoms(pageProps);
 
-  useNextjsRoutingPageRegister(commonPageProps.nextjsRoutingPage);
+  useNextjsRoutingPageRegister(pageProps.nextjsRoutingPage);
 
   useEffect(() => {
     const updateLangAttribute = () => {
@@ -69,18 +77,21 @@ function GrowiApp({ Component, pageProps, userLocale }: GrowiAppProps): JSX.Elem
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? (page => page);
 
+  return <>{getLayout(<Component {...pageProps} />)}</>;
+};
+
+function GrowiApp(props: GrowiAppProps): JSX.Element {
   return (
     <>
       <GlobalFonts />
-      <SWRConfig value={swrGlobalConfiguration}>
-        <Provider>
-          {getLayout(<Component {...pageProps} />)}
-        </Provider>
-      </SWRConfig>
+      <StateManagementContainer>
+        <GrowiAppSubstance {...props} />
+      </StateManagementContainer>
     </>
   );
 }
 
+// inject userLocale by context
 GrowiApp.getInitialProps = async(appContext: AppContext) => {
   const appProps = App.getInitialProps(appContext);
   const userLocale = getLocaleAtServerSide(appContext.ctx.req as unknown as CrowiRequest);
