@@ -145,7 +145,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       const sanitizeRevisionId = revisionId == null ? undefined : generalXssFilter.process(revisionId);
 
       // check page existence
-      const isExist = await Page.count({ _id: pageId }) > 0;
+      const isExist = await Page.count({ _id: { $eq: pageId } }) > 0;
       if (!isExist) {
         return res.apiv3Err(new ErrorV3(`Page('${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 400);
       }
