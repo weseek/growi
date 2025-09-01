@@ -3,7 +3,11 @@ import { NodeSDK } from '@opentelemetry/sdk-node';
 
 import { configManager } from '~/server/service/config-manager';
 
-import { setupAdditionalResourceAttributes, initInstrumentation, startOpenTelemetry } from './node-sdk';
+import {
+  initInstrumentation,
+  setupAdditionalResourceAttributes,
+  startOpenTelemetry,
+} from './node-sdk';
 import { getResource } from './node-sdk-resource';
 
 // Only mock configManager as it's external to what we're testing
@@ -37,24 +41,28 @@ vi.mock('~/server/service/growi-info', () => ({
 describe('node-sdk', () => {
   // Helper functions to reduce duplication
   const mockInstrumentationEnabled = () => {
-    vi.mocked(configManager.getConfig).mockImplementation((key: string, source?: ConfigSource) => {
-      if (key === 'otel:enabled') {
-        return source === ConfigSource.env ? true : undefined;
-      }
-      return undefined;
-    });
+    vi.mocked(configManager.getConfig).mockImplementation(
+      (key: string, source?: ConfigSource) => {
+        if (key === 'otel:enabled') {
+          return source === ConfigSource.env ? true : undefined;
+        }
+        return undefined;
+      },
+    );
   };
 
   const mockInstrumentationDisabled = () => {
-    vi.mocked(configManager.getConfig).mockImplementation((key: string, source?: ConfigSource) => {
-      if (key === 'otel:enabled') {
-        return source === ConfigSource.env ? false : undefined;
-      }
-      return undefined;
-    });
+    vi.mocked(configManager.getConfig).mockImplementation(
+      (key: string, source?: ConfigSource) => {
+        if (key === 'otel:enabled') {
+          return source === ConfigSource.env ? false : undefined;
+        }
+        return undefined;
+      },
+    );
   };
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
 
     // Reset SDK instance using __testing__ export
@@ -66,14 +74,14 @@ describe('node-sdk', () => {
   });
 
   describe('initInstrumentation', () => {
-    it('should call setupCustomMetrics when instrumentation is enabled', async() => {
+    it('should call setupCustomMetrics when instrumentation is enabled', async () => {
       // Mock instrumentation as enabled
       mockInstrumentationEnabled();
 
       await initInstrumentation();
     });
 
-    it('should not call setupCustomMetrics when instrumentation is disabled', async() => {
+    it('should not call setupCustomMetrics when instrumentation is disabled', async () => {
       const { setupCustomMetrics } = await import('./custom-metrics');
 
       // Mock instrumentation as disabled
@@ -85,7 +93,7 @@ describe('node-sdk', () => {
       expect(setupCustomMetrics).not.toHaveBeenCalled();
     });
 
-    it('should create SDK instance when instrumentation is enabled', async() => {
+    it('should create SDK instance when instrumentation is enabled', async () => {
       // Mock instrumentation as enabled
       mockInstrumentationEnabled();
 
@@ -98,7 +106,7 @@ describe('node-sdk', () => {
       expect(sdkInstance).toBeInstanceOf(NodeSDK);
     });
 
-    it('should not create SDK instance when instrumentation is disabled', async() => {
+    it('should not create SDK instance when instrumentation is disabled', async () => {
       // Mock instrumentation as disabled
       mockInstrumentationDisabled();
 
@@ -112,17 +120,19 @@ describe('node-sdk', () => {
   });
 
   describe('setupAdditionalResourceAttributes', () => {
-    it('should update service.instance.id when app:serviceInstanceId is available', async() => {
+    it('should update service.instance.id when app:serviceInstanceId is available', async () => {
       // Set up mocks for this specific test
-      vi.mocked(configManager.getConfig).mockImplementation((key: string, source?: ConfigSource) => {
-        // For otel:enabled, always expect ConfigSource.env
-        if (key === 'otel:enabled') {
-          return source === ConfigSource.env ? true : undefined;
-        }
-        // For service instance IDs, only respond when no source is specified
-        if (key === 'app:serviceInstanceId') return 'test-instance-id';
-        return undefined;
-      });
+      vi.mocked(configManager.getConfig).mockImplementation(
+        (key: string, source?: ConfigSource) => {
+          // For otel:enabled, always expect ConfigSource.env
+          if (key === 'otel:enabled') {
+            return source === ConfigSource.env ? true : undefined;
+          }
+          // For service instance IDs, only respond when no source is specified
+          if (key === 'app:serviceInstanceId') return 'test-instance-id';
+          return undefined;
+        },
+      );
 
       // Initialize SDK first
       await initInstrumentation();
@@ -147,25 +157,29 @@ describe('node-sdk', () => {
 
       // Verify that resource was updated with app:serviceInstanceId
       const updatedResource = getResource(sdkInstance);
-      expect(updatedResource.attributes['service.instance.id']).toBe('test-instance-id');
+      expect(updatedResource.attributes['service.instance.id']).toBe(
+        'test-instance-id',
+      );
     });
 
-    it('should update service.instance.id with otel:serviceInstanceId if available', async() => {
+    it('should update service.instance.id with otel:serviceInstanceId if available', async () => {
       // Set up mocks for this specific test
-      vi.mocked(configManager.getConfig).mockImplementation((key: string, source?: ConfigSource) => {
-        // For otel:enabled, always expect ConfigSource.env
-        if (key === 'otel:enabled') {
-          return source === ConfigSource.env ? true : undefined;
-        }
+      vi.mocked(configManager.getConfig).mockImplementation(
+        (key: string, source?: ConfigSource) => {
+          // For otel:enabled, always expect ConfigSource.env
+          if (key === 'otel:enabled') {
+            return source === ConfigSource.env ? true : undefined;
+          }
 
-        // For service instance IDs, only respond when no source is specified
-        if (source === undefined) {
-          if (key === 'otel:serviceInstanceId') return 'otel-instance-id';
-          if (key === 'app:serviceInstanceId') return 'test-instance-id';
-        }
+          // For service instance IDs, only respond when no source is specified
+          if (source === undefined) {
+            if (key === 'otel:serviceInstanceId') return 'otel-instance-id';
+            if (key === 'app:serviceInstanceId') return 'test-instance-id';
+          }
 
-        return undefined;
-      });
+          return undefined;
+        },
+      );
 
       // Initialize SDK
       await initInstrumentation();
@@ -184,10 +198,12 @@ describe('node-sdk', () => {
 
       // Verify that otel:serviceInstanceId was used
       const updatedResource = getResource(sdkInstance);
-      expect(updatedResource.attributes['service.instance.id']).toBe('otel-instance-id');
+      expect(updatedResource.attributes['service.instance.id']).toBe(
+        'otel-instance-id',
+      );
     });
 
-    it('should handle gracefully when instrumentation is disabled', async() => {
+    it('should handle gracefully when instrumentation is disabled', async () => {
       // Mock instrumentation as disabled
       mockInstrumentationDisabled();
 
@@ -195,12 +211,14 @@ describe('node-sdk', () => {
       await initInstrumentation();
 
       // Call setupAdditionalResourceAttributes should not throw error
-      await expect(setupAdditionalResourceAttributes()).resolves.toBeUndefined();
+      await expect(
+        setupAdditionalResourceAttributes(),
+      ).resolves.toBeUndefined();
     });
   });
 
   describe('startOpenTelemetry', () => {
-    it('should start SDK and call setupCustomMetrics when instrumentation is enabled and SDK instance exists', async() => {
+    it('should start SDK and call setupCustomMetrics when instrumentation is enabled and SDK instance exists', async () => {
       const { setupCustomMetrics } = await import('./custom-metrics');
 
       // Mock instrumentation as enabled
@@ -228,7 +246,7 @@ describe('node-sdk', () => {
       }
     });
 
-    it('should not start SDK when instrumentation is disabled', async() => {
+    it('should not start SDK when instrumentation is disabled', async () => {
       const { setupCustomMetrics } = await import('./custom-metrics');
 
       // Mock instrumentation as disabled
@@ -244,7 +262,7 @@ describe('node-sdk', () => {
       expect(setupCustomMetrics).not.toHaveBeenCalled();
     });
 
-    it('should not start SDK when SDK instance does not exist', async() => {
+    it('should not start SDK when SDK instance does not exist', async () => {
       const { setupCustomMetrics } = await import('./custom-metrics');
 
       // Mock instrumentation as enabled but don't initialize SDK

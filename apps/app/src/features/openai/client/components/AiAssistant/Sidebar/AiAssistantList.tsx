@@ -15,6 +15,8 @@ import { deleteAiAssistant, setDefaultAiAssistant } from '../../../services/ai-a
 import { useAiAssistantSidebar, useAiAssistantManagementModal } from '../../../stores/ai-assistant';
 import { getShareScopeIcon } from '../../../utils/get-share-scope-Icon';
 
+import { DeleteAiAssistantModal } from './DeleteAiAssistantModal';
+
 const logger = loggerFactory('growi:openai:client:components:AiAssistantList');
 
 /*
@@ -25,8 +27,8 @@ type AiAssistantItemProps = {
   aiAssistant: AiAssistantHasId;
   onEditClick: (aiAssistantData: AiAssistantHasId) => void;
   onItemClick: (aiAssistantData: AiAssistantHasId) => void;
+  onDeleteClick: (aiAssistant: AiAssistantHasId) => void;
   onUpdated?: () => void;
-  onDeleted?: (aiAssistantId: string) => void;
 };
 
 const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
@@ -34,8 +36,8 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
   aiAssistant,
   onEditClick,
   onItemClick,
+  onDeleteClick,
   onUpdated,
-  onDeleted,
 }) => {
 
   const { t } = useTranslation();
@@ -61,18 +63,6 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
     }
   }, [aiAssistant._id, aiAssistant.isDefault, onUpdated, t]);
 
-  const deleteAiAssistantHandler = useCallback(async() => {
-    try {
-      await deleteAiAssistant(aiAssistant._id);
-      onDeleted?.(aiAssistant._id);
-      toastSuccess(t('ai_assistant_substance.toaster.ai_assistant_deleted_success'));
-    }
-    catch (err) {
-      logger.error(err);
-      toastError(t('ai_assistant_substance.toaster.ai_assistant_deleted_failed'));
-    }
-  }, [aiAssistant._id, onDeleted, t]);
-
   const isOperable = currentUser?._id != null && getIdStringForRef(aiAssistant.owner) === currentUser._id;
   const isPublicAiAssistantOperable = currentUser?.admin
     && determineShareScope(aiAssistant.shareScope, aiAssistant.accessScope) === AiAssistantShareScope.PUBLIC_ONLY;
@@ -95,7 +85,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
           <p className="text-truncate m-auto">{aiAssistant.name}</p>
         </div>
 
-        <div className="grw-btn-actions opacity-0 d-flex justify-content-center ">
+        <div className="grw-btn-actions opacity-0 d-flex justify-content-center">
           {isPublicAiAssistantOperable && (
             <button
               type="button"
@@ -125,7 +115,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
                 className="btn btn-link text-secondary p-0"
                 onClick={(e) => {
                   e.stopPropagation();
-                  deleteAiAssistantHandler();
+                  onDeleteClick(aiAssistant);
                 }}
               >
                 <span className="material-symbols-outlined fs-5">delete</span>
@@ -160,6 +150,10 @@ export const AiAssistantList: React.FC<AiAssistantListProps> = ({
 
   const [isCollapsed, setIsCollapsed] = useState(false);
 
+  const [aiAssistantToBeDeleted, setAiAssistantToBeDeleted] = useState<AiAssistantHasId | null>(null);
+  const [isDeleteModalShown, setIsDeleteModalShown] = useState(false);
+  const [errorMessageOnDelete, setErrorMessageOnDelete] = useState('');
+
   const toggleCollapse = useCallback(() => {
     setIsCollapsed((prev) => {
       if (!prev) {
@@ -168,6 +162,38 @@ export const AiAssistantList: React.FC<AiAssistantListProps> = ({
       return !prev;
     });
   }, [onCollapsed]);
+
+  const onClickDeleteButton = useCallback((aiAssistant: AiAssistantHasId) => {
+    setAiAssistantToBeDeleted(aiAssistant);
+    setIsDeleteModalShown(true);
+  }, []);
+
+  const onCancelDeleteAiAssistant = useCallback(() => {
+    setAiAssistantToBeDeleted(null);
+    setIsDeleteModalShown(false);
+    setErrorMessageOnDelete('');
+  }, []);
+
+  const onDeleteAiAssistantAfterOperation = useCallback((aiAssistantId: string) => {
+    onCancelDeleteAiAssistant();
+    onDeleted?.(aiAssistantId);
+  }, [onCancelDeleteAiAssistant, onDeleted]);
+
+  const onDeleteAiAssistant = useCallback(async() => {
+    if (aiAssistantToBeDeleted == null) return;
+
+    try {
+      await deleteAiAssistant(aiAssistantToBeDeleted._id);
+      onDeleteAiAssistantAfterOperation(aiAssistantToBeDeleted._id);
+      toastSuccess(t('ai_assistant_substance.toaster.ai_assistant_deleted_success'));
+    }
+    catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setErrorMessageOnDelete(message);
+      logger.error(err);
+      toastError(t('ai_assistant_substance.toaster.ai_assistant_deleted_failed'));
+    }
+  }, [aiAssistantToBeDeleted, onDeleteAiAssistantAfterOperation, t]);
 
   return (
     <>
@@ -196,12 +222,20 @@ export const AiAssistantList: React.FC<AiAssistantListProps> = ({
               aiAssistant={assistant}
               onEditClick={openAiAssistantManagementModal}
               onItemClick={openChat}
+              onDeleteClick={onClickDeleteButton}
               onUpdated={onUpdated}
-              onDeleted={onDeleted}
             />
           ))}
         </ul>
       </Collapse>
+
+      <DeleteAiAssistantModal
+        isShown={isDeleteModalShown}
+        aiAssistant={aiAssistantToBeDeleted}
+        errorMessage={errorMessageOnDelete}
+        onCancel={onCancelDeleteAiAssistant}
+        onConfirm={onDeleteAiAssistant}
+      />
     </>
   );
 };
