@@ -38,6 +38,7 @@ module.exports = {
     'src/features/plantuml/**',
     'src/features/external-user-group/**',
     'src/features/opentelemetry/**',
+    'src/utils/**',
   ],
   settings: {
     // resolve path aliases by eslint-import-resolver-typescript
