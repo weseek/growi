@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { pagePathUtils } from '@growi/core/dist/utils';
+import { isPermalink, isUserPage, isUsersTopPage } from '@growi/core/dist/utils/page-path-utils';
 import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -21,8 +21,6 @@ import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
 
 import styles from './index.module.scss';
 
-
-const { isPermalink, isUserPage, isUsersTopPage } = pagePathUtils;
 
 const LoginForm = dynamic(() => import('~/client/components/LoginForm').then(mod => mod.LoginForm), { ssr: false });
 
@@ -72,7 +70,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
 };
 
 
-export const getServerSideConfigurationProps: GetServerSideProps<ServerConfigurationProps> = async(context: GetServerSidePropsContext) => {
+const getServerSideConfigurationProps: GetServerSideProps<ServerConfigurationProps> = async(context: GetServerSidePropsContext) => {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
