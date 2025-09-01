@@ -31,12 +31,6 @@ export function isValidInitialAndSameRouteProps(props: unknown): props is Initia
     return false;
   }
 
-  // SSRProps
-  if (typeof p.skipSSR !== 'boolean') {
-    logger.warn('isValidInitialAndSameRouteProps: skipSSR is not a boolean', { skipSSR: p.skipSSR });
-    return false;
-  }
-
   // InitialProps specific page state
   if (typeof p.isNotFound !== 'boolean') {
     logger.warn('isValidInitialAndSameRouteProps: isNotFound is not a boolean', { isNotFound: p.isNotFound });

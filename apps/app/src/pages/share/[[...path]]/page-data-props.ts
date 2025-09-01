@@ -8,9 +8,7 @@ import type { IShareLink } from '~/interfaces/share-link';
 import type { PageModel } from '~/server/models/page';
 import type { ShareLinkModel } from '~/server/models/share-link';
 
-import type { InitialProps } from '../../general-page';
-
-import type { ShareLinkPageProps } from './types';
+import type { ShareLinkInitialProps } from './types';
 
 
 let mongooseModel: typeof model;
@@ -18,7 +16,7 @@ let Page: PageModel;
 let ShareLink: ShareLinkModel;
 
 export const getPageDataForInitial = async(context: GetServerSidePropsContext):
-    Promise<GetServerSidePropsResult<Pick<InitialProps, 'isNotFound' | 'pageWithMeta' | 'skipSSR'> & ShareLinkPageProps>> => {
+    Promise<GetServerSidePropsResult<ShareLinkInitialProps>> => {
 
   const req = context.req as CrowiRequest;
   const { crowi, params } = req;
@@ -41,6 +39,8 @@ export const getPageDataForInitial = async(context: GetServerSidePropsContext):
       props: {
         isNotFound: true,
         pageWithMeta: null,
+        isExpired: undefined,
+        shareLink: undefined,
       },
     };
   }
@@ -52,6 +52,7 @@ export const getPageDataForInitial = async(context: GetServerSidePropsContext):
         isNotFound: false,
         pageWithMeta: null,
         isExpired: true,
+        shareLink,
       },
     };
   }
@@ -65,6 +66,8 @@ export const getPageDataForInitial = async(context: GetServerSidePropsContext):
       props: {
         isNotFound: true,
         pageWithMeta: null,
+        isExpired: undefined,
+        shareLink: undefined,
       },
     };
   }
