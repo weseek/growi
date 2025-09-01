@@ -5,32 +5,30 @@ import type {
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
+import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { useIsSearchPage } from '~/states/context';
 import { useHydrateSidebarAtoms } from '~/states/ui/sidebar/hydrate';
 
 import type {
   CommonEachProps,
   CommonInitialProps, UserUISettingsProps,
-} from './common-props';
+} from '../common-props';
 import {
   getServerSideCommonEachProps, getServerSideCommonInitialProps, getServerSideI18nProps, getServerSideUserUISettingsProps,
-} from './common-props';
-import type { RendererConfigProps, SidebarConfigProps } from './general-page';
-import { getServerSideRendererConfigProps, getServerSideSidebarConfigProps } from './general-page';
-import { useCustomTitle } from './utils/page-title-customization';
-import { mergeGetServerSidePropsResults } from './utils/server-side-props';
+} from '../common-props';
+import type { RendererConfigProps, SidebarConfigProps } from '../general-page';
+import { getServerSideRendererConfigProps, getServerSideSidebarConfigProps } from '../general-page';
+import { useCustomTitle } from '../utils/page-title-customization';
+import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
+
+import type { ServerConfigurationProps } from './types';
+import { useHydrateServerConfigurationAtoms } from './use-hydrate-server-configurations';
 
 const SearchResultLayout = dynamic(() => import('~/components/Layout/SearchResultLayout'), { ssr: false });
 
-
-type ServerConfigurationProps = {
-  isSearchServiceConfigured: boolean,
-  isSearchServiceReachable: boolean,
-  isSearchScopeChildrenAsDefault: boolean,
-  isEnabledMarp: boolean,
-}
 
 type Props = CommonInitialProps & CommonEachProps & ServerConfigurationProps & RendererConfigProps & UserUISettingsProps & SidebarConfigProps;
 
@@ -44,15 +42,15 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   // useHydratePageAtoms(undefined);
   // useCurrentPathname('/_private-legacy-pages');
 
-  // Search
-  useIsSearchPage(true);
-  useIsSearchServiceConfigured(props.isSearchServiceConfigured);
-  useIsSearchServiceReachable(props.isSearchServiceReachable);
-  useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
-  useIsEnabledMarp(props.isEnabledMarp);
+  const [, setSearchPage] = useIsSearchPage();
 
-  // Hydrate sidebar atoms with server-side data
+  // Hydrate server-side data
+  useHydrateServerConfigurationAtoms(props.serverConfig, props.rendererConfig);
   useHydrateSidebarAtoms(props.sidebarConfig, props.userUISettings);
+
+  useIsomorphicLayoutEffect(() => {
+    setSearchPage(true);
+  }, [setSearchPage]);
 
   const title = useCustomTitle(t('private_legacy_pages.title'));
 
@@ -82,10 +80,11 @@ const getServerSideConfigurationProps: GetServerSideProps<ServerConfigurationPro
 
   return {
     props: {
-      isSearchServiceConfigured: searchService.isConfigured,
-      isSearchServiceReachable: searchService.isReachable,
-      isSearchScopeChildrenAsDefault: configManager.getConfig('customize:isSearchScopeChildrenAsDefault'),
-      isEnabledMarp: configManager.getConfig('customize:isEnabledMarp'),
+      serverConfig: {
+        isSearchServiceConfigured: searchService.isConfigured,
+        isSearchServiceReachable: searchService.isReachable,
+        isSearchScopeChildrenAsDefault: configManager.getConfig('customize:isSearchScopeChildrenAsDefault'),
+      },
     },
   };
 };
