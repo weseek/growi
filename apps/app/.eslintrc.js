@@ -33,6 +33,9 @@ module.exports = {
     'src/features/callout/**',
     'src/features/comment/**',
     'src/features/templates/**',
+    'src/features/mermaid/**',
+    'src/features/search/**',
+    'src/features/plantuml/**',
     'src/features/external-user-group/**',
   ],
   settings: {
