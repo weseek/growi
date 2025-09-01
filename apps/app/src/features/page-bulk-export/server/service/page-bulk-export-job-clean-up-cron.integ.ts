@@ -37,6 +37,7 @@ vi.mock('./page-bulk-export-job-cron', () => {
 
 describe('PageBulkExportJobCleanUpCronService', () => {
   const crowi = {} as Crowi;
+  // biome-ignore lint/suspicious/noImplicitAnyLet: ignore
   let user;
 
   beforeAll(async () => {
