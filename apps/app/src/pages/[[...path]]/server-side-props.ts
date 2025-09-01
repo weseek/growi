@@ -3,11 +3,12 @@ import type { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import {
   getServerSideI18nProps, getServerSideUserUISettingsProps, getServerSideCommonInitialProps, getServerSideCommonEachProps, isValidCommonEachRouteProps,
 } from '../common-props';
-import type { InitialProps } from '../general-page';
+import type { GeneralPageInitialProps } from '../general-page';
 import {
-  getServerSideConfigurationProps, getServerSideRendererConfigProps, getServerSideSidebarConfigProps,
+  getServerSideRendererConfigProps, getServerSideSidebarConfigProps,
   getActivityAction, isValidInitialAndSameRouteProps,
 } from '../general-page';
+import { getServerSideConfigurationProps } from '../general-page/configuration-props';
 import { addActivity } from '../utils/activity';
 import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
 
@@ -22,7 +23,7 @@ const nextjsRoutingProps = {
   },
 };
 
-export async function getServerSidePropsForInitial(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<InitialProps & EachProps>> {
+export async function getServerSidePropsForInitial(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<GeneralPageInitialProps & EachProps>> {
   //
   // STAGE 1
   //

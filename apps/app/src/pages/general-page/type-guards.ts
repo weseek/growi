@@ -3,25 +3,25 @@ import loggerFactory from '~/utils/logger';
 import type { CommonEachProps } from '../common-props';
 import { isValidCommonEachRouteProps } from '../common-props';
 
-import type { InitialProps } from './types';
+import type { GeneralPageInitialProps } from './types';
 
 const logger = loggerFactory('growi:pages:general-page:type-guards');
 
 /**
- * Type guard for InitialProps & SameRouteEachProps validation
- * First validates SameRouteEachProps, then checks InitialProps-specific properties
+ * Type guard for GeneralPageInitialProps & CommonEachProps validation
+ * First validates CommonEachProps, then checks GeneralPageGeneralPageInitialProps-specific properties
  */
-export function isValidInitialAndSameRouteProps(props: unknown): props is InitialProps & CommonEachProps {
-  // First, validate SameRouteEachProps
+export function isValidInitialAndSameRouteProps(props: unknown): props is GeneralPageInitialProps & CommonEachProps {
+  // First, validate CommonEachProps
   if (!isValidCommonEachRouteProps(props)) {
-    logger.warn('isValidInitialAndSameRouteProps: SameRouteEachProps validation failed');
+    logger.warn('isValidInitialAndSameRouteProps: CommonEachProps validation failed');
     return false;
   }
 
   const p = props as Record<string, unknown>;
 
-  // Then validate InitialProps-specific properties
-  // CommonInitialProps
+  // Then validate GeneralPageInitialProps-specific properties
+  // CommonPageInitialProps
   if (p.isNextjsRoutingTypeInitial !== true) {
     logger.warn('isValidInitialAndSameRouteProps: isNextjsRoutingTypeInitial is not true', { isNextjsRoutingTypeInitial: p.isNextjsRoutingTypeInitial });
     return false;
@@ -31,7 +31,7 @@ export function isValidInitialAndSameRouteProps(props: unknown): props is Initia
     return false;
   }
 
-  // InitialProps specific page state
+  // GeneralPageInitialProps specific page state
   if (typeof p.isNotFound !== 'boolean') {
     logger.warn('isValidInitialAndSameRouteProps: isNotFound is not a boolean', { isNotFound: p.isNotFound });
     return false;

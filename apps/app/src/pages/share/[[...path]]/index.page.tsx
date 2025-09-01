@@ -19,13 +19,13 @@ import {
 } from '~/states/page';
 import { useHydratePageAtoms } from '~/states/page/hydrate';
 import { useDisableLinkSharing, useRendererConfig } from '~/states/server-configurations';
-import { useHydrateServerConfigurationAtoms } from '~/states/server-configurations/hydrate';
 import loggerFactory from '~/utils/logger';
 
 import type { NextPageWithLayout } from '../../_app.page';
-import type { InitialProps } from '../../general-page';
+import type { GeneralPageInitialProps } from '../../general-page';
 import { useInitialCSRFetch } from '../../general-page';
 import { registerPageToShowRevisionWithMeta } from '../../general-page/superjson';
+import { useHydrateServerConfigurationAtoms } from '../../general-page/use-hydrate-server-configurations';
 
 import { NEXT_JS_ROUTING_PAGE } from './consts';
 import { getServerSidePropsForInitial, getServerSidePropsForSameRoute } from './server-side-props';
@@ -40,9 +40,10 @@ const GrowiContextualSubNavigation = dynamic(() => import('~/client/components/N
 
 const logger = loggerFactory('growi:next-page:share');
 
-type Props = CommonEachProps | (CommonEachProps & InitialProps & ShareLinkInitialProps);
+type InitialProps = CommonEachProps & GeneralPageInitialProps & ShareLinkInitialProps;
+type Props = CommonEachProps | InitialProps;
 
-const isInitialProps = (props: Props): props is (ShareLinkInitialProps & InitialProps & CommonEachProps) => {
+const isInitialProps = (props: Props): props is InitialProps => {
   return 'isNextjsRoutingTypeInitial' in props && props.isNextjsRoutingTypeInitial;
 };
 

@@ -25,7 +25,6 @@ import {
 import { useHydratePageAtoms } from '~/states/page/hydrate';
 import { useRedirectFrom } from '~/states/page/redirect';
 import { useRendererConfig } from '~/states/server-configurations';
-import { useHydrateServerConfigurationAtoms } from '~/states/server-configurations/hydrate';
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/states/socket-io';
 import { useEditingMarkdown } from '~/states/ui/editor';
 import { useHydrateSidebarAtoms } from '~/states/ui/sidebar/hydrate';
@@ -33,9 +32,10 @@ import { useSWRMUTxCurrentPageYjsData } from '~/stores/yjs';
 
 import type { NextPageWithLayout } from '../_app.page';
 import type { UserUISettingsProps } from '../common-props';
-import type { InitialProps, SidebarConfigProps } from '../general-page';
+import type { GeneralPageInitialProps, SidebarConfigProps } from '../general-page';
 import { useInitialCSRFetch } from '../general-page';
 import { registerPageToShowRevisionWithMeta } from '../general-page/superjson';
+import { useHydrateServerConfigurationAtoms } from '../general-page/use-hydrate-server-configurations';
 import { NextjsRoutingType, detectNextjsRoutingType } from '../utils/nextjs-routing-utils';
 import { useCustomTitleForPage } from '../utils/page-title-customization';
 
@@ -74,10 +74,10 @@ const ConflictDiffModal = dynamic(() => import('~/client/components/PageEditor/C
 
 const EditablePageEffects = dynamic(() => import('~/client/components/Page/EditablePageEffects').then(mod => mod.EditablePageEffects), { ssr: false });
 
+type InitialProps = EachProps & GeneralPageInitialProps & UserUISettingsProps & SidebarConfigProps;
+type Props = EachProps | InitialProps;
 
-type Props = EachProps | (EachProps & InitialProps & UserUISettingsProps & SidebarConfigProps);
-
-const isInitialProps = (props: Props): props is (UserUISettingsProps & SidebarConfigProps & InitialProps & EachProps) => {
+const isInitialProps = (props: Props): props is InitialProps => {
   return 'isNextjsRoutingTypeInitial' in props && props.isNextjsRoutingTypeInitial;
 };
 

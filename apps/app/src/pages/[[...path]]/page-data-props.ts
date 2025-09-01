@@ -9,7 +9,7 @@ import type { PageModel } from '~/server/models/page';
 import type { IPageRedirect, PageRedirectModel } from '~/server/models/page-redirect';
 
 import type { CommonEachProps } from '../common-props';
-import type { InitialProps } from '../general-page';
+import type { GeneralPageInitialProps } from '../general-page';
 
 import type { EachProps } from './types';
 
@@ -59,7 +59,7 @@ async function resolvePathAndCheckIdentical(
 export async function getPageDataForInitial(
     context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<
-  Pick<InitialProps, 'pageWithMeta' | 'isNotFound' | 'isNotCreatable' | 'isForbidden' | 'skipSSR'> &
+  Pick<GeneralPageInitialProps, 'pageWithMeta' | 'isNotFound' | 'isNotCreatable' | 'isForbidden' | 'skipSSR'> &
   Pick<EachProps, 'currentPathname' | 'isIdenticalPathPage' | 'redirectFrom'>
 >> {
   const req: CrowiRequest = context.req as CrowiRequest;

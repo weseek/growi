@@ -4,9 +4,10 @@ import type { CommonEachProps } from '../../common-props';
 import {
   getServerSideI18nProps, getServerSideCommonInitialProps, getServerSideCommonEachProps,
 } from '../../common-props';
-import type { InitialProps } from '../../general-page';
+import type { GeneralPageInitialProps } from '../../general-page';
 import {
-  getServerSideConfigurationProps, getServerSideRendererConfigProps,
+  getServerSideConfigurationProps,
+  getServerSideRendererConfigProps,
   getActivityAction, isValidInitialAndSameRouteProps,
 } from '../../general-page';
 import { addActivity } from '../../utils/activity';
@@ -32,7 +33,7 @@ const basisProps = {
 };
 
 export async function getServerSidePropsForInitial(context: GetServerSidePropsContext):
-    Promise<GetServerSidePropsResult<InitialProps & ShareLinkInitialProps & CommonEachProps>> {
+    Promise<GetServerSidePropsResult<GeneralPageInitialProps & ShareLinkInitialProps & CommonEachProps>> {
 
   //
   // STAGE 1
