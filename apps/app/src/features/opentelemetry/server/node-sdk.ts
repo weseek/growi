@@ -16,28 +16,37 @@ let sdkInstance: NodeSDK | undefined;
  * Since otel library sees it.
  */
 function overwriteSdkDisabled(): void {
-  const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
+  const instrumentationEnabled = configManager.getConfig(
+    'otel:enabled',
+    ConfigSource.env,
+  );
 
-  if (instrumentationEnabled && (
-    process.env.OTEL_SDK_DISABLED === 'true'
-    || process.env.OTEL_SDK_DISABLED === '1'
-  )) {
-    logger.warn("OTEL_SDK_DISABLED overwritten with 'false' since GROWI's 'otel:enabled' config is true.");
+  if (
+    instrumentationEnabled &&
+    (process.env.OTEL_SDK_DISABLED === 'true' ||
+      process.env.OTEL_SDK_DISABLED === '1')
+  ) {
+    logger.warn(
+      "OTEL_SDK_DISABLED overwritten with 'false' since GROWI's 'otel:enabled' config is true.",
+    );
     process.env.OTEL_SDK_DISABLED = 'false';
     return;
   }
 
-  if (!instrumentationEnabled && (
-    process.env.OTEL_SDK_DISABLED === 'false'
-    || process.env.OTEL_SDK_DISABLED === '0'
-  )) {
-    logger.warn("OTEL_SDK_DISABLED is overwritten with 'true' since GROWI's 'otel:enabled' config is false.");
+  if (
+    !instrumentationEnabled &&
+    (process.env.OTEL_SDK_DISABLED === 'false' ||
+      process.env.OTEL_SDK_DISABLED === '0')
+  ) {
+    logger.warn(
+      "OTEL_SDK_DISABLED is overwritten with 'true' since GROWI's 'otel:enabled' config is false.",
+    );
     process.env.OTEL_SDK_DISABLED = 'true';
     return;
   }
 }
 
-export const initInstrumentation = async(): Promise<void> => {
+export const initInstrumentation = async (): Promise<void> => {
   if (sdkInstance != null) {
     logger.warn('OpenTelemetry instrumentation already started');
     return;
@@ -48,7 +57,10 @@ export const initInstrumentation = async(): Promise<void> => {
 
   overwriteSdkDisabled();
 
-  const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
+  const instrumentationEnabled = configManager.getConfig(
+    'otel:enabled',
+    ConfigSource.env,
+  );
   if (instrumentationEnabled) {
     logger.info(`GROWI now collects anonymous telemetry.
 
@@ -66,9 +78,14 @@ For more information, see https://docs.growi.org/en/admin-guide/admin-cookbook/t
 
     // instanciate NodeSDK
     const { NodeSDK } = await import('@opentelemetry/sdk-node');
-    const { generateNodeSDKConfiguration } = await import('./node-sdk-configuration');
+    const { generateNodeSDKConfiguration } = await import(
+      './node-sdk-configuration'
+    );
     // get resource from configuration
-    const enableAnonymization = configManager.getConfig('otel:anonymizeInBestEffort', ConfigSource.env);
+    const enableAnonymization = configManager.getConfig(
+      'otel:anonymizeInBestEffort',
+      ConfigSource.env,
+    );
 
     const sdkConfig = generateNodeSDKConfiguration({ enableAnonymization });
 
@@ -76,20 +93,30 @@ For more information, see https://docs.growi.org/en/admin-guide/admin-cookbook/t
   }
 };
 
-export const setupAdditionalResourceAttributes = async(): Promise<void> => {
-  const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
+export const setupAdditionalResourceAttributes = async (): Promise<void> => {
+  const instrumentationEnabled = configManager.getConfig(
+    'otel:enabled',
+    ConfigSource.env,
+  );
 
   if (instrumentationEnabled) {
     if (sdkInstance == null) {
       throw new Error('OpenTelemetry instrumentation is not initialized');
     }
 
-    const { generateAdditionalResourceAttributes } = await import('./node-sdk-configuration');
+    const { generateAdditionalResourceAttributes } = await import(
+      './node-sdk-configuration'
+    );
     // get resource from configuration
-    const enableAnonymization = configManager.getConfig('otel:anonymizeInBestEffort', ConfigSource.env);
+    const enableAnonymization = configManager.getConfig(
+      'otel:anonymizeInBestEffort',
+      ConfigSource.env,
+    );
 
     // generate additional resource attributes
-    const updatedResource = await generateAdditionalResourceAttributes({ enableAnonymization });
+    const updatedResource = await generateAdditionalResourceAttributes({
+      enableAnonymization,
+    });
 
     // set resource to sdk instance
     setResource(sdkInstance, updatedResource);
@@ -97,7 +124,10 @@ export const setupAdditionalResourceAttributes = async(): Promise<void> => {
 };
 
 export const startOpenTelemetry = (): void => {
-  const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
+  const instrumentationEnabled = configManager.getConfig(
+    'otel:enabled',
+    ConfigSource.env,
+  );
 
   if (instrumentationEnabled && sdkInstance != null) {
     if (sdkInstance == null) {
