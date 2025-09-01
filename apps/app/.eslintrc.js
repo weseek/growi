@@ -37,6 +37,7 @@ module.exports = {
     'src/features/search/**',
     'src/features/plantuml/**',
     'src/features/external-user-group/**',
+    'src/interfaces/**',
   ],
   settings: {
     // resolve path aliases by eslint-import-resolver-typescript
