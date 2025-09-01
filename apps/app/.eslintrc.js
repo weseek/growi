@@ -37,6 +37,7 @@ module.exports = {
     'src/features/search/**',
     'src/features/plantuml/**',
     'src/features/external-user-group/**',
+    'src/features/page-bulk-export/**',
   ],
   settings: {
     // resolve path aliases by eslint-import-resolver-typescript
