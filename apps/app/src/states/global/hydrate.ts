@@ -1,16 +1,14 @@
 import { useHydrateAtoms } from 'jotai/utils';
-
-import type { CommonInitialProps } from '~/pages/utils/commons';
-
+import type { CommonInitialProps } from '~/pages/common-props';
 import {
   appTitleAtom,
-  siteUrlAtom,
   confidentialAtom,
+  customTitleTemplateAtom,
+  forcedColorSchemeAtom,
+  growiCloudUriAtom,
   growiVersionAtom,
   isDefaultLogoAtom,
-  customTitleTemplateAtom,
-  growiCloudUriAtom,
-  forcedColorSchemeAtom,
+  siteUrlAtom,
 } from './global';
 
 /**
@@ -19,7 +17,9 @@ import {
  *
  * @param commonInitialProps - Server-side common properties from getServerSideCommonInitialProps
  */
-export const useHydrateGlobalInitialAtoms = (commonInitialProps: CommonInitialProps): void => {
+export const useHydrateGlobalInitialAtoms = (
+  commonInitialProps: CommonInitialProps,
+): void => {
   // Hydrate global atoms with server-side data
   useHydrateAtoms([
     [appTitleAtom, commonInitialProps.appTitle],
