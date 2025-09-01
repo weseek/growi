@@ -1,4 +1,4 @@
-import { metrics, type Meter, type ObservableGauge } from '@opentelemetry/api';
+import { type Meter, metrics, type ObservableGauge } from '@opentelemetry/api';
 import { mock } from 'vitest-mock-extended';
 
 import { addUserCountsMetrics } from './user-counts-metrics';
@@ -25,7 +25,7 @@ vi.mock('@opentelemetry/api', () => ({
 const mockGrowiInfoService = {
   getGrowiInfo: vi.fn(),
 };
-vi.mock('~/server/service/growi-info', async() => ({
+vi.mock('~/server/service/growi-info', async () => ({
   growiInfoService: mockGrowiInfoService,
 }));
 
@@ -49,15 +49,24 @@ describe('addUserCountsMetrics', () => {
   it('should create observable gauges and set up metrics collection', () => {
     addUserCountsMetrics();
 
-    expect(metrics.getMeter).toHaveBeenCalledWith('growi-user-counts-metrics', '1.0.0');
-    expect(mockMeter.createObservableGauge).toHaveBeenCalledWith('growi.users.total', {
-      description: 'Total number of users in GROWI',
-      unit: 'users',
-    });
-    expect(mockMeter.createObservableGauge).toHaveBeenCalledWith('growi.users.active', {
-      description: 'Number of active users in GROWI',
-      unit: 'users',
-    });
+    expect(metrics.getMeter).toHaveBeenCalledWith(
+      'growi-user-counts-metrics',
+      '1.0.0',
+    );
+    expect(mockMeter.createObservableGauge).toHaveBeenCalledWith(
+      'growi.users.total',
+      {
+        description: 'Total number of users in GROWI',
+        unit: 'users',
+      },
+    );
+    expect(mockMeter.createObservableGauge).toHaveBeenCalledWith(
+      'growi.users.active',
+      {
+        description: 'Number of active users in GROWI',
+        unit: 'users',
+      },
+    );
     expect(mockMeter.addBatchObservableCallback).toHaveBeenCalledWith(
       expect.any(Function),
       [mockUserCountGauge, mockActiveUserCountGauge],
@@ -76,7 +85,7 @@ describe('addUserCountsMetrics', () => {
       mockGrowiInfoService.getGrowiInfo.mockResolvedValue(mockGrowiInfo);
     });
 
-    it('should observe user count metrics when growi info is available', async() => {
+    it('should observe user count metrics when growi info is available', async () => {
       const mockResult = { observe: vi.fn() };
 
       addUserCountsMetrics();
@@ -85,12 +94,17 @@ describe('addUserCountsMetrics', () => {
       const callback = mockMeter.addBatchObservableCallback.mock.calls[0][0];
       await callback(mockResult);
 
-      expect(mockGrowiInfoService.getGrowiInfo).toHaveBeenCalledWith({ includeUserCountInfo: true });
+      expect(mockGrowiInfoService.getGrowiInfo).toHaveBeenCalledWith({
+        includeUserCountInfo: true,
+      });
       expect(mockResult.observe).toHaveBeenCalledWith(mockUserCountGauge, 150);
-      expect(mockResult.observe).toHaveBeenCalledWith(mockActiveUserCountGauge, 75);
+      expect(mockResult.observe).toHaveBeenCalledWith(
+        mockActiveUserCountGauge,
+        75,
+      );
     });
 
-    it('should use default values when user counts are missing', async() => {
+    it('should use default values when user counts are missing', async () => {
       const mockResult = { observe: vi.fn() };
 
       const growiInfoWithoutCounts = {
@@ -98,7 +112,9 @@ describe('addUserCountsMetrics', () => {
           // Missing currentUsersCount and currentActiveUsersCount
         },
       };
-      mockGrowiInfoService.getGrowiInfo.mockResolvedValue(growiInfoWithoutCounts);
+      mockGrowiInfoService.getGrowiInfo.mockResolvedValue(
+        growiInfoWithoutCounts,
+      );
 
       addUserCountsMetrics();
 
@@ -106,16 +122,21 @@ describe('addUserCountsMetrics', () => {
       await callback(mockResult);
 
       expect(mockResult.observe).toHaveBeenCalledWith(mockUserCountGauge, 0);
-      expect(mockResult.observe).toHaveBeenCalledWith(mockActiveUserCountGauge, 0);
+      expect(mockResult.observe).toHaveBeenCalledWith(
+        mockActiveUserCountGauge,
+        0,
+      );
     });
 
-    it('should handle missing additionalInfo gracefully', async() => {
+    it('should handle missing additionalInfo gracefully', async () => {
       const mockResult = { observe: vi.fn() };
 
       const growiInfoWithoutAdditionalInfo = {
         // Missing additionalInfo entirely
       };
-      mockGrowiInfoService.getGrowiInfo.mockResolvedValue(growiInfoWithoutAdditionalInfo);
+      mockGrowiInfoService.getGrowiInfo.mockResolvedValue(
+        growiInfoWithoutAdditionalInfo,
+      );
 
       addUserCountsMetrics();
 
@@ -123,11 +144,16 @@ describe('addUserCountsMetrics', () => {
       await callback(mockResult);
 
       expect(mockResult.observe).toHaveBeenCalledWith(mockUserCountGauge, 0);
-      expect(mockResult.observe).toHaveBeenCalledWith(mockActiveUserCountGauge, 0);
+      expect(mockResult.observe).toHaveBeenCalledWith(
+        mockActiveUserCountGauge,
+        0,
+      );
     });
 
-    it('should handle errors in metrics collection gracefully', async() => {
-      mockGrowiInfoService.getGrowiInfo.mockRejectedValue(new Error('Service unavailable'));
+    it('should handle errors in metrics collection gracefully', async () => {
+      mockGrowiInfoService.getGrowiInfo.mockRejectedValue(
+        new Error('Service unavailable'),
+      );
       const mockResult = { observe: vi.fn() };
 
       addUserCountsMetrics();

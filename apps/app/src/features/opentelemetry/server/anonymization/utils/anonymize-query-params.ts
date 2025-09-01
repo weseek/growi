@@ -1,6 +1,8 @@
 import { diag } from '@opentelemetry/api';
 
-const logger = diag.createComponentLogger({ namespace: 'growi:anonymization:anonymize-query-params' });
+const logger = diag.createComponentLogger({
+  namespace: 'growi:anonymization:anonymize-query-params',
+});
 
 /**
  * Try to parse JSON array, return null if invalid
@@ -9,8 +11,7 @@ function tryParseJsonArray(value: string): unknown[] | null {
   try {
     const parsed = JSON.parse(value);
     return Array.isArray(parsed) ? parsed : null;
-  }
-  catch {
+  } catch {
     return null;
   }
 }
@@ -21,7 +22,10 @@ function tryParseJsonArray(value: string): unknown[] | null {
  * @param paramNames - Array of parameter names to anonymize
  * @returns Anonymized HTTP target URL
  */
-export function anonymizeQueryParams(target: string, paramNames: string[]): string {
+export function anonymizeQueryParams(
+  target: string,
+  paramNames: string[],
+): string {
   try {
     const url = new URL(target, 'http://localhost');
     const searchParams = new URLSearchParams(url.search);
@@ -54,10 +58,13 @@ export function anonymizeQueryParams(target: string, paramNames: string[]): stri
       }
     }
 
-    return hasChange ? `${url.pathname}?${searchParams.toString()}${url.hash}` : target;
-  }
-  catch (error) {
-    logger.warn(`Failed to anonymize query parameters [${paramNames.join(', ')}]: ${error}`);
+    return hasChange
+      ? `${url.pathname}?${searchParams.toString()}${url.hash}`
+      : target;
+  } catch (error) {
+    logger.warn(
+      `Failed to anonymize query parameters [${paramNames.join(', ')}]: ${error}`,
+    );
     return target;
   }
 }

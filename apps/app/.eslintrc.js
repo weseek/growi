@@ -38,6 +38,7 @@ module.exports = {
     'src/features/plantuml/**',
     'src/features/external-user-group/**',
     'src/features/page-bulk-export/**',
+    'src/features/opentelemetry/**',
   ],
   settings: {
     // resolve path aliases by eslint-import-resolver-typescript
