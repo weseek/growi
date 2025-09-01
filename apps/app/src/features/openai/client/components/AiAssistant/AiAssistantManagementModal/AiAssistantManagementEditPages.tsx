@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ModalBody } from 'reactstrap';
 import SimpleBar from 'simplebar-react';
 
-import { useLimitLearnablePageCountPerAssistant } from '~/stores-universal/context';
+import { useLimitLearnablePageCountPerAssistant } from '~/states/server-configurations';
 
 import type { SelectablePage } from '../../../../interfaces/selectable-page';
 
@@ -19,7 +19,7 @@ type Props = {
 
 export const AiAssistantManagementEditPages = (props: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { data: limitLearnablePageCountPerAssistant } = useLimitLearnablePageCountPerAssistant();
+  const [limitLearnablePageCountPerAssistant] = useLimitLearnablePageCountPerAssistant();
 
   const { selectedPages, onRemove } = props;
 

@@ -10,7 +10,7 @@ import {
 import { AiAssistantShareScope, AiAssistantAccessScope } from '~/features/openai/interfaces/ai-assistant';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import { useCurrentUser } from '~/states/global';
-import { useLimitLearnablePageCountPerAssistant } from '~/stores-universal/context';
+import { useLimitLearnablePageCountPerAssistant } from '~/states/server-configurations';
 
 import type { SelectablePage } from '../../../../interfaces/selectable-page';
 import { determineShareScope } from '../../../../utils/determine-share-scope';
@@ -54,7 +54,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
 
   const { t } = useTranslation();
   const [currentUser] = useCurrentUser();
-  const { data: limitLearnablePageCountPerAssistant } = useLimitLearnablePageCountPerAssistant();
+  const [limitLearnablePageCountPerAssistant] = useLimitLearnablePageCountPerAssistant();
   const { close: closeAiAssistantManagementModal, changePageMode } = useAiAssistantManagementModal();
 
   const [isShareScopeWarningModalOpen, setIsShareScopeWarningModalOpen] = useState(false);

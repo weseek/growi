@@ -9,7 +9,8 @@ import { Collapse } from 'reactstrap';
 import SimpleBar from 'simplebar-react';
 
 import { toastError } from '~/client/util/toastr';
-import { useGrowiCloudUri, useIsEnableUnifiedMergeView } from '~/stores-universal/context';
+import { useGrowiCloudUri } from '~/states/global';
+import { useIsEnableUnifiedMergeView } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
 import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
@@ -67,7 +68,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
   // Hooks
   const { t } = useTranslation();
-  const { data: growiCloudUri } = useGrowiCloudUri();
+  const [growiCloudUri] = useGrowiCloudUri();
 
   const {
     createThread: createThreadForKnowledgeAssistant,

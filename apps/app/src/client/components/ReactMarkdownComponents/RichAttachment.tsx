@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import prettyBytes from 'pretty-bytes';
 
-import { useIsGuestUser, useIsReadOnlyUser, useIsSharedUser } from '~/stores-universal/context';
+import { useIsGuestUser, useIsReadOnlyUser, useIsSharedUser } from '~/states/context';
 import { useSWRxAttachment } from '~/stores/attachment';
 import { useDeleteAttachmentModal } from '~/stores/modal';
 
@@ -23,9 +23,9 @@ export const RichAttachment = React.memo((props: RichAttachmentProps) => {
   const { data: attachment, remove } = useSWRxAttachment(attachmentId);
   const { open: openDeleteAttachmentModal } = useDeleteAttachmentModal();
 
-  const { data: isGuestUser } = useIsGuestUser();
-  const { data: isSharedUser } = useIsSharedUser();
-  const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const [isGuestUser] = useIsGuestUser();
+  const [isSharedUser] = useIsSharedUser();
+  const [isReadOnlyUser] = useIsReadOnlyUser();
 
   const showTrashButton = isGuestUser === false && isSharedUser === false && isReadOnlyUser === false;
 

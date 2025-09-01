@@ -5,7 +5,8 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import urljoin from 'url-join';
 
-import { useGrowiCloudUri, useGrowiAppIdForGrowiCloud } from '~/stores-universal/context';
+import { useGrowiCloudUri } from '~/states/global';
+import { useGrowiAppIdForGrowiCloud } from '~/stores-universal/context';
 
 import styles from './AdminNavigation.module.scss';
 
@@ -83,7 +84,7 @@ const MenuLink = ({
 export const AdminNavigation = (): JSX.Element => {
   const pathname = window.location.pathname;
 
-  const { data: growiCloudUri } = useGrowiCloudUri();
+  const [growiCloudUri] = useGrowiCloudUri();
   const { data: growiAppIdForGrowiCloud } = useGrowiAppIdForGrowiCloud();
 
   const isActiveMenu = useCallback((path: string | string[]) => {
