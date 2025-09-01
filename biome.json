@@ -30,7 +30,6 @@
       "!apps/app/src/features/growi-plugin/**",
       "!apps/app/src/features/openai/**",
       "!apps/app/src/features/rate-limiter/**",
-      "!apps/app/src/interfaces/**",
       "!apps/app/src/models/**",
       "!apps/app/src/pages/**",
       "!apps/app/src/server/**",
