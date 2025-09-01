@@ -16,7 +16,7 @@ describe('getOsResourceAttributes', () => {
     totalmem: ReturnType<typeof vi.fn>;
   };
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
     // Get the mocked os module
     mockOs = await vi.importMock('node:os');

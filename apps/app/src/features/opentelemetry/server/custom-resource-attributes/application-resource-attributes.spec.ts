@@ -21,7 +21,7 @@ describe('getApplicationResourceAttributes', () => {
     vi.clearAllMocks();
   });
 
-  it('should return complete application resource attributes when growi info is available', async() => {
+  it('should return complete application resource attributes when growi info is available', async () => {
     const mockGrowiInfo = {
       type: 'app',
       deploymentType: 'standalone',
@@ -43,10 +43,12 @@ describe('getApplicationResourceAttributes', () => {
       'growi.installedAt': '2023-01-01T00:00:00.000Z',
       'growi.installedAt.by_oldest_user': '2023-01-01T00:00:00.000Z',
     });
-    expect(mockGrowiInfoService.getGrowiInfo).toHaveBeenCalledWith({ includeInstalledInfo: true });
+    expect(mockGrowiInfoService.getGrowiInfo).toHaveBeenCalledWith({
+      includeInstalledInfo: true,
+    });
   });
 
-  it('should handle missing additionalInfo gracefully', async() => {
+  it('should handle missing additionalInfo gracefully', async () => {
     const mockGrowiInfo = {
       type: 'app',
       deploymentType: 'standalone',
@@ -66,15 +68,17 @@ describe('getApplicationResourceAttributes', () => {
     });
   });
 
-  it('should return empty object when growiInfoService throws error', async() => {
-    mockGrowiInfoService.getGrowiInfo.mockRejectedValue(new Error('Service unavailable'));
+  it('should return empty object when growiInfoService throws error', async () => {
+    mockGrowiInfoService.getGrowiInfo.mockRejectedValue(
+      new Error('Service unavailable'),
+    );
 
     const result = await getApplicationResourceAttributes();
 
     expect(result).toEqual({});
   });
 
-  it('should handle partial additionalInfo data', async() => {
+  it('should handle partial additionalInfo data', async () => {
     const mockGrowiInfo = {
       type: 'app',
       deploymentType: 'docker',

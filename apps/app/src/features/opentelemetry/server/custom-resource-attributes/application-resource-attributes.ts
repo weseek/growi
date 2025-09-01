@@ -2,7 +2,9 @@ import type { Attributes } from '@opentelemetry/api';
 
 import loggerFactory from '~/utils/logger';
 
-const logger = loggerFactory('growi:opentelemetry:custom-resource-attributes:application');
+const logger = loggerFactory(
+  'growi:opentelemetry:custom-resource-attributes:application',
+);
 
 /**
  * Get application fixed information as OpenTelemetry Resource Attributes
@@ -15,7 +17,9 @@ export async function getApplicationResourceAttributes(): Promise<Attributes> {
     // Dynamic import to avoid circular dependencies
     const { growiInfoService } = await import('~/server/service/growi-info');
 
-    const growiInfo = await growiInfoService.getGrowiInfo({ includeInstalledInfo: true });
+    const growiInfo = await growiInfoService.getGrowiInfo({
+      includeInstalledInfo: true,
+    });
 
     const attributes: Attributes = {
       // Service configuration (rarely changes after system setup)
@@ -25,15 +29,17 @@ export async function getApplicationResourceAttributes(): Promise<Attributes> {
 
       // Installation information (fixed values)
       'growi.installedAt': growiInfo.additionalInfo?.installedAt?.toISOString(),
-      'growi.installedAt.by_oldest_user': growiInfo.additionalInfo?.installedAtByOldestUser?.toISOString(),
+      'growi.installedAt.by_oldest_user':
+        growiInfo.additionalInfo?.installedAtByOldestUser?.toISOString(),
     };
 
     logger.info('Application resource attributes collected', { attributes });
 
     return attributes;
-  }
-  catch (error) {
-    logger.error('Failed to collect application resource attributes', { error });
+  } catch (error) {
+    logger.error('Failed to collect application resource attributes', {
+      error,
+    });
     return {};
   }
 }
