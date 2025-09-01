@@ -65,15 +65,15 @@ GROWI is a team collaboration software using markdown - a wiki platform with hie
 - **Authentication**: Passport.js with multiple strategies (local, LDAP, OAuth, SAML)
 - **Real-time Features**: Socket.io for collaborative editing and notifications
 - **Editor**: Custom markdown editor with collaborative editing using Yjs
-- **Database**: MongoDB 6.0+ with migration system using migrate-mongo
+- **Database**: MongoDB 8.0+ with migration system using migrate-mongo
 - **Package Manager**: pnpm with workspace support
 - **Build System**: Turborepo for monorepo orchestration
 
 ### Development Dependencies
 - Node.js v20.x or v22.x
 - pnpm 10.x  
-- MongoDB 6.0+
-- Optional: Redis 3.x, Elasticsearch 7.x/8.x (for full-text search)
+- MongoDB v6.x or v8.x
+- Optional: Redis 3.x, Elasticsearch 7.x/8.x/9.x (for full-text search)
 
 ## File Organization Patterns
 

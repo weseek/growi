@@ -1,8 +1,6 @@
 import type { IncomingMessage } from 'http';
 
-import {
-  describe, it, expect, beforeEach,
-} from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { pageListingApiModule } from './page-listing-api-handler';
 
@@ -15,20 +13,20 @@ describe('pageListingApiModule', () => {
 
   describe('canHandle', () => {
     it.each`
-      description                           | url                                                    | expected
-      ${'ancestors-children endpoint'}      | ${'/_api/v3/page-listing/ancestors-children?path=/'}  | ${true}
-      ${'children endpoint'}                | ${'/_api/v3/page-listing/children?path=/docs'}        | ${true}
-      ${'info endpoint'}                    | ${'/_api/v3/page-listing/info?path=/wiki'}            | ${true}
-      ${'ancestors-children without query'} | ${'/_api/v3/page-listing/ancestors-children'}         | ${true}
-      ${'children without query'}           | ${'/_api/v3/page-listing/children'}                   | ${true}
-      ${'info without query'}               | ${'/_api/v3/page-listing/info'}                       | ${true}
-      ${'other page-listing endpoint'}      | ${'/_api/v3/page-listing/other'}                      | ${false}
-      ${'different API version'}            | ${'/_api/v2/page-listing/children'}                   | ${false}
-      ${'non-page-listing API'}             | ${'/_api/v3/pages/list'}                              | ${false}
-      ${'regular page path'}                | ${'/page/path'}                                       | ${false}
-      ${'root path'}                        | ${'/'}                                                | ${false}
-      ${'empty URL'}                        | ${''}                                                 | ${false}
-      ${'partial match'}                    | ${'/_api/v3/page-listing-other/children'}             | ${false}
+      description                           | url                                                  | expected
+      ${'ancestors-children endpoint'}      | ${'/_api/v3/page-listing/ancestors-children?path=/'} | ${true}
+      ${'children endpoint'}                | ${'/_api/v3/page-listing/children?path=/docs'}       | ${true}
+      ${'info endpoint'}                    | ${'/_api/v3/page-listing/info?path=/wiki'}           | ${true}
+      ${'ancestors-children without query'} | ${'/_api/v3/page-listing/ancestors-children'}        | ${true}
+      ${'children without query'}           | ${'/_api/v3/page-listing/children'}                  | ${true}
+      ${'info without query'}               | ${'/_api/v3/page-listing/info'}                      | ${true}
+      ${'other page-listing endpoint'}      | ${'/_api/v3/page-listing/other'}                     | ${false}
+      ${'different API version'}            | ${'/_api/v2/page-listing/children'}                  | ${false}
+      ${'non-page-listing API'}             | ${'/_api/v3/pages/list'}                             | ${false}
+      ${'regular page path'}                | ${'/page/path'}                                      | ${false}
+      ${'root path'}                        | ${'/'}                                               | ${false}
+      ${'empty URL'}                        | ${''}                                                | ${false}
+      ${'partial match'}                    | ${'/_api/v3/page-listing-other/children'}            | ${false}
     `('should return $expected for $description: $url', ({ url, expected }) => {
       const result = pageListingApiModule.canHandle(url);
       expect(result).toBe(expected);
@@ -38,7 +36,8 @@ describe('pageListingApiModule', () => {
   describe('handle', () => {
     describe('ancestors-children endpoint', () => {
       it('should anonymize path parameter when present', () => {
-        const originalUrl = '/_api/v3/page-listing/ancestors-children?path=/sensitive/path&limit=10';
+        const originalUrl =
+          '/_api/v3/page-listing/ancestors-children?path=/sensitive/path&limit=10';
 
         // Ensure canHandle returns true for this URL
         expect(pageListingApiModule.canHandle(originalUrl)).toBe(true);
@@ -46,12 +45,14 @@ describe('pageListingApiModule', () => {
         const result = pageListingApiModule.handle(mockRequest, originalUrl);
 
         expect(result).toEqual({
-          'http.target': '/_api/v3/page-listing/ancestors-children?path=%5BANONYMIZED%5D&limit=10',
+          'http.target':
+            '/_api/v3/page-listing/ancestors-children?path=%5BANONYMIZED%5D&limit=10',
         });
       });
 
       it('should anonymize empty path parameter', () => {
-        const originalUrl = '/_api/v3/page-listing/ancestors-children?path=&limit=5';
+        const originalUrl =
+          '/_api/v3/page-listing/ancestors-children?path=&limit=5';
 
         // Ensure canHandle returns true for this URL
         expect(pageListingApiModule.canHandle(originalUrl)).toBe(true);
@@ -60,7 +61,8 @@ describe('pageListingApiModule', () => {
 
         // Empty path parameter should now be anonymized
         expect(result).toEqual({
-          'http.target': '/_api/v3/page-listing/ancestors-children?path=%5BANONYMIZED%5D&limit=5',
+          'http.target':
+            '/_api/v3/page-listing/ancestors-children?path=%5BANONYMIZED%5D&limit=5',
         });
       });
 
@@ -78,7 +80,8 @@ describe('pageListingApiModule', () => {
 
     describe('children endpoint', () => {
       it('should anonymize path parameter when present', () => {
-        const originalUrl = '/_api/v3/page-listing/children?path=/docs/api&offset=0&limit=20';
+        const originalUrl =
+          '/_api/v3/page-listing/children?path=/docs/api&offset=0&limit=20';
 
         // Ensure canHandle returns true for this URL
         expect(pageListingApiModule.canHandle(originalUrl)).toBe(true);
@@ -86,12 +89,14 @@ describe('pageListingApiModule', () => {
         const result = pageListingApiModule.handle(mockRequest, originalUrl);
 
         expect(result).toEqual({
-          'http.target': '/_api/v3/page-listing/children?path=%5BANONYMIZED%5D&offset=0&limit=20',
+          'http.target':
+            '/_api/v3/page-listing/children?path=%5BANONYMIZED%5D&offset=0&limit=20',
         });
       });
 
       it('should handle encoded path parameter', () => {
-        const originalUrl = '/_api/v3/page-listing/children?path=%2Fencoded%2Fpath&limit=10';
+        const originalUrl =
+          '/_api/v3/page-listing/children?path=%2Fencoded%2Fpath&limit=10';
 
         // Ensure canHandle returns true for this URL
         expect(pageListingApiModule.canHandle(originalUrl)).toBe(true);
@@ -99,7 +104,8 @@ describe('pageListingApiModule', () => {
         const result = pageListingApiModule.handle(mockRequest, originalUrl);
 
         expect(result).toEqual({
-          'http.target': '/_api/v3/page-listing/children?path=%5BANONYMIZED%5D&limit=10',
+          'http.target':
+            '/_api/v3/page-listing/children?path=%5BANONYMIZED%5D&limit=10',
         });
       });
 
@@ -117,7 +123,8 @@ describe('pageListingApiModule', () => {
 
     describe('info endpoint', () => {
       it('should anonymize path parameter when present', () => {
-        const originalUrl = '/_api/v3/page-listing/info?path=/wiki/documentation';
+        const originalUrl =
+          '/_api/v3/page-listing/info?path=/wiki/documentation';
 
         // Ensure canHandle returns true for this URL
         expect(pageListingApiModule.canHandle(originalUrl)).toBe(true);
@@ -143,7 +150,8 @@ describe('pageListingApiModule', () => {
 
     describe('edge cases', () => {
       it('should handle URL with complex query parameters', () => {
-        const originalUrl = '/_api/v3/page-listing/ancestors-children?path=/complex/path&sort=name&direction=asc&filter=active';
+        const originalUrl =
+          '/_api/v3/page-listing/ancestors-children?path=/complex/path&sort=name&direction=asc&filter=active';
 
         // Ensure canHandle returns true for this URL
         expect(pageListingApiModule.canHandle(originalUrl)).toBe(true);
@@ -151,7 +159,8 @@ describe('pageListingApiModule', () => {
         const result = pageListingApiModule.handle(mockRequest, originalUrl);
 
         expect(result).toEqual({
-          'http.target': '/_api/v3/page-listing/ancestors-children?path=%5BANONYMIZED%5D&sort=name&direction=asc&filter=active',
+          'http.target':
+            '/_api/v3/page-listing/ancestors-children?path=%5BANONYMIZED%5D&sort=name&direction=asc&filter=active',
         });
       });
 
@@ -165,7 +174,8 @@ describe('pageListingApiModule', () => {
 
         // Fragment should be preserved by anonymizeQueryParams
         expect(result).toEqual({
-          'http.target': '/_api/v3/page-listing/children?path=%5BANONYMIZED%5D#section',
+          'http.target':
+            '/_api/v3/page-listing/children?path=%5BANONYMIZED%5D#section',
         });
       });
     });

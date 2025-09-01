@@ -666,6 +666,10 @@
       "thread_deleted_failed": "删除会话失败",
       "ai_assistant_set_default_success": "已成功设置默认助手",
       "ai_assistant_set_default_failed": "设置默认助手失败"
+    },
+    "delete_modal": {
+      "title": "删除助手",
+      "confirm_message": "确定要删除此助手吗？"
     }
   },
   "link_edit": {

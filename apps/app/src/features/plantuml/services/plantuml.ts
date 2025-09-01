@@ -8,9 +8,9 @@ import carbonGrayDarkStyles from '../themes/carbon-gray-dark.puml';
 import carbonGrayLightStyles from '../themes/carbon-gray-light.puml';
 
 type PlantUMLPluginParams = {
-  plantumlUri: string,
-  isDarkMode?: boolean,
-}
+  plantumlUri: string;
+  isDarkMode?: boolean;
+};
 
 export const remarkPlugin: Plugin<[PlantUMLPluginParams]> = (options) => {
   const { plantumlUri, isDarkMode } = options;
@@ -21,7 +21,9 @@ export const remarkPlugin: Plugin<[PlantUMLPluginParams]> = (options) => {
   return (tree, file) => {
     visit(tree, 'code', (node: Code) => {
       if (node.lang === 'plantuml') {
-        const themeStyles = isDarkMode ? carbonGrayDarkStyles : carbonGrayLightStyles;
+        const themeStyles = isDarkMode
+          ? carbonGrayDarkStyles
+          : carbonGrayLightStyles;
         node.value = `${themeStyles}\n${node.value}`;
       }
     });
