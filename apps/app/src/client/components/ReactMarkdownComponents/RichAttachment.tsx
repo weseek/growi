@@ -27,7 +27,7 @@ export const RichAttachment = React.memo((props: RichAttachmentProps) => {
   const { data: isSharedUser } = useIsSharedUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
 
-  const showTrashButton = !isGuestUser && !isSharedUser && !isReadOnlyUser;
+  const showTrashButton = isGuestUser === false && isSharedUser === false && isReadOnlyUser === false;
 
   const onClickTrashButtonHandler = useCallback(() => {
     if (attachment == null) {
