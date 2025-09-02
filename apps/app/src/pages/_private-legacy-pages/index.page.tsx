@@ -84,6 +84,7 @@ const getServerSideConfigurationProps: GetServerSideProps<ServerConfigurationPro
         isSearchServiceConfigured: searchService.isConfigured,
         isSearchServiceReachable: searchService.isReachable,
         isSearchScopeChildrenAsDefault: configManager.getConfig('customize:isSearchScopeChildrenAsDefault'),
+        isContainerFluid: configManager.getConfig('customize:isContainerFluid'),
       },
     },
   };

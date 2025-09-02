@@ -5,6 +5,7 @@ import {
   isSearchScopeChildrenAsDefaultAtom,
   isSearchServiceConfiguredAtom,
   isSearchServiceReachableAtom,
+  isContainerFluidAtom,
   rendererConfigAtom,
 } from '~/states/server-configurations/server-configurations';
 
@@ -23,6 +24,7 @@ export const useHydrateServerConfigurationAtoms = (
     [isSearchServiceConfiguredAtom, serverConfig.isSearchServiceConfigured],
     [isSearchServiceReachableAtom, serverConfig.isSearchServiceReachable],
     [isSearchScopeChildrenAsDefaultAtom, serverConfig.isSearchScopeChildrenAsDefault],
+    [isContainerFluidAtom, serverConfig.isContainerFluid],
     [rendererConfigAtom, rendererConfigs],
   ]);
 };
