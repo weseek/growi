@@ -2,6 +2,7 @@ import type { IUserHasId } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler } from 'express';
 import { query, type ValidationChain } from 'express-validator';
+
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
@@ -28,10 +29,10 @@ export const getWeatherFactory: GetWeatherFactory = () => {
   return [
     ...validator,
     apiV3FormValidator,
-    async (req: Req, res: ApiV3Response) => {
+    async(req: Req, res: ApiV3Response) => {
       const { city } = req.query;
 
-      const agent = mastra.getAgent("weatherAgent");
+      const agent = mastra.getAgent('weatherAgent');
 
       try {
         const result = await agent.generate(`What's the weather like in ${city}?`);

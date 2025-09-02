@@ -10,7 +10,7 @@ export const weatherTool = createTool({
   outputSchema: z.object({
     output: z.string(),
   }),
-  execute: async () => {
+  execute: async() => {
     return {
       output: 'The weather is sunny',
     };
