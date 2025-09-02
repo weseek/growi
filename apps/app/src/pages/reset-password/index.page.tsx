@@ -2,16 +2,16 @@ import React from 'react';
 
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 
 import { RawLayout } from '~/components/Layout/RawLayout';
 
-import type { CommonProps } from './common-props';
-import { getNextI18NextConfig, getServerSideCommonProps } from './common-props';
+import type { CommonEachProps, CommonInitialProps } from '../common-props';
+import { getServerSideCommonEachProps, getServerSideCommonInitialProps, getServerSideI18nProps } from '../common-props';
+import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
 
 
-type Props = CommonProps & {
+type Props = CommonInitialProps & CommonEachProps & {
   email: string
 };
 
@@ -43,33 +43,32 @@ const ForgotPasswordPage: NextPage<Props> = (props: Props) => {
   );
 };
 
-// eslint-disable-next-line max-len
-async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
-  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
-  props._nextI18Next = nextI18NextConfig._nextI18Next;
-}
+const getServerSideConfigurationProps: GetServerSideProps<{ email: string }> = async(context: GetServerSidePropsContext) => {
+  const email = context.query.email;
+  return {
+    props: {
+      email: (typeof email === 'string') ? email : '',
+    },
+  };
+};
+
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const result = await getServerSideCommonProps(context);
+  const [
+    commonInitialResult,
+    commonEachResult,
+    serverConfigResult,
+    i18nPropsResult,
+  ] = await Promise.all([
+    getServerSideCommonInitialProps(context),
+    getServerSideCommonEachProps(context),
+    getServerSideConfigurationProps(context),
+    getServerSideI18nProps(context, ['translation', 'commons']),
+  ]);
 
-  // check for presence
-  // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
-  if (!('props' in result)) {
-    throw new Error('invalid getSSP result');
-  }
-
-  const props: Props = result.props as Props;
-
-  const email = context.query.email;
-  if (typeof email === 'string') {
-    props.email = email;
-  }
-
-  await injectNextI18NextConfigurations(context, props, ['translation', 'commons']);
-
-  return {
-    props,
-  };
+  return mergeGetServerSidePropsResults(commonInitialResult,
+    mergeGetServerSidePropsResults(commonEachResult,
+      mergeGetServerSidePropsResults(serverConfigResult, i18nPropsResult)));
 };
 
 export default ForgotPasswordPage;

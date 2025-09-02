@@ -1,6 +1,5 @@
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
@@ -11,17 +10,19 @@ import type { RegistrationMode } from '~/interfaces/registration-mode';
 import type { ReqWithUserRegistrationOrder } from '~/server/middlewares/inject-user-registration-order-by-token-middleware';
 
 
-import type { CommonProps } from './common-props';
+import type { CommonEachProps, CommonInitialProps } from './common-props';
 import {
-  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle,
+  getServerSideCommonEachProps, getServerSideCommonInitialProps, getServerSideI18nProps,
 } from './common-props';
+import { useCustomTitle } from './utils/page-title-customization';
+import { mergeGetServerSidePropsResults } from './utils/server-side-props';
 
 
 const CompleteUserRegistrationForm = dynamic(() => import('~/client/components/CompleteUserRegistrationForm')
   .then(mod => mod.CompleteUserRegistrationForm), { ssr: false });
 
 
-type Props = CommonProps & {
+type ServerConfigurationProps = {
   token: string
   email: string
   errorCode?: UserActivationErrorCode
@@ -29,10 +30,12 @@ type Props = CommonProps & {
   isEmailAuthenticationEnabled: boolean
 }
 
+type Props = CommonInitialProps & CommonEachProps & ServerConfigurationProps;
+
 const UserActivationPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
 
-  const title = generateCustomTitle(props, t('User Activation'));
+  const title = useCustomTitle(t('User Activation'));
 
   return (
     <NoLoginLayout>
@@ -50,45 +53,39 @@ const UserActivationPage: NextPage<Props> = (props: Props) => {
   );
 };
 
-/**
- * for Server Side Translations
- * @param context
- * @param props
- * @param namespacesRequired
- */
-async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
-  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
-  props._nextI18Next = nextI18NextConfig._nextI18Next;
-}
-
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const result = await getServerSideCommonProps(context);
+const getServerSideConfigurationProps: GetServerSideProps<ServerConfigurationProps> = async(context: GetServerSidePropsContext) => {
   const req = context.req as ReqWithUserRegistrationOrder & CrowiRequest;
 
-  // check for presence
-  // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
-  if (!('props' in result)) {
-    throw new Error('invalid getSSP result');
-  }
-  const props: Props = result.props as Props;
+  const { configManager } = req.crowi;
 
-  if (req.userRegistrationOrder != null) {
-    const userRegistrationOrder = req.userRegistrationOrder;
-    props.email = userRegistrationOrder.email;
-    props.token = userRegistrationOrder.token;
-  }
-
-  if (typeof context.query.errorCode === 'string') {
-    props.errorCode = context.query.errorCode as UserActivationErrorCode;
-  }
-  props.registrationMode = req.crowi.configManager.getConfig('security:registrationMode');
-  props.isEmailAuthenticationEnabled = req.crowi.configManager.getConfig('security:passport-local:isEmailAuthenticationEnabled');
-
-  await injectNextI18NextConfigurations(context, props, ['translation']);
-
+  const errorCode = context.query.errorCode as UserActivationErrorCode;
   return {
-    props,
+    props: {
+      email: req.userRegistrationOrder?.email ?? '',
+      token: req.userRegistrationOrder?.token ?? '',
+      errorCode: (typeof errorCode === 'string') ? errorCode : undefined,
+      registrationMode: configManager.getConfig('security:registrationMode'),
+      isEmailAuthenticationEnabled: configManager.getConfig('security:passport-local:isEmailAuthenticationEnabled'),
+    },
   };
+};
+
+export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+  const [
+    commonInitialResult,
+    commonEachResult,
+    serverConfigResult,
+    i18nPropsResult,
+  ] = await Promise.all([
+    getServerSideCommonInitialProps(context),
+    getServerSideCommonEachProps(context),
+    getServerSideConfigurationProps(context),
+    getServerSideI18nProps(context, ['translation']),
+  ]);
+
+  return mergeGetServerSidePropsResults(commonInitialResult,
+    mergeGetServerSidePropsResults(commonEachResult,
+      mergeGetServerSidePropsResults(serverConfigResult, i18nPropsResult)));
 };
 
 export default UserActivationPage;
