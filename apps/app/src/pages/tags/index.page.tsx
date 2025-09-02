@@ -1,68 +1,82 @@
 import type { ReactNode, JSX } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import type { IUser } from '@growi/core';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { PagePathNavTitle } from '~/components/Common/PagePathNavTitle';
 import { BasicLayout } from '~/components/Layout/BasicLayout';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
+import type { IDataTagCount } from '~/interfaces/tag';
 import { useHydratePageAtoms } from '~/states/hydrate/page';
 import { useHydrateSidebarAtoms } from '~/states/hydrate/sidebar';
 import {
-  useCurrentUser, useCurrentPathname, useGrowiCloudUri,
+  useCurrentUser, useIsSearchPage,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
-  useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL,
+  useIsSearchScopeChildrenAsDefault, useGrowiCloudUri, useCurrentPathname,
 } from '~/stores-universal/context';
+import { useSWRxTagsList } from '~/stores/tag';
 
 
-import type { NextPageWithLayout } from './_app.page';
-import type { CommonProps } from './common-props';
+import type { NextPageWithLayout } from '../_app.page';
+import type { CommonProps } from '../common-props';
 import {
-  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitleForPage,
-} from './common-props';
+  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle,
+} from '../common-props';
 
-
-const TrashPageList = dynamic(() => import('~/client/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
-const EmptyTrashModal = dynamic(() => import('~/client/components/EmptyTrashModal'), { ssr: false });
-
+const PAGING_LIMIT = 10;
 
 type Props = CommonProps & {
   currentUser: IUser,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
-  showPageLimitationXL: number,
 
   rendererConfig: RendererConfig,
 
   sidebarConfig: ISidebarConfig,
 };
 
-const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
+const TagList = dynamic(() => import('~/client/components/TagList'), { ssr: false });
+const TagCloudBox = dynamic(() => import('~/client/components/TagCloudBox'), { ssr: false });
+
+const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
+  const [activePage, setActivePage] = useState<number>(1);
+  const [offset, setOffset] = useState<number>(0);
+
   useCurrentUser(props.currentUser ?? null);
 
   // clear the cache for the current page
   //  in order to fix https://redmine.weseek.co.jp/issues/135811
   useHydratePageAtoms(undefined);
-  useCurrentPathname('/trash');
+  useCurrentPathname('/tags');
+
+  const { data: tagDataList, error } = useSWRxTagsList(PAGING_LIMIT, offset);
+  const { t } = useTranslation('');
+  const setOffsetByPageNumber = useCallback((selectedPageNumber: number) => {
+    setActivePage(selectedPageNumber);
+    setOffset((selectedPageNumber - 1) * PAGING_LIMIT);
+  }, []);
+
+  const tagData: IDataTagCount[] = tagDataList?.data || [];
+  const totalCount: number = tagDataList?.totalCount || 0;
+  const isLoading = tagDataList === undefined && error == null;
 
   useGrowiCloudUri(props.growiCloudUri);
 
+  useIsSearchPage(false);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
-  useIsSearchPage(false);
-
-  useShowPageLimitationXL(props.showPageLimitationXL);
-
-  const title = generateCustomTitleForPage(props, '/trash');
+  const title = generateCustomTitle(props, t('Tags'));
 
   return (
     <>
@@ -72,10 +86,34 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
       <div className="dynamic-layout-root">
         <GroundGlassBar className="sticky-top py-4"></GroundGlassBar>
 
-        <div className="main ps-sidebar">
+        <div className="main ps-sidebar" data-testid="tags-page">
           <div className="container-lg wide-gutter-x-lg">
-            <PagePathNavTitle pagePath="/trash" />
-            <TrashPageList />
+
+            <h2 className="sticky-top py-1">
+              {`${t('Tags')}(${totalCount})`}
+            </h2>
+
+            <div className="px-3 mb-5 text-center">
+              <TagCloudBox tags={tagData} minSize={20} />
+            </div>
+            { isLoading
+              ? (
+                <div className="text-muted text-center">
+                  <LoadingSpinner className="mt-3 fs-3" />
+                </div>
+              )
+              : (
+                <div data-testid="grw-tags-list">
+                  <TagList
+                    tagData={tagData}
+                    totalTags={totalCount}
+                    activePage={activePage}
+                    onChangePage={setOffsetByPageNumber}
+                    pagingLimit={PAGING_LIMIT}
+                  />
+                </div>
+              )
+            }
           </div>
         </div>
       </div>
@@ -84,7 +122,7 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
 };
 
 type LayoutProps = Props & {
-  children?: ReactNode,
+  children?: ReactNode
 }
 
 const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
@@ -93,14 +131,11 @@ const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
   return <BasicLayout>{children}</BasicLayout>;
 };
 
-TrashPage.getLayout = function getLayout(page) {
+TagPage.getLayout = function getLayout(page) {
   return (
-    <>
-      <Layout {...page.props}>
-        {page}
-      </Layout>
-      <EmptyTrashModal />
-    </>
+    <Layout {...page.props}>
+      {page}
+    </Layout>
   );
 };
 
@@ -114,7 +149,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('customize:isSearchScopeChildrenAsDefault');
-  props.showPageLimitationXL = crowi.configManager.getConfig('customize:showPageLimitationXL');
 
   props.sidebarConfig = {
     isSidebarCollapsedMode: configManager.getConfig('customize:isSidebarCollapsedMode'),
@@ -147,6 +181,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   if (user != null) {
     props.currentUser = user.toObject();
   }
+
   injectServerConfigurations(context, props);
   await injectNextI18NextConfigurations(context, props, ['translation']);
 
@@ -155,4 +190,4 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   };
 };
 
-export default TrashPage;
+export default TagPage;
