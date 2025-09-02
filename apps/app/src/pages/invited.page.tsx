@@ -1,36 +1,34 @@
 import React from 'react';
 
-import type { IUser } from '@growi/core';
 import { USER_STATUS } from '@growi/core';
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import { useCsrfToken, useCurrentPathname, useCurrentUser } from '~/stores-universal/context';
 
-import type { CommonProps } from './common-props';
-import { getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig } from './common-props';
+import type { CommonEachProps, CommonInitialProps } from './common-props';
+import {
+  getServerSideCommonEachProps, getServerSideCommonInitialProps, getServerSideI18nProps,
+} from './common-props';
+import { mergeGetServerSidePropsResults } from './utils/server-side-props';
+import { useCustomTitle } from './utils/page-title-customization';
 
 const InvitedForm = dynamic(() => import('~/client/components/InvitedForm').then(mod => mod.InvitedForm), { ssr: false });
 
-type Props = CommonProps & {
-  currentUser: IUser,
-  invitedFormUsername: string,
-  invitedFormName: string,
-}
+type ServerConfigurationProps = {
+  invitedFormUsername: string;
+  invitedFormName: string;
+};
+
+type Props = CommonInitialProps & CommonEachProps & ServerConfigurationProps;
 
 const InvitedPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
 
-  useCsrfToken(props.csrfToken);
-  useCurrentPathname(props.currentPathname);
-  useCurrentUser(props.currentUser);
-
-  const title = generateCustomTitle(props, t('invited.title'));
+  const title = useCustomTitle(t('invited.title'));
   const classNames: string[] = ['invited-page'];
 
   return (
@@ -44,60 +42,66 @@ const InvitedPage: NextPage<Props> = (props: Props) => {
 
 };
 
-async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
-  const req: CrowiRequest = context.req as CrowiRequest;
+const getServerSideConfigurationProps: GetServerSideProps<ServerConfigurationProps> = async(context: GetServerSidePropsContext) => {
+  const req = context.req as CrowiRequest;
   const { body: invitedForm } = req;
 
-  if (props.invitedFormUsername != null) {
-    props.invitedFormUsername = invitedForm.username;
-  }
-  if (props.invitedFormName != null) {
-    props.invitedFormName = invitedForm.name;
-  }
-}
-
-/**
- * for Server Side Translations
- * @param context
- * @param props
- * @param namespacesRequired
- */
-async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
-  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
-  props._nextI18Next = nextI18NextConfig._nextI18Next;
-}
+  return {
+    props: {
+      invitedFormUsername: invitedForm?.username ?? '',
+      invitedFormName: invitedForm?.name ?? '',
+    },
+  };
+};
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const req = context.req as CrowiRequest;
-  const { user } = req;
-  const result = await getServerSideCommonProps(context);
+  //
+  // STAGE 1
+  //
 
-  // check for presence
-  // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
-  if (!('props' in result)) {
-    throw new Error('invalid getSSP result');
+  const commonEachPropsResult = await getServerSideCommonEachProps(context);
+  // Handle early return cases (redirect/notFound)
+  if ('redirect' in commonEachPropsResult || 'notFound' in commonEachPropsResult) {
+    return commonEachPropsResult;
   }
-  const props: Props = result.props as Props;
+  const commonEachProps = await commonEachPropsResult.props;
 
-  if (user != null) {
-    props.currentUser = user.toObject();
-
-    // Only invited user can access to /invited page
-    if (props.currentUser.status !== USER_STATUS.INVITED) {
-      return {
-        redirect: {
-          permanent: false,
-          destination: '/',
-        },
-      };
-    }
-
+  // Handle redirect destination from common props
+  if (commonEachProps.redirectDestination != null) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: commonEachProps.redirectDestination,
+      },
+    };
   }
 
-  await injectServerConfigurations(context, props);
-  await injectNextI18NextConfigurations(context, props, ['translation']);
+  // Only invited user can access to /invited page
+  if (commonEachProps.currentUser != null && commonEachProps.currentUser.status !== USER_STATUS.INVITED) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/',
+      },
+    };
+  }
 
-  return { props };
+  //
+  // STAGE 2
+  //
+  const [
+    commonInitialResult,
+    serverConfigResult,
+    i18nPropsResult,
+  ] = await Promise.all([
+    getServerSideCommonInitialProps(context),
+    getServerSideConfigurationProps(context),
+    getServerSideI18nProps(context, ['translation']),
+  ]);
+
+  return mergeGetServerSidePropsResults(commonInitialResult,
+    mergeGetServerSidePropsResults(commonEachPropsResult,
+      mergeGetServerSidePropsResults(serverConfigResult, i18nPropsResult)));
 };
 
 export default InvitedPage;

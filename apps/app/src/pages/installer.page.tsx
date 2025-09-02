@@ -4,33 +4,29 @@ import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import {
-  useCsrfToken, useAppTitle, useSiteUrl, useConfidential, useGrowiCloudUri,
-} from '~/stores-universal/context';
 
-import type { CommonProps } from './common-props';
-import { getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle } from './common-props';
+import type { CommonEachProps, CommonInitialProps } from './common-props';
+import {
+  getServerSideCommonEachProps, getServerSideCommonInitialProps, getServerSideI18nProps,
+} from './common-props';
+import { mergeGetServerSidePropsResults } from './utils/server-side-props';
+import { useCustomTitle } from './utils/page-title-customization';
 
 
 const InstallerForm = dynamic(() => import('~/client/components/InstallerForm'), { ssr: false });
 const DataTransferForm = dynamic(() => import('~/client/components/DataTransferForm'), { ssr: false });
 const CustomNavAndContents = dynamic(() => import('~/client/components/CustomNavigation/CustomNavAndContents'), { ssr: false });
 
-async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
-  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired, true);
-  props._nextI18Next = nextI18NextConfig._nextI18Next;
-}
-
-type Props = CommonProps & {
-  minPasswordLength: number,
-  pageWithMetaStr: string,
+type ServerConfigurationProps = {
+  minPasswordLength: number;
 };
+
+type Props = CommonInitialProps & CommonEachProps & ServerConfigurationProps;
 
 const InstallerPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
@@ -52,14 +48,7 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
     };
   }, [props.minPasswordLength, t, tCommons]);
 
-  // commons
-  useAppTitle(props.appTitle);
-  useSiteUrl(props.siteUrl);
-  useConfidential(props.confidential);
-  useCsrfToken(props.csrfToken);
-  useGrowiCloudUri(props.growiCloudUri);
-
-  const title = generateCustomTitle(props, t('installer.title'));
+  const title = useCustomTitle(t('installer.title'));
   const classNames: string[] = [];
 
   return (
@@ -74,31 +63,34 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
   );
 };
 
-async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
-  const req: CrowiRequest = context.req as CrowiRequest;
+const getServerSideConfigurationProps: GetServerSideProps<ServerConfigurationProps> = async(context: GetServerSidePropsContext) => {
+  const req = context.req as CrowiRequest;
   const { crowi } = req;
   const { configManager } = crowi;
 
-  props.minPasswordLength = configManager.getConfig('app:minPasswordLength');
-}
+  return {
+    props: {
+      minPasswordLength: configManager.getConfig('app:minPasswordLength'),
+    },
+  };
+};
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const result = await getServerSideCommonProps(context);
+  const [
+    commonInitialResult,
+    commonEachResult,
+    serverConfigResult,
+    i18nPropsResult,
+  ] = await Promise.all([
+    getServerSideCommonInitialProps(context),
+    getServerSideCommonEachProps(context),
+    getServerSideConfigurationProps(context),
+    getServerSideI18nProps(context, ['translation']),
+  ]);
 
-  // check for presence
-  // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
-  if (!('props' in result)) {
-    throw new Error('invalid getSSP result');
-  }
-
-  const props: Props = result.props as Props;
-
-  await injectNextI18NextConfigurations(context, props, ['translation']);
-  injectServerConfigurations(context, props);
-
-  return {
-    props,
-  };
+  return mergeGetServerSidePropsResults(commonInitialResult,
+    mergeGetServerSidePropsResults(commonEachResult,
+      mergeGetServerSidePropsResults(serverConfigResult, i18nPropsResult)));
 };
 
 export default InstallerPage;
