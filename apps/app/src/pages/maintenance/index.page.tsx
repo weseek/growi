@@ -1,11 +1,11 @@
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import dynamic from 'next/dynamic';
 
-import type { CommonEachProps, CommonInitialProps } from './common-props';
+import type { CommonEachProps, CommonInitialProps } from '../common-props';
 import {
   getServerSideCommonEachProps, getServerSideCommonInitialProps, getServerSideI18nProps,
-} from './common-props';
-import { mergeGetServerSidePropsResults } from './utils/server-side-props';
+} from '../common-props';
+import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
 
 
 const Maintenance = dynamic(() => import('~/client/components/Maintenance').then(mod => mod.Maintenance), { ssr: false });
