@@ -40,6 +40,7 @@ module.exports = {
     'src/features/page-bulk-export/**',
     'src/features/opentelemetry/**',
     'src/interfaces/**',
+    'src/utils/**',
   ],
   settings: {
     // resolve path aliases by eslint-import-resolver-typescript
