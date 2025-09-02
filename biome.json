@@ -35,7 +35,6 @@
       "!apps/app/src/server/**",
       "!apps/app/src/services/**",
       "!apps/app/src/stores/**",
-      "!apps/app/src/stores-universal/**",
       "!apps/app/src/styles/**",
       "!apps/app/test/integration/service/**",
       "!apps/app/test-with-vite/**"
