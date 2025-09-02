@@ -21,9 +21,11 @@ export const AiAssistantManagementEditInstruction = (props: Props): JSX.Element 
       <AiAssistantManagementHeader labelTranslationKey="modal_ai_assistant.page_mode_title.instruction" />
 
       <ModalBody className="px-4">
-        <p className="text-secondary py-1">
-          {t('modal_ai_assistant.instructions.description')}
-        </p>
+        <p
+          className="text-secondary py-1"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: t('modal_ai_assistant.instructions.description') }}
+        />
 
         <Input
           autoFocus
