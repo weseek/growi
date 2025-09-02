@@ -5,7 +5,10 @@ import type { Resource } from '@opentelemetry/resources';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import type { NodeSDKConfiguration } from '@opentelemetry/sdk-node';
-import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
+import {
+  ATTR_SERVICE_NAME,
+  ATTR_SERVICE_VERSION,
+} from '@opentelemetry/semantic-conventions';
 
 import { configManager } from '~/server/service/config-manager';
 import { getGrowiVersion } from '~/utils/growi-version';
@@ -14,8 +17,8 @@ import { httpInstrumentationConfig as httpInstrumentationConfigForAnonymize } fr
 import { ATTR_SERVICE_INSTANCE_ID } from './semconv';
 
 type Option = {
-  enableAnonymization?: boolean,
-}
+  enableAnonymization?: boolean;
+};
 
 type Configuration = Partial<NodeSDKConfiguration> & {
   resource: Resource;
@@ -34,7 +37,9 @@ export const generateNodeSDKConfiguration = (opts?: Option): Configuration => {
     });
 
     // Data anonymization configuration
-    const httpInstrumentationConfig = opts?.enableAnonymization ? httpInstrumentationConfigForAnonymize : {};
+    const httpInstrumentationConfig = opts?.enableAnonymization
+      ? httpInstrumentationConfigForAnonymize
+      : {};
 
     configuration = {
       resource,
@@ -43,23 +48,24 @@ export const generateNodeSDKConfiguration = (opts?: Option): Configuration => {
         exporter: new OTLPMetricExporter(),
         exportIntervalMillis: 300000, // 5 minute
       }),
-      instrumentations: [getNodeAutoInstrumentations({
-        '@opentelemetry/instrumentation-bunyan': {
-          enabled: false,
-        },
-        // disable fs instrumentation since this generates very large amount of traces
-        // see: https://opentelemetry.io/docs/languages/js/libraries/#registration
-        '@opentelemetry/instrumentation-fs': {
-          enabled: false,
-        },
-        // HTTP instrumentation with anonymization
-        '@opentelemetry/instrumentation-http': {
-          enabled: true,
-          ...httpInstrumentationConfig,
-        },
-      })],
+      instrumentations: [
+        getNodeAutoInstrumentations({
+          '@opentelemetry/instrumentation-bunyan': {
+            enabled: false,
+          },
+          // disable fs instrumentation since this generates very large amount of traces
+          // see: https://opentelemetry.io/docs/languages/js/libraries/#registration
+          '@opentelemetry/instrumentation-fs': {
+            enabled: false,
+          },
+          // HTTP instrumentation with anonymization
+          '@opentelemetry/instrumentation-http': {
+            enabled: true,
+            ...httpInstrumentationConfig,
+          },
+        }),
+      ],
     };
-
   }
 
   return configuration;
@@ -69,19 +75,27 @@ export const generateNodeSDKConfiguration = (opts?: Option): Configuration => {
  * Generate additional attributes after database initialization
  * This function should be called after database is available
  */
-export const generateAdditionalResourceAttributes = async(opts?: Option): Promise<Resource> => {
+export const generateAdditionalResourceAttributes = async (
+  opts?: Option,
+): Promise<Resource> => {
   if (resource == null) {
-    throw new Error('Resource is not initialized. Call generateNodeSDKConfiguration first.');
+    throw new Error(
+      'Resource is not initialized. Call generateNodeSDKConfiguration first.',
+    );
   }
 
-  const serviceInstanceId = configManager.getConfig('otel:serviceInstanceId')
-    ?? configManager.getConfig('app:serviceInstanceId');
+  const serviceInstanceId =
+    configManager.getConfig('otel:serviceInstanceId') ??
+    configManager.getConfig('app:serviceInstanceId');
 
-  const { getApplicationResourceAttributes, getOsResourceAttributes } = await import('./custom-resource-attributes');
+  const { getApplicationResourceAttributes, getOsResourceAttributes } =
+    await import('./custom-resource-attributes');
 
-  return resource.merge(resourceFromAttributes({
-    [ATTR_SERVICE_INSTANCE_ID]: serviceInstanceId,
-    ...await getApplicationResourceAttributes(),
-    ...await getOsResourceAttributes(),
-  }));
+  return resource.merge(
+    resourceFromAttributes({
+      [ATTR_SERVICE_INSTANCE_ID]: serviceInstanceId,
+      ...(await getApplicationResourceAttributes()),
+      ...(await getOsResourceAttributes()),
+    }),
+  );
 };

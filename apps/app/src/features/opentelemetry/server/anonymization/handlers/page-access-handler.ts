@@ -1,20 +1,21 @@
-import { createHash } from 'crypto';
-import type { IncomingMessage } from 'http';
-
 import {
-  isCreatablePage,
-  isUsersHomepage,
-  isUserPage,
-  isUsersTopPage,
-  isPermalink,
   getUsernameByPath,
+  isCreatablePage,
+  isPermalink,
+  isUserPage,
+  isUsersHomepage,
+  isUsersTopPage,
 } from '@growi/core/dist/utils/page-path-utils';
 import { diag } from '@opentelemetry/api';
+import { createHash } from 'crypto';
+import type { IncomingMessage } from 'http';
 
 import { ATTR_HTTP_TARGET } from '../../semconv';
 import type { AnonymizationModule } from '../interfaces/anonymization-module';
 
-const logger = diag.createComponentLogger({ namespace: 'growi:anonymization:page-access-handler' });
+const logger = diag.createComponentLogger({
+  namespace: 'growi:anonymization:page-access-handler',
+});
 
 /**
  * Create a hash of the given string
@@ -54,7 +55,8 @@ function anonymizeUrlPath(urlPath: string): string {
           const cleanRemainingPath = remainingPath.replace(/^\/+|\/+$/g, '');
           const hashedRemainingPath = hashString(cleanRemainingPath);
           const leadingSlash = remainingPath.startsWith('/') ? '/' : '';
-          const trailingSlash = remainingPath.endsWith('/') && remainingPath.length > 1 ? '/' : '';
+          const trailingSlash =
+            remainingPath.endsWith('/') && remainingPath.length > 1 ? '/' : '';
 
           return `/user/[USERNAME_HASHED:${hashedUsername}]${leadingSlash}[HASHED:${hashedRemainingPath}]${trailingSlash}`;
         }
@@ -72,11 +74,11 @@ function anonymizeUrlPath(urlPath: string): string {
     // Hash the path and return with original slash structure
     const hashedPath = hashString(cleanPath);
     const leadingSlash = urlPath.startsWith('/') ? '/' : '';
-    const trailingSlash = urlPath.endsWith('/') && urlPath.length > 1 ? '/' : '';
+    const trailingSlash =
+      urlPath.endsWith('/') && urlPath.length > 1 ? '/' : '';
 
     return `${leadingSlash}[HASHED:${hashedPath}]${trailingSlash}`;
-  }
-  catch (error) {
+  } catch (error) {
     logger.warn(`Failed to anonymize URL path: ${error}`);
     return urlPath;
   }
@@ -98,11 +100,14 @@ export const pageAccessModule: AnonymizationModule = {
       if (path === '/') return false;
 
       // Exclude static resources first
-      if (path.includes('/static/')
-        || path.includes('/_next/')
-        || path.includes('/favicon')
-        || path.includes('/assets/')
-        || path.includes('.')) { // Exclude file extensions (images, css, js, etc.)
+      if (
+        path.includes('/static/') ||
+        path.includes('/_next/') ||
+        path.includes('/favicon') ||
+        path.includes('/assets/') ||
+        path.includes('.')
+      ) {
+        // Exclude file extensions (images, css, js, etc.)
         return false;
       }
 
@@ -118,8 +123,7 @@ export const pageAccessModule: AnonymizationModule = {
       // Use GROWI's isCreatablePage logic to determine if this is a valid page path
       // This excludes API endpoints, system paths, etc.
       return isCreatablePage(path);
-    }
-    catch {
+    } catch {
       // If URL parsing fails, don't handle it
       return false;
     }
@@ -148,8 +152,7 @@ export const pageAccessModule: AnonymizationModule = {
       }
 
       return null;
-    }
-    catch (error) {
+    } catch (error) {
       logger.warn(`Failed to anonymize page access URL: ${error}`);
       return null;
     }
