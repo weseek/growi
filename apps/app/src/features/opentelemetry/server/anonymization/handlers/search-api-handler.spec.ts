@@ -1,8 +1,6 @@
 import type { IncomingMessage } from 'http';
 
-import {
-  describe, it, expect, beforeEach,
-} from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { searchApiModule } from './search-api-handler';
 
@@ -15,18 +13,18 @@ describe('searchApiModule', () => {
 
   describe('canHandle', () => {
     it.each`
-      description                     | url                                 | expected
-      ${'search API endpoint'}        | ${'/_api/search?q=test'}            | ${true}
-      ${'search API without query'}   | ${'/_api/search'}                   | ${true}
-      ${'search endpoint'}            | ${'/_search?q=keyword'}             | ${true}
-      ${'search endpoint without q'}  | ${'/_search'}                       | ${true}
-      ${'nested search API'}          | ${'/admin/_api/search?q=admin'}     | ${true}
-      ${'nested search endpoint'}     | ${'/docs/_search?q=documentation'}  | ${true}
-      ${'other API endpoint'}         | ${'/_api/pages'}                    | ${false}
-      ${'regular page path'}          | ${'/search/results'}                | ${false}
-      ${'similar but different'}      | ${'/_api/search-results'}           | ${false}
-      ${'root path'}                  | ${'/'}                              | ${false}
-      ${'empty URL'}                  | ${''}                               | ${false}
+      description                    | url                                | expected
+      ${'search API endpoint'}       | ${'/_api/search?q=test'}           | ${true}
+      ${'search API without query'}  | ${'/_api/search'}                  | ${true}
+      ${'search endpoint'}           | ${'/_search?q=keyword'}            | ${true}
+      ${'search endpoint without q'} | ${'/_search'}                      | ${true}
+      ${'nested search API'}         | ${'/admin/_api/search?q=admin'}    | ${true}
+      ${'nested search endpoint'}    | ${'/docs/_search?q=documentation'} | ${true}
+      ${'other API endpoint'}        | ${'/_api/pages'}                   | ${false}
+      ${'regular page path'}         | ${'/search/results'}               | ${false}
+      ${'similar but different'}     | ${'/_api/search-results'}          | ${false}
+      ${'root path'}                 | ${'/'}                             | ${false}
+      ${'empty URL'}                 | ${''}                              | ${false}
     `('should return $expected for $description: $url', ({ url, expected }) => {
       const result = searchApiModule.canHandle(url);
       expect(result).toBe(expected);
@@ -147,7 +145,8 @@ describe('searchApiModule', () => {
 
         // The actual output may have different parameter order due to URL parsing
         expect(result).toEqual({
-          'http.target': '/_search?category=docs&q=%5BANONYMIZED%5D&page=1&sort=date',
+          'http.target':
+            '/_search?category=docs&q=%5BANONYMIZED%5D&page=1&sort=date',
         });
       });
 
