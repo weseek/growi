@@ -6,11 +6,11 @@ import Link from 'next/link';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { useIsMailerSetup } from '~/stores-universal/context';
+import { useIsMailerSetup } from '~/states/server-configurations';
 
 const PasswordResetRequestForm: FC = () => {
   const { t } = useTranslation();
-  const { data: isMailerSetup } = useIsMailerSetup();
+  const [isMailerSetup] = useIsMailerSetup();
   const [email, setEmail] = useState('');
 
   const changeEmail = useCallback((inputValue) => {

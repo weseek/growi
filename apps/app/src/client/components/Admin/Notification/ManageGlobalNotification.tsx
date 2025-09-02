@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import { NotifyType, TriggerEventType } from '~/client/interfaces/global-notification';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
-import { useIsMailerSetup } from '~/stores-universal/context';
+import { useIsMailerSetup } from '~/states/server-configurations';
 import { useSWRxGlobalNotification } from '~/stores/global-notification';
 import loggerFactory from '~/utils/logger';
 
@@ -106,7 +106,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
   }, [emailToSend, notifyType, props.globalNotificationId, router, slackChannelToSend, triggerEvents, triggerPath, updateGlobalNotification]);
 
 
-  const { data: isMailerSetup } = useIsMailerSetup();
+  const [isMailerSetup] = useIsMailerSetup();
   const { t } = useTranslation('admin');
 
   return (
