@@ -49,12 +49,12 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
 
   // Turn on search page flag
   useEffect(() => {
-    const resetPageContexts = () => {
+    const turnOnSearchPage = () => {
       setIsSearchPage(true);
     };
-    router.events.on('routeChangeComplete', resetPageContexts);
+    router.events.on('routeChangeComplete', turnOnSearchPage);
     return () => {
-      router.events.off('routeChangeComplete', resetPageContexts);
+      router.events.off('routeChangeComplete', turnOnSearchPage);
     };
   }, [router, setIsSearchPage]);
 
