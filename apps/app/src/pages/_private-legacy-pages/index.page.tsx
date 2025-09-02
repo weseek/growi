@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { isPermalink, isUserPage, isUsersTopPage } from '@growi/core/dist/utils/page-path-utils';
 import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
@@ -5,17 +7,16 @@ import type {
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { useIsomorphicLayoutEffect } from 'usehooks-ts';
+import { useRouter } from 'next/router';
 
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { useIsSearchPage } from '~/states/context';
 import { useHydrateSidebarAtoms } from '~/states/ui/sidebar/hydrate';
 
-import type {
-  CommonEachProps,
-  CommonInitialProps, UserUISettingsProps,
-} from '../common-props';
+import type { ServerConfigurationProps } from '../_search/types';
+import { useHydrateServerConfigurationAtoms } from '../_search/use-hydrate-server-configurations';
+import type { CommonEachProps, CommonInitialProps, UserUISettingsProps } from '../common-props';
 import {
   getServerSideCommonEachProps, getServerSideCommonInitialProps, getServerSideI18nProps, getServerSideUserUISettingsProps,
 } from '../common-props';
@@ -24,8 +25,6 @@ import { getServerSideRendererConfigProps, getServerSideSidebarConfigProps } fro
 import { useCustomTitle } from '../utils/page-title-customization';
 import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
 
-import type { ServerConfigurationProps } from './types';
-import { useHydrateServerConfigurationAtoms } from './use-hydrate-server-configurations';
 
 const SearchResultLayout = dynamic(() => import('~/components/Layout/SearchResultLayout'), { ssr: false });
 
@@ -33,6 +32,7 @@ const SearchResultLayout = dynamic(() => import('~/components/Layout/SearchResul
 type Props = CommonInitialProps & CommonEachProps & ServerConfigurationProps & RendererConfigProps & UserUISettingsProps & SidebarConfigProps;
 
 const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
+  const router = useRouter();
   const { t } = useTranslation();
 
   const PrivateLegacyPages = dynamic(() => import('~/client/components/PrivateLegacyPages'), { ssr: false });
@@ -42,15 +42,22 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   // useHydratePageAtoms(undefined);
   // useCurrentPathname('/_private-legacy-pages');
 
-  const [, setSearchPage] = useIsSearchPage();
-
   // Hydrate server-side data
   useHydrateServerConfigurationAtoms(props.serverConfig, props.rendererConfig);
   useHydrateSidebarAtoms(props.sidebarConfig, props.userUISettings);
 
-  useIsomorphicLayoutEffect(() => {
-    setSearchPage(true);
-  }, [setSearchPage]);
+  const [, setIsSearchPage] = useIsSearchPage();
+
+  // Turn on search page flag
+  useEffect(() => {
+    const resetPageContexts = () => {
+      setIsSearchPage(true);
+    };
+    router.events.on('routeChangeComplete', resetPageContexts);
+    return () => {
+      router.events.off('routeChangeComplete', resetPageContexts);
+    };
+  }, [router, setIsSearchPage]);
 
   const title = useCustomTitle(t('private_legacy_pages.title'));
 
