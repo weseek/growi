@@ -23,8 +23,8 @@ import loggerFactory from '~/utils/logger';
 import type { NextPageWithLayout } from '../../_app.page';
 import type { GeneralPageInitialProps } from '../../general-page';
 import { useInitialCSRFetch } from '../../general-page';
+import { useHydrateGeneralPageConfigurationAtoms } from '../../general-page/hydrate';
 import { registerPageToShowRevisionWithMeta } from '../../general-page/superjson';
-import { useHydrateServerConfigurationAtoms } from '../../general-page/use-hydrate-server-configurations';
 
 import { NEXT_JS_ROUTING_PAGE } from './consts';
 import { getServerSidePropsForInitial, getServerSidePropsForSameRoute } from './server-side-props';
@@ -103,7 +103,7 @@ type LayoutProps = Props & {
 const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
   // Hydrate sidebar atoms with server-side data - must be called unconditionally
   const initialProps = isInitialProps(props) ? props : undefined;
-  useHydrateServerConfigurationAtoms(initialProps?.serverConfig, initialProps?.rendererConfig);
+  useHydrateGeneralPageConfigurationAtoms(initialProps?.serverConfig, initialProps?.rendererConfig);
 
   return <ShareLinkLayout>{children}</ShareLinkLayout>;
 };

@@ -2,10 +2,8 @@ import { useHydrateAtoms } from 'jotai/utils';
 
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import {
-  isSearchScopeChildrenAsDefaultAtom,
-  isSearchServiceConfiguredAtom,
-  isSearchServiceReachableAtom,
   isContainerFluidAtom,
+  showPageLimitationLAtom,
   rendererConfigAtom,
 } from '~/states/server-configurations';
 
@@ -21,10 +19,8 @@ export const useHydrateServerConfigurationAtoms = (
 ): void => {
   // Hydrate server configuration atoms with server-side data
   useHydrateAtoms(serverConfig == null || rendererConfigs == null ? [] : [
-    [isSearchServiceConfiguredAtom, serverConfig.isSearchServiceConfigured],
-    [isSearchServiceReachableAtom, serverConfig.isSearchServiceReachable],
-    [isSearchScopeChildrenAsDefaultAtom, serverConfig.isSearchScopeChildrenAsDefault],
     [isContainerFluidAtom, serverConfig.isContainerFluid],
+    [showPageLimitationLAtom, serverConfig.showPageLimitationL],
     [rendererConfigAtom, rendererConfigs],
   ]);
 };

@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next';
 import type { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import { useKeywordManager } from '~/client/services/search-operation';
 import type { IFormattedSearchResult } from '~/interfaces/search';
-import { useShowPageLimitationL } from '~/stores-universal/context';
+import { useShowPageLimitationL } from '~/states/server-configurations';
 import { type ISearchConditions, type ISearchConfigurations, useSWRxSearch } from '~/stores/search';
 
 import { NotAvailableForGuest } from './NotAvailableForGuest';
@@ -84,7 +84,7 @@ SearchResultListHead.displayName = 'SearchResultListHead';
 
 export const SearchPage = (): JSX.Element => {
   const { t } = useTranslation();
-  const { data: showPageLimitationL } = useShowPageLimitationL();
+  const [showPageLimitationL] = useShowPageLimitationL();
 
   const { data: keyword, pushState } = useKeywordManager();
 
