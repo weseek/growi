@@ -37,7 +37,9 @@ module.exports = {
     'src/features/search/**',
     'src/features/plantuml/**',
     'src/features/external-user-group/**',
+    'src/features/page-bulk-export/**',
     'src/features/opentelemetry/**',
+    'src/interfaces/**',
     'src/utils/**',
   ],
   settings: {
