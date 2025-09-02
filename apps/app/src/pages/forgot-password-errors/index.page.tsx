@@ -7,8 +7,8 @@ import Link from 'next/link';
 
 import { forgotPasswordErrorCode } from '~/interfaces/errors/forgot-password';
 
-import type { CommonProps } from './common-props';
-import { getNextI18NextConfig, getServerSideCommonProps } from './common-props';
+import type { CommonProps } from '../common-props';
+import { getNextI18NextConfig, getServerSideCommonProps } from '../common-props';
 
 type Props = CommonProps & {
   errorCode?: forgotPasswordErrorCode
