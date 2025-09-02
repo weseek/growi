@@ -12,22 +12,18 @@ import { BasicLayout } from '~/components/Layout/BasicLayout';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { IDataTagCount } from '~/interfaces/tag';
-import { useHydrateSidebarAtoms } from '~/states/ui/sidebar/hydrate';
 import { useSWRxTagsList } from '~/stores/tag';
 
 
 import type { NextPageWithLayout } from '../_app.page';
-import type { CommonEachProps, CommonInitialProps, UserUISettingsProps } from '../common-props';
-import {
-  getServerSideCommonEachProps, getServerSideCommonInitialProps, getServerSideI18nProps, getServerSideUserUISettingsProps,
-} from '../common-props';
-import type { RendererConfigProps, SidebarConfigProps } from '../general-page';
-import { getServerSideSidebarConfigProps } from '../general-page';
+import type { BasicLayoutConfigurationProps } from '../basic-layout-page';
+import { getServerSideBasicLayoutProps } from '../basic-layout-page';
+import { useHydrateBasicLayoutConfigurationAtoms } from '../basic-layout-page/hydrate';
+import type { CommonEachProps, CommonInitialProps } from '../common-props';
+import { getServerSideCommonEachProps, getServerSideCommonInitialProps, getServerSideI18nProps } from '../common-props';
 import { useCustomTitle } from '../utils/page-title-customization';
 import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
 
-import type { ServerConfigurationProps } from './types';
-import { useHydrateServerConfigurationAtoms } from './use-hydrate-server-configurations';
 
 const PAGING_LIMIT = 10;
 
@@ -36,7 +32,7 @@ const TagList = dynamic(() => import('~/client/components/TagList'), { ssr: fals
 const TagCloudBox = dynamic(() => import('~/client/components/TagCloudBox'), { ssr: false });
 
 
-type Props = CommonInitialProps & CommonEachProps & ServerConfigurationProps & RendererConfigProps & UserUISettingsProps & SidebarConfigProps;
+type Props = CommonInitialProps & CommonEachProps & BasicLayoutConfigurationProps;
 
 const TagPage: NextPageWithLayout<Props> = (props: Props) => {
   const { t } = useTranslation();
@@ -45,10 +41,6 @@ const TagPage: NextPageWithLayout<Props> = (props: Props) => {
   // //  in order to fix https://redmine.weseek.co.jp/issues/135811
   // useHydratePageAtoms(undefined);
   // useCurrentPathname('/tags');
-
-  // Hydrate server-side data
-  useHydrateServerConfigurationAtoms(props.serverConfig);
-  useHydrateSidebarAtoms(props.sidebarConfig, props.userUISettings);
 
   const [activePage, setActivePage] = useState<number>(1);
   const [offset, setOffset] = useState<number>(0);
@@ -113,7 +105,7 @@ type LayoutProps = Props & {
 }
 
 const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
-  useHydrateSidebarAtoms(props.sidebarConfig, props.userUISettings);
+  useHydrateBasicLayoutConfigurationAtoms(props.searchConfig, props.sidebarConfig, props.userUISettings);
 
   return <BasicLayout>{children}</BasicLayout>;
 };
@@ -124,25 +116,6 @@ TagPage.getLayout = function getLayout(page) {
       {page}
     </Layout>
   );
-};
-
-
-const getServerSideConfigurationProps: GetServerSideProps<ServerConfigurationProps> = async(context: GetServerSidePropsContext) => {
-  const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi } = req;
-  const {
-    configManager, searchService,
-  } = crowi;
-
-  return {
-    props: {
-      serverConfig: {
-        isSearchServiceConfigured: searchService.isConfigured,
-        isSearchServiceReachable: searchService.isReachable,
-        isSearchScopeChildrenAsDefault: configManager.getConfig('customize:isSearchScopeChildrenAsDefault'),
-      },
-    },
-  };
 };
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
@@ -159,24 +132,18 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const [
     commonInitialResult,
     commonEachResult,
-    userUIResult,
-    sidebarConfigResult,
-    serverConfigResult,
+    basicLayoutResult,
     i18nPropsResult,
   ] = await Promise.all([
     getServerSideCommonInitialProps(context),
     getServerSideCommonEachProps(context),
-    getServerSideUserUISettingsProps(context),
-    getServerSideSidebarConfigProps(context),
-    getServerSideConfigurationProps(context),
+    getServerSideBasicLayoutProps(context),
     getServerSideI18nProps(context, ['translation']),
   ]);
 
   return mergeGetServerSidePropsResults(commonInitialResult,
     mergeGetServerSidePropsResults(commonEachResult,
-      mergeGetServerSidePropsResults(userUIResult,
-        mergeGetServerSidePropsResults(sidebarConfigResult,
-          mergeGetServerSidePropsResults(serverConfigResult, i18nPropsResult)))));
+      mergeGetServerSidePropsResults(basicLayoutResult, i18nPropsResult)));
 };
 
 export default TagPage;

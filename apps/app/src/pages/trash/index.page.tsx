@@ -10,15 +10,16 @@ import { PagePathNavTitle } from '~/components/Common/PagePathNavTitle';
 import { BasicLayout } from '~/components/Layout/BasicLayout';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import { useHydrateSidebarAtoms } from '~/states/ui/sidebar/hydrate';
 
 import type { NextPageWithLayout } from '../_app.page';
-import type { CommonEachProps, CommonInitialProps, UserUISettingsProps } from '../common-props';
+import type { BasicLayoutConfigurationProps } from '../basic-layout-page';
+import { getServerSideBasicLayoutProps } from '../basic-layout-page';
+import { useHydrateBasicLayoutConfigurationAtoms } from '../basic-layout-page/hydrate';
+import type { CommonEachProps, CommonInitialProps } from '../common-props';
 import {
-  getServerSideCommonEachProps, getServerSideCommonInitialProps, getServerSideI18nProps, getServerSideUserUISettingsProps,
+  getServerSideCommonEachProps, getServerSideCommonInitialProps, getServerSideI18nProps,
 } from '../common-props';
-import type { RendererConfigProps, SidebarConfigProps } from '../general-page';
-import { getServerSideSidebarConfigProps } from '../general-page';
+import type { RendererConfigProps } from '../general-page';
 import { useCustomTitle } from '../utils/page-title-customization';
 import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
 
@@ -29,7 +30,7 @@ import { useHydrateServerConfigurationAtoms } from './use-hydrate-server-configu
 const TrashPageList = dynamic(() => import('~/client/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
 const EmptyTrashModal = dynamic(() => import('~/client/components/EmptyTrashModal'), { ssr: false });
 
-type Props = CommonInitialProps & CommonEachProps & ServerConfigurationProps & RendererConfigProps & UserUISettingsProps & SidebarConfigProps;
+type Props = CommonInitialProps & CommonEachProps & BasicLayoutConfigurationProps & ServerConfigurationProps & RendererConfigProps;
 
 const TrashPage: NextPageWithLayout<Props> = (props: Props) => {
   // // clear the cache for the current page
@@ -39,7 +40,6 @@ const TrashPage: NextPageWithLayout<Props> = (props: Props) => {
 
   // Hydrate server-side data
   useHydrateServerConfigurationAtoms(props.serverConfig);
-  useHydrateSidebarAtoms(props.sidebarConfig, props.userUISettings);
 
   const title = useCustomTitle('/trash');
 
@@ -67,7 +67,7 @@ type LayoutProps = Props & {
 }
 
 const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
-  useHydrateSidebarAtoms(props.sidebarConfig, props.userUISettings);
+  useHydrateBasicLayoutConfigurationAtoms(props.searchConfig, props.sidebarConfig, props.userUISettings);
 
   return <BasicLayout>{children}</BasicLayout>;
 };
@@ -117,24 +117,21 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const [
     commonInitialResult,
     commonEachResult,
-    userUIResult,
-    sidebarConfigResult,
+    basicLayoutResult,
     serverConfigResult,
     i18nPropsResult,
   ] = await Promise.all([
     getServerSideCommonInitialProps(context),
     getServerSideCommonEachProps(context),
-    getServerSideUserUISettingsProps(context),
-    getServerSideSidebarConfigProps(context),
+    getServerSideBasicLayoutProps(context),
     getServerSideConfigurationProps(context),
     getServerSideI18nProps(context, ['translation']),
   ]);
 
   return mergeGetServerSidePropsResults(commonInitialResult,
     mergeGetServerSidePropsResults(commonEachResult,
-      mergeGetServerSidePropsResults(userUIResult,
-        mergeGetServerSidePropsResults(sidebarConfigResult,
-          mergeGetServerSidePropsResults(serverConfigResult, i18nPropsResult)))));
+      mergeGetServerSidePropsResults(basicLayoutResult,
+        mergeGetServerSidePropsResults(serverConfigResult, i18nPropsResult))));
 };
 
 export default TrashPage;
