@@ -39,7 +39,7 @@ const TagCloudBox = dynamic(() => import('~/client/components/TagCloudBox'), { s
 type Props = CommonInitialProps & CommonEachProps & ServerConfigurationProps & RendererConfigProps & UserUISettingsProps & SidebarConfigProps;
 
 const TagPage: NextPageWithLayout<Props> = (props: Props) => {
-  const { t } = useTranslation('');
+  const { t } = useTranslation();
 
   // // clear the cache for the current page
   // //  in order to fix https://redmine.weseek.co.jp/issues/135811
@@ -140,7 +140,6 @@ const getServerSideConfigurationProps: GetServerSideProps<ServerConfigurationPro
         isSearchServiceConfigured: searchService.isConfigured,
         isSearchServiceReachable: searchService.isReachable,
         isSearchScopeChildrenAsDefault: configManager.getConfig('customize:isSearchScopeChildrenAsDefault'),
-        isContainerFluid: configManager.getConfig('customize:isContainerFluid'),
       },
     },
   };

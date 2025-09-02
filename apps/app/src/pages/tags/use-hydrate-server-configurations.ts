@@ -4,7 +4,7 @@ import {
   isSearchScopeChildrenAsDefaultAtom,
   isSearchServiceConfiguredAtom,
   isSearchServiceReachableAtom,
-} from '~/states/server-configurations/server-configurations';
+} from '~/states/server-configurations';
 
 import type { ServerConfigurationProps } from './types';
 

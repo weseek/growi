@@ -18,7 +18,9 @@ export const useIsAiEnabled = (): UseAtom<typeof aiEnabledAtom> => {
  */
 export const limitLearnablePageCountPerAssistantAtom = atom<number>(0);
 
-export const useLimitLearnablePageCountPerAssistant = (): UseAtom<typeof limitLearnablePageCountPerAssistantAtom> => {
+export const useLimitLearnablePageCountPerAssistant = (): UseAtom<
+  typeof limitLearnablePageCountPerAssistantAtom
+> => {
   return useAtom(limitLearnablePageCountPerAssistantAtom);
 };
 
@@ -27,7 +29,9 @@ export const useLimitLearnablePageCountPerAssistant = (): UseAtom<typeof limitLe
  */
 export const isUsersHomepageDeletionEnabledAtom = atom<boolean>(false);
 
-export const useIsUsersHomepageDeletionEnabled = (): UseAtom<typeof isUsersHomepageDeletionEnabledAtom> => {
+export const useIsUsersHomepageDeletionEnabled = (): UseAtom<
+  typeof isUsersHomepageDeletionEnabledAtom
+> => {
   return useAtom(isUsersHomepageDeletionEnabledAtom);
 };
 
@@ -36,7 +40,9 @@ export const useIsUsersHomepageDeletionEnabled = (): UseAtom<typeof isUsersHomep
  */
 export const defaultIndentSizeAtom = atom<number>(4);
 
-export const useDefaultIndentSize = (): UseAtom<typeof defaultIndentSizeAtom> => {
+export const useDefaultIndentSize = (): UseAtom<
+  typeof defaultIndentSizeAtom
+> => {
   return useAtom(defaultIndentSizeAtom);
 };
 
@@ -45,7 +51,9 @@ export const useDefaultIndentSize = (): UseAtom<typeof defaultIndentSizeAtom> =>
  */
 export const isSearchScopeChildrenAsDefaultAtom = atom<boolean>(false);
 
-export const useIsSearchScopeChildrenAsDefault = (): UseAtom<typeof isSearchScopeChildrenAsDefaultAtom> => {
+export const useIsSearchScopeChildrenAsDefault = (): UseAtom<
+  typeof isSearchScopeChildrenAsDefaultAtom
+> => {
   return useAtom(isSearchScopeChildrenAsDefaultAtom);
 };
 
@@ -54,7 +62,9 @@ export const useIsSearchScopeChildrenAsDefault = (): UseAtom<typeof isSearchScop
  */
 export const elasticsearchMaxBodyLengthToIndexAtom = atom<number>(0);
 
-export const useElasticsearchMaxBodyLengthToIndex = (): UseAtom<typeof elasticsearchMaxBodyLengthToIndexAtom> => {
+export const useElasticsearchMaxBodyLengthToIndex = (): UseAtom<
+  typeof elasticsearchMaxBodyLengthToIndexAtom
+> => {
   return useAtom(elasticsearchMaxBodyLengthToIndexAtom);
 };
 
@@ -63,7 +73,9 @@ export const useElasticsearchMaxBodyLengthToIndex = (): UseAtom<typeof elasticse
  */
 export const isRomUserAllowedToCommentAtom = atom<boolean>(false);
 
-export const useIsRomUserAllowedToComment = (): UseAtom<typeof isRomUserAllowedToCommentAtom> => {
+export const useIsRomUserAllowedToComment = (): UseAtom<
+  typeof isRomUserAllowedToCommentAtom
+> => {
   return useAtom(isRomUserAllowedToCommentAtom);
 };
 
@@ -112,7 +124,9 @@ export const useShowPageLimitationXL = (): UseAtom<
  */
 export const showPageSideAuthorsAtom = atom<boolean>(false);
 
-export const useShowPageSideAuthors = (): UseAtom<typeof showPageSideAuthorsAtom> => {
+export const useShowPageSideAuthors = (): UseAtom<
+  typeof showPageSideAuthorsAtom
+> => {
   return useAtom(showPageSideAuthorsAtom);
 };
 
@@ -130,7 +144,9 @@ export const useIsContainerFluid = (): UseAtom<typeof isContainerFluidAtom> => {
  */
 export const isEnabledStaleNotificationAtom = atom<boolean>(false);
 
-export const useIsEnabledStaleNotification = (): UseAtom<typeof isEnabledStaleNotificationAtom> => {
+export const useIsEnabledStaleNotification = (): UseAtom<
+  typeof isEnabledStaleNotificationAtom
+> => {
   return useAtom(isEnabledStaleNotificationAtom);
 };
 
@@ -139,7 +155,9 @@ export const useIsEnabledStaleNotification = (): UseAtom<typeof isEnabledStaleNo
  */
 export const disableLinkSharingAtom = atom<boolean>(false);
 
-export const useDisableLinkSharing = (): UseAtom<typeof disableLinkSharingAtom> => {
+export const useDisableLinkSharing = (): UseAtom<
+  typeof disableLinkSharingAtom
+> => {
   return useAtom(disableLinkSharingAtom);
 };
 
@@ -148,7 +166,9 @@ export const useDisableLinkSharing = (): UseAtom<typeof disableLinkSharingAtom> 
  */
 export const isIndentSizeForcedAtom = atom<boolean>(false);
 
-export const useIsIndentSizeForced = (): UseAtom<typeof isIndentSizeForcedAtom> => {
+export const useIsIndentSizeForced = (): UseAtom<
+  typeof isIndentSizeForcedAtom
+> => {
   return useAtom(isIndentSizeForcedAtom);
 };
 
@@ -157,7 +177,9 @@ export const useIsIndentSizeForced = (): UseAtom<typeof isIndentSizeForcedAtom> 
  */
 export const isEnabledAttachTitleHeaderAtom = atom<boolean>(false);
 
-export const useIsEnabledAttachTitleHeader = (): UseAtom<typeof isEnabledAttachTitleHeaderAtom> => {
+export const useIsEnabledAttachTitleHeader = (): UseAtom<
+  typeof isEnabledAttachTitleHeaderAtom
+> => {
   return useAtom(isEnabledAttachTitleHeaderAtom);
 };
 
@@ -166,7 +188,9 @@ export const useIsEnabledAttachTitleHeader = (): UseAtom<typeof isEnabledAttachT
  */
 export const isSearchServiceConfiguredAtom = atom<boolean>(false);
 
-export const useIsSearchServiceConfigured = (): UseAtom<typeof isSearchServiceConfiguredAtom> => {
+export const useIsSearchServiceConfigured = (): UseAtom<
+  typeof isSearchServiceConfiguredAtom
+> => {
   return useAtom(isSearchServiceConfiguredAtom);
 };
 
@@ -175,7 +199,9 @@ export const useIsSearchServiceConfigured = (): UseAtom<typeof isSearchServiceCo
  */
 export const isSearchServiceReachableAtom = atom<boolean>(false);
 
-export const useIsSearchServiceReachable = (): UseAtom<typeof isSearchServiceReachableAtom> => {
+export const useIsSearchServiceReachable = (): UseAtom<
+  typeof isSearchServiceReachableAtom
+> => {
   return useAtom(isSearchServiceReachableAtom);
 };
 
@@ -184,7 +210,9 @@ export const useIsSearchServiceReachable = (): UseAtom<typeof isSearchServiceRea
  */
 export const isSlackConfiguredAtom = atom<boolean>(false);
 
-export const useIsSlackConfigured = (): UseAtom<typeof isSlackConfiguredAtom> => {
+export const useIsSlackConfigured = (): UseAtom<
+  typeof isSlackConfiguredAtom
+> => {
   return useAtom(isSlackConfiguredAtom);
 };
 
@@ -202,7 +230,9 @@ export const useIsAclEnabled = (): UseAtom<typeof isAclEnabledAtom> => {
  */
 export const isUploadAllFileAllowedAtom = atom<boolean>(false);
 
-export const useIsUploadAllFileAllowed = (): UseAtom<typeof isUploadAllFileAllowedAtom> => {
+export const useIsUploadAllFileAllowed = (): UseAtom<
+  typeof isUploadAllFileAllowedAtom
+> => {
   return useAtom(isUploadAllFileAllowedAtom);
 };
 
@@ -220,7 +250,9 @@ export const useIsUploadEnabled = (): UseAtom<typeof isUploadEnabledAtom> => {
  */
 export const isBulkExportPagesEnabledAtom = atom<boolean>(false);
 
-export const useIsBulkExportPagesEnabled = (): UseAtom<typeof isBulkExportPagesEnabledAtom> => {
+export const useIsBulkExportPagesEnabled = (): UseAtom<
+  typeof isBulkExportPagesEnabledAtom
+> => {
   return useAtom(isBulkExportPagesEnabledAtom);
 };
 
@@ -229,7 +261,9 @@ export const useIsBulkExportPagesEnabled = (): UseAtom<typeof isBulkExportPagesE
  */
 export const isPdfBulkExportEnabledAtom = atom<boolean>(false);
 
-export const useIsPdfBulkExportEnabled = (): UseAtom<typeof isPdfBulkExportEnabledAtom> => {
+export const useIsPdfBulkExportEnabled = (): UseAtom<
+  typeof isPdfBulkExportEnabledAtom
+> => {
   return useAtom(isPdfBulkExportEnabledAtom);
 };
 
@@ -238,7 +272,9 @@ export const useIsPdfBulkExportEnabled = (): UseAtom<typeof isPdfBulkExportEnabl
  */
 export const isLocalAccountRegistrationEnabledAtom = atom<boolean>(false);
 
-export const useIsLocalAccountRegistrationEnabled = (): UseAtom<typeof isLocalAccountRegistrationEnabledAtom> => {
+export const useIsLocalAccountRegistrationEnabled = (): UseAtom<
+  typeof isLocalAccountRegistrationEnabledAtom
+> => {
   return useAtom(isLocalAccountRegistrationEnabledAtom);
 };
 
