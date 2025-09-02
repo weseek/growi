@@ -13,8 +13,8 @@ export const factory = (crowi: Crowi): express.Router => {
   // }
 
   // enabled
-  import('./weather').then(({ getWeatherFactory }) => {
-    router.get('/weather', getWeatherFactory());
+  import('./post-message').then(({ postMessageHandlersFactory }) => {
+    router.post('/message', postMessageHandlersFactory());
   });
 
   return router;
