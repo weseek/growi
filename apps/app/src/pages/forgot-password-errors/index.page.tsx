@@ -2,15 +2,20 @@ import React from 'react';
 
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 
 import { forgotPasswordErrorCode } from '~/interfaces/errors/forgot-password';
 
-import type { CommonProps } from '../common-props';
-import { getNextI18NextConfig, getServerSideCommonProps } from '../common-props';
+import type {
+  CommonEachProps,
+  CommonInitialProps,
+} from '../common-props';
+import {
+  getServerSideCommonEachProps, getServerSideCommonInitialProps, getServerSideI18nProps,
+} from '../common-props';
+import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
 
-type Props = CommonProps & {
+type Props = CommonInitialProps & CommonEachProps & {
   errorCode?: forgotPasswordErrorCode
 };
 
@@ -56,32 +61,32 @@ const ForgotPasswordErrorsPage: NextPage<Props> = (props: Props) => {
   );
 };
 
-async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
-  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
-  props._nextI18Next = nextI18NextConfig._nextI18Next;
-}
+const getServerSideConfigurationProps: GetServerSideProps<{ errorCode?: forgotPasswordErrorCode }> = async(context: GetServerSidePropsContext) => {
+  const errorCode = context.query.errorCode;
+  return {
+    props: {
+      errorCode: (typeof errorCode === 'string') ? errorCode as forgotPasswordErrorCode : undefined,
+    },
+  };
+};
+
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const result = await getServerSideCommonProps(context);
+  const [
+    commonInitialResult,
+    commonEachResult,
+    serverConfigResult,
+    i18nPropsResult,
+  ] = await Promise.all([
+    getServerSideCommonInitialProps(context),
+    getServerSideCommonEachProps(context),
+    getServerSideConfigurationProps(context),
+    getServerSideI18nProps(context, ['translation']),
+  ]);
 
-  // check for presence
-  // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
-  if (!('props' in result)) {
-    throw new Error('invalid getSSP result');
-  }
-
-  const props: Props = result.props as Props;
-
-  const errorCode = context.query.errorCode;
-  if (typeof errorCode === 'string') {
-    props.errorCode = errorCode as forgotPasswordErrorCode;
-  }
-
-  await injectNextI18NextConfigurations(context, props, ['translation']);
-
-  return {
-    props,
-  };
+  return mergeGetServerSidePropsResults(commonInitialResult,
+    mergeGetServerSidePropsResults(commonEachResult,
+      mergeGetServerSidePropsResults(serverConfigResult, i18nPropsResult)));
 };
 
 export default ForgotPasswordErrorsPage;
