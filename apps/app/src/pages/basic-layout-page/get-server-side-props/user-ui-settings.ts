@@ -5,9 +5,8 @@ import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import { getModelSafely } from '~/server/util/mongoose-utils';
 
-export type UserUISettingsProps = {
-  userUISettings?: IUserUISettings,
-};
+import type { UserUISettingsProps } from '../types';
+
 
 export const getServerSideUserUISettingsProps: GetServerSideProps<UserUISettingsProps> = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest;

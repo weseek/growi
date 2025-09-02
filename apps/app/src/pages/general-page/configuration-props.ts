@@ -3,22 +3,7 @@ import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { RegistrationMode } from '~/interfaces/registration-mode';
 
-import type { RendererConfigProps, ServerConfigurationProps, SidebarConfigProps } from './types';
-
-export const getServerSideSidebarConfigProps: GetServerSideProps<SidebarConfigProps> = async(context: GetServerSidePropsContext) => {
-  const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi } = req;
-  const { configManager } = crowi;
-
-  return {
-    props: {
-      sidebarConfig: {
-        isSidebarCollapsedMode: configManager.getConfig('customize:isSidebarCollapsedMode'),
-        isSidebarClosedAtDockMode: configManager.getConfig('customize:isSidebarClosedAtDockMode'),
-      },
-    },
-  };
-};
+import type { RendererConfigProps, ServerConfigurationProps } from './types';
 
 export const getServerSideRendererConfigProps: GetServerSideProps<RendererConfigProps> = async(context: GetServerSidePropsContext) => {
   const req: CrowiRequest = context.req as CrowiRequest;
@@ -54,7 +39,7 @@ export const getServerSideConfigurationProps: GetServerSideProps<ServerConfigura
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    configManager, searchService, aclService, fileUploadService,
+    configManager, aclService, fileUploadService,
     slackIntegrationService, passportService,
   } = crowi;
 
@@ -64,9 +49,6 @@ export const getServerSideConfigurationProps: GetServerSideProps<ServerConfigura
         aiEnabled: configManager.getConfig('app:aiEnabled'),
         limitLearnablePageCountPerAssistant: configManager.getConfig('openai:limitLearnablePageCountPerAssistant'),
         isUsersHomepageDeletionEnabled: configManager.getConfig('security:user-homepage-deletion:isEnabled'),
-        isSearchServiceConfigured: searchService.isConfigured,
-        isSearchServiceReachable: searchService.isReachable,
-        isSearchScopeChildrenAsDefault: configManager.getConfig('customize:isSearchScopeChildrenAsDefault'),
         elasticsearchMaxBodyLengthToIndex: configManager.getConfig('app:elasticsearchMaxBodyLengthToIndex'),
 
         isRomUserAllowedToComment: configManager.getConfig('security:isRomUserAllowedToComment'),

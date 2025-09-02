@@ -1,11 +1,12 @@
 import type { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 
+import { getServerSideBasicLayoutProps } from '../basic-layout-page';
 import {
-  getServerSideI18nProps, getServerSideUserUISettingsProps, getServerSideCommonInitialProps, getServerSideCommonEachProps, isValidCommonEachRouteProps,
+  getServerSideI18nProps, getServerSideCommonInitialProps, getServerSideCommonEachProps, isValidCommonEachRouteProps,
 } from '../common-props';
 import type { GeneralPageInitialProps } from '../general-page';
 import {
-  getServerSideRendererConfigProps, getServerSideSidebarConfigProps,
+  getServerSideRendererConfigProps,
   getActivityAction, isValidInitialAndSameRouteProps,
 } from '../general-page';
 import { getServerSideConfigurationProps } from '../general-page/configuration-props';
@@ -51,18 +52,16 @@ export async function getServerSidePropsForInitial(context: GetServerSidePropsCo
 
   const [
     commonInitialResult,
-    userUIResult,
+    basicLayoutResult,
     serverConfigResult,
     rendererConfigResult,
-    sidebarConfigResult,
     i18nPropsResult,
     pageDataResult,
   ] = await Promise.all([
     getServerSideCommonInitialProps(context),
-    getServerSideUserUISettingsProps(context),
+    getServerSideBasicLayoutProps(context),
     getServerSideConfigurationProps(context),
     getServerSideRendererConfigProps(context),
-    getServerSideSidebarConfigProps(context),
     getServerSideI18nProps(context, ['translation']),
     getPageDataForInitial(context),
   ]);
@@ -70,12 +69,11 @@ export async function getServerSidePropsForInitial(context: GetServerSidePropsCo
   // Merge all results in a type-safe manner (using sequential merging)
   const mergedResult = mergeGetServerSidePropsResults(commonEachPropsResult,
     mergeGetServerSidePropsResults(commonInitialResult,
-      mergeGetServerSidePropsResults(userUIResult,
+      mergeGetServerSidePropsResults(basicLayoutResult,
         mergeGetServerSidePropsResults(serverConfigResult,
           mergeGetServerSidePropsResults(rendererConfigResult,
-            mergeGetServerSidePropsResults(sidebarConfigResult,
-              mergeGetServerSidePropsResults(i18nPropsResult,
-                mergeGetServerSidePropsResults(pageDataResult, nextjsRoutingProps))))))));
+            mergeGetServerSidePropsResults(i18nPropsResult,
+              mergeGetServerSidePropsResults(pageDataResult, nextjsRoutingProps)))))));
 
   // Check for early return (redirect/notFound)
   if ('redirect' in mergedResult || 'notFound' in mergedResult) {

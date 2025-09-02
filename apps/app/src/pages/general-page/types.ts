@@ -3,16 +3,11 @@ import type {
 } from '@growi/core';
 
 import type { RendererConfig } from '~/interfaces/services/renderer';
-import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { PageDocument } from '~/server/models/page';
 
 import type { CommonInitialProps } from '../common-props';
 
 export type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfo>;
-
-export type SidebarConfigProps = {
-  sidebarConfig: ISidebarConfig,
-}
 
 export type RendererConfigProps = {
   rendererConfig: RendererConfig,
@@ -24,9 +19,6 @@ export type ServerConfigurationProps = {
     limitLearnablePageCountPerAssistant: number;
     isUsersHomepageDeletionEnabled: boolean;
     adminPreferredIndentSize: number;
-    isSearchServiceConfigured: boolean;
-    isSearchServiceReachable: boolean;
-    isSearchScopeChildrenAsDefault: boolean;
     elasticsearchMaxBodyLengthToIndex: number;
     isRomUserAllowedToComment: boolean;
     drawioUri: string | null;

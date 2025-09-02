@@ -22,15 +22,15 @@ import { useRedirectFrom } from '~/states/page/redirect';
 import { useRendererConfig } from '~/states/server-configurations';
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/states/socket-io';
 import { useEditingMarkdown } from '~/states/ui/editor';
-import { useHydrateSidebarAtoms } from '~/states/ui/sidebar/hydrate';
 import { useSWRMUTxCurrentPageYjsData } from '~/stores/yjs';
 
 import type { NextPageWithLayout } from '../_app.page';
-import type { UserUISettingsProps } from '../common-props';
-import type { GeneralPageInitialProps, SidebarConfigProps } from '../general-page';
+import type { BasicLayoutConfigurationProps } from '../basic-layout-page';
+import { useHydrateBasicLayoutConfigurationAtoms } from '../basic-layout-page/hydrate';
+import type { GeneralPageInitialProps } from '../general-page';
 import { useInitialCSRFetch } from '../general-page';
+import { useHydrateGeneralPageConfigurationAtoms } from '../general-page/hydrate';
 import { registerPageToShowRevisionWithMeta } from '../general-page/superjson';
-import { useHydrateServerConfigurationAtoms } from '../general-page/use-hydrate-server-configurations';
 import { NextjsRoutingType, detectNextjsRoutingType } from '../utils/nextjs-routing-utils';
 import { useCustomTitleForPage } from '../utils/page-title-customization';
 
@@ -69,7 +69,7 @@ const ConflictDiffModal = dynamic(() => import('~/client/components/PageEditor/C
 
 const EditablePageEffects = dynamic(() => import('~/client/components/Page/EditablePageEffects').then(mod => mod.EditablePageEffects), { ssr: false });
 
-type InitialProps = EachProps & GeneralPageInitialProps & UserUISettingsProps & SidebarConfigProps;
+type InitialProps = EachProps & GeneralPageInitialProps & BasicLayoutConfigurationProps;
 type Props = EachProps | InitialProps;
 
 const isInitialProps = (props: Props): props is InitialProps => {
@@ -171,10 +171,8 @@ type LayoutProps = Props & {
 const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
   // Hydrate sidebar atoms with server-side data - must be called unconditionally
   const initialProps = isInitialProps(props) ? props : undefined;
-  const sidebarConfig = initialProps?.sidebarConfig;
-  const userUISettings = initialProps?.userUISettings;
-  useHydrateSidebarAtoms(sidebarConfig, userUISettings);
-  useHydrateServerConfigurationAtoms(initialProps?.serverConfig, initialProps?.rendererConfig);
+  useHydrateBasicLayoutConfigurationAtoms(initialProps?.searchConfig, initialProps?.sidebarConfig, initialProps?.userUISettings);
+  useHydrateGeneralPageConfigurationAtoms(initialProps?.serverConfig, initialProps?.rendererConfig);
 
   return <BasicLayoutWithEditor>{children}</BasicLayoutWithEditor>;
 };

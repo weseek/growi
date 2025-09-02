@@ -3,4 +3,3 @@ export {
   type CommonEachProps, getServerSideCommonEachProps, isValidCommonEachRouteProps,
 } from './commons';
 export { getServerSideI18nProps } from './i18n';
-export { getServerSideUserUISettingsProps, type UserUISettingsProps } from './user-ui-settings';

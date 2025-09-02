@@ -6,7 +6,6 @@ import {
   limitLearnablePageCountPerAssistantAtom,
   isUsersHomepageDeletionEnabledAtom,
   defaultIndentSizeAtom,
-  isSearchScopeChildrenAsDefaultAtom,
   elasticsearchMaxBodyLengthToIndexAtom,
   isRomUserAllowedToCommentAtom,
   drawioUriAtom,
@@ -17,8 +16,6 @@ import {
   disableLinkSharingAtom,
   isIndentSizeForcedAtom,
   isEnabledAttachTitleHeaderAtom,
-  isSearchServiceConfiguredAtom,
-  isSearchServiceReachableAtom,
   isSlackConfiguredAtom,
   isAclEnabledAtom,
   isUploadAllFileAllowedAtom,
@@ -35,7 +32,7 @@ import type { ServerConfigurationProps } from './types';
  * Hook for hydrating server configuration atoms with server-side data
  * This should be called early in the app component to ensure atoms are properly initialized before rendering
  */
-export const useHydrateServerConfigurationAtoms = (
+export const useHydrateGeneralPageConfigurationAtoms = (
     serverConfig: ServerConfigurationProps['serverConfig'] | undefined,
     rendererConfigs: RendererConfig | undefined,
 ): void => {
@@ -45,7 +42,6 @@ export const useHydrateServerConfigurationAtoms = (
     [limitLearnablePageCountPerAssistantAtom, serverConfig.limitLearnablePageCountPerAssistant],
     [isUsersHomepageDeletionEnabledAtom, serverConfig.isUsersHomepageDeletionEnabled],
     [defaultIndentSizeAtom, serverConfig.adminPreferredIndentSize],
-    [isSearchScopeChildrenAsDefaultAtom, serverConfig.isSearchScopeChildrenAsDefault],
     [elasticsearchMaxBodyLengthToIndexAtom, serverConfig.elasticsearchMaxBodyLengthToIndex],
     [isRomUserAllowedToCommentAtom, serverConfig.isRomUserAllowedToComment],
     [drawioUriAtom, serverConfig.drawioUri],
@@ -56,8 +52,6 @@ export const useHydrateServerConfigurationAtoms = (
     [disableLinkSharingAtom, serverConfig.disableLinkSharing],
     [isIndentSizeForcedAtom, serverConfig.isIndentSizeForced],
     [isEnabledAttachTitleHeaderAtom, serverConfig.isEnabledAttachTitleHeader],
-    [isSearchServiceConfiguredAtom, serverConfig.isSearchServiceConfigured],
-    [isSearchServiceReachableAtom, serverConfig.isSearchServiceReachable],
     [isSlackConfiguredAtom, serverConfig.isSlackConfigured],
     [isAclEnabledAtom, serverConfig.isAclEnabled],
     [isUploadAllFileAllowedAtom, serverConfig.isUploadAllFileAllowed],
