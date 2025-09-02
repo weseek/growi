@@ -1,65 +1,59 @@
 import type { ReactNode, JSX } from 'react';
 import React, { useState, useCallback } from 'react';
 
-import type { IUser } from '@growi/core';
+import { isPermalink, isUserPage, isUsersTopPage } from '@growi/core/dist/utils/page-path-utils';
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
 import { BasicLayout } from '~/components/Layout/BasicLayout';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import type { RendererConfig } from '~/interfaces/services/renderer';
-import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IDataTagCount } from '~/interfaces/tag';
-import { useHydratePageAtoms } from '~/states/hydrate/page';
-import { useHydrateSidebarAtoms } from '~/states/hydrate/sidebar';
-import {
-  useCurrentUser, useIsSearchPage,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable,
-  useIsSearchScopeChildrenAsDefault, useGrowiCloudUri, useCurrentPathname,
-} from '~/stores-universal/context';
+import { useHydrateSidebarAtoms } from '~/states/ui/sidebar/hydrate';
 import { useSWRxTagsList } from '~/stores/tag';
 
 
 import type { NextPageWithLayout } from '../_app.page';
-import type { CommonProps } from '../common-props';
+import type { CommonEachProps, CommonInitialProps, UserUISettingsProps } from '../common-props';
 import {
-  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle,
+  getServerSideCommonEachProps, getServerSideCommonInitialProps, getServerSideI18nProps, getServerSideUserUISettingsProps,
 } from '../common-props';
+import type { RendererConfigProps, SidebarConfigProps } from '../general-page';
+import { getServerSideSidebarConfigProps } from '../general-page';
+import { useCustomTitle } from '../utils/page-title-customization';
+import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
+
+import type { ServerConfigurationProps } from './types';
+import { useHydrateServerConfigurationAtoms } from './use-hydrate-server-configurations';
 
 const PAGING_LIMIT = 10;
 
-type Props = CommonProps & {
-  currentUser: IUser,
-  isSearchServiceConfigured: boolean,
-  isSearchServiceReachable: boolean,
-  isSearchScopeChildrenAsDefault: boolean,
-
-  rendererConfig: RendererConfig,
-
-  sidebarConfig: ISidebarConfig,
-};
 
 const TagList = dynamic(() => import('~/client/components/TagList'), { ssr: false });
 const TagCloudBox = dynamic(() => import('~/client/components/TagCloudBox'), { ssr: false });
 
-const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
+
+type Props = CommonInitialProps & CommonEachProps & ServerConfigurationProps & RendererConfigProps & UserUISettingsProps & SidebarConfigProps;
+
+const TagPage: NextPageWithLayout<Props> = (props: Props) => {
+  const { t } = useTranslation('');
+
+  // // clear the cache for the current page
+  // //  in order to fix https://redmine.weseek.co.jp/issues/135811
+  // useHydratePageAtoms(undefined);
+  // useCurrentPathname('/tags');
+
+  // Hydrate server-side data
+  useHydrateServerConfigurationAtoms(props.serverConfig);
+  useHydrateSidebarAtoms(props.sidebarConfig, props.userUISettings);
+
   const [activePage, setActivePage] = useState<number>(1);
   const [offset, setOffset] = useState<number>(0);
 
-  useCurrentUser(props.currentUser ?? null);
-
-  // clear the cache for the current page
-  //  in order to fix https://redmine.weseek.co.jp/issues/135811
-  useHydratePageAtoms(undefined);
-  useCurrentPathname('/tags');
-
   const { data: tagDataList, error } = useSWRxTagsList(PAGING_LIMIT, offset);
-  const { t } = useTranslation('');
   const setOffsetByPageNumber = useCallback((selectedPageNumber: number) => {
     setActivePage(selectedPageNumber);
     setOffset((selectedPageNumber - 1) * PAGING_LIMIT);
@@ -69,14 +63,7 @@ const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   const totalCount: number = tagDataList?.totalCount || 0;
   const isLoading = tagDataList === undefined && error == null;
 
-  useGrowiCloudUri(props.growiCloudUri);
-
-  useIsSearchPage(false);
-  useIsSearchServiceConfigured(props.isSearchServiceConfigured);
-  useIsSearchServiceReachable(props.isSearchServiceReachable);
-  useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
-
-  const title = generateCustomTitle(props, t('Tags'));
+  const title = useCustomTitle(t('Tags'));
 
   return (
     <>
@@ -139,55 +126,58 @@ TagPage.getLayout = function getLayout(page) {
   );
 };
 
-function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
+
+const getServerSideConfigurationProps: GetServerSideProps<ServerConfigurationProps> = async(context: GetServerSidePropsContext) => {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    searchService, configManager,
+    configManager, searchService,
   } = crowi;
 
-  props.isSearchServiceConfigured = searchService.isConfigured;
-  props.isSearchServiceReachable = searchService.isReachable;
-  props.isSearchScopeChildrenAsDefault = configManager.getConfig('customize:isSearchScopeChildrenAsDefault');
-
-  props.sidebarConfig = {
-    isSidebarCollapsedMode: configManager.getConfig('customize:isSidebarCollapsedMode'),
-    isSidebarClosedAtDockMode: configManager.getConfig('customize:isSidebarClosedAtDockMode'),
+  return {
+    props: {
+      serverConfig: {
+        isSearchServiceConfigured: searchService.isConfigured,
+        isSearchServiceReachable: searchService.isReachable,
+        isSearchScopeChildrenAsDefault: configManager.getConfig('customize:isSearchScopeChildrenAsDefault'),
+        isContainerFluid: configManager.getConfig('customize:isContainerFluid'),
+      },
+    },
   };
-
-}
-
-/**
- * for Server Side Translations
- * @param context
- * @param props
- * @param namespacesRequired
- */
-async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
-  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
-  props._nextI18Next = nextI18NextConfig._nextI18Next;
-}
+};
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const req = context.req as CrowiRequest;
-  const { user } = req;
-  const result = await getServerSideCommonProps(context);
+  const req: CrowiRequest = context.req as CrowiRequest;
 
-  if (!('props' in result)) {
-    throw new Error('invalid getSSP result');
-  }
-  const props: Props = result.props as Props;
-
-  if (user != null) {
-    props.currentUser = user.toObject();
+  // redirect to the page the user was on before moving to the Login Page
+  if (req.headers.referer != null) {
+    const urlBeforeLogin = new URL(req.headers.referer);
+    if (isPermalink(urlBeforeLogin.pathname) || isUserPage(urlBeforeLogin.pathname) || isUsersTopPage(urlBeforeLogin.pathname)) {
+      req.session.redirectTo = urlBeforeLogin.href;
+    }
   }
 
-  injectServerConfigurations(context, props);
-  await injectNextI18NextConfigurations(context, props, ['translation']);
+  const [
+    commonInitialResult,
+    commonEachResult,
+    userUIResult,
+    sidebarConfigResult,
+    serverConfigResult,
+    i18nPropsResult,
+  ] = await Promise.all([
+    getServerSideCommonInitialProps(context),
+    getServerSideCommonEachProps(context),
+    getServerSideUserUISettingsProps(context),
+    getServerSideSidebarConfigProps(context),
+    getServerSideConfigurationProps(context),
+    getServerSideI18nProps(context, ['translation']),
+  ]);
 
-  return {
-    props,
-  };
+  return mergeGetServerSidePropsResults(commonInitialResult,
+    mergeGetServerSidePropsResults(commonEachResult,
+      mergeGetServerSidePropsResults(userUIResult,
+        mergeGetServerSidePropsResults(sidebarConfigResult,
+          mergeGetServerSidePropsResults(serverConfigResult, i18nPropsResult)))));
 };
 
 export default TagPage;
