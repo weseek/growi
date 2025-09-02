@@ -1,5 +1,5 @@
 import type { ReactNode, JSX } from 'react';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import type {
   GetServerSideProps, GetServerSidePropsContext,
@@ -13,7 +13,6 @@ import { ShareLinkPageView } from '~/components/ShareLinkPageView';
 import type { CommonEachProps } from '~/pages/common-props';
 import { NextjsRoutingType, detectNextjsRoutingType } from '~/pages/utils/nextjs-routing-utils';
 import { useCustomTitleForPage } from '~/pages/utils/page-title-customization';
-import { useIsSearchPage, useIsSharedUser } from '~/states/context';
 import {
   useCurrentPageData, useCurrentPagePath,
 } from '~/states/page';
@@ -60,8 +59,6 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   const [currentPage] = useCurrentPageData();
   const [currentPagePath] = useCurrentPagePath();
   const [rendererConfig] = useRendererConfig();
-  const [, setIsSharedUser] = useIsSharedUser();
-  const [, setIsSearchPage] = useIsSearchPage();
   const [isLinkSharingDisabled] = useDisableLinkSharing();
 
   // Use custom hooks for navigation and routing
@@ -69,12 +66,6 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
 
   // If initial props and skipSSR, fetch page data on client-side
   useInitialCSRFetch(isInitialProps(props) && props.skipSSR);
-
-  // Initialize atom values
-  useEffect(() => {
-    setIsSharedUser(true);
-    setIsSearchPage(false);
-  }, [setIsSharedUser, setIsSearchPage]);
 
   // If the data on the page changes without router.push, pageWithMeta remains old because getServerSideProps() is not executed
   // So preferentially take page data from useSWRxCurrentPage

@@ -1,7 +1,6 @@
 import type { ReactNode, JSX } from 'react';
 import React, { useEffect } from 'react';
 
-
 import EventEmitter from 'events';
 
 import { isClient } from '@growi/core/dist/utils';
@@ -15,10 +14,6 @@ import { BasicLayout } from '~/components/Layout/BasicLayout';
 import { PageView } from '~/components/PageView/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { useEditorModeClassName } from '~/services/layout/use-editor-mode-class-name';
-import {
-  useIsSharedUser,
-  useIsSearchPage,
-} from '~/states/context';
 import {
   useCurrentPageData, useCurrentPageId, useCurrentPagePath, usePageNotFound,
 } from '~/states/page';
@@ -99,8 +94,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const [isNotFound] = usePageNotFound();
   const [rendererConfig] = useRendererConfig();
   const [, setRedirectFrom] = useRedirectFrom();
-  const [, setIsSharedUser] = useIsSharedUser();
-  const [, setIsSearchPage] = useIsSearchPage();
   const [, setEditingMarkdown] = useEditingMarkdown();
 
   const { trigger: mutateCurrentPageYjsDataFromApi } = useSWRMUTxCurrentPageYjsData();
@@ -116,12 +109,10 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // If initial props and skipSSR, fetch page data on client-side
   useInitialCSRFetch(isInitialProps(props) && props.skipSSR);
 
-  // Initialize atom values
+  // Initialize redirectFrom atom values
   useEffect(() => {
     setRedirectFrom(props.redirectFrom ?? null);
-    setIsSharedUser(false); // this page can't be routed for '/share'
-    setIsSearchPage(false);
-  }, [props.redirectFrom, setRedirectFrom, setIsSharedUser, setIsSearchPage]);
+  }, [props.redirectFrom, setRedirectFrom]);
 
   // Optimized effects with minimal dependencies
   useEffect(() => {
