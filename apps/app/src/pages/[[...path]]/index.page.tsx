@@ -112,6 +112,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // Initialize redirectFrom atom values
   useEffect(() => {
     setRedirectFrom(props.redirectFrom ?? null);
+    // cleanup
+    return () => setRedirectFrom(null);
   }, [props.redirectFrom, setRedirectFrom]);
 
   // Optimized effects with minimal dependencies

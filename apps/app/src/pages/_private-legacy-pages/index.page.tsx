@@ -43,13 +43,9 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
 
   // Turn on search page flag
   useEffect(() => {
-    const turnOnSearchPage = () => {
-      setIsSearchPage(true);
-    };
-    router.events.on('routeChangeComplete', turnOnSearchPage);
-    return () => {
-      router.events.off('routeChangeComplete', turnOnSearchPage);
-    };
+    setIsSearchPage(true);
+    // cleanup
+    return () => setIsSearchPage(false);
   }, [router, setIsSearchPage]);
 
   const title = useCustomTitle(t('private_legacy_pages.title'));

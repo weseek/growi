@@ -21,7 +21,6 @@ import { swrGlobalConfiguration } from '~/utils/swr-utils';
 import { getLocaleAtServerSide } from './utils/locale';
 import { useNextjsRoutingPageRegister } from './utils/nextjs-routing-utils';
 import { registerTransformerForObjectId } from './utils/objectid-transformer';
-import { useResetPageContextsOnNextRouting } from './utils/reset-page-contexts';
 
 import '~/styles/prebuilt/vendor.css';
 import '~/styles/style-app.scss';
@@ -58,8 +57,6 @@ const GrowiAppSubstance = ({ Component, pageProps, userLocale }: GrowiAppProps):
   useAutoUpdateGlobalAtoms(pageProps);
 
   useNextjsRoutingPageRegister(pageProps.nextjsRoutingPage);
-
-  useResetPageContextsOnNextRouting();
 
   useEffect(() => {
     const updateLangAttribute = () => {
