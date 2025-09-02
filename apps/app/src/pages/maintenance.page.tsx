@@ -1,25 +1,18 @@
-import type { IUser } from '@growi/core';
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 
-import type { CrowiRequest } from '~/interfaces/crowi-request';
-import { useCurrentUser } from '~/stores-universal/context';
-
-import type { CommonProps } from './common-props';
-import { getServerSideCommonProps, getNextI18NextConfig } from './common-props';
+import type { CommonEachProps, CommonInitialProps } from './common-props';
+import {
+  getServerSideCommonEachProps, getServerSideCommonInitialProps, getServerSideI18nProps,
+} from './common-props';
+import { mergeGetServerSidePropsResults } from './utils/server-side-props';
 
 
 const Maintenance = dynamic(() => import('~/client/components/Maintenance').then(mod => mod.Maintenance), { ssr: false });
 
-type Props = CommonProps & {
-  currentUser: IUser,
-};
+type Props = CommonInitialProps & CommonEachProps;
 
-const MaintenancePage: NextPage<CommonProps> = (props: Props) => {
-
-  useCurrentUser(props.currentUser ?? null);
-
+const MaintenancePage: NextPage<Props> = (props: Props) => {
   return (
     <div className="container-lg">
       <div className="container">
@@ -33,45 +26,41 @@ const MaintenancePage: NextPage<CommonProps> = (props: Props) => {
   );
 };
 
-async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
-  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
-  props._nextI18Next = nextI18NextConfig._nextI18Next;
-}
-
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const req = context.req as CrowiRequest;
+  //
+  // STAGE 1
+  //
 
-  const result = await getServerSideCommonProps(context);
-
-  if ('redirect' in result) {
-    return { redirect: result.redirect };
+  const commonEachPropsResult = await getServerSideCommonEachProps(context);
+  // Handle early return cases (redirect/notFound)
+  if ('redirect' in commonEachPropsResult || 'notFound' in commonEachPropsResult) {
+    return commonEachPropsResult;
   }
+  const commonEachProps = await commonEachPropsResult.props;
 
-  if (!('props' in result)) {
-    throw new Error('invalid getSSP result');
-  }
-
-  const props: Props = result.props as Props;
-
-  if (props.redirectDestination != null) {
+  // Handle redirect destination from common props
+  if (commonEachProps.redirectDestination != null) {
     return {
       redirect: {
         permanent: false,
-        destination: props.redirectDestination,
+        destination: commonEachProps.redirectDestination,
       },
     };
   }
 
-  const { user } = req;
-  if (user != null) {
-    props.currentUser = user.toObject();
-  }
+  //
+  // STAGE 2
+  //
+  const [
+    commonInitialResult,
+    i18nPropsResult,
+  ] = await Promise.all([
+    getServerSideCommonInitialProps(context),
+    getServerSideI18nProps(context, ['translation']),
+  ]);
 
-  await injectNextI18NextConfigurations(context, props, ['translation']);
-
-  return {
-    props,
-  };
+  return mergeGetServerSidePropsResults(commonInitialResult,
+    mergeGetServerSidePropsResults(commonEachPropsResult, i18nPropsResult));
 };
 
 export default MaintenancePage;
