@@ -86,6 +86,28 @@ export const useIsAllReplyShown = (): UseAtom<typeof isAllReplyShownAtom> => {
 };
 
 /**
+ * Atom for show page limitation L
+ */
+export const showPageLimitationLAtom = atom<number>(50);
+
+export const useShowPageLimitationL = (): UseAtom<
+  typeof showPageLimitationLAtom
+> => {
+  return useAtom(showPageLimitationLAtom);
+};
+
+/**
+ * Atom for show page limitation XL
+ */
+export const showPageLimitationXLAtom = atom<number>(20);
+
+export const useShowPageLimitationXL = (): UseAtom<
+  typeof showPageLimitationXLAtom
+> => {
+  return useAtom(showPageLimitationXLAtom);
+};
+
+/**
  * Atom for show page side authors
  */
 export const showPageSideAuthorsAtom = atom<boolean>(false);

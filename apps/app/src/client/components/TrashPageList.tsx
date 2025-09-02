@@ -7,7 +7,7 @@ import dynamic from 'next/dynamic';
 import { toastSuccess } from '~/client/util/toastr';
 import type { IPagingResult } from '~/interfaces/paging-result';
 import { useIsReadOnlyUser } from '~/states/context';
-import { useShowPageLimitationXL } from '~/stores-universal/context';
+import { useShowPageLimitationXL } from '~/states/server-configurations';
 import { useEmptyTrashModal } from '~/stores/modal';
 import { useSWRxPageInfoForList, useSWRxPageList } from '~/stores/page-listing';
 
@@ -26,7 +26,7 @@ const convertToIDataWithMeta = (page) => {
 const useEmptyTrashButton = () => {
 
   const { t } = useTranslation();
-  const { data: limit } = useShowPageLimitationXL();
+  const [limit] = useShowPageLimitationXL();
   const [isReadOnlyUser] = useIsReadOnlyUser();
   const { data: pagingResult, mutate: mutatePageLists } = useSWRxPageList('/trash', 1, limit);
   const { open: openEmptyTrashModal } = useEmptyTrashModal();
@@ -64,7 +64,7 @@ const useEmptyTrashButton = () => {
 };
 
 const DescendantsPageListForTrash = (): JSX.Element => {
-  const { data: limit } = useShowPageLimitationXL();
+  const [limit] = useShowPageLimitationXL();
 
   return (
     <DescendantsPageList

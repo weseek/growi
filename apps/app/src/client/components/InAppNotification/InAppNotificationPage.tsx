@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
-import { useShowPageLimitationXL } from '~/stores-universal/context';
+import { useShowPageLimitationXL } from '~/states/server-configurations';
 import { useSWRxInAppNotifications, useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
 
 import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
@@ -17,7 +17,7 @@ import InAppNotificationList from './InAppNotificationList';
 export const InAppNotificationPage: FC = () => {
   const { t } = useTranslation('commons');
 
-  const { data: showPageLimitationXL } = useShowPageLimitationXL();
+  const [showPageLimitationXL] = useShowPageLimitationXL();
 
   const limit = showPageLimitationXL != null ? showPageLimitationXL : 20;
 

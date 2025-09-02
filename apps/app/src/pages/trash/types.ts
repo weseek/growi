@@ -3,5 +3,6 @@ export type ServerConfigurationProps = {
     isSearchServiceConfigured: boolean;
     isSearchServiceReachable: boolean;
     isSearchScopeChildrenAsDefault: boolean;
+    showPageLimitationXL: number,
   },
 }

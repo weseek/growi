@@ -1,13 +1,11 @@
 import { useHydrateAtoms } from 'jotai/utils';
 
-import type { RendererConfig } from '~/interfaces/services/renderer';
 import {
   isSearchScopeChildrenAsDefaultAtom,
   isSearchServiceConfiguredAtom,
   isSearchServiceReachableAtom,
-  isContainerFluidAtom,
-  rendererConfigAtom,
-} from '~/states/server-configurations/server-configurations';
+  showPageLimitationXLAtom,
+} from '~/states/server-configurations';
 
 import type { ServerConfigurationProps } from './types';
 
@@ -17,14 +15,12 @@ import type { ServerConfigurationProps } from './types';
  */
 export const useHydrateServerConfigurationAtoms = (
     serverConfig: ServerConfigurationProps['serverConfig'] | undefined,
-    rendererConfigs: RendererConfig | undefined,
 ): void => {
   // Hydrate server configuration atoms with server-side data
-  useHydrateAtoms(serverConfig == null || rendererConfigs == null ? [] : [
+  useHydrateAtoms(serverConfig == null ? [] : [
     [isSearchServiceConfiguredAtom, serverConfig.isSearchServiceConfigured],
     [isSearchServiceReachableAtom, serverConfig.isSearchServiceReachable],
     [isSearchScopeChildrenAsDefaultAtom, serverConfig.isSearchScopeChildrenAsDefault],
-    [isContainerFluidAtom, serverConfig.isContainerFluid],
-    [rendererConfigAtom, rendererConfigs],
+    [showPageLimitationXLAtom, serverConfig.showPageLimitationXL],
   ]);
 };

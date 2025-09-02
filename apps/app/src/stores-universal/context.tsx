@@ -42,14 +42,6 @@ export const useIsBlinkedHeaderAtBoot = (initialData?: boolean): SWRResponse<boo
   return useContextSWR('isBlinkedAtBoot', initialData, { fallbackData: false });
 };
 
-export const useShowPageLimitationL = (initialData?: number): SWRResponse<number, Error> => {
-  return useContextSWR('showPageLimitationL', initialData);
-};
-
-export const useShowPageLimitationXL = (initialData?: number): SWRResponse<number, Error> => {
-  return useContextSWR('showPageLimitationXL', initialData);
-};
-
 export const useCustomizeTitle = (initialData?: string): SWRResponse<string, Error> => {
   return useContextSWR('CustomizeTitle', initialData);
 };

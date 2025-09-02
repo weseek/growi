@@ -1,8 +1,8 @@
 import type { ReactNode, JSX } from 'react';
+import React from 'react';
 
-import type { IUser } from '@growi/core';
+import { isPermalink, isUserPage, isUsersTopPage } from '@growi/core/dist/utils/page-path-utils';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
@@ -10,59 +10,38 @@ import { PagePathNavTitle } from '~/components/Common/PagePathNavTitle';
 import { BasicLayout } from '~/components/Layout/BasicLayout';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import type { RendererConfig } from '~/interfaces/services/renderer';
-import type { ISidebarConfig } from '~/interfaces/sidebar-config';
-import { useHydratePageAtoms } from '~/states/hydrate/page';
-import { useHydrateSidebarAtoms } from '~/states/hydrate/sidebar';
-import {
-  useCurrentUser, useCurrentPathname, useGrowiCloudUri,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable,
-  useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL,
-} from '~/stores-universal/context';
-
+import { useHydrateSidebarAtoms } from '~/states/ui/sidebar/hydrate';
 
 import type { NextPageWithLayout } from '../_app.page';
-import type { CommonProps } from '../common-props';
+import type { CommonEachProps, CommonInitialProps, UserUISettingsProps } from '../common-props';
 import {
-  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitleForPage,
+  getServerSideCommonEachProps, getServerSideCommonInitialProps, getServerSideI18nProps, getServerSideUserUISettingsProps,
 } from '../common-props';
+import type { RendererConfigProps, SidebarConfigProps } from '../general-page';
+import { getServerSideSidebarConfigProps } from '../general-page';
+import { useCustomTitle } from '../utils/page-title-customization';
+import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
+
+import type { ServerConfigurationProps } from './types';
+import { useHydrateServerConfigurationAtoms } from './use-hydrate-server-configurations';
 
 
 const TrashPageList = dynamic(() => import('~/client/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
 const EmptyTrashModal = dynamic(() => import('~/client/components/EmptyTrashModal'), { ssr: false });
 
+type Props = CommonInitialProps & CommonEachProps & ServerConfigurationProps & RendererConfigProps & UserUISettingsProps & SidebarConfigProps;
 
-type Props = CommonProps & {
-  currentUser: IUser,
-  isSearchServiceConfigured: boolean,
-  isSearchServiceReachable: boolean,
-  isSearchScopeChildrenAsDefault: boolean,
-  showPageLimitationXL: number,
+const TrashPage: NextPageWithLayout<Props> = (props: Props) => {
+  // // clear the cache for the current page
+  // //  in order to fix https://redmine.weseek.co.jp/issues/135811
+  // useHydratePageAtoms(undefined);
+  // useCurrentPathname('/trash');
 
-  rendererConfig: RendererConfig,
+  // Hydrate server-side data
+  useHydrateServerConfigurationAtoms(props.serverConfig);
+  useHydrateSidebarAtoms(props.sidebarConfig, props.userUISettings);
 
-  sidebarConfig: ISidebarConfig,
-};
-
-const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
-  useCurrentUser(props.currentUser ?? null);
-
-  // clear the cache for the current page
-  //  in order to fix https://redmine.weseek.co.jp/issues/135811
-  useHydratePageAtoms(undefined);
-  useCurrentPathname('/trash');
-
-  useGrowiCloudUri(props.growiCloudUri);
-
-  useIsSearchServiceConfigured(props.isSearchServiceConfigured);
-  useIsSearchServiceReachable(props.isSearchServiceReachable);
-  useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
-
-  useIsSearchPage(false);
-
-  useShowPageLimitationXL(props.showPageLimitationXL);
-
-  const title = generateCustomTitleForPage(props, '/trash');
+  const title = useCustomTitle('/trash');
 
   return (
     <>
@@ -104,55 +83,58 @@ TrashPage.getLayout = function getLayout(page) {
   );
 };
 
-function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
+
+const getServerSideConfigurationProps: GetServerSideProps<ServerConfigurationProps> = async(context: GetServerSidePropsContext) => {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    searchService, configManager,
+    configManager, searchService,
   } = crowi;
 
-  props.isSearchServiceConfigured = searchService.isConfigured;
-  props.isSearchServiceReachable = searchService.isReachable;
-  props.isSearchScopeChildrenAsDefault = configManager.getConfig('customize:isSearchScopeChildrenAsDefault');
-  props.showPageLimitationXL = crowi.configManager.getConfig('customize:showPageLimitationXL');
-
-  props.sidebarConfig = {
-    isSidebarCollapsedMode: configManager.getConfig('customize:isSidebarCollapsedMode'),
-    isSidebarClosedAtDockMode: configManager.getConfig('customize:isSidebarClosedAtDockMode'),
+  return {
+    props: {
+      serverConfig: {
+        isSearchServiceConfigured: searchService.isConfigured,
+        isSearchServiceReachable: searchService.isReachable,
+        isSearchScopeChildrenAsDefault: configManager.getConfig('customize:isSearchScopeChildrenAsDefault'),
+        showPageLimitationXL: crowi.configManager.getConfig('customize:showPageLimitationXL'),
+      },
+    },
   };
-
-}
-
-/**
- * for Server Side Translations
- * @param context
- * @param props
- * @param namespacesRequired
- */
-async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
-  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
-  props._nextI18Next = nextI18NextConfig._nextI18Next;
-}
+};
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const req = context.req as CrowiRequest;
-  const { user } = req;
-  const result = await getServerSideCommonProps(context);
+  const req: CrowiRequest = context.req as CrowiRequest;
 
-  if (!('props' in result)) {
-    throw new Error('invalid getSSP result');
+  // redirect to the page the user was on before moving to the Login Page
+  if (req.headers.referer != null) {
+    const urlBeforeLogin = new URL(req.headers.referer);
+    if (isPermalink(urlBeforeLogin.pathname) || isUserPage(urlBeforeLogin.pathname) || isUsersTopPage(urlBeforeLogin.pathname)) {
+      req.session.redirectTo = urlBeforeLogin.href;
+    }
   }
-  const props: Props = result.props as Props;
 
-  if (user != null) {
-    props.currentUser = user.toObject();
-  }
-  injectServerConfigurations(context, props);
-  await injectNextI18NextConfigurations(context, props, ['translation']);
+  const [
+    commonInitialResult,
+    commonEachResult,
+    userUIResult,
+    sidebarConfigResult,
+    serverConfigResult,
+    i18nPropsResult,
+  ] = await Promise.all([
+    getServerSideCommonInitialProps(context),
+    getServerSideCommonEachProps(context),
+    getServerSideUserUISettingsProps(context),
+    getServerSideSidebarConfigProps(context),
+    getServerSideConfigurationProps(context),
+    getServerSideI18nProps(context, ['translation']),
+  ]);
 
-  return {
-    props,
-  };
+  return mergeGetServerSidePropsResults(commonInitialResult,
+    mergeGetServerSidePropsResults(commonEachResult,
+      mergeGetServerSidePropsResults(userUIResult,
+        mergeGetServerSidePropsResults(sidebarConfigResult,
+          mergeGetServerSidePropsResults(serverConfigResult, i18nPropsResult)))));
 };
 
 export default TrashPage;
