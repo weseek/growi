@@ -6,7 +6,7 @@ import {
 } from '../../common-props';
 import type { GeneralPageInitialProps } from '../../general-page';
 import {
-  getServerSideConfigurationProps,
+  getServerSideGeneralPageProps,
   getServerSideRendererConfigProps,
   getActivityAction, isValidInitialAndSameRouteProps,
 } from '../../general-page';
@@ -62,13 +62,13 @@ export async function getServerSidePropsForInitial(context: GetServerSidePropsCo
 
   const [
     commonInitialResult,
-    serverConfigResult,
+    generalPageResult,
     rendererConfigResult,
     i18nPropsResult,
     pageDataResult,
   ] = await Promise.all([
     getServerSideCommonInitialProps(context),
-    getServerSideConfigurationProps(context),
+    getServerSideGeneralPageProps(context),
     getServerSideRendererConfigProps(context),
     getServerSideI18nProps(context, ['translation']),
     getPageDataForInitial(context),
@@ -77,7 +77,7 @@ export async function getServerSidePropsForInitial(context: GetServerSidePropsCo
   // Merge all results in a type-safe manner (using sequential merging)
   const mergedResult = mergeGetServerSidePropsResults(commonEachPropsResult,
     mergeGetServerSidePropsResults(commonInitialResult,
-      mergeGetServerSidePropsResults(serverConfigResult,
+      mergeGetServerSidePropsResults(generalPageResult,
         mergeGetServerSidePropsResults(rendererConfigResult,
           mergeGetServerSidePropsResults(i18nPropsResult,
             mergeGetServerSidePropsResults(pageDataResult,

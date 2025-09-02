@@ -35,7 +35,7 @@ export const getServerSideRendererConfigProps: GetServerSideProps<RendererConfig
   };
 };
 
-export const getServerSideConfigurationProps: GetServerSideProps<ServerConfigurationProps> = async(context: GetServerSidePropsContext) => {
+export const getServerSideGeneralPageProps: GetServerSideProps<ServerConfigurationProps> = async(context: GetServerSidePropsContext) => {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {

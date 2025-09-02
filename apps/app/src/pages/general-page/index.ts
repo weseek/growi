@@ -1,4 +1,4 @@
-export { getServerSideRendererConfigProps, getServerSideConfigurationProps } from './configuration-props';
+export { getServerSideRendererConfigProps, getServerSideGeneralPageProps } from './configuration-props';
 export { getActivityAction } from './get-activity-action';
 export type * from './types';
 export { isValidInitialAndSameRouteProps } from './type-guards';

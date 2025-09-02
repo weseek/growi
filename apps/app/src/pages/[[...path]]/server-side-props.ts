@@ -8,8 +8,8 @@ import type { GeneralPageInitialProps } from '../general-page';
 import {
   getServerSideRendererConfigProps,
   getActivityAction, isValidInitialAndSameRouteProps,
+  getServerSideGeneralPageProps,
 } from '../general-page';
-import { getServerSideConfigurationProps } from '../general-page/configuration-props';
 import { addActivity } from '../utils/activity';
 import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
 
@@ -53,14 +53,14 @@ export async function getServerSidePropsForInitial(context: GetServerSidePropsCo
   const [
     commonInitialResult,
     basicLayoutResult,
-    serverConfigResult,
+    generalPageResult,
     rendererConfigResult,
     i18nPropsResult,
     pageDataResult,
   ] = await Promise.all([
     getServerSideCommonInitialProps(context),
     getServerSideBasicLayoutProps(context),
-    getServerSideConfigurationProps(context),
+    getServerSideGeneralPageProps(context),
     getServerSideRendererConfigProps(context),
     getServerSideI18nProps(context, ['translation']),
     getPageDataForInitial(context),
@@ -70,7 +70,7 @@ export async function getServerSidePropsForInitial(context: GetServerSidePropsCo
   const mergedResult = mergeGetServerSidePropsResults(commonEachPropsResult,
     mergeGetServerSidePropsResults(commonInitialResult,
       mergeGetServerSidePropsResults(basicLayoutResult,
-        mergeGetServerSidePropsResults(serverConfigResult,
+        mergeGetServerSidePropsResults(generalPageResult,
           mergeGetServerSidePropsResults(rendererConfigResult,
             mergeGetServerSidePropsResults(i18nPropsResult,
               mergeGetServerSidePropsResults(pageDataResult, nextjsRoutingProps)))))));
