@@ -9,12 +9,12 @@ import Head from 'next/head';
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 
-import type { CommonEachProps, CommonInitialProps } from './common-props';
+import type { CommonEachProps, CommonInitialProps } from '../common-props';
 import {
   getServerSideCommonEachProps, getServerSideCommonInitialProps, getServerSideI18nProps,
-} from './common-props';
-import { mergeGetServerSidePropsResults } from './utils/server-side-props';
-import { useCustomTitle } from './utils/page-title-customization';
+} from '../common-props';
+import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
+import { useCustomTitle } from '../utils/page-title-customization';
 
 const InvitedForm = dynamic(() => import('~/client/components/InvitedForm').then(mod => mod.InvitedForm), { ssr: false });
 
