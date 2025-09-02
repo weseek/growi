@@ -10,12 +10,12 @@ import type { RegistrationMode } from '~/interfaces/registration-mode';
 import type { ReqWithUserRegistrationOrder } from '~/server/middlewares/inject-user-registration-order-by-token-middleware';
 
 
-import type { CommonEachProps, CommonInitialProps } from './common-props';
+import type { CommonEachProps, CommonInitialProps } from '../common-props';
 import {
   getServerSideCommonEachProps, getServerSideCommonInitialProps, getServerSideI18nProps,
-} from './common-props';
-import { useCustomTitle } from './utils/page-title-customization';
-import { mergeGetServerSidePropsResults } from './utils/server-side-props';
+} from '../common-props';
+import { useCustomTitle } from '../utils/page-title-customization';
+import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
 
 
 const CompleteUserRegistrationForm = dynamic(() => import('~/client/components/CompleteUserRegistrationForm')
