@@ -47,6 +47,15 @@ export const useDefaultIndentSize = (): UseAtom<
 };
 
 /**
+ * Atom for mailer setup status
+ */
+export const isMailerSetupAtom = atom<boolean>(false);
+
+export const useIsMailerSetup = (): UseAtom<typeof isMailerSetupAtom> => {
+  return useAtom(isMailerSetupAtom);
+};
+
+/**
  * Atom for search scope children as default
  */
 export const isSearchScopeChildrenAsDefaultAtom = atom<boolean>(false);

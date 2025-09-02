@@ -22,10 +22,6 @@ export const useRegistrationWhitelist = (initialData?: Nullable<string[]>): SWRR
   return useContextSWR<Nullable<string[]>, Error>('registrationWhitelist', initialData);
 };
 
-export const useIsMailerSetup = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useContextSWR('isMailerSetup', initialData);
-};
-
 export const useAuditLogEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('auditLogEnabled', initialData, { fallbackData: false });
 };
