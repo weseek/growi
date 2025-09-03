@@ -18,11 +18,11 @@ import { useCustomTitle } from '~/pages/utils/page-title-customization';
 import { mergeGetServerSidePropsResults } from '~/pages/utils/server-side-props';
 import loggerFactory from '~/utils/logger';
 
-import type { NextPageWithLayout } from '../../_app.page';
-import type { CommonEachProps, CommonInitialProps } from '../../common-props';
+import type { NextPageWithLayout } from '../_app.page';
+import type { CommonEachProps, CommonInitialProps } from '../common-props';
 import {
   getServerSideCommonEachProps, getServerSideCommonInitialProps, getServerSideI18nProps,
-} from '../../common-props';
+} from '../common-props';
 
 import type { ServerConfigurationProps } from './types';
 import { useHydrateServerConfigurationAtoms } from './use-hydrate-server-configurations';
