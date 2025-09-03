@@ -1,8 +1,10 @@
+import { useHydrateAtoms } from 'jotai/utils';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import dynamic from 'next/dynamic';
 
 import type { SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { activityExpirationSecondsAtom, auditLogAvailableActionsAtom, auditLogEnabledAtom } from '~/states/global';
 
 import type { NextPageWithLayout } from '../_app.page';
 import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
@@ -20,7 +22,16 @@ type PageProps = {
 
 type Props = AdminCommonProps & PageProps;
 
-const AdminAuditLogPage: NextPageWithLayout<Props> = () => <AuditLogManagement />;
+const AdminAuditLogPage: NextPageWithLayout<Props> = (props: Props) => {
+  // hydrate
+  useHydrateAtoms([
+    [auditLogEnabledAtom, props.auditLogEnabled],
+    [activityExpirationSecondsAtom, props.activityExpirationSeconds],
+    [auditLogAvailableActionsAtom, props.auditLogAvailableActions],
+  ], { dangerouslyForceHydrate: true });
+
+  return <AuditLogManagement />;
+};
 
 // No extra containers required presently; values injected directly via props + existing universal stores inside component children
 AdminAuditLogPage.getLayout = createAdminPageLayout<Props>({
@@ -30,10 +41,6 @@ AdminAuditLogPage.getLayout = createAdminPageLayout<Props>({
 // Extend common SSR to inject audit log specific server configs
 export const getServerSideProps: GetServerSideProps<Props> = async(context: GetServerSidePropsContext) => {
   const baseResult = await getServerSideAdminCommonProps(context);
-  if ('redirect' in baseResult || 'notFound' in baseResult) {
-    // These branches are shape-invariant w.r.t generic P, safe to return directly
-    return baseResult;
-  }
 
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;

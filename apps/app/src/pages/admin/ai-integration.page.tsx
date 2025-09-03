@@ -1,7 +1,9 @@
+import { useHydrateAtoms } from 'jotai/utils';
 import type { GetServerSideProps } from 'next';
 import dynamic from 'next/dynamic';
 
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { aiEnabledAtom } from '~/states/server-configurations/server-configurations';
 
 import type { NextPageWithLayout } from '../_app.page';
 import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
@@ -16,9 +18,11 @@ const AiIntegrationDisableMode = dynamic(
 
 type Props = AdminCommonProps & { aiEnabled: boolean };
 
-const AdminAiIntegrationPage: NextPageWithLayout<Props> = (props: Props) => (
-  props.aiEnabled ? <AiIntegration /> : <AiIntegrationDisableMode />
-);
+const AdminAiIntegrationPage: NextPageWithLayout<Props> = ({ aiEnabled }: Props) => {
+  // Hydrate server-provided prop into atom (runs only on mount / hydration)
+  useHydrateAtoms([[aiEnabledAtom, aiEnabled]], { dangerouslyForceHydrate: true });
+  return aiEnabled ? <AiIntegration /> : <AiIntegrationDisableMode />;
+};
 
 AdminAiIntegrationPage.getLayout = createAdminPageLayout<Props>({
   title: (_p, t) => t('ai_integration.ai_integration'),
