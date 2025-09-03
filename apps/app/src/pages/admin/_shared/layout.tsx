@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import type { ReactElement, ReactNode } from 'react';
 
+import type { TFunction } from 'i18next';
 import { useTranslation } from 'next-i18next';
 
 import { useCustomTitle } from '~/pages/utils/page-title-customization';
@@ -10,7 +11,7 @@ import type { AnyUnstatedContainer, AdminCommonProps } from './types';
 import { useUnstatedContainers } from './use-unstated-container';
 
 export interface AdminLayoutOptions<P extends AdminCommonProps> {
-  title: string | ((props: P, t: (k: string) => string) => string);
+  title: string | ((props: P, t: TFunction) => string);
   containerFactories?: Array<() => Promise<AnyUnstatedContainer>>;
 }
 

@@ -1,5 +1,7 @@
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
+import type { GetServerSideI18nPropsOption } from '~/pages/common-props/i18n';
+
 import { getServerSideCommonInitialProps, getServerSideCommonEachProps, getServerSideI18nProps } from '../../common-props';
 import { mergeGetServerSidePropsResults } from '../../utils/server-side-props';
 
@@ -9,7 +11,9 @@ import type { AdminCommonProps } from './types';
  * Build common admin SSR props (merges common initial/each/i18n and computes admin flag).
  * Returns redirect / notFound as-is.
  */
-export const getServerSideAdminCommonProps: GetServerSideProps<AdminCommonProps> = async(context: GetServerSidePropsContext) => {
+export const getServerSideAdminCommonProps = async(
+    context: GetServerSidePropsContext, options?: GetServerSideI18nPropsOption,
+): ReturnType<GetServerSideProps<AdminCommonProps>> => {
   //
   // STAGE 1
   //
@@ -32,7 +36,7 @@ export const getServerSideAdminCommonProps: GetServerSideProps<AdminCommonProps>
     i18nResult,
   ] = await Promise.all([
     getServerSideCommonInitialProps(context),
-    getServerSideI18nProps(context, ['admin']),
+    getServerSideI18nProps(context, ['admin'], options),
   ]);
 
   return mergeGetServerSidePropsResults(commonInitialResult,

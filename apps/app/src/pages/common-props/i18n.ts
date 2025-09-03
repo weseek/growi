@@ -40,13 +40,17 @@ async function createNextI18NextConfig(
   );
 }
 
+export type GetServerSideI18nPropsOption = {
+  preloadAllLang: boolean,
+}
 
 export const getServerSideI18nProps = async(
     context: GetServerSidePropsContext,
     namespacesRequired?: string[] | undefined,
+    options?: GetServerSideI18nPropsOption,
 ): Promise<GetServerSidePropsResult<SSRConfig>> => {
   // Use the shared helper function instead of the local one
-  const nextI18NextConfig = await createNextI18NextConfig(context, namespacesRequired);
+  const nextI18NextConfig = await createNextI18NextConfig(context, namespacesRequired, options?.preloadAllLang);
 
   return {
     props: {
