@@ -10,6 +10,7 @@ import {
   growiVersionAtom,
   isDefaultLogoAtom,
   siteUrlAtom,
+  siteUrlWithEmptyValueWarnAtom,
 } from './global';
 
 /**
@@ -25,6 +26,10 @@ export const useHydrateGlobalInitialAtoms = (
   useHydrateAtoms([
     [appTitleAtom, commonInitialProps.appTitle],
     [siteUrlAtom, commonInitialProps.siteUrl],
+    [
+      siteUrlWithEmptyValueWarnAtom,
+      commonInitialProps.siteUrlWithEmptyValueWarn,
+    ],
     [confidentialAtom, commonInitialProps.confidential],
     [growiVersionAtom, commonInitialProps.growiVersion],
     [isDefaultLogoAtom, commonInitialProps.isDefaultLogo],

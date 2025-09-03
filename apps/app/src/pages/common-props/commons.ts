@@ -12,6 +12,7 @@ export type CommonInitialProps = {
   isNextjsRoutingTypeInitial: true,
   appTitle: string,
   siteUrl: string | undefined,
+  siteUrlWithEmptyValueWarn: string,
   confidential: string,
   growiVersion: string,
   isDefaultLogo: boolean,
@@ -25,7 +26,7 @@ export const getServerSideCommonInitialProps: GetServerSideProps<CommonInitialPr
   const req = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    appService, configManager, attachmentService, customizeService,
+    appService, configManager, attachmentService, customizeService, growiInfoService,
   } = crowi;
 
   const isCustomizedLogoUploaded = await attachmentService.isBrandLogoExist();
@@ -36,7 +37,8 @@ export const getServerSideCommonInitialProps: GetServerSideProps<CommonInitialPr
     props: {
       isNextjsRoutingTypeInitial: true,
       appTitle: appService.getAppTitle(),
-      siteUrl: configManager.getConfig('app:siteUrl'), // DON'T USE growiInfoService.getSiteUrl()
+      siteUrl: configManager.getConfig('app:siteUrl'),
+      siteUrlWithEmptyValueWarn: growiInfoService.getSiteUrl(),
       confidential: appService.getAppConfidential() || '',
       growiVersion: getGrowiVersion(),
       isDefaultLogo,
