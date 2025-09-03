@@ -42,7 +42,7 @@ export const useSiteUrl = (): UseAtom<typeof siteUrlAtom> => {
 };
 
 // Site URL atom (no persistence needed as it's server-provided)
-export const siteUrlWithEmptyValueWarnAtom = atom<string>();
+export const siteUrlWithEmptyValueWarnAtom = atom<string>('');
 export const useSiteUrlWithEmptyValueWarn = (): UseAtom<
   typeof siteUrlWithEmptyValueWarnAtom
 > => {
