@@ -5,12 +5,12 @@ import { useTranslation, i18n } from 'next-i18next';
 import { i18n as i18nConfig } from '^/config/next-i18next.config';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { useRegistrationWhitelist } from '~/stores-universal/context';
+import { useRegistrationWhitelist } from '~/states/server-configurations';
 import { usePersonalSettings } from '~/stores/personal-settings';
 
 export const BasicInfoSettings = (): JSX.Element => {
   const { t } = useTranslation();
-  const { data: registrationWhitelist } = useRegistrationWhitelist();
+  const [registrationWhitelist] = useRegistrationWhitelist();
 
   const {
     data: personalSettingsInfo, mutate: mutatePersonalSettings, sync, updateBasicInfo, error,

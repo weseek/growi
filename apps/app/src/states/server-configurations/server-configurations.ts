@@ -235,6 +235,17 @@ export const useIsAclEnabled = (): UseAtom<typeof isAclEnabledAtom> => {
 };
 
 /**
+ * Atom for registration whitelist
+ */
+export const registrationWhitelistAtom = atom<string[] | null>(null);
+
+export const useRegistrationWhitelist = (): UseAtom<
+  typeof registrationWhitelistAtom
+> => {
+  return useAtom(registrationWhitelistAtom);
+};
+
+/**
  * Atom for upload all file allowed
  */
 export const isUploadAllFileAllowedAtom = atom<boolean>(false);
