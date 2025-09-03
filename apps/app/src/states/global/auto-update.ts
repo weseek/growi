@@ -2,7 +2,12 @@ import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import type { CommonEachProps } from '~/pages/common-props';
 
-import { useCsrfToken, useCurrentPathname, useCurrentUser } from './global';
+import {
+  useCsrfToken,
+  useCurrentPathname,
+  useCurrentUser,
+  useIsMaintenanceMode,
+} from './global';
 
 /**
  * Hook for auto-updating global UI state atoms with server-side data
@@ -27,4 +32,10 @@ export const useAutoUpdateGlobalAtoms = (props: CommonEachProps): void => {
   useIsomorphicLayoutEffect(() => {
     setCsrfToken(props.csrfToken);
   }, [setCsrfToken, props.csrfToken]);
+
+  // Update maintenance mode atom
+  const [, setIsMaintenanceMode] = useIsMaintenanceMode();
+  useIsomorphicLayoutEffect(() => {
+    setIsMaintenanceMode(props.isMaintenanceMode);
+  }, [setIsMaintenanceMode, props.isMaintenanceMode]);
 };
