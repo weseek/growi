@@ -1,65 +1,72 @@
-import { useEffect, useMemo } from 'react';
-
-import type {
-  NextPage, GetServerSideProps, GetServerSidePropsContext,
-} from 'next';
+/* eslint-disable react/prop-types */
+import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
-import Head from 'next/head';
-import type { Container } from 'unstated';
-import { Provider } from 'unstated';
 
-import type { CommonProps } from '~/pages/utils/commons';
-import { generateCustomTitle } from '~/pages/utils/commons';
-import { useCurrentUser } from '~/stores-universal/context';
+import { useCustomTitle } from '~/pages/utils/page-title-customization';
 
-import { retrieveServerSideProps } from '../../utils/admin-page-util';
+import type { NextPageWithLayout } from '../_app.page';
+import type { CommonInitialProps, CommonEachProps } from '../common-props';
+import { getServerSideCommonInitialProps, getServerSideCommonEachProps, getServerSideI18nProps } from '../common-props';
+import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
 
-const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
+import { AdminPageFrame } from './_shared/AdminPageFrame';
+import { useAdminContainers } from './_shared/useAdminContainers';
+
 const NotificationSetting = dynamic(() => import('~/client/components/Admin/Notification/NotificationSetting'), { ssr: false });
-const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
+type Props = CommonInitialProps & CommonEachProps & {
+  isAccessDeniedForNonAdminUser: boolean;
+};
 
-const AdminExternalNotificationPage: NextPage<CommonProps> = (props) => {
+const AdminExternalNotificationPage: NextPageWithLayout<Props> = () => <NotificationSetting />;
+
+// A wrapping component to legally use hooks while following getLayout pattern
+interface NotificationPageLayoutProps { page: JSX.Element & { props: Props } }
+const NotificationPageLayout: React.FC<NotificationPageLayoutProps> = (propsWrapper) => {
+  const page = propsWrapper.page;
+  const props = page.props;
   const { t } = useTranslation('admin');
-  useCurrentUser(props.currentUser ?? null);
-
   const componentTitle = t('external_notification.external_notification');
-  const pageTitle = generateCustomTitle(props, componentTitle);
-
-  const injectableContainers: Container<any>[] = useMemo(() => [], []);
-
-  useEffect(() => {
-    (async() => {
+  const title = useCustomTitle(componentTitle);
+  const containers = useAdminContainers([
+    async() => {
       const AdminNotificationContainer = (await import('~/client/services/AdminNotificationContainer')).default;
-      const adminNotificationContainer = new AdminNotificationContainer();
-      injectableContainers.push(adminNotificationContainer);
-    })();
-  }, [injectableContainers]);
-
-  if (props.isAccessDeniedForNonAdminUser) {
-    return <ForbiddenPage />;
-  }
-
+      return new AdminNotificationContainer();
+    },
+  ]);
 
   return (
-    <Provider inject={[...injectableContainers]}>
-      <AdminLayout componentTitle={componentTitle}>
-        <Head>
-          <title>{pageTitle}</title>
-        </Head>
-        <NotificationSetting />
-      </AdminLayout>
-    </Provider>
+    <AdminPageFrame
+      title={title}
+      componentTitle={componentTitle}
+      isAccessDeniedForNonAdminUser={props.isAccessDeniedForNonAdminUser}
+      containers={containers}
+    >
+      {page}
+    </AdminPageFrame>
   );
-
 };
 
+AdminExternalNotificationPage.getLayout = page => <NotificationPageLayout page={page} />;
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const props = await retrieveServerSideProps(context);
-  return props;
-};
+  const [commonInitialResult, commonEachResult, i18nResult] = await Promise.all([
+    getServerSideCommonInitialProps(context),
+    getServerSideCommonEachProps(context),
+    getServerSideI18nProps(context, ['admin']),
+  ]);
 
+  const merged = mergeGetServerSidePropsResults(commonInitialResult,
+    mergeGetServerSidePropsResults(commonEachResult, i18nResult));
+
+  if ('props' in merged) {
+    const mergedProps = merged.props as CommonInitialProps & CommonEachProps & { isAccessDeniedForNonAdminUser?: boolean, currentUser?: { admin?: boolean } };
+    const currentUser = mergedProps.currentUser;
+    mergedProps.isAccessDeniedForNonAdminUser = currentUser == null ? true : !currentUser.admin;
+  }
+
+  return merged;
+};
 
 export default AdminExternalNotificationPage;
