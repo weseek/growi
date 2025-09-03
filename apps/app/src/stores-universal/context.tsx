@@ -1,12 +1,14 @@
-import type EventEmitter from 'events';
-
 import { AcceptedUploadFileType } from '@growi/core';
 import { useSWRStatic } from '@growi/core/dist/swr';
+import type EventEmitter from 'events';
 import type { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import type { SupportedActionType } from '~/interfaces/activity';
-import { useIsUploadEnabled, useIsUploadAllFileAllowed } from '~/states/server-configurations';
+import {
+  useIsUploadAllFileAllowed,
+  useIsUploadEnabled,
+} from '~/states/server-configurations';
 
 import { useContextSWR } from './use-context-swr';
 
@@ -17,49 +19,78 @@ declare global {
 
 type Nullable<T> = T | null;
 
-
-export const useRegistrationWhitelist = (initialData?: Nullable<string[]>): SWRResponse<Nullable<string[]>, Error> => {
-  return useContextSWR<Nullable<string[]>, Error>('registrationWhitelist', initialData);
+export const useRegistrationWhitelist = (
+  initialData?: Nullable<string[]>,
+): SWRResponse<Nullable<string[]>, Error> => {
+  return useContextSWR<Nullable<string[]>, Error>(
+    'registrationWhitelist',
+    initialData,
+  );
 };
 
-export const useAuditLogEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useContextSWR<boolean, Error>('auditLogEnabled', initialData, { fallbackData: false });
+export const useAuditLogEnabled = (
+  initialData?: boolean,
+): SWRResponse<boolean, Error> => {
+  return useContextSWR<boolean, Error>('auditLogEnabled', initialData, {
+    fallbackData: false,
+  });
 };
 
-export const useActivityExpirationSeconds = (initialData?: number) : SWRResponse<number, Error> => {
+export const useActivityExpirationSeconds = (
+  initialData?: number,
+): SWRResponse<number, Error> => {
   return useContextSWR<number, Error>('activityExpirationSeconds', initialData);
 };
 
-export const useAuditLogAvailableActions = (initialData?: Array<SupportedActionType>) : SWRResponse<Array<SupportedActionType>, Error> => {
-  return useContextSWR<Array<SupportedActionType>, Error>('auditLogAvailableActions', initialData);
+export const useAuditLogAvailableActions = (
+  initialData?: Array<SupportedActionType>,
+): SWRResponse<Array<SupportedActionType>, Error> => {
+  return useContextSWR<Array<SupportedActionType>, Error>(
+    'auditLogAvailableActions',
+    initialData,
+  );
 };
 
-export const useIsBlinkedHeaderAtBoot = (initialData?: boolean): SWRResponse<boolean, Error> => {
+export const useIsBlinkedHeaderAtBoot = (
+  initialData?: boolean,
+): SWRResponse<boolean, Error> => {
   return useContextSWR('isBlinkedAtBoot', initialData, { fallbackData: false });
 };
 
-export const useCustomizeTitle = (initialData?: string): SWRResponse<string, Error> => {
+export const useCustomizeTitle = (
+  initialData?: string,
+): SWRResponse<string, Error> => {
   return useContextSWR('CustomizeTitle', initialData);
 };
 
-export const useIsCustomizedLogoUploaded = (initialData?: boolean): SWRResponse<boolean, Error> => {
+export const useIsCustomizedLogoUploaded = (
+  initialData?: boolean,
+): SWRResponse<boolean, Error> => {
   return useSWRStatic('isCustomizedLogoUploaded', initialData);
 };
 
-export const useGrowiAppIdForGrowiCloud = (initialData?: number): SWRResponse<number, Error> => {
+export const useGrowiAppIdForGrowiCloud = (
+  initialData?: number,
+): SWRResponse<number, Error> => {
   return useContextSWR('growiAppIdForGrowiCloud', initialData);
 };
 
-export const useIsEnableUnifiedMergeView = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useSWRStatic<boolean, Error>('isEnableUnifiedMergeView', initialData, { fallbackData: false });
-
+export const useIsEnableUnifiedMergeView = (
+  initialData?: boolean,
+): SWRResponse<boolean, Error> => {
+  return useSWRStatic<boolean, Error>('isEnableUnifiedMergeView', initialData, {
+    fallbackData: false,
+  });
 };
 
 /** **********************************************************
  *                     Computed contexts
  *********************************************************** */
 
-export const useAcceptedUploadFileType = (): SWRResponse<AcceptedUploadFileType, Error> => {
+export const useAcceptedUploadFileType = (): SWRResponse<
+  AcceptedUploadFileType,
+  Error
+> => {
   const [isUploadEnabled] = useIsUploadEnabled();
   const [isUploadAllFileAllowed] = useIsUploadAllFileAllowed();
 

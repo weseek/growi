@@ -6,18 +6,30 @@ import qs from 'qs';
 // eslint-disable-next-line no-restricted-imports
 export * from 'axios';
 
-const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?(Z|[+-]\d{2}:\d{2})$/;
+const isoDateRegex =
+  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?(Z|[+-]\d{2}:\d{2})$/;
 
-export type DateConvertible = string | number | boolean | Date | null | undefined | DateConvertible[] | { [key: string]: DateConvertible };
+export type DateConvertible =
+  | string
+  | number
+  | boolean
+  | Date
+  | null
+  | undefined
+  | DateConvertible[]
+  | { [key: string]: DateConvertible };
 
 /**
-* Converts string to dates recursively.
-*
-* @param data - Data to be transformed to Date if applicable.
-* @param seen - Set containing data that has been through the function before.
-* @returns - Data containing transformed Dates.
-*/
-function convertStringsToDatesRecursive(data: DateConvertible, seen: Set<unknown>): DateConvertible {
+ * Converts string to dates recursively.
+ *
+ * @param data - Data to be transformed to Date if applicable.
+ * @param seen - Set containing data that has been through the function before.
+ * @returns - Data containing transformed Dates.
+ */
+function convertStringsToDatesRecursive(
+  data: DateConvertible,
+  seen: Set<unknown>,
+): DateConvertible {
   if (typeof data !== 'object' || data === null) {
     if (typeof data === 'string' && isoDateRegex.test(data)) {
       return new Date(data);
@@ -32,7 +44,7 @@ function convertStringsToDatesRecursive(data: DateConvertible, seen: Set<unknown
   seen.add(data);
 
   if (Array.isArray(data)) {
-    return data.map(item => convertStringsToDatesRecursive(item, seen));
+    return data.map((item) => convertStringsToDatesRecursive(item, seen));
   }
 
   const newData: Record<string, DateConvertible> = {};
@@ -42,13 +54,9 @@ function convertStringsToDatesRecursive(data: DateConvertible, seen: Set<unknown
 
     if (typeof value === 'string' && isoDateRegex.test(value)) {
       newData[key] = new Date(value);
-    }
-
-    else if (typeof value === 'object' && value !== null) {
+    } else if (typeof value === 'object' && value !== null) {
       newData[key] = convertStringsToDatesRecursive(value, seen);
-    }
-
-    else {
+    } else {
       newData[key] = value;
     }
   }
@@ -58,9 +66,15 @@ function convertStringsToDatesRecursive(data: DateConvertible, seen: Set<unknown
 
 // Function overloads for better type inference
 export function convertStringsToDates(data: string): string | Date;
-export function convertStringsToDates<T extends DateConvertible>(data: T): DateConvertible;
-export function convertStringsToDates<T extends DateConvertible[]>(data: T): DateConvertible[];
-export function convertStringsToDates<T extends Record<string, DateConvertible>>(data: T): Record<string, DateConvertible>;
+export function convertStringsToDates<T extends DateConvertible>(
+  data: T,
+): DateConvertible;
+export function convertStringsToDates<T extends DateConvertible[]>(
+  data: T,
+): DateConvertible[];
+export function convertStringsToDates<
+  T extends Record<string, DateConvertible>,
+>(data: T): Record<string, DateConvertible>;
 export function convertStringsToDates(data: DateConvertible): DateConvertible {
   return convertStringsToDatesRecursive(data, new Set());
 }
@@ -70,13 +84,10 @@ let baseTransformers = axios.defaults.transformResponse;
 
 if (baseTransformers == null) {
   baseTransformers = [];
-}
-
-else if (!Array.isArray(baseTransformers)) {
+} else if (!Array.isArray(baseTransformers)) {
   // If it's a single transformer function, wrap it in an array
   baseTransformers = [baseTransformers];
 }
-
 
 const customAxios = axios.create({
   headers: {
@@ -84,20 +95,19 @@ const customAxios = axios.create({
     'Content-Type': 'application/json',
   },
 
-  transformResponse: baseTransformers.concat(
-    (data) => {
-      return convertStringsToDates(data);
-    },
-  ),
+  transformResponse: baseTransformers.concat((data) => {
+    return convertStringsToDates(data);
+  }),
 });
 
 // serialize Date config: https://github.com/axios/axios/issues/1548#issuecomment-548306666
 customAxios.interceptors.request.use((config) => {
-  config.paramsSerializer = params => qs.stringify(params, {
-    serializeDate: (date: Date) => {
-      return formatISO(date, { representation: 'complete' });
-    },
-  });
+  config.paramsSerializer = (params) =>
+    qs.stringify(params, {
+      serializeDate: (date: Date) => {
+        return formatISO(date, { representation: 'complete' });
+      },
+    });
   return config;
 });
 
