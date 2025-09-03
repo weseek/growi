@@ -11,9 +11,9 @@ import {
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { toastSuccess, toastError, toastWarning } from '~/client/util/toastr';
-import { useIsMailerSetup } from '~/stores-universal/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
+import { useIsMailerSetup } from '~/states/server-configurations';
 
 class UserInviteModal extends React.Component {
 
@@ -280,7 +280,7 @@ class UserInviteModal extends React.Component {
 
 const UserInviteModalWrapperFC = (props) => {
   const { t } = useTranslation();
-  const { data: isMailerSetup } = useIsMailerSetup();
+  const [isMailerSetup] = useIsMailerSetup();
   return <UserInviteModal t={t} isMailerSetup={isMailerSetup ?? false} {...props} />;
 };
 
