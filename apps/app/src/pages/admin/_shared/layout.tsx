@@ -6,9 +6,8 @@ import { useTranslation } from 'next-i18next';
 import { useCustomTitle } from '~/pages/utils/page-title-customization';
 
 import { AdminPageFrame } from './AdminPageFrame';
-import type { AdminCommonProps } from './admin-ssr';
-import type { AnyUnstatedContainer } from './types';
-import { useAdminContainers } from './useAdminContainers';
+import type { AnyUnstatedContainer, AdminCommonProps } from './types';
+import { useUnstatedContainers } from './use-unstated-container';
 
 export interface AdminLayoutOptions<P extends AdminCommonProps> {
   title: string | ((props: P, t: (k: string) => string) => string);
@@ -24,7 +23,7 @@ export function createAdminPageLayout<P extends AdminCommonProps>(options: Admin
       const title = useCustomTitle(rawTitle);
 
       const factories = useMemo(() => options.containerFactories ?? [], []);
-      const containers = useAdminContainers(factories);
+      const containers = useUnstatedContainers(factories);
 
       return (
         <AdminPageFrame

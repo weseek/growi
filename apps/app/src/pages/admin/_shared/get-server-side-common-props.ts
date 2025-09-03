@@ -1,13 +1,9 @@
-import type { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
-import type { CommonInitialProps, CommonEachProps } from '../../common-props';
 import { getServerSideCommonInitialProps, getServerSideCommonEachProps, getServerSideI18nProps } from '../../common-props';
 import { mergeGetServerSidePropsResults } from '../../utils/server-side-props';
 
-/** Base admin page props (allowed or forbidden). */
-export type AdminCommonProps = CommonInitialProps & CommonEachProps & {
-  isAccessDeniedForNonAdminUser: boolean;
-};
+import type { AdminCommonProps } from './types';
 
 /**
  * Build common admin SSR props (merges common initial/each/i18n and computes admin flag).

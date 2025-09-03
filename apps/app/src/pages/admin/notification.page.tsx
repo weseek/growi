@@ -3,9 +3,8 @@ import dynamic from 'next/dynamic';
 
 import type { NextPageWithLayout } from '../_app.page';
 
-import type { AdminCommonProps } from './_shared/admin-ssr';
-import { getServerSideAdminCommonProps } from './_shared/admin-ssr';
-import { createAdminPageLayout } from './_shared/createAdminPageLayout';
+import type { AdminCommonProps } from './_shared';
+import { createAdminPageLayout, getServerSideAdminCommonProps } from './_shared';
 
 const NotificationSetting = dynamic(() => import('~/client/components/Admin/Notification/NotificationSetting'), { ssr: false });
 

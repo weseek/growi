@@ -6,7 +6,7 @@ import type { AnyUnstatedContainer } from './types';
  * Helper hook to dynamically load and instantiate unstated containers for admin pages.
  * Pass an array of async factory functions returning container instances.
  */
-export const useAdminContainers = (factories: Array<() => Promise<AnyUnstatedContainer>>): AnyUnstatedContainer[] => {
+export const useUnstatedContainers = (factories: Array<() => Promise<AnyUnstatedContainer>>): AnyUnstatedContainer[] => {
   const [containers, setContainers] = useState<AnyUnstatedContainer[]>([]);
 
   useEffect(() => {
@@ -21,4 +21,4 @@ export const useAdminContainers = (factories: Array<() => Promise<AnyUnstatedCon
   return containers;
 };
 
-export default useAdminContainers;
+export default useUnstatedContainers;
