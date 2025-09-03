@@ -2,20 +2,21 @@ import type { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 
 import { getServerSideBasicLayoutProps } from '../basic-layout-page';
 import {
-  getServerSideI18nProps, getServerSideCommonInitialProps, getServerSideCommonEachProps, isValidCommonEachRouteProps,
+  getServerSideI18nProps, getServerSideCommonInitialProps,
 } from '../common-props';
 import type { GeneralPageInitialProps } from '../general-page';
 import {
   getServerSideRendererConfigProps,
-  getActivityAction, isValidInitialAndSameRouteProps,
+  getActivityAction,
   getServerSideGeneralPageProps,
 } from '../general-page';
+import { isValidGeneralPageInitialProps } from '../general-page/type-guards';
 import { addActivity } from '../utils/activity';
 import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
 
 import { NEXT_JS_ROUTING_PAGE } from './consts';
 import { getPageDataForInitial, getPageDataForSameRoute } from './page-data-props';
-import type { EachProps } from './types';
+import type { PageEachProps } from './types';
 
 
 const nextjsRoutingProps = {
@@ -24,32 +25,8 @@ const nextjsRoutingProps = {
   },
 };
 
-export async function getServerSidePropsForInitial(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<GeneralPageInitialProps & EachProps>> {
-  //
-  // STAGE 1
-  //
-
-  const commonEachPropsResult = await getServerSideCommonEachProps(context);
-  // Handle early return cases (redirect/notFound)
-  if ('redirect' in commonEachPropsResult || 'notFound' in commonEachPropsResult) {
-    return commonEachPropsResult;
-  }
-  const commonEachProps = await commonEachPropsResult.props;
-
-  // Handle redirect destination from common props
-  if (commonEachProps.redirectDestination != null) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: commonEachProps.redirectDestination,
-      },
-    };
-  }
-
-  //
-  // STAGE 2
-  //
-
+export async function getServerSidePropsForInitial(context: GetServerSidePropsContext):
+    Promise<GetServerSidePropsResult<GeneralPageInitialProps & PageEachProps>> {
   const [
     commonInitialResult,
     basicLayoutResult,
@@ -67,13 +44,12 @@ export async function getServerSidePropsForInitial(context: GetServerSidePropsCo
   ]);
 
   // Merge all results in a type-safe manner (using sequential merging)
-  const mergedResult = mergeGetServerSidePropsResults(commonEachPropsResult,
-    mergeGetServerSidePropsResults(commonInitialResult,
-      mergeGetServerSidePropsResults(basicLayoutResult,
-        mergeGetServerSidePropsResults(generalPageResult,
-          mergeGetServerSidePropsResults(rendererConfigResult,
-            mergeGetServerSidePropsResults(i18nPropsResult,
-              mergeGetServerSidePropsResults(pageDataResult, nextjsRoutingProps)))))));
+  const mergedResult = mergeGetServerSidePropsResults(commonInitialResult,
+    mergeGetServerSidePropsResults(basicLayoutResult,
+      mergeGetServerSidePropsResults(generalPageResult,
+        mergeGetServerSidePropsResults(rendererConfigResult,
+          mergeGetServerSidePropsResults(i18nPropsResult,
+            mergeGetServerSidePropsResults(pageDataResult, nextjsRoutingProps))))));
 
   // Check for early return (redirect/notFound)
   if ('redirect' in mergedResult || 'notFound' in mergedResult) {
@@ -83,7 +59,7 @@ export async function getServerSidePropsForInitial(context: GetServerSidePropsCo
   const mergedProps = await mergedResult.props;
 
   // Type-safe props validation AFTER skipSSR is properly set
-  if (!isValidInitialAndSameRouteProps(mergedProps)) {
+  if (!isValidGeneralPageInitialProps(mergedProps)) {
     throw new Error('Invalid merged props structure');
   }
 
@@ -91,58 +67,13 @@ export async function getServerSidePropsForInitial(context: GetServerSidePropsCo
   return mergedResult;
 }
 
-export async function getServerSidePropsForSameRoute(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<EachProps>> {
-  //
-  // STAGE 1
-  //
-
-  const commonEachPropsResult = await getServerSideCommonEachProps(context);
-  // Handle early return cases (redirect/notFound)
-  if ('redirect' in commonEachPropsResult || 'notFound' in commonEachPropsResult) {
-    return commonEachPropsResult;
-  }
-  const commonEachProps = await commonEachPropsResult.props;
-
-  // Handle redirect destination from common props
-  if (commonEachProps.redirectDestination != null) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: commonEachProps.redirectDestination,
-      },
-    };
-  }
-
-  //
-  // STAGE 2
-  //
-
+export async function getServerSidePropsForSameRoute(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<PageEachProps>> {
   // Get page data
-  const sameRoutePageDataResult = await getPageDataForSameRoute(context);
-
-  // Merge results in a type-safe manner
-  const mergedResult = mergeGetServerSidePropsResults(commonEachPropsResult,
-    mergeGetServerSidePropsResults(sameRoutePageDataResult, nextjsRoutingProps));
-
-  // Check for early return (redirect/notFound)
-  if ('redirect' in mergedResult || 'notFound' in mergedResult) {
-    return mergedResult;
-  }
-
-  // Validate the merged props have all required properties
-  if (!isValidCommonEachRouteProps(mergedResult.props)) {
-    throw new Error('Invalid same route props structure');
-  }
+  const result = await getPageDataForSameRoute(context);
 
   // -- TODO: persist activity
 
   // const mergedProps = await mergedResult.props;
-
-  // // Type-safe props validation AFTER skipSSR is properly set
-  // if (!isValidSameRouteProps(mergedProps)) {
-  //   throw new Error('Invalid same route props structure');
-  // }
-
   // await addActivity(context, getActivityAction(mergedProps));
-  return mergedResult;
+  return result;
 }

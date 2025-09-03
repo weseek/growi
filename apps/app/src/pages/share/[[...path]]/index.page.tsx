@@ -11,8 +11,10 @@ import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { ShareLinkPageView } from '~/components/ShareLinkPageView';
 import type { CommonEachProps } from '~/pages/common-props';
+import { getServerSideCommonEachProps } from '~/pages/common-props';
 import { NextjsRoutingType, detectNextjsRoutingType } from '~/pages/utils/nextjs-routing-utils';
 import { useCustomTitleForPage } from '~/pages/utils/page-title-customization';
+import { mergeGetServerSidePropsResults } from '~/pages/utils/server-side-props';
 import {
   useCurrentPageData, useCurrentPagePath,
 } from '~/states/page';
@@ -27,7 +29,7 @@ import { useHydrateGeneralPageConfigurationAtoms } from '../../general-page/hydr
 import { registerPageToShowRevisionWithMeta } from '../../general-page/superjson';
 
 import { NEXT_JS_ROUTING_PAGE } from './consts';
-import { getServerSidePropsForInitial, getServerSidePropsForSameRoute } from './server-side-props';
+import { getServerSidePropsForInitial } from './server-side-props';
 import type { ShareLinkInitialProps } from './types';
 
 // call superjson custom register
@@ -134,16 +136,46 @@ SharedPage.getLayout = function getLayout(page) {
 //   return action;
 // }
 
+const emptyProps = {
+  props: {},
+};
+
 export const getServerSideProps: GetServerSideProps<Props> = async(context: GetServerSidePropsContext) => {
+  //
+  // STAGE 1
+  //
+
+  const commonEachPropsResult = await getServerSideCommonEachProps(context, NEXT_JS_ROUTING_PAGE);
+  // Handle early return cases (redirect/notFound)
+  if ('redirect' in commonEachPropsResult || 'notFound' in commonEachPropsResult) {
+    return commonEachPropsResult;
+  }
+  const commonEachProps = await commonEachPropsResult.props;
+
+  // Handle redirect destination from common props
+  if (commonEachProps.redirectDestination != null) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: commonEachProps.redirectDestination,
+      },
+    };
+  }
+
+  //
+  // STAGE 2
+  //
+
   // detect Next.js routing type
   const nextjsRoutingType = detectNextjsRoutingType(context, NEXT_JS_ROUTING_PAGE);
 
-  if (nextjsRoutingType === NextjsRoutingType.INITIAL) {
-    return getServerSidePropsForInitial(context);
-  }
+  // Merge all results in a type-safe manner (using sequential merging)
+  return mergeGetServerSidePropsResults(commonEachPropsResult, (
+    (nextjsRoutingType === NextjsRoutingType.INITIAL)
+      ? await getServerSidePropsForInitial(context)
+      : emptyProps
+  ));
 
-  // Lightweight props for same-route navigation
-  return getServerSidePropsForSameRoute(context);
 };
 
 export default SharedPage;

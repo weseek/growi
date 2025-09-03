@@ -48,7 +48,7 @@ export const getServerSideCommonInitialProps: GetServerSideProps<CommonInitialPr
 
 export type CommonEachProps = {
   currentPathname: string,
-  nextjsRoutingPage: string | null, // must be set by each page
+  nextjsRoutingPage?: string, // must be set by each page
   currentUser?: IUserHasId,
   csrfToken: string,
   isMaintenanceMode: boolean,
@@ -59,7 +59,7 @@ export type CommonEachProps = {
  * Type guard for SameRouteEachProps validation
  * Lightweight validation for same-route navigation
  */
-export function isValidCommonEachRouteProps(props: unknown): props is CommonEachProps {
+function isValidCommonEachRouteProps(props: unknown, shouldContainNextjsRoutingPage = false): props is CommonEachProps {
   if (typeof props !== 'object' || props === null) {
     logger.warn('isValidCommonEachRouteProps: props is not an object or is null');
     return false;
@@ -68,9 +68,11 @@ export function isValidCommonEachRouteProps(props: unknown): props is CommonEach
   const p = props as Record<string, unknown>;
 
   // Essential properties validation
-  if (typeof p.nextjsRoutingPage !== 'string' && p.nextjsRoutingPage !== null) {
-    logger.warn('isValidCommonEachRouteProps: nextjsRoutingPage is not a string or null', { nextjsRoutingPage: p.nextjsRoutingPage });
-    return false;
+  if (shouldContainNextjsRoutingPage) {
+    if (typeof p.nextjsRoutingPage !== 'string' && p.nextjsRoutingPage !== undefined) {
+      logger.warn('isValidCommonEachRouteProps: nextjsRoutingPage is not a string or null', { nextjsRoutingPage: p.nextjsRoutingPage });
+      return false;
+    }
   }
   if (typeof p.currentPathname !== 'string') {
     logger.warn('isValidCommonEachRouteProps: currentPathname is not a string', { currentPathname: p.currentPathname });
@@ -84,20 +86,20 @@ export function isValidCommonEachRouteProps(props: unknown): props is CommonEach
     logger.warn('isValidCommonEachRouteProps: isMaintenanceMode is not a boolean', { isMaintenanceMode: p.isMaintenanceMode });
     return false;
   }
-  if (typeof p.isIdenticalPathPage !== 'boolean') {
-    logger.warn('isValidCommonEachRouteProps: isIdenticalPathPage is not a boolean', { isIdenticalPathPage: p.isIdenticalPathPage });
-    return false;
-  }
 
   return true;
 }
 
-export const getServerSideCommonEachProps: GetServerSideProps<Omit<CommonEachProps, 'nextjsRoutingPage'>> = async(context: GetServerSidePropsContext) => {
+export const getServerSideCommonEachProps = async(
+    context: GetServerSidePropsContext, nextjsRoutingPage?: string,
+): ReturnType<GetServerSideProps<CommonEachProps>> => {
+
   const req = context.req as CrowiRequest;
   const { crowi, user } = req;
   const { appService } = crowi;
 
   const url = new URL(context.resolvedUrl, 'http://example.com');
+
   const currentPathname = decodeURIComponent(url.pathname);
 
   const isMaintenanceMode = appService.isMaintenanceMode();
@@ -122,13 +124,19 @@ export const getServerSideCommonEachProps: GetServerSideProps<Omit<CommonEachPro
     redirectDestination = null;
   }
 
-  return {
-    props: {
-      currentPathname,
-      currentUser,
-      csrfToken: req.csrfToken(),
-      isMaintenanceMode,
-      redirectDestination,
-    },
+  const props = {
+    currentPathname,
+    nextjsRoutingPage,
+    currentUser,
+    csrfToken: req.csrfToken(),
+    isMaintenanceMode,
+    redirectDestination,
   };
+
+  const shouldContainNextjsRoutingPage = (nextjsRoutingPage != null);
+  if (!isValidCommonEachRouteProps(props, shouldContainNextjsRoutingPage)) {
+    throw new Error('Invalid common each route props structure');
+  }
+
+  return { props };
 };

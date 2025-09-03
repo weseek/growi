@@ -27,12 +27,14 @@ import { useSWRMUTxCurrentPageYjsData } from '~/stores/yjs';
 import type { NextPageWithLayout } from '../_app.page';
 import type { BasicLayoutConfigurationProps } from '../basic-layout-page';
 import { useHydrateBasicLayoutConfigurationAtoms } from '../basic-layout-page/hydrate';
+import { getServerSideCommonEachProps } from '../common-props';
 import type { GeneralPageInitialProps } from '../general-page';
 import { useInitialCSRFetch } from '../general-page';
 import { useHydrateGeneralPageConfigurationAtoms } from '../general-page/hydrate';
 import { registerPageToShowRevisionWithMeta } from '../general-page/superjson';
 import { NextjsRoutingType, detectNextjsRoutingType } from '../utils/nextjs-routing-utils';
 import { useCustomTitleForPage } from '../utils/page-title-customization';
+import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
 
 import { NEXT_JS_ROUTING_PAGE } from './consts';
 import { getServerSidePropsForInitial, getServerSidePropsForSameRoute } from './server-side-props';
@@ -207,15 +209,40 @@ Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
 };
 
 export const getServerSideProps: GetServerSideProps<Props> = async(context: GetServerSidePropsContext) => {
+  //
+  // STAGE 1
+  //
+
+  const commonEachPropsResult = await getServerSideCommonEachProps(context, NEXT_JS_ROUTING_PAGE);
+  // Handle early return cases (redirect/notFound)
+  if ('redirect' in commonEachPropsResult || 'notFound' in commonEachPropsResult) {
+    return commonEachPropsResult;
+  }
+  const commonEachProps = await commonEachPropsResult.props;
+
+  // Handle redirect destination from common props
+  if (commonEachProps.redirectDestination != null) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: commonEachProps.redirectDestination,
+      },
+    };
+  }
+
+  //
+  // STAGE 2
+  //
+
   // detect Next.js routing type
   const nextjsRoutingType = detectNextjsRoutingType(context, NEXT_JS_ROUTING_PAGE);
 
-  if (nextjsRoutingType === NextjsRoutingType.INITIAL) {
-    return getServerSidePropsForInitial(context);
-  }
-
-  // Lightweight props for same-route navigation
-  return getServerSidePropsForSameRoute(context);
+  // Merge all results in a type-safe manner (using sequential merging)
+  return mergeGetServerSidePropsResults(commonEachPropsResult, (
+    (nextjsRoutingType === NextjsRoutingType.INITIAL)
+      ? await getServerSidePropsForInitial(context)
+      : await getServerSidePropsForSameRoute(context)
+  ));
 };
 
 export default Page;
