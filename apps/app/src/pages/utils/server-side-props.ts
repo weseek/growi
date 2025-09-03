@@ -1,4 +1,5 @@
 import type { GetServerSidePropsResult } from 'next';
+import deepMerge from 'ts-deepmerge';
 
 // Type-safe GetServerSidePropsResult merger for two results
 export function mergeGetServerSidePropsResults<T1, T2>(
@@ -18,10 +19,5 @@ export function mergeGetServerSidePropsResults<T1, T2>(
     throw new Error('Invalid GetServerSidePropsResult - missing props');
   }
 
-  return {
-    props: {
-      ...result1.props,
-      ...result2.props,
-    } as T1 & T2,
-  };
+  return deepMerge(result1, result2) as GetServerSidePropsResult<T1 & T2>;
 }
