@@ -45,7 +45,6 @@ AdminHomepage.getLayout = createAdminPageLayout<Props>({
 
 export const getServerSideProps: GetServerSideProps<Props> = async(context: GetServerSidePropsContext) => {
   const baseResult = await getServerSideAdminCommonProps(context);
-  if ('redirect' in baseResult || 'notFound' in baseResult) return baseResult;
 
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
