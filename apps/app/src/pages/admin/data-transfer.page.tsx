@@ -13,7 +13,7 @@ type Props = AdminCommonProps;
 const DataTransferPage: NextPageWithLayout<Props> = () => <G2GDataTransferPage />;
 
 DataTransferPage.getLayout = createAdminPageLayout<Props>({
-  title: (_p, t) => t('g2g_data_transfer.data_transfer'),
+  title: (_p, t) => t('g2g_data_transfer.data_transfer', { ns: 'commons' }),
   containerFactories: [
     async() => {
       const AdminAppContainer = (await import('~/client/services/AdminAppContainer')).default;
