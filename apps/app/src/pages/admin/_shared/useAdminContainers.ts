@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 
-import type { AnyContainer } from './AdminPageFrame';
+import type { AnyUnstatedContainer } from './types';
 
 /**
  * Helper hook to dynamically load and instantiate unstated containers for admin pages.
  * Pass an array of async factory functions returning container instances.
  */
-export const useAdminContainers = (factories: Array<() => Promise<AnyContainer>>): AnyContainer[] => {
-  const [containers, setContainers] = useState<AnyContainer[]>([]);
+export const useAdminContainers = (factories: Array<() => Promise<AnyUnstatedContainer>>): AnyUnstatedContainer[] => {
+  const [containers, setContainers] = useState<AnyUnstatedContainer[]>([]);
 
   useEffect(() => {
     let canceled = false;
