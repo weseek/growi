@@ -17,6 +17,7 @@ export type CommonInitialProps = {
   isDefaultLogo: boolean,
   customTitleTemplate: string,
   growiCloudUri: string | undefined,
+  growiAppIdForGrowiCloud: number | undefined,
   forcedColorScheme?: ColorScheme,
 };
 
@@ -41,6 +42,7 @@ export const getServerSideCommonInitialProps: GetServerSideProps<CommonInitialPr
       isDefaultLogo,
       customTitleTemplate: customizeService.customTitleTemplate,
       growiCloudUri: configManager.getConfig('app:growiCloudUri'),
+      growiAppIdForGrowiCloud: configManager.getConfig('app:growiAppIdForCloud'),
       forcedColorScheme,
     },
   };

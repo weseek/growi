@@ -58,12 +58,6 @@ export const useIsCustomizedLogoUploaded = (
   return useSWRStatic('isCustomizedLogoUploaded', initialData);
 };
 
-export const useGrowiAppIdForGrowiCloud = (
-  initialData?: number,
-): SWRResponse<number, Error> => {
-  return useContextSWR('growiAppIdForGrowiCloud', initialData);
-};
-
 export const useIsEnableUnifiedMergeView = (
   initialData?: boolean,
 ): SWRResponse<boolean, Error> => {

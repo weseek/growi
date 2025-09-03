@@ -29,7 +29,9 @@ export const useAppTitle = (): UseAtom<typeof appTitleAtom> => {
 
 // Custom Title Template atom (no persistence needed as it's server-provided)
 export const customTitleTemplateAtom = atom<string>('');
-export const useCustomTitleTemplate = (): UseAtom<typeof customTitleTemplateAtom> => {
+export const useCustomTitleTemplate = (): UseAtom<
+  typeof customTitleTemplateAtom
+> => {
   return useAtom(customTitleTemplateAtom);
 };
 
@@ -53,7 +55,9 @@ export const useGrowiVersion = (): UseAtom<typeof growiVersionAtom> => {
 
 // Maintenance Mode atom (no persistence needed as it's server-provided)
 export const isMaintenanceModeAtom = atom<boolean>(false);
-export const useIsMaintenanceMode = (): UseAtom<typeof isMaintenanceModeAtom> => {
+export const useIsMaintenanceMode = (): UseAtom<
+  typeof isMaintenanceModeAtom
+> => {
   return useAtom(isMaintenanceModeAtom);
 };
 
@@ -69,8 +73,18 @@ export const useGrowiCloudUri = (): UseAtom<typeof growiCloudUriAtom> => {
   return useAtom(growiCloudUriAtom);
 };
 
+// GROWI Cloud App ID atom (no persistence needed as it's server-provided)
+export const growiAppIdForGrowiCloudAtom = atom<number | undefined>(undefined);
+export const useGrowiAppIdForGrowiCloud = (): UseAtom<
+  typeof growiAppIdForGrowiCloudAtom
+> => {
+  return useAtom(growiAppIdForGrowiCloudAtom);
+};
+
 // Forced Color Scheme atom (no persistence needed as it's server-provided)
 export const forcedColorSchemeAtom = atom<ColorScheme | undefined>(undefined);
-export const useForcedColorScheme = (): UseAtom<typeof forcedColorSchemeAtom> => {
+export const useForcedColorScheme = (): UseAtom<
+  typeof forcedColorSchemeAtom
+> => {
   return useAtom(forcedColorSchemeAtom);
 };
