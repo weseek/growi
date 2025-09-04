@@ -6,7 +6,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
-import { useIsSearchPage } from '~/states/context';
+import { useSetSearchPage } from '~/states/context';
 
 import type { NextPageWithLayout } from '../_app.page';
 import type { BasicLayoutConfigurationProps } from '../basic-layout-page';
@@ -40,14 +40,14 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
   useHydrateBasicLayoutConfigurationAtoms(props.searchConfig, props.sidebarConfig, props.userUISettings);
   useHydrateServerConfigurationAtoms(props.serverConfig, props.rendererConfig);
 
-  const [, setIsSearchPage] = useIsSearchPage();
+  const setSearchPage = useSetSearchPage();
 
   // Turn on search page flag
   useEffect(() => {
-    setIsSearchPage(true);
+    setSearchPage(true);
     // cleanup
-    return () => setIsSearchPage(false);
-  }, [router, setIsSearchPage]);
+    return () => setSearchPage(false);
+  }, [router, setSearchPage]);
 
   const title = useCustomTitle(t('search_result.title'));
 

@@ -7,7 +7,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
-import { useIsSearchPage } from '~/states/context';
+import { useSetSearchPage } from '~/states/context';
 
 import { getServerSideSearchPageProps } from '../_search/get-server-side-props';
 import type { ServerConfigurationProps } from '../_search/types';
@@ -39,14 +39,14 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   useHydrateBasicLayoutConfigurationAtoms(props.searchConfig, props.sidebarConfig, props.userUISettings);
   useHydrateServerConfigurationAtoms(props.serverConfig, props.rendererConfig);
 
-  const [, setIsSearchPage] = useIsSearchPage();
+  const setSearchPage = useSetSearchPage();
 
   // Turn on search page flag
   useEffect(() => {
-    setIsSearchPage(true);
+    setSearchPage(true);
     // cleanup
-    return () => setIsSearchPage(false);
-  }, [router, setIsSearchPage]);
+    return () => setSearchPage(false);
+  }, [router, setSearchPage]);
 
   const title = useCustomTitle(t('private_legacy_pages.title'));
 

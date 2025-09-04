@@ -1,4 +1,4 @@
-import { atom, useAtomValue } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { currentUserAtomGetter, growiCloudUriAtomGetter } from './global';
 
 /**
@@ -71,8 +71,14 @@ export const useIsSharedUser = () => useAtomValue(isSharedUserAtom);
  * Atom for checking if current page is a search page
  */
 const isSearchPageAtom = atom<boolean | null>(null);
-
+/**
+ * Hook for getting the current search page state
+ */
 export const useIsSearchPage = () => useAtomValue(isSearchPageAtom);
+/**
+ * Hook for setting the current search page state
+ */
+export const useSetSearchPage = () => useSetAtom(isSearchPageAtom);
 
 /**
  * Computed atom for GROWI documentation URL
