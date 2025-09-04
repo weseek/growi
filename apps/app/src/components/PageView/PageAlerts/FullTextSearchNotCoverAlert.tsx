@@ -1,16 +1,17 @@
 import type { JSX } from 'react';
 
+import { useAtomValue } from 'jotai';
 import { useTranslation } from 'react-i18next';
 
 import { useCurrentPageData } from '~/states/page';
-import { useElasticsearchMaxBodyLengthToIndex } from '~/states/server-configurations';
+import { elasticsearchMaxBodyLengthToIndexAtom } from '~/states/server-configurations';
 
 
 export const FullTextSearchNotCoverAlert = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const [elasticsearchMaxBodyLengthToIndex] = useElasticsearchMaxBodyLengthToIndex();
-  const [data] = useCurrentPageData();
+  const elasticsearchMaxBodyLengthToIndex = useAtomValue(elasticsearchMaxBodyLengthToIndexAtom);
+  const data = useCurrentPageData();
 
   const markdownLength = data?.revision?.body?.length;
 

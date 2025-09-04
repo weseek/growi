@@ -45,7 +45,7 @@ describe('nextjs-routing-utils', () => {
     });
 
     it('should remove cookie when nextjsRoutingPage is null', () => {
-      renderHook(() => useNextjsRoutingPageRegister(null));
+      renderHook(() => useNextjsRoutingPageRegister(undefined));
 
       expect(mockCookies.remove).toHaveBeenCalledWith('nextjsRoutingPage');
     });
@@ -93,7 +93,7 @@ describe('nextjs-routing-utils', () => {
 
     it('should handle rapid prop changes correctly', () => {
       const { rerender } = renderHook(
-        ({ page }: { page: string | null }) => useNextjsRoutingPageRegister(page),
+        ({ page }: { page: string | null }) => useNextjsRoutingPageRegister(page ?? undefined),
         { initialProps: { page: '/page1' as string | null } },
       );
 

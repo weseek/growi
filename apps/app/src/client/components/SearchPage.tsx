@@ -2,12 +2,13 @@ import React, {
   useCallback, useMemo, useRef, useState, type JSX,
 } from 'react';
 
+import { useAtomValue } from 'jotai';
 import { useTranslation } from 'next-i18next';
 
 import type { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import { useKeywordManager } from '~/client/services/search-operation';
 import type { IFormattedSearchResult } from '~/interfaces/search';
-import { useShowPageLimitationL } from '~/states/server-configurations';
+import { showPageLimitationLAtom } from '~/states/server-configurations';
 import { type ISearchConditions, type ISearchConfigurations, useSWRxSearch } from '~/stores/search';
 
 import { NotAvailableForGuest } from './NotAvailableForGuest';
@@ -84,7 +85,7 @@ SearchResultListHead.displayName = 'SearchResultListHead';
 
 export const SearchPage = (): JSX.Element => {
   const { t } = useTranslation();
-  const [showPageLimitationL] = useShowPageLimitationL();
+  const showPageLimitationL = useAtomValue(showPageLimitationLAtom);
 
   const { data: keyword, pushState } = useKeywordManager();
 

@@ -15,11 +15,14 @@ import {
 } from 'reactstrap';
 
 import { useCurrentUser } from '~/states/global';
-import { useCurrentPageData, useRemoteRevisionBody, useRemoteRevisionId } from '~/states/page';
-import { useConflictDiffModal } from '~/stores/modal';
 import {
-  useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdateUser,
-} from '~/stores/remote-latest-page';
+  useCurrentPageData,
+  useRemoteRevisionBody,
+  useRemoteRevisionId,
+  useRemoteRevisionLastUpdatedAt,
+  useRemoteRevisionLastUpdateUser,
+} from '~/states/page';
+import { useConflictDiffModal } from '~/stores/modal';
 
 import styles from './ConflictDiffModal.module.scss';
 
@@ -186,15 +189,15 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
 
 
 export const ConflictDiffModal = (): JSX.Element => {
-  const [currentUser] = useCurrentUser();
-  const [currentPage] = useCurrentPageData();
+  const currentUser = useCurrentUser();
+  const currentPage = useCurrentPageData();
   const { data: conflictDiffModalStatus } = useConflictDiffModal();
 
   // state for latest page
-  const [remoteRevisionId] = useRemoteRevisionId();
-  const [remoteRevisionBody] = useRemoteRevisionBody();
-  const { data: remoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
-  const { data: remoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
+  const remoteRevisionId = useRemoteRevisionId();
+  const remoteRevisionBody = useRemoteRevisionBody();
+  const remoteRevisionLastUpdateUser = useRemoteRevisionLastUpdateUser();
+  const remoteRevisionLastUpdatedAt = useRemoteRevisionLastUpdatedAt();
 
   const isRemotePageDataInappropriate = remoteRevisionId == null || remoteRevisionBody == null || remoteRevisionLastUpdateUser == null;
 

@@ -34,7 +34,7 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
 
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
-  const [currentUser] = useCurrentUser();
+  const currentUser = useCurrentUser();
   const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild(currentUser?._id);
 
   const { trigger: mutateCurrentUserBookmarks } = useSWRMUTxCurrentUserBookmarks();

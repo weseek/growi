@@ -1,20 +1,21 @@
 import type { JSX } from 'react';
 
 import { isIPageInfoForEntity } from '@growi/core';
+import { useAtomValue } from 'jotai';
 import { useTranslation } from 'next-i18next';
 
 
 import { useCurrentPageData } from '~/states/page';
-import { useIsEnabledStaleNotification } from '~/states/server-configurations';
+import { isEnabledStaleNotificationAtom } from '~/states/server-configurations';
 import { useSWRxPageInfo } from '~/stores/page';
 
 
 export const PageStaleAlert = ():JSX.Element => {
   const { t } = useTranslation();
-  const [isEnabledStaleNotification] = useIsEnabledStaleNotification();
+  const isEnabledStaleNotification = useAtomValue(isEnabledStaleNotificationAtom);
 
   // Todo: determine if it should fetch or not like useSWRxPageInfo below after https://redmine.weseek.co.jp/issues/96788
-  const [pageData] = useCurrentPageData();
+  const pageData = useCurrentPageData();
   const { data: pageInfo } = useSWRxPageInfo(isEnabledStaleNotification ? pageData?._id : null);
 
   const contentAge = isIPageInfoForEntity(pageInfo) ? pageInfo.contentAge : null;

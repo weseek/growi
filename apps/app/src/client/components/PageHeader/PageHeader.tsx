@@ -14,7 +14,7 @@ const moduleClass = styles['page-header'] ?? '';
 
 export const PageHeader = (): JSX.Element => {
 
-  const [currentPage] = useCurrentPageData();
+  const currentPage = useCurrentPageData();
   const { data: pageControlsX } = usePageControlsX();
   const pageHeaderRef = useRef<HTMLDivElement>(null);
 
