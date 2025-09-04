@@ -9,8 +9,8 @@ import { useAppTitle, useCustomTitleTemplate } from '~/states/global';
  * @param title
  */
 export const useCustomTitle = (title: string): string => {
-  const [appTitle] = useAppTitle();
-  const [customTitleTemplate] = useCustomTitleTemplate();
+  const appTitle = useAppTitle();
+  const customTitleTemplate = useCustomTitleTemplate();
 
   return customTitleTemplate
     .replace('{{sitename}}', appTitle)
@@ -24,8 +24,8 @@ export const useCustomTitle = (title: string): string => {
  * @param pagePath
  */
 export const useCustomTitleForPage = (pagePath: string): string => {
-  const [appTitle] = useAppTitle();
-  const [customTitleTemplate] = useCustomTitleTemplate();
+  const appTitle = useAppTitle();
+  const customTitleTemplate = useCustomTitleTemplate();
 
   const dPagePath = new DevidedPagePath(pagePath, true, true);
 
