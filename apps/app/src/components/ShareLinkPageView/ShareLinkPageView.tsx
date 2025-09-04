@@ -41,9 +41,9 @@ export const ShareLinkPageView = memo((props: Props): JSX.Element => {
     isExpired, disableLinkSharing,
   } = props;
 
-  const [isNotFoundMeta] = usePageNotFound();
+  const isNotFoundMeta = usePageNotFound();
 
-  const [page] = useCurrentPageData();
+  const page = useCurrentPageData();
 
   const { data: viewOptions } = useViewOptions();
 

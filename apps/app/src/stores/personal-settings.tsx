@@ -23,7 +23,7 @@ const logger = loggerFactory('growi:stores:personal-settings');
 
 
 export const useSWRxPersonalSettings = (config?: SWRConfiguration): SWRResponse<IUser, Error> => {
-  const [isGuestUser] = useIsGuestUser();
+  const isGuestUser = useIsGuestUser();
 
   const key = !isGuestUser ? '/personal-setting' : null;
 

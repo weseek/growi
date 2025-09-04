@@ -18,7 +18,7 @@ import styles from './PersonalDropdown.module.scss';
 
 export const PersonalDropdown = (): JSX.Element => {
   const { t } = useTranslation('commons');
-  const [currentUser] = useCurrentUser();
+  const currentUser = useCurrentUser();
 
   if (currentUser == null) {
     return <SkeletonItem />;

@@ -14,7 +14,7 @@ export const BookmarkContents = (): JSX.Element => {
   const { t } = useTranslation();
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
 
-  const [currentUser] = useCurrentUser();
+  const currentUser = useCurrentUser();
   const { mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild(currentUser?._id);
 
   const onClickNewBookmarkFolder = useCallback(() => {

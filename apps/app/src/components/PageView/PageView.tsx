@@ -49,13 +49,13 @@ export const PageView = memo((props: Props): JSX.Element => {
     pagePath, rendererConfig, className,
   } = props;
 
-  const [currentPageId] = useCurrentPageId();
-  const [isIdenticalPathPage] = useIsIdenticalPath();
-  const [isForbidden] = useIsForbidden();
-  const [isNotCreatable] = useIsNotCreatable();
-  const [isNotFoundMeta] = usePageNotFound();
+  const currentPageId = useCurrentPageId();
+  const isIdenticalPathPage = useIsIdenticalPath();
+  const isForbidden = useIsForbidden();
+  const isNotCreatable = useIsNotCreatable();
+  const isNotFoundMeta = usePageNotFound();
 
-  const [page] = useCurrentPageData();
+  const page = useCurrentPageData();
   const { data: viewOptions } = useViewOptions();
 
   // DEBUG: Log PageView render start

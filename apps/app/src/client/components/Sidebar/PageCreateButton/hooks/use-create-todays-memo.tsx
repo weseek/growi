@@ -18,7 +18,7 @@ type UseCreateTodaysMemo = () => {
 export const useCreateTodaysMemo: UseCreateTodaysMemo = () => {
   const { t } = useTranslation('commons');
 
-  const [currentUser] = useCurrentUser();
+  const currentUser = useCurrentUser();
   const { isCreating, create } = useCreatePage();
 
   const isCreatable = currentUser != null;

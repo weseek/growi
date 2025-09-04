@@ -19,7 +19,7 @@ const CUSTOMIZED_LOGO = '/attachment/brand-logo';
 const CustomizeLogoSetting = (): JSX.Element => {
 
   const { t } = useTranslation();
-  const [isDefaultLogo] = useIsDefaultLogo();
+  const isDefaultLogo = useIsDefaultLogo();
   const { data: isCustomizedLogoUploaded, mutate: mutateIsCustomizedLogoUploaded } = useIsCustomizedLogoUploaded();
 
   const [uploadLogoSrc, setUploadLogoSrc] = useState<ArrayBuffer | string | null>(null);
