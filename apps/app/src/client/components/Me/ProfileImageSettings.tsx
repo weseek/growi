@@ -17,7 +17,7 @@ const DEFAULT_IMAGE = '/images/icons/user.svg';
 const ProfileImageSettings = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const [currentUser] = useCurrentUser();
+  const currentUser = useCurrentUser();
 
   const [isGravatarEnabled, setGravatarEnabled] = useState(currentUser?.isGravatarEnabled);
   const [uploadedPictureSrc, setUploadedPictureSrc] = useState(() => {

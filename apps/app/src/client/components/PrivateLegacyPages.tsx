@@ -194,7 +194,7 @@ ConvertByPathModal.displayName = 'ConvertByPathModal';
 const PrivateLegacyPages = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const [isAdmin] = useIsAdmin();
+  const isAdmin = useIsAdmin();
 
   const [keyword, setKeyword] = useState<string>(initQ);
   const [offset, setOffset] = useState<number>(0);

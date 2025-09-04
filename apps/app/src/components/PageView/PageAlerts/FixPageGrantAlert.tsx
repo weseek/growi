@@ -284,8 +284,8 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
 export const FixPageGrantAlert = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const [currentUser] = useCurrentUser();
-  const [pageData] = useCurrentPageData();
+  const currentUser = useCurrentUser();
+  const pageData = useCurrentPageData();
   const hasParent = pageData != null ? pageData.parent != null : false;
   const pageId = pageData?._id;
 
