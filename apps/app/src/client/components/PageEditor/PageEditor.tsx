@@ -15,6 +15,7 @@ import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/co
 import { useResolvedThemeForEditor } from '@growi/editor/dist/client/stores/use-resolved-theme';
 import { useRect } from '@growi/ui/dist/utils';
 import detectIndent from 'detect-indent';
+import { useAtomValue } from 'jotai';
 import { useTranslation } from 'next-i18next';
 import { throttle, debounce } from 'throttle-debounce';
 
@@ -33,9 +34,9 @@ import {
 } from '~/states/page';
 import { useTemplateBody } from '~/states/page/hooks';
 import {
-  useDefaultIndentSize,
-  useIsEnabledAttachTitleHeader,
-  useIsIndentSizeForced,
+  defaultIndentSizeAtom,
+  isEnabledAttachTitleHeaderAtom,
+  isIndentSizeForcedAtom,
 } from '~/states/server-configurations';
 import { useEditorMode, EditorMode, useEditingMarkdown } from '~/states/ui/editor';
 import {
@@ -97,26 +98,26 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
   const previewRef = useRef<HTMLDivElement>(null);
   const [previewRect] = useRect(previewRef);
 
-  const [isNotFound] = usePageNotFound();
-  const [pageId] = useCurrentPageId();
-  const [currentPagePath] = useCurrentPagePath();
-  const [currentPathname] = useCurrentPathname();
-  const [currentPage] = useCurrentPageData();
+  const isNotFound = usePageNotFound();
+  const pageId = useCurrentPageId();
+  const currentPagePath = useCurrentPagePath();
+  const currentPathname = useCurrentPathname();
+  const currentPage = useCurrentPageData();
   const { data: selectedGrant } = useSelectedGrant();
   const [editingMarkdown] = useEditingMarkdown();
-  const [isEnabledAttachTitleHeader] = useIsEnabledAttachTitleHeader();
+  const isEnabledAttachTitleHeader = useAtomValue(isEnabledAttachTitleHeaderAtom);
   const [templateBody] = useTemplateBody();
-  const [isEditable] = useIsEditable();
+  const isEditable = useIsEditable();
   const { mutate: mutateWaitingSaveProcessing } = useWaitingSaveProcessing();
   const { editorMode, setEditorMode } = useEditorMode();
   const { data: isUntitledPage } = useIsUntitledPage();
-  const [isIndentSizeForced] = useIsIndentSizeForced();
+  const isIndentSizeForced = useAtomValue(isIndentSizeForcedAtom);
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
-  const [defaultIndentSize] = useDefaultIndentSize();
+  const defaultIndentSize = useAtomValue(defaultIndentSizeAtom);
   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsGrantNormalized } = useSWRxCurrentGrantData(currentPage?._id);
-  const [user] = useCurrentUser();
+  const user = useCurrentUser();
   const { mutate: mutateEditingUsers } = useEditingClients();
   const onConflict = useConflictResolver();
   const { data: reservedNextCaretLine, mutate: mutateReservedNextCaretLine } = useReservedNextCaretLine();

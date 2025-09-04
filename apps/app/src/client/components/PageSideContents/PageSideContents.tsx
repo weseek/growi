@@ -1,15 +1,19 @@
 import React, {
-  Suspense, useCallback, useRef, type JSX,
+  Suspense,
+  useCallback,
+  useRef,
+  type JSX,
 } from 'react';
 
 import type { IPagePopulatedToShowRevision, IPageInfoForOperation } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
+import { useAtomValue } from 'jotai';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { scroller } from 'react-scroll';
 
 import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
-import { useShowPageSideAuthors } from '~/states/server-configurations';
+import { showPageSideAuthorsAtom } from '~/states/server-configurations';
 import { useDescendantsPageListModal, useTagEditModal } from '~/stores/modal';
 import { useSWRxPageInfo, useSWRxTagsInfo } from '~/stores/page';
 import { useIsAbleToShowTagLabel } from '~/stores/ui';
@@ -44,8 +48,8 @@ const Tags = (props: TagsProps): JSX.Element => {
   const { data: tagsInfoData } = useSWRxTagsInfo(pageId, { suspense: true });
 
   const { data: showTagLabel } = useIsAbleToShowTagLabel();
-  const [isGuestUser] = useIsGuestUser();
-  const [isReadOnlyUser] = useIsReadOnlyUser();
+  const isGuestUser = useIsGuestUser();
+  const isReadOnlyUser = useIsReadOnlyUser();
   const { open: openTagEditModal } = useTagEditModal();
 
   const onClickEditTagsButton = useCallback(() => {
@@ -88,7 +92,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
   const tagsRef = useRef<HTMLDivElement>(null);
 
   const { data: pageInfo } = useSWRxPageInfo(page._id);
-  const [showPageSideAuthors] = useShowPageSideAuthors();
+  const showPageSideAuthors = useAtomValue(showPageSideAuthorsAtom);
 
   const {
     creator, lastUpdateUser, createdAt, updatedAt,

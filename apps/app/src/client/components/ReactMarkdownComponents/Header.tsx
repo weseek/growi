@@ -63,10 +63,10 @@ export const Header = (props: HeaderProps): JSX.Element => {
     node, id, children,
   } = props;
 
-  const [isGuestUser] = useIsGuestUser();
-  const [isReadOnlyUser] = useIsReadOnlyUser();
-  const [isSharedUser] = useIsSharedUser();
-  const [shareLinkId] = useShareLinkId();
+  const isGuestUser = useIsGuestUser();
+  const isReadOnlyUser = useIsReadOnlyUser();
+  const isSharedUser = useIsSharedUser();
+  const shareLinkId = useShareLinkId();
   const { data: currentPageYjsData, isLoading: isLoadingCurrentPageYjsData } = useCurrentPageYjsData();
 
   const router = useRouter();
