@@ -75,8 +75,75 @@ module.exports = (crowi) => {
 
       const mimeTypeDefaults = configManager.getConfig('attachments:contentDisposition:mimeTypeOverrides');
       const contentDispositionSettings: Record<string, 'inline' | 'attachment'> = mimeTypeDefaults;
+      let currentMode: string;
 
-      return res.apiv3({ contentDispositionSettings });
+      const strictMimeTypeSettings: Record<string, 'inline' | 'attachment'> = {
+        // Documents
+        'application/pdf': 'attachment',
+        'application/json': 'attachment',
+        'text/plain': 'attachment',
+        'text/csv': 'attachment',
+        'text/html': 'attachment',
+
+        // Images
+        'image/jpeg': 'attachment',
+        'image/png': 'attachment',
+        'image/gif': 'attachment',
+        'image/webp': 'attachment',
+        'image/svg+xml': 'attachment',
+
+        // Audio and Video
+        'audio/mpeg': 'attachment',
+        'video/mp4': 'attachment',
+        'video/webm': 'attachment',
+
+        // Fonts
+        'font/woff2': 'attachment',
+        'font/woff': 'attachment',
+        'font/ttf': 'attachment',
+        'font/otf': 'attachment',
+      };
+
+      const laxMimeTypeSettings: Record<string, 'inline' | 'attachment'> = {
+        // Documents
+        'application/pdf': 'inline',
+        'application/json': 'inline',
+        'text/plain': 'inline',
+        'text/csv': 'inline',
+        'text/html': 'attachment',
+
+        // Images
+        'image/jpeg': 'inline',
+        'image/png': 'inline',
+        'image/gif': 'inline',
+        'image/webp': 'inline',
+        'image/svg+xml': 'attachment',
+
+        // Audio and Video
+        'audio/mpeg': 'inline',
+        'video/mp4': 'inline',
+        'video/webm': 'inline',
+
+        // Fonts
+        'font/woff2': 'inline',
+        'font/woff': 'inline',
+        'font/ttf': 'inline',
+        'font/otf': 'inline',
+      };
+
+      if (JSON.stringify(contentDispositionSettings) === JSON.stringify(strictMimeTypeSettings)) {
+        currentMode = 'strict';
+      }
+
+      else if (JSON.stringify(contentDispositionSettings) === JSON.stringify(laxMimeTypeSettings)) {
+        currentMode = 'lax';
+      }
+
+      else {
+        currentMode = 'custom';
+      }
+
+      return res.apiv3({ currentMode, contentDispositionSettings });
     }
     catch (err) {
       logger.error('Error retrieving content disposition settings:', err);
@@ -93,9 +160,26 @@ module.exports = (crowi) => {
 
       try {
         const strictMimeTypeSettings: Record<string, 'inline' | 'attachment'> = {
+          // Documents
           'application/pdf': 'attachment',
           'application/json': 'attachment',
+          'text/plain': 'attachment',
           'text/csv': 'attachment',
+          'text/html': 'attachment',
+
+          // Images
+          'image/jpeg': 'attachment',
+          'image/png': 'attachment',
+          'image/gif': 'attachment',
+          'image/webp': 'attachment',
+          'image/svg+xml': 'attachment',
+
+          // Audio and Video
+          'audio/mpeg': 'attachment',
+          'video/mp4': 'attachment',
+          'video/webm': 'attachment',
+
+          // Fonts
           'font/woff2': 'attachment',
           'font/woff': 'attachment',
           'font/ttf': 'attachment',
@@ -132,9 +216,26 @@ module.exports = (crowi) => {
 
       try {
         const laxMimeTypeSettings: Record<string, 'inline' | 'attachment'> = {
+          // Documents
           'application/pdf': 'inline',
           'application/json': 'inline',
+          'text/plain': 'inline',
           'text/csv': 'inline',
+          'text/html': 'attachment',
+
+          // Images
+          'image/jpeg': 'inline',
+          'image/png': 'inline',
+          'image/gif': 'inline',
+          'image/webp': 'inline',
+          'image/svg+xml': 'attachment',
+
+          // Audio and Video
+          'audio/mpeg': 'inline',
+          'video/mp4': 'inline',
+          'video/webm': 'inline',
+
+          // Fonts
           'font/woff2': 'inline',
           'font/woff': 'inline',
           'font/ttf': 'inline',
