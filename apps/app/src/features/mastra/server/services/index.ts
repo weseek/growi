@@ -10,7 +10,7 @@ import { z } from 'zod';
 
 
 const generatePreMessageStep = createStep({
-  id: 'step-1',
+  id: 'generate-pre-message-step',
   inputSchema: z.object({
     prompt: z.string(),
   }),
@@ -52,7 +52,7 @@ const generatePreMessageStep = createStep({
 });
 
 const fileSearchStep = createStep({
-  id: 'step-2',
+  id: 'file-search-step-step',
   inputSchema: z.object({
     prompt: z.string(),
   }),
@@ -67,7 +67,7 @@ const fileSearchStep = createStep({
       prompt: inputData.prompt,
       tools: {
         file_search: openai.tools.fileSearch({
-          vectorStoreIds: ['vs_68b65ccb682c81918368df3c0093e5ec'],
+          vectorStoreIds: ['vs_68b964a09b848191ba2dbee3bf360234'],
           maxNumResults: 10,
           ranking: {
             ranker: 'auto',
