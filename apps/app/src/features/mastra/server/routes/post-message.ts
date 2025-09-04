@@ -48,7 +48,7 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = () => {
           // console.log(chunk?.payload?.output?.text);
           const text = chunk?.payload?.output?.text;
           // console._stdout.write(text);
-          console.log('text:', text);
+          console.log('output: ', chunk?.payload?.output?.type, text);
         }
       }
 
