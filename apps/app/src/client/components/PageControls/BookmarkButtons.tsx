@@ -32,7 +32,7 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
   const [isBookmarkFolderMenuOpen, setBookmarkFolderMenuOpen] = useState(false);
   const [isBookmarkUsersPopoverOpen, setBookmarkUsersPopoverOpen] = useState(false);
 
-  const [isGuestUser] = useIsGuestUser();
+  const isGuestUser = useIsGuestUser();
 
   const { data: bookmarkedUsers, isLoading: isLoadingBookmarkedUsers } = useSWRxBookmarkedUsers(isBookmarkUsersPopoverOpen ? pageId : null);
 

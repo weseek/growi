@@ -11,7 +11,7 @@ import { ApiTokenSettings } from './ApiTokenSettings';
 const ApiSettings = React.memo((): JSX.Element => {
 
   const { t } = useTranslation();
-  const [currentUser] = useCurrentUser();
+  const currentUser = useCurrentUser();
 
   const shouldHideAccessTokenSettings = currentUser == null || !currentUser?.readOnly;
 

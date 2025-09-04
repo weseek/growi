@@ -7,7 +7,7 @@ import { useCurrentPageData, useFetchCurrentPage } from '~/states/page';
 
 export const WipPageAlert = (): JSX.Element => {
   const { t } = useTranslation();
-  const [currentPage] = useCurrentPageData();
+  const currentPage = useCurrentPageData();
   const { fetchCurrentPage } = useFetchCurrentPage();
 
   const clickPagePublishButton = useCallback(async() => {
