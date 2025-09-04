@@ -8,7 +8,7 @@ import { useCurrentPageData } from '~/states/page';
 
 export const PageGrantAlert = (): JSX.Element => {
   const { t } = useTranslation();
-  const [pageData] = useCurrentPageData();
+  const pageData = useCurrentPageData();
 
   if (pageData == null || pageData.grant == null || pageData.grant === 1) {
     return <></>;

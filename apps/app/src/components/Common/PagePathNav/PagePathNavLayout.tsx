@@ -38,7 +38,7 @@ export const PagePathNavLayout = (props: Props): JSX.Element => {
     maxWidth,
   } = props;
 
-  const [isNotFound] = usePageNotFound();
+  const isNotFound = usePageNotFound();
 
   const copyDropdownId = `copydropdown-in-pagepathnavlayout-${pageId}`;
 

@@ -10,7 +10,7 @@ import { useCurrentUser } from '~/states/global';
 export const Maintenance = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const [currentUser] = useCurrentUser();
+  const currentUser = useCurrentUser();
 
   const logoutHandler = async() => {
     try {
