@@ -1,5 +1,6 @@
 import React, { useMemo, useState, type JSX } from 'react';
 
+import { useAtomValue } from 'jotai';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import {
@@ -7,7 +8,7 @@ import {
 } from 'reactstrap';
 
 import { useIsGuestUser, useIsReadOnlyUser, useIsSharedUser } from '~/states/context';
-import { useDisableLinkSharing } from '~/states/server-configurations';
+import { disableLinkSharingAtom } from '~/states/server-configurations';
 import { usePageAccessoriesModal, PageAccessoriesModalContents } from '~/stores/modal';
 import { useIsDeviceLargerThanLg } from '~/stores/ui';
 
@@ -31,10 +32,10 @@ export const PageAccessoriesModal = (): JSX.Element => {
 
   const [isWindowExpanded, setIsWindowExpanded] = useState(false);
 
-  const [isSharedUser] = useIsSharedUser();
-  const [isGuestUser] = useIsGuestUser();
-  const [isReadOnlyUser] = useIsReadOnlyUser();
-  const [isLinkSharingDisabled] = useDisableLinkSharing();
+  const isSharedUser = useIsSharedUser();
+  const isGuestUser = useIsGuestUser();
+  const isReadOnlyUser = useIsReadOnlyUser();
+  const isLinkSharingDisabled = useAtomValue(disableLinkSharingAtom);
   const { data: isDeviceLargerThanLg } = useIsDeviceLargerThanLg();
 
   const { data: status, close, selectContents } = usePageAccessoriesModal();
