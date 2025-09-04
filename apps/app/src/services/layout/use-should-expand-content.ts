@@ -1,9 +1,10 @@
 import type { IPage, IPagePopulatedToShowRevision } from '@growi/core';
+import { useAtomValue } from 'jotai';
 
-import { useIsContainerFluid } from '~/states/server-configurations';
+import { isContainerFluidAtom } from '~/states/server-configurations';
 
 const useDetermineExpandContent = (expandContentWidth?: boolean | null): boolean => {
-  const [dataIsContainerFluid] = useIsContainerFluid();
+  const dataIsContainerFluid = useAtomValue(isContainerFluidAtom);
 
   const isContainerFluidDefault = dataIsContainerFluid;
   return expandContentWidth ?? isContainerFluidDefault ?? false;

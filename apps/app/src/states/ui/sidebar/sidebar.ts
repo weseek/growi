@@ -2,14 +2,13 @@ import { atom, useAtom } from 'jotai';
 
 import { scheduleToPut } from '~/client/services/user-ui-settings';
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
-import type { UseAtom } from '../../helper';
 import { isDeviceLargerThanXlAtom } from '../device';
 import { EditorMode } from '../editor';
 import { editorModeAtom } from '../editor/atoms'; // import the atom directly
 
 const isDrawerOpenedAtom = atom(false);
 
-export const useDrawerOpened = (): UseAtom<typeof isDrawerOpenedAtom> => {
+export const useDrawerOpened = () => {
   return useAtom(isDrawerOpenedAtom);
 };
 
@@ -23,18 +22,14 @@ const preferCollapsedModeAtomExt = atom(
   },
 );
 
-export const usePreferCollapsedMode = (): UseAtom<
-  typeof preferCollapsedModeAtom
-> => {
+export const usePreferCollapsedMode = () => {
   return useAtom(preferCollapsedModeAtomExt);
 };
 
 // Collapsed contents opened state (temporary UI state, no persistence needed)
 const isCollapsedContentsOpenedAtom = atom(false);
 
-export const useCollapsedContentsOpened = (): UseAtom<
-  typeof isCollapsedContentsOpenedAtom
-> => {
+export const useCollapsedContentsOpened = () => {
   return useAtom(isCollapsedContentsOpenedAtom);
 };
 
@@ -50,9 +45,7 @@ const currentSidebarContentsAtomExt = atom(
   },
 );
 
-export const useCurrentSidebarContents = (): UseAtom<
-  typeof currentSidebarContentsAtom
-> => {
+export const useCurrentSidebarContents = () => {
   return useAtom(currentSidebarContentsAtomExt);
 };
 
@@ -66,9 +59,7 @@ const currentProductNavWidthAtomExt = atom(
   },
 );
 
-export const useCurrentProductNavWidth = (): UseAtom<
-  typeof currentProductNavWidthAtom
-> => {
+export const useCurrentProductNavWidth = () => {
   return useAtom(currentProductNavWidthAtomExt);
 };
 

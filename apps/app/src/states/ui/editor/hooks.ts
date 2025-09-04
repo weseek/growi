@@ -2,15 +2,14 @@ import { useAtom } from 'jotai';
 import { useCallback } from 'react';
 
 import { useIsEditable } from '~/states/context';
-import type { UseAtom } from '~/states/helper';
 import { usePageNotFound } from '~/states/page';
 
 import { editingMarkdownAtom, editorModeAtom } from './atoms';
 import { EditorMode, type UseEditorModeReturn } from './types';
 
 export const useEditorMode = (): UseEditorModeReturn => {
-  const [isEditable] = useIsEditable();
-  const [isNotFound] = usePageNotFound();
+  const isEditable = useIsEditable();
+  const isNotFound = usePageNotFound();
   const [editorMode, setEditorModeRaw] = useAtom(editorModeAtom);
 
   // Check if editor mode should be prevented
@@ -47,5 +46,4 @@ export const useEditorMode = (): UseEditorModeReturn => {
   };
 };
 
-export const useEditingMarkdown = (): UseAtom<typeof editingMarkdownAtom> =>
-  useAtom(editingMarkdownAtom);
+export const useEditingMarkdown = () => useAtom(editingMarkdownAtom);

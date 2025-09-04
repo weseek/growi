@@ -90,11 +90,11 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const pageData = isInitialProps(props) ? props.pageWithMeta?.data : undefined;
   useHydratePageAtoms(pageData);
 
-  const [currentPage] = useCurrentPageData();
-  const [pageId] = useCurrentPageId();
-  const [currentPagePath] = useCurrentPagePath();
-  const [isNotFound] = usePageNotFound();
-  const [rendererConfig] = useRendererConfig();
+  const currentPage = useCurrentPageData();
+  const pageId = useCurrentPageId();
+  const currentPagePath = useCurrentPagePath();
+  const isNotFound = usePageNotFound();
+  const rendererConfig = useRendererConfig();
   const [, setRedirectFrom] = useRedirectFrom();
   const [, setEditingMarkdown] = useEditingMarkdown();
 
@@ -184,7 +184,7 @@ const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
 Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
   // Get drawioUri from rendererConfig atom to ensure consistency across navigations
   const DrawioViewerScriptWithAtom = (): JSX.Element => {
-    const [rendererConfig] = useRendererConfig();
+    const rendererConfig = useRendererConfig();
     return <DrawioViewerScript drawioUri={rendererConfig.drawioUri} />;
   };
 

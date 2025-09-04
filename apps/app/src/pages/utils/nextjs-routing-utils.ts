@@ -5,7 +5,7 @@ import { type GetServerSidePropsContext } from 'next';
 
 const COOKIE_NAME = 'nextjsRoutingPage';
 
-export const useNextjsRoutingPageRegister = (nextjsRoutingPage: string | null): void => {
+export const useNextjsRoutingPageRegister = (nextjsRoutingPage: string | undefined): void => {
   useEffect(() => {
     if (nextjsRoutingPage == null) {
       Cookies.remove(COOKIE_NAME);

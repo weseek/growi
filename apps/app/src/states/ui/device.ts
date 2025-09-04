@@ -1,22 +1,21 @@
-import { useEffect } from 'react';
-
 import { isClient } from '@growi/core/dist/utils';
 import { Breakpoint } from '@growi/ui/dist/interfaces';
-import { addBreakpointListener, cleanupBreakpointListener } from '@growi/ui/dist/utils';
+import {
+  addBreakpointListener,
+  cleanupBreakpointListener,
+} from '@growi/ui/dist/utils';
 import { atom, useAtom } from 'jotai';
-
-import type { UseAtom } from '../helper';
-
+import { useEffect } from 'react';
 
 // Device state atoms
 export const isDeviceLargerThanXlAtom = atom(false);
 
-export const useDeviceLargerThanXl = (): UseAtom<typeof isDeviceLargerThanXlAtom> => {
+export const useDeviceLargerThanXl = () => {
   const [isLargerThanXl, setIsLargerThanXl] = useAtom(isDeviceLargerThanXlAtom);
 
   useEffect(() => {
     if (isClient()) {
-      const xlOrAboveHandler = function(this: MediaQueryList): void {
+      const xlOrAboveHandler = function (this: MediaQueryList): void {
         // lg -> xl: matches will be true
         // xl -> lg: matches will be false
         setIsLargerThanXl(this.matches);

@@ -16,7 +16,7 @@ import { useCurrentPageTocNode } from './ui';
 const logger = loggerFactory('growi:cli:services:renderer');
 
 const useRendererConfigExt = (): RendererConfigExt | null => {
-  const [rendererConfig] = useRendererConfig();
+  const rendererConfig = useRendererConfig();
   const { isDarkMode } = useNextThemes();
 
   return rendererConfig == null ? null : {
@@ -27,7 +27,7 @@ const useRendererConfigExt = (): RendererConfigExt | null => {
 
 
 export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
-  const [currentPagePath] = useCurrentPagePath();
+  const currentPagePath = useCurrentPagePath();
   const rendererConfig = useRendererConfigExt();
   const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
 
@@ -59,7 +59,7 @@ export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
 };
 
 export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
-  const [currentPagePath] = useCurrentPagePath();
+  const currentPagePath = useCurrentPagePath();
   const rendererConfig = useRendererConfigExt();
   const { data: tocNode } = useCurrentPageTocNode();
 
@@ -82,7 +82,7 @@ export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
 };
 
 export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
-  const [currentPagePath] = useCurrentPagePath();
+  const currentPagePath = useCurrentPagePath();
   const rendererConfig = useRendererConfigExt();
 
   const isAllDataValid = currentPagePath != null && rendererConfig != null;
@@ -109,7 +109,7 @@ export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
 };
 
 export const useCommentForCurrentPageOptions = (): SWRResponse<RendererOptions, Error> => {
-  const [currentPagePath] = useCurrentPagePath();
+  const currentPagePath = useCurrentPagePath();
   const rendererConfig = useRendererConfigExt();
 
   const isAllDataValid = currentPagePath != null && rendererConfig != null;
@@ -182,7 +182,7 @@ export const useCustomSidebarOptions = (config?: SWRConfiguration): SWRResponse<
 };
 
 export const usePresentationViewOptions = (): SWRResponse<RendererOptions, Error> => {
-  const [currentPagePath] = useCurrentPagePath();
+  const currentPagePath = useCurrentPagePath();
   const rendererConfig = useRendererConfigExt();
 
   const isAllDataValid = currentPagePath != null && rendererConfig != null;

@@ -1,10 +1,15 @@
 import type {
-  IPagePopulatedToShowRevision, IRevisionHasId, IUserHasId, Lang, PageGrant, PageStatus,
+  IPagePopulatedToShowRevision,
+  IRevisionHasId,
+  IUserHasId,
+  Lang,
+  PageGrant,
+  PageStatus,
 } from '@growi/core';
 import { renderHook, waitFor } from '@testing-library/react';
 // eslint-disable-next-line no-restricted-imports
 import type { AxiosResponse } from 'axios';
-import { Provider, createStore } from 'jotai';
+import { createStore, Provider } from 'jotai';
 import type { NextRouter } from 'next/router';
 import { useRouter } from 'next/router';
 import { vi } from 'vitest';
@@ -14,7 +19,12 @@ import { mockDeep } from 'vitest-mock-extended';
 import * as apiv3Client from '~/client/util/apiv3-client';
 import { useFetchCurrentPage } from '~/states/page';
 import {
-  currentPageDataAtom, currentPageIdAtom, pageErrorAtom, pageLoadingAtom, pageNotCreatableAtom, pageNotFoundAtom,
+  currentPageDataAtom,
+  currentPageIdAtom,
+  pageErrorAtom,
+  pageLoadingAtom,
+  pageNotCreatableAtom,
+  pageNotFoundAtom,
 } from '~/states/page/internal-atoms';
 
 // Mock Next.js router
@@ -47,7 +57,11 @@ const mockUser: IUserHasId = {
 
 // This is a minimal mock to satisfy the IPagePopulatedToShowRevision type.
 // It is based on the type definition in packages/core/src/interfaces/page.ts
-const createPageDataMock = (pageId: string, path: string, body: string): IPagePopulatedToShowRevision => {
+const createPageDataMock = (
+  pageId: string,
+  path: string,
+  body: string,
+): IPagePopulatedToShowRevision => {
   const revision: IRevisionHasId = {
     _id: `rev_${pageId}`,
     pageId,
@@ -86,9 +100,7 @@ const createPageDataMock = (pageId: string, path: string, body: string): IPagePo
   };
 };
 
-
 describe('useFetchCurrentPage - Integration Test', () => {
-
   let store: ReturnType<typeof createStore>;
 
   // Helper to render the hook with Jotai provider
@@ -98,7 +110,9 @@ describe('useFetchCurrentPage - Integration Test', () => {
     });
   };
 
-  const mockApiResponse = (page: IPagePopulatedToShowRevision): AxiosResponse<{ page: IPagePopulatedToShowRevision }> => {
+  const mockApiResponse = (
+    page: IPagePopulatedToShowRevision,
+  ): AxiosResponse<{ page: IPagePopulatedToShowRevision }> => {
     return {
       data: { page },
       status: 200,
@@ -118,18 +132,30 @@ describe('useFetchCurrentPage - Integration Test', () => {
     (useRouter as ReturnType<typeof vi.fn>).mockReturnValue(mockRouter);
 
     // Default API response
-    const defaultPageData = createPageDataMock('defaultPageId', '/initial/path', 'default content');
+    const defaultPageData = createPageDataMock(
+      'defaultPageId',
+      '/initial/path',
+      'default content',
+    );
     mockedApiv3Get.mockResolvedValue(mockApiResponse(defaultPageData));
   });
 
-  it('should fetch data and update atoms when called with a new path', async() => {
+  it('should fetch data and update atoms when called with a new path', async () => {
     // Arrange: Start at an initial page
-    const initialPageData = createPageDataMock('initialPageId', '/initial/path', 'initial content');
+    const initialPageData = createPageDataMock(
+      'initialPageId',
+      '/initial/path',
+      'initial content',
+    );
     store.set(currentPageIdAtom, initialPageData._id);
     store.set(currentPageDataAtom, initialPageData);
 
     // Arrange: Navigate to a new page
-    const newPageData = createPageDataMock('newPageId', '/new/page', 'new content');
+    const newPageData = createPageDataMock(
+      'newPageId',
+      '/new/page',
+      'new content',
+    );
     mockedApiv3Get.mockResolvedValue(mockApiResponse(newPageData));
 
     // Act
@@ -139,7 +165,10 @@ describe('useFetchCurrentPage - Integration Test', () => {
     // Assert: Wait for state updates
     await waitFor(() => {
       // 1. API was called correctly
-      expect(mockedApiv3Get).toHaveBeenCalledWith('/page', expect.objectContaining({ path: '/new/page' }));
+      expect(mockedApiv3Get).toHaveBeenCalledWith(
+        '/page',
+        expect.objectContaining({ path: '/new/page' }),
+      );
 
       // 2. Atoms were updated
       expect(store.get(currentPageIdAtom)).toBe(newPageData._id);
@@ -150,9 +179,13 @@ describe('useFetchCurrentPage - Integration Test', () => {
     });
   });
 
-  it('should not re-fetch if target path is the same as current', async() => {
+  it('should not re-fetch if target path is the same as current', async () => {
     // Arrange: Current state is set
-    const currentPageData = createPageDataMock('page1', '/same/path', 'current content');
+    const currentPageData = createPageDataMock(
+      'page1',
+      '/same/path',
+      'current content',
+    );
     store.set(currentPageIdAtom, currentPageData._id);
     store.set(currentPageDataAtom, currentPageData);
 
@@ -162,14 +195,17 @@ describe('useFetchCurrentPage - Integration Test', () => {
 
     // Assert
     // Use a short timeout to ensure no fetch is initiated
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
     expect(mockedApiv3Get).not.toHaveBeenCalled();
   });
 
-
-  it('should handle fetching the root page', async() => {
+  it('should handle fetching the root page', async () => {
     // Arrange: Start on a regular page
-    const regularPageData = createPageDataMock('regularPageId', '/some/page', 'Regular page content');
+    const regularPageData = createPageDataMock(
+      'regularPageId',
+      '/some/page',
+      'Regular page content',
+    );
     mockedApiv3Get.mockResolvedValue(mockApiResponse(regularPageData));
 
     const { result } = renderHookWithProvider();
@@ -181,7 +217,11 @@ describe('useFetchCurrentPage - Integration Test', () => {
 
     // Arrange: Navigate to the root page
     mockedApiv3Get.mockClear();
-    const rootPageData = createPageDataMock('rootPageId', '/', 'Root page content');
+    const rootPageData = createPageDataMock(
+      'rootPageId',
+      '/',
+      'Root page content',
+    );
     mockedApiv3Get.mockResolvedValue(mockApiResponse(rootPageData));
 
     // Act
@@ -189,16 +229,23 @@ describe('useFetchCurrentPage - Integration Test', () => {
 
     // Assert: Navigation to root works
     await waitFor(() => {
-      expect(mockedApiv3Get).toHaveBeenCalledWith('/page', expect.objectContaining({ path: '/' }));
+      expect(mockedApiv3Get).toHaveBeenCalledWith(
+        '/page',
+        expect.objectContaining({ path: '/' }),
+      );
       expect(store.get(currentPageIdAtom)).toBe('rootPageId');
     });
   });
 
-  it('should handle encoded URI path', async() => {
+  it('should handle encoded URI path', async () => {
     // Arrange
     const encodedPath = '/encoded%2Fpath'; // /encoded/path
     const decodedPath = decodeURIComponent(encodedPath);
-    const newPageData = createPageDataMock('encodedPageId', decodedPath, 'encoded content');
+    const newPageData = createPageDataMock(
+      'encodedPageId',
+      decodedPath,
+      'encoded content',
+    );
     mockedApiv3Get.mockResolvedValue(mockApiResponse(newPageData));
 
     // Act
@@ -207,15 +254,22 @@ describe('useFetchCurrentPage - Integration Test', () => {
 
     // Assert
     await waitFor(() => {
-      expect(mockedApiv3Get).toHaveBeenCalledWith('/page', expect.objectContaining({ path: decodedPath }));
+      expect(mockedApiv3Get).toHaveBeenCalledWith(
+        '/page',
+        expect.objectContaining({ path: decodedPath }),
+      );
       expect(store.get(currentPageIdAtom)).toBe('encodedPageId');
     });
   });
 
-  it('should handle permalink path', async() => {
+  it('should handle permalink path', async () => {
     // Arrange
     const permalink = '/65d4e0a0f7b7b2e5a8652e86';
-    const newPageData = createPageDataMock('65d4e0a0f7b7b2e5a8652e86', '/any/path', 'permalink content');
+    const newPageData = createPageDataMock(
+      '65d4e0a0f7b7b2e5a8652e86',
+      '/any/path',
+      'permalink content',
+    );
     mockedApiv3Get.mockResolvedValue(mockApiResponse(newPageData));
 
     // Act
@@ -224,12 +278,15 @@ describe('useFetchCurrentPage - Integration Test', () => {
 
     // Assert
     await waitFor(() => {
-      expect(mockedApiv3Get).toHaveBeenCalledWith('/page', expect.objectContaining({ pageId: '65d4e0a0f7b7b2e5a8652e86' }));
+      expect(mockedApiv3Get).toHaveBeenCalledWith(
+        '/page',
+        expect.objectContaining({ pageId: '65d4e0a0f7b7b2e5a8652e86' }),
+      );
       expect(store.get(currentPageIdAtom)).toBe('65d4e0a0f7b7b2e5a8652e86');
     });
   });
 
-  it('should set pageNotFoundAtom and pageNotCreatableAtom on 404 error for a non-creatable path', async() => {
+  it('should set pageNotFoundAtom and pageNotCreatableAtom on 404 error for a non-creatable path', async () => {
     // Arrange
     const notCreatablePath = '/user';
     const apiError = {
@@ -250,5 +307,4 @@ describe('useFetchCurrentPage - Integration Test', () => {
       expect(store.get(pageErrorAtom)).toEqual(apiError);
     });
   });
-
 });

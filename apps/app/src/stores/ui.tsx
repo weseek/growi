@@ -40,7 +40,7 @@ const logger = loggerFactory('growi:stores:ui');
  *********************************************************** */
 
 export const useCurrentPageTocNode = (): SWRResponse<HtmlElementNode, any> => {
-  const [currentPagePath] = useCurrentPagePath();
+  const currentPagePath = useCurrentPagePath();
 
   return useStaticSWR(['currentPageTocNode', currentPagePath]);
 };
@@ -233,13 +233,13 @@ export const useCommentEditorDirtyMap = (): SWRResponse<Map<string, boolean>, Er
 export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowTrashPageManagementButtons';
 
-  const [_currentUser] = useCurrentUser();
+  const _currentUser = useCurrentUser();
   const isCurrentUserExist = _currentUser != null;
 
-  const [_currentPageId] = useCurrentPageId();
-  const [_isNotFound] = usePageNotFound();
-  const [_isTrashPage] = useIsTrashPage();
-  const [_isReadOnlyUser] = useIsReadOnlyUser();
+  const _currentPageId = useCurrentPageId();
+  const _isNotFound = usePageNotFound();
+  const _isTrashPage = useIsTrashPage();
+  const _isReadOnlyUser = useIsReadOnlyUser();
   const isPageExist = _currentPageId != null && _isNotFound === false;
   const isTrashPage = isPageExist && _isTrashPage === true;
   const isReadOnlyUser = isPageExist && _isReadOnlyUser === true;
@@ -254,10 +254,10 @@ export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean
 
 export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageManagement';
-  const [currentPageId] = useCurrentPageId();
-  const [isNotFound] = usePageNotFound();
-  const [_isTrashPage] = useIsTrashPage();
-  const [_isSharedUser] = useIsSharedUser();
+  const currentPageId = useCurrentPageId();
+  const isNotFound = usePageNotFound();
+  const _isTrashPage = useIsTrashPage();
+  const _isSharedUser = useIsSharedUser();
 
   const pageId = currentPageId;
   const includesUndefined = [pageId, _isTrashPage, _isSharedUser, isNotFound].some(v => v === undefined);
@@ -274,12 +274,12 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
 
 export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowTagLabel';
-  const [pageId] = useCurrentPageId();
-  const [isNotFound] = usePageNotFound();
-  const [currentPagePath] = useCurrentPagePath();
-  const [isIdenticalPath] = useIsIdenticalPath();
+  const pageId = useCurrentPageId();
+  const isNotFound = usePageNotFound();
+  const currentPagePath = useCurrentPagePath();
+  const isIdenticalPath = useIsIdenticalPath();
   const { editorMode } = useEditorMode();
-  const [shareLinkId] = useShareLinkId();
+  const shareLinkId = useShareLinkId();
 
 
   const includesUndefined = [currentPagePath, isIdenticalPath, isNotFound, editorMode].some(v => v === undefined);
@@ -296,8 +296,8 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
 
 export const useIsAbleToChangeEditorMode = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToChangeEditorMode';
-  const [isEditable] = useIsEditable();
-  const [isSharedUser] = useIsSharedUser();
+  const isEditable = useIsEditable();
+  const isSharedUser = useIsSharedUser();
 
   const includesUndefined = [isEditable, isSharedUser].some(v => v === undefined);
 
@@ -309,9 +309,9 @@ export const useIsAbleToChangeEditorMode = (): SWRResponse<boolean, Error> => {
 
 export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageAuthors';
-  const [pageId] = useCurrentPageId();
-  const [isNotFound] = usePageNotFound();
-  const [pagePath] = useCurrentPagePath();
+  const pageId = useCurrentPageId();
+  const isNotFound = usePageNotFound();
+  const pagePath = useCurrentPagePath();
 
   const includesUndefined = [pageId, pagePath, isNotFound].some(v => v === undefined);
   const isPageExist = (pageId != null) && !isNotFound;
@@ -326,7 +326,7 @@ export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
 export const useIsUntitledPage = (): SWRResponse<boolean> => {
   const key = 'isUntitledPage';
 
-  const [pageId] = useCurrentPageId();
+  const pageId = useCurrentPageId();
 
   return useSWRStatic(
     pageId == null ? null : [key, pageId],

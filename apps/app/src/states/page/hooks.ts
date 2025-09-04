@@ -1,8 +1,7 @@
 import { pagePathUtils } from '@growi/core/dist/utils';
-import { useAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 
 import { useCurrentPathname } from '../global';
-import type { UseAtom } from '../helper';
 
 import {
   currentPageDataAtom,
@@ -28,60 +27,32 @@ import {
  */
 
 // Read-only hooks for page state
-export const useCurrentPageId = (): UseAtom<typeof currentPageIdAtom> => {
-  return useAtom(currentPageIdAtom);
-};
+export const useCurrentPageId = () => useAtomValue(currentPageIdAtom);
 
-export const useCurrentPageData = (): UseAtom<typeof currentPageDataAtom> => {
-  return useAtom(currentPageDataAtom);
-};
+export const useCurrentPageData = () => useAtomValue(currentPageDataAtom);
 
-export const usePageNotFound = (): UseAtom<typeof pageNotFoundAtom> => {
-  return useAtom(pageNotFoundAtom);
-};
+export const usePageNotFound = () => useAtomValue(pageNotFoundAtom);
 
-export const usePageNotCreatable = (): UseAtom<typeof pageNotCreatableAtom> => {
-  return useAtom(pageNotCreatableAtom);
-};
+export const usePageNotCreatable = () => useAtomValue(pageNotCreatableAtom);
 
-export const useLatestRevision = (): UseAtom<typeof latestRevisionAtom> => {
-  return useAtom(latestRevisionAtom);
-};
+export const useLatestRevision = () => useAtomValue(latestRevisionAtom);
 
-export const useShareLinkId = (): UseAtom<typeof shareLinkIdAtom> => {
-  return useAtom(shareLinkIdAtom);
-};
+export const useShareLinkId = () => useAtomValue(shareLinkIdAtom);
 
-export const useTemplateTags = (): UseAtom<typeof templateTagsAtom> => {
-  return useAtom(templateTagsAtom);
-};
+export const useTemplateTags = () => useAtomValue(templateTagsAtom);
 
-export const useTemplateBody = (): UseAtom<typeof templateBodyAtom> => {
-  return useAtom(templateBodyAtom);
-};
+export const useTemplateBody = () => useAtomValue(templateBodyAtom);
 
 // Remote revision hooks (replacements for stores/remote-latest-page.ts)
-export const useRemoteRevisionId = (): UseAtom<typeof remoteRevisionIdAtom> => {
-  return useAtom(remoteRevisionIdAtom);
-};
+export const useRemoteRevisionId = () => useAtomValue(remoteRevisionIdAtom);
 
-export const useRemoteRevisionBody = (): UseAtom<
-  typeof remoteRevisionBodyAtom
-> => {
-  return useAtom(remoteRevisionBodyAtom);
-};
+export const useRemoteRevisionBody = () => useAtomValue(remoteRevisionBodyAtom);
 
-export const useRemoteRevisionLastUpdateUser = (): UseAtom<
-  typeof remoteRevisionLastUpdateUserAtom
-> => {
-  return useAtom(remoteRevisionLastUpdateUserAtom);
-};
+export const useRemoteRevisionLastUpdateUser = () =>
+  useAtomValue(remoteRevisionLastUpdateUserAtom);
 
-export const useRemoteRevisionLastUpdatedAt = (): UseAtom<
-  typeof remoteRevisionLastUpdatedAtAtom
-> => {
-  return useAtom(remoteRevisionLastUpdatedAtAtom);
-};
+export const useRemoteRevisionLastUpdatedAt = () =>
+  useAtomValue(remoteRevisionLastUpdatedAtAtom);
 
 // Enhanced computed hooks (pure Jotai - no SWR needed)
 
@@ -89,31 +60,28 @@ export const useRemoteRevisionLastUpdatedAt = (): UseAtom<
  * Get current page path with fallback to pathname
  * Pure Jotai replacement for stores/page.tsx useCurrentPagePath
  */
-export const useCurrentPagePath = (): readonly [string | undefined] => {
-  const [currentPagePath] = useAtom(currentPagePathAtom);
-  const [currentPathname] = useCurrentPathname();
+export const useCurrentPagePath = (): string | undefined => {
+  const currentPagePath = useAtomValue(currentPagePathAtom);
+  const currentPathname = useCurrentPathname();
 
   if (currentPagePath != null) {
-    return [currentPagePath];
+    return currentPagePath;
   }
   if (currentPathname != null && !pagePathUtils.isPermalink(currentPathname)) {
-    return [currentPathname];
+    return currentPathname;
   }
-  return [undefined];
+  return undefined;
 };
 
 /**
  * Check if current page is in trash
  * Pure Jotai replacement for stores/page.tsx useIsTrashPage
  */
-export const useIsTrashPage = (): readonly [boolean, never] => {
-  return useAtom(isTrashPageAtom);
-};
+export const useIsTrashPage = (): boolean => useAtomValue(isTrashPageAtom);
 
 /**
  * Check if current revision is outdated
  * Pure Jotai replacement for stores/page.tsx useIsRevisionOutdated
  */
-export const useIsRevisionOutdated = (): readonly [boolean, never] => {
-  return useAtom(isRevisionOutdatedAtom);
-};
+export const useIsRevisionOutdated = (): boolean =>
+  useAtomValue(isRevisionOutdatedAtom);

@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai';
 
-import { pageLoadingAtom, pageErrorAtom } from './internal-atoms';
+import { pageErrorAtom, pageLoadingAtom } from './internal-atoms';
 
 /**
  * Hook to access current page loading state

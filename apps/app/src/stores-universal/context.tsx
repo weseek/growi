@@ -1,13 +1,14 @@
 import { AcceptedUploadFileType } from '@growi/core';
 import { useSWRStatic } from '@growi/core/dist/swr';
 import type EventEmitter from 'events';
+import { useAtomValue } from 'jotai';
 import type { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import type { SupportedActionType } from '~/interfaces/activity';
 import {
-  useIsUploadAllFileAllowed,
-  useIsUploadEnabled,
+  isUploadAllFileAllowedAtom,
+  isUploadEnabledAtom,
 } from '~/states/server-configurations';
 
 import { useContextSWR } from './use-context-swr';
@@ -74,8 +75,8 @@ export const useAcceptedUploadFileType = (): SWRResponse<
   AcceptedUploadFileType,
   Error
 > => {
-  const [isUploadEnabled] = useIsUploadEnabled();
-  const [isUploadAllFileAllowed] = useIsUploadAllFileAllowed();
+  const isUploadEnabled = useAtomValue(isUploadEnabledAtom);
+  const isUploadAllFileAllowed = useAtomValue(isUploadAllFileAllowedAtom);
 
   return useSWRImmutable(
     ['acceptedUploadFileType', isUploadEnabled, isUploadAllFileAllowed],

@@ -50,6 +50,23 @@ export const getServerSideCommonInitialProps: GetServerSideProps<CommonInitialPr
   };
 };
 
+export const isCommonInitialProps = (props: unknown): props is CommonInitialProps => {
+  if (typeof props !== 'object' || props === null) {
+    logger.warn('isCommonInitialProps: props is not an object or is null');
+    return false;
+  }
+
+  const p = props as Record<string, unknown>;
+
+  // Essential properties validation
+  if (p.isNextjsRoutingTypeInitial !== true) {
+    logger.warn('isCommonInitialProps: isNextjsRoutingTypeInitial is not true', { isNextjsRoutingTypeInitial: p.isNextjsRoutingTypeInitial });
+    return false;
+  }
+
+  return true;
+};
+
 export type CommonEachProps = {
   currentPathname: string,
   nextjsRoutingPage?: string, // must be set by each page

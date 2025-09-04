@@ -3,6 +3,7 @@ import { useCallback, useEffect } from 'react';
 import { type Nullable } from '@growi/core';
 import { withUtils, type SWRResponseWithUtils, useSWRStatic } from '@growi/core/dist/swr';
 import type { EditorSettings } from '@growi/editor';
+import { useAtomValue } from 'jotai';
 import useSWR, { type SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -11,7 +12,7 @@ import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import type { SlackChannels } from '~/interfaces/user-trigger-notification';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
 import { useCurrentUser } from '~/states/global';
-import { useDefaultIndentSize } from '~/states/server-configurations';
+import { defaultIndentSizeAtom } from '~/states/server-configurations';
 
 import { useSWRxTagsInfo } from './page';
 
@@ -29,9 +30,9 @@ type EditorSettingsOperation = {
 //   - Unabling localStorageMiddleware occurrs a flickering problem when loading theme.
 //   - see: https://github.com/weseek/growi/pull/6781#discussion_r1000285786
 export const useEditorSettings = (): SWRResponseWithUtils<EditorSettingsOperation, EditorSettings, Error> => {
-  const [currentUser] = useCurrentUser();
-  const [isGuestUser] = useIsGuestUser();
-  const [isReadOnlyUser] = useIsReadOnlyUser();
+  const currentUser = useCurrentUser();
+  const isGuestUser = useIsGuestUser();
+  const isReadOnlyUser = useIsReadOnlyUser();
 
   const swrResult = useSWRImmutable(
     (isGuestUser || isReadOnlyUser) ? null : ['/personal-setting/editor-settings', currentUser?.username],
@@ -61,7 +62,7 @@ export const useEditorSettings = (): SWRResponseWithUtils<EditorSettingsOperatio
 };
 
 export const useCurrentIndentSize = (): SWRResponse<number, Error> => {
-  const [defaultIndentSize] = useDefaultIndentSize();
+  const defaultIndentSize = useAtomValue(defaultIndentSizeAtom);
   return useSWRStatic<number, Error>(
     defaultIndentSize == null ? null : 'currentIndentSize',
     undefined,

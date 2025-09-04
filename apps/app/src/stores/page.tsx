@@ -53,7 +53,7 @@ export const useSWRxPageByPath = (path?: string, config?: SWRConfiguration): SWR
 };
 
 export const useSWRxTagsInfo = (pageId: Nullable<string>, config?: SWRConfiguration): SWRResponse<IPageTagsInfo | null, Error> => {
-  const [shareLinkId] = useShareLinkId();
+  const shareLinkId = useShareLinkId();
 
   const endpoint = `/pages.getPageTag?pageId=${pageId}`;
 
@@ -83,7 +83,7 @@ export const useSWRxPageInfo = (
 ): SWRResponse<IPageInfo | IPageInfoForOperation> => {
 
   // Cache remains from guest mode when logging in via the Login lead, so add 'isGuestUser' key
-  const [isGuestUser] = useIsGuestUser();
+  const isGuestUser = useIsGuestUser();
 
   // assign null if shareLinkId is undefined in order to identify SWR key only by pageId
   const fixedShareLinkId = shareLinkId ?? null;
@@ -117,7 +117,7 @@ export const useSWRMUTxPageInfo = (
 ): SWRMutationResponse<IPageInfo | IPageInfoForOperation> => {
 
   // Cache remains from guest mode when logging in via the Login lead, so add 'isGuestUser' key
-  const [isGuestUser] = useIsGuestUser();
+  const isGuestUser = useIsGuestUser();
 
   // assign null if shareLinkId is undefined in order to identify SWR key only by pageId
   const fixedShareLinkId = shareLinkId ?? null;
@@ -173,9 +173,9 @@ export const useSWRxCurrentGrantData = (
     pageId: string | null | undefined,
 ): SWRResponse<IResCurrentGrantData, Error> => {
 
-  const [isGuestUser] = useIsGuestUser();
-  const [isReadOnlyUser] = useIsReadOnlyUser();
-  const [isNotFound] = usePageNotFound();
+  const isGuestUser = useIsGuestUser();
+  const isReadOnlyUser = useIsReadOnlyUser();
+  const isNotFound = usePageNotFound();
 
   const key = !isGuestUser && !isReadOnlyUser && !isNotFound && pageId != null
     ? ['/page/grant-data', pageId]

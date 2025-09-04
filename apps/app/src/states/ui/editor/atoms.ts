@@ -5,7 +5,7 @@ import { EditorMode, EditorModeHash } from './types';
 import { determineEditorModeByHash } from './utils';
 
 // Base atom for editor mode
-export const editorModeBaseAtom = atom<EditorMode | null>(null);
+const editorModeBaseAtom = atom<EditorMode | null>(null);
 
 // Derived atom with initialization logic
 export const editorModeAtom = atom(

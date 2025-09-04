@@ -15,9 +15,7 @@ const globalSocketAtom = atom<Socket | null>(null);
 /**
  * Hook to get WebSocket connection
  */
-export const useGlobalSocket = (): Socket | null => {
-  return useAtomValue(globalSocketAtom);
-};
+export const useGlobalSocket = () => useAtomValue(globalSocketAtom);
 
 /**
  * Hook to initialize WebSocket connection
@@ -63,7 +61,7 @@ export const useSetupGlobalSocket = (): void => {
  */
 export const useSetupGlobalSocketForPage = (): void => {
   const socket = useAtomValue(globalSocketAtom);
-  const [pageId] = useCurrentPageId();
+  const pageId = useCurrentPageId();
 
   useEffect(() => {
     if (socket == null || pageId == null) {

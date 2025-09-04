@@ -14,7 +14,7 @@ export type Themes = (typeof Themes)[keyof typeof Themes];
 const ATTRIBUTE = 'data-bs-theme';
 
 export const NextThemesProvider: React.FC<ThemeProviderProps> = (props) => {
-  const [forcedColorScheme] = useForcedColorScheme();
+  const forcedColorScheme = useForcedColorScheme();
 
   return (
     <ThemeProvider
@@ -36,7 +36,7 @@ type UseThemeExtendedProps = Omit<UseThemeProps, 'theme' | 'resolvedTheme'> & {
 
 export const useNextThemes = (): UseThemeProps & UseThemeExtendedProps => {
   const props = useTheme();
-  const [forcedColorScheme] = useForcedColorScheme();
+  const forcedColorScheme = useForcedColorScheme();
 
   const resolvedTheme =
     forcedColorScheme ?? (props.resolvedTheme as ColorScheme);

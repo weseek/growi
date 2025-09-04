@@ -1,131 +1,210 @@
 import type { ColorScheme, IUserHasId } from '@growi/core';
-import { atom, useAtom } from 'jotai';
+import { atom, useAtomValue } from 'jotai';
 import type { SupportedActionType } from '~/interfaces/activity';
-import type { UseAtom } from '../helper';
 
-// CSRF Token atom (no persistence needed as it's server-provided)
-export const csrfTokenAtom = atom<string>('');
-export const useCsrfToken = (): UseAtom<typeof csrfTokenAtom> => {
-  return useAtom(csrfTokenAtom);
-};
+/**
+ * CSRF Token atom
+ */
+const csrfTokenAtom = atom<string>('');
+/**
+ * CSRF Token atom setter
+ */
+export const useCsrfToken = () => useAtomValue(csrfTokenAtom);
 
-// App current pathname atom (no persistence needed as it's server-provided)
-export const currentPathnameAtom = atom<string>('');
-export const useCurrentPathname = (): UseAtom<typeof currentPathnameAtom> => {
-  return useAtom(currentPathnameAtom);
-};
+/**
+ * App current pathname atom
+ */
+const currentPathnameAtom = atom<string>('');
+/**
+ * App current pathname atom setter
+ */
+export const useCurrentPathname = () => useAtomValue(currentPathnameAtom);
 
-// Current User atom (no persistence needed as it's server-provided)
-export const currentUserAtom = atom<IUserHasId | undefined>();
-export const useCurrentUser = (): UseAtom<typeof currentUserAtom> => {
-  return useAtom(currentUserAtom);
-};
+/**
+ * Current User atom
+ */
+const currentUserAtom = atom<IUserHasId | undefined>();
+/**
+ * Current user atom getter
+ */
+export const currentUserAtomGetter = atom((get) => get(currentUserAtom));
+/**
+ * Current User atom setter
+ */
+export const useCurrentUser = () => useAtomValue(currentUserAtom);
 
-// App Title atom (no persistence needed as it's server-provided)
-export const appTitleAtom = atom<string>('');
-export const useAppTitle = (): UseAtom<typeof appTitleAtom> => {
-  return useAtom(appTitleAtom);
-};
+/**
+ * App Title atom
+ */
+const appTitleAtom = atom<string>('');
+/**
+ * App Title atom setter
+ */
+export const useAppTitle = () => useAtomValue(appTitleAtom);
 
-// Custom Title Template atom (no persistence needed as it's server-provided)
-export const customTitleTemplateAtom = atom<string>('');
-export const useCustomTitleTemplate = (): UseAtom<
-  typeof customTitleTemplateAtom
-> => {
-  return useAtom(customTitleTemplateAtom);
-};
+/**
+ * Custom Title Template atom
+ */
+const customTitleTemplateAtom = atom<string>('');
+/**
+ * Custom Title Template atom setter
+ */
+export const useCustomTitleTemplate = () =>
+  useAtomValue(customTitleTemplateAtom);
 
-// Site URL atom (no persistence needed as it's server-provided)
-export const siteUrlAtom = atom<string | undefined>(undefined);
-export const useSiteUrl = (): UseAtom<typeof siteUrlAtom> => {
-  return useAtom(siteUrlAtom);
-};
+/**
+ * Site URL atom
+ */
+const siteUrlAtom = atom<string | undefined>(undefined);
+/**
+ * Site URL atom setter
+ */
+export const useSiteUrl = () => useAtomValue(siteUrlAtom);
 
-// Site URL atom (no persistence needed as it's server-provided)
-export const siteUrlWithEmptyValueWarnAtom = atom<string>('');
-export const useSiteUrlWithEmptyValueWarn = (): UseAtom<
-  typeof siteUrlWithEmptyValueWarnAtom
-> => {
-  return useAtom(siteUrlWithEmptyValueWarnAtom);
-};
+/**
+ * Site URL atom
+ */
+const siteUrlWithEmptyValueWarnAtom = atom<string>('');
+/**
+ * Site URL with empty value warning atom setter
+ */
+export const useSiteUrlWithEmptyValueWarn = () =>
+  useAtomValue(siteUrlWithEmptyValueWarnAtom);
 
-// Confidential atom (no persistence needed as it's server-provided)
-export const confidentialAtom = atom<string>('');
-export const useConfidential = (): UseAtom<typeof confidentialAtom> => {
-  return useAtom(confidentialAtom);
-};
+/**
+ * Confidential atom
+ */
+const confidentialAtom = atom<string>('');
+/**
+ * Confidential atom setter
+ */
+export const useConfidential = () => useAtomValue(confidentialAtom);
 
-// GROWI Version atom (no persistence needed as it's server-provided)
-export const growiVersionAtom = atom<string>('');
-export const useGrowiVersion = (): UseAtom<typeof growiVersionAtom> => {
-  return useAtom(growiVersionAtom);
-};
+/**
+ * GROWI Version atom
+ */
+const growiVersionAtom = atom<string>('');
+/**
+ * GROWI Version atom setter
+ */
+export const useGrowiVersion = () => useAtomValue(growiVersionAtom);
 
-// Maintenance Mode atom (no persistence needed as it's server-provided)
-export const isMaintenanceModeAtom = atom<boolean>(false);
-export const useIsMaintenanceMode = (): UseAtom<
-  typeof isMaintenanceModeAtom
-> => {
-  return useAtom(isMaintenanceModeAtom);
-};
+/**
+ * Maintenance Mode atom
+ */
+const isMaintenanceModeAtom = atom<boolean>(false);
+/**
+ * Maintenance Mode atom setter
+ */
+export const useIsMaintenanceMode = () => useAtomValue(isMaintenanceModeAtom);
 
-// Default Logo atom (no persistence needed as it's server-provided)
-export const isDefaultLogoAtom = atom<boolean>(true);
-export const useIsDefaultLogo = (): UseAtom<typeof isDefaultLogoAtom> => {
-  return useAtom(isDefaultLogoAtom);
-};
+/**
+ * Default Logo atom
+ */
+const isDefaultLogoAtom = atom<boolean>(true);
+/**
+ * Default Logo atom setter
+ */
+export const useIsDefaultLogo = () => useAtomValue(isDefaultLogoAtom);
 
-// Customize Title (admin customize setting)
-export const customizeTitleAtom = atom<string | undefined>(undefined);
-export const useCustomizeTitle = (): UseAtom<typeof customizeTitleAtom> => {
-  return useAtom(customizeTitleAtom);
-};
+/**
+ * Customize Title
+ */
+const customizeTitleAtom = atom<string | undefined>(undefined);
+/**
+ * Customize Title atom setter
+ */
+export const useCustomizeTitle = () => useAtomValue(customizeTitleAtom);
 
-// Is Customized Logo Uploaded
-export const isCustomizedLogoUploadedAtom = atom<boolean>(false);
-export const useIsCustomizedLogoUploaded = (): UseAtom<
-  typeof isCustomizedLogoUploadedAtom
-> => {
-  return useAtom(isCustomizedLogoUploadedAtom);
-};
+/**
+ * Is Customized Logo Uploaded
+ */
+const isCustomizedLogoUploadedAtom = atom<boolean>(false);
+/**
+ * Is Customized Logo Uploaded atom setter
+ */
+export const useIsCustomizedLogoUploaded = () =>
+  useAtomValue(isCustomizedLogoUploadedAtom);
 
-// GROWI Cloud URI atom (no persistence needed as it's server-provided)
-export const growiCloudUriAtom = atom<string | undefined>(undefined);
-export const useGrowiCloudUri = (): UseAtom<typeof growiCloudUriAtom> => {
-  return useAtom(growiCloudUriAtom);
-};
+/**
+ * GROWI Cloud URI atom
+ */
+const growiCloudUriAtom = atom<string | undefined>(undefined);
+/**
+ * GROWI Cloud URI atom getter
+ */
+export const growiCloudUriAtomGetter = atom((get) => get(growiCloudUriAtom));
+/**
+ * GROWI Cloud URI atom setter
+ */
+export const useGrowiCloudUri = () => useAtomValue(growiCloudUriAtom);
 
-// GROWI Cloud App ID atom (no persistence needed as it's server-provided)
-export const growiAppIdForGrowiCloudAtom = atom<number | undefined>(undefined);
-export const useGrowiAppIdForGrowiCloud = (): UseAtom<
-  typeof growiAppIdForGrowiCloudAtom
-> => {
-  return useAtom(growiAppIdForGrowiCloudAtom);
-};
+/**
+ * GROWI Cloud App ID atom
+ */
+const growiAppIdForGrowiCloudAtom = atom<number | undefined>(undefined);
+/**
+ * GROWI Cloud App ID atom setter
+ */
+export const useGrowiAppIdForGrowiCloud = () =>
+  useAtomValue(growiAppIdForGrowiCloudAtom);
 
-// Forced Color Scheme atom (no persistence needed as it's server-provided)
-export const forcedColorSchemeAtom = atom<ColorScheme | undefined>(undefined);
-export const useForcedColorScheme = (): UseAtom<
-  typeof forcedColorSchemeAtom
-> => {
-  return useAtom(forcedColorSchemeAtom);
-};
+/**
+ * Forced Color Scheme atom
+ */
+const forcedColorSchemeAtom = atom<ColorScheme | undefined>(undefined);
+/**
+ * Forced Color Scheme atom setter
+ */
+export const useForcedColorScheme = () => useAtomValue(forcedColorSchemeAtom);
 
-export const auditLogEnabledAtom = atom<boolean>(false);
-export const useAuditLogEnabled = (): UseAtom<typeof auditLogEnabledAtom> => {
-  return useAtom(auditLogEnabledAtom);
-};
+/**
+ * Audit Log Enabled atom
+ */
+const auditLogEnabledAtom = atom<boolean>(false);
+/**
+ * Audit Log Enabled atom setter
+ */
+export const useAuditLogEnabled = () => useAtomValue(auditLogEnabledAtom);
 
-export const activityExpirationSecondsAtom = atom<number>(0);
-export const useActivityExpirationSeconds = (): UseAtom<
-  typeof activityExpirationSecondsAtom
-> => {
-  return useAtom(activityExpirationSecondsAtom);
-};
+/**
+ * Activity Expiration Seconds atom
+ */
+const activityExpirationSecondsAtom = atom<number>(0);
+/**
+ * Activity Expiration Seconds atom setter
+ */
+export const useActivityExpirationSeconds = () =>
+  useAtomValue(activityExpirationSecondsAtom);
 
-export const auditLogAvailableActionsAtom = atom<SupportedActionType[]>([]);
-export const useAuditLogAvailableActions = (): UseAtom<
-  typeof auditLogAvailableActionsAtom
-> => {
-  return useAtom(auditLogAvailableActionsAtom);
+/**
+ * Audit Log Available Actions atom
+ */
+const auditLogAvailableActionsAtom = atom<SupportedActionType[]>([]);
+/**
+ * Audit Log Available Actions atom setter
+ */
+export const useAuditLogAvailableActions = () =>
+  useAtomValue(auditLogAvailableActionsAtom);
+
+export const _atomsForHydration = {
+  csrfTokenAtom,
+  currentPathnameAtom,
+  currentUserAtom,
+  appTitleAtom,
+  customTitleTemplateAtom,
+  siteUrlAtom,
+  siteUrlWithEmptyValueWarnAtom,
+  confidentialAtom,
+  growiVersionAtom,
+  isMaintenanceModeAtom,
+  isDefaultLogoAtom,
+  customizeTitleAtom,
+  isCustomizedLogoUploadedAtom,
+  growiCloudUriAtom,
+  growiAppIdForGrowiCloudAtom,
+  forcedColorSchemeAtom,
+  auditLogEnabledAtom,
+  activityExpirationSecondsAtom,
+  auditLogAvailableActionsAtom,
 };
