@@ -17,7 +17,7 @@ const isValidUrl = (str: string): boolean => {
 
 export const AlertSiteUrlUndefined = (): JSX.Element => {
   const { t } = useTranslation('commons');
-  const [siteUrl] = useSiteUrl();
+  const siteUrl = useSiteUrl();
 
   if (typeof siteUrl === 'string' && isValidUrl(siteUrl)) {
     return <></>;

@@ -11,6 +11,7 @@ import type {
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
+import { useAtomValue } from 'jotai';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -29,8 +30,10 @@ import { useCurrentPathname, useCurrentUser } from '~/states/global';
 import { useCurrentPageId, useFetchCurrentPage } from '~/states/page';
 import { useShareLinkId } from '~/states/page/hooks';
 import {
-  useDisableLinkSharing,
-  useIsBulkExportPagesEnabled, useIsLocalAccountRegistrationEnabled, useIsUploadEnabled,
+  disableLinkSharingAtom,
+  isBulkExportPagesEnabledAtom,
+  isLocalAccountRegistrationEnabledAtom,
+  isUploadEnabledAtom,
 } from '~/states/server-configurations';
 import { useEditorMode } from '~/states/ui/editor';
 import {
@@ -79,11 +82,11 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
     pageId, revisionId, isLinkSharingDisabled,
   } = props;
 
-  const [isGuestUser] = useIsGuestUser();
-  const [isReadOnlyUser] = useIsReadOnlyUser();
-  const [isSharedUser] = useIsSharedUser();
-  const [isBulkExportPagesEnabled] = useIsBulkExportPagesEnabled();
-  const [isUploadEnabled] = useIsUploadEnabled();
+  const isGuestUser = useIsGuestUser();
+  const isReadOnlyUser = useIsReadOnlyUser();
+  const isSharedUser = useIsSharedUser();
+  const isBulkExportPagesEnabled = useAtomValue(isBulkExportPagesEnabledAtom);
+  const isUploadEnabled = useAtomValue(isUploadEnabledAtom);
 
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
@@ -255,23 +258,23 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const router = useRouter();
 
-  const [shareLinkId] = useShareLinkId();
+  const shareLinkId = useShareLinkId();
   const { fetchCurrentPage } = useFetchCurrentPage();
 
-  const [currentPathname] = useCurrentPathname();
+  const currentPathname = useCurrentPathname();
   const isSharedPage = pagePathUtils.isSharedPage(currentPathname ?? '');
 
   const revision = currentPage?.revision;
   const revisionId = (revision != null && isPopulated(revision)) ? revision._id : undefined;
 
   const { editorMode } = useEditorMode();
-  const [pageId] = useCurrentPageId();
-  const [currentUser] = useCurrentUser();
-  const [isGuestUser] = useIsGuestUser();
-  const [isReadOnlyUser] = useIsReadOnlyUser();
-  const [isLocalAccountRegistrationEnabled] = useIsLocalAccountRegistrationEnabled();
-  const [isLinkSharingDisabled] = useDisableLinkSharing();
-  const [isSharedUser] = useIsSharedUser();
+  const pageId = useCurrentPageId();
+  const currentUser = useCurrentUser();
+  const isGuestUser = useIsGuestUser();
+  const isReadOnlyUser = useIsReadOnlyUser();
+  const isLocalAccountRegistrationEnabled = useAtomValue(isLocalAccountRegistrationEnabledAtom);
+  const isLinkSharingDisabled = useAtomValue(disableLinkSharingAtom);
+  const isSharedUser = useIsSharedUser();
 
   const shouldExpandContent = useShouldExpandContent(currentPage);
 
@@ -373,7 +376,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         }
       </>
     );
-  }, [isLinkSharingDisabled, isReadOnlyUser, pageId, revisionId]);
+  }, [isLinkSharingDisabled, pageId, revisionId, isReadOnlyUser]);
 
   // hide sub controls when sticky on mobile device
   const hideSubControls = useMemo(() => {

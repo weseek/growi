@@ -6,6 +6,7 @@ import {
   GroupType, getIdStringForRef, type IGrantedGroup, type IUserGroup, type IUserGroupHasId,
 } from '@growi/core';
 import { objectIdUtils } from '@growi/core/dist/utils';
+import { useAtomValue } from 'jotai';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -18,7 +19,7 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import type { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 import type { PageActionOnGroupDelete, SearchType } from '~/interfaces/user-group';
 import { SearchTypes } from '~/interfaces/user-group';
-import { useIsAclEnabled } from '~/states/server-configurations';
+import { isAclEnabledAtom } from '~/states/server-configurations';
 import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
 import { useSWRxUserGroupPages, useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups } from '~/stores/user-group';
 import loggerFactory from '~/utils/logger';
@@ -104,7 +105,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
 
   const { data: ancestorUserGroups, mutate: mutateAncestorUserGroups } = useAncestorUserGroups(currentUserGroupId, isExternalGroup);
 
-  const [isAclEnabled] = useIsAclEnabled();
+  const isAclEnabled = useAtomValue(isAclEnabledAtom);
 
   const { open: openUpdateParentConfirmModal } = useUpdateUserGroupConfirmModal();
 

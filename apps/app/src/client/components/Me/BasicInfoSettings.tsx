@@ -1,16 +1,17 @@
 import React, { type JSX } from 'react';
 
+import { useAtomValue } from 'jotai';
 import { useTranslation, i18n } from 'next-i18next';
 
 import { i18n as i18nConfig } from '^/config/next-i18next.config';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { useRegistrationWhitelist } from '~/states/server-configurations';
+import { registrationWhitelistAtom } from '~/states/server-configurations';
 import { usePersonalSettings } from '~/stores/personal-settings';
 
 export const BasicInfoSettings = (): JSX.Element => {
   const { t } = useTranslation();
-  const [registrationWhitelist] = useRegistrationWhitelist();
+  const registrationWhitelist = useAtomValue(registrationWhitelistAtom);
 
   const {
     data: personalSettingsInfo, mutate: mutatePersonalSettings, sync, updateBasicInfo, error,

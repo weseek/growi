@@ -9,6 +9,7 @@ import { CodeMirrorEditorComment } from '@growi/editor/dist/client/components/Co
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useResolvedThemeForEditor } from '@growi/editor/dist/client/stores/use-resolved-theme';
 import { UserPicture } from '@growi/ui/dist/components';
+import { useAtomValue } from 'jotai';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import {
@@ -20,7 +21,7 @@ import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError } from '~/client/util/toastr';
 import { useCurrentUser } from '~/states/global';
 import { useCurrentPagePath } from '~/states/page';
-import { useIsSlackConfigured } from '~/states/server-configurations';
+import { isSlackConfiguredAtom } from '~/states/server-configurations';
 import { useAcceptedUploadFileType } from '~/stores-universal/context';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
 import { useSWRxPageComment } from '~/stores/comment';
@@ -77,13 +78,13 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     currentCommentId, commentBody, onCanceled, onCommented,
   } = props;
 
-  const [currentUser] = useCurrentUser();
-  const [currentPagePath] = useCurrentPagePath();
+  const currentUser = useCurrentUser();
+  const currentPagePath = useCurrentPagePath();
   const { update: updateComment, post: postComment } = useSWRxPageComment(pageId);
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
-  const [isSlackConfigured] = useIsSlackConfigured();
+  const isSlackConfigured = useAtomValue(isSlackConfiguredAtom);
   const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const {
