@@ -89,7 +89,6 @@ module.exports = (crowi) => {
     loginRequiredStrictly,
     adminRequired,
     addActivity,
-
     async(req, res) => {
 
       try {
@@ -129,11 +128,10 @@ module.exports = (crowi) => {
     loginRequiredStrictly,
     adminRequired,
     addActivity,
-
     async(req, res) => {
 
       try {
-        const strictMimeTypeSettings: Record<string, 'inline' | 'attachment'> = {
+        const laxMimeTypeSettings: Record<string, 'inline' | 'attachment'> = {
           'application/pdf': 'inline',
           'application/json': 'inline',
           'text/csv': 'inline',
@@ -143,16 +141,16 @@ module.exports = (crowi) => {
           'font/otf': 'inline',
         };
 
-        await configManager.updateConfigs({ 'attachments:contentDisposition:mimeTypeOverrides': strictMimeTypeSettings });
+        await configManager.updateConfigs({ 'attachments:contentDisposition:mimeTypeOverrides': laxMimeTypeSettings });
 
         const parameters = {
           action: SupportedAction.ACTION_ADMIN_ATTACHMENT_DISPOSITION_UPDATE,
-          contentDispositionSettings: strictMimeTypeSettings,
+          contentDispositionSettings: laxMimeTypeSettings,
           currentMode: 'lax',
         };
         activityEvent.emit('update', res.locals.activity._id, parameters);
 
-        return res.apiv3({ currentMode: 'lax', contentDispositionSettings: strictMimeTypeSettings });
+        return res.apiv3({ currentMode: 'lax', contentDispositionSettings: laxMimeTypeSettings });
       }
       catch (err) {
         const msg = 'Error occurred in updating content disposition for MIME types';
