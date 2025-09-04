@@ -1,10 +1,10 @@
 import type { IGrantedGroup } from '@growi/core';
 import { GroupType, getIdForRef } from '@growi/core';
+import { useAtomValue } from 'jotai';
 import type { FC } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TabContent, TabPane } from 'reactstrap';
-
 import { UserGroupDeleteModal } from '~/client/components/Admin/UserGroup/UserGroupDeleteModal';
 import { UserGroupModal } from '~/client/components/Admin/UserGroup/UserGroupModal';
 import { UserGroupTable } from '~/client/components/Admin/UserGroup/UserGroupTable';
@@ -13,7 +13,7 @@ import { apiv3Delete, apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import type { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 import type { PageActionOnGroupDelete } from '~/interfaces/user-group';
-import { useIsAclEnabled } from '~/states/server-configurations';
+import { isAclEnabledAtom } from '~/states/server-configurations/server-configurations';
 import { useSWRxUserGroupList } from '~/stores/user-group';
 
 import {
@@ -55,7 +55,7 @@ export const ExternalGroupManagement: FC = () => {
       ? childExternalUserGroupsList.childUserGroups
       : [];
 
-  const [isAclEnabled] = useIsAclEnabled();
+  const isAclEnabled = useAtomValue(isAclEnabledAtom);
 
   const [activeTab, setActiveTab] = useState('ldap');
   const [activeComponents, setActiveComponents] = useState(new Set(['ldap']));

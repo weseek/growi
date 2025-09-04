@@ -17,7 +17,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
 
   const { t } = useTranslation();
   const router = useRouter();
-  const [user] = useCurrentUser();
+  const user = useCurrentUser();
   const [loginErrors, setLoginErrors] = useState<Error[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 

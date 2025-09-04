@@ -42,8 +42,8 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const [isReadOnlyUser] = useIsReadOnlyUser();
-  const [currentPage] = useCurrentPageData();
+  const isReadOnlyUser = useIsReadOnlyUser();
+  const currentPage = useCurrentPageData();
   const { data: bookmarkFolders, mutate: mutateBookmarkFolders } = useSWRxBookmarkFolderAndChild(userId);
   const { data: userBookmarks, mutate: mutateUserBookmarks } = useSWRxUserBookmarks(userId ?? null);
   const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(currentPage?._id ?? null);

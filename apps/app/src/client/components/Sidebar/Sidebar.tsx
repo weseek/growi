@@ -232,7 +232,7 @@ export const Sidebar = (): JSX.Element => {
     isDrawerMode, isCollapsedMode, isDockMode,
   } = useSidebarMode();
 
-  const [isSearchPage] = useIsSearchPage();
+  const isSearchPage = useIsSearchPage();
   const { editorMode } = useEditorMode();
   const { data: isMdSize } = useIsDeviceLargerThanMd();
   const [isXlSize] = useDeviceLargerThanXl();

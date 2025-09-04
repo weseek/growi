@@ -1,11 +1,12 @@
 import React, { memo, useMemo } from 'react';
 
+import { useAtomValue } from 'jotai';
+
 import { AiAssistant } from '~/features/openai/client/components/AiAssistant/Sidebar/AiAssistant';
 import { SidebarContentsType } from '~/interfaces/ui';
 import { useIsGuestUser } from '~/states/context';
-import { useSidebarMode, useCollapsedContentsOpened, useCurrentSidebarContents } from '~/states/ui/sidebar';
-import { useAtomValue } from 'jotai';
 import { aiEnabledAtom } from '~/states/server-configurations';
+import { useSidebarMode, useCollapsedContentsOpened, useCurrentSidebarContents } from '~/states/ui/sidebar';
 
 import { Bookmarks } from './Bookmarks';
 import { CustomSidebar } from './Custom';
