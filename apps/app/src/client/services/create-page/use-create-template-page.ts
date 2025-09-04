@@ -18,7 +18,7 @@ type UseCreateTemplatePage = () => {
 
 export const useCreateTemplatePage: UseCreateTemplatePage = () => {
 
-  const [currentPagePath] = useCurrentPagePath();
+  const currentPagePath = useCurrentPagePath();
 
   const { isCreating, create } = useCreatePage();
   const isCreatable = currentPagePath != null && isCreatablePage(normalizePath(`${currentPagePath}/_template`));

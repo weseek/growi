@@ -50,7 +50,7 @@ export const useCreatePage: UseCreatePage = () => {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const [currentPagePath] = useCurrentPagePath();
+  const currentPagePath = useCurrentPagePath();
   const { setEditorMode } = useEditorMode();
   const { mutate: mutateIsUntitledPage } = useIsUntitledPage();
   const { open: openGrantedGroupsInheritanceSelectModal, close: closeGrantedGroupsInheritanceSelectModal } = useGrantedGroupsInheritanceSelectModal();

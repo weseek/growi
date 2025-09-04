@@ -11,7 +11,7 @@ import { useCurrentPageId } from '~/states/page';
 export const PageContentsUtilities = (): null => {
   const { t } = useTranslation();
 
-  const [pageId] = useCurrentPageId();
+  const pageId = useCurrentPageId();
   const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 
   useHandsontableModalLauncherForView({

@@ -39,8 +39,8 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
     .filter(page => (page.meta?.elasticSearchResult?.snippet?.length ?? 0) === 0)
     .map(page => page.data._id);
 
-  const [isGuestUser] = useIsGuestUser();
-  const [isReadOnlyUser] = useIsReadOnlyUser();
+  const isGuestUser = useIsGuestUser();
+  const isReadOnlyUser = useIsReadOnlyUser();
   const { data: idToPageInfo } = useSWRxPageInfoForList(pageIdsWithNoSnippet, null, true, true);
 
   const itemsRef = useRef<(ISelectable|null)[]>([]);

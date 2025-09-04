@@ -12,7 +12,7 @@ type NotAvailableForGuestProps = {
 
 export const NotAvailableForGuest = React.memo(({ children }: NotAvailableForGuestProps): JSX.Element => {
   const { t } = useTranslation();
-  const [isGuestUser] = useIsGuestUser();
+  const isGuestUser = useIsGuestUser();
 
   const isDisabled = !!isGuestUser;
   const title = t('Not available for guest');

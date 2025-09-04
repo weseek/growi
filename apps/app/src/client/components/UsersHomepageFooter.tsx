@@ -17,7 +17,7 @@ export const UsersHomepageFooter = (props: UsersHomepageFooterProps): JSX.Elemen
   const { t } = useTranslation();
   const { creatorId } = props;
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [currentUser] = useCurrentUser();
+  const currentUser = useCurrentUser();
   const isOperable = currentUser?._id === creatorId;
 
   return (

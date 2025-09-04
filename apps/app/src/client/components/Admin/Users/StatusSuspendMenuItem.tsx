@@ -32,7 +32,7 @@ const StatusSuspendMenuItem = (props: Props): JSX.Element => {
 
   const { adminUsersContainer, user } = props;
 
-  const [currentUser] = useCurrentUser();
+  const currentUser = useCurrentUser(); // custom hook now returns single value
 
   const clickDeactiveBtnHandler = useCallback(async() => {
     try {

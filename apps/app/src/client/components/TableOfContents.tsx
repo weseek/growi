@@ -21,7 +21,7 @@ type Props = {
 }
 
 const TableOfContents = ({ tagsElementHeight }: Props): JSX.Element => {
-  const [currentPagePath] = useCurrentPagePath();
+  const currentPagePath = useCurrentPagePath();
 
   const isUsersHomePage = currentPagePath != null && _isUsersHomepage(currentPagePath);
 

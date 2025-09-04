@@ -42,8 +42,8 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
     pagingResult, activePage, setActivePage, forceHideMenuItems, onPagesDeleted, onPagePutBacked,
   } = props;
 
-  const [isGuestUser] = useIsGuestUser();
-  const [isReadOnlyUser] = useIsReadOnlyUser();
+  const isGuestUser = useIsGuestUser();
+  const isReadOnlyUser = useIsReadOnlyUser();
 
   const pageIds = pagingResult?.items?.map(page => page._id);
   const { injectTo } = useSWRxPageInfoForList(pageIds, null, true, true);
@@ -133,7 +133,7 @@ export const DescendantsPageList = (props: DescendantsPageListProps): JSX.Elemen
 
   const [activePage, setActivePage] = useState(1);
 
-  const [isSharedUser] = useIsSharedUser();
+  const isSharedUser = useIsSharedUser();
 
   const { data: pagingResult, error, mutate } = useSWRxPageList(isSharedUser ? null : path, activePage, limit);
 

@@ -20,11 +20,11 @@ const checkIfFileInUse = (markdown: string, attachment): boolean => {
 
 const PageAttachment = (): JSX.Element => {
 
-  const [pageId] = useCurrentPageId();
-  const [currentPage] = useCurrentPageData();
+  const pageId = useCurrentPageId();
+  const currentPage = useCurrentPageData();
 
-  const [isGuestUser] = useIsGuestUser();
-  const [isReadOnlyUser] = useIsReadOnlyUser();
+  const isGuestUser = useIsGuestUser();
+  const isReadOnlyUser = useIsReadOnlyUser();
 
   const isPageAttachmentDisabled = !!isGuestUser || !!isReadOnlyUser;
 

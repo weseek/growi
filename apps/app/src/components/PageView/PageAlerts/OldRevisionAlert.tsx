@@ -10,8 +10,8 @@ export const OldRevisionAlert = (): JSX.Element => {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const [isOldRevisionPage] = useLatestRevision();
-  const [page] = useCurrentPageData();
+  const isOldRevisionPage = useLatestRevision();
+  const page = useCurrentPageData();
   const { fetchCurrentPage } = useFetchCurrentPage();
 
   const onClickShowLatestButton = useCallback(async() => {

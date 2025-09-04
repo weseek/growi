@@ -7,10 +7,10 @@ import type { MarkdownTable } from '@growi/editor';
 
 import { getMarkdownTableFromLine, replaceMarkdownTableInMarkdown } from '~/client/components/Page/markdown-table-util-for-view';
 import { extractRemoteRevisionDataFromErrorObj, useUpdatePage } from '~/client/services/update-page';
-import { useCurrentPageData } from '~/states/page';
+import { useCurrentPageData, useSetRemoteLatestPageData } from '~/states/page';
+import type { RemoteRevisionData } from '~/states/page';
 import { useShareLinkId } from '~/states/page/hooks';
 import { useHandsontableModal, useConflictDiffModal } from '~/stores/modal';
-import { type RemoteRevisionData, useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
 
 
@@ -28,9 +28,9 @@ export const useHandsontableModalLauncherForView = (opts?: {
   onSaveError?: (error: any) => void,
 }): void => {
 
-  const [shareLinkId] = useShareLinkId();
+  const shareLinkId = useShareLinkId();
 
-  const [currentPage] = useCurrentPageData();
+  const currentPage = useCurrentPageData();
 
   const { open: openHandsontableModal } = useHandsontableModal();
 
@@ -38,7 +38,7 @@ export const useHandsontableModalLauncherForView = (opts?: {
 
   const _updatePage = useUpdatePage();
 
-  const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
+  const setRemoteLatestPageData = useSetRemoteLatestPageData();
 
   // eslint-disable-next-line max-len
   const updatePage = useCallback(async(revisionId:string, newMarkdown: string, onConflict: (conflictData: RemoteRevisionData, newMarkdown: string) => void) => {
@@ -66,7 +66,7 @@ export const useHandsontableModalLauncherForView = (opts?: {
       logger.error('failed to save', error);
       opts?.onSaveError?.(error);
     }
-  }, [closeConflictDiffModal, currentPage, opts, shareLinkId]);
+  }, [_updatePage, closeConflictDiffModal, currentPage, opts, shareLinkId]);
 
   // eslint-disable-next-line max-len
   const generateResolveConflictHandler = useCallback((revisionId: string, onConflict: (conflictData: RemoteRevisionData, newMarkdown: string) => void) => {

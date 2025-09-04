@@ -17,7 +17,7 @@ type RevokeAdminButtonProps = {
 const RevokeAdminButton = (props: RevokeAdminButtonProps): JSX.Element => {
 
   const { t } = useTranslation('admin');
-  const [currentUser] = useCurrentUser();
+  const currentUser = useCurrentUser(); // hook returns single value now
   const { adminUsersContainer, user } = props;
 
   const onClickRevokeAdminBtnHandler = useCallback(async() => {

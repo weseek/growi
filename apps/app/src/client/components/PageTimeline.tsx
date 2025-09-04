@@ -46,7 +46,7 @@ export const PageTimeline = (): JSX.Element => {
 
   const PER_PAGE = 3;
   const { t } = useTranslation();
-  const [currentPagePath] = useCurrentPagePath();
+  const currentPagePath = useCurrentPagePath();
 
   const swrInfinitexPageTimeline = useSWRINFxPageTimeline(currentPagePath ?? undefined, PER_PAGE);
   const { data } = swrInfinitexPageTimeline;

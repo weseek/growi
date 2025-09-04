@@ -33,7 +33,7 @@ const RevokeAdminMenuItem = (props: Props): JSX.Element => {
 
   const { adminUsersContainer, user } = props;
 
-  const [currentUser] = useCurrentUser();
+  const currentUser = useCurrentUser();
 
   const clickRevokeAdminBtnHandler = useCallback(async() => {
     try {

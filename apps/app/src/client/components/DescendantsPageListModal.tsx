@@ -31,7 +31,7 @@ export const DescendantsPageListModal = (): JSX.Element => {
   const [activeTab, setActiveTab] = useState('pagelist');
   const [isWindowExpanded, setIsWindowExpanded] = useState(false);
 
-  const [isSharedUser] = useIsSharedUser();
+  const isSharedUser = useIsSharedUser();
 
   const { data: status, close } = useDescendantsPageListModal();
 

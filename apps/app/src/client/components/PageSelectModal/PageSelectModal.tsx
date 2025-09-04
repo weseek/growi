@@ -33,9 +33,9 @@ const PageSelectModalSubstance: FC = () => {
 
   const { t } = useTranslation();
 
-  const [isGuestUser] = useIsGuestUser();
-  const [isReadOnlyUser] = useIsReadOnlyUser();
-  const [currentPage] = useCurrentPageData();
+  const isGuestUser = useIsGuestUser();
+  const isReadOnlyUser = useIsReadOnlyUser();
+  const currentPage = useCurrentPageData();
   const { data: pageSelectModalData } = usePageSelectModal();
 
   const isHierarchicalSelectionMode = pageSelectModalData?.opts?.isHierarchicalSelectionMode ?? false;
