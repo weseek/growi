@@ -4,6 +4,7 @@ import React, {
 } from 'react';
 
 import { LoadingSpinner } from '@growi/ui/dist/components';
+import { useAtomValue } from 'jotai';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 
@@ -12,9 +13,7 @@ import { toastSuccess } from '~/client/util/toastr';
 import type { IFormattedSearchResult, IPageWithSearchMeta } from '~/interfaces/search';
 import type { OnDeletedFunction } from '~/interfaces/ui';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
-import {
-  useIsSearchServiceConfigured, useIsSearchServiceReachable,
-} from '~/states/server-configurations';
+import { isSearchServiceConfiguredAtom, isSearchServiceReachableAtom } from '~/states/server-configurations';
 import { usePageDeleteModal } from '~/stores/modal';
 import { mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 
@@ -66,10 +65,10 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
 
   const searchResultListRef = useRef<ISelectableAll|null>(null);
 
-  const [isGuestUser] = useIsGuestUser();
-  const [isReadOnlyUser] = useIsReadOnlyUser();
-  const [isSearchServiceConfigured] = useIsSearchServiceConfigured();
-  const [isSearchServiceReachable] = useIsSearchServiceReachable();
+  const isGuestUser = useIsGuestUser();
+  const isReadOnlyUser = useIsReadOnlyUser();
+  const isSearchServiceConfigured = useAtomValue(isSearchServiceConfiguredAtom);
+  const isSearchServiceReachable = useAtomValue(isSearchServiceReachableAtom);
 
   const [selectedPageIdsByCheckboxes] = useState<Set<string>>(new Set());
   // const [allPageIds] = useState<Set<string>>(new Set());

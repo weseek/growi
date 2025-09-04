@@ -16,12 +16,12 @@ export const PageStatusAlert = (): JSX.Element => {
   const { t } = useTranslation();
 
   const { editorMode } = useEditorMode();
-  const [isGuestUser] = useIsGuestUser();
-  const [isReadOnlyUser] = useIsReadOnlyUser();
+  const isGuestUser = useIsGuestUser();
+  const isReadOnlyUser = useIsReadOnlyUser();
   const { data: pageStatusAlertData } = usePageStatusAlert();
-  const [remoteRevisionId] = useRemoteRevisionId();
+  const remoteRevisionId = useRemoteRevisionId();
   const { data: remoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
-  const [pageData] = useCurrentPageData();
+  const pageData = useCurrentPageData();
 
   const onClickRefreshPage = useCallback(() => {
     pageStatusAlertData?.onRefleshPage?.();

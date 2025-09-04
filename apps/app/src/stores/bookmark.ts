@@ -28,7 +28,7 @@ export const useSWRxUserBookmarks = (userId: string | null): SWRResponse<(IPageH
 };
 
 export const useSWRMUTxCurrentUserBookmarks = (): SWRMutationResponse<(IPageHasId | null)[], Error> => {
-  const [currentUser] = useCurrentUser();
+  const currentUser = useCurrentUser();
 
   return useSWRMutation(
     currentUser != null ? `/bookmarks/${currentUser?._id}` : null,

@@ -14,8 +14,8 @@ export const GrowiNavbarBottom = (): JSX.Element => {
 
   const [isDrawerOpened, setIsDrawerOpened] = useDrawerOpened();
   const { open: openCreateModal } = usePageCreateModal();
-  const [currentPagePath] = useCurrentPagePath();
-  const [isSearchPage] = useIsSearchPage();
+  const currentPagePath = useCurrentPagePath();
+  const isSearchPage = useIsSearchPage();
   const { open: openSearchModal } = useSearchModal();
 
   const searchButtonClickHandler = useCallback(() => {

@@ -4,6 +4,7 @@ import React, {
 
 import { isIPageInfoForEntity } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
+import { useAtomValue } from 'jotai';
 import { useTranslation } from 'next-i18next';
 import {
   Collapse, Modal, ModalHeader, ModalBody, ModalFooter,
@@ -13,7 +14,7 @@ import { debounce } from 'throttle-debounce';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 import { useSiteUrl } from '~/states/global';
-import { useIsSearchServiceReachable } from '~/states/server-configurations';
+import { isSearchServiceReachableAtom } from '~/states/server-configurations';
 import { usePageRenameModal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';
 
@@ -30,9 +31,9 @@ const PageRenameModal = (): JSX.Element => {
   const { t } = useTranslation();
 
   const { isUsersHomepage } = pagePathUtils;
-  const [siteUrl] = useSiteUrl();
+  const siteUrl = useSiteUrl();
   const { data: renameModalData, close: closeRenameModal } = usePageRenameModal();
-  const [isReachable] = useIsSearchServiceReachable();
+  const isReachable = useAtomValue(isSearchServiceReachableAtom);
 
   const isOpened = renameModalData?.isOpened ?? false;
   const page = renameModalData?.page;

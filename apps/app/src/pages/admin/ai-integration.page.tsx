@@ -3,7 +3,7 @@ import type { GetServerSideProps } from 'next';
 import dynamic from 'next/dynamic';
 
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import { aiEnabledAtom } from '~/states/server-configurations/server-configurations';
+import { aiEnabledAtom } from '~/states/server-configurations';
 
 import type { NextPageWithLayout } from '../_app.page';
 import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
