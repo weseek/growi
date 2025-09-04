@@ -1,3 +1,5 @@
+import util from 'util';
+
 import type { IUserHasId } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler } from 'express';
@@ -32,16 +34,55 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = () => {
   return [...validator, apiV3FormValidator, async(req: Req, res: ApiV3Response) => {
     const { userMessage } = req.body;
 
-    const agent = mastra.getAgent('chatAgent');
+    // const agent = mastra.getAgent('fileSearchAgent');
+
+    const workflow = mastra.getWorkflow('fileSearchWorkflow');
+    const run = workflow.createRun();
 
     try {
-      const result = await agent.generateVNext(userMessage);
-      return res.apiv3({ output: result.text });
+
+      const stream = run.streamVNext({ inputData: { prompt: userMessage } });
+
+      for await (const chunk of stream) {
+        if (chunk?.payload?.output?.type === 'pre-message-event' || chunk?.payload?.output?.type === 'file-search-event') {
+          // console.log(chunk?.payload?.output?.text);
+          const text = chunk?.payload?.output?.text;
+          // console._stdout.write(text);
+          console.log('text:', text);
+        }
+      }
+
+
+      // console.dir(result, { depth: null });
+
+
+      // const stream = await agent.streamVNext(userMessage);
+
+      // for await (const chunk of stream.fullStream) {
+      //   if (chunk?.payload?.output?.type === 'file-search-event') {
+      //     console.log(chunk.payload.output.text)
+      //   }
+      // }
+
+      // for await (const chunk of stream) {
+      //    console.log(chunk);
+      // }
+
+      // let fullText = '';
+      // for await (const chunk of stream) {
+      //   console.log(chunk);
+      //   fullText += chunk;
+      // }
+
+      // console.log('fullText:', fullText);
+      return res.apiv3({});
     }
 
     catch (error) {
       logger.error(error);
-      return res.apiv3Err(new ErrorV3('Failed to post message'));
+      if (!res.headersSent) {
+        return res.apiv3Err(new ErrorV3('Failed to post message'));
+      }
     }
   },
   ];
