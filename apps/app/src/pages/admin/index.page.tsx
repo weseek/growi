@@ -3,10 +3,7 @@ import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import dynamic from 'next/dynamic';
 
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import {
-  growiCloudUriAtom,
-  growiAppIdForGrowiCloudAtom,
-} from '~/states/global';
+import { _atomsForAdminPagesHydration as atoms } from '~/states/global';
 
 import type { NextPageWithLayout } from '../_app.page';
 import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
@@ -26,8 +23,8 @@ type Props = AdminCommonProps & ExtraProps;
 const AdminHomepage: NextPageWithLayout<Props> = ({ growiCloudUri, growiAppIdForGrowiCloud }) => {
   // Hydrate atoms with fragment values (idempotent if already set by common props)
   useHydrateAtoms([
-    [growiCloudUriAtom, growiCloudUri],
-    [growiAppIdForGrowiCloudAtom, growiAppIdForGrowiCloud],
+    [atoms.growiCloudUriAtom, growiCloudUri],
+    [atoms.growiAppIdForGrowiCloudAtom, growiAppIdForGrowiCloud],
   ], { dangerouslyForceHydrate: true });
 
   return <AdminHome />;

@@ -3,7 +3,7 @@ import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import dynamic from 'next/dynamic';
 
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import { siteUrlWithEmptyValueWarnAtom } from '~/states/global';
+import { _atomsForAdminPagesHydration as atoms } from '~/states/global';
 import { isMailerSetupAtom } from '~/states/server-configurations';
 
 import type { NextPageWithLayout } from '../_app.page';
@@ -24,7 +24,7 @@ const AdminSecuritySettingsPage: NextPageWithLayout<Props> = (props: Props) => {
   // hydrate
   useHydrateAtoms([
     [isMailerSetupAtom, props.isMailerSetup],
-    [siteUrlWithEmptyValueWarnAtom, props.siteUrlWithEmptyValueWarn],
+    [atoms.siteUrlWithEmptyValueWarnAtom, props.siteUrlWithEmptyValueWarn],
   ], { dangerouslyForceHydrate: true });
 
   return <SecurityManagement />;

@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 
 import type { SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import { activityExpirationSecondsAtom, auditLogAvailableActionsAtom, auditLogEnabledAtom } from '~/states/global';
+import { activityExpirationSecondsAtom, auditLogAvailableActionsAtom, auditLogEnabledAtom } from '~/states/server-configurations';
 
 import type { NextPageWithLayout } from '../_app.page';
 import { mergeGetServerSidePropsResults } from '../utils/server-side-props';

@@ -1,6 +1,5 @@
 import type { ColorScheme, IUserHasId } from '@growi/core';
 import { atom, useAtomValue } from 'jotai';
-import type { SupportedActionType } from '~/interfaces/activity';
 
 /**
  * CSRF Token atom
@@ -108,25 +107,6 @@ const isDefaultLogoAtom = atom<boolean>(true);
 export const useIsDefaultLogo = () => useAtomValue(isDefaultLogoAtom);
 
 /**
- * Customize Title
- */
-const customizeTitleAtom = atom<string | undefined>(undefined);
-/**
- * Customize Title atom setter
- */
-export const useCustomizeTitle = () => useAtomValue(customizeTitleAtom);
-
-/**
- * Is Customized Logo Uploaded
- */
-const isCustomizedLogoUploadedAtom = atom<boolean>(false);
-/**
- * Is Customized Logo Uploaded atom setter
- */
-export const useIsCustomizedLogoUploaded = () =>
-  useAtomValue(isCustomizedLogoUploadedAtom);
-
-/**
  * GROWI Cloud URI atom
  */
 const growiCloudUriAtom = atom<string | undefined>(undefined);
@@ -158,35 +138,6 @@ const forcedColorSchemeAtom = atom<ColorScheme | undefined>(undefined);
  */
 export const useForcedColorScheme = () => useAtomValue(forcedColorSchemeAtom);
 
-/**
- * Audit Log Enabled atom
- */
-const auditLogEnabledAtom = atom<boolean>(false);
-/**
- * Audit Log Enabled atom setter
- */
-export const useAuditLogEnabled = () => useAtomValue(auditLogEnabledAtom);
-
-/**
- * Activity Expiration Seconds atom
- */
-const activityExpirationSecondsAtom = atom<number>(0);
-/**
- * Activity Expiration Seconds atom setter
- */
-export const useActivityExpirationSeconds = () =>
-  useAtomValue(activityExpirationSecondsAtom);
-
-/**
- * Audit Log Available Actions atom
- */
-const auditLogAvailableActionsAtom = atom<SupportedActionType[]>([]);
-/**
- * Audit Log Available Actions atom setter
- */
-export const useAuditLogAvailableActions = () =>
-  useAtomValue(auditLogAvailableActionsAtom);
-
 export const _atomsForHydration = {
   csrfTokenAtom,
   currentPathnameAtom,
@@ -199,12 +150,15 @@ export const _atomsForHydration = {
   growiVersionAtom,
   isMaintenanceModeAtom,
   isDefaultLogoAtom,
-  customizeTitleAtom,
-  isCustomizedLogoUploadedAtom,
   growiCloudUriAtom,
   growiAppIdForGrowiCloudAtom,
   forcedColorSchemeAtom,
-  auditLogEnabledAtom,
-  activityExpirationSecondsAtom,
-  auditLogAvailableActionsAtom,
+};
+
+export const _atomsForAdminPagesHydration = {
+  siteUrlWithEmptyValueWarnAtom,
+  customTitleTemplateAtom,
+  isDefaultLogoAtom,
+  growiCloudUriAtom,
+  growiAppIdForGrowiCloudAtom,
 };

@@ -2,7 +2,7 @@ import { useHydrateAtoms } from 'jotai/utils';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import dynamic from 'next/dynamic';
 
-import { siteUrlWithEmptyValueWarnAtom } from '~/states/global';
+import { _atomsForAdminPagesHydration as atoms } from '~/states/global';
 
 import type { NextPageWithLayout } from '../_app.page';
 
@@ -16,7 +16,7 @@ type Props = AdminCommonProps;
 const AdminSlackIntegrationPage: NextPageWithLayout<Props> = (props: Props) => {
   // hydrate global state
   useHydrateAtoms([
-    [siteUrlWithEmptyValueWarnAtom, props.siteUrlWithEmptyValueWarn],
+    [atoms.siteUrlWithEmptyValueWarnAtom, props.siteUrlWithEmptyValueWarn],
   ], { dangerouslyForceHydrate: true });
 
   return <SlackIntegration />;

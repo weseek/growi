@@ -1,16 +1,10 @@
-import { useEffect } from 'react';
-
 import { useHydrateAtoms } from 'jotai/utils';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import dynamic from 'next/dynamic';
 
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import {
-  customizeTitleAtom,
-  isCustomizedLogoUploadedAtom,
-  useCustomizeTitle,
-  useIsCustomizedLogoUploaded,
-} from '~/states/global';
+import { _atomsForAdminPagesHydration as atoms } from '~/states/global';
+import { isCustomizedLogoUploadedAtom } from '~/states/server-configurations';
 
 import type { NextPageWithLayout } from '../_app.page';
 import { mergeGetServerSidePropsResults } from '../utils/server-side-props';
@@ -21,24 +15,20 @@ import { createAdminPageLayout, getServerSideAdminCommonProps } from './_shared'
 const CustomizeSettingContents = dynamic(() => import('~/client/components/Admin/Customize/Customize'), { ssr: false });
 
 type PageProps = {
-  customizeTitle?: string,
+  isDefaultBrandLogoUsed: boolean,
   isCustomizedLogoUploaded: boolean,
+  customTitleTemplate?: string,
 };
 
 type Props = AdminCommonProps & PageProps;
 
 // eslint-disable-next-line react/prop-types
-const AdminCustomizeSettingsPage: NextPageWithLayout<Props> = ({ customizeTitle, isCustomizedLogoUploaded }) => {
+const AdminCustomizeSettingsPage: NextPageWithLayout<Props> = (props: Props) => {
   useHydrateAtoms([
-    [customizeTitleAtom, customizeTitle],
-    [isCustomizedLogoUploadedAtom, isCustomizedLogoUploaded],
+    [atoms.isDefaultLogoAtom, props.isDefaultBrandLogoUsed],
+    [atoms.customTitleTemplateAtom, props.customTitleTemplate],
+    [isCustomizedLogoUploadedAtom, props.isCustomizedLogoUploaded],
   ], { dangerouslyForceHydrate: true });
-
-  const [, setCustomizeTitle] = useCustomizeTitle();
-  const [, setIsCustomizedLogoUploaded] = useIsCustomizedLogoUploaded();
-
-  useEffect(() => { setCustomizeTitle(customizeTitle) }, [customizeTitle, setCustomizeTitle]);
-  useEffect(() => { setIsCustomizedLogoUploaded(isCustomizedLogoUploaded) }, [isCustomizedLogoUploaded, setIsCustomizedLogoUploaded]);
 
   return <CustomizeSettingContents />;
 };
@@ -61,8 +51,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async(context: GetS
 
   const customizePropsFragment = {
     props: {
-      customizeTitle: crowi.configManager.getConfig('customize:title'),
+      isDefaultBrandLogoUsed: await crowi.attachmentService.isDefaultBrandLogoUsed(),
       isCustomizedLogoUploaded: await crowi.attachmentService.isBrandLogoExist(),
+      customTitleTemplate: crowi.configManager.getConfig('customize:title'),
     },
   } satisfies { props: PageProps };
 

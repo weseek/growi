@@ -1,4 +1,5 @@
 import { atom, useAtomValue } from 'jotai';
+import type { SupportedActionType } from '~/interfaces/activity';
 
 import type { RendererConfig } from '~/interfaces/services/renderer';
 
@@ -66,6 +67,11 @@ export const showPageLimitationXLAtom = atom<number>(20);
  * Atom for show page side authors
  */
 export const showPageSideAuthorsAtom = atom<boolean>(false);
+
+/**
+ * Atom for whether Customized Logo Uploaded
+ */
+export const isCustomizedLogoUploadedAtom = atom<boolean>(false);
 
 /**
  * Atom for container fluid
@@ -141,6 +147,21 @@ export const isPdfBulkExportEnabledAtom = atom<boolean>(false);
  * Atom for local account registration enabled
  */
 export const isLocalAccountRegistrationEnabledAtom = atom<boolean>(false);
+
+/**
+ * Audit Log Enabled atom
+ */
+export const auditLogEnabledAtom = atom<boolean>(false);
+
+/**
+ * Activity Expiration Seconds atom
+ */
+export const activityExpirationSecondsAtom = atom<number>(0);
+
+/**
+ * Audit Log Available Actions atom
+ */
+export const auditLogAvailableActionsAtom = atom<SupportedActionType[]>([]);
 
 /**
  * Atom for renderer config
