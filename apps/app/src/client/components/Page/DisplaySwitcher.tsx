@@ -18,8 +18,8 @@ const PageEditorReadOnly = dynamic(() => import('../PageEditor/PageEditorReadOnl
 export const DisplaySwitcher = (): JSX.Element => {
 
   const { editorMode } = useEditorMode();
-  const [isEditable] = useIsEditable();
-  const [isLatestRevision] = useLatestRevision();
+  const isEditable = useIsEditable();
+  const isLatestRevision = useLatestRevision();
 
   useHashChangedEffect();
   useReservedNextCaretLine();

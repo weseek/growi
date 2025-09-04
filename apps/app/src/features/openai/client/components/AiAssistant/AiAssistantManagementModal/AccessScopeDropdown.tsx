@@ -25,7 +25,7 @@ export const AccessScopeDropdown: React.FC<Props> = (props: Props) => {
   } = props;
 
   const { t } = useTranslation();
-  const [currentUser] = useCurrentUser();
+  const currentUser = useCurrentUser();
 
   const getAccessScopeLabel = useCallback((accessScope: AiAssistantAccessScope) => {
     const baseLabel = `modal_ai_assistant.access_scope.${accessScope}`;

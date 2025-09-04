@@ -11,7 +11,7 @@ import { useEditorMode, determineEditorModeByHash } from '~/states/ui/editor';
 export const useHashChangedEffect = (): void => {
   const router = useRouter();
 
-  const [isEditable] = useIsEditable();
+  const isEditable = useIsEditable();
   const { editorMode, setEditorMode } = useEditorMode();
 
   const hashchangeHandler = useCallback(() => {

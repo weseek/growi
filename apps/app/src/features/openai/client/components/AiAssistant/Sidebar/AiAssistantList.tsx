@@ -145,7 +145,7 @@ export const AiAssistantList: React.FC<AiAssistantListProps> = ({
 }) => {
   const { t } = useTranslation();
   const { openChat } = useAiAssistantSidebar();
-  const [currentUser] = useCurrentUser();
+  const currentUser = useCurrentUser();
   const { open: openAiAssistantManagementModal } = useAiAssistantManagementModal();
 
   const [isCollapsed, setIsCollapsed] = useState(false);

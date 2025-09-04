@@ -66,7 +66,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
 
   const { t } = useTranslation('commons');
 
-  const [isNotFound] = usePageNotFound();
+  const isNotFound = usePageNotFound();
   const { setEditorMode } = useEditorMode();
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
   const { data: currentPageYjsData } = useCurrentPageYjsData();
