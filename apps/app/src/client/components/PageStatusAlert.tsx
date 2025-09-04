@@ -3,10 +3,9 @@ import React, { useCallback, type JSX } from 'react';
 import { useTranslation } from 'next-i18next';
 
 import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
-import { useCurrentPageData, useRemoteRevisionId } from '~/states/page';
+import { useCurrentPageData, useRemoteRevisionId, useRemoteRevisionLastUpdateUser } from '~/states/page';
 import { useEditorMode } from '~/states/ui/editor';
 import { usePageStatusAlert } from '~/stores/alert';
-import { useRemoteRevisionLastUpdateUser } from '~/stores/remote-latest-page';
 
 import { Username } from '../../components/User/Username';
 
@@ -20,7 +19,7 @@ export const PageStatusAlert = (): JSX.Element => {
   const isReadOnlyUser = useIsReadOnlyUser();
   const { data: pageStatusAlertData } = usePageStatusAlert();
   const remoteRevisionId = useRemoteRevisionId();
-  const { data: remoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
+  const remoteRevisionLastUpdateUser = useRemoteRevisionLastUpdateUser();
   const pageData = useCurrentPageData();
 
   const onClickRefreshPage = useCallback(() => {

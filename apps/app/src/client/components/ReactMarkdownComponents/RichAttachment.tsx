@@ -23,9 +23,9 @@ export const RichAttachment = React.memo((props: RichAttachmentProps) => {
   const { data: attachment, remove } = useSWRxAttachment(attachmentId);
   const { open: openDeleteAttachmentModal } = useDeleteAttachmentModal();
 
-  const [isGuestUser] = useIsGuestUser();
-  const [isSharedUser] = useIsSharedUser();
-  const [isReadOnlyUser] = useIsReadOnlyUser();
+  const isGuestUser = useIsGuestUser();
+  const isSharedUser = useIsSharedUser();
+  const isReadOnlyUser = useIsReadOnlyUser();
 
   const showTrashButton = isGuestUser === false && isSharedUser === false && isReadOnlyUser === false;
 

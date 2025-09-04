@@ -25,11 +25,11 @@ type TableWithEditButtonProps = {
 const TableWithEditButtonNoMemorized = (props: TableWithEditButtonProps): JSX.Element => {
   const { children, node, className } = props;
 
-  const [isGuestUser] = useIsGuestUser();
-  const [isReadOnlyUser] = useIsReadOnlyUser();
-  const [isSharedUser] = useIsSharedUser();
-  const [shareLinkId] = useShareLinkId();
-  const [isRevisionOutdated] = useIsRevisionOutdated();
+  const isGuestUser = useIsGuestUser();
+  const isReadOnlyUser = useIsReadOnlyUser();
+  const isSharedUser = useIsSharedUser();
+  const shareLinkId = useShareLinkId();
+  const isRevisionOutdated = useIsRevisionOutdated();
   const { data: currentPageYjsData } = useCurrentPageYjsData();
 
   const bol = node.position?.start.line;

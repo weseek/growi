@@ -19,9 +19,9 @@ type Props = {
 export const PageEditorReadOnly = react.memo(({ visibility }: Props): JSX.Element => {
   const previewRef = useRef<HTMLDivElement>(null);
 
-  const [currentPage] = useCurrentPageData();
+  const currentPage = useCurrentPageData();
   const { data: rendererOptions } = usePreviewOptions();
-  const [isLatestRevision] = useLatestRevision();
+  const isLatestRevision = useLatestRevision();
   const shouldExpandContent = useShouldExpandContent(currentPage);
 
   const { scrollEditorHandler, scrollPreviewHandler } = useScrollSync(GlobalCodeMirrorEditorKey.READONLY, previewRef);

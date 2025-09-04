@@ -125,7 +125,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
   const { data: rendererOptions } = useSearchResultOptions(pageWithMeta.data.path, highlightKeywords);
-  const [currentUser] = useCurrentUser();
+  const currentUser = useCurrentUser();
 
   const shouldExpandContent = useShouldExpandContent(page);
 
