@@ -124,7 +124,7 @@ const G2GDataTransfer = (): JSX.Element => {
     }
   }, [setTransferring, startTransferKey, selectedCollections, optionsMap]);
 
-  const [documentationUrl] = useGrowiDocumentationUrl();
+  const documentationUrl = useGrowiDocumentationUrl();
 
   // File upload
   // const onChangeFileUploadTypeHandler = useCallback((e: ChangeEvent, type: string) => {

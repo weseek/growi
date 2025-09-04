@@ -7,7 +7,7 @@ import { useGrowiDocumentationUrl } from '~/states/context';
 
 export const AiIntegrationDisableMode: FC = () => {
   const { t } = useTranslation('admin');
-  const [documentationUrl] = useGrowiDocumentationUrl();
+  const documentationUrl = useGrowiDocumentationUrl();
 
   return (
     <div className="ccontainer-lg">

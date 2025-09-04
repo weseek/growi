@@ -16,8 +16,8 @@ type PageHistoryProps = {
 export const PageHistory: React.FC<PageHistoryProps> = (props: PageHistoryProps) => {
   const { onClose } = props;
 
-  const [currentPageId] = useCurrentPageId();
-  const [currentPagePath] = useCurrentPagePath();
+  const currentPageId = useCurrentPageId();
+  const currentPagePath = useCurrentPagePath();
 
   const comparingRevisions = useAutoComparingRevisionsByQueryParam();
 

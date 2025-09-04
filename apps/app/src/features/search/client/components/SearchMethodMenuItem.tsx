@@ -19,7 +19,7 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
 
   const { t } = useTranslation('commons');
 
-  const [currentPagePath] = useCurrentPagePath();
+  const currentPagePath = useCurrentPagePath();
 
   const dPagePath = new DevidedPagePath(currentPagePath ?? '', true, true);
   const currentPageName = `

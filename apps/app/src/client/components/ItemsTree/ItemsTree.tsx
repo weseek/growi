@@ -55,7 +55,7 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   const router = useRouter();
 
   const { data: rootPageResult, error } = useSWRxRootPage({ suspense: true });
-  const [currentPagePath] = useCurrentPagePath();
+  const currentPagePath = useCurrentPagePath();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openDeleteModal } = usePageDeleteModal();
 

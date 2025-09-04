@@ -248,7 +248,7 @@ LocalSecuritySettingContents.propTypes = {
 
 const LocalSecuritySettingContentsWrapperFC = (props) => {
   const { t } = useTranslation('admin');
-  const [isMailerSetup] = useIsMailerSetup();
+  const isMailerSetup = useIsMailerSetup();
   return <LocalSecuritySettingContents t={t} {...props} isMailerSetup={isMailerSetup ?? false} />;
 };
 

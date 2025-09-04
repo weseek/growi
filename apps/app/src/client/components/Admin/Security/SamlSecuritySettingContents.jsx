@@ -11,9 +11,9 @@ import urljoin from 'url-join';
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityContainer';
 import { toastSuccess, toastError } from '~/client/util/toastr';
+import { useSiteUrlWithEmptyValueWarn } from '~/states/global';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { useSiteUrlWithEmptyValueWarn } from '~/states/global';
 
 
 class SamlSecurityManagementContents extends React.Component {
@@ -551,7 +551,7 @@ SamlSecurityManagementContents.propTypes = {
 
 const SamlSecurityManagementContentsWrapperFC = (props) => {
   const { t } = useTranslation('admin');
-  const [siteUrl] = useSiteUrlWithEmptyValueWarn();
+  const siteUrl = useSiteUrlWithEmptyValueWarn();
   return <SamlSecurityManagementContents t={t} siteUrl={siteUrl} {...props} />;
 };
 

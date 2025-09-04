@@ -8,7 +8,7 @@ import { usePageCreateModal } from '~/stores/modal';
 const CreatePage = React.memo((props) => {
 
   const { open: openCreateModal } = usePageCreateModal();
-  const [currentPath] = useCurrentPagePath();
+  const currentPath = useCurrentPagePath();
 
   // setup effect
   useEffect(() => {

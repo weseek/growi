@@ -476,7 +476,7 @@ OidcSecurityManagementContents.propTypes = {
 
 const OidcSecurityManagementContentsWrapperFC = (props) => {
   const { t } = useTranslation('admin');
-  const [siteUrl] = useSiteUrlWithEmptyValueWarn();
+  const siteUrl = useSiteUrlWithEmptyValueWarn();
   return <OidcSecurityManagementContents t={t} {...props} siteUrl={siteUrl} />;
 };
 

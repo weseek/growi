@@ -15,7 +15,7 @@ type FormatterData = {
 }
 
 export const useFormatter = (): FormatterData => {
-  const [currentPagePath] = useCurrentPagePath();
+  const currentPagePath = useCurrentPagePath();
 
   const format: FormatMethod = (markdown) => {
     if (markdown == null) {

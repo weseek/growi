@@ -286,7 +286,7 @@ const TestProcess = ({
 
 const WithProxyAccordions = (props) => {
   const { t } = useTranslation();
-  const [siteUrl] = useSiteUrlWithEmptyValueWarn();
+  const siteUrl = useSiteUrlWithEmptyValueWarn();
   const [isLatestConnectionSuccess, setIsLatestConnectionSuccess] = useState(false);
 
   const submitForm = () => {

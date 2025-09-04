@@ -200,7 +200,7 @@ class GoogleSecurityManagementContents extends React.Component {
 
 const GoogleSecurityManagementContentsFc = (props) => {
   const { t } = useTranslation('admin');
-  const [siteUrl] = useSiteUrlWithEmptyValueWarn();
+  const siteUrl = useSiteUrlWithEmptyValueWarn();
   return <GoogleSecurityManagementContents t={t} siteUrl={siteUrl} {...props} />;
 };
 

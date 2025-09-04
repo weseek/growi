@@ -34,8 +34,6 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
   // useHydratePageAtoms(undefined);
   // useCurrentPathname('/_search');
 
-  // const [, setSearchPage] = useIsSearchPage();
-
   // Hydrate server-side data
   useHydrateBasicLayoutConfigurationAtoms(props.searchConfig, props.sidebarConfig, props.userUISettings);
   useHydrateServerConfigurationAtoms(props.serverConfig, props.rendererConfig);

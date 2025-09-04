@@ -139,7 +139,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
 
   // Hooks
   const { t } = useTranslation();
-  const [currentPageId] = useCurrentPageId();
+  const currentPageId = useCurrentPageId();
   const { data: isEnableUnifiedMergeView, mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
   const yDocs = useSecondaryYdocs(isEnableUnifiedMergeView ?? false, { pageId: currentPageId ?? undefined, useSecondary: isEnableUnifiedMergeView ?? false });

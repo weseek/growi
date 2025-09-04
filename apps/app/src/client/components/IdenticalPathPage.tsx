@@ -50,7 +50,7 @@ const IdenticalPathAlert : FC<IdenticalPathAlertProps> = (props: IdenticalPathAl
 
 export const IdenticalPathPage = (): JSX.Element => {
 
-  const [currentPath] = useCurrentPathname();
+  const currentPath = useCurrentPathname();
 
   const { data: pages } = useSWRxPagesByPath(currentPath);
   const { injectTo } = useSWRxPageInfoForList(null, currentPath, true, true);

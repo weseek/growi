@@ -68,7 +68,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
   // Hooks
   const { t } = useTranslation();
-  const [growiCloudUri] = useGrowiCloudUri();
+  const growiCloudUri = useGrowiCloudUri();
 
   const {
     createThread: createThreadForKnowledgeAssistant,

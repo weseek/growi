@@ -15,7 +15,7 @@ const SystemVersion = (props: Props): JSX.Element => {
 
   const { open: openShortcutsModal } = useShortcutsModal();
 
-  const [growiVersion] = useGrowiVersion();
+  const growiVersion = useGrowiVersion();
   // add classes to cmd-key by OS
   const platform = window.navigator.platform.toLowerCase();
   const isMac = (platform.indexOf('mac') > -1);

@@ -106,7 +106,7 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
   const { data: selectedGrant } = useSelectedGrant();
   const [editingMarkdown] = useEditingMarkdown();
   const isEnabledAttachTitleHeader = useAtomValue(isEnabledAttachTitleHeaderAtom);
-  const [templateBody] = useTemplateBody();
+  const templateBody = useTemplateBody();
   const isEditable = useIsEditable();
   const { mutate: mutateWaitingSaveProcessing } = useWaitingSaveProcessing();
   const { editorMode, setEditorMode } = useEditorMode();

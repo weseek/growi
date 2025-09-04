@@ -10,7 +10,7 @@ import CustomCopyToClipBoard from './Common/CustomCopyToClipBoard';
 const DataTransferForm = (): JSX.Element => {
   const { t } = useTranslation('commons');
   const { transferKey, generateTransferKey } = useGenerateTransferKey();
-  const [documentationUrl] = useGrowiDocumentationUrl();
+  const documentationUrl = useGrowiDocumentationUrl();
 
   return (
     <div data-testid="installerForm" className="py-3 px-4">

@@ -10,9 +10,9 @@ import urljoin from 'url-join';
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminGitHubSecurityContainer from '~/client/services/AdminGitHubSecurityContainer';
 import { toastSuccess, toastError } from '~/client/util/toastr';
+import { useSiteUrlWithEmptyValueWarn } from '~/states/global';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { useSiteUrlWithEmptyValueWarn } from '~/states/global';
 
 class GitHubSecurityManagementContents extends React.Component {
 
@@ -194,7 +194,7 @@ class GitHubSecurityManagementContents extends React.Component {
 
 const GitHubSecurityManagementContentsFC = (props) => {
   const { t } = useTranslation('admin');
-  const [siteUrl] = useSiteUrlWithEmptyValueWarn();
+  const siteUrl = useSiteUrlWithEmptyValueWarn();
   return <GitHubSecurityManagementContents t={t} siteUrl={siteUrl} {...props} />;
 };
 

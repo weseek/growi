@@ -12,7 +12,7 @@ type UseCreateNewPage = () => {
 }
 
 export const useCreateNewPage: UseCreateNewPage = () => {
-  const [currentPagePath] = useCurrentPagePath();
+  const currentPagePath = useCurrentPagePath();
 
   const { isCreating, create } = useCreatePage();
 

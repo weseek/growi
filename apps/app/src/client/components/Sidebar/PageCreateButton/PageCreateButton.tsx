@@ -19,7 +19,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const { open: openPageCreateModal } = usePageCreateModal();
-  const [currentPagePath] = useCurrentPagePath();
+  const currentPagePath = useCurrentPagePath();
 
   const { createNewPage, isCreating: isNewPageCreating } = useCreateNewPage();
   // TODO: https://redmine.weseek.co.jp/issues/138806
