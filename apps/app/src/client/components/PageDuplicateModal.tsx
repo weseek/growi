@@ -2,6 +2,7 @@ import React, {
   useState, useEffect, useCallback, useMemo, type JSX,
 } from 'react';
 
+import { useAtomValue } from 'jotai';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -11,7 +12,7 @@ import { debounce } from 'throttle-debounce';
 import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 import { useSiteUrl } from '~/states/global';
-import { useIsSearchServiceReachable } from '~/states/server-configurations';
+import { isSearchServiceReachableAtom } from '~/states/server-configurations';
 import { usePageDuplicateModal } from '~/stores/modal';
 
 import DuplicatePathsTable from './DuplicatedPathsTable';
@@ -22,8 +23,8 @@ import PagePathAutoComplete from './PagePathAutoComplete';
 const PageDuplicateModal = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const [siteUrl] = useSiteUrl();
-  const [isReachable] = useIsSearchServiceReachable();
+  const siteUrl = useSiteUrl();
+  const isReachable = useAtomValue(isSearchServiceReachableAtom);
 
   const { data: duplicateModalData, close: closeDuplicateModal } = usePageDuplicateModal();
 

@@ -1,9 +1,8 @@
 import type { ReactNode, JSX } from 'react';
 import React from 'react';
 
-import type {
-  GetServerSideProps, GetServerSidePropsContext,
-} from 'next';
+import { useAtomValue } from 'jotai';
+import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
@@ -15,12 +14,9 @@ import { getServerSideCommonEachProps } from '~/pages/common-props';
 import { NextjsRoutingType, detectNextjsRoutingType } from '~/pages/utils/nextjs-routing-utils';
 import { useCustomTitleForPage } from '~/pages/utils/page-title-customization';
 import { mergeGetServerSidePropsResults } from '~/pages/utils/server-side-props';
-import {
-  useCurrentPageData, useCurrentPagePath,
-} from '~/states/page';
+import { useCurrentPageData, useCurrentPagePath } from '~/states/page';
 import { useHydratePageAtoms } from '~/states/page/hydrate';
-import { useDisableLinkSharing, useRendererConfig } from '~/states/server-configurations';
-import loggerFactory from '~/utils/logger';
+import { disableLinkSharingAtom, useRendererConfig } from '~/states/server-configurations';
 
 import type { NextPageWithLayout } from '../../_app.page';
 import type { GeneralPageInitialProps } from '../../general-page';
@@ -39,8 +35,6 @@ registerPageToShowRevisionWithMeta();
 const GrowiContextualSubNavigation = dynamic(() => import('~/client/components/Navbar/GrowiContextualSubNavigation'), { ssr: false });
 
 
-const logger = loggerFactory('growi:next-page:share');
-
 type InitialProps = CommonEachProps & GeneralPageInitialProps & ShareLinkInitialProps;
 type Props = CommonEachProps | InitialProps;
 
@@ -58,10 +52,10 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
     shareLinkId: shareLink?._id,
   });
 
-  const [currentPage] = useCurrentPageData();
-  const [currentPagePath] = useCurrentPagePath();
-  const [rendererConfig] = useRendererConfig();
-  const [isLinkSharingDisabled] = useDisableLinkSharing();
+  const currentPage = useCurrentPageData();
+  const currentPagePath = useCurrentPagePath();
+  const rendererConfig = useRendererConfig();
+  const isLinkSharingDisabled = useAtomValue(disableLinkSharingAtom);
 
   // Use custom hooks for navigation and routing
   // useSameRouteNavigation();

@@ -9,6 +9,7 @@ import { Origin } from '@growi/core';
 import { pagePathUtils, pathUtils } from '@growi/core/dist/utils';
 import { normalizePath } from '@growi/core/dist/utils/path-utils';
 import { format } from 'date-fns/format';
+import { useAtomValue } from 'jotai';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
@@ -19,7 +20,7 @@ import { useCreateTemplatePage } from '~/client/services/create-page';
 import { useCreatePage } from '~/client/services/create-page/use-create-page';
 import { useToastrOnError } from '~/client/services/use-toastr-on-error';
 import { useCurrentUser } from '~/states/global';
-import { useIsSearchServiceReachable } from '~/states/server-configurations';
+import { isSearchServiceReachableAtom } from '~/states/server-configurations';
 import { usePageCreateModal } from '~/stores/modal';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
@@ -33,7 +34,7 @@ const {
 const PageCreateModal: React.FC = () => {
   const { t } = useTranslation();
 
-  const [currentUser] = useCurrentUser();
+  const currentUser = useCurrentUser();
 
   const { data: pageCreateModalData, close: closeCreateModal } = usePageCreateModal();
 
@@ -42,7 +43,7 @@ const PageCreateModal: React.FC = () => {
   const { create } = useCreatePage();
   const { createTemplate } = useCreateTemplatePage();
 
-  const [isReachable] = useIsSearchServiceReachable();
+  const isReachable = useAtomValue(isSearchServiceReachableAtom);
   const pathname = pageCreateModalData?.path ?? '';
   const userHomepagePath = pagePathUtils.userHomepagePath(currentUser);
   const isCreatable = isCreatablePage(pathname) || isUsersHomepage(pathname);

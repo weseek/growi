@@ -30,7 +30,7 @@ const Preview = (props: Props): JSX.Element => {
     expandContentWidth,
   } = props;
 
-  const [{ isEnabledMarp }] = useRendererConfig();
+  const { isEnabledMarp } = useRendererConfig();
   const isSlide = useSlidesByFrontmatter(markdown, isEnabledMarp);
 
   const fluidLayoutClass = expandContentWidth ? 'fluid-layout' : '';

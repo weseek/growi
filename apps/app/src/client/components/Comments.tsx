@@ -37,8 +37,8 @@ export const Comments = (props: CommentsProps): JSX.Element => {
 
   const { mutate } = useSWRxPageComment(pageId);
   const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(pageId);
-  const [isDeleted] = useIsTrashPage();
-  const [currentUser] = useCurrentUser();
+  const isDeleted = useIsTrashPage();
+  const currentUser = useCurrentUser();
 
   const pageCommentParentRef = useRef<HTMLDivElement>(null);
 

@@ -38,10 +38,10 @@ const PagePresentationModal = (): JSX.Element => {
   const { isDarkMode } = useNextThemes();
   const fullscreen = useFullScreen();
 
-  const [currentPage] = useCurrentPageData();
+  const currentPage = useCurrentPageData();
   const { data: rendererOptions, isLoading } = usePresentationViewOptions();
 
-  const [{ isEnabledMarp }] = useRendererConfig();
+  const { isEnabledMarp } = useRendererConfig();
 
   const markdown = currentPage?.revision?.body;
 

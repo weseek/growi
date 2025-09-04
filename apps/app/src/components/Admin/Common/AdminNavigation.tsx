@@ -83,8 +83,8 @@ const MenuLink = ({
 export const AdminNavigation = (): JSX.Element => {
   const pathname = window.location.pathname;
 
-  const [growiCloudUri] = useGrowiCloudUri();
-  const [growiAppIdForGrowiCloud] = useGrowiAppIdForGrowiCloud();
+  const growiCloudUri = useGrowiCloudUri();
+  const growiAppIdForGrowiCloud = useGrowiAppIdForGrowiCloud();
 
   const isActiveMenu = useCallback((path: string | string[]) => {
     const paths = Array.isArray(path) ? path : [path];

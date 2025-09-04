@@ -10,6 +10,7 @@ import {
 } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { useRect } from '@growi/ui/dist/utils';
+import { useAtomValue } from 'jotai';
 import { useTranslation } from 'next-i18next';
 import { DropdownItem } from 'reactstrap';
 
@@ -20,7 +21,7 @@ import { toastError } from '~/client/util/toastr';
 import OpenDefaultAiAssistantButton from '~/features/openai/client/components/AiAssistant/OpenDefaultAiAssistantButton';
 import { useIsGuestUser, useIsReadOnlyUser, useIsSearchPage } from '~/states/context';
 import { useCurrentPagePath } from '~/states/page';
-import { useIsUsersHomepageDeletionEnabled } from '~/states/server-configurations';
+import { isUsersHomepageDeletionEnabledAtom } from '~/states/server-configurations';
 import {
   EditorMode, useEditorMode,
 } from '~/states/ui/editor';
@@ -132,13 +133,13 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     onClickEditTagsButton, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
   } = props;
 
-  const [isGuestUser] = useIsGuestUser();
-  const [isReadOnlyUser] = useIsReadOnlyUser();
+  const isGuestUser = useIsGuestUser();
+  const isReadOnlyUser = useIsReadOnlyUser();
   const { editorMode } = useEditorMode();
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
-  const [isSearchPage] = useIsSearchPage();
-  const [isUsersHomepageDeletionEnabled] = useIsUsersHomepageDeletionEnabled();
-  const [currentPagePath] = useCurrentPagePath();
+  const isSearchPage = useIsSearchPage();
+  const isUsersHomepageDeletionEnabled = useAtomValue(isUsersHomepageDeletionEnabledAtom);
+  const currentPagePath = useCurrentPagePath();
 
   const isUsersHomepage = currentPagePath == null ? false : pagePathUtils.isUsersHomepage(currentPagePath);
 
@@ -189,7 +190,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     mutatePageInfo();
   }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
 
-  const duplicateMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
+  const duplicateMenuItemClickHandler = useCallback(async(): Promise<void> => {
     if (onClickDuplicateMenuItem == null || path == null) {
       return;
     }
@@ -198,7 +199,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     onClickDuplicateMenuItem(page);
   }, [onClickDuplicateMenuItem, pageId, path]);
 
-  const renameMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
+  const renameMenuItemClickHandler = useCallback(async(): Promise<void> => {
     if (onClickRenameMenuItem == null || path == null) {
       return;
     }
@@ -215,7 +216,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     onClickRenameMenuItem(page);
   }, [onClickRenameMenuItem, pageId, pageInfo, path, revisionId]);
 
-  const deleteMenuItemClickHandler = useCallback(async(_pageId: string): Promise<void> => {
+  const deleteMenuItemClickHandler = useCallback(async(): Promise<void> => {
     if (onClickDeleteMenuItem == null || path == null) {
       return;
     }
@@ -270,7 +271,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     }
 
     return true;
-  }, [isGuestUser, isUsersHomepage, isUsersHomepageDeletionEnabled]);
+  }, [currentPagePath, isGuestUser, isUsersHomepage, isUsersHomepageDeletionEnabled]);
 
   const additionalMenuItemOnTopRenderer = useMemo(() => {
     if (!isIPageInfoForEntity(pageInfo)) {

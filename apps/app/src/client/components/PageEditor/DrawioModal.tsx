@@ -55,7 +55,7 @@ const drawioConfig: DrawioConfig = {
 
 
 export const DrawioModal = (): JSX.Element => {
-  const [{ drawioUri }] = useRendererConfig();
+  const { drawioUri } = useRendererConfig();
   const { data: personalSettingsInfo } = usePersonalSettings({
     // make immutable
     revalidateIfStale: false,
