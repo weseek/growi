@@ -10,11 +10,11 @@ import type { Save, SaveOptions } from '~/client/components/PageEditor/PageEdito
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/toastr';
 import { SocketEventName } from '~/interfaces/websocket';
-import { useCurrentPageData, useCurrentPageId } from '~/states/page';
+import type { RemoteRevisionData } from '~/states/page';
+import { useCurrentPageData, useCurrentPageId, useSetRemoteLatestPageData } from '~/states/page';
 import { EditorMode, useEditorMode } from '~/states/ui/editor';
 import { usePageStatusAlert } from '~/stores/alert';
 import { useConflictDiffModal } from '~/stores/modal';
-import { type RemoteRevisionData, useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 
 
 export type ConflictHandler = (
@@ -34,7 +34,7 @@ type GenerateResolveConflicthandler = () => (
 const useGenerateResolveConflictHandler: GenerateResolveConflicthandler = () => {
   const { t } = useTranslation();
 
-  const [pageId] = useCurrentPageId();
+  const pageId = useCurrentPageId();
   const { close: closePageStatusAlert } = usePageStatusAlert();
   const { close: closeConflictDiffModal } = useConflictDiffModal();
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
@@ -65,7 +65,7 @@ type ConflictResolver = () => ConflictHandler;
 export const useConflictResolver: ConflictResolver = () => {
   const { open: openPageStatusAlert } = usePageStatusAlert();
   const { open: openConflictDiffModal } = useConflictDiffModal();
-  const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
+  const setRemoteLatestPageData = useSetRemoteLatestPageData();
   const generateResolveConflictHandler = useGenerateResolveConflictHandler();
 
   return useCallback((remoteRevidsionData, requestMarkdown, save, saveOptions) => {
@@ -80,7 +80,7 @@ export const useConflictResolver: ConflictResolver = () => {
 };
 
 export const useConflictEffect = (): void => {
-  const [currentPage] = useCurrentPageData();
+  const currentPage = useCurrentPageData();
   const { close: closePageStatusAlert } = usePageStatusAlert();
   const { close: closeConflictDiffModal } = useConflictDiffModal();
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);

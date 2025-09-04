@@ -50,7 +50,7 @@ export const NextLink = (props: Props): JSX.Element => {
     id, href, children, className, onClick, ...rest
   } = props;
 
-  const [siteUrl] = useSiteUrl();
+  const siteUrl = useSiteUrl();
 
   if (href == null) {
     return <a className={className}>{children}</a>;
