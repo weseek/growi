@@ -27,15 +27,15 @@ export const TrashPageAlert = (): JSX.Element => {
   const router = useRouter();
 
   const { data: isAbleToShowTrashPageManagementButtons } = useIsAbleToShowTrashPageManagementButtons();
-  const [pageData] = useCurrentPageData();
-  const [isTrashPage] = useIsTrashPage();
+  const pageData = useCurrentPageData();
+  const isTrashPage = useIsTrashPage();
   const pageId = pageData?._id;
   const pagePath = pageData?.path;
   const { data: pageInfo } = useSWRxPageInfo(pageId ?? null);
 
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
-  const [currentPagePath] = useCurrentPagePath();
+  const currentPagePath = useCurrentPagePath();
 
   const { fetchCurrentPage } = useFetchCurrentPage();
 

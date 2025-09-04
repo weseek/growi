@@ -62,11 +62,11 @@ export const GrantSelector = (props: Props): JSX.Element => {
 
   const [isSelectGroupModalShown, setIsSelectGroupModalShown] = useState(false);
 
-  const [currentUser] = useCurrentUser();
+  const currentUser = useCurrentUser();
 
   const shouldFetch = isSelectGroupModalShown;
   const { data: selectedGrant, mutate: mutateSelectedGrant } = useSelectedGrant();
-  const [currentPageId] = useCurrentPageId();
+  const currentPageId = useCurrentPageId();
   const { data: grantData } = useSWRxCurrentGrantData(currentPageId);
 
   const currentPageGrantData = grantData?.grantData.currentPageGrant;
