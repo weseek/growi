@@ -9,7 +9,7 @@ import { BookmarkContents } from './Bookmarks/BookmarkContents';
 
 export const Bookmarks = () : JSX.Element => {
   const { t } = useTranslation();
-  const [isGuestUser] = useIsGuestUser();
+  const isGuestUser = useIsGuestUser();
 
   return (
     <div className="px-3">

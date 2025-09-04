@@ -42,9 +42,9 @@ const SecondaryItem: FC<SecondaryItemProps> = (props: SecondaryItemProps) => {
 
 export const SecondaryItems: FC = memo(() => {
 
-  const [isAdmin] = useIsAdmin();
-  const [growiCloudUri] = useGrowiCloudUri();
-  const [isGuestUser] = useIsGuestUser();
+  const isAdmin = useIsAdmin();
+  const growiCloudUri = useGrowiCloudUri();
+  const isGuestUser = useIsGuestUser();
 
   return (
     <div className={styles['grw-secondary-items']}>

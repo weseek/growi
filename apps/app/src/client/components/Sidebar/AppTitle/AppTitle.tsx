@@ -17,9 +17,9 @@ type Props = {
 
 const AppTitleSubstance = memo(({ className = '', hideAppTitle = false }: Props): JSX.Element => {
 
-  const [isDefaultLogo] = useIsDefaultLogo();
-  const [appTitle] = useAppTitle();
-  const [confidential] = useConfidential();
+  const isDefaultLogo = useIsDefaultLogo();
+  const appTitle = useAppTitle();
+  const confidential = useConfidential();
 
   return (
     <div className={`${styles['grw-app-title']} ${className} d-flex`}>
