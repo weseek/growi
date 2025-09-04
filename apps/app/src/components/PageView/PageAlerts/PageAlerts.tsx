@@ -17,7 +17,7 @@ const TrashPageAlert = dynamic(() => import('./TrashPageAlert').then(mod => mod.
 
 export const PageAlerts = (): JSX.Element => {
 
-  const [isNotFound] = usePageNotFound();
+  const isNotFound = usePageNotFound();
 
   return (
     <div className="row d-edit-none">

@@ -10,7 +10,7 @@ const AiAssistantContent = dynamic(() => import('./AiAssistantSubstance').then(m
 
 export const AiAssistant = (): JSX.Element => {
   const { t } = useTranslation();
-  const [isGuestUser] = useIsGuestUser();
+  const isGuestUser = useIsGuestUser();
 
   return (
     <div className="px-3">

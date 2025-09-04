@@ -29,8 +29,8 @@ const moduleClass = styles['grw-ai-assistant-management-page-tree-selection'] ??
 const SelectablePageTree = memo((props: { onClickAddPageButton: (page: SelectablePage) => void }) => {
   const { onClickAddPageButton } = props;
 
-  const [isGuestUser] = useIsGuestUser();
-  const [isReadOnlyUser] = useIsReadOnlyUser();
+  const isGuestUser = useIsGuestUser();
+  const isReadOnlyUser = useIsReadOnlyUser();
 
   const pageTreeItemClickHandler = useCallback((page: IPageForItem) => {
     if (!isSelectablePage(page)) {

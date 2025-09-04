@@ -18,8 +18,8 @@ export type SidebarNavProps = {
 export const SidebarNav = memo((props: SidebarNavProps) => {
   const { onPrimaryItemHover } = props;
 
-  const [isGuestUser] = useIsGuestUser();
-  const [isReadOnlyUser] = useIsReadOnlyUser();
+  const isGuestUser = useIsGuestUser();
+  const isReadOnlyUser = useIsReadOnlyUser();
 
   const renderedPageCreateButton = useMemo(() => {
     if (isGuestUser) {

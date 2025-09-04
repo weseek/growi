@@ -95,10 +95,10 @@ type PageTreeContentProps = {
 
 export const PageTreeContent = memo(({ isWipPageShown }: PageTreeContentProps) => {
 
-  const [isGuestUser] = useIsGuestUser();
-  const [isReadOnlyUser] = useIsReadOnlyUser();
-  const [currentPath] = useCurrentPagePath();
-  const [targetId] = useCurrentPageId();
+  const isGuestUser = useIsGuestUser();
+  const isReadOnlyUser = useIsReadOnlyUser();
+  const currentPath = useCurrentPagePath();
+  const targetId = useCurrentPageId();
 
   const { data: migrationStatus } = useSWRxV5MigrationStatus({ suspense: true });
 
