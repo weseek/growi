@@ -111,3 +111,8 @@ export const setRemoteRevisionDataAtom = atom(
     }
   },
 );
+
+/**
+ * Atom for redirect from path
+ */
+export const redirectFromAtom = atom<string | undefined>(undefined);

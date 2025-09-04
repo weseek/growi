@@ -12,6 +12,7 @@ import {
   latestRevisionAtom,
   pageNotCreatableAtom,
   pageNotFoundAtom,
+  redirectFromAtom,
   remoteRevisionBodyAtom,
   remoteRevisionIdAtom,
   remoteRevisionLastUpdatedAtAtom,
@@ -53,6 +54,8 @@ export const useRemoteRevisionLastUpdateUser = () =>
 
 export const useRemoteRevisionLastUpdatedAt = () =>
   useAtomValue(remoteRevisionLastUpdatedAtAtom);
+
+export const useRedirectFrom = () => useAtomValue(redirectFromAtom);
 
 // Enhanced computed hooks (pure Jotai - no SWR needed)
 

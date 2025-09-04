@@ -7,6 +7,7 @@ import {
   latestRevisionAtom,
   pageNotCreatableAtom,
   pageNotFoundAtom,
+  redirectFromAtom,
   remoteRevisionBodyAtom,
   remoteRevisionIdAtom,
   shareLinkIdAtom,
@@ -44,8 +45,9 @@ export const useHydratePageAtoms = (
     isNotCreatable?: boolean;
     isLatestRevision?: boolean;
     shareLinkId?: string;
-    templateTags?: string[];
-    templateBody?: string;
+    redirectFrom?: string; // always overwrited
+    templateTags?: string[]; // always overwrited
+    templateBody?: string; // always overwrited
   },
 ): void => {
   useHydrateAtoms([
@@ -59,12 +61,19 @@ export const useHydratePageAtoms = (
     // ShareLink page state
     [shareLinkIdAtom, options?.shareLinkId],
 
-    // Template data - from options (not auto-extracted from page)
-    [templateTagsAtom, options?.templateTags ?? []],
-    [templateBodyAtom, options?.templateBody ?? ''],
-
     // Remote revision data - auto-extracted from page.revision
     [remoteRevisionIdAtom, page?.revision?._id],
     [remoteRevisionBodyAtom, page?.revision?.body],
   ]);
+
+  // always overwrited
+  useHydrateAtoms(
+    [
+      [redirectFromAtom, options?.redirectFrom ?? undefined],
+      // Template data - from options (not auto-extracted from page)
+      [templateTagsAtom, options?.templateTags ?? []],
+      [templateBodyAtom, options?.templateBody ?? ''],
+    ],
+    { dangerouslyForceHydrate: true },
+  );
 };

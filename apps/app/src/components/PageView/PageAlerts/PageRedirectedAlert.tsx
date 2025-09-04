@@ -3,12 +3,12 @@ import React, { useState, useCallback, type JSX } from 'react';
 import { useTranslation } from 'next-i18next';
 
 import { useCurrentPagePath } from '~/states/page';
-import { useRedirectFrom } from '~/stores/page-redirect';
+import { useRedirectFrom } from '~/states/page/redirect';
 
 export const PageRedirectedAlert = React.memo((): JSX.Element => {
   const { t } = useTranslation();
   const currentPagePath = useCurrentPagePath();
-  const { data: redirectFrom } = useRedirectFrom();
+  const [redirectFrom] = useRedirectFrom();
 
   const [isUnlinked, setIsUnlinked] = useState(false);
 

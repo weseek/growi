@@ -18,7 +18,6 @@ import {
   useCurrentPageData, useCurrentPageId, useCurrentPagePath, usePageNotFound,
 } from '~/states/page';
 import { useHydratePageAtoms } from '~/states/page/hydrate';
-import { useRedirectFrom } from '~/states/page/redirect';
 import { useRendererConfig } from '~/states/server-configurations';
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/states/socket-io';
 import { useEditingMarkdown } from '~/states/ui/editor';
@@ -88,14 +87,15 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   // Initialize Jotai atoms with initial data - must be called unconditionally
   const pageData = isInitialProps(props) ? props.pageWithMeta?.data : undefined;
-  useHydratePageAtoms(pageData);
+  useHydratePageAtoms(pageData, {
+    redirectFrom: props.redirectFrom ?? undefined,
+  });
 
   const currentPage = useCurrentPageData();
   const pageId = useCurrentPageId();
   const currentPagePath = useCurrentPagePath();
   const isNotFound = usePageNotFound();
   const rendererConfig = useRendererConfig();
-  const [, setRedirectFrom] = useRedirectFrom();
   const [, setEditingMarkdown] = useEditingMarkdown();
 
   const { trigger: mutateCurrentPageYjsDataFromApi } = useSWRMUTxCurrentPageYjsData();
@@ -110,13 +110,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   // If initial props and skipSSR, fetch page data on client-side
   useInitialCSRFetch(isInitialProps(props) && props.skipSSR);
-
-  // Initialize redirectFrom atom values
-  useEffect(() => {
-    setRedirectFrom(props.redirectFrom ?? null);
-    // cleanup
-    return () => setRedirectFrom(null);
-  }, [props.redirectFrom, setRedirectFrom]);
 
   // Optimized effects with minimal dependencies
   useEffect(() => {
