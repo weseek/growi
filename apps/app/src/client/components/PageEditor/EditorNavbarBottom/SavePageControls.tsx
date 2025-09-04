@@ -7,6 +7,7 @@ import type EventEmitter from 'events';
 import { PageGrant } from '@growi/core';
 import { isTopPage, isUsersProtectedPages } from '@growi/core/dist/utils/page-path-utils';
 import { LoadingSpinner } from '@growi/ui/dist/components';
+import { useAtomValue } from 'jotai';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, Button,
@@ -16,8 +17,8 @@ import {
 import { useIsEditable } from '~/states/context';
 import { useCurrentPageData, useCurrentPagePath } from '~/states/page';
 import {
-  useIsAclEnabled,
-  useIsSlackConfigured,
+  isAclEnabledAtom,
+  isSlackConfiguredAtom,
 } from '~/states/server-configurations';
 import { useEditorMode } from '~/states/ui/editor';
 import { useWaitingSaveProcessing, useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
@@ -146,13 +147,13 @@ const SavePageButton = (props: {slackChannels: string, isSlackEnabled?: boolean,
 
 export const SavePageControls = (): JSX.Element | null => {
   const { t } = useTranslation('commons');
-  const [currentPage] = useCurrentPageData();
-  const [isEditable] = useIsEditable();
-  const [isAclEnabled] = useIsAclEnabled();
+  const currentPage = useCurrentPageData();
+  const isEditable = useIsEditable();
+  const isAclEnabled = useAtomValue(isAclEnabledAtom);
 
   const { editorMode } = useEditorMode();
-  const [currentPagePath] = useCurrentPagePath();
-  const [isSlackConfigured] = useIsSlackConfigured();
+  const currentPagePath = useCurrentPagePath();
+  const isSlackConfigured = useAtomValue(isSlackConfiguredAtom);
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();

@@ -1,11 +1,12 @@
 import { memo } from 'react';
 
+import { useAtomValue } from 'jotai';
 import dynamic from 'next/dynamic';
 
 import { SidebarContentsType } from '~/interfaces/ui';
 import { useIsGuestUser } from '~/states/context';
+import { aiEnabledAtom } from '~/states/server-configurations';
 import { useSidebarMode } from '~/states/ui/sidebar';
-import { useIsAiEnabled } from '~/states/server-configurations';
 
 import { PrimaryItem } from './PrimaryItem';
 
@@ -25,8 +26,8 @@ export const PrimaryItems = memo((props: Props) => {
   const { onItemHover } = props;
 
   const { sidebarMode } = useSidebarMode();
-  const [isAiEnabled] = useIsAiEnabled();
-  const [isGuestUser] = useIsGuestUser();
+  const isAiEnabled = useAtomValue(aiEnabledAtom);
+  const isGuestUser = useIsGuestUser();
 
   if (sidebarMode == null) {
     return <></>;

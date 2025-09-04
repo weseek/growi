@@ -1,8 +1,9 @@
 import type { JSX } from 'react';
 
+import { useAtomValue } from 'jotai';
 import dynamic from 'next/dynamic';
 
-import { useIsAiEnabled } from '~/states/server-configurations';
+import { aiEnabledAtom } from '~/states/server-configurations';
 import { useDrawerOpened } from '~/states/ui/sidebar';
 
 import { EditorAssistantToggleButton } from './EditorAssistantToggleButton';
@@ -16,7 +17,7 @@ const SavePageControls = dynamic(() => import('./SavePageControls').then(mod => 
 const OptionsSelector = dynamic(() => import('./OptionsSelector').then(mod => mod.OptionsSelector), { ssr: false });
 
 export const EditorNavbarBottom = (): JSX.Element => {
-  const [isAiEnabled] = useIsAiEnabled();
+  const isAiEnabled = useAtomValue(aiEnabledAtom);
   const [, setIsDrawerOpened] = useDrawerOpened();
 
   return (

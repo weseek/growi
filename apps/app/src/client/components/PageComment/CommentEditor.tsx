@@ -322,7 +322,7 @@ export const CommentEditorPre = (props: CommentEditorProps): JSX.Element => {
 
   const { onCommented, onCanceled, ...rest } = props;
 
-  const [currentUser] = useCurrentUser();
+  const currentUser = useCurrentUser();
   const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
   const { resolvedTheme } = useNextThemes();
   mutateResolvedTheme({ themeData: resolvedTheme });
