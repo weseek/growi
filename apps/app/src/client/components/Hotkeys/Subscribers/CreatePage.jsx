@@ -3,11 +3,11 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { useCurrentPagePath } from '~/states/page';
-import { usePageCreateModal } from '~/states/ui/modal/page-create';
+import { usePageCreateModalActions } from '~/states/ui/modal/page-create';
 
 const CreatePage = React.memo((props) => {
 
-  const { open: openCreateModal } = usePageCreateModal();
+  const { open: openCreateModal } = usePageCreateModalActions();
   const currentPath = useCurrentPagePath();
 
   // setup effect
