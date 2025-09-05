@@ -34,7 +34,7 @@ const logger = loggerFactory('growi:components:LinkEditModal');
 
 export const LinkEditModal = (): JSX.Element => {
   const { t } = useTranslation();
-  const [currentPath] = useCurrentPagePath();
+  const currentPath = useCurrentPagePath();
   const { data: rendererOptions } = usePreviewOptions();
   const { data: linkEditModalStatus, close } = useLinkEditModal();
 
