@@ -16,71 +16,6 @@ const logger = loggerFactory('growi:stores:modal');
 
 
 /*
- * PrivateLegacyPagesMigrationModal
- */
-
-export type ILegacyPrivatePage = { pageId: string, path: string };
-
-export type PrivateLegacyPagesMigrationModalSubmitedHandler = (pages: ILegacyPrivatePage[], isRecursively?: boolean) => void;
-
-type PrivateLegacyPagesMigrationModalStatus = {
-  isOpened: boolean,
-  pages?: ILegacyPrivatePage[],
-  onSubmited?: PrivateLegacyPagesMigrationModalSubmitedHandler,
-}
-
-type PrivateLegacyPagesMigrationModalStatusUtils = {
-  open(pages: ILegacyPrivatePage[], onSubmited?: PrivateLegacyPagesMigrationModalSubmitedHandler): Promise<PrivateLegacyPagesMigrationModalStatus | undefined>,
-  close(): Promise<PrivateLegacyPagesMigrationModalStatus | undefined>,
-}
-
-export const usePrivateLegacyPagesMigrationModal = (
-    status?: PrivateLegacyPagesMigrationModalStatus,
-): SWRResponse<PrivateLegacyPagesMigrationModalStatus, Error> & PrivateLegacyPagesMigrationModalStatusUtils => {
-  const initialData: PrivateLegacyPagesMigrationModalStatus = {
-    isOpened: false,
-    pages: [],
-  };
-  const swrResponse = useSWRStatic<PrivateLegacyPagesMigrationModalStatus, Error>('privateLegacyPagesMigrationModal', status, { fallbackData: initialData });
-
-  return {
-    ...swrResponse,
-    open: (pages, onSubmited?) => swrResponse.mutate({
-      isOpened: true, pages, onSubmited,
-    }),
-    close: () => swrResponse.mutate({ isOpened: false, pages: [], onSubmited: undefined }),
-  };
-};
-
-
-/*
-* DescendantsPageListModal
-*/
-type DescendantsPageListModalStatus = {
-  isOpened: boolean,
-  path?: string,
-}
-
-type DescendantsPageListUtils = {
-  open(path: string): Promise<DescendantsPageListModalStatus | undefined>
-  close(): Promise<DescendantsPageListModalStatus | undefined>
-}
-
-export const useDescendantsPageListModal = (
-    status?: DescendantsPageListModalStatus,
-): SWRResponse<DescendantsPageListModalStatus, Error> & DescendantsPageListUtils => {
-
-  const initialData: DescendantsPageListModalStatus = { isOpened: false };
-  const swrResponse = useSWRStatic<DescendantsPageListModalStatus, Error>('descendantsPageListModalStatus', status, { fallbackData: initialData });
-
-  return {
-    ...swrResponse,
-    open: (path: string) => swrResponse.mutate({ isOpened: true, path }),
-    close: () => swrResponse.mutate({ isOpened: false }),
-  };
-};
-
-/*
  * UpdateUserGroupConfirmModal
  */
 type UpdateUserGroupConfirmModalStatus = {
@@ -113,43 +48,6 @@ export const useUpdateUserGroupConfirmModal = (): SWRResponse<UpdateUserGroupCon
   };
 };
 
-
-/*
- * ConflictDiffModal
- */
-type ResolveConflictHandler = (newMarkdown: string) => Promise<void> | void;
-
-type ConflictDiffModalStatus = {
- isOpened: boolean,
- requestRevisionBody?: string,
- onResolve?: ResolveConflictHandler
-}
-
-type ConflictDiffModalUtils = {
- open(requestRevisionBody: string, onResolveConflict: ResolveConflictHandler): void,
- close(): void,
-}
-
-export const useConflictDiffModal = (): SWRResponse<ConflictDiffModalStatus, Error> & ConflictDiffModalUtils => {
-
-  const initialStatus: ConflictDiffModalStatus = { isOpened: false };
-  const swrResponse = useSWRStatic<ConflictDiffModalStatus, Error>('conflictDiffModal', undefined, { fallbackData: initialStatus });
-  const { mutate } = swrResponse;
-
-  const open = useCallback((requestRevisionBody: string, onResolve: ResolveConflictHandler) => {
-    mutate({ isOpened: true, requestRevisionBody, onResolve });
-  }, [mutate]);
-
-  const close = useCallback(() => {
-    mutate({ isOpened: false });
-  }, [mutate]);
-
-  return {
-    ...swrResponse,
-    open,
-    close,
-  };
-};
 
 /*
 * BookmarkFolderDeleteModal

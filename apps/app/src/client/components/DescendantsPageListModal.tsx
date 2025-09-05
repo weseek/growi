@@ -11,7 +11,7 @@ import {
 } from 'reactstrap';
 
 import { useIsSharedUser } from '~/states/context';
-import { useDescendantsPageListModal } from '~/stores/modal';
+import { useDescendantsPageListModalActions, useDescendantsPageListModalStatus } from '~/states/ui/modal/descendants-page-list';
 import { useIsDeviceLargerThanLg } from '~/stores/ui';
 
 import { CustomNavDropdown, CustomNavTab } from './CustomNavigation/CustomNav';
@@ -33,7 +33,8 @@ export const DescendantsPageListModal = (): JSX.Element => {
 
   const isSharedUser = useIsSharedUser();
 
-  const { data: status, close } = useDescendantsPageListModal();
+  const status = useDescendantsPageListModalStatus();
+  const { close } = useDescendantsPageListModalActions();
 
   const { events } = useRouter();
 

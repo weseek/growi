@@ -18,8 +18,8 @@ import type { IFormattedSearchResult } from '~/interfaces/search';
 import type { PageMigrationErrorData } from '~/interfaces/websocket';
 import { SocketEventName } from '~/interfaces/websocket';
 import { useIsAdmin } from '~/states/context';
-import type { ILegacyPrivatePage } from '~/stores/modal';
-import { usePrivateLegacyPagesMigrationModal } from '~/stores/modal';
+import type { ILegacyPrivatePage } from '~/states/ui/modal/private-legacy-pages-migration';
+import { usePrivateLegacyPagesMigrationModalActions } from '~/states/ui/modal/private-legacy-pages-migration';
 import { mutatePageTree, useSWRxV5MigrationStatus } from '~/stores/page-listing';
 import {
   useSWRxSearch,
@@ -221,7 +221,7 @@ const PrivateLegacyPages = (): JSX.Element => {
     setOffset(0);
   }, [mutateMigrationStatus]);
 
-  const { open: openModal, close: closeModal } = usePrivateLegacyPagesMigrationModal();
+  const { open: openModal, close: closeModal } = usePrivateLegacyPagesMigrationModalActions();
   const { data: socket } = useGlobalSocket();
 
   useEffect(() => {

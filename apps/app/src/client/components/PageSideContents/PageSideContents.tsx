@@ -14,8 +14,8 @@ import { scroller } from 'react-scroll';
 
 import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
 import { showPageSideAuthorsAtom } from '~/states/server-configurations';
+import { useDescendantsPageListModalActions } from '~/states/ui/modal/descendants-page-list';
 import { useTagEditModalActions } from '~/states/ui/modal/tag-edit';
-import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxPageInfo, useSWRxTagsInfo } from '~/stores/page';
 import { useIsAbleToShowTagLabel } from '~/stores/ui';
 
@@ -86,7 +86,7 @@ type PageSideContentsProps = {
 export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
   const { t } = useTranslation();
 
-  const { open: openDescendantPageListModal } = useDescendantsPageListModal();
+  const { open: openDescendantPageListModal } = useDescendantsPageListModalActions();
 
   const { page, isSharedUser } = props;
 

@@ -22,7 +22,7 @@ import {
   useRemoteRevisionLastUpdatedAt,
   useRemoteRevisionLastUpdateUser,
 } from '~/states/page';
-import { useConflictDiffModal } from '~/stores/modal';
+import { useConflictDiffModalActions, useConflictDiffModalStatus } from '~/states/ui/modal/conflict-diff';
 
 import styles from './ConflictDiffModal.module.scss';
 
@@ -50,7 +50,8 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
   const [isModalExpanded, setIsModalExpanded] = useState<boolean>(false);
 
   const { t } = useTranslation();
-  const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
+  const conflictDiffModalStatus = useConflictDiffModalStatus();
+  const { close: closeConflictDiffModal } = useConflictDiffModalActions();
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.DIFF);
 
   const selectRevisionHandler = useCallback((selectedRevision: string) => {
@@ -191,7 +192,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
 export const ConflictDiffModal = (): JSX.Element => {
   const currentUser = useCurrentUser();
   const currentPage = useCurrentPageData();
-  const { data: conflictDiffModalStatus } = useConflictDiffModal();
+  const conflictDiffModalStatus = useConflictDiffModalStatus();
 
   // state for latest page
   const remoteRevisionId = useRemoteRevisionId();
