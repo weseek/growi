@@ -635,6 +635,10 @@
       "thread_deleted_failed": "스레드 삭제 실패",
       "ai_assistant_set_default_success": "기본 어시스턴트 설정 성공",
       "ai_assistant_set_default_failed": "기본 어시스턴트 설정 실패"
+    },
+    "delete_modal": {
+      "title": "어시스턴트 삭제",
+      "confirm_message": "정말로 이 어시스턴트를 삭제하시겠습니까?"
     }
   },
   "link_edit": {
