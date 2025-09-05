@@ -4,7 +4,11 @@ import { useCallback } from 'react';
 import { useIsEditable } from '~/states/context';
 import { usePageNotFound } from '~/states/page';
 
-import { editingMarkdownAtom, editorModeAtom, selectedGrantAtom } from './atoms';
+import {
+  editingMarkdownAtom,
+  editorModeAtom,
+  selectedGrantAtom,
+} from './atoms';
 import { EditorMode, type UseEditorModeReturn } from './types';
 
 export const useEditorMode = (): UseEditorModeReturn => {
