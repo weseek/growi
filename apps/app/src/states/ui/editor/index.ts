@@ -1,7 +1,7 @@
 // Export only the essential public API
 
-export { editingMarkdownAtom } from './atoms';
-export { useEditingMarkdown, useEditorMode } from './hooks';
+export { editingMarkdownAtom, selectedGrantAtom } from './atoms';
+export { useEditingMarkdown, useEditorMode, useSelectedGrant } from './hooks';
 export type { EditorMode as EditorModeType } from './types';
 export { EditorMode } from './types';
 

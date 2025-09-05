@@ -20,9 +20,9 @@ import {
   isAclEnabledAtom,
   isSlackConfiguredAtom,
 } from '~/states/server-configurations';
-import { useEditorMode } from '~/states/ui/editor';
+import { useEditorMode, useSelectedGrant } from '~/states/ui/editor';
 import { useWaitingSaveProcessing, useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
-import { useIsDeviceLargerThanMd, useSelectedGrant } from '~/stores/ui';
+import { useIsDeviceLargerThanMd } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 import { NotAvailable } from '../../NotAvailable';
@@ -45,7 +45,7 @@ const SavePageButton = (props: {slackChannels: string, isSlackEnabled?: boolean,
   const { t } = useTranslation();
   const { data: _isWaitingSaveProcessing } = useWaitingSaveProcessing();
   const [isSavePageModalShown, setIsSavePageModalShown] = useState<boolean>(false);
-  const { data: selectedGrant } = useSelectedGrant();
+  const [selectedGrant] = useSelectedGrant();
 
   const { slackChannels, isSlackEnabled, isDeviceLargerThanMd } = props;
 

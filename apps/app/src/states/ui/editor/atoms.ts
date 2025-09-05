@@ -1,5 +1,8 @@
+import { PageGrant } from '@growi/core/dist/interfaces';
 import { isServer } from '@growi/core/dist/utils';
 import { atom } from 'jotai';
+
+import type { IPageSelectedGrant } from '~/interfaces/page';
 
 import { EditorMode, EditorModeHash } from './types';
 import { determineEditorModeByHash } from './utils';
@@ -39,3 +42,11 @@ export const editorModeAtom = atom(
  * Atom for editing markdown content
  */
 export const editingMarkdownAtom = atom<string>('');
+
+/**
+ * Atom for selected grant in page editor
+ * Stores temporary grant selection before it's applied to the page
+ */
+export const selectedGrantAtom = atom<IPageSelectedGrant | null>({
+  grant: PageGrant.GRANT_PUBLIC,
+});

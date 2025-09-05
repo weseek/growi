@@ -3,7 +3,7 @@ import {
 } from 'react';
 
 import { useCurrentPageData } from '~/states/page';
-import { usePageControlsX } from '~/stores/ui';
+import { usePageControlsX } from '~/states/ui/page';
 
 import { PagePathHeader } from './PagePathHeader';
 import { PageTitleHeader } from './PageTitleHeader';
@@ -15,7 +15,7 @@ const moduleClass = styles['page-header'] ?? '';
 export const PageHeader = (): JSX.Element => {
 
   const currentPage = useCurrentPageData();
-  const { data: pageControlsX } = usePageControlsX();
+  const pageControlsX = usePageControlsX();
   const pageHeaderRef = useRef<HTMLDivElement>(null);
 
   const [maxWidth, setMaxWidth] = useState<number>();

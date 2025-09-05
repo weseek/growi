@@ -25,10 +25,9 @@ import { isUsersHomepageDeletionEnabledAtom } from '~/states/server-configuratio
 import {
   EditorMode, useEditorMode,
 } from '~/states/ui/editor';
+import { useSetPageControlsX } from '~/states/ui/page';
 import { useTagEditModal, type IPageForPageDuplicateModal } from '~/stores/modal';
-import {
-  useIsDeviceLargerThanMd, usePageControlsX,
-} from '~/stores/ui';
+import { useIsDeviceLargerThanMd } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 import { useSWRxPageInfo, useSWRxTagsInfo } from '../../../stores/page';
@@ -148,7 +147,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const likerIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.likerIds ?? []).slice(0, 15) : [];
   const seenUserIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.seenUserIds ?? []).slice(0, 15) : [];
 
-  const { mutate: mutatePageControlsX } = usePageControlsX();
+  const setPageControlsX = useSetPageControlsX();
 
   const pageControlsRef = useRef<HTMLDivElement>(null);
   const [pageControlsRect] = useRect(pageControlsRef);
@@ -157,8 +156,8 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     if (pageControlsRect?.x == null) {
       return;
     }
-    mutatePageControlsX(pageControlsRect.x);
-  }, [pageControlsRect?.x, mutatePageControlsX]);
+    setPageControlsX(pageControlsRect.x);
+  }, [pageControlsRect?.x, setPageControlsX]);
 
 
   // Put in a mixture of seenUserIds and likerIds data to make the cache work

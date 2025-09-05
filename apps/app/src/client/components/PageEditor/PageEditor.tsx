@@ -38,7 +38,9 @@ import {
   isEnabledAttachTitleHeaderAtom,
   isIndentSizeForcedAtom,
 } from '~/states/server-configurations';
-import { useEditorMode, EditorMode, useEditingMarkdown } from '~/states/ui/editor';
+import {
+  useEditorMode, EditorMode, useEditingMarkdown, useSelectedGrant,
+} from '~/states/ui/editor';
 import {
   useAcceptedUploadFileType, useIsEnableUnifiedMergeView,
 } from '~/stores-universal/context';
@@ -54,7 +56,7 @@ import {
 } from '~/stores/page';
 import { mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 import { usePreviewOptions } from '~/stores/renderer';
-import { useIsUntitledPage, useSelectedGrant } from '~/stores/ui';
+import { useIsUntitledPage } from '~/stores/ui';
 import { useEditingClients } from '~/stores/use-editing-clients';
 import loggerFactory from '~/utils/logger';
 
@@ -103,7 +105,7 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
   const currentPagePath = useCurrentPagePath();
   const currentPathname = useCurrentPathname();
   const currentPage = useCurrentPageData();
-  const { data: selectedGrant } = useSelectedGrant();
+  const [selectedGrant] = useSelectedGrant();
   const [editingMarkdown] = useEditingMarkdown();
   const isEnabledAttachTitleHeader = useAtomValue(isEnabledAttachTitleHeaderAtom);
   const templateBody = useTemplateBody();

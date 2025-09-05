@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import { useIsEditable } from '~/states/context';
 import { usePageNotFound } from '~/states/page';
 
-import { editingMarkdownAtom, editorModeAtom } from './atoms';
+import { editingMarkdownAtom, editorModeAtom, selectedGrantAtom } from './atoms';
 import { EditorMode, type UseEditorModeReturn } from './types';
 
 export const useEditorMode = (): UseEditorModeReturn => {
@@ -47,3 +47,9 @@ export const useEditorMode = (): UseEditorModeReturn => {
 };
 
 export const useEditingMarkdown = () => useAtom(editingMarkdownAtom);
+
+/**
+ * Hook for managing selected grant in page editor
+ * Used for temporary grant selection before applying to the page
+ */
+export const useSelectedGrant = () => useAtom(selectedGrantAtom);

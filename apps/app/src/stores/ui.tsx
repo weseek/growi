@@ -3,7 +3,6 @@ import {
   useLayoutEffect,
 } from 'react';
 
-import { PageGrant, type Nullable } from '@growi/core';
 import { useSWRStatic } from '@growi/core/dist/swr';
 import { pagePathUtils, isClient } from '@growi/core/dist/utils';
 import { Breakpoint } from '@growi/ui/dist/interfaces';
@@ -15,7 +14,6 @@ import {
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import type { IPageSelectedGrant } from '~/interfaces/page';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
 import {
   useIsEditable, useIsIdenticalPath, useIsReadOnlyUser, useIsSharedUser,
@@ -143,15 +141,6 @@ export const useIsDeviceLargerThanLg = (): SWRResponse<boolean, Error> => {
   }, [cache, key, mutate]);
 
   return useSWRStatic(key);
-};
-
-
-export const usePageControlsX = (initialData?: number): SWRResponse<number> => {
-  return useSWRStatic('pageControlsX', initialData);
-};
-
-export const useSelectedGrant = (initialData?: Nullable<IPageSelectedGrant>): SWRResponse<Nullable<IPageSelectedGrant>, Error> => {
-  return useSWRStatic<Nullable<IPageSelectedGrant>, Error>('selectedGrant', initialData, { fallbackData: { grant: PageGrant.GRANT_PUBLIC } });
 };
 
 type PageTreeDescCountMapUtils = {
