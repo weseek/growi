@@ -33,7 +33,7 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
   const [customExpirationDate, setCustomExpirationDate] = useState<Date>(new Date());
   const [customExpirationTime, setCustomExpirationTime] = useState<Date>(new Date());
 
-  const [currentPageId] = useCurrentPageId();
+  const currentPageId = useCurrentPageId();
 
   const handleChangeExpirationType = useCallback((expirationType: ExpirationType) => {
     setExpirationType(expirationType);

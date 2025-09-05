@@ -14,7 +14,7 @@ export const ShareLink = (): JSX.Element => {
   const { t } = useTranslation();
   const [isOpenShareLinkForm, setIsOpenShareLinkForm] = useState<boolean>(false);
 
-  const [currentPageId] = useCurrentPageId();
+  const currentPageId = useCurrentPageId();
 
   const { data: currentShareLinks, mutate } = useSWRxSharelink(currentPageId);
 
