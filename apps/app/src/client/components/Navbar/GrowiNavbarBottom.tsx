@@ -4,8 +4,8 @@ import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import { useSearchModal } from '~/features/search/client/stores/search';
 import { useIsSearchPage } from '~/states/context';
 import { useCurrentPagePath } from '~/states/page';
+import { usePageCreateModal } from '~/states/ui/modal/page-create';
 import { useDrawerOpened } from '~/states/ui/sidebar';
-import { usePageCreateModal } from '~/stores/modal';
 
 import styles from './GrowiNavbarBottom.module.scss';
 

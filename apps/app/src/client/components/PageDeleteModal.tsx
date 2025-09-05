@@ -16,7 +16,7 @@ import {
 import { apiPost } from '~/client/util/apiv1-client';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import type { IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result } from '~/interfaces/page';
-import { usePageDeleteModal } from '~/stores/modal';
+import { usePageDeleteModal } from '~/states/ui/modal/page-delete';
 import { useSWRxPageInfoForList } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
 

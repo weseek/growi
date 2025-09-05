@@ -5,7 +5,7 @@ import { Dropdown } from 'reactstrap';
 import { useCreateTemplatePage } from '~/client/services/create-page';
 import { useToastrOnError } from '~/client/services/use-toastr-on-error';
 import { useCurrentPagePath } from '~/states/page';
-import { usePageCreateModal } from '~/stores/modal';
+import { usePageCreateModal } from '~/states/ui/modal/page-create';
 
 import { CreateButton } from './CreateButton';
 import { DropendMenu } from './DropendMenu';
