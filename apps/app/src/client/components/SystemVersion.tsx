@@ -1,7 +1,7 @@
 import React, { type JSX } from 'react';
 
 import { useGrowiVersion } from '~/states/global';
-import { useShortcutsModal } from '~/stores/modal';
+import { useShortcutsModal } from '~/states/ui/modal/shortcuts';
 
 import styles from './SystemVersion.module.scss';
 

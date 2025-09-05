@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { usePageAccessoriesModal, PageAccessoriesModalContents } from '~/stores/modal';
+import { usePageAccessoriesModal, PageAccessoriesModalContents } from '~/states/ui/modal/page-accessories';
 
 function getURLQueryParamValue(key: string) {
 // window.location.href is page URL;

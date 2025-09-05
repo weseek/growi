@@ -1,6 +1,6 @@
 import React, { useEffect, type JSX } from 'react';
 
-import { useShortcutsModal } from '~/stores/modal';
+import { useShortcutsModal } from '~/states/ui/modal/shortcuts';
 
 type Props = {
   onDeleteRender: () => void,

@@ -19,9 +19,8 @@ import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from 
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import { useCurrentUser } from '~/states/global';
 import { usePageDeleteModal } from '~/states/ui/modal/page-delete';
-import {
-  usePageDuplicateModal, usePageRenameModal,
-} from '~/stores/modal';
+import { usePageDuplicateModal } from '~/states/ui/modal/page-duplicate';
+import { usePageRenameModal } from '~/states/ui/modal/page-rename';
 import { mutatePageList, mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 import { useSearchResultOptions } from '~/stores/renderer';
 import { mutateSearching } from '~/stores/search';

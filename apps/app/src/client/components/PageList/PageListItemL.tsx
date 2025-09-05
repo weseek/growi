@@ -26,10 +26,10 @@ import type {
 } from '~/interfaces/ui';
 import LinkedPagePath from '~/models/linked-page-path';
 import { usePageDeleteModal } from '~/states/ui/modal/page-delete';
+import { usePageDuplicateModal } from '~/states/ui/modal/page-duplicate';
+import { usePageRenameModal } from '~/states/ui/modal/page-rename';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
-import {
-  usePageRenameModal, usePageDuplicateModal, usePutBackPageModal,
-} from '~/stores/modal';
+import { usePutBackPageModal } from '~/stores/modal';
 import { useIsDeviceLargerThanLg } from '~/stores/ui';
 
 import { PagePathHierarchicalLink } from '../../../components/Common/PagePathHierarchicalLink';

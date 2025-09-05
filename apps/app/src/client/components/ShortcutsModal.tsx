@@ -3,7 +3,7 @@ import React, { type JSX } from 'react';
 import { useTranslation } from 'next-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
-import { useShortcutsModal } from '~/stores/modal';
+import { useShortcutsModal } from '~/states/ui/modal/shortcuts';
 
 import styles from './ShortcutsModal.module.scss';
 

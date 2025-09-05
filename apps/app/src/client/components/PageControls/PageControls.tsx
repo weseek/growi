@@ -25,8 +25,9 @@ import { isUsersHomepageDeletionEnabledAtom } from '~/states/server-configuratio
 import {
   EditorMode, useEditorMode,
 } from '~/states/ui/editor';
+import { type IPageForPageDuplicateModal } from '~/states/ui/modal/page-duplicate';
+import { useTagEditModal } from '~/states/ui/modal/tag-edit';
 import { useSetPageControlsX } from '~/states/ui/page';
-import { useTagEditModal, type IPageForPageDuplicateModal } from '~/stores/modal';
 import { useIsDeviceLargerThanMd } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 

@@ -36,11 +36,11 @@ import {
   isUploadEnabledAtom,
 } from '~/states/server-configurations';
 import { useEditorMode } from '~/states/ui/editor';
+import { PageAccessoriesModalContents, usePageAccessoriesModal } from '~/states/ui/modal/page-accessories';
 import { usePageDeleteModal } from '~/states/ui/modal/page-delete';
-import {
-  usePageAccessoriesModal, PageAccessoriesModalContents, type IPageForPageDuplicateModal,
-  usePageDuplicateModal, usePageRenameModal, usePagePresentationModal,
-} from '~/stores/modal';
+import { usePageDuplicateModal, type IPageForPageDuplicateModal } from '~/states/ui/modal/page-duplicate';
+import { usePageRenameModal } from '~/states/ui/modal/page-rename';
+import { usePagePresentationModal } from '~/stores/modal';
 import {
   useSWRxPageInfo,
 } from '~/stores/page';

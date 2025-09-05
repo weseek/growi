@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 
 import type {
-  IAttachmentHasId, IPageToDeleteWithMeta, IPageToRenameWithMeta, IUserGroupHasId,
+  IAttachmentHasId, IPageToDeleteWithMeta, IUserGroupHasId,
 } from '@growi/core';
 import { useSWRStatic } from '@growi/core/dist/swr';
 import { MarkdownTable } from '@growi/editor';
@@ -9,7 +9,7 @@ import type { SWRResponse } from 'swr';
 
 import type { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import type {
-  OnDuplicatedFunction, OnRenamedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction, OnSelectedFunction,
+  OnPutBackedFunction, onDeletedBookmarkFolderFunction, OnSelectedFunction,
 } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -83,84 +83,6 @@ export const useEmptyTrashModal = (status?: EmptyTrashModalStatus): SWRResponse<
         opts?: IEmptyTrashModalOption,
     ) => swrResponse.mutate({
       isOpened: true, pages, opts,
-    }),
-    close: () => swrResponse.mutate({ isOpened: false }),
-  };
-};
-
-/*
-* PageDuplicateModal
-*/
-export type IPageForPageDuplicateModal = {
-  pageId: string,
-  path: string
-}
-
-export type IDuplicateModalOption = {
-  onDuplicated?: OnDuplicatedFunction,
-}
-
-type DuplicateModalStatus = {
-  isOpened: boolean,
-  page?: IPageForPageDuplicateModal,
-  opts?: IDuplicateModalOption,
-}
-
-type DuplicateModalStatusUtils = {
-  open(
-    page?: IPageForPageDuplicateModal,
-    opts?: IDuplicateModalOption
-  ): Promise<DuplicateModalStatus | undefined>
-  close(): Promise<DuplicateModalStatus | undefined>
-}
-
-export const usePageDuplicateModal = (status?: DuplicateModalStatus): SWRResponse<DuplicateModalStatus, Error> & DuplicateModalStatusUtils => {
-  const initialData: DuplicateModalStatus = { isOpened: false };
-  const swrResponse = useSWRStatic<DuplicateModalStatus, Error>('duplicateModalStatus', status, { fallbackData: initialData });
-
-  return {
-    ...swrResponse,
-    open: (
-        page?: IPageForPageDuplicateModal,
-        opts?: IDuplicateModalOption,
-    ) => swrResponse.mutate({ isOpened: true, page, opts }),
-    close: () => swrResponse.mutate({ isOpened: false }),
-  };
-};
-
-
-/*
- * PageRenameModal
- */
-export type IRenameModalOption = {
-  onRenamed?: OnRenamedFunction,
-}
-
-type RenameModalStatus = {
-  isOpened: boolean,
-  page?: IPageToRenameWithMeta,
-  opts?: IRenameModalOption
-}
-
-type RenameModalStatusUtils = {
-  open(
-    page?: IPageToRenameWithMeta,
-    opts?: IRenameModalOption
-  ): Promise<RenameModalStatus | undefined>
-  close(): Promise<RenameModalStatus | undefined>
-}
-
-export const usePageRenameModal = (status?: RenameModalStatus): SWRResponse<RenameModalStatus, Error> & RenameModalStatusUtils => {
-  const initialData: RenameModalStatus = { isOpened: false };
-  const swrResponse = useSWRStatic<RenameModalStatus, Error>('renameModalStatus', status, { fallbackData: initialData });
-
-  return {
-    ...swrResponse,
-    open: (
-        page?: IPageToRenameWithMeta,
-        opts?: IRenameModalOption,
-    ) => swrResponse.mutate({
-      isOpened: true, page, opts,
     }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
@@ -288,7 +210,7 @@ type DescendantsPageListModalStatus = {
 
 type DescendantsPageListUtils = {
   open(path: string): Promise<DescendantsPageListModalStatus | undefined>
-  close(): Promise<DuplicateModalStatus | undefined>
+  close(): Promise<DescendantsPageListModalStatus | undefined>
 }
 
 export const useDescendantsPageListModal = (
@@ -303,62 +225,6 @@ export const useDescendantsPageListModal = (
     open: (path: string) => swrResponse.mutate({ isOpened: true, path }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
-};
-
-/*
-* PageAccessoriesModal
-*/
-export const PageAccessoriesModalContents = {
-  PageHistory: 'PageHistory',
-  Attachment: 'Attachment',
-  ShareLink: 'ShareLink',
-} as const;
-export type PageAccessoriesModalContents = typeof PageAccessoriesModalContents[keyof typeof PageAccessoriesModalContents];
-
-type PageAccessoriesModalStatus = {
-  isOpened: boolean,
-  activatedContents?: PageAccessoriesModalContents,
-}
-
-type PageAccessoriesModalUtils = {
-  open(activatedContents: PageAccessoriesModalContents): void
-  close(): void
-  selectContents(activatedContents: PageAccessoriesModalContents): void
-}
-
-export const usePageAccessoriesModal = (): SWRResponse<PageAccessoriesModalStatus, Error> & PageAccessoriesModalUtils => {
-
-  const initialStatus = { isOpened: false };
-  const swrResponse = useSWRStatic<PageAccessoriesModalStatus, Error>('pageAccessoriesModalStatus', undefined, { fallbackData: initialStatus });
-
-  const { data, mutate } = swrResponse;
-
-  return Object.assign(swrResponse, {
-    open: useCallback((activatedContents) => {
-      if (data == null) {
-        return;
-      }
-      mutate({
-        isOpened: true,
-        activatedContents,
-      });
-    }, [data, mutate]),
-    close: useCallback(() => {
-      if (data == null) {
-        return;
-      }
-      mutate({ isOpened: false });
-    }, [data, mutate]),
-    selectContents: useCallback((activatedContents) => {
-      if (data == null) {
-        return;
-      }
-      mutate({
-        isOpened: data.isOpened,
-        activatedContents,
-      });
-    }, [data, mutate]),
-  });
 };
 
 /*
@@ -390,34 +256,6 @@ export const useUpdateUserGroupConfirmModal = (): SWRResponse<UpdateUserGroupCon
     },
     async close() {
       await swrResponse.mutate({ isOpened: false });
-    },
-  };
-};
-
-/*
- * ShortcutsModal
- */
-type ShortcutsModalStatus = {
-  isOpened: boolean,
-}
-
-type ShortcutsModalUtils = {
-  open(): void,
-  close(): void,
-}
-
-export const useShortcutsModal = (): SWRResponse<ShortcutsModalStatus, Error> & ShortcutsModalUtils => {
-
-  const initialStatus: ShortcutsModalStatus = { isOpened: false };
-  const swrResponse = useSWRStatic<ShortcutsModalStatus, Error>('shortcutsModal', undefined, { fallbackData: initialStatus });
-
-  return {
-    ...swrResponse,
-    open() {
-      swrResponse.mutate({ isOpened: true });
-    },
-    close() {
-      swrResponse.mutate({ isOpened: false });
     },
   };
 };
@@ -689,49 +527,5 @@ export const usePageSelectModal = (
 };
 
 /*
-* TagEditModal
+* OverwriteMergeModeModal
 */
-export type TagEditModalStatus = {
-  isOpen: boolean,
-  tags: string[],
-  pageId: string,
-  revisionId: string,
-}
-
-type TagEditModalUtils = {
-  open(tags: string[], pageId: string, revisionId: string): Promise<void>,
-  close(): Promise<void>,
-}
-
-export const useTagEditModal = (): SWRResponse<TagEditModalStatus, Error> & TagEditModalUtils => {
-  const initialStatus: TagEditModalStatus = useMemo(() => {
-    return {
-      isOpen: false,
-      tags: [],
-      pageId: '',
-      revisionId: '',
-    };
-  }, []);
-
-  const swrResponse = useSWRStatic<TagEditModalStatus, Error>('TagEditModal', undefined, { fallbackData: initialStatus });
-  const { mutate } = swrResponse;
-
-  const open = useCallback(async(tags: string[], pageId: string, revisionId: string) => {
-    mutate({
-      isOpen: true,
-      tags,
-      pageId,
-      revisionId,
-    });
-  }, [mutate]);
-
-  const close = useCallback(async() => {
-    mutate(initialStatus);
-  }, [initialStatus, mutate]);
-
-  return {
-    ...swrResponse,
-    open,
-    close,
-  };
-};

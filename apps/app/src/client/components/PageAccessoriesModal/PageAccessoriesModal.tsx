@@ -9,7 +9,7 @@ import {
 
 import { useIsGuestUser, useIsReadOnlyUser, useIsSharedUser } from '~/states/context';
 import { disableLinkSharingAtom } from '~/states/server-configurations';
-import { usePageAccessoriesModal, PageAccessoriesModalContents } from '~/stores/modal';
+import { usePageAccessoriesModal, PageAccessoriesModalContents } from '~/states/ui/modal/page-accessories';
 import { useIsDeviceLargerThanLg } from '~/stores/ui';
 
 import { CustomNavDropdown, CustomNavTab } from '../CustomNavigation/CustomNav';

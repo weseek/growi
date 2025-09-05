@@ -10,7 +10,7 @@ import {
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { useTagEditModal, type TagEditModalStatus } from '~/stores/modal';
+import { useTagEditModal, type TagEditModalStatus } from '~/states/ui/modal/tag-edit';
 
 import { TagsInput } from './TagsInput';
 
