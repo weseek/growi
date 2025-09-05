@@ -15,7 +15,8 @@ const globalSocketAtom = atom<Socket | null>(null);
 /**
  * Hook to get WebSocket connection
  */
-export const useGlobalSocket = (): Socket | null => useAtomValue(globalSocketAtom);
+export const useGlobalSocket = (): Socket | null =>
+  useAtomValue(globalSocketAtom);
 
 /**
  * Hook to initialize WebSocket connection
