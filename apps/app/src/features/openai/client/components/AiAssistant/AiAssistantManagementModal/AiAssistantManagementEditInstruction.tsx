@@ -19,18 +19,15 @@ type Props = {
   instruction: string;
   onChange: (value: string) => void;
   onReset: () => void;
-  backToPageMode?: AiAssistantManagementModalPageMode;
 }
 
 export const AiAssistantManagementEditInstruction = (props: Props): JSX.Element => {
-  const {
-    instruction, onChange, onReset, backToPageMode = AiAssistantManagementModalPageMode.HOME,
-  } = props;
+  const { instruction, onChange, onReset } = props;
   const { t } = useTranslation();
   const { changePageMode } = useAiAssistantManagementModal();
 
   const handleComplete = () => {
-    changePageMode(backToPageMode);
+    changePageMode(AiAssistantManagementModalPageMode.HOME);
   };
 
   return (
