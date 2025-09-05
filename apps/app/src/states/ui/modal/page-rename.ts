@@ -29,7 +29,7 @@ const pageRenameModalAtom = atom<RenameModalStatus>({
  * Hook for managing page rename modal state
  * Returns read-only modal status for optimal performance
  */
-export const usePageRenameModal = (): RenameModalStatus => {
+export const usePageRenameModalStatus = (): RenameModalStatus => {
   return useAtomValue(pageRenameModalAtom);
 };
 

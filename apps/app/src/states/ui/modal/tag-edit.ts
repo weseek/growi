@@ -26,7 +26,7 @@ const tagEditModalAtom = atom<TagEditModalStatus>({
  * Hook for managing tag edit modal state
  * Returns read-only modal status for optimal performance
  */
-export const useTagEditModal = (): TagEditModalStatus => {
+export const useTagEditModalStatus = (): TagEditModalStatus => {
   return useAtomValue(tagEditModalAtom);
 };
 

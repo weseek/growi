@@ -13,7 +13,7 @@ import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 import { useSiteUrl } from '~/states/global';
 import { isSearchServiceReachableAtom } from '~/states/server-configurations';
-import { usePageDuplicateModal, usePageDuplicateModalActions } from '~/states/ui/modal/page-duplicate';
+import { usePageDuplicateModalStatus, usePageDuplicateModalActions } from '~/states/ui/modal/page-duplicate';
 
 import DuplicatePathsTable from './DuplicatedPathsTable';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
@@ -26,11 +26,8 @@ const PageDuplicateModal = (): JSX.Element => {
   const siteUrl = useSiteUrl();
   const isReachable = useAtomValue(isSearchServiceReachableAtom);
 
-  const duplicateModalData = usePageDuplicateModal();
+  const { isOpened, page, opts } = usePageDuplicateModalStatus();
   const { close: closeDuplicateModal } = usePageDuplicateModalActions();
-
-  const isOpened = duplicateModalData?.isOpened ?? false;
-  const page = duplicateModalData?.page;
 
   const [pageNameInput, setPageNameInput] = useState('');
 
@@ -121,7 +118,7 @@ const PageDuplicateModal = (): JSX.Element => {
       const { data } = await apiv3Post('/pages/duplicate', {
         pageId, pageNameInput, isRecursively: isDuplicateRecursively, onlyDuplicateUserRelatedResources,
       });
-      const onDuplicated = duplicateModalData?.opts?.onDuplicated;
+      const onDuplicated = opts?.onDuplicated;
       const fromPath = path;
       const toPath = data.page.path;
 
@@ -133,7 +130,7 @@ const PageDuplicateModal = (): JSX.Element => {
     catch (err) {
       setErrs(err);
     }
-  }, [closeDuplicateModal, duplicateModalData?.opts?.onDuplicated, isDuplicateRecursively, page, pageNameInput, onlyDuplicateUserRelatedResources]);
+  }, [closeDuplicateModal, opts?.onDuplicated, isDuplicateRecursively, page, pageNameInput, onlyDuplicateUserRelatedResources]);
 
   useEffect(() => {
     if (isOpened) {

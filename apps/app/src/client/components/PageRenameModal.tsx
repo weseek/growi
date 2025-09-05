@@ -15,7 +15,7 @@ import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 import { useSiteUrl } from '~/states/global';
 import { isSearchServiceReachableAtom } from '~/states/server-configurations';
-import { usePageRenameModal, usePageRenameModalActions } from '~/states/ui/modal/page-rename';
+import { usePageRenameModalStatus, usePageRenameModalActions } from '~/states/ui/modal/page-rename';
 import { useSWRxPageInfo } from '~/stores/page';
 
 import DuplicatedPathsTable from './DuplicatedPathsTable';
@@ -32,12 +32,9 @@ const PageRenameModal = (): JSX.Element => {
 
   const { isUsersHomepage } = pagePathUtils;
   const siteUrl = useSiteUrl();
-  const renameModalData = usePageRenameModal();
+  const { isOpened, page, opts } = usePageRenameModalStatus();
   const { close: closeRenameModal } = usePageRenameModalActions();
   const isReachable = useAtomValue(isSearchServiceReachableAtom);
-
-  const isOpened = renameModalData?.isOpened ?? false;
-  const page = renameModalData?.page;
 
   const shouldFetch = isOpened && page != null && !isIPageInfoForEntity(page.meta);
   const { data: pageInfo } = useSWRxPageInfo(shouldFetch ? page?.data._id : null);
@@ -119,7 +116,7 @@ const PageRenameModal = (): JSX.Element => {
         url.searchParams.append('withRedirect', 'true');
       }
 
-      const onRenamed = renameModalData?.opts?.onRenamed;
+      const onRenamed = opts?.onRenamed;
       if (onRenamed != null) {
         onRenamed(path);
       }
@@ -128,7 +125,7 @@ const PageRenameModal = (): JSX.Element => {
     catch (err) {
       setErrs(err);
     }
-  }, [closeRenameModal, canRename, isRemainMetadata, isRenameRecursively, isRenameRedirect, page, pageNameInput, renameModalData?.opts?.onRenamed]);
+  }, [closeRenameModal, canRename, isRemainMetadata, isRenameRecursively, isRenameRedirect, page, pageNameInput, opts?.onRenamed]);
 
   const checkExistPaths = useCallback(async(fromPath, toPath) => {
     if (page == null) {

@@ -16,7 +16,7 @@ import {
 import { apiPost } from '~/client/util/apiv1-client';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import type { IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result } from '~/interfaces/page';
-import { usePageDeleteModal, usePageDeleteModalActions } from '~/states/ui/modal/page-delete';
+import { usePageDeleteModalStatus, usePageDeleteModalActions } from '~/states/ui/modal/page-delete';
 import { useSWRxPageInfoForList } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
 
@@ -50,7 +50,7 @@ const isIPageInfoForEntityForDeleteModal = (pageInfo: any | undefined): pageInfo
 const PageDeleteModal: FC = () => {
   const { t } = useTranslation();
 
-  const deleteModalData = usePageDeleteModal();
+  const deleteModalData = usePageDeleteModalStatus();
   const { close: closeDeleteModal } = usePageDeleteModalActions();
 
   const isOpened = deleteModalData?.isOpened ?? false;

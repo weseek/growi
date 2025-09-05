@@ -3,7 +3,7 @@ import React, { type JSX } from 'react';
 import { useTranslation } from 'next-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
-import { useShortcutsModal, useShortcutsModalActions } from '~/states/ui/modal/shortcuts';
+import { useShortcutsModalStatus, useShortcutsModalActions } from '~/states/ui/modal/shortcuts';
 
 import styles from './ShortcutsModal.module.scss';
 
@@ -11,7 +11,7 @@ import styles from './ShortcutsModal.module.scss';
 const ShortcutsModal = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const status = useShortcutsModal();
+  const status = useShortcutsModalStatus();
   const { close } = useShortcutsModalActions();
 
   const bodyContent = () => {

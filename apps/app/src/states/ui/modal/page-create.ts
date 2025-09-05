@@ -20,7 +20,7 @@ const pageCreateModalAtom = atom<CreateModalStatus>({ isOpened: false });
  * Returns read-only modal status for optimal performance
  * Used for creating new pages with optional path specification
  */
-export const usePageCreateModal = (): CreateModalStatus => {
+export const usePageCreateModalStatus = (): CreateModalStatus => {
   return useAtomValue(pageCreateModalAtom);
 };
 

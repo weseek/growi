@@ -21,7 +21,7 @@ import { useCreatePage } from '~/client/services/create-page/use-create-page';
 import { useToastrOnError } from '~/client/services/use-toastr-on-error';
 import { useCurrentUser } from '~/states/global';
 import { isSearchServiceReachableAtom } from '~/states/server-configurations';
-import { usePageCreateModal, usePageCreateModalActions } from '~/states/ui/modal/page-create';
+import { usePageCreateModalStatus, usePageCreateModalActions } from '~/states/ui/modal/page-create';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
 
@@ -36,16 +36,13 @@ const PageCreateModal: React.FC = () => {
 
   const currentUser = useCurrentUser();
 
-  const pageCreateModalData = usePageCreateModal();
+  const { isOpened, path: pathname = '' } = usePageCreateModalStatus();
   const { close: closeCreateModal } = usePageCreateModalActions();
-
-  const isOpened = pageCreateModalData?.isOpened ?? false;
 
   const { create } = useCreatePage();
   const { createTemplate } = useCreateTemplatePage();
 
   const isReachable = useAtomValue(isSearchServiceReachableAtom);
-  const pathname = pageCreateModalData?.path ?? '';
   const userHomepagePath = pagePathUtils.userHomepagePath(currentUser);
   const isCreatable = isCreatablePage(pathname) || isUsersHomepage(pathname);
   const pageNameInputInitialValue = isCreatable ? pathUtils.addTrailingSlash(pathname) : '/';

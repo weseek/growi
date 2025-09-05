@@ -20,7 +20,7 @@ const shortcutsModalAtom = atom<ShortcutsModalStatus>({
  * Hook for managing shortcuts modal state
  * Returns read-only modal status for optimal performance
  */
-export const useShortcutsModal = (): ShortcutsModalStatus => {
+export const useShortcutsModalStatus = (): ShortcutsModalStatus => {
   return useAtomValue(shortcutsModalAtom);
 };
 

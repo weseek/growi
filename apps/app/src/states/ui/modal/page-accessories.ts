@@ -31,7 +31,7 @@ const pageAccessoriesModalAtom = atom<PageAccessoriesModalStatus>({
  * Hook for managing page accessories modal state
  * Returns read-only modal status for optimal performance
  */
-export const usePageAccessoriesModal = (): PageAccessoriesModalStatus => {
+export const usePageAccessoriesModalStatus = (): PageAccessoriesModalStatus => {
   return useAtomValue(pageAccessoriesModalAtom);
 };
 

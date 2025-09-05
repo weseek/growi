@@ -36,7 +36,7 @@ const pageDuplicateModalAtom = atom<DuplicateModalStatus>({
  * Hook for managing page duplicate modal state
  * Returns read-only modal status for optimal performance
  */
-export const usePageDuplicateModal = (): DuplicateModalStatus => {
+export const usePageDuplicateModalStatus = (): DuplicateModalStatus => {
   return useAtomValue(pageDuplicateModalAtom);
 };
 

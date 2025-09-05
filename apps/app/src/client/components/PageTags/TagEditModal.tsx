@@ -10,7 +10,7 @@ import {
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { useTagEditModal, useTagEditModalActions, type TagEditModalStatus } from '~/states/ui/modal/tag-edit';
+import { useTagEditModalStatus, useTagEditModalActions, type TagEditModalStatus } from '~/states/ui/modal/tag-edit';
 
 import { TagsInput } from './TagsInput';
 
@@ -69,7 +69,7 @@ const TagEditModalSubstance: React.FC<TagEditModalSubstanceProps> = (props: TagE
 };
 
 export const TagEditModal: React.FC = () => {
-  const tagEditModalData = useTagEditModal();
+  const tagEditModalData = useTagEditModalStatus();
   const { close: closeTagEditModal } = useTagEditModalActions();
 
   if (!tagEditModalData?.isOpen) {

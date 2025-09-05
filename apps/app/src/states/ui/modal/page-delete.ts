@@ -31,7 +31,7 @@ const pageDeleteModalAtom = atom<DeleteModalStatus>({
  * Returns read-only modal status for optimal performance
  * Used for deleting single or multiple pages
  */
-export const usePageDeleteModal = (): DeleteModalStatus => {
+export const usePageDeleteModalStatus = (): DeleteModalStatus => {
   return useAtomValue(pageDeleteModalAtom);
 };
 
