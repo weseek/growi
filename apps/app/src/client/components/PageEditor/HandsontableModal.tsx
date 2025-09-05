@@ -13,7 +13,7 @@ import { debounce } from 'throttle-debounce';
 
 
 import { replaceFocusedMarkdownTableWithEditor, getMarkdownTable } from '~/client/components/PageEditor/markdown-table-util-for-editor';
-import { useHandsontableModal } from '~/stores/modal';
+import { useHandsontableModalActions, useHandsontableModalStatus } from '~/states/ui/modal/handsontable';
 
 import ExpandOrContractButton from '../ExpandOrContractButton';
 
@@ -33,7 +33,8 @@ const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
 export const HandsontableModal = (): JSX.Element => {
 
   const { t } = useTranslation('commons');
-  const { data: handsontableModalData, close: closeHandsontableModal } = useHandsontableModal();
+  const handsontableModalData = useHandsontableModalStatus();
+  const { close: closeHandsontableModal } = useHandsontableModalActions();
   const { data: handsontableModalForEditorData } = useHandsontableModalForEditor();
 
   const isOpened = handsontableModalData?.isOpened ?? false;

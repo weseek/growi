@@ -9,7 +9,7 @@ import {
   useCurrentPageData, useCurrentPagePath, useIsTrashPage, useFetchCurrentPage,
 } from '~/states/page';
 import { usePageDeleteModalActions } from '~/states/ui/modal/page-delete';
-import { usePutBackPageModal } from '~/stores/modal';
+import { usePutBackPageModalActions } from '~/states/ui/modal/put-back-page';
 import { useSWRxPageInfo } from '~/stores/page';
 import { mutateRecentlyUpdated } from '~/stores/page-listing';
 import { useIsAbleToShowTrashPageManagementButtons } from '~/stores/ui';
@@ -35,7 +35,7 @@ export const TrashPageAlert = (): JSX.Element => {
   const { data: pageInfo } = useSWRxPageInfo(pageId ?? null);
 
   const { open: openDeleteModal } = usePageDeleteModalActions();
-  const { open: openPutBackPageModal } = usePutBackPageModal();
+  const { open: openPutBackPageModal } = usePutBackPageModalActions();
   const currentPagePath = useCurrentPagePath();
 
   const { fetchCurrentPage } = useFetchCurrentPage();

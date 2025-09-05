@@ -13,7 +13,7 @@ import {
 
 import { replaceFocusedDrawioWithEditor, getMarkdownDrawioMxfile } from '~/client/components/PageEditor/markdown-drawio-util-for-editor';
 import { useRendererConfig } from '~/states/server-configurations';
-import { useDrawioModal } from '~/stores/modal';
+import { useDrawioModalActions, useDrawioModalStatus } from '~/states/ui/modal/drawio';
 import { usePersonalSettings } from '~/stores/personal-settings';
 import loggerFactory from '~/utils/logger';
 
@@ -63,7 +63,8 @@ export const DrawioModal = (): JSX.Element => {
     revalidateOnReconnect: false,
   });
 
-  const { data: drawioModalData, close: closeDrawioModal } = useDrawioModal();
+  const drawioModalData = useDrawioModalStatus();
+  const { close: closeDrawioModal } = useDrawioModalActions();
   const { data: drawioModalDataInEditor, close: closeDrawioModalInEditor } = useDrawioModalForEditor();
   const editorKey = drawioModalDataInEditor?.editorKey ?? null;
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
@@ -117,7 +118,7 @@ export const DrawioModal = (): JSX.Element => {
     }
 
     const drawioMxFile = editor != null ? getMarkdownDrawioMxfile(editor) : drawioModalData.drawioMxFile;
-    drawioCommunicationHelper?.onReceiveMessage(event, drawioMxFile);
+    drawioCommunicationHelper?.onReceiveMessage(event, drawioMxFile ?? null);
   }, [drawioCommunicationHelper, drawioModalData, editor]);
 
   useEffect(() => {

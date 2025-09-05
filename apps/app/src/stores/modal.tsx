@@ -1,123 +1,18 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 
 import type {
   IAttachmentHasId, IUserGroupHasId,
 } from '@growi/core';
 import { useSWRStatic } from '@growi/core/dist/swr';
-import { MarkdownTable } from '@growi/editor';
 import type { SWRResponse } from 'swr';
 
 import type { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import type {
-  OnPutBackedFunction, onDeletedBookmarkFolderFunction, OnSelectedFunction,
+  onDeletedBookmarkFolderFunction,
 } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:stores:modal');
-
-/*
-* GrantedGroupsInheritanceSelectModal
-*/
-type GrantedGroupsInheritanceSelectModalStatus = {
-  isOpened: boolean,
-  onCreateBtnClick?: (onlyInheritUserRelatedGrantedGroups?: boolean) => Promise<void>,
-}
-
-type GrantedGroupsInheritanceSelectModalStatusUtils = {
-  open(onCreateBtnClick?: (onlyInheritUserRelatedGrantedGroups?: boolean) => Promise<void>): Promise<GrantedGroupsInheritanceSelectModalStatus | undefined>
-  close(): Promise<GrantedGroupsInheritanceSelectModalStatus | undefined>
-}
-
-export const useGrantedGroupsInheritanceSelectModal = (
-    status?: GrantedGroupsInheritanceSelectModalStatus,
-): SWRResponse<GrantedGroupsInheritanceSelectModalStatus, Error> & GrantedGroupsInheritanceSelectModalStatusUtils => {
-  const initialData: GrantedGroupsInheritanceSelectModalStatus = { isOpened: false };
-  const swrResponse = useSWRStatic<GrantedGroupsInheritanceSelectModalStatus, Error>(
-    'grantedGroupsInheritanceSelectModalStatus', status, { fallbackData: initialData },
-  );
-
-  const { mutate } = swrResponse;
-
-  return {
-    ...swrResponse,
-    open: useCallback(
-      (onCreateBtnClick?: (onlyInheritUserRelatedGrantedGroups?: boolean) => Promise<void>) => mutate({ isOpened: true, onCreateBtnClick }), [mutate],
-    ),
-    close: useCallback(() => mutate({ isOpened: false }), [mutate]),
-  };
-};
-
-/*
-* PutBackPageModal
-*/
-export type IPageForPagePutBackModal = {
-  pageId: string,
-  path: string
-}
-
-export type IPutBackPageModalOption = {
-  onPutBacked?: OnPutBackedFunction,
-}
-
-type PutBackPageModalStatus = {
-  isOpened: boolean,
-  page?: IPageForPagePutBackModal,
-  opts?: IPutBackPageModalOption,
-}
-
-type PutBackPageModalUtils = {
-  open(
-    page?: IPageForPagePutBackModal,
-    opts?: IPutBackPageModalOption,
-  ): Promise<PutBackPageModalStatus | undefined>
-  close(): Promise<PutBackPageModalStatus | undefined>
-}
-
-export const usePutBackPageModal = (status?: PutBackPageModalStatus): SWRResponse<PutBackPageModalStatus, Error> & PutBackPageModalUtils => {
-  const initialData: PutBackPageModalStatus = useMemo(() => ({
-    isOpened: false,
-    page: { pageId: '', path: '' },
-  }), []);
-  const swrResponse = useSWRStatic<PutBackPageModalStatus, Error>('putBackPageModalStatus', status, { fallbackData: initialData });
-
-  return {
-    ...swrResponse,
-    open: (
-        page: IPageForPagePutBackModal, opts?: IPutBackPageModalOption,
-    ) => swrResponse.mutate({
-      isOpened: true, page, opts,
-    }),
-    close: () => swrResponse.mutate({ isOpened: false, page: { pageId: '', path: '' } }),
-  };
-};
-
-
-/*
-* PagePresentationModal
-*/
-type PresentationModalStatus = {
-  isOpened: boolean,
-}
-
-type PresentationModalStatusUtils = {
-  open(): Promise<PresentationModalStatus | undefined>
-  close(): Promise<PresentationModalStatus | undefined>
-}
-
-export const usePagePresentationModal = (
-    status?: PresentationModalStatus,
-): SWRResponse<PresentationModalStatus, Error> & PresentationModalStatusUtils => {
-  const initialData: PresentationModalStatus = {
-    isOpened: false,
-  };
-  const swrResponse = useSWRStatic<PresentationModalStatus, Error>('presentationModalStatus', status, { fallbackData: initialData });
-
-  return {
-    ...swrResponse,
-    open: () => swrResponse.mutate({ isOpened: true }, { revalidate: true }),
-    close: () => swrResponse.mutate({ isOpened: false }),
-  };
-};
 
 
 /*
@@ -218,114 +113,6 @@ export const useUpdateUserGroupConfirmModal = (): SWRResponse<UpdateUserGroupCon
   };
 };
 
-
-/*
-* DrawioModal
-*/
-
-type DrawioModalSaveHandler = (drawioMxFile: string) => void;
-
-type DrawioModalStatus = {
-  isOpened: boolean,
-  drawioMxFile: string,
-  onSave?: DrawioModalSaveHandler,
-}
-
-type DrawioModalStatusUtils = {
-  open(
-    drawioMxFile: string,
-    onSave?: DrawioModalSaveHandler,
-  ): void,
-  close(): void,
-}
-
-export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioModalStatus, Error> & DrawioModalStatusUtils => {
-  const initialData: DrawioModalStatus = {
-    isOpened: false,
-    drawioMxFile: '',
-  };
-  const swrResponse = useSWRStatic<DrawioModalStatus, Error>('drawioModalStatus', status, { fallbackData: initialData });
-
-  const { mutate } = swrResponse;
-
-  const open = useCallback((drawioMxFile: string, onSave?: DrawioModalSaveHandler): void => {
-    mutate({ isOpened: true, drawioMxFile, onSave });
-  }, [mutate]);
-
-  const close = useCallback((): void => {
-    mutate({ isOpened: false, drawioMxFile: '', onSave: undefined });
-  }, [mutate]);
-
-  return {
-    ...swrResponse,
-    open,
-    close,
-  };
-};
-
-/*
-* HandsonTableModal
-*/
-type HandsonTableModalSaveHandler = (table: MarkdownTable) => void;
-
-type HandsontableModalStatus = {
-  isOpened: boolean,
-  table: MarkdownTable,
-  autoFormatMarkdownTable?: boolean,
-  // onSave is passed only when editing table directly from the page.
-  onSave?: HandsonTableModalSaveHandler
-}
-
-type HandsontableModalStatusUtils = {
-  open(
-    table: MarkdownTable,
-    autoFormatMarkdownTable?: boolean,
-    onSave?: HandsonTableModalSaveHandler
-  ): void
-  close(): void
-}
-
-const defaultMarkdownTable = () => {
-  return new MarkdownTable(
-    [
-      ['col1', 'col2', 'col3'],
-      ['', '', ''],
-      ['', '', ''],
-    ],
-    {
-      align: ['', '', ''],
-    },
-  );
-};
-
-export const useHandsontableModal = (status?: HandsontableModalStatus): SWRResponse<HandsontableModalStatus, Error> & HandsontableModalStatusUtils => {
-  const initialData: HandsontableModalStatus = {
-    isOpened: false,
-    table: defaultMarkdownTable(),
-    autoFormatMarkdownTable: false,
-  };
-
-  const swrResponse = useSWRStatic<HandsontableModalStatus, Error>('handsontableModalStatus', status, { fallbackData: initialData });
-
-  const { mutate } = swrResponse;
-
-  const open = useCallback((table: MarkdownTable, autoFormatMarkdownTable?: boolean, onSave?: HandsonTableModalSaveHandler): void => {
-    mutate({
-      isOpened: true, table, autoFormatMarkdownTable, onSave,
-    });
-  }, [mutate]);
-  const close = useCallback((): void => {
-    mutate({
-      isOpened: false, table: defaultMarkdownTable(), autoFormatMarkdownTable: false, onSave: undefined,
-    });
-  }, [mutate]);
-
-  return {
-    ...swrResponse,
-    open,
-    close,
-  };
-};
 
 /*
  * ConflictDiffModal
@@ -446,41 +233,6 @@ export const useDeleteAttachmentModal = (): SWRResponse<DeleteAttachmentModalSta
     ...swrResponse,
     open,
     close,
-  };
-};
-
-/*
-* PageSelectModal
-*/
-type IPageSelectModalOption = {
-  isHierarchicalSelectionMode?: boolean,
-  onSelected?: OnSelectedFunction,
-}
-
-type PageSelectModalStatus = {
-  isOpened: boolean
-  opts?: IPageSelectModalOption
-}
-
-type PageSelectModalStatusUtils = {
-  open(opts?: IPageSelectModalOption): void
-  close(): void
-}
-
-export const usePageSelectModal = (
-    status?: PageSelectModalStatus,
-): SWRResponse<PageSelectModalStatus, Error> & PageSelectModalStatusUtils => {
-  const initialStatus = { isOpened: false };
-  const swrResponse = useSWRStatic<PageSelectModalStatus, Error>('PageSelectModal', status, { fallbackData: initialStatus });
-
-  return {
-    ...swrResponse,
-    open: (
-        opts?: IPageSelectModalOption,
-    ) => swrResponse.mutate({
-      isOpened: true, opts,
-    }),
-    close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
 

@@ -28,8 +28,8 @@ import LinkedPagePath from '~/models/linked-page-path';
 import { usePageDeleteModalActions } from '~/states/ui/modal/page-delete';
 import { usePageDuplicateModalActions } from '~/states/ui/modal/page-duplicate';
 import { usePageRenameModalActions } from '~/states/ui/modal/page-rename';
+import { usePutBackPageModalActions } from '~/states/ui/modal/put-back-page';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
-import { usePutBackPageModal } from '~/stores/modal';
 import { useIsDeviceLargerThanLg } from '~/stores/ui';
 
 import { PagePathHierarchicalLink } from '../../../components/Common/PagePathHierarchicalLink';
@@ -89,7 +89,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const { open: openDuplicateModal } = usePageDuplicateModalActions();
   const { open: openRenameModal } = usePageRenameModalActions();
   const { open: openDeleteModal } = usePageDeleteModalActions();
-  const { open: openPutBackPageModal } = usePutBackPageModal();
+  const { open: openPutBackPageModal } = usePutBackPageModalActions();
 
   const shouldFetch = isSelected && (pageData != null || pageMeta != null);
   const { data: pageInfo } = useSWRxPageInfo(shouldFetch ? pageData?._id : null);

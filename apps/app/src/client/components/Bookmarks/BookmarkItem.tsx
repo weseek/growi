@@ -16,7 +16,7 @@ import { toastError, toastSuccess } from '~/client/util/toastr';
 import type { BookmarkFolderItems, DragItemDataType } from '~/interfaces/bookmark-info';
 import { DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { useFetchCurrentPage } from '~/states/page';
-import { usePutBackPageModal } from '~/stores/modal';
+import { usePutBackPageModalActions } from '~/states/ui/modal/put-back-page';
 import { mutateAllPageInfo, useSWRxPageInfo } from '~/stores/page';
 
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
@@ -48,7 +48,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     isReadOnlyUser, isOperable, bookmarkedPage, onClickDeleteMenuItemHandler,
     parentFolder, level, canMoveToRoot, bookmarkFolderTreeMutation,
   } = props;
-  const { open: openPutBackPageModal } = usePutBackPageModal();
+  const { open: openPutBackPageModal } = usePutBackPageModalActions();
   const [isRenameInputShown, setRenameInputShown] = useState(false);
 
   const { data: pageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(bookmarkedPage?._id);

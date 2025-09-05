@@ -8,7 +8,7 @@ import { toastWarning } from '~/client/util/toastr';
 import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
 import { useCurrentPagePath } from '~/states/page';
 import { useEditorMode, EditorMode } from '~/states/ui/editor';
-import { useGrantedGroupsInheritanceSelectModal } from '~/stores/modal';
+import { useGrantedGroupsInheritanceSelectModalActions } from '~/states/ui/modal/granted-groups-inheritance-select';
 import { useIsUntitledPage } from '~/stores/ui';
 
 import { createPage } from './create-page';
@@ -53,7 +53,7 @@ export const useCreatePage: UseCreatePage = () => {
   const currentPagePath = useCurrentPagePath();
   const { setEditorMode } = useEditorMode();
   const { mutate: mutateIsUntitledPage } = useIsUntitledPage();
-  const { open: openGrantedGroupsInheritanceSelectModal, close: closeGrantedGroupsInheritanceSelectModal } = useGrantedGroupsInheritanceSelectModal();
+  const { open: openGrantedGroupsInheritanceSelectModal, close: closeGrantedGroupsInheritanceSelectModal } = useGrantedGroupsInheritanceSelectModalActions();
 
   const [isCreating, setCreating] = useState(false);
 

@@ -39,8 +39,8 @@ import { useEditorMode } from '~/states/ui/editor';
 import { PageAccessoriesModalContents, usePageAccessoriesModalActions } from '~/states/ui/modal/page-accessories';
 import { usePageDeleteModalActions } from '~/states/ui/modal/page-delete';
 import { usePageDuplicateModalActions, type IPageForPageDuplicateModal } from '~/states/ui/modal/page-duplicate';
+import { usePresentationModalActions } from '~/states/ui/modal/page-presentation';
 import { usePageRenameModalActions } from '~/states/ui/modal/page-rename';
-import { usePagePresentationModal } from '~/stores/modal';
 import {
   useSWRxPageInfo,
 } from '~/stores/page';
@@ -89,7 +89,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
   const isBulkExportPagesEnabled = useAtomValue(isBulkExportPagesEnabledAtom);
   const isUploadEnabled = useAtomValue(isUploadEnabledAtom);
 
-  const { open: openPresentationModal } = usePagePresentationModal();
+  const { open: openPresentationModal } = usePresentationModalActions();
   const { open: openAccessoriesModal } = usePageAccessoriesModalActions();
   const { open: openPageBulkExportSelectModal } = usePageBulkExportSelectModal();
 

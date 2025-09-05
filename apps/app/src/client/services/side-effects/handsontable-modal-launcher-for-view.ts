@@ -10,7 +10,8 @@ import { extractRemoteRevisionDataFromErrorObj, useUpdatePage } from '~/client/s
 import { useCurrentPageData, useSetRemoteLatestPageData } from '~/states/page';
 import type { RemoteRevisionData } from '~/states/page';
 import { useShareLinkId } from '~/states/page/hooks';
-import { useHandsontableModal, useConflictDiffModal } from '~/stores/modal';
+import { useHandsontableModalActions } from '~/states/ui/modal/handsontable';
+import { useConflictDiffModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
 
@@ -32,7 +33,7 @@ export const useHandsontableModalLauncherForView = (opts?: {
 
   const currentPage = useCurrentPageData();
 
-  const { open: openHandsontableModal } = useHandsontableModal();
+  const { open: openHandsontableModal } = useHandsontableModalActions();
 
   const { open: openConflictDiffModal, close: closeConflictDiffModal } = useConflictDiffModal();
 

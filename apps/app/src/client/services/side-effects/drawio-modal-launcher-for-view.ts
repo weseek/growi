@@ -10,7 +10,8 @@ import { extractRemoteRevisionDataFromErrorObj, useUpdatePage } from '~/client/s
 import { useCurrentPageData, useSetRemoteLatestPageData } from '~/states/page';
 import type { RemoteRevisionData } from '~/states/page';
 import { useShareLinkId } from '~/states/page/hooks';
-import { useConflictDiffModal, useDrawioModal } from '~/stores/modal';
+import { useDrawioModalActions } from '~/states/ui/modal/drawio';
+import { useConflictDiffModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
 
@@ -32,7 +33,7 @@ export const useDrawioModalLauncherForView = (opts?: {
 
   const currentPage = useCurrentPageData();
 
-  const { open: openDrawioModal } = useDrawioModal();
+  const { open: openDrawioModal } = useDrawioModalActions();
 
   const { open: openConflictDiffModal, close: closeConflictDiffModal } = useConflictDiffModal();
 
