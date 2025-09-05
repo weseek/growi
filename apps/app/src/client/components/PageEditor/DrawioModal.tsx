@@ -4,7 +4,6 @@ import React, {
 
 import { Lang } from '@growi/core';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
-import { useDrawioModalForEditor } from '@growi/editor/dist/client/stores/use-drawio';
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import {
   Modal,
@@ -14,6 +13,7 @@ import {
 import { replaceFocusedDrawioWithEditor, getMarkdownDrawioMxfile } from '~/client/components/PageEditor/markdown-drawio-util-for-editor';
 import { useRendererConfig } from '~/states/server-configurations';
 import { useDrawioModalActions, useDrawioModalStatus } from '~/states/ui/modal/drawio';
+import { useDrawioModalForEditorStatus, useDrawioModalForEditorActions } from '~/states/ui/modal/drawio-for-editor';
 import { usePersonalSettings } from '~/stores/personal-settings';
 import loggerFactory from '~/utils/logger';
 
@@ -65,7 +65,8 @@ export const DrawioModal = (): JSX.Element => {
 
   const drawioModalData = useDrawioModalStatus();
   const { close: closeDrawioModal } = useDrawioModalActions();
-  const { data: drawioModalDataInEditor, close: closeDrawioModalInEditor } = useDrawioModalForEditor();
+  const drawioModalDataInEditor = useDrawioModalForEditorStatus();
+  const { close: closeDrawioModalInEditor } = useDrawioModalForEditorActions();
   const editorKey = drawioModalDataInEditor?.editorKey ?? null;
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
   const editor = codeMirrorEditor?.view;

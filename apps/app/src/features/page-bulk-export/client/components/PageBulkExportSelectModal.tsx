@@ -5,14 +5,18 @@ import { type JSX, useState } from 'react';
 import { Modal, ModalBody, ModalHeader } from 'reactstrap';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { usePageBulkExportSelectModal } from '~/features/page-bulk-export/client/stores/modal';
-import { PageBulkExportFormat } from '~/features/page-bulk-export/interfaces/page-bulk-export';
 import { useCurrentPagePath } from '~/states/page';
 import { isPdfBulkExportEnabledAtom } from '~/states/server-configurations';
+import { PageBulkExportFormat } from '../../interfaces/page-bulk-export';
+import {
+  usePageBulkExportSelectModalActions,
+  usePageBulkExportSelectModalStatus,
+} from '../states/modal';
 
 const PageBulkExportSelectModal = (): JSX.Element => {
   const { t } = useTranslation();
-  const { data: status, close } = usePageBulkExportSelectModal();
+  const status = usePageBulkExportSelectModalStatus();
+  const { close } = usePageBulkExportSelectModalActions();
   const currentPagePath = useCurrentPagePath();
   const isPdfBulkExportEnabled = useAtomValue(isPdfBulkExportEnabledAtom);
 

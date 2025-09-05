@@ -22,7 +22,7 @@ import { DropdownItem, UncontrolledTooltip, Tooltip } from 'reactstrap';
 import { exportAsMarkdown, updateContentWidth, syncLatestRevisionBody } from '~/client/services/page-operation';
 import { toastSuccess, toastError, toastWarning } from '~/client/util/toastr';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
-import { usePageBulkExportSelectModal } from '~/features/page-bulk-export/client/stores/modal';
+import { usePageBulkExportSelectModalActions } from '~/features/page-bulk-export/client/states/modal';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import { useIsGuestUser, useIsReadOnlyUser, useIsSharedUser } from '~/states/context';
@@ -91,7 +91,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
 
   const { open: openPresentationModal } = usePresentationModalActions();
   const { open: openAccessoriesModal } = usePageAccessoriesModalActions();
-  const { open: openPageBulkExportSelectModal } = usePageBulkExportSelectModal();
+  const { open: openPageBulkExportSelectModal } = usePageBulkExportSelectModalActions();
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
