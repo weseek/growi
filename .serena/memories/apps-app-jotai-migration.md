@@ -1,4 +1,4 @@
-# Jotai 移行ガイド
+# Jotai 移行ガイド（更新版）
 
 > **📊 最新の進捗状況**: [`jotai-migration-progress.md`](jotai-migration-progress.md) を参照
 
@@ -16,18 +16,40 @@
 
 ## 2. 実装ガイド
 
-### ディレクトリ構造
+### ディレクトリ構造（実装済み）
 
 ```
 states/
 ├── ui/
-│   ├── sidebar.ts      # サイドバー状態 ✅
-│   ├── device.ts       # デバイス状態 ✅
-│   ├── editor.ts       # エディター状態 ✅（部分）
-│   ├── page.ts         # ページ関連状態（次の対象）
-│   └── modal.ts        # モーダル状態（未作成）
-└── hydrate/
-    └── sidebar.ts      # SSRハイドレーション ✅
+│   ├── sidebar/
+│   │   ├── sidebar.ts      # サイドバー状態 ✅
+│   │   ├── index.ts        # エクスポート統合 ✅
+│   │   └── hydrate.ts      # SSRハイドレーション ✅
+│   ├── editor/
+│   │   ├── index.ts        # エクスポート統合 ✅
+│   │   ├── atoms.ts        # エディターatoms ✅
+│   │   ├── hooks.ts        # エディターhooks ✅
+│   │   ├── types.ts        # 型定義 ✅
+│   │   └── utils.ts        # ユーティリティ ✅
+│   ├── device.ts           # デバイス状態 ✅
+│   └── modal.ts            # モーダル状態（未作成）
+├── page/
+│   ├── index.ts            # ページ状態エクスポート ✅
+│   ├── hooks.ts            # ページ関連hooks ✅
+│   ├── internal-atoms.ts   # 内部atoms ✅
+│   ├── hydrate.ts          # SSRハイドレーション ✅
+│   └── *.spec.tsx          # テストファイル ✅
+├── server-configurations/
+│   ├── index.ts            # サーバー設定エクスポート ✅
+│   └── server-configurations.ts  # 設定atoms ✅
+├── global/
+│   ├── index.ts            # グローバル状態エクスポート ✅
+│   ├── global.ts           # グローバルatoms ✅
+│   └── hydrate.ts          # SSRハイドレーション ✅
+├── socket-io/
+│   ├── index.ts            # Socket.IOエクスポート ✅
+│   └── socket-io.ts        # Socket.IO atoms ✅
+└── context.ts              # 共通コンテキスト ✅
 ```
 
 ### 実装パターン
@@ -55,6 +77,14 @@ const temporaryStateAtom = atom(defaultValue);
 export const useTemporaryState = () => useAtom(temporaryStateAtom);
 ```
 
+#### 読み取り専用パターン
+```typescript
+// 読み取り専用の状態
+const readOnlyAtom = atom(defaultValue);
+
+export const useReadOnlyState = () => useAtomValue(readOnlyAtom);
+```
+
 #### SSRハイドレーションパターン
 ```typescript
 // states/hydrate/feature.ts
@@ -70,8 +100,27 @@ export const useHydrateFeatureAtoms = (initialData: InitialData) => {
 - **Atom**: `{feature}Atom`
 - **Hook**: `use{Feature}`
 - **永続化対応**: `{feature}AtomExt`
+- **読み取り専用Hook**: `use{Feature}` (useAtomValue を使用)
+- **書き込み専用Hook**: `useSet{Feature}` (useSetAtom を使用)
 
-## 3. 判断基準
+## 3. 移行時の注意点
+
+### フックの返り値の変更
+- **従来**: `const [value, setValue] = useHook();` (tuple)
+- **Jotai**: `const value = useHook();` (単一値) または `const [value, setValue] = useHook();` (tuple)
+
+### 型チェックエラーの修正
+移行時に発生するTS2488エラーは、配列分割代入の誤用が原因：
+
+```typescript
+// ❌ エラーの例
+const [value] = useAtomValueHook(); // useAtomValue を使った hook
+
+// ✅ 修正
+const value = useAtomValueHook();
+```
+
+## 4. 判断基準
 
 ### Jotai移行対象
 - ✅ クライアントサイド完結のUI状態
@@ -84,8 +133,9 @@ export const useHydrateFeatureAtoms = (initialData: InitialData) => {
 - ❌ 非同期的な状態更新
 - ❌ キャッシュ機能が重要
 - ❌ リアルタイム更新が必要
+- ❌ 複雑な computed値（パフォーマンス重視）
 
-## 4. 移行の成果
+## 5. 移行の成果
 
 ### 技術的改善
 - **コードの簡潔化**: 複雑なSWRベースのカスタムフックがシンプルなatomsに
@@ -98,10 +148,11 @@ export const useHydrateFeatureAtoms = (initialData: InitialData) => {
 - **直感的なAPI**: React の `useState` に近い使用感
 - **デバッグの容易さ**: 状態の変更が追跡しやすい
 - **テストの簡素化**: モックやテストデータの管理が簡単
+- **型安全性**: TS2488エラーの原因となる誤用を防止
 
 ---
 
-## 5. 技術スタック
+## 6. 技術スタック
 
 - **Jotai**: v2.x（アトミックな状態管理）
 - **SSR対応**: `useHydrateAtoms`（公式パターン）
@@ -110,20 +161,42 @@ export const useHydrateFeatureAtoms = (initialData: InitialData) => {
 
 ---
 
-## 6. 今後の対応予定
+## 7. 現在の課題と今後の対応
 
-### 動的ルーティング時に更新が必要な値
-以下の値は Next.js の dynamic routing によるページ遷移時に値の更新が必要な可能性があります：
+### 動的ルーティング時の状態管理
+以下の値は Next.js の dynamic routing によるページ遷移時に適切に管理されています：
 
-- **currentPathname** - ページ遷移時に現在のパスが変更される
-- **isIdenticalPath** - ページごとに異なる値を持つ
-- **isForbidden** - ページのアクセス権限がページごとに異なる
-- **isNotCreatable** - ページの作成可能性がページごとに異なる
-- **csrfToken** - セキュリティ要件によってはページ遷移時に更新が必要（既に対応済み）
+- **currentPagePath** - `useCurrentPagePath()` で適切に管理済み ✅
+- **currentPageId** - `useCurrentPageId()` で適切に管理済み ✅
+- **pageNotFound** - `usePageNotFound()` で適切に管理済み ✅
+- **isNotCreatable** - `usePageNotCreatable()` で適切に管理済み ✅
 
-これらの値については、現在のSWR実装から段階的にJotaiへの移行を検討する必要があります。
-移行時には以下の点を考慮する必要があります：
+### 次のステップ
+1. **残りのUI状態の移行**: `usePageControlsX`, `useSelectedGrant`
+2. **モーダル状態の移行**: 統一的なパターンでの実装
+3. **レガシーファイルのクリーンアップ**: `stores/ui.tsx`, `stores/modal.tsx`
 
-1. **ページ遷移時の同期**: `useEffect` と `useRouter` を使用した値の同期
-2. **初期値の設定**: `useHydrateAtoms` による SSR からの初期値設定
-3. **永続化の必要性**: 一時的な状態かユーザー設定として永続化が必要かの判断
+---
+
+## 8. トラブルシューティング
+
+### よくある移行エラー
+
+#### TS2488: Type must have a '[Symbol.iterator]()' method
+```typescript
+// ❌ 問題のあるコード
+const [value] = useAtomValueHook();
+
+// ✅ 修正版
+const value = useAtomValueHook();
+```
+
+#### TS2724: no exported member
+```typescript
+// ❌ 削除されたfook
+import { useOldHook } from '~/states/somewhere';
+
+// ✅ 新しいatom-based hook
+import { useNewHook } from '~/states/somewhere';
+const value = useNewHook(); // または [value, setValue]
+```

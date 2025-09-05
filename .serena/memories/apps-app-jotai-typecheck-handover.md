@@ -1,51 +1,92 @@
-Handover Tips for Jotai migration & TS typecheck (support/use-jotai)
+# Jotai Migration Handover (Updated - 2025-09-05)
 
-Context:
-- Goal: Eliminate TS2488 errors caused by legacy tuple-style custom hooks after migrating to Jotai single-value hooks.
-- Command per CLAUDE.md: `cd apps/app && pnpm run lint:typecheck` (ONLY this for type checking).
+## Current Status: ✅ TYPECHECK ERRORS RESOLVED
+
+**Context:**
+- Goal: Complete Jotai migration for UI state management
 - Branch: support/use-jotai
+- Command: `cd apps/app && pnpm run lint:typecheck` ✅ PASSES
 
-Current Status (at interruption):
-- All identified tuple destructuring patterns converted to single-value usage (e.g. `const value = useXxx();`).
-- Last edited file: `src/client/components/Sidebar/SidebarNav/SecondaryItems.tsx` (removed `[isAdmin]`, `[growiCloudUri]`, `[isGuestUser]`).
-- A rerun of typecheck after this final change was attempted but the command execution was cancelled, so confirmation of 0 remaining TS2488 errors is still pending.
-- Previously remaining single TS error (TS2488) was always of the same form: `const [something] = useHook();`.
-- Other non-blocking lint issues still present (console logs in `PageView.tsx`, `<img>` tags without `alt` or Next.js `<Image>` replacement, `any` types). These do NOT affect `vue-tsc` typecheck success but will appear when running full lint tasks.
+## ✅ COMPLETED TASKS
 
-Likely Next Step:
-1. Run: `cd apps/app && pnpm run lint:typecheck`.
-2. If TS2488 still appears, fix by:
-   - Change `const [name] = useSomeHook();` to `const name = useSomeHook();`.
-   - Remove unused variable names if no longer needed.
-3. Repeat until typecheck passes with no errors.
+### Type Check Issues Fixed
+- **All TS2488 errors resolved** ✅
+- Fixed tuple destructuring patterns in:
+  - `PageAccessoriesModal/ShareLink/ShareLinkForm.tsx`
+  - `PageAccessoriesModal/ShareLink/ShareLink.tsx`  
+  - `PageEditor/LinkEditModal.tsx`
+- **Current status**: `pnpm run lint:typecheck` exits 0
 
-Useful Grep (do manually in next session):
-- Search residual tuple patterns: `grep -R "const \[" apps/app/src/client apps/app/src/components | grep use`.
+### Major Migration Completed
+- **Sidebar state**: Complete ✅
+- **Device state**: Complete ✅
+- **Editor state**: Complete ✅
+- **Page state**: Complete ✅
+- **Server configurations**: Complete ✅
+- **Global state**: Complete ✅
+- **Socket.IO state**: Complete ✅
+- **SSR hydration**: Complete ✅
 
-Patterns Already Normalized:
-- `useCurrentUser`, `useCurrentPageData`, `useCurrentPageId`, `useCurrentPagePath`, `useLatestRevision`, `usePageNotFound`, `useIsEditable`, all `useIsGuestUser|ReadOnlyUser|SharedUser|Admin|DefaultLogo`, server config atoms (showPageLimitation*, isMailerSetup, etc.), remote revision hooks.
+## 🚧 NEXT PRIORITIES
 
-Remote Revision Migration:
-- All former imports from `~/stores/remote-latest-page` replaced by hooks in `~/states/page` (e.g. `useSetRemoteLatestPageData`, `useRemoteRevisionId`, etc.). If any stragglers appear, replace path and remove tuple destructuring.
+### Immediate Tasks (Priority 1)
+1. **`usePageControlsX` migration**
+   - Location: `src/stores/ui.tsx:149`
+   - Target: Create `states/ui/page.ts`
+   - Pattern: Simple number atom (no persistence needed)
 
-Caveats:
-- Do NOT reintroduce tuple destructuring; hooks now return single values.
-- Avoid modifying console logs, `<img>` tags, or lint-only issues unless explicitly tasked (keep scope focused so auto-approve remains stable).
+2. **`useSelectedGrant` migration**
+   - Location: `src/stores/ui.tsx:153`
+   - Target: Add to `states/ui/editor.ts`
+   - Pattern: Temporary state for editor
 
-Definition of Done:
-- `pnpm run lint:typecheck` exits 0 with no TS errors.
+### Future Tasks (Priority 2-3)
+3. **Modal states migration** (18 modals in `stores/modal.tsx`)
+4. **Other UI hooks evaluation** (determine if SWR should remain)
+5. **Legacy cleanup** (`stores/ui.tsx`, `stores/modal.tsx` removal)
 
-If Additional Errors Appear:
-- TS2307 (old remote-latest-page path): update import to `~/states/page` and adjust variable names to direct values.
-- TS2724/TS2305 (missing exports for removed legacy hooks): replace usage with the new atom-based hook listed in `/states/*` directories.
+## 🔧 Technical Notes
 
-After Success (Optional Future Tasks):
-- Remove debug `console.log` in `PageView.tsx`.
-- Replace `<img>` with Next `<Image>` and add `alt` attributes where flagged.
-- Tighten `any` usages in files like `ProfileImageSettings.tsx`, `CustomizeLogoSetting.tsx`.
+### Migration Pattern Recognition
+- **useAtomValue hooks**: Return single value → `const value = useHook()`
+- **useAtom hooks**: Return tuple → `const [value, setValue] = useHook()`
+- **Legacy SWR patterns**: May need data fetching evaluation
 
-Quick Checklist For Next Session:
-[ ] Run typecheck command
-[ ] Fix any residual TS2488
-[ ] Re-run until clean
-[ ] Commit with message: "chore(app): remove remaining tuple destructuring for jotai migration"
+### File Structure (Established)
+```
+states/
+├── ui/sidebar/     ✅ Complete
+├── ui/editor/      ✅ Complete  
+├── ui/device.ts    ✅ Complete
+├── page/           ✅ Complete
+├── server-configurations/ ✅ Complete
+├── global/         ✅ Complete
+└── socket-io/      ✅ Complete
+```
+
+## 🎯 Definition of Done
+
+**Phase 1 (Current)**: ✅ Type checking passes
+**Phase 2 (Next)**: Migrate remaining 2 UI hooks
+**Phase 3 (Future)**: Modal migration + cleanup
+
+## 🚨 Important Notes
+
+- **DO NOT** reintroduce tuple destructuring for single-value hooks
+- **Pattern**: If hook uses `useAtomValue` → single value return
+- **Pattern**: If hook uses `useAtom` → tuple return
+- Avoid modifying unrelated lint issues (console logs, img tags, any types)
+
+## Quick Commands
+```bash
+# Type check
+cd apps/app && pnpm run lint:typecheck
+
+# Find remaining legacy patterns
+grep -r "const \[.*\] = use" apps/app/src --include="*.tsx" --include="*.ts"
+```
+
+---
+**Status**: Ready for next migration phase
+**Last Updated**: 2025-09-05
+**Next Session Focus**: usePageControlsX migration
