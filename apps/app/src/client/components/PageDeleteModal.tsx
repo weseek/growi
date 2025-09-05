@@ -49,13 +49,10 @@ const isIPageInfoForEntityForDeleteModal = (pageInfo: any | undefined): pageInfo
 
 const PageDeleteModal: FC = () => {
   const { t } = useTranslation();
-
-  const deleteModalData = usePageDeleteModalStatus();
+  const { isOpened, pages, opts } = usePageDeleteModalStatus() ?? {};
   const { close: closeDeleteModal } = usePageDeleteModalActions();
 
-  const isOpened = deleteModalData?.isOpened ?? false;
-
-  const notOperatablePages: IPageToDeleteWithMeta[] = (deleteModalData?.pages ?? [])
+  const notOperatablePages: IPageToDeleteWithMeta[] = (pages ?? [])
     .filter(p => !isIPageInfoForEntityForDeleteModal(p.meta));
   const notOperatablePageIds = notOperatablePages.map(p => p.data._id);
 
@@ -63,8 +60,8 @@ const PageDeleteModal: FC = () => {
 
   // inject IPageInfo to operate
   let injectedPages: IDataWithMeta<HasObjectId & { path: string }, IPageInfoForEntity>[] | null = null;
-  if (deleteModalData?.pages != null) {
-    injectedPages = injectTo(deleteModalData?.pages);
+  if (pages != null) {
+    injectedPages = injectTo(pages);
   }
 
   // calculate conditions to delete
@@ -79,11 +76,11 @@ const PageDeleteModal: FC = () => {
 
   // calculate condition to determine modal status
   const forceDeleteCompletelyMode = useMemo(() => {
-    if (deleteModalData != null && deleteModalData.pages != null && deleteModalData.pages.length > 0) {
-      return deleteModalData.pages.every(pageWithMeta => isTrashPage(pageWithMeta.data?.path ?? ''));
+    if (pages != null && pages.length > 0) {
+      return pages.every(pageWithMeta => isTrashPage(pageWithMeta.data?.path ?? ''));
     }
     return false;
-  }, [deleteModalData]);
+  }, [pages]);
 
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(forceDeleteCompletelyMode);
@@ -116,7 +113,7 @@ const PageDeleteModal: FC = () => {
   }
 
   async function deletePage() {
-    if (deleteModalData == null || deleteModalData.pages == null) {
+    if (pages == null) {
       return;
     }
 
@@ -128,13 +125,13 @@ const PageDeleteModal: FC = () => {
     /*
      * When multiple pages
      */
-    if (deleteModalData.pages.length > 1) {
+    if (pages.length > 1) {
       try {
         const isRecursively = isDeleteRecursively === true ? true : undefined;
         const isCompletely = isDeleteCompletely === true ? true : undefined;
 
         const pageIdToRevisionIdMap = {};
-        deleteModalData.pages.forEach((p) => { pageIdToRevisionIdMap[p.data._id] = p.data.revision as string });
+        pages.forEach((p) => { pageIdToRevisionIdMap[p.data._id] = p.data.revision as string });
 
         const { data } = await apiv3Post<IDeleteManyPageApiv3Result>('/pages/delete', {
           pageIdToRevisionIdMap,
@@ -142,7 +139,7 @@ const PageDeleteModal: FC = () => {
           isCompletely,
         });
 
-        const onDeleted = deleteModalData.opts?.onDeleted;
+        const onDeleted = opts?.onDeleted;
         if (onDeleted != null) {
           onDeleted(data.paths, data.isRecursively, data.isCompletely);
         }
@@ -160,7 +157,7 @@ const PageDeleteModal: FC = () => {
         const recursively = isDeleteRecursively === true ? true : undefined;
         const completely = forceDeleteCompletelyMode || isDeleteCompletely ? true : undefined;
 
-        const page = deleteModalData.pages[0].data;
+        const page = pages[0].data;
 
         const { path, isRecursively, isCompletely } = await apiPost('/pages.remove', {
           page_id: page._id,
@@ -169,7 +166,7 @@ const PageDeleteModal: FC = () => {
           completely,
         }) as IDeleteSinglePageApiv1Result;
 
-        const onDeleted = deleteModalData.opts?.onDeleted;
+        const onDeleted = opts?.onDeleted;
         if (onDeleted != null) {
           onDeleted(path, isRecursively, isCompletely);
         }
@@ -232,10 +229,10 @@ const PageDeleteModal: FC = () => {
   }
 
   const renderPagePathsToDelete = () => {
-    const pages = injectedPages != null && injectedPages.length > 0 ? injectedPages : deleteModalData?.pages;
+    const renderingPages = injectedPages != null && injectedPages.length > 0 ? injectedPages : pages;
 
-    if (pages != null) {
-      return pages.map(page => (
+    if (renderingPages != null) {
+      return renderingPages.map(page => (
         <p key={page.data._id} className="mb-1">
           <code>{ page.data.path }</code>
           { page.meta?.isDeletable != null && !page.meta.isDeletable && <span className="ms-3 text-danger"><strong>(CAN NOT TO DELETE)</strong></span> }
