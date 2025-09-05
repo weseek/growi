@@ -1,6 +1,16 @@
-# Jotai 移行進捗（2025-09-05 更新）
+# Jotai 移行ガイド & 進捗管理（統合版）
 
-## 移行作業フロー ⚠️【重要】
+## 🎯 移行方針と基本原則
+
+### 移行の背景
+- `useSWRStatic` や `useContextSWR` による複雑な状態管理の課題解決
+- パフォーマンス改善と責務の明確化
+
+### 役割分担の明確化
+- **SWR**: データフェッチング、サーバーキャッシュ管理に特化
+- **Jotai**: クライアントサイドUI状態、同期的な状態管理に特化
+
+## ⚠️ 移行作業フロー（必須手順）
 
 ### 基本手順（必ず順序通りに実行）
 1. **新しいJotaiベースの実装を作成**
@@ -18,100 +28,130 @@ cd /workspace/growi/apps/app && pnpm run lint:typecheck
 - **コンパイルエラーによる検証**: 旧コードを削除することで、移行漏れが確実に検出される
 - **保守性の向上**: 重複コードがないことで、将来の変更時の混乱を防ぐ
 
-## 実装状況
+## 📁 ディレクトリ構造と実装パターン
 
-### ✅ 移行完了済み
+### ディレクトリ構造（確立済み）
+```
+states/
+├── ui/
+│   ├── sidebar/            # サイドバー状態 ✅
+│   ├── editor/             # エディター状態 ✅
+│   ├── device.ts           # デバイス状態 ✅
+│   ├── page.ts             # ページUI状態 ✅
+│   └── modal/              # 個別モーダルファイル ✅
+│       ├── page-create.ts  # ページ作成モーダル ✅
+│       ├── page-delete.ts  # ページ削除モーダル ✅
+│       └── empty-trash.ts  # ゴミ箱空モーダル ✅
+├── page/                   # ページ関連状態 ✅
+├── server-configurations/  # サーバー設定状態 ✅
+├── global/                 # グローバル状態 ✅
+├── socket-io/              # Socket.IO状態 ✅
+└── context.ts              # 共通コンテキスト ✅
+```
 
-#### サイドバー・デバイス・エディター状態（完了）
-- ✅ `useDrawerOpened`: サイドバーのドロワー表示状態
-- ✅ `usePreferCollapsedMode`: サイドバーの折りたたみモード（永続化対応）
-- ✅ `useSidebarMode`: サイドバーの表示モード管理
-- ✅ `useCurrentSidebarContents`: サイドバーのコンテンツタイプ（永続化対応）
-- ✅ `useCollapsedContentsOpened`: 折りたたまれたコンテンツの開閉状態
-- ✅ `useCurrentProductNavWidth`: プロダクトナビゲーションの幅（永続化対応）
-- ✅ `useDeviceLargerThanXl`: デバイスサイズ判定
-- ✅ `useEditorMode`: エディターモード管理
+### 🎯 確立された実装パターン
 
-#### ページ関連状態（完了）
-- ✅ `useCurrentPageId`: 現在のページID
-- ✅ `useCurrentPageData`: 現在のページデータ
-- ✅ `useCurrentPagePath`: 現在のページパス
-- ✅ `usePageNotFound`: ページが見つからない状態
-- ✅ `usePageNotCreatable`: ページ作成不可状態
-- ✅ `useLatestRevision`: 最新リビジョン
-- ✅ リモートリビジョン関連フック群
-- ✅ `useShareLinkId`, `useTemplateTags`, `useTemplateBody`
+#### パフォーマンス最適化フック分離パターン
+```typescript
+// 状態型定義
+export type [Modal]Status = {
+  isOpened: boolean;
+  // その他のプロパティ
+};
 
-#### サーバー設定・グローバル状態（完了）
-- ✅ サーバー設定関連の全atomsとhooks
-- ✅ グローバル状態（現在ユーザーなど）
-- ✅ Socket.IO状態管理
+export type [Modal]Actions = {
+  open: (...args) => void;
+  close: () => void;
+};
 
-#### SSRハイドレーション対応（完了）
-- ✅ `useHydrateSidebarAtoms`: サイドバー用
-- ✅ `useHydratePageAtoms`: ページ用
-- ✅ `useHydrateGlobalAtoms`: グローバル用
+// Atom定義
+const [modal]Atom = atom<[Modal]Status>({ isOpened: false });
 
-#### 新規移行完了（2025-09-05）
-- ✅ **`usePageControlsX`**: ページコントロールのX座標状態（states/ui/page.ts）
-  - 実装場所: `states/ui/page.ts`
-  - 読み取り専用hook: `usePageControlsX()`
-  - 書き込み専用hook: `useSetPageControlsX()`
-  - 使用箇所を完全移行（PageControls、PageHeader、PagePathNavSticky）
-- ✅ **`useSelectedGrant`**: エディターでの選択中grant状態（states/ui/editor/）
-  - 実装場所: `states/ui/editor/atoms.ts`, `hooks.ts`
-  - 使用箇所を完全移行（GrantSelector、SavePageControls、PageEditor）
-  - デフォルト値: `{ grant: PageGrant.GRANT_PUBLIC }`
+// 読み取り専用フック（useAtomValue使用）
+export const use[Modal]Status = (): [Modal]Status => {
+  return useAtomValue([modal]Atom);
+};
 
-#### モーダル状態（個別ファイル方式で移行中）
-- ✅ **`usePageCreateModal`**: ページ作成モーダル（states/ui/modal/page-create.ts）
-- ✅ **`usePageDeleteModal`**: ページ削除モーダル（states/ui/modal/page-delete.ts）
-- ✅ **個別インポート方式**: `from '~/states/ui/modal/page-create'` でバンドルサイズ最適化
+// アクション専用フック（useSetAtom + useCallback）
+export const use[Modal]Actions = (): [Modal]Actions => {
+  const setStatus = useSetAtom([modal]Atom);
 
-### ✅ 型チェック修正（完了済み）
-- ✅ 全てのTS2488エラー（配列分割代入の誤用）を修正済み
-- ✅ `pnpm run lint:typecheck` が成功することを確認済み
-- ✅ 以下のファイルを修正：
-  - `ShareLinkForm.tsx`: `const currentPageId = useCurrentPageId()`
-  - `ShareLink.tsx`: `const currentPageId = useCurrentPageId()`
-  - `LinkEditModal.tsx`: `const currentPath = useCurrentPagePath()`
+  const open = useCallback((...args) => {
+    setStatus({ isOpened: true, ...args });
+  }, [setStatus]);
 
-### ✅ 品質確認（2025-09-05）
-- ✅ TypeScript型チェック通過
-- ✅ アプリケーションビルド成功
-- ✅ Socket.IO型注釈の修正対応済み
+  const close = useCallback(() => {
+    setStatus({ isOpened: false });
+  }, [setStatus]);
 
-**実装済みファイル:**
-- `states/ui/sidebar/`: サイドバー状態の完全実装
-- `states/ui/device.ts`: デバイス状態
-- `states/ui/editor/`: エディター状態（useSelectedGrant追加）
-- `states/ui/page.ts`: ページUI状態（usePageControlsX新規追加）
-- `states/ui/modal/`: 個別モーダルファイル（page-create, page-delete）
-- `states/page/`: ページ関連状態の完全実装
-- `states/server-configurations/`: サーバー設定状態
-- `states/global/`: グローバル状態
-- `states/socket-io/`: Socket.IO状態
+  return { open, close };
+};
+```
+
+#### 使用パターン
+- **ステータスのみ必要**: `use[Modal]Status()`
+- **アクションのみ必要**: `use[Modal]Actions()`
+- **両方必要**: 2つのフックを併用
+
+#### 重要事項
+- **後方互換フックは不要**: 移行完了後は即座に削除
+- **型の正しいインポート**: 元ファイルのimport文を参考にする
+- **フック分離のメリット**: 不要なリレンダリング防止、参照安定化
+
+## ✅ 移行完了済み状態
+
+### UI関連状態（完了）
+- ✅ **サイドバー状態**: `useDrawerOpened`, `usePreferCollapsedMode`, `useSidebarMode`, `useCurrentSidebarContents`, `useCollapsedContentsOpened`, `useCurrentProductNavWidth`
+- ✅ **デバイス状態**: `useDeviceLargerThanXl`
+- ✅ **エディター状態**: `useEditorMode`, `useSelectedGrant`
+- ✅ **ページUI状態**: `usePageControlsX`
+
+### データ関連状態（完了）
+- ✅ **ページ状態**: `useCurrentPageId`, `useCurrentPageData`, `useCurrentPagePath`, `usePageNotFound`, `usePageNotCreatable`, `useLatestRevision`
+- ✅ **サーバー設定**: 全サーバー設定atoms
+- ✅ **グローバル状態**: 現在ユーザーなど
+- ✅ **Socket.IO状態**: 接続管理
+
+### SSRハイドレーション（完了）
+- ✅ `useHydrateSidebarAtoms`, `useHydratePageAtoms`, `useHydrateGlobalAtoms`
+
+### モーダル状態（個別ファイル方式）
+- ✅ **`usePageCreateModal`**: ページ作成モーダル
+- ✅ **`usePageDeleteModal`**: ページ削除モーダル
+- ✅ **`useEmptyTrashModal`**: ゴミ箱空モーダル（2025-09-05完了）
+
+#### EmptyTrashModal移行の成功事例
+```typescript
+// 実装例: states/ui/modal/empty-trash.ts
+import type { IPageToDeleteWithMeta } from '@growi/core';
+
+export const useEmptyTrashModalStatus = (): EmptyTrashModalStatus => {
+  return useAtomValue(emptyTrashModalAtom);
+};
+
+export const useEmptyTrashModalActions = (): EmptyTrashModalActions => {
+  const setStatus = useSetAtom(emptyTrashModalAtom);
+  // useCallback with [setStatus] dependency
+  return { open, close };
+};
+```
 
 ## 🚧 次の実装ステップ（優先度順）
 
-### **優先度 1: 残りモーダル状態の移行**
+### 優先度1: 残りモーダル状態の移行（15個）
+個別ファイル `states/ui/modal/[modal-name].ts` で実装：
 
-#### 個別ファイル方式での継続実装 ← **次の主要タスク**
-- **残り16個のモーダル**: 個別ファイル `states/ui/modal/[modal-name].ts` で実装
-- **対象モーダル**:
-  - `useGrantedGroupsInheritanceSelectModal`, `useEmptyTrashModal`
-  - `usePageDuplicateModal`, `usePageRenameModal`, `usePutBackPageModal`
-  - `usePagePresentationModal`, `usePrivateLegacyPagesMigrationModal`
-  - `useDescendantsPageListModal`, `usePageAccessoriesModal`
-  - `useUpdateUserGroupConfirmModal`, `useShortcutsModal`
-  - `useDrawioModal`, `useHandsontableModal`, `useConflictDiffModal`
-  - `useBookmarkFolderDeleteModal`, `useDeleteAttachmentModal`
-  - `usePageSelectModal`, `useTagEditModal`
-- **実装方針**: 既存パターン（page-create, page-delete）を踏襲
-- **特徴**: すべて一時的な状態で永続化不要
+**対象モーダル**:
+- `useGrantedGroupsInheritanceSelectModal`
+- `usePageDuplicateModal`, `usePageRenameModal`, `usePutBackPageModal`
+- `usePagePresentationModal`, `usePrivateLegacyPagesMigrationModal`
+- `useDescendantsPageListModal`, `usePageAccessoriesModal`
+- `useUpdateUserGroupConfirmModal`, `useShortcutsModal`
+- `useDrawioModal`, `useHandsontableModal`, `useConflictDiffModal`
+- `useBookmarkFolderDeleteModal`, `useDeleteAttachmentModal`
+- `usePageSelectModal`, `useTagEditModal`
 
-### **優先度 2: 他のUI関連フック（判定・検討が必要）**
-
+### 優先度2: UI関連フック（判定・検討が必要）
 以下のフックはSWR継続使用を検討（データフェッチングやcomputed値のため）：
 - `useCurrentPageTocNode`: ページ固有の目次データ
 - `useSidebarScrollerRef`: ref管理
@@ -120,26 +160,23 @@ cd /workspace/growi/apps/app && pnpm run lint:typecheck
 - `useCommentEditorDirtyMap`: 複雑なMap操作
 - `useIsAbleToShow*`: computed boolean値群
 
-### **最終フェーズ: クリーンアップ**
-
-#### 不要ファイルの削除とリファクタリング（旧コード削除手順の厳守）
+### 最終フェーズ: クリーンアップ
 - `stores/ui.tsx` の段階的縮小・最終削除
-- `stores/modal.tsx` の完全削除
+- `stores/modal.tsx` の完全削除（進行中）
 - 残存する SWR ベースの状態の最終判定
 - ドキュメントの更新
 
-## 📊 進捗サマリー
+## 📊 現在の進捗サマリー
 
-- **完了**: 主要なUI状態 + ページ関連状態 + SSRハイドレーション + 型チェック修正 + 新規2状態 + モーダル2個
-- **次のタスク**: 残り16個のモーダル状態の個別ファイル実装
-- **残り**: UI関連フック数個（判定必要） + モーダル16個 + クリーンアップ
-- **推定残工数**: 1-2週間
+- **完了**: 主要なUI状態 + ページ関連状態 + SSRハイドレーション + モーダル3個
+- **現在のタスク**: 残り15個のモーダル状態の個別ファイル実装
+- **推定残工数**: 1-2週間（確立されたパターンで加速）
 
 ## 🔄 更新履歴
 
-- **2025-09-05**: 個別モーダルファイル方式採用、重要な移行手順追加、メモリファイル統合
-- **2025-09-05**: `usePageControlsX`と`useSelectedGrant`の移行完了、ビルド確認済み
-- **2025-09-05**: 型チェック修正完了、ページ関連状態移行済みを確認、進捗状況を実態に合わせて更新
+- **2025-09-05**: EmptyTrashModal完全移行完了、実装パターン確立、メモリー統合
+- **2025-09-05**: 個別モーダルファイル方式採用、重要な移行手順追加
+- **2025-09-05**: `usePageControlsX`と`useSelectedGrant`の移行完了
 - **2025-07-30**: ドキュメント統合、進捗の実装状況反映
 - **2025-07-XX**: サイドバー関連の移行完了
 - **2025-07-XX**: SSRハイドレーション対応完了
