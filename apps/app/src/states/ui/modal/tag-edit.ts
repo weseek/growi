@@ -1,4 +1,4 @@
-import { atom, useAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { useCallback } from 'react';
 
 // Type definitions to match the original implementation
@@ -9,7 +9,7 @@ export type TagEditModalStatus = {
   revisionId: string;
 };
 
-export type TagEditModalUtils = {
+export type TagEditModalActions = {
   open: (tags: string[], pageId: string, revisionId: string) => void;
   close: () => void;
 };
@@ -24,11 +24,18 @@ const tagEditModalAtom = atom<TagEditModalStatus>({
 
 /**
  * Hook for managing tag edit modal state
+ * Returns read-only modal status for optimal performance
  */
-export const useTagEditModal = (): {
-  data: TagEditModalStatus;
-} & TagEditModalUtils => {
-  const [status, setStatus] = useAtom(tagEditModalAtom);
+export const useTagEditModal = (): TagEditModalStatus => {
+  return useAtomValue(tagEditModalAtom);
+};
+
+/**
+ * Hook for managing tag edit modal actions
+ * Returns actions for opening and closing the modal
+ */
+export const useTagEditModalActions = (): TagEditModalActions => {
+  const setStatus = useSetAtom(tagEditModalAtom);
 
   const open = useCallback(
     (tags: string[], pageId: string, revisionId: string) => {
@@ -42,7 +49,6 @@ export const useTagEditModal = (): {
   }, [setStatus]);
 
   return {
-    data: status,
     open,
     close,
   };

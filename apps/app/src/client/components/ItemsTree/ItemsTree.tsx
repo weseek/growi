@@ -13,9 +13,9 @@ import type { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import type { UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
 import { SocketEventName } from '~/interfaces/websocket';
 import { useCurrentPagePath, useFetchCurrentPage } from '~/states/page';
-import { usePageDeleteModal } from '~/states/ui/modal/page-delete';
+import { usePageDeleteModalActions } from '~/states/ui/modal/page-delete';
 import type { IPageForPageDuplicateModal } from '~/states/ui/modal/page-duplicate';
-import { usePageDuplicateModal } from '~/states/ui/modal/page-duplicate';
+import { usePageDuplicateModalActions } from '~/states/ui/modal/page-duplicate';
 import { mutateAllPageInfo } from '~/stores/page';
 import {
   useSWRxRootPage, mutatePageTree, mutatePageList,
@@ -57,8 +57,8 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   const { data: rootPageResult, error } = useSWRxRootPage({ suspense: true });
   const currentPagePath = useCurrentPagePath();
-  const { open: openDuplicateModal } = usePageDuplicateModal();
-  const { open: openDeleteModal } = usePageDeleteModal();
+  const { open: openDuplicateModal } = usePageDuplicateModalActions();
+  const { open: openDeleteModal } = usePageDeleteModalActions();
 
   const { data: socket } = useGlobalSocket();
   const { data: ptDescCountMap, update: updatePtDescCountMap } = usePageTreeDescCountMap();

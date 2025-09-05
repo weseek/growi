@@ -9,7 +9,7 @@ import {
 
 import { useIsGuestUser, useIsReadOnlyUser, useIsSharedUser } from '~/states/context';
 import { disableLinkSharingAtom } from '~/states/server-configurations';
-import { usePageAccessoriesModal, PageAccessoriesModalContents } from '~/states/ui/modal/page-accessories';
+import { usePageAccessoriesModal, usePageAccessoriesModalActions, PageAccessoriesModalContents } from '~/states/ui/modal/page-accessories';
 import { useIsDeviceLargerThanLg } from '~/stores/ui';
 
 import { CustomNavDropdown, CustomNavTab } from '../CustomNavigation/CustomNav';
@@ -38,7 +38,8 @@ export const PageAccessoriesModal = (): JSX.Element => {
   const isLinkSharingDisabled = useAtomValue(disableLinkSharingAtom);
   const { data: isDeviceLargerThanLg } = useIsDeviceLargerThanLg();
 
-  const { data: status, close, selectContents } = usePageAccessoriesModal();
+  const status = usePageAccessoriesModal();
+  const { close, selectContents } = usePageAccessoriesModalActions();
 
   useAutoOpenModalByQueryParam();
 

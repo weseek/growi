@@ -1,4 +1,4 @@
-import { atom, useAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { useCallback } from 'react';
 
 import type { OnDuplicatedFunction } from '../../../interfaces/ui';
@@ -19,7 +19,7 @@ export type DuplicateModalStatus = {
   opts?: IDuplicateModalOption;
 };
 
-export type DuplicateModalUtils = {
+export type DuplicateModalActions = {
   open: (
     page?: IPageForPageDuplicateModal,
     opts?: IDuplicateModalOption,
@@ -34,11 +34,18 @@ const pageDuplicateModalAtom = atom<DuplicateModalStatus>({
 
 /**
  * Hook for managing page duplicate modal state
+ * Returns read-only modal status for optimal performance
  */
-export const usePageDuplicateModal = (): {
-  data: DuplicateModalStatus;
-} & DuplicateModalUtils => {
-  const [status, setStatus] = useAtom(pageDuplicateModalAtom);
+export const usePageDuplicateModal = (): DuplicateModalStatus => {
+  return useAtomValue(pageDuplicateModalAtom);
+};
+
+/**
+ * Hook for managing page duplicate modal actions
+ * Returns actions for opening and closing the modal
+ */
+export const usePageDuplicateModalActions = (): DuplicateModalActions => {
+  const setStatus = useSetAtom(pageDuplicateModalAtom);
 
   const open = useCallback(
     (page?: IPageForPageDuplicateModal, opts?: IDuplicateModalOption) => {
@@ -52,7 +59,6 @@ export const usePageDuplicateModal = (): {
   }, [setStatus]);
 
   return {
-    data: status,
     open,
     close,
   };

@@ -4,7 +4,7 @@ import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import { useSearchModal } from '~/features/search/client/stores/search';
 import { useIsSearchPage } from '~/states/context';
 import { useCurrentPagePath } from '~/states/page';
-import { usePageCreateModal } from '~/states/ui/modal/page-create';
+import { usePageCreateModalActions } from '~/states/ui/modal/page-create';
 import { useDrawerOpened } from '~/states/ui/sidebar';
 
 import styles from './GrowiNavbarBottom.module.scss';
@@ -13,7 +13,7 @@ import styles from './GrowiNavbarBottom.module.scss';
 export const GrowiNavbarBottom = (): JSX.Element => {
 
   const [isDrawerOpened, setIsDrawerOpened] = useDrawerOpened();
-  const { open: openCreateModal } = usePageCreateModal();
+  const { open: openCreateModal } = usePageCreateModalActions();
   const currentPagePath = useCurrentPagePath();
   const isSearchPage = useIsSearchPage();
   const { open: openSearchModal } = useSearchModal();

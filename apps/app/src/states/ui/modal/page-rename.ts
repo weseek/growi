@@ -1,5 +1,5 @@
 import type { IPageToRenameWithMeta } from '@growi/core';
-import { atom, useAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { useCallback } from 'react';
 
 import type { OnRenamedFunction } from '../../../interfaces/ui';
@@ -15,7 +15,7 @@ export type RenameModalStatus = {
   opts?: IRenameModalOption;
 };
 
-export type RenameModalUtils = {
+export type RenameModalActions = {
   open: (page?: IPageToRenameWithMeta, opts?: IRenameModalOption) => void;
   close: () => void;
 };
@@ -27,11 +27,18 @@ const pageRenameModalAtom = atom<RenameModalStatus>({
 
 /**
  * Hook for managing page rename modal state
+ * Returns read-only modal status for optimal performance
  */
-export const usePageRenameModal = (): {
-  data: RenameModalStatus;
-} & RenameModalUtils => {
-  const [status, setStatus] = useAtom(pageRenameModalAtom);
+export const usePageRenameModal = (): RenameModalStatus => {
+  return useAtomValue(pageRenameModalAtom);
+};
+
+/**
+ * Hook for managing page rename modal actions
+ * Returns actions for opening and closing the modal
+ */
+export const usePageRenameModalActions = (): RenameModalActions => {
+  const setStatus = useSetAtom(pageRenameModalAtom);
 
   const open = useCallback(
     (page?: IPageToRenameWithMeta, opts?: IRenameModalOption) => {
@@ -45,7 +52,6 @@ export const usePageRenameModal = (): {
   }, [setStatus]);
 
   return {
-    data: status,
     open,
     close,
   };

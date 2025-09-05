@@ -36,10 +36,10 @@ import {
   isUploadEnabledAtom,
 } from '~/states/server-configurations';
 import { useEditorMode } from '~/states/ui/editor';
-import { PageAccessoriesModalContents, usePageAccessoriesModal } from '~/states/ui/modal/page-accessories';
-import { usePageDeleteModal } from '~/states/ui/modal/page-delete';
-import { usePageDuplicateModal, type IPageForPageDuplicateModal } from '~/states/ui/modal/page-duplicate';
-import { usePageRenameModal } from '~/states/ui/modal/page-rename';
+import { PageAccessoriesModalContents, usePageAccessoriesModalActions } from '~/states/ui/modal/page-accessories';
+import { usePageDeleteModalActions } from '~/states/ui/modal/page-delete';
+import { usePageDuplicateModalActions, type IPageForPageDuplicateModal } from '~/states/ui/modal/page-duplicate';
+import { usePageRenameModalActions } from '~/states/ui/modal/page-rename';
 import { usePagePresentationModal } from '~/stores/modal';
 import {
   useSWRxPageInfo,
@@ -90,7 +90,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
   const isUploadEnabled = useAtomValue(isUploadEnabledAtom);
 
   const { open: openPresentationModal } = usePagePresentationModal();
-  const { open: openAccessoriesModal } = usePageAccessoriesModal();
+  const { open: openAccessoriesModal } = usePageAccessoriesModalActions();
   const { open: openPageBulkExportSelectModal } = usePageBulkExportSelectModal();
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
@@ -283,9 +283,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isAbleToChangeEditorMode } = useIsAbleToChangeEditorMode();
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
 
-  const { open: openDuplicateModal } = usePageDuplicateModal();
-  const { open: openRenameModal } = usePageRenameModal();
-  const { open: openDeleteModal } = usePageDeleteModal();
+  const { open: openDuplicateModal } = usePageDuplicateModalActions();
+  const { open: openRenameModal } = usePageRenameModalActions();
+  const { open: openDeleteModal } = usePageDeleteModalActions();
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
 
   const [isStickyActive, setStickyActive] = useState(false);

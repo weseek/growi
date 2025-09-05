@@ -1,4 +1,4 @@
-import { atom, useAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { useCallback } from 'react';
 
 // Type definitions
@@ -6,7 +6,7 @@ export type ShortcutsModalStatus = {
   isOpened: boolean;
 };
 
-export type ShortcutsModalUtils = {
+export type ShortcutsModalActions = {
   open: () => void;
   close: () => void;
 };
@@ -18,11 +18,18 @@ const shortcutsModalAtom = atom<ShortcutsModalStatus>({
 
 /**
  * Hook for managing shortcuts modal state
+ * Returns read-only modal status for optimal performance
  */
-export const useShortcutsModal = (): {
-  data: ShortcutsModalStatus;
-} & ShortcutsModalUtils => {
-  const [status, setStatus] = useAtom(shortcutsModalAtom);
+export const useShortcutsModal = (): ShortcutsModalStatus => {
+  return useAtomValue(shortcutsModalAtom);
+};
+
+/**
+ * Hook for managing shortcuts modal actions
+ * Returns actions for opening and closing the modal
+ */
+export const useShortcutsModalActions = (): ShortcutsModalActions => {
+  const setStatus = useSetAtom(shortcutsModalAtom);
 
   const open = useCallback(() => {
     setStatus({ isOpened: true });
@@ -33,7 +40,6 @@ export const useShortcutsModal = (): {
   }, [setStatus]);
 
   return {
-    data: status,
     open,
     close,
   };

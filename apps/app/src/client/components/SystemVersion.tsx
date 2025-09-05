@@ -1,7 +1,7 @@
 import React, { type JSX } from 'react';
 
 import { useGrowiVersion } from '~/states/global';
-import { useShortcutsModal } from '~/states/ui/modal/shortcuts';
+import { useShortcutsModalActions } from '~/states/ui/modal/shortcuts';
 
 import styles from './SystemVersion.module.scss';
 
@@ -13,7 +13,7 @@ type Props = {
 const SystemVersion = (props: Props): JSX.Element => {
   const { showShortcutsButton } = props;
 
-  const { open: openShortcutsModal } = useShortcutsModal();
+  const { open: openShortcutsModal } = useShortcutsModalActions();
 
   const growiVersion = useGrowiVersion();
   // add classes to cmd-key by OS

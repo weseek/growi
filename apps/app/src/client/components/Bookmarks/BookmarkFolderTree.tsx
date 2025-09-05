@@ -11,7 +11,7 @@ import { toastSuccess } from '~/client/util/toastr';
 import type { OnDeletedFunction } from '~/interfaces/ui';
 import { useIsReadOnlyUser } from '~/states/context';
 import { useCurrentPageData } from '~/states/page';
-import { usePageDeleteModal } from '~/states/ui/modal/page-delete';
+import { usePageDeleteModalActions } from '~/states/ui/modal/page-delete';
 import {
   useSWRxUserBookmarks, useSWRMUTxCurrentUserBookmarks,
 } from '~/stores/bookmark';
@@ -48,7 +48,7 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
   const { data: userBookmarks, mutate: mutateUserBookmarks } = useSWRxUserBookmarks(userId ?? null);
   const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(currentPage?._id ?? null);
   const { trigger: mutateCurrentUserBookmarks } = useSWRMUTxCurrentUserBookmarks();
-  const { open: openDeleteModal } = usePageDeleteModal();
+  const { open: openDeleteModal } = usePageDeleteModalActions();
 
   const bookmarkFolderTreeMutation = useCallback(() => {
     mutateUserBookmarks();

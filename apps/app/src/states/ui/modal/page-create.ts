@@ -1,4 +1,4 @@
-import { atom, useAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { useCallback } from 'react';
 
 // Type definitions
@@ -7,7 +7,7 @@ export type CreateModalStatus = {
   path?: string;
 };
 
-export type CreateModalUtils = {
+export type CreateModalActions = {
   open: (path?: string) => void;
   close: () => void;
 };
@@ -17,12 +17,19 @@ const pageCreateModalAtom = atom<CreateModalStatus>({ isOpened: false });
 
 /**
  * Hook for managing page create modal state
+ * Returns read-only modal status for optimal performance
  * Used for creating new pages with optional path specification
  */
-export const usePageCreateModal = (): {
-  data: CreateModalStatus;
-} & CreateModalUtils => {
-  const [status, setStatus] = useAtom(pageCreateModalAtom);
+export const usePageCreateModal = (): CreateModalStatus => {
+  return useAtomValue(pageCreateModalAtom);
+};
+
+/**
+ * Hook for managing page create modal actions
+ * Returns actions for opening and closing the modal
+ */
+export const usePageCreateModalActions = (): CreateModalActions => {
+  const setStatus = useSetAtom(pageCreateModalAtom);
 
   const open = useCallback(
     (path?: string) => {
@@ -36,7 +43,6 @@ export const usePageCreateModal = (): {
   }, [setStatus]);
 
   return {
-    data: status,
     open,
     close,
   };

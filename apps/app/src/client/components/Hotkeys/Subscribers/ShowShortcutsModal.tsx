@@ -1,13 +1,14 @@
 import React, { useEffect, type JSX } from 'react';
 
-import { useShortcutsModal } from '~/states/ui/modal/shortcuts';
+import { useShortcutsModal, useShortcutsModalActions } from '~/states/ui/modal/shortcuts';
 
 type Props = {
   onDeleteRender: () => void,
 }
 const ShowShortcutsModal = (props: Props): JSX.Element => {
 
-  const { data: status, open } = useShortcutsModal();
+  const status = useShortcutsModal();
+  const { open } = useShortcutsModalActions();
 
   const { onDeleteRender } = props;
 

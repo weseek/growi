@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import {
   useCurrentPageData, useCurrentPagePath, useIsTrashPage, useFetchCurrentPage,
 } from '~/states/page';
-import { usePageDeleteModal } from '~/states/ui/modal/page-delete';
+import { usePageDeleteModalActions } from '~/states/ui/modal/page-delete';
 import { usePutBackPageModal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';
 import { mutateRecentlyUpdated } from '~/stores/page-listing';
@@ -34,7 +34,7 @@ export const TrashPageAlert = (): JSX.Element => {
   const pagePath = pageData?.path;
   const { data: pageInfo } = useSWRxPageInfo(pageId ?? null);
 
-  const { open: openDeleteModal } = usePageDeleteModal();
+  const { open: openDeleteModal } = usePageDeleteModalActions();
   const { open: openPutBackPageModal } = usePutBackPageModal();
   const currentPagePath = useCurrentPagePath();
 

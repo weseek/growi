@@ -13,7 +13,7 @@ import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 import { useSiteUrl } from '~/states/global';
 import { isSearchServiceReachableAtom } from '~/states/server-configurations';
-import { usePageDuplicateModal } from '~/states/ui/modal/page-duplicate';
+import { usePageDuplicateModal, usePageDuplicateModalActions } from '~/states/ui/modal/page-duplicate';
 
 import DuplicatePathsTable from './DuplicatedPathsTable';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
@@ -26,7 +26,8 @@ const PageDuplicateModal = (): JSX.Element => {
   const siteUrl = useSiteUrl();
   const isReachable = useAtomValue(isSearchServiceReachableAtom);
 
-  const { data: duplicateModalData, close: closeDuplicateModal } = usePageDuplicateModal();
+  const duplicateModalData = usePageDuplicateModal();
+  const { close: closeDuplicateModal } = usePageDuplicateModalActions();
 
   const isOpened = duplicateModalData?.isOpened ?? false;
   const page = duplicateModalData?.page;

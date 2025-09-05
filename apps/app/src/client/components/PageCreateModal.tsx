@@ -21,7 +21,7 @@ import { useCreatePage } from '~/client/services/create-page/use-create-page';
 import { useToastrOnError } from '~/client/services/use-toastr-on-error';
 import { useCurrentUser } from '~/states/global';
 import { isSearchServiceReachableAtom } from '~/states/server-configurations';
-import { usePageCreateModal } from '~/states/ui/modal/page-create';
+import { usePageCreateModal, usePageCreateModalActions } from '~/states/ui/modal/page-create';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
 
@@ -36,7 +36,8 @@ const PageCreateModal: React.FC = () => {
 
   const currentUser = useCurrentUser();
 
-  const { data: pageCreateModalData, close: closeCreateModal } = usePageCreateModal();
+  const pageCreateModalData = usePageCreateModal();
+  const { close: closeCreateModal } = usePageCreateModalActions();
 
   const isOpened = pageCreateModalData?.isOpened ?? false;
 

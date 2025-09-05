@@ -18,9 +18,9 @@ import type { IPageWithSearchMeta } from '~/interfaces/search';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import { useCurrentUser } from '~/states/global';
-import { usePageDeleteModal } from '~/states/ui/modal/page-delete';
-import { usePageDuplicateModal } from '~/states/ui/modal/page-duplicate';
-import { usePageRenameModal } from '~/states/ui/modal/page-rename';
+import { usePageDeleteModalActions } from '~/states/ui/modal/page-delete';
+import { usePageDuplicateModalActions } from '~/states/ui/modal/page-duplicate';
+import { usePageRenameModalActions } from '~/states/ui/modal/page-rename';
 import { mutatePageList, mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 import { useSearchResultOptions } from '~/stores/renderer';
 import { mutateSearching } from '~/stores/search';
@@ -121,9 +121,9 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const page = pageWithMeta.data;
-  const { open: openDuplicateModal } = usePageDuplicateModal();
-  const { open: openRenameModal } = usePageRenameModal();
-  const { open: openDeleteModal } = usePageDeleteModal();
+  const { open: openDuplicateModal } = usePageDuplicateModalActions();
+  const { open: openRenameModal } = usePageRenameModalActions();
+  const { open: openDeleteModal } = usePageDeleteModalActions();
   const { data: rendererOptions } = useSearchResultOptions(pageWithMeta.data.path, highlightKeywords);
   const currentUser = useCurrentUser();
 

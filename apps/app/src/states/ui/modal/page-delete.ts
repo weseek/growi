@@ -1,5 +1,5 @@
 import type { IPageToDeleteWithMeta } from '@growi/core';
-import { atom, useAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { useCallback } from 'react';
 
 import type { OnDeletedFunction } from '../../../interfaces/ui';
@@ -15,7 +15,7 @@ export type DeleteModalStatus = {
   opts?: IDeleteModalOption;
 };
 
-export type DeleteModalUtils = {
+export type DeleteModalActions = {
   open: (pages?: IPageToDeleteWithMeta[], opts?: IDeleteModalOption) => void;
   close: () => void;
 };
@@ -28,12 +28,19 @@ const pageDeleteModalAtom = atom<DeleteModalStatus>({
 
 /**
  * Hook for managing page delete modal state
+ * Returns read-only modal status for optimal performance
  * Used for deleting single or multiple pages
  */
-export const usePageDeleteModal = (): {
-  data: DeleteModalStatus;
-} & DeleteModalUtils => {
-  const [status, setStatus] = useAtom(pageDeleteModalAtom);
+export const usePageDeleteModal = (): DeleteModalStatus => {
+  return useAtomValue(pageDeleteModalAtom);
+};
+
+/**
+ * Hook for managing page delete modal actions
+ * Returns actions for opening and closing the modal
+ */
+export const usePageDeleteModalActions = (): DeleteModalActions => {
+  const setStatus = useSetAtom(pageDeleteModalAtom);
 
   const open = useCallback(
     (pages?: IPageToDeleteWithMeta[], opts?: IDeleteModalOption) => {
@@ -47,7 +54,6 @@ export const usePageDeleteModal = (): {
   }, [setStatus]);
 
   return {
-    data: status,
     open,
     close,
   };

@@ -25,9 +25,9 @@ import type {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
 } from '~/interfaces/ui';
 import LinkedPagePath from '~/models/linked-page-path';
-import { usePageDeleteModal } from '~/states/ui/modal/page-delete';
-import { usePageDuplicateModal } from '~/states/ui/modal/page-duplicate';
-import { usePageRenameModal } from '~/states/ui/modal/page-rename';
+import { usePageDeleteModalActions } from '~/states/ui/modal/page-delete';
+import { usePageDuplicateModalActions } from '~/states/ui/modal/page-duplicate';
+import { usePageRenameModalActions } from '~/states/ui/modal/page-rename';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import { usePutBackPageModal } from '~/stores/modal';
 import { useIsDeviceLargerThanLg } from '~/stores/ui';
@@ -86,9 +86,9 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   }));
 
   const { data: isDeviceLargerThanLg } = useIsDeviceLargerThanLg();
-  const { open: openDuplicateModal } = usePageDuplicateModal();
-  const { open: openRenameModal } = usePageRenameModal();
-  const { open: openDeleteModal } = usePageDeleteModal();
+  const { open: openDuplicateModal } = usePageDuplicateModalActions();
+  const { open: openRenameModal } = usePageRenameModalActions();
+  const { open: openDeleteModal } = usePageDeleteModalActions();
   const { open: openPutBackPageModal } = usePutBackPageModal();
 
   const shouldFetch = isSelected && (pageData != null || pageMeta != null);

@@ -1,4 +1,4 @@
-import { atom, useAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { useCallback } from 'react';
 
 // Constants to match the original implementation
@@ -16,7 +16,7 @@ export type PageAccessoriesModalStatus = {
   activatedContents?: PageAccessoriesModalContents;
 };
 
-export type PageAccessoriesModalUtils = {
+export type PageAccessoriesModalActions = {
   open: (activatedContents: PageAccessoriesModalContents) => void;
   close: () => void;
   selectContents: (activatedContents: PageAccessoriesModalContents) => void;
@@ -29,34 +29,41 @@ const pageAccessoriesModalAtom = atom<PageAccessoriesModalStatus>({
 
 /**
  * Hook for managing page accessories modal state
+ * Returns read-only modal status for optimal performance
  */
-export const usePageAccessoriesModal = (): {
-  data: PageAccessoriesModalStatus;
-} & PageAccessoriesModalUtils => {
-  const [status, setStatus] = useAtom(pageAccessoriesModalAtom);
-
-  const open = useCallback(
-    (activatedContents: PageAccessoriesModalContents) => {
-      setStatus({ isOpened: true, activatedContents });
-    },
-    [setStatus],
-  );
-
-  const close = useCallback(() => {
-    setStatus({ isOpened: false });
-  }, [setStatus]);
-
-  const selectContents = useCallback(
-    (activatedContents: PageAccessoriesModalContents) => {
-      setStatus((current) => ({ ...current, activatedContents }));
-    },
-    [setStatus],
-  );
-
-  return {
-    data: status,
-    open,
-    close,
-    selectContents,
-  };
+export const usePageAccessoriesModal = (): PageAccessoriesModalStatus => {
+  return useAtomValue(pageAccessoriesModalAtom);
 };
+
+/**
+ * Hook for managing page accessories modal actions
+ * Returns actions for opening, closing, and selecting contents
+ */
+export const usePageAccessoriesModalActions =
+  (): PageAccessoriesModalActions => {
+    const setStatus = useSetAtom(pageAccessoriesModalAtom);
+
+    const open = useCallback(
+      (activatedContents: PageAccessoriesModalContents) => {
+        setStatus({ isOpened: true, activatedContents });
+      },
+      [setStatus],
+    );
+
+    const close = useCallback(() => {
+      setStatus({ isOpened: false });
+    }, [setStatus]);
+
+    const selectContents = useCallback(
+      (activatedContents: PageAccessoriesModalContents) => {
+        setStatus((current) => ({ ...current, activatedContents }));
+      },
+      [setStatus],
+    );
+
+    return {
+      open,
+      close,
+      selectContents,
+    };
+  };

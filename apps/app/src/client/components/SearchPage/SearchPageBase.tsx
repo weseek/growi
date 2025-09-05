@@ -14,7 +14,7 @@ import type { IFormattedSearchResult, IPageWithSearchMeta } from '~/interfaces/s
 import type { OnDeletedFunction } from '~/interfaces/ui';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
 import { isSearchServiceConfiguredAtom, isSearchServiceReachableAtom } from '~/states/server-configurations';
-import { usePageDeleteModal } from '~/states/ui/modal/page-delete';
+import { usePageDeleteModalActions } from '~/states/ui/modal/page-delete';
 import { mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 
 import type { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
@@ -243,7 +243,7 @@ export const usePageDeleteModalForBulkDeletion = (
 
   const { t } = useTranslation();
 
-  const { open: openDeleteModal } = usePageDeleteModal();
+  const { open: openDeleteModal } = usePageDeleteModalActions();
 
   return () => {
     if (data == null) {

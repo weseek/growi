@@ -15,7 +15,7 @@ import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 import { useSiteUrl } from '~/states/global';
 import { isSearchServiceReachableAtom } from '~/states/server-configurations';
-import { usePageRenameModal } from '~/states/ui/modal/page-rename';
+import { usePageRenameModal, usePageRenameModalActions } from '~/states/ui/modal/page-rename';
 import { useSWRxPageInfo } from '~/stores/page';
 
 import DuplicatedPathsTable from './DuplicatedPathsTable';
@@ -32,7 +32,8 @@ const PageRenameModal = (): JSX.Element => {
 
   const { isUsersHomepage } = pagePathUtils;
   const siteUrl = useSiteUrl();
-  const { data: renameModalData, close: closeRenameModal } = usePageRenameModal();
+  const renameModalData = usePageRenameModal();
+  const { close: closeRenameModal } = usePageRenameModalActions();
   const isReachable = useAtomValue(isSearchServiceReachableAtom);
 
   const isOpened = renameModalData?.isOpened ?? false;

@@ -14,7 +14,7 @@ import { scroller } from 'react-scroll';
 
 import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
 import { showPageSideAuthorsAtom } from '~/states/server-configurations';
-import { useTagEditModal } from '~/states/ui/modal/tag-edit';
+import { useTagEditModalActions } from '~/states/ui/modal/tag-edit';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxPageInfo, useSWRxTagsInfo } from '~/stores/page';
 import { useIsAbleToShowTagLabel } from '~/stores/ui';
@@ -51,7 +51,7 @@ const Tags = (props: TagsProps): JSX.Element => {
   const { data: showTagLabel } = useIsAbleToShowTagLabel();
   const isGuestUser = useIsGuestUser();
   const isReadOnlyUser = useIsReadOnlyUser();
-  const { open: openTagEditModal } = useTagEditModal();
+  const { open: openTagEditModal } = useTagEditModalActions();
 
   const onClickEditTagsButton = useCallback(() => {
     if (tagsInfoData == null) {

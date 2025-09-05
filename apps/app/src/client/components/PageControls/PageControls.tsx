@@ -26,7 +26,7 @@ import {
   EditorMode, useEditorMode,
 } from '~/states/ui/editor';
 import { type IPageForPageDuplicateModal } from '~/states/ui/modal/page-duplicate';
-import { useTagEditModal } from '~/states/ui/modal/tag-edit';
+import { useTagEditModalActions } from '~/states/ui/modal/tag-edit';
 import { useSetPageControlsX } from '~/states/ui/page';
 import { useIsDeviceLargerThanMd } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
@@ -380,7 +380,7 @@ export const PageControls = memo((props: PageControlsProps): JSX.Element => {
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
   const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
-  const { open: openTagEditModal } = useTagEditModal();
+  const { open: openTagEditModal } = useTagEditModalActions();
 
   const onClickEditTagsButton = useCallback(() => {
     if (tagsInfoData == null || revisionId == null) {
