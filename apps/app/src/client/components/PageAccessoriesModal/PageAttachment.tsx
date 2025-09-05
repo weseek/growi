@@ -7,8 +7,8 @@ import { LoadingSpinner } from '@growi/ui/dist/components';
 
 import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
 import { useCurrentPageData, useCurrentPageId } from '~/states/page';
+import { useDeleteAttachmentModalActions } from '~/states/ui/modal/delete-attachment';
 import { useSWRxAttachments } from '~/stores/attachment';
-import { useDeleteAttachmentModal } from '~/stores/modal';
 
 import { PageAttachmentList } from '../PageAttachment/PageAttachmentList';
 import PaginationWrapper from '../PaginationWrapper';
@@ -33,7 +33,7 @@ const PageAttachment = (): JSX.Element => {
 
   // SWRs
   const { data: dataAttachments, remove } = useSWRxAttachments(pageId, pageNumber);
-  const { open: openDeleteAttachmentModal } = useDeleteAttachmentModal();
+  const { open: openDeleteAttachmentModal } = useDeleteAttachmentModalActions();
   const markdown = currentPage?.revision?.body;
 
   // Custom hooks

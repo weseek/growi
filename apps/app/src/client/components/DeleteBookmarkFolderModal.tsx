@@ -10,12 +10,13 @@ import {
 import { FolderIcon } from '~/client/components/Icons/FolderIcon';
 import { deleteBookmarkFolder } from '~/client/util/bookmark-utils';
 import { toastError } from '~/client/util/toastr';
-import { useBookmarkFolderDeleteModal } from '~/stores/modal';
+import { useDeleteBookmarkFolderModalStatus, useDeleteBookmarkFolderModalActions } from '~/states/ui/modal/delete-bookmark-folder';
 
 
 const DeleteBookmarkFolderModal: FC = () => {
   const { t } = useTranslation();
-  const { data: deleteBookmarkFolderModalData, close: closeBookmarkFolderDeleteModal } = useBookmarkFolderDeleteModal();
+  const deleteBookmarkFolderModalData = useDeleteBookmarkFolderModalStatus();
+  const { close: closeBookmarkFolderDeleteModal } = useDeleteBookmarkFolderModalActions();
   const isOpened = deleteBookmarkFolderModalData?.isOpened ?? false;
 
   async function deleteBookmark() {

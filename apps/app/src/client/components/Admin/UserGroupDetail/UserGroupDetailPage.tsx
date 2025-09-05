@@ -20,7 +20,7 @@ import type { IExternalUserGroupHasId } from '~/features/external-user-group/int
 import type { PageActionOnGroupDelete, SearchType } from '~/interfaces/user-group';
 import { SearchTypes } from '~/interfaces/user-group';
 import { isAclEnabledAtom } from '~/states/server-configurations';
-import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
+import { useUpdateUserGroupConfirmModalActions } from '~/states/ui/modal/update-user-group-confirm';
 import { useSWRxUserGroupPages, useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups } from '~/stores/user-group';
 import loggerFactory from '~/utils/logger';
 
@@ -107,7 +107,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
 
   const isAclEnabled = useAtomValue(isAclEnabledAtom);
 
-  const { open: openUpdateParentConfirmModal } = useUpdateUserGroupConfirmModal();
+  const { open: openUpdateParentConfirmModal } = useUpdateUserGroupConfirmModalActions();
 
   const parentUserGroup = (() => {
     if (isExternalGroup) {

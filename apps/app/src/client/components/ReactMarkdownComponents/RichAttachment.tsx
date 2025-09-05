@@ -6,8 +6,8 @@ import Image from 'next/image';
 import prettyBytes from 'pretty-bytes';
 
 import { useIsGuestUser, useIsReadOnlyUser, useIsSharedUser } from '~/states/context';
+import { useDeleteAttachmentModalActions } from '~/states/ui/modal/delete-attachment';
 import { useSWRxAttachment } from '~/stores/attachment';
-import { useDeleteAttachmentModal } from '~/stores/modal';
 
 import styles from './RichAttachment.module.scss';
 
@@ -21,7 +21,7 @@ export const RichAttachment = React.memo((props: RichAttachmentProps) => {
   const { attachmentId, attachmentName } = props;
   const { t } = useTranslation();
   const { data: attachment, remove } = useSWRxAttachment(attachmentId);
-  const { open: openDeleteAttachmentModal } = useDeleteAttachmentModal();
+  const { open: openDeleteAttachmentModal } = useDeleteAttachmentModalActions();
 
   const isGuestUser = useIsGuestUser();
   const isSharedUser = useIsSharedUser();
