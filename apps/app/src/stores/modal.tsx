@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 
 import type {
-  IAttachmentHasId, IPageToDeleteWithMeta, IUserGroupHasId,
+  IAttachmentHasId, IUserGroupHasId,
 } from '@growi/core';
 import { useSWRStatic } from '@growi/core/dist/swr';
 import { MarkdownTable } from '@growi/editor';
@@ -46,48 +46,6 @@ export const useGrantedGroupsInheritanceSelectModal = (
     close: useCallback(() => mutate({ isOpened: false }), [mutate]),
   };
 };
-
-/*
-* EmptyTrashModal
-*/
-type IEmptyTrashModalOption = {
-  onEmptiedTrash?: () => void,
-  canDeleteAllPages: boolean,
-}
-
-type EmptyTrashModalStatus = {
-  isOpened: boolean,
-  pages?: IPageToDeleteWithMeta[],
-  opts?: IEmptyTrashModalOption,
-}
-
-type EmptyTrashModalStatusUtils = {
-  open(
-    pages?: IPageToDeleteWithMeta[],
-    opts?: IEmptyTrashModalOption,
-  ): Promise<EmptyTrashModalStatus | undefined>,
-  close(): Promise<EmptyTrashModalStatus | undefined>,
-}
-
-export const useEmptyTrashModal = (status?: EmptyTrashModalStatus): SWRResponse<EmptyTrashModalStatus, Error> & EmptyTrashModalStatusUtils => {
-  const initialData: EmptyTrashModalStatus = {
-    isOpened: false,
-    pages: [],
-  };
-  const swrResponse = useSWRStatic<EmptyTrashModalStatus, Error>('emptyTrashModalStatus', status, { fallbackData: initialData });
-
-  return {
-    ...swrResponse,
-    open: (
-        pages?: IPageToDeleteWithMeta[],
-        opts?: IEmptyTrashModalOption,
-    ) => swrResponse.mutate({
-      isOpened: true, pages, opts,
-    }),
-    close: () => swrResponse.mutate({ isOpened: false }),
-  };
-};
-
 
 /*
 * PutBackPageModal

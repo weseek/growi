@@ -9,7 +9,7 @@ import { toastSuccess } from '~/client/util/toastr';
 import type { IPagingResult } from '~/interfaces/paging-result';
 import { useIsReadOnlyUser } from '~/states/context';
 import { showPageLimitationXLAtom } from '~/states/server-configurations';
-import { useEmptyTrashModal } from '~/stores/modal';
+import { useEmptyTrashModalActions } from '~/states/ui/modal/empty-trash';
 import { useSWRxPageInfoForList, useSWRxPageList } from '~/stores/page-listing';
 
 import { MenuItemType } from './Common/Dropdown/PageItemControl';
@@ -30,7 +30,7 @@ const useEmptyTrashButton = () => {
   const limit = useAtomValue(showPageLimitationXLAtom);
   const isReadOnlyUser = useIsReadOnlyUser();
   const { data: pagingResult, mutate: mutatePageLists } = useSWRxPageList('/trash', 1, limit);
-  const { open: openEmptyTrashModal } = useEmptyTrashModal();
+  const { open: openEmptyTrashModal } = useEmptyTrashModalActions();
 
   const pageIds = pagingResult?.items?.map(page => page._id);
   const { injectTo } = useSWRxPageInfoForList(pageIds, null, true, true);

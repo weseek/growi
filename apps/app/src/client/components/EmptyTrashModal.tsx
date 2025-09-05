@@ -9,14 +9,15 @@ import {
 } from 'reactstrap';
 
 import { apiv3Delete } from '~/client/util/apiv3-client';
-import { useEmptyTrashModal } from '~/stores/modal';
+import { useEmptyTrashModalStatus, useEmptyTrashModalActions } from '~/states/ui/modal/empty-trash';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
 const EmptyTrashModal: FC = () => {
   const { t } = useTranslation();
 
-  const { data: emptyTrashModalData, close: closeEmptyTrashModal } = useEmptyTrashModal();
+  const emptyTrashModalData = useEmptyTrashModalStatus();
+  const { close: closeEmptyTrashModal } = useEmptyTrashModalActions();
 
   const isOpened = emptyTrashModalData?.isOpened ?? false;
 
