@@ -2,11 +2,11 @@ import { useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
-import { useIsEditable } from '~/stores-universal/context';
+import { useIsEditable } from '~/states/context';
 import { EditorMode, useEditorMode } from '~/states/ui/editor';
 
 const EditPage = (props) => {
-  const { data: isEditable } = useIsEditable();
+  const isEditable = useIsEditable();
   const { mutate: mutateEditorMode } = useEditorMode();
 
   // setup effect

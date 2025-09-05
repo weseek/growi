@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 
 import { useSearchModal } from '~/features/search/client/stores/search';
-import { useIsEditable } from '~/stores-universal/context';
+import { useIsEditable } from '~/states/context';
 
 
 const FocusToGlobalSearch = (props) => {
-  const { data: isEditable } = useIsEditable();
+  const isEditable = useIsEditable();
   const { data: searchModalData, open: openSearchModal } = useSearchModal();
 
   // setup effect
