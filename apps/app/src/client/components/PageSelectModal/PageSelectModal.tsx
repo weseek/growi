@@ -15,7 +15,7 @@ import SimpleBar from 'simplebar-react';
 import type { IPageForItem } from '~/interfaces/page';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/states/context';
 import { useCurrentPageData } from '~/states/page';
-import { usePageSelectModal } from '~/stores/modal';
+import { usePageSelectModalStatus, usePageSelectModalActions } from '~/states/ui/modal/page-select';
 
 import { ItemsTree } from '../ItemsTree';
 import ItemsTreeContentSkeleton from '../ItemsTree/ItemsTreeContentSkeleton';
@@ -23,10 +23,7 @@ import ItemsTreeContentSkeleton from '../ItemsTree/ItemsTreeContentSkeleton';
 import { TreeItemForModal } from './TreeItemForModal';
 
 const PageSelectModalSubstance: FC = () => {
-  const {
-    data: PageSelectModalData,
-    close: closeModal,
-  } = usePageSelectModal();
+  const { close: closeModal } = usePageSelectModalActions();
 
   const [clickedParentPage, setClickedParentPage] = useState<IPageForItem | null>(null);
   const [isIncludeSubPage, setIsIncludeSubPage] = useState(true);
@@ -36,9 +33,9 @@ const PageSelectModalSubstance: FC = () => {
   const isGuestUser = useIsGuestUser();
   const isReadOnlyUser = useIsReadOnlyUser();
   const currentPage = useCurrentPageData();
-  const { data: pageSelectModalData } = usePageSelectModal();
+  const { opts } = usePageSelectModalStatus();
 
-  const isHierarchicalSelectionMode = pageSelectModalData?.opts?.isHierarchicalSelectionMode ?? false;
+  const isHierarchicalSelectionMode = opts?.isHierarchicalSelectionMode ?? false;
 
   const onClickTreeItem = useCallback((page: IPageForItem) => {
     const parentPagePath = page.path;
@@ -55,13 +52,14 @@ const PageSelectModalSubstance: FC = () => {
     closeModal();
   }, [closeModal]);
 
+  const { onSelected } = opts ?? {};
   const onClickDone = useCallback(() => {
     if (clickedParentPage != null) {
-      PageSelectModalData?.opts?.onSelected?.(clickedParentPage, isIncludeSubPage);
+      onSelected?.(clickedParentPage, isIncludeSubPage);
     }
 
     closeModal();
-  }, [PageSelectModalData?.opts, clickedParentPage, closeModal, isIncludeSubPage]);
+  }, [clickedParentPage, closeModal, isIncludeSubPage, onSelected]);
 
   const parentPagePath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage?.path ?? ''));
 
@@ -121,7 +119,8 @@ const PageSelectModalSubstance: FC = () => {
 };
 
 export const PageSelectModal = (): JSX.Element => {
-  const { data: pageSelectModalData, close: closePageSelectModal } = usePageSelectModal();
+  const pageSelectModalData = usePageSelectModalStatus();
+  const { close: closePageSelectModal } = usePageSelectModalActions();
   const isOpen = pageSelectModalData?.isOpened ?? false;
 
   if (!isOpen) {
