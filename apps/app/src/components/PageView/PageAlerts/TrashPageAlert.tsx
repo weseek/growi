@@ -8,7 +8,8 @@ import { useTranslation } from 'react-i18next';
 import {
   useCurrentPageData, useCurrentPagePath, useIsTrashPage, useFetchCurrentPage,
 } from '~/states/page';
-import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
+import { usePageDeleteModal } from '~/states/ui/modal/page-delete';
+import { usePutBackPageModal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';
 import { mutateRecentlyUpdated } from '~/stores/page-listing';
 import { useIsAbleToShowTrashPageManagementButtons } from '~/stores/ui';

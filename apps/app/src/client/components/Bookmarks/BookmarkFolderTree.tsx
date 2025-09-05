@@ -11,11 +11,11 @@ import { toastSuccess } from '~/client/util/toastr';
 import type { OnDeletedFunction } from '~/interfaces/ui';
 import { useIsReadOnlyUser } from '~/states/context';
 import { useCurrentPageData } from '~/states/page';
+import { usePageDeleteModal } from '~/states/ui/modal/page-delete';
 import {
   useSWRxUserBookmarks, useSWRMUTxCurrentUserBookmarks,
 } from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
-import { usePageDeleteModal } from '~/stores/modal';
 import { mutateAllPageInfo, useSWRMUTxPageInfo } from '~/stores/page';
 
 import { BookmarkFolderItem } from './BookmarkFolderItem';

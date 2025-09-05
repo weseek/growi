@@ -25,9 +25,10 @@ import type {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
 } from '~/interfaces/ui';
 import LinkedPagePath from '~/models/linked-page-path';
+import { usePageDeleteModal } from '~/states/ui/modal/page-delete';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import {
-  usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
+  usePageRenameModal, usePageDuplicateModal, usePutBackPageModal,
 } from '~/stores/modal';
 import { useIsDeviceLargerThanLg } from '~/stores/ui';
 

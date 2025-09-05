@@ -18,8 +18,9 @@ import type { IPageWithSearchMeta } from '~/interfaces/search';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import { useCurrentUser } from '~/states/global';
+import { usePageDeleteModal } from '~/states/ui/modal/page-delete';
 import {
-  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
+  usePageDuplicateModal, usePageRenameModal,
 } from '~/stores/modal';
 import { mutatePageList, mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 import { useSearchResultOptions } from '~/stores/renderer';

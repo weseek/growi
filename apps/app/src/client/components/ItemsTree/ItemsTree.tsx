@@ -13,8 +13,9 @@ import type { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import type { UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
 import { SocketEventName } from '~/interfaces/websocket';
 import { useCurrentPagePath, useFetchCurrentPage } from '~/states/page';
+import { usePageDeleteModal } from '~/states/ui/modal/page-delete';
 import type { IPageForPageDuplicateModal } from '~/stores/modal';
-import { usePageDuplicateModal, usePageDeleteModal } from '~/stores/modal';
+import { usePageDuplicateModal } from '~/stores/modal';
 import { mutateAllPageInfo } from '~/stores/page';
 import {
   useSWRxRootPage, mutatePageTree, mutatePageList,

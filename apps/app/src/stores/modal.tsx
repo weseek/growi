@@ -9,35 +9,11 @@ import type { SWRResponse } from 'swr';
 
 import type { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import type {
-  OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction, OnSelectedFunction,
+  OnDuplicatedFunction, OnRenamedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction, OnSelectedFunction,
 } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:stores:modal');
-
-/*
-* PageCreateModal
-*/
-type CreateModalStatus = {
-  isOpened: boolean,
-  path?: string,
-}
-
-type CreateModalStatusUtils = {
-  open(path?: string): Promise<CreateModalStatus | undefined>
-  close(): Promise<CreateModalStatus | undefined>
-}
-
-export const usePageCreateModal = (status?: CreateModalStatus): SWRResponse<CreateModalStatus, Error> & CreateModalStatusUtils => {
-  const initialData: CreateModalStatus = { isOpened: false };
-  const swrResponse = useSWRStatic<CreateModalStatus, Error>('pageCreateModalStatus', status, { fallbackData: initialData });
-
-  return {
-    ...swrResponse,
-    open: (path?: string) => swrResponse.mutate({ isOpened: true, path }),
-    close: () => swrResponse.mutate({ isOpened: false }),
-  };
-};
 
 /*
 * GrantedGroupsInheritanceSelectModal
@@ -68,46 +44,6 @@ export const useGrantedGroupsInheritanceSelectModal = (
       (onCreateBtnClick?: (onlyInheritUserRelatedGrantedGroups?: boolean) => Promise<void>) => mutate({ isOpened: true, onCreateBtnClick }), [mutate],
     ),
     close: useCallback(() => mutate({ isOpened: false }), [mutate]),
-  };
-};
-
-/*
-* PageDeleteModal
-*/
-export type IDeleteModalOption = {
-  onDeleted?: OnDeletedFunction,
-}
-
-type DeleteModalStatus = {
-  isOpened: boolean,
-  pages?: IPageToDeleteWithMeta[],
-  opts?: IDeleteModalOption,
-}
-
-type DeleteModalStatusUtils = {
-  open(
-    pages?: IPageToDeleteWithMeta[],
-    opts?: IDeleteModalOption,
-  ): Promise<DeleteModalStatus | undefined>,
-  close(): Promise<DeleteModalStatus | undefined>,
-}
-
-export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<DeleteModalStatus, Error> & DeleteModalStatusUtils => {
-  const initialData: DeleteModalStatus = {
-    isOpened: false,
-    pages: [],
-  };
-  const swrResponse = useSWRStatic<DeleteModalStatus, Error>('deleteModalStatus', status, { fallbackData: initialData });
-
-  return {
-    ...swrResponse,
-    open: (
-        pages?: IPageToDeleteWithMeta[],
-        opts?: IDeleteModalOption,
-    ) => swrResponse.mutate({
-      isOpened: true, pages, opts,
-    }),
-    close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
 
