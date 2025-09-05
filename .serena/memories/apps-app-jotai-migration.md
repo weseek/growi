@@ -14,7 +14,25 @@
 - **SWR**: データフェッチング、サーバーキャッシュ管理に特化
 - **Jotai**: クライアントサイドUI状態、同期的な状態管理に特化
 
-## 2. 実装ガイド
+## 2. 移行作業フロー ⚠️【重要】
+
+### 基本手順（必ず順序通りに実行）
+1. **新しいJotaiベースの実装を作成**
+2. **使用箇所を新しい実装に置き換え**
+3. **【必須】旧コードの削除** ← これを忘れずに！
+4. **【必須】型チェックの実行** ← migration完了確認
+
+```bash
+# 型チェック実行（migration完了確認）
+cd /workspace/growi/apps/app && pnpm run lint:typecheck
+```
+
+### ⚠️ 旧コード削除が必須な理由
+- **Migration完了の確認**: 旧コードが残っていると、移行が不完全でもtypecheckがパスしてしまう
+- **コンパイルエラーによる検証**: 旧コードを削除することで、移行漏れが確実に検出される
+- **保守性の向上**: 重複コードがないことで、将来の変更時の混乱を防ぐ
+
+## 3. 実装ガイド
 
 ### ディレクトリ構造（実装済み）
 
@@ -32,7 +50,9 @@ states/
 │   │   ├── types.ts        # 型定義 ✅
 │   │   └── utils.ts        # ユーティリティ ✅
 │   ├── device.ts           # デバイス状態 ✅
-│   └── modal.ts            # モーダル状態（未作成）
+│   └── modal/              # 個別モーダルファイル ✅
+│       ├── page-create.ts  # ページ作成モーダル ✅
+│       └── page-delete.ts  # ページ削除モーダル ✅
 ├── page/
 │   ├── index.ts            # ページ状態エクスポート ✅
 │   ├── hooks.ts            # ページ関連hooks ✅
@@ -103,7 +123,7 @@ export const useHydrateFeatureAtoms = (initialData: InitialData) => {
 - **読み取り専用Hook**: `use{Feature}` (useAtomValue を使用)
 - **書き込み専用Hook**: `useSet{Feature}` (useSetAtom を使用)
 
-## 3. 移行時の注意点
+## 4. 移行時の注意点
 
 ### フックの返り値の変更
 - **従来**: `const [value, setValue] = useHook();` (tuple)
@@ -120,7 +140,7 @@ const [value] = useAtomValueHook(); // useAtomValue を使った hook
 const value = useAtomValueHook();
 ```
 
-## 4. 判断基準
+## 5. 判断基準
 
 ### Jotai移行対象
 - ✅ クライアントサイド完結のUI状態
@@ -135,7 +155,7 @@ const value = useAtomValueHook();
 - ❌ リアルタイム更新が必要
 - ❌ 複雑な computed値（パフォーマンス重視）
 
-## 5. 移行の成果
+## 6. 移行の成果
 
 ### 技術的改善
 - **コードの簡潔化**: 複雑なSWRベースのカスタムフックがシンプルなatomsに
@@ -150,18 +170,14 @@ const value = useAtomValueHook();
 - **テストの簡素化**: モックやテストデータの管理が簡単
 - **型安全性**: TS2488エラーの原因となる誤用を防止
 
----
-
-## 6. 技術スタック
+## 7. 技術スタック
 
 - **Jotai**: v2.x（アトミックな状態管理）
 - **SSR対応**: `useHydrateAtoms`（公式パターン）
 - **永続化**: 既存の`scheduleToPut`機構と連携
 - **TypeScript**: 型推論とタイプセーフティ
 
----
-
-## 7. 現在の課題と今後の対応
+## 8. 現在の課題と今後の対応
 
 ### 動的ルーティング時の状態管理
 以下の値は Next.js の dynamic routing によるページ遷移時に適切に管理されています：
@@ -172,13 +188,10 @@ const value = useAtomValueHook();
 - **isNotCreatable** - `usePageNotCreatable()` で適切に管理済み ✅
 
 ### 次のステップ
-1. **残りのUI状態の移行**: `usePageControlsX`, `useSelectedGrant`
-2. **モーダル状態の移行**: 統一的なパターンでの実装
-3. **レガシーファイルのクリーンアップ**: `stores/ui.tsx`, `stores/modal.tsx`
+1. **残りのモーダル状態の移行**: 個別ファイルでの実装継続
+2. **レガシーファイルのクリーンアップ**: 旧実装の完全削除
 
----
-
-## 8. トラブルシューティング
+## 9. トラブルシューティング
 
 ### よくある移行エラー
 
@@ -200,3 +213,8 @@ import { useOldHook } from '~/states/somewhere';
 import { useNewHook } from '~/states/somewhere';
 const value = useNewHook(); // または [value, setValue]
 ```
+
+### 旧コード削除後のエラー対応
+- まだ使用されている箇所がある → migration継続が必要
+- export/importの整理が不完全 → 整理後に再実行
+- 型エラーが残る → hook使用方法の変更が必要
