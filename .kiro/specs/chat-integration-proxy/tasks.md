@@ -30,7 +30,7 @@
   - 接続して問い合わせが 1 本通ることが確かめられる
   - _Requirements: 1.1_
 
-- [ ] 1.3 層をまたぐ型を宣言する
+- [x] 1.3 層をまたぐ型を宣言する
   - 保存層が返す型（関係・コマンドの起動）、投稿するもの、履歴、分散ロック、
     やり取りの参照・期間・入力欄の形
   - **チャットから届くイベントの型、アプリごとの設定の型、workspace ごとの資格情報の型**も
@@ -498,3 +498,4 @@
 
 - **1.1**: このアプリは `"type": "module"` + `tsc` ビルドなので、相対 import は拡張子（`.js`）を付けて書くこと（`apps/growi-vault-manager` と同じ形。`tsc` は import 文をそのまま出力し、Node は拡張子なしの相対 import を実行時に解決できない）。Biome の `useImportExtensions` はこのリポジトリで有効になっておらず、1.7 が担当するのは層の順序と Chat SDK の import 元の2点だけなので、拡張子の付け忘れを機械的に捕まえる仕組みは無い。1.3 以降、複数ファイル間の相対 import を書く最初のタスクから注意すること。
 - **1.2**: PostgreSQL 18 系の公式 image は `PGDATA` を `/var/lib/postgresql/18/docker` に変更しており、image 自身の `VOLUME` 宣言も `/var/lib/postgresql/data` ではなく親の `/var/lib/postgresql`。旧来の慣習のまま `volumes: - /var/lib/postgresql/data` と書くと、コンテナ再作成のたびに実データが消える（マウント先が実際の書き込み先と一致しない）。`.devcontainer/compose.yml` の `postgres` サービスは `/var/lib/postgresql` を volume にしている。今後 PostgreSQL の major version を上げる際は、上げる先の公式 Dockerfile で `PGDATA`/`VOLUME` の記述を必ず確認すること。`@chat-adapter/state-pg` 用の接続は `CHAT_SDK_DATABASE_URL`（`?options=-c%20search_path%3Dchat_sdk` で `chat_sdk` schema を選択、`postgres-init` サービスが起動時に schema を作成）、アプリ自身の Prisma 用は `DATABASE_URL` と、あえて別名の環境変数にしている（`createPostgresState()` が `POSTGRES_URL`/`DATABASE_URL` を自動検出するため、同名だと衝突する）。1.4・2.1・2.2 などスキーマ/テーブルを扱うタスクはこの2つの接続文字列の使い分けを踏襲すること。現時点では devcontainer 未 rebuild のため `postgres` ホスト名が解決できず、`postgres-connectivity.integ.ts` の2件は `ENOTFOUND postgres` で red のまま — これは devcontainer rebuild 後に解消される想定の欠陥ではない red で、rebuild が完了し次第 green になることを確認すること。
+- **1.3**: `src/types/` の型のうち、design.md の文面（interface 宣言やコード片）をそのまま写したのは `PlatformEvent` / `PlatformAppConfig` / `InstallationCredentials` / `OutboundMessage` / `HistoryOutcome` / `HistoryMessage` / `DistributedLock` / `FieldSpec` の8個。`Relation` / `Invocation` / `InteractionRef` / `TimeRange` / `ModalForm` の5個は design.md に interface 宣言が無く、`relation` 表の列や `ArgumentCollector.start` などの使われ方から逆算して導いたもの（レビューで design.md の全使用箇所と矛盾しないことを確認済み）。後続タスクでこれらの型にフィールドが足りないと分かった場合は、根拠が使われ方からの逆算であることを踏まえて素直に拡張してよい（並行する型を新設しないこと）。`Invocation` と `PlatformEvent` はいずれも workspace/installation を指す値を持たない（`PlatformEvent` は design.md の文面どおりのため）。`InstallationProvider.resolve` や `listChannels` がその値を必要とするので、1.4 以降でどちらかの型に足すか、別の経路で運ぶかを決めること。
