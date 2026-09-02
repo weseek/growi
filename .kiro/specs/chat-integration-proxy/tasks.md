@@ -13,7 +13,7 @@
 
 ---
 
-- [ ] 1. 土台を作る
+- [x] 1. 土台を作る
 - [x] 1.1 新規アプリ `apps/chat-integration-proxy` の雛形を用意する
   - package.json・tsconfig・turbo.json・vitest の設定を置く。**build は `@growi/chat` の build に依存する**と宣言する
   - Biome と Vitest を最初から使う。HTTP は Hono、DI コンテナは使わない
