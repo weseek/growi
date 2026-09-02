@@ -15,13 +15,18 @@
 import { generateKeyPairSync, randomUUID, sign, verify } from 'node:crypto';
 import { afterAll, describe, expect, it } from 'vitest';
 
-import type { InstallationCredentials } from '../../types/index.js';
+import type { InstallationCredentials, Invocation } from '../../types/index.js';
 import { createPrismaClient, type PrismaClient } from '../prisma-client.js';
+import { createChannelPermissionRepository } from './channel-permission-repository.js';
+import { createInstallationChannelRepository } from './installation-channel-repository.js';
 import { createInstallationRepository } from './installation-repository.js';
 import { createOwnKeyRepository } from './own-key-repository.js';
 import { createPairingOrderRepository } from './pairing-order-repository.js';
 import { createPeerKeyRepository } from './peer-key-repository.js';
+import { createPendingCollectionRepository } from './pending-collection-repository.js';
+import { createProcessedNotificationRepository } from './processed-notification-repository.js';
 import { createRelationRepository } from './relation-repository.js';
+import { createRequestNonceRepository } from './request-nonce-repository.js';
 import { testCipher } from './test-cipher.js';
 
 const DATABASE_URL =
@@ -103,8 +108,28 @@ describe('storage round trip through real PostgreSQL (Requirements 8.1, 10.5, 10
     await prisma.peerKey.deleteMany({
       where: { relationId: { in: relationIds } },
     });
+    // task 2.2's tables: also children of `relation` (Restrict), so they have
+    // to go before `relation` is deleted, same as the two above.
+    await prisma.channelPermission.deleteMany({
+      where: { relationId: { in: relationIds } },
+    });
+    await prisma.pendingCollection.deleteMany({
+      where: { relationId: { in: relationIds } },
+    });
+    await prisma.processedNotificationTarget.deleteMany({
+      where: { relationId: { in: relationIds } },
+    });
+    // `request_nonce` -> `relation` is Cascade (design.md: left to expire
+    // naturally), so it does not need an explicit delete here -- kept anyway
+    // for a clean test database rather than relying on that cascade.
+    await prisma.requestNonce.deleteMany({
+      where: { relationId: { in: relationIds } },
+    });
     await prisma.relation.deleteMany({ where: { installationId } });
     await prisma.pairingOrder.deleteMany({ where: { installationId } });
+    // `installation_channel` is per-installation, not per-relation (design.md:
+    // unpairing must not touch it), so it is cleaned up by installationId here.
+    await prisma.installationChannel.deleteMany({ where: { installationId } });
     await prisma.installation.deleteMany({ where: { id: installationId } });
     await prisma.$disconnect();
   });
@@ -298,5 +323,332 @@ describe('storage round trip through real PostgreSQL (Requirements 8.1, 10.5, 10
       relationId: null,
     });
     expect(await pairingOrders.recordAttempt(issued.id)).toBe(1);
+  });
+});
+
+// Task 2.2's five repositories, against the same real PostgreSQL. Reuses
+// `context()`'s shared installation (and creates one relation per test that
+// needs one) rather than repeating `installations.save()`, for the same
+// reason the block above does.
+describe('task 2.2 storage round trip through real PostgreSQL (Requirements 2.5, 10.4, 10.7, 11.5)', () => {
+  it('marks and reads a channel-inventory refresh, distinguishing it from a channel actually being saved (Requirement 2.5)', async () => {
+    const { prisma, installationId } = await context();
+    const installations = createInstallationRepository(prisma, testCipher);
+    const installationChannels = createInstallationChannelRepository(prisma);
+    const channelId = `C-${randomUUID()}`;
+
+    // Before any refresh: no channel row, and channelsSyncedAt starts null
+    // from installations.save() above (never overwritten by re-saving).
+    await expect(
+      installationChannels.find(installationId, channelId),
+    ).resolves.toBeNull();
+    await expect(installationChannels.existsAny(installationId)).resolves.toBe(
+      false,
+    );
+
+    const refreshedAt = new Date();
+    await installationChannels.upsert({
+      installationId,
+      platform: 'slack',
+      channelId,
+      channelName: 'general',
+      isPrivate: false,
+      refreshedAt,
+    });
+    await installations.markChannelsSynced(installationId, refreshedAt);
+
+    await expect(
+      installationChannels.find(installationId, channelId),
+    ).resolves.toEqual({
+      installationId,
+      platform: 'slack',
+      channelId,
+      channelName: 'general',
+      isPrivate: false,
+      refreshedAt,
+    });
+    await expect(installationChannels.existsAny(installationId)).resolves.toBe(
+      true,
+    );
+    await expect(installations.findById(installationId)).resolves.toEqual(
+      expect.objectContaining({ channelsSyncedAt: refreshedAt }),
+    );
+  });
+
+  it('reads back the permitted channels for one (relation, command), keeping "no row" apart from an empty list', async () => {
+    const { prisma, installationId } = await context();
+    const relations = createRelationRepository(prisma);
+    const channelPermissions = createChannelPermissionRepository(prisma);
+    const relation = await relations.create({
+      installationId,
+      growiUri: `https://perm-${WORKSPACE_ID}.example.com`,
+      growiLabel: 'Permissions',
+      searchWeight: 1,
+      settingsVersion: 0,
+    });
+
+    // No row yet: 'no-settings', not an empty restriction.
+    await expect(
+      channelPermissions.find(relation.relationId, 'search'),
+    ).resolves.toBeNull();
+
+    await channelPermissions.upsert(relation.relationId, 'search', [
+      'C0001',
+      'C0002',
+    ]);
+    await expect(
+      channelPermissions.find(relation.relationId, 'search'),
+    ).resolves.toEqual(['C0001', 'C0002']);
+
+    await expect(
+      channelPermissions.deleteByRelation(relation.relationId),
+    ).resolves.toBe(1);
+    await expect(
+      channelPermissions.find(relation.relationId, 'search'),
+    ).resolves.toBeNull();
+  });
+
+  it('reads back a pending collection, finds it as in-flight, updates it, and removes it (Requirement 11.5)', async () => {
+    const { prisma } = await context();
+    const pendingCollections = createPendingCollectionRepository(prisma);
+    const correlationId = `corr-${randomUUID()}`;
+    const channelId = `C-${randomUUID()}`;
+    const invocation: Invocation = {
+      platform: 'slack',
+      channel: {
+        platform: 'slack',
+        channelId,
+        channelName: 'general',
+        isPrivate: false,
+      },
+      actor: { platform: 'slack', accountId: 'U0001', displayName: 'Alice' },
+      commandName: 'create-page',
+      argsText: '',
+      interaction: null,
+    };
+
+    const created = await pendingCollections.create({
+      correlationId,
+      relationId: null,
+      platform: 'slack',
+      channelId,
+      actorAccountId: 'U0001',
+      commandName: 'create-page',
+      invocation,
+      collected: {},
+      offeredOptions: {},
+      expiresAt: new Date(Date.now() + 600_000),
+    });
+    expect(created.invocation).toEqual(invocation);
+
+    await expect(
+      pendingCollections.findInFlight('slack', channelId, 'U0001'),
+    ).resolves.toEqual(created);
+
+    await pendingCollections.update(correlationId, {
+      collected: { path: '/Sandbox/new-page' },
+    });
+    const updated = await pendingCollections.findByCorrelationId(correlationId);
+    expect(updated?.collected).toEqual({ path: '/Sandbox/new-page' });
+
+    await pendingCollections.remove(correlationId);
+    await expect(
+      pendingCollections.findByCorrelationId(correlationId),
+    ).resolves.toBeNull();
+  });
+
+  it('sweeps expired pending collections without touching one that has not expired', async () => {
+    const { prisma } = await context();
+    const pendingCollections = createPendingCollectionRepository(prisma);
+    const expiredId = `corr-${randomUUID()}`;
+    const freshId = `corr-${randomUUID()}`;
+    const invocationFor = (channelId: string): Invocation => ({
+      platform: 'slack',
+      channel: {
+        platform: 'slack',
+        channelId,
+        channelName: 'general',
+        isPrivate: false,
+      },
+      actor: { platform: 'slack', accountId: 'U0002', displayName: 'Bob' },
+      commandName: 'search',
+      argsText: '',
+      interaction: null,
+    });
+
+    await pendingCollections.create({
+      correlationId: expiredId,
+      relationId: null,
+      platform: 'slack',
+      channelId: `C-${randomUUID()}`,
+      actorAccountId: 'U0002',
+      commandName: 'search',
+      invocation: invocationFor(`C-${randomUUID()}`),
+      collected: {},
+      offeredOptions: {},
+      expiresAt: new Date(Date.now() - 1_000),
+    });
+    await pendingCollections.create({
+      correlationId: freshId,
+      relationId: null,
+      platform: 'slack',
+      channelId: `C-${randomUUID()}`,
+      actorAccountId: 'U0002',
+      commandName: 'search',
+      invocation: invocationFor(`C-${randomUUID()}`),
+      collected: {},
+      offeredOptions: {},
+      expiresAt: new Date(Date.now() + 600_000),
+    });
+
+    const removed = await pendingCollections.deleteExpired(new Date());
+    expect(removed).toBeGreaterThanOrEqual(1);
+    await expect(
+      pendingCollections.findByCorrelationId(expiredId),
+    ).resolves.toBeNull();
+    await expect(
+      pendingCollections.findByCorrelationId(freshId),
+    ).resolves.not.toBeNull();
+
+    await prisma.pendingCollection.deleteMany({
+      where: { correlationId: freshId },
+    });
+  });
+
+  it('retries a notification by destination, leaving an already-posted destination untouched (Requirement 10.7)', async () => {
+    const { prisma, installationId } = await context();
+    const relations = createRelationRepository(prisma);
+    const relation = await relations.create({
+      installationId,
+      growiUri: `https://notify-${WORKSPACE_ID}.example.com`,
+      growiLabel: 'Notify',
+      searchWeight: 1,
+      settingsVersion: 0,
+    });
+    const processedNotifications =
+      createProcessedNotificationRepository(prisma);
+    const requestId = `req-${randomUUID()}`;
+    const expiresAt = new Date(Date.now() + 600_000);
+
+    await processedNotifications.upsertTarget({
+      relationId: relation.relationId,
+      requestId,
+      platform: 'slack',
+      channelId: 'C0001',
+      status: 'posted',
+      detail: null,
+      processedAt: new Date(),
+      expiresAt,
+    });
+    await processedNotifications.upsertTarget({
+      relationId: relation.relationId,
+      requestId,
+      platform: 'slack',
+      channelId: 'C0002',
+      status: 'bot-not-in-channel',
+      detail: 'bot is not a member of C0002',
+      processedAt: new Date(),
+      expiresAt,
+    });
+
+    const targets = await processedNotifications.findAllForRequest(
+      relation.relationId,
+      requestId,
+    );
+    expect(targets.map((target) => target.channelId).sort()).toEqual([
+      'C0001',
+      'C0002',
+    ]);
+    expect(targets.find((target) => target.channelId === 'C0001')?.status).toBe(
+      'posted',
+    );
+
+    // Retrying only the failed destination must not disturb the posted one.
+    await processedNotifications.upsertTarget({
+      relationId: relation.relationId,
+      requestId,
+      platform: 'slack',
+      channelId: 'C0002',
+      status: 'posted',
+      detail: null,
+      processedAt: new Date(),
+      expiresAt,
+    });
+    const retried = await processedNotifications.findAllForRequest(
+      relation.relationId,
+      requestId,
+    );
+    expect(retried.every((target) => target.status === 'posted')).toBe(true);
+  });
+
+  it('consumes a nonce exactly once, refusing the same (relation, key, nonce) triple a second time (Requirement 10.4)', async () => {
+    const { prisma, installationId } = await context();
+    const relations = createRelationRepository(prisma);
+    const requestNonces = createRequestNonceRepository(prisma);
+    const relation = await relations.create({
+      installationId,
+      growiUri: `https://nonce-${WORKSPACE_ID}.example.com`,
+      growiLabel: 'Nonce',
+      searchWeight: 1,
+      settingsVersion: 0,
+    });
+    const ref = { relationId: relation.relationId, keyId: 'growi-key-1' };
+    const nonce = randomUUID();
+    const expiresAt = new Date(Date.now() + 300_000);
+
+    await expect(
+      requestNonces.consumeNonce(ref, nonce, expiresAt),
+    ).resolves.toBe(true);
+    // The same triple, submitted again (a replay), must be refused -- and
+    // must not throw, so a caller can treat this as an ordinary verdict.
+    await expect(
+      requestNonces.consumeNonce(ref, nonce, expiresAt),
+    ).resolves.toBe(false);
+  });
+
+  it('sweeps expired request nonces', async () => {
+    const { prisma, installationId } = await context();
+    const relations = createRelationRepository(prisma);
+    const requestNonces = createRequestNonceRepository(prisma);
+    const relation = await relations.create({
+      installationId,
+      growiUri: `https://nonce-sweep-${WORKSPACE_ID}.example.com`,
+      growiLabel: 'NonceSweep',
+      searchWeight: 1,
+      settingsVersion: 0,
+    });
+    const ref = { relationId: relation.relationId, keyId: 'growi-key-1' };
+    const expiredNonce = randomUUID();
+    const freshNonce = randomUUID();
+
+    await requestNonces.consumeNonce(
+      ref,
+      expiredNonce,
+      new Date(Date.now() - 1_000),
+    );
+    await requestNonces.consumeNonce(
+      ref,
+      freshNonce,
+      new Date(Date.now() + 300_000),
+    );
+
+    const removed = await requestNonces.deleteExpired(new Date());
+    expect(removed).toBeGreaterThanOrEqual(1);
+    // The expired nonce is gone, so it can be "seen" again (still refused
+    // only while it was live -- this proves the sweep, not replay safety).
+    await expect(
+      requestNonces.consumeNonce(
+        ref,
+        expiredNonce,
+        new Date(Date.now() + 300_000),
+      ),
+    ).resolves.toBe(true);
+    await expect(
+      requestNonces.consumeNonce(
+        ref,
+        freshNonce,
+        new Date(Date.now() + 300_000),
+      ),
+    ).resolves.toBe(false);
   });
 });

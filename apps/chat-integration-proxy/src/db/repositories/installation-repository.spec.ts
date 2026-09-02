@@ -154,3 +154,19 @@ describe('installationRepository reads that carry no credentials', () => {
     ]);
   });
 });
+
+describe('installationRepository.markChannelsSynced', () => {
+  it('writes the given timestamp to channelsSyncedAt alone', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.installation.update.mockResolvedValue(ROW);
+    const repository = createInstallationRepository(prisma, testCipher);
+    const syncedAt = new Date('2026-03-01T00:00:00.000Z');
+
+    await repository.markChannelsSynced('installation-1', syncedAt);
+
+    expect(prisma.installation.update).toHaveBeenCalledWith({
+      where: { id: 'installation-1' },
+      data: { channelsSyncedAt: syncedAt },
+    });
+  });
+});

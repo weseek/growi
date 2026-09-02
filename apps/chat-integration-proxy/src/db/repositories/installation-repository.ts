@@ -67,6 +67,15 @@ export interface InstallationRepository {
     platform: PlatformName,
     workspaceId: string,
   ): Promise<InstallationCredentials | null>;
+  /**
+   * Marks a full channel-inventory refresh (`listChannels()`) as complete,
+   * regardless of whether it found any channels -- design.md: 「`channels_synced_at`
+   * は…結果によらず（0 件でも）完了するたびに現在時刻を書く」. Deciding WHEN to
+   * call this (the periodic refresh, and the one-time refresh right after
+   * `save()`) is `ChannelDirectory`'s job, one layer up; this is only the
+   * write primitive.
+   */
+  markChannelsSynced(installationId: string, syncedAt: Date): Promise<void>;
 }
 
 interface InstallationRow {
@@ -154,5 +163,12 @@ export const createInstallationRepository = (
     return JSON.parse(
       cipher.decrypt(row.credentials),
     ) as InstallationCredentials;
+  },
+
+  markChannelsSynced: async (installationId, syncedAt) => {
+    await db.installation.update({
+      where: { id: installationId },
+      data: { channelsSyncedAt: syncedAt },
+    });
   },
 });

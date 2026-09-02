@@ -1,0 +1,78 @@
+// Mocked-Prisma tests: these prove the wiring -- which composite key each
+// function reads/writes by, and that the two reads a "never synced" vs
+// "synced, empty" judgement needs stay independent of each other. A real
+// round trip through PostgreSQL is `storage-round-trip.integ.ts`'s job.
+import { mockDeep } from 'vitest-mock-extended';
+
+import type { PrismaClient } from '../prisma-client.js';
+import { createInstallationChannelRepository } from './installation-channel-repository.js';
+
+const CHANNEL = {
+  installationId: 'installation-1',
+  platform: 'slack',
+  channelId: 'C0001',
+  channelName: 'general',
+  isPrivate: false,
+  refreshedAt: new Date('2026-01-01T00:00:00.000Z'),
+};
+
+describe('installationChannelRepository.upsert', () => {
+  it('upserts by the composite (installationId, channelId) key', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.installationChannel.upsert.mockResolvedValue(CHANNEL);
+    const repository = createInstallationChannelRepository(prisma);
+
+    await repository.upsert(CHANNEL);
+
+    expect(prisma.installationChannel.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: {
+          installationId_channelId: {
+            installationId: 'installation-1',
+            channelId: 'C0001',
+          },
+        },
+      }),
+    );
+  });
+});
+
+describe('installationChannelRepository.find (Requirement 2.5)', () => {
+  it('finds a saved channel by the composite key', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.installationChannel.findUnique.mockResolvedValue(CHANNEL);
+    const repository = createInstallationChannelRepository(prisma);
+
+    await expect(repository.find('installation-1', 'C0001')).resolves.toEqual(
+      CHANNEL,
+    );
+  });
+
+  it('answers null for a channel not in the saved inventory', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.installationChannel.findUnique.mockResolvedValue(null);
+    const repository = createInstallationChannelRepository(prisma);
+
+    await expect(
+      repository.find('installation-1', 'C-unknown'),
+    ).resolves.toBeNull();
+  });
+});
+
+describe('installationChannelRepository.existsAny', () => {
+  it('answers true when at least one channel is recorded for the installation', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.installationChannel.findFirst.mockResolvedValue(CHANNEL);
+    const repository = createInstallationChannelRepository(prisma);
+
+    await expect(repository.existsAny('installation-1')).resolves.toBe(true);
+  });
+
+  it('answers false when no channel is recorded -- callers must combine this with installation.channelsSyncedAt to tell "never synced" apart from "synced, empty"', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.installationChannel.findFirst.mockResolvedValue(null);
+    const repository = createInstallationChannelRepository(prisma);
+
+    await expect(repository.existsAny('installation-1')).resolves.toBe(false);
+  });
+});
