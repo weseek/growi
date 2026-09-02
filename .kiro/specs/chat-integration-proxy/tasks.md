@@ -14,7 +14,7 @@
 ---
 
 - [ ] 1. 土台を作る
-- [ ] 1.1 新規アプリ `apps/chat-integration-proxy` の雛形を用意する
+- [x] 1.1 新規アプリ `apps/chat-integration-proxy` の雛形を用意する
   - package.json・tsconfig・turbo.json・vitest の設定を置く。**build は `@growi/chat` の build に依存する**と宣言する
   - Biome と Vitest を最初から使う。HTTP は Hono、DI コンテナは使わない
   - Chat SDK はバージョンを完全に固定して入れる
@@ -491,3 +491,9 @@
     proxy がどこにも保存していないことを、保存の中身を見て確かめる
   - _Requirements: 7.8, 9.1, 9.2, 9.5, 9.7, 10.5, 10.6, 13.1_
   - _Depends: 11.1_
+
+---
+
+## Implementation Notes
+
+- **1.1**: このアプリは `"type": "module"` + `tsc` ビルドなので、相対 import は拡張子（`.js`）を付けて書くこと（`apps/growi-vault-manager` と同じ形。`tsc` は import 文をそのまま出力し、Node は拡張子なしの相対 import を実行時に解決できない）。Biome の `useImportExtensions` はこのリポジトリで有効になっておらず、1.7 が担当するのは層の順序と Chat SDK の import 元の2点だけなので、拡張子の付け忘れを機械的に捕まえる仕組みは無い。1.3 以降、複数ファイル間の相対 import を書く最初のタスクから注意すること。
