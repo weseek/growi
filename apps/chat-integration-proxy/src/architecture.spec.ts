@@ -9,6 +9,14 @@
 //      imported from `src/platform/**`. The Chat SDK is not a layer, so a file that is
 //      perfectly layer-order-correct (e.g. `orchestration/`, near the right end of the
 //      chain) can still import it directly without breaking guard 1.
+//   3. Prisma generated-client origin — `src/generated/**` may only be imported from
+//      `src/db/**`. Added by task 2.1, which needed the first import of the generated client:
+//      like the Chat SDK, `generated/` is not a layer (it is not hand-written source), so
+//      guard 1 cannot express "legal from exactly one place" for it and would instead reject
+//      every importer including the legal one. Guard 1 therefore skips resolved paths under
+//      `generated/` and this guard takes over. Note this must stay a path-based rule and must
+//      never be relaxed into a tsconfig path alias: guard 1 only inspects specifiers starting
+//      with `.`, so a non-relative alias would slip past both guards silently.
 import { mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, relative, resolve, sep } from 'node:path';
@@ -46,7 +54,8 @@ type Layer = (typeof LAYER_ORDER)[number];
  * - `generated/`: Prisma's generated client output, not hand-written source.
  */
 const OUTERMOST_DIR = 'runtime';
-const EXCLUDED_DIRS = ['generated'];
+const GENERATED_DIR = 'generated';
+const EXCLUDED_DIRS = [GENERATED_DIR];
 
 /** A file that belongs to no layer: `src/*.ts` and `src/runtime/**`. Same rules as runtime. */
 const OUTERMOST = 'outermost';
@@ -189,7 +198,11 @@ describe('layer order', () => {
         .filter((specifier) => specifier.startsWith('.'))
         .flatMap((specifier) => {
           const resolved = resolve(dirname(file), specifier);
-          if (relative(SRC_DIR, resolved).startsWith('..')) return []; // outside src/
+          const fromSrc = relative(SRC_DIR, resolved);
+          if (fromSrc.startsWith('..')) return []; // outside src/
+          // Not a layer, and legal from exactly one place — judged by the
+          // generated-client origin guard below instead.
+          if (fromSrc.split(sep)[0] === GENERATED_DIR) return [];
           const importedLayer = layerOf(resolved);
           const allowed =
             importedLayer !== OUTERMOST &&
@@ -245,5 +258,50 @@ describe('Chat SDK import origin', () => {
   it('does not restrict @growi/chat', () => {
     expect(isRestricted('@growi/chat')).toBe(false);
     expect(isRestricted('@growi/chat/dist/interfaces')).toBe(false);
+  });
+});
+
+describe('Prisma generated client import origin', () => {
+  /**
+   * design.md's File Structure Plan puts `db/prisma-client.ts` between the generated client
+   * and the rest of the app. Reaching `src/generated/**` from any other layer would put a
+   * generated model type — and the connection it is bound to — into a layer that is supposed
+   * to see only the repository surface `db/` publishes.
+   */
+  const DB_DIR = `db${sep}`;
+
+  const generatedImportsOf = (file: string): string[] =>
+    importSpecifiersOf(file)
+      .filter((specifier) => specifier.startsWith('.'))
+      .filter(
+        (specifier) =>
+          relative(SRC_DIR, resolve(dirname(file), specifier)).split(sep)[0] ===
+          GENERATED_DIR,
+      );
+
+  it('is imported from src/db/** only', () => {
+    const violations = SOURCE_FILES.filter(
+      (file) => !relative(SRC_DIR, file).startsWith(DB_DIR),
+    ).flatMap((file) =>
+      generatedImportsOf(file).map(
+        (specifier) => `${toDisplayPath(file)} imports '${specifier}'`,
+      ),
+    );
+
+    expect(violations).toEqual([]);
+  });
+
+  it('recognizes the real import that made this guard necessary', () => {
+    // Without a positive case the rule above passes vacuously the moment `generatedImportsOf`
+    // stops matching anything — the same reason the Chat SDK guard asserts its own predicate.
+    // `db/prisma-client.ts` is the one file design.md puts in front of the generated client,
+    // so it is the honest positive case rather than a synthetic fixture.
+    expect(generatedImportsOf(join(SRC_DIR, 'db', 'prisma-client.ts'))).toEqual(
+      ['../generated/prisma/client.js'],
+    );
+  });
+
+  it('does not read an ordinary sibling import as a generated-client import', () => {
+    expect(generatedImportsOf(join(SRC_DIR, 'types', 'index.ts'))).toEqual([]);
   });
 });

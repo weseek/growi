@@ -1,0 +1,95 @@
+// The registration code an administrator is handed (design.md's `pairing_order`).
+// Only the code's hash is ever stored, so a leaked database row does not hand
+// an attacker a code they could submit (Requirement 10.6).
+import { mockDeep } from 'vitest-mock-extended';
+
+import type { PrismaClient } from '../prisma-client.js';
+import { createPairingOrderRepository } from './pairing-order-repository.js';
+
+const EXPIRES_AT = new Date('2026-06-01T00:10:00.000Z');
+
+const row = (overrides: Partial<Record<string, unknown>> = {}) => ({
+  id: 'pairing-order-1',
+  installationId: 'installation-1',
+  codeHash: 'sha256-of-the-code',
+  attempts: 0,
+  expiresAt: EXPIRES_AT,
+  consumedAt: null,
+  relationId: null,
+  ...overrides,
+});
+
+describe('pairingOrderRepository (Requirement 10.6)', () => {
+  it('stores only what it was given to store, and looks up by the same hash', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.pairingOrder.create.mockResolvedValue(row());
+    const repository = createPairingOrderRepository(prisma);
+
+    await repository.issue('installation-1', 'sha256-of-the-code', EXPIRES_AT);
+
+    expect(prisma.pairingOrder.create.mock.calls[0][0].data).toEqual({
+      installationId: 'installation-1',
+      codeHash: 'sha256-of-the-code',
+      expiresAt: EXPIRES_AT,
+    });
+  });
+
+  it('finds an order by the hash of the submitted code', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.pairingOrder.findUnique.mockResolvedValue(row());
+    const repository = createPairingOrderRepository(prisma);
+
+    const found = await repository.findByCodeHash('sha256-of-the-code');
+
+    expect(prisma.pairingOrder.findUnique.mock.calls[0][0].where).toEqual({
+      codeHash: 'sha256-of-the-code',
+    });
+    expect(found).toEqual({
+      id: 'pairing-order-1',
+      installationId: 'installation-1',
+      attempts: 0,
+      expiresAt: EXPIRES_AT,
+      consumedAt: null,
+      relationId: null,
+    });
+  });
+
+  it('answers null for a code that was never issued', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.pairingOrder.findUnique.mockResolvedValue(null);
+    const repository = createPairingOrderRepository(prisma);
+
+    await expect(
+      repository.findByCodeHash('sha256-of-nothing'),
+    ).resolves.toBeNull();
+  });
+
+  it('counts a failed attempt in the database, not in the caller', async () => {
+    // Two administrators submitting at once must not each read 0 and write 1;
+    // the increment has to happen where the row lives.
+    const prisma = mockDeep<PrismaClient>();
+    prisma.pairingOrder.update.mockResolvedValue(row({ attempts: 3 }));
+    const repository = createPairingOrderRepository(prisma);
+
+    await expect(repository.recordAttempt('pairing-order-1')).resolves.toBe(3);
+    expect(prisma.pairingOrder.update.mock.calls[0][0].data).toEqual({
+      attempts: { increment: 1 },
+    });
+  });
+
+  it('remembers which relation a consumed code produced', async () => {
+    // Without this, submitting the same code a second time could not answer
+    // with the same `PairingResult` and would create a second relation.
+    const prisma = mockDeep<PrismaClient>();
+    prisma.pairingOrder.update.mockResolvedValue(row());
+    const repository = createPairingOrderRepository(prisma);
+    const consumedAt = new Date('2026-06-01T00:05:00.000Z');
+
+    await repository.consume('pairing-order-1', 'relation-1', consumedAt);
+
+    expect(prisma.pairingOrder.update.mock.calls[0][0]).toEqual({
+      where: { id: 'pairing-order-1' },
+      data: { relationId: 'relation-1', consumedAt },
+    });
+  });
+});

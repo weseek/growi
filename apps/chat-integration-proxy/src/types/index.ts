@@ -77,3 +77,4 @@ export type {
   PlatformEvent,
 } from './platform-event.js';
 export type { Relation } from './relation.js';
+export type { SecretCipher } from './secret-cipher.js';

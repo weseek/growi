@@ -16,22 +16,17 @@
 import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 
-import type { PlatformAppConfig } from '../types/index.js';
+import type { PlatformAppConfig, SecretCipher } from '../types/index.js';
+
+// Re-exported so `runtime/index.ts` -- and anything reading this module as the
+// place storage encryption is configured -- still names the type here, while
+// `types/secret-cipher.ts` stays its single declaration (see that file for why
+// the declaration cannot live in `runtime/`).
+export type { SecretCipher } from '../types/index.js';
 
 // ---------------------------------------------------------------------------
 // Public types
 // ---------------------------------------------------------------------------
-
-/**
- * What the storage layer uses to read and write the two encrypted columns.
- * `encrypt` sits next to `decrypt` on purpose: the layer that writes those
- * columns needs both, and moving `encrypt` anywhere else would mean handing
- * that layer the raw key -- exactly the invariant this module exists to keep.
- */
-export interface SecretCipher {
-  readonly encrypt: (plaintext: string) => string;
-  readonly decrypt: (ciphertext: string) => string;
-}
 
 /**
  * The operator's closed-network declaration (Requirement 13.1). `allowList`
