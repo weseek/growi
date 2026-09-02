@@ -1168,6 +1168,9 @@ importers:
       '@types/pg':
         specifier: ^8.23.1
         version: 8.23.1
+      prisma:
+        specifier: 6.19.2
+        version: 6.19.2(magicast@0.3.5)(typescript@5.9.3)
 
   apps/growi-vault-manager:
     dependencies:

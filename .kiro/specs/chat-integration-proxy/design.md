@@ -914,7 +914,7 @@ bot が招待されていない公開チャンネルは、本当は `bot-not-in-
 | 取り直し | **proxy が installation ごとに、自分の周期で**（既定 10 分）`PlatformFacade.listChannels()` を呼び、`installation_channel` に保存する |
 | **最初の 1 回** | **`InstallationStore.save()` が成功した直後に 1 回取り直す。** これが無いと、`installation_channel` が空のまま最初の周期を待つことになり、**紐付けた直後の 10 分間、通知がすべて断られる** |
 | 判定 | 通知が来たら**保存した一覧だけを見る**。無いチャンネルは `channel-not-in-installation` |
-| **一度も取れていない installation** | `refreshed_at` の行が 1 つも無い状態と、取れた結果が空だった状態を**区別する**。前者は `channel-not-in-installation` ではなく **`inventory-not-ready`** を返す。前者で「そのチャンネルは無い」と答えると、**運用者に間違った直し方（チャンネルを作り直す・bot を入れ直す）を案内してしまう** |
+| **一度も取れていない installation** | `installation.channels_synced_at` が `NULL` の状態と、非 `NULL`（取り直しは完了したが結果が空だった）状態を**区別する**。前者は `channel-not-in-installation` ではなく **`inventory-not-ready`** を返す。前者で「そのチャンネルは無い」と答えると、**運用者に間違った直し方（チャンネルを作り直す・bot を入れ直す）を案内してしまう** |
 | 取り直しの失敗 | **最後に取れた一覧をそのまま使い続ける**（新しい一覧が取れるまで判定は変わらない） |
 | 誰が回すか | `sweeper` と同じく**分散ロックで 1 台だけ**が取り直す。保存先は PostgreSQL なので、**ロックを持たない台も読める** |
 
@@ -987,7 +987,7 @@ custom proxy 向けに、許す宛先を運用者が設定で明示できるよ�
 
 | テーブル | 主な列 | 索引・制約 |
 |---|---|---|
-| `installation` | `id`, `platform`, `workspace_id`, `workspace_name`, `credentials`（暗号化）, `created_at` | `(platform, workspace_id)` 一意 |
+| `installation` | `id`, `platform`, `workspace_id`, `workspace_name`, `credentials`（暗号化）, `created_at`, **`channels_synced_at`（nullable）** | `(platform, workspace_id)` 一意。**`channels_synced_at`** は `listChannels()` による一覧の取り直しが**結果によらず**（0 件でも）完了するたびに現在時刻を書く。`installation_channel` は installation ごとの行がチャンネル数だけ増減するため、それ単独では「一度も取れていない」と「取れた結果が 0 件だった」を区別できない — 前者は `channels_synced_at IS NULL`、後者は非 NULL かつ `installation_channel` に行が無い状態として区別する |
 | `relation` | `id`（**推測できない値。連番にしない** — `keyid` として署名ヘッダに載り外部に出るため）, `installation_id`, `growi_uri`, `growi_label`, `search_weight`, `settings_version`, `created_at` | `(installation_id, growi_uri)` 一意 |
 | `peer_key` | `id`, `relation_id`, `key_id`, `public_key_jwk`, `valid_from`, `revoked_at` | `(relation_id, key_id)` 一意 |
 | `own_key` | `id`, `relation_id`, `key_id`, `private_key_pem`（暗号化）, `valid_from`, `revoked_at`, **`superseded_key_id`**, **`delivered_to_peer_at`** | 同上。**相手ごとに鍵を分ける** — 1 つの関係の鍵が漏れても他へ波及しないため。後ろ 2 列は入れ替えの途中経過（上記） |
