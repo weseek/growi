@@ -12,6 +12,7 @@ import type {
   OutboundMessage,
   PlatformAppConfig,
   PlatformEvent,
+  PlatformEventSink,
   Relation,
   TimeRange,
 } from './index.js';
@@ -257,6 +258,32 @@ describe('PlatformEvent', () => {
     // @ts-expect-error -- `'reply'` is not a member of `PlatformEvent['kind']`.
     const rejectedKind: PlatformEvent['kind'] = 'reply';
     expect(events.every((event) => event.kind !== rejectedKind)).toBe(true);
+  });
+
+  it('declares the sink a mapped event is handed to, taking any of the five kinds', async () => {
+    const handled: PlatformEvent[] = [];
+    const sink: PlatformEventSink = {
+      handle: (event) => {
+        handled.push(event);
+        return Promise.resolve();
+      },
+    };
+
+    await sink.handle({
+      kind: 'mention',
+      platform: 'discord',
+      channel: {
+        platform: 'discord',
+        channelId: 'C1',
+        channelName: 'general',
+        isPrivate: false,
+      },
+      actor: { platform: 'discord', accountId: 'U1', displayName: 'Alice' },
+      text: 'hi',
+      interaction: null,
+    });
+
+    expect(handled.map((event) => event.kind)).toEqual(['mention']);
   });
 });
 

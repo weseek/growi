@@ -216,6 +216,14 @@ modal を開くには、そのサービスが modal に対応しているかと�
 
 **したがって modal を選ぶ条件は「能力表が対応と言っている**かつ**有効な手がかりがある」。**
 
+**手がかりは `PlatformEvent` の `interaction` に載る。無いときは `null`。**
+実際に載るのは Slack だけで（`trigger_id`）、Discord は slash コマンドに対応しているのに載せてこない。
+そのため `slash-command` と `action` の `interaction` は `InteractionRef | null` である
+（非 null にすると、手がかりの無いサービスではイベント自体を作れず、コマンドが丸ごと使えなくなる）。
+なお Teams は `modal` が ○ でありながら手がかりを載せないので、
+**「有効な手がかりがある」を `interaction != null` と実装してはならない** — Chat SDK 側は
+イベントそのものが持つ `openModal()` で開く形になっている。
+
 mention から始まったときの段取り:
 
 1. `interactiveActions` が使えるなら、**ボタンを 1 つ出す**（「入力する」）
@@ -616,9 +624,9 @@ export interface InstallationStore {
 /** platform 層が外へ渡すイベント。**Chat SDK の型を含めない** */
 export type PlatformEvent =
   | { readonly kind: 'mention';       readonly platform: PlatformName; readonly channel: ChannelRef; readonly actor: ChatAccountRef; readonly text: string; readonly interaction: InteractionRef | null }
-  | { readonly kind: 'slash-command'; readonly platform: PlatformName; readonly channel: ChannelRef; readonly actor: ChatAccountRef; readonly command: string; readonly text: string; readonly interaction: InteractionRef }
+  | { readonly kind: 'slash-command'; readonly platform: PlatformName; readonly channel: ChannelRef; readonly actor: ChatAccountRef; readonly command: string; readonly text: string; readonly interaction: InteractionRef | null }
   | { readonly kind: 'modal-submit';  readonly platform: PlatformName; readonly channel: ChannelRef; readonly actor: ChatAccountRef; readonly correlationId: string; readonly values: Readonly<Record<string, string>> }
-  | { readonly kind: 'action';        readonly platform: PlatformName; readonly channel: ChannelRef; readonly actor: ChatAccountRef; readonly correlationId: string; readonly actionId: string; readonly value: string | null; readonly interaction: InteractionRef }
+  | { readonly kind: 'action';        readonly platform: PlatformName; readonly channel: ChannelRef; readonly actor: ChatAccountRef; readonly correlationId: string; readonly actionId: string; readonly value: string | null; readonly interaction: InteractionRef | null }
   | { readonly kind: 'link-posted';   readonly platform: PlatformName; readonly channel: ChannelRef; readonly actor: ChatAccountRef; readonly messageRef: MessageRef; readonly urls: ReadonlyArray<string> };
 
 export interface PlatformEventSink { handle(event: PlatformEvent): Promise<void> }

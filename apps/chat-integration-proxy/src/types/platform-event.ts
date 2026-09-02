@@ -36,7 +36,15 @@ export type PlatformEvent =
       readonly actor: ChatAccountRef;
       readonly command: string;
       readonly text: string;
-      readonly interaction: InteractionRef;
+      /**
+       * `null` when the platform handed this invocation no short-lived
+       * modal handle. Only Slack supplies one (`trigger_id`); Discord
+       * supports slash commands and never does. Dropping the event there
+       * would make the command unusable, so the missing handle is reported
+       * rather than treated as an invalid event -- design.md's 「手がかりが
+       * 切れているなら、聞き返しの経路へ落とす」 is exactly this case.
+       */
+      readonly interaction: InteractionRef | null;
     }
   | {
       readonly kind: 'modal-submit';
@@ -54,7 +62,8 @@ export type PlatformEvent =
       readonly correlationId: string;
       readonly actionId: string;
       readonly value: string | null;
-      readonly interaction: InteractionRef;
+      /** `null` for the same reason as on `slash-command` above. */
+      readonly interaction: InteractionRef | null;
     }
   | {
       readonly kind: 'link-posted';
@@ -64,6 +73,17 @@ export type PlatformEvent =
       readonly messageRef: MessageRef;
       readonly urls: ReadonlyArray<string>;
     };
+
+/**
+ * What `platform/` hands a converted `PlatformEvent` to (design.md declares it
+ * alongside `PlatformEvent` itself). Declared here rather than in
+ * `orchestration/` because `platform/` -- which calls it -- sits to the LEFT of
+ * `orchestration/` in the declared dependency order and so cannot import from
+ * it; `orchestration/event-sink.ts` implements this type.
+ */
+export interface PlatformEventSink {
+  handle(event: PlatformEvent): Promise<void>;
+}
 
 /**
  * Values that exist once per app, used to open the always-on connection
