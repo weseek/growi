@@ -17,6 +17,16 @@
 //      `generated/` and this guard takes over. Note this must stay a path-based rule and must
 //      never be relaxed into a tsconfig path alias: guard 1 only inspects specifiers starting
 //      with `.`, so a non-relative alias would slip past both guards silently.
+//   4. db barrel-only — a file outside `src/db/**` may reach the storage layer only through
+//      its declared barrels (`src/db/index.ts` or `src/db/repositories/index.ts`, both named
+//      as public entry points in design.md's File Structure Plan), never by importing
+//      `src/db/repositories/*.ts` or `src/db/prisma-client.ts` directly. Added by task 2.3,
+//      which is exactly the task that created
+//      created `db/index.ts` and `db/repositories/index.ts`: guard 1 already keeps every OTHER
+//      layer from importing `db/` out of order, but it has nothing to say about which FILE
+//      inside `db/` a caller reaches, because from guard 1's point of view every file under
+//      `db/` is equally "the db layer". This guard is narrower than guard 1 and independent of
+//      it, the same way guard 3 is independent of guard 1 for `generated/`.
 import { mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, relative, resolve, sep } from 'node:path';
@@ -303,5 +313,141 @@ describe('Prisma generated client import origin', () => {
 
   it('does not read an ordinary sibling import as a generated-client import', () => {
     expect(generatedImportsOf(join(SRC_DIR, 'types', 'index.ts'))).toEqual([]);
+  });
+});
+
+describe('db barrel import origin', () => {
+  /**
+   * design.md's File Structure Plan marks `db/index.ts` "この層の公開窓口" (this layer's
+   * public entry point) — the storage layer's declared single way in. Task 2.3 added the two
+   * barrels (`db/index.ts` and `db/repositories/index.ts`); this guard is what makes bypassing
+   * them (`import { createRelationRepository } from '../db/repositories/relation-repository.js'`)
+   * a caught violation rather than a convention nobody enforces.
+   *
+   * Written generically (a resolved-path check against every file, not a check that today's
+   * tree is clean) so it automatically covers every future caller in `platform/`, `command/`,
+   * `relation/`, `growi/`, `orchestration/`, and `routes/` once those layers exist — the same
+   * "binds files that don't exist yet" shape task 1.7's `LAYER_ORDER` walk and this file's other
+   * guards already use.
+   */
+  const DB_DIR = `db${sep}`;
+
+  /**
+   * Barrel paths, extension-stripped. Every relative import specifier in this app's real
+   * source resolves to a `.js` path (Implementation Note 1.1: `tsc` emits import specifiers
+   * verbatim, and Node cannot resolve an extensionless relative import at runtime), while
+   * `SOURCE_FILES` walks `.ts` files on disk — so a resolved specifier path (`db/index.js`)
+   * and the on-disk barrel path (`db/index.ts`) never compare equal without stripping the
+   * extension from both sides first. Comparing them directly would make the guard reject the
+   * one legal way to reach `db/` (`from './db/index.js'`), which is worse than not having the
+   * guard at all.
+   */
+  const withoutExtension = (path: string): string =>
+    path.replace(/\.(?:ts|js)$/, '');
+  const BARRELS = new Set(
+    [
+      join(SRC_DIR, 'db', 'index.ts'),
+      join(SRC_DIR, 'db', 'repositories', 'index.ts'),
+    ].map(withoutExtension),
+  );
+
+  /** True for any `db/` file other than its own two declared entry points. */
+  const isDbInternal = (resolvedPath: string): boolean =>
+    relative(SRC_DIR, resolvedPath).startsWith(DB_DIR) &&
+    !BARRELS.has(withoutExtension(resolvedPath));
+
+  const dbInternalImportsOf = (file: string): string[] =>
+    importSpecifiersOf(file)
+      .filter((specifier) => specifier.startsWith('.'))
+      .filter((specifier) => isDbInternal(resolve(dirname(file), specifier)));
+
+  /**
+   * A relative specifier from `fromDir` to `toFile`, always prefixed so it reads as relative,
+   * and always `.js`-suffixed (`toFile` is passed as a `.ts` path on disk) to match the import
+   * style every real source file in this app uses.
+   */
+  const relativeSpecifierTo = (fromDir: string, toFile: string): string => {
+    const rel = relative(fromDir, toFile)
+      .replace(/\.ts$/, '.js')
+      .split(sep)
+      .join('/');
+    return rel.startsWith('.') ? rel : `./${rel}`;
+  };
+
+  it('is reached only through its declared barrels (db/index.ts, db/repositories/index.ts), never by importing a repository file or prisma-client.ts directly', () => {
+    const violations = SOURCE_FILES.filter(
+      (file) => !relative(SRC_DIR, file).startsWith(DB_DIR),
+    ).flatMap((file) =>
+      dbInternalImportsOf(file).map(
+        (specifier) => `${toDisplayPath(file)} imports '${specifier}'`,
+      ),
+    );
+
+    expect(violations).toEqual([]);
+  });
+
+  it('recognizes a direct import of a repository file, bypassing the barrel, as a violation', () => {
+    // A fixture outside src/ (same reason writeFixture() lives outside src/ elsewhere in this
+    // file): SOURCE_FILES walks src/, so a violating file placed inside it would change what
+    // the assertion above is checking.
+    const fixtureDir = mkdtempSync(join(tmpdir(), 'chat-proxy-architecture-'));
+    const fixturePath = join(fixtureDir, 'fixture.ts');
+    const target = join(
+      SRC_DIR,
+      'db',
+      'repositories',
+      'relation-repository.ts',
+    );
+    const specifier = relativeSpecifierTo(fixtureDir, target);
+    writeFileSync(
+      fixturePath,
+      `import { createRelationRepository } from '${specifier}';\n`,
+    );
+
+    expect(dbInternalImportsOf(fixturePath)).toEqual([specifier]);
+  });
+
+  it('does not flag an import of the db barrel itself', () => {
+    const fixtureDir = mkdtempSync(join(tmpdir(), 'chat-proxy-architecture-'));
+    const fixturePath = join(fixtureDir, 'fixture.ts');
+    const target = join(SRC_DIR, 'db', 'index.ts');
+    const specifier = relativeSpecifierTo(fixtureDir, target);
+    writeFileSync(
+      fixturePath,
+      `import { createPrismaClient } from '${specifier}';\n`,
+    );
+
+    expect(dbInternalImportsOf(fixturePath)).toEqual([]);
+  });
+
+  it('does not flag an import of the repositories barrel itself', () => {
+    const fixtureDir = mkdtempSync(join(tmpdir(), 'chat-proxy-architecture-'));
+    const fixturePath = join(fixtureDir, 'fixture.ts');
+    const target = join(SRC_DIR, 'db', 'repositories', 'index.ts');
+    const specifier = relativeSpecifierTo(fixtureDir, target);
+    writeFileSync(
+      fixturePath,
+      `import { createRelationRepository } from '${specifier}';\n`,
+    );
+
+    expect(dbInternalImportsOf(fixturePath)).toEqual([]);
+  });
+
+  it('does not flag the exact import a future src/routes/** file will legally write', () => {
+    // The real-world positive case: every file this guard will actually see once task 3.x
+    // exists reaches db/ through 'db/index.js', not through a '.ts' specifier -- so this test
+    // has to write the same '.js'-suffixed specifier relativeSpecifierTo() produces, not a
+    // hand-picked one, or it would not have caught the extension mismatch this guard once had.
+    const fixtureDir = mkdtempSync(join(tmpdir(), 'chat-proxy-architecture-'));
+    const fixturePath = join(fixtureDir, 'fixture.ts');
+    const target = join(SRC_DIR, 'db', 'index.ts');
+    const specifier = relativeSpecifierTo(fixtureDir, target);
+    writeFileSync(
+      fixturePath,
+      `import { createRelationRepository } from '${specifier}';\n`,
+    );
+
+    expect(specifier.endsWith('.js')).toBe(true);
+    expect(dbInternalImportsOf(fixturePath)).toEqual([]);
   });
 });
