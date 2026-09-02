@@ -265,6 +265,28 @@ describe('Chat SDK import origin', () => {
     expect(violations).toEqual([]);
   });
 
+  it('recognizes the real Chat SDK imports that made this guard necessary', () => {
+    // Until task 3.1 no file imported the SDK at all, so the rule above passed
+    // vacuously -- exactly the failure mode the generated-client guard below
+    // guards against with its own positive case. `platform/adapter-set.ts` is
+    // the one file design.md puts in front of the SDK's adapter constructors,
+    // so it is the honest positive case rather than a synthetic fixture.
+    const specifiers = importSpecifiersOf(
+      join(SRC_DIR, 'platform', 'adapter-set.ts'),
+    ).filter(isRestricted);
+
+    expect(specifiers.sort()).toEqual(
+      [
+        '@chat-adapter/discord',
+        '@chat-adapter/slack',
+        '@chat-adapter/state-pg',
+        '@chat-adapter/teams',
+        'chat',
+        'chat-adapter-mattermost',
+      ].sort(),
+    );
+  });
+
   it('does not restrict @growi/chat', () => {
     expect(isRestricted('@growi/chat')).toBe(false);
     expect(isRestricted('@growi/chat/dist/interfaces')).toBe(false);
