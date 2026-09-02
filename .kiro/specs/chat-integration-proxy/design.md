@@ -63,7 +63,7 @@ types → capabilities → db → platform → command → relation → growi �
 - `@growi/chat` の契約が変わったとき
 - 対応するチャットサービスが増減したとき（能力表と要件 1.2 / 5.6 / 6.5 の対象が変わる）
 - Chat SDK を更新したとき — **能力表を必ず突き合わせる**（docs が `protected` 拡張面を「まだ安定と見なしていない」と明記）
-- 能力表の「要確認」の行を実物で確かめたとき（`linkPreview` / `plainReply`）
+- 能力表の「要確認」の行を実物で確かめたとき（`plainReply`）
 
 ---
 
