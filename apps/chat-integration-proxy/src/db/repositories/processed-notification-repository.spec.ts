@@ -99,3 +99,19 @@ describe('processedNotificationRepository.deleteExpired', () => {
     });
   });
 });
+
+describe('processedNotificationRepository.deleteByRelation', () => {
+  it('deletes every recorded destination of the relation, across requests', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.processedNotificationTarget.deleteMany.mockResolvedValue({
+      count: 4,
+    });
+    const repository = createProcessedNotificationRepository(prisma);
+
+    await expect(repository.deleteByRelation('relation-1')).resolves.toBe(4);
+    // No `requestId` in the filter: every request's rows go, not one request's.
+    expect(prisma.processedNotificationTarget.deleteMany).toHaveBeenCalledWith({
+      where: { relationId: 'relation-1' },
+    });
+  });
+});

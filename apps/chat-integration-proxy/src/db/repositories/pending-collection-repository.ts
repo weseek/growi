@@ -73,6 +73,18 @@ export interface PendingCollectionRepository {
    * task (`runtime/sweeper.ts`), not to this repository.
    */
   deleteExpired(now: Date): Promise<number>;
+  /**
+   * Deletes every row of a relation. Part of the ordered removal sequences
+   * design.md specifies (unpairing one relation, removing a whole
+   * installation).
+   *
+   * A collection whose GROWI destination has not been chosen yet has a NULL
+   * `relation_id` (and no foreign key onto `installation` at all), so no such
+   * row is reachable from a relation id and none is deleted here. That is
+   * deliberate: those rows do not block either removal, and `deleteExpired`
+   * reaps them at their `expires_at`.
+   */
+  deleteByRelation(relationId: string): Promise<number>;
 }
 
 interface PendingCollectionRow {
@@ -160,6 +172,13 @@ export const createPendingCollectionRepository = (
   deleteExpired: async (now) => {
     const result = await db.pendingCollection.deleteMany({
       where: { expiresAt: { lte: now } },
+    });
+    return result.count;
+  },
+
+  deleteByRelation: async (relationId) => {
+    const result = await db.pendingCollection.deleteMany({
+      where: { relationId },
     });
     return result.count;
   },

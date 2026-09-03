@@ -40,6 +40,15 @@ export interface PairingOrderRepository {
    * create a second relation instead (design.md's Data Models note).
    */
   consume(id: string, relationId: string, consumedAt: Date): Promise<void>;
+  /**
+   * Deletes every order of an installation. Needed by
+   * `InstallationStore.remove()` and by nothing else: `pairing_order` ->
+   * `installation` is `Restrict`, so the installation row cannot be deleted
+   * while an order remains. It is deliberately NOT part of unpairing --
+   * `pairing_order` -> `relation` is `SetNull` there, which keeps the order as
+   * history with its `relation_id` cleared (design.md's Data Models note).
+   */
+  deleteByInstallation(installationId: string): Promise<number>;
 }
 
 interface PairingOrderRow {
@@ -88,5 +97,12 @@ export const createPairingOrderRepository = (
       where: { id },
       data: { relationId, consumedAt },
     });
+  },
+
+  deleteByInstallation: async (installationId) => {
+    const result = await db.pairingOrder.deleteMany({
+      where: { installationId },
+    });
+    return result.count;
   },
 });

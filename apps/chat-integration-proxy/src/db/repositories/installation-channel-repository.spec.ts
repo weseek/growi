@@ -76,3 +76,16 @@ describe('installationChannelRepository.existsAny', () => {
     await expect(repository.existsAny('installation-1')).resolves.toBe(false);
   });
 });
+
+describe('installationChannelRepository.deleteByInstallation', () => {
+  it('deletes the whole saved inventory of the installation', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.installationChannel.deleteMany.mockResolvedValue({ count: 5 });
+    const repository = createInstallationChannelRepository(prisma);
+
+    await expect(repository.deleteByInstallation('inst-1')).resolves.toBe(5);
+    expect(prisma.installationChannel.deleteMany).toHaveBeenCalledWith({
+      where: { installationId: 'inst-1' },
+    });
+  });
+});

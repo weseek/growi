@@ -202,3 +202,18 @@ describe('ownKeyRepository rotation bookkeeping (Requirement 10.5)', () => {
     expect(prisma.ownKey.delete).not.toHaveBeenCalled();
   });
 });
+
+describe('ownKeyRepository.deleteByRelation', () => {
+  it('deletes every key of the relation and answers the count removed', async () => {
+    // Unpairing and installation removal both require that no private key
+    // survives the relation, so this deletes rows rather than revoking them.
+    const prisma = mockDeep<PrismaClient>();
+    prisma.ownKey.deleteMany.mockResolvedValue({ count: 2 });
+    const repository = createOwnKeyRepository(prisma, testCipher);
+
+    await expect(repository.deleteByRelation('relation-1')).resolves.toBe(2);
+    expect(prisma.ownKey.deleteMany).toHaveBeenCalledWith({
+      where: { relationId: 'relation-1' },
+    });
+  });
+});

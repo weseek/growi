@@ -152,3 +152,16 @@ describe('peerKeyRepository.listKeys (Requirement 10.5)', () => {
     ]);
   });
 });
+
+describe('peerKeyRepository.deleteByRelation', () => {
+  it('deletes every key of the relation and answers the count removed', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.peerKey.deleteMany.mockResolvedValue({ count: 3 });
+    const repository = createPeerKeyRepository(prisma);
+
+    await expect(repository.deleteByRelation('relation-1')).resolves.toBe(3);
+    expect(prisma.peerKey.deleteMany).toHaveBeenCalledWith({
+      where: { relationId: 'relation-1' },
+    });
+  });
+});

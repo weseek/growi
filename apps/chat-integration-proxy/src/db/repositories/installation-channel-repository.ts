@@ -46,6 +46,18 @@ export interface InstallationChannelRepository {
    * repository's job.
    */
   existsAny(installationId: string): Promise<boolean>;
+  /**
+   * Deletes the whole saved inventory of an installation. Called only when the
+   * installation itself is removed (`InstallationStore.remove()`), where
+   * `installation_channel` -> `installation` being `Restrict` means the
+   * installation row cannot go while these rows remain.
+   *
+   * **Not part of unpairing.** This table is per installation, not per
+   * relation: clearing it when one relation is unpaired would refuse every
+   * notification from the workspace's other GROWIs until the next refresh
+   * (design.md: 「`installation_channel` は消さない」).
+   */
+  deleteByInstallation(installationId: string): Promise<number>;
 }
 
 const toRecord = (
@@ -93,5 +105,12 @@ export const createInstallationChannelRepository = (
       select: { installationId: true },
     });
     return row != null;
+  },
+
+  deleteByInstallation: async (installationId) => {
+    const result = await db.installationChannel.deleteMany({
+      where: { installationId },
+    });
+    return result.count;
   },
 });

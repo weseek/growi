@@ -166,3 +166,19 @@ describe('pendingCollectionRepository.deleteExpired', () => {
     });
   });
 });
+
+describe('pendingCollectionRepository.deleteByRelation', () => {
+  it('deletes the collections of the relation, addressed by relation_id alone', async () => {
+    // Addressed by `relationId` only: a collection still choosing its GROWI
+    // has a NULL `relation_id` and is intentionally out of reach here (it
+    // blocks nothing and expires on its own).
+    const prisma = mockDeep<PrismaClient>();
+    prisma.pendingCollection.deleteMany.mockResolvedValue({ count: 1 });
+    const repository = createPendingCollectionRepository(prisma);
+
+    await expect(repository.deleteByRelation('relation-1')).resolves.toBe(1);
+    expect(prisma.pendingCollection.deleteMany).toHaveBeenCalledWith({
+      where: { relationId: 'relation-1' },
+    });
+  });
+});

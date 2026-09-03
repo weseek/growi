@@ -629,6 +629,9 @@ export interface InstallationStore {
 }
 ```
 
+**`save()` が返すのは installation の id だけ。** 作った直後の一覧の取り直し（下記「最初の 1 回」）が
+失敗しても、`save()` は id を返して成功し、失敗は**呼ぶ側へ渡す関数で知らせる**。
+
 **呼ぶ入り口は 2 つ**（型だけあって呼ぶ場所が無い、という状態にしない）。
 
 | サービス | 入り口 | 置き場所 |
@@ -951,6 +954,16 @@ bot が招待されていない公開チャンネルは、本当は `bot-not-in-
 | 取り直しの失敗 | **最後に取れた一覧をそのまま使い続ける**（新しい一覧が取れるまで判定は変わらない） |
 | 誰が回すか | `sweeper` と同じく**分散ロックで 1 台だけ**が取り直す。保存先は PostgreSQL なので、**ロックを持たない台も読める** |
 
+**その「最初の 1 回」が失敗したときは、installation を作り直させない。**
+`save()` は installation の id を返して成功し、取り直しの失敗は**呼ぶ側へ渡す関数で知らせる**
+（`InstallationStore` の実装が受け取る `onChannelRefreshFailed`。この関数は省略できない引数にする —
+省略できると、2 つの入り口のどちらも渡さないまま失敗が消えてしまう）。
+installation を巻き戻すと、一時的な通信の失敗のために運用者が導入をやり直すことになり、
+Slack と Discord では**OAuth の折り返しをもう一度通ることになる**。
+取りこぼした一覧は周期の取り直しが埋める（それがこの周期の役目である）。
+ただし**黙って捨てない** — 次の周期までこの workspace 宛の通知は `inventory-not-ready` で断られるので、
+運用者に伝える価値がある。周期の取り直しの失敗と同じ考え方（保存した状態は書き換えず、失敗は呼ぶ側へ渡す）で揃えてある。
+
 **「通知が来たときに引く」と「失敗したら通す」を両方やめるのが要点。** 前の版はこの 2 つを持っていたため、
 **侵害された GROWI が覚えていないチャンネル宛てに大量に送るだけで問い合わせを起こし、
 チャットサービスの呼び出し上限に当てて検査を通る側へ倒せた** — 攻撃者が自分で条件を作れた。
@@ -1047,6 +1060,32 @@ Chat SDK の state（購読・分散ロック・重複排除）は `@chat-adapte
 - **`installation_channel` は消さない。** この表は **installation ごと**であって関係ごとではない。
   1 つの関係を解除しただけで消すと、**同じ workspace に紐づく他の GROWI からの通知が、
   次の取り直しまで（既定 10 分）すべて `channel-not-in-installation` で断られる**
+
+**installation そのものを消すとき（`InstallationStore.remove()`）**: 上の「紐付けを解除したとき」は
+**1 つの関係だけを外す**操作で、installation とその他の関係はそのまま残る。それとは別に、
+**installation を丸ごと消す**（チャットアプリが workspace から外された、など）操作では、
+その installation に連なる**すべての関係**を上と同じ順で消したうえで、installation ごとの行も消す。
+`installation` と `relation` に付く外部キーはすべて `Restrict` なので、**この順番は好みではない** —
+親を先に消そうとすると DB に拒否される。
+
+1. その installation の関係を 1 つずつ、**1 つの関係を消し終えてから次の関係へ進む**:
+   `own_key` → `peer_key` → `channel_permission` → `pending_collection` →
+   `processed_notification_target` → 最後にその `relation` の行
+2. `pairing_order` の行。`installation_id` への外部キーが `Restrict` なので、
+   関係の削除で `relation_id` が `SetNull` により空になっても**行は残り、installation の削除を妨げる**
+3. `installation_channel` の行。**解除のときは消さないが、ここでは消す** — installation 自体が無くなるため
+4. 最後に `installation` の行
+
+- `request_nonce` は `Cascade` なので明示的には消さない（解除のときと同じ理由）
+- **GROWI の選択が済んでいない `pending_collection` の行は消えない。** `relation_id` が空で、
+  `installation` への外部キーも無いため、関係の id からは辿れない。installation の削除を妨げることも無く、
+  `expires_at` の掃除で消える
+- **1 つのトランザクションにはまとめない。** `platform/` 層は Prisma のクライアントを持たない
+  （持つのは `db/` だけ）という決まりを崩さないため。途中で失敗しても `Restrict` により
+  行が孤立することは無く、`installation` の行は残るので、**`remove()` をもう一度呼べば続きから終わる**
+- 関係 1 つ分の削除の順番は `PairingService.unpair()` と同じである。**共通の関数にはまだしていない** —
+  `unpair()` が未実装で形が決まっていないため。`unpair()` を書くときは**この順番に揃え**、
+  そのときに共通の置き場所（`relation/` 側）へ出すこと
 
 **保存時の暗号化**: `installation.credentials` と `own_key.private_key_pem`。
 暗号化に使う鍵は `runtime/config.ts` が環境変数から読み、他の層へは復号済みの値ではなく**復号する関数**を渡す。

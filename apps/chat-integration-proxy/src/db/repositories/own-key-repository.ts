@@ -61,6 +61,16 @@ export interface OwnKeyRepository {
   markDeliveredToPeer(ref: KeyRef, deliveredAt: Date): Promise<void>;
   /** Closes a key's validity. The row stays, so it still counts as a revoked key. */
   revoke(ref: KeyRef, revokedAt: Date): Promise<void>;
+  /**
+   * Deletes every key of a relation, private key material included. Part of
+   * the ordered removal sequences design.md specifies -- unpairing one
+   * relation, and removing a whole installation -- both of which require
+   * 「秘密鍵を残さない」. Unlike `revoke`, no row is left behind: this is only
+   * called when the relation itself is going away. Composing the sequence
+   * belongs to the caller (`PairingService.unpair()`,
+   * `InstallationStore.remove()`); this is only the primitive.
+   */
+  deleteByRelation(relationId: string): Promise<number>;
 }
 
 const byRef = (ref: KeyRef) => ({
@@ -131,5 +141,10 @@ export const createOwnKeyRepository = (
 
   revoke: async (ref, revokedAt) => {
     await db.ownKey.update({ where: byRef(ref), data: { revokedAt } });
+  },
+
+  deleteByRelation: async (relationId) => {
+    const result = await db.ownKey.deleteMany({ where: { relationId } });
+    return result.count;
   },
 });

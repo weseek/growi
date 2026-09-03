@@ -93,3 +93,18 @@ describe('pairingOrderRepository (Requirement 10.6)', () => {
     });
   });
 });
+
+describe('pairingOrderRepository.deleteByInstallation', () => {
+  it('deletes every order of the installation and answers the count removed', async () => {
+    // Only the installation-wide removal needs this: unpairing leaves the
+    // order as history with its `relation_id` nulled by the foreign key.
+    const prisma = mockDeep<PrismaClient>();
+    prisma.pairingOrder.deleteMany.mockResolvedValue({ count: 2 });
+    const repository = createPairingOrderRepository(prisma);
+
+    await expect(repository.deleteByInstallation('inst-1')).resolves.toBe(2);
+    expect(prisma.pairingOrder.deleteMany).toHaveBeenCalledWith({
+      where: { installationId: 'inst-1' },
+    });
+  });
+});

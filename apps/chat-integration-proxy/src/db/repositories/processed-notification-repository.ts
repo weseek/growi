@@ -42,6 +42,14 @@ export interface ProcessedNotificationRepository {
    * lock-held run belongs to a later task (`runtime/sweeper.ts`).
    */
   deleteExpired(now: Date): Promise<number>;
+  /**
+   * Deletes every row of a relation. Part of the ordered removal sequences
+   * design.md specifies -- unpairing one relation, and removing a whole
+   * installation. Composing the sequence belongs to the caller
+   * (`PairingService.unpair()`, `InstallationStore.remove()`); this is only
+   * the primitive.
+   */
+  deleteByRelation(relationId: string): Promise<number>;
 }
 
 const toRecord = (
@@ -90,6 +98,13 @@ export const createProcessedNotificationRepository = (
   deleteExpired: async (now) => {
     const result = await db.processedNotificationTarget.deleteMany({
       where: { expiresAt: { lte: now } },
+    });
+    return result.count;
+  },
+
+  deleteByRelation: async (relationId) => {
+    const result = await db.processedNotificationTarget.deleteMany({
+      where: { relationId },
     });
     return result.count;
   },

@@ -42,6 +42,14 @@ export interface PeerKeyRepository {
   listKeys(relationId: string): Promise<ReadonlyArray<RevocableKeyEntry>>;
   /** Closes a key's validity. The row stays: a deleted key reads as one that never existed. */
   revoke(ref: KeyRef, revokedAt: Date): Promise<void>;
+  /**
+   * Deletes every row of a relation. Part of the ordered removal sequences
+   * design.md specifies -- unpairing one relation, and removing a whole
+   * installation. Composing the sequence belongs to the caller
+   * (`PairingService.unpair()`, `InstallationStore.remove()`); this is only
+   * the primitive.
+   */
+  deleteByRelation(relationId: string): Promise<number>;
 }
 
 export const createPeerKeyRepository = (db: DbClient): PeerKeyRepository => ({
@@ -101,5 +109,10 @@ export const createPeerKeyRepository = (db: DbClient): PeerKeyRepository => ({
       },
       data: { revokedAt },
     });
+  },
+
+  deleteByRelation: async (relationId) => {
+    const result = await db.peerKey.deleteMany({ where: { relationId } });
+    return result.count;
   },
 });
