@@ -45,6 +45,19 @@ export type CommandStartEvent = Extract<
   { readonly kind: 'mention' | 'slash-command' }
 >;
 
+/**
+ * Drops a mention's leading address token (`@growi`) and returns the rest
+ * VERBATIM -- inner whitespace, newlines included, untouched.
+ *
+ * Exported because `argument-collector.ts` needs the same address-stripping
+ * for a follow-up ANSWER, which is not a command and must not be re-split
+ * into a command name and a remainder: an answer to a `multiline` field can
+ * legitimately start with a short first line, and splitting then rejoining it
+ * would collapse the newline after that line.
+ */
+export const stripAddressToken = (text: string): string =>
+  splitFirstToken(text).rest;
+
 export const CommandInvocation = {
   /**
    * `mention`'s `text` still carries the address token the bot was mentioned
