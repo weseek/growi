@@ -310,11 +310,14 @@ interface FailureRow {
 }
 
 /**
- * The Slack adapter rethrows `@slack/web-api`'s own error untouched (its
- * `handleSlackError` re-maps only rate limiting), and that error is a plain
- * `Error` carrying `code: 'slack_webapi_platform_error'` with the API's own
- * name under `data.error`. There is no `SlackApiError` class anywhere in
- * `@chat-adapter/slack`.
+ * The Slack adapter's post-message path rethrows `@slack/web-api`'s own error
+ * untouched (its `handleSlackError` re-maps only rate limiting), and that
+ * error is a plain `Error` carrying `code: 'slack_webapi_platform_error'`
+ * with the API's own name under `data.error` -- it never throws
+ * `SlackApiError`. `SlackApiError` does exist elsewhere in
+ * `@chat-adapter/slack` (`api.d.ts`, thrown by `callSlackApi` /
+ * `assertSlackOk` -- the same functions `channels.ts` depends on for Slack's
+ * channel listing); it is simply not what this older post path raises.
  */
 const slackApiErrorName = (error: Record<string, unknown>): string | null => {
   if (error.code !== 'slack_webapi_platform_error') return null;
