@@ -6,7 +6,7 @@
   - 観測できる完了条件：ブラウザの開発者ツールで `document.documentElement` の計算済みスタイルを見たとき、`--grw-inline-comment-marker-bg` が `--grw-marker-bg` の実効値（既定テーマでは `#FFFA90`）に解決されることを確認できる
   - _Requirements: 12.1, 12.2_
 
-- [ ] 1.2 (P) `CodeMirrorEditorProps` に `hideToolbar` を公開する
+- [x] 1.2 (P) `CodeMirrorEditorProps` に `hideToolbar` を公開する
   - `packages/editor/src/client/components-internal/CodeMirrorEditor/CodeMirrorEditor.tsx` の公開 `CodeMirrorEditorProps` に、既存の内部実装 `hideToolbar?: boolean` を追加する（実装本体は変更しない。`CodeMirrorEditorReadOnly.tsx` が既に使っている値をそのまま公開するだけ）
   - 観測できる完了条件：`CodeMirrorEditorComment` から `hideToolbar` を渡せることを型チェックで確認できる
   - _Requirements: 13.3_
