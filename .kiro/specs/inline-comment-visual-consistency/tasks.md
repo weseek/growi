@@ -18,7 +18,7 @@
   - _Requirements: 11.6_
 
 - [ ] 2. 作成UI（起点ボタン・入力フォーム）のテーマ対応化
-- [ ] 2.1 (P) 作成の起点ボタンをBootstrap5・テーマ対応のスタイルにする
+- [x] 2.1 (P) 作成の起点ボタンをBootstrap5・テーマ対応のスタイルにする
   - `SelectionActionButton.tsx` に `className`（`btn btn-sm shadow-sm d-inline-flex align-items-center gap-1`＋新規`SelectionActionButton.module.scss`）とアイコンを追加し、ラベルを `t('inline_comment.start_comment')` に置き換える
   - `SelectionActionButton.module.scss` は `--bs-btn-bg`/`--bs-btn-color`/`--bs-btn-border-color` 等を `--bs-body-bg`/`--bs-body-color`/`--bs-border-color`/`--bs-secondary-bg`/`--bs-tertiary-bg`（16テーマすべてで出力される、primary/secondaryに限定されないプロパティ）で上書きする
   - 観測できる完了条件：ブラウザ操作で、CSSクラスの付いていない既定ボタンの見た目ではなく、枠線・角丸を持つボタンが選択範囲近傍に表示されることを確認できる
