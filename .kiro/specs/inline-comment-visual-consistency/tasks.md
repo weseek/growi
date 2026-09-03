@@ -59,7 +59,7 @@
   - _Depends: 3.2_
   - _Boundary: SelectionCapture_
 
-- [ ] 3.4 色の直値が使われていないことを固定する回帰テストを追加する
+- [x] 3.4 色の直値が使われていないことを固定する回帰テストを追加する
   - `apps/app/src/features/inline-comment/client/no-literal-colors.spec.ts` を新規作成し、`apps/app/src/features/inline-comment/` 配下の `*.ts`/`*.tsx`/`*.scss`/`*.module.scss`（`*.spec.*` を除く）に `#[0-9a-fA-F]{3,8}`/`rgb(`/`rgba(` が一致しないことを確認する
   - 観測できる完了条件：このテストがgreenになる（タスク2.1・2.2・3.1がすべて完了し、`InlineCommentHighlight.tsx`の直値`rgba(255, 193, 7, 0.35)`が除去された後に実行する）
   - _Requirements: 11.2, 12.2_
