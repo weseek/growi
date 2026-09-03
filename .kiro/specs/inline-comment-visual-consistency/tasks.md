@@ -66,7 +66,7 @@
   - _Depends: 2.1, 2.2, 3.1_
 
 - [ ] 4. 通常コメントとの共有カードコンポーネント
-- [ ] 4.1 既存の通常コメント表示を固定する回帰テストを新規作成する
+- [x] 4.1 既存の通常コメント表示を固定する回帰テストを新規作成する
   - `apps/app/src/client/components/PageComment/Comment.spec.tsx` を新規作成する（現状このディレクトリにテストが1つも無い）。文字列の一致ではなく、`comment-styles`モジュールクラス→`.page-comment`→`.page-comment-main.bg-comment.rounded`→見出し行（`d-flex align-items-center`）と`.page-comment-body`、という入れ物の連なりをDOM構造として確認する
   - 観測できる完了条件：現状の`Comment.tsx`に対してこのテストがgreenになる（タスク4.3の書き換え前後で崩れないことを確認するための基準点にする）
   - _Requirements: 13.9_
