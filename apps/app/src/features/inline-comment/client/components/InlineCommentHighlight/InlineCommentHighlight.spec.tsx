@@ -129,4 +129,25 @@ describe('InlineCommentHighlight', () => {
 
     expect(highlightRegistry.has('growi-inline-comment')).toBe(false);
   });
+
+  it('paints the highlight with the theme-aware custom property and no literal color fallback', () => {
+    render(
+      <InlineCommentHighlight
+        containerRef={containerRef}
+        resolvedRanges={new Map<string, ResolvedRange>()}
+      />,
+    );
+
+    // `<style jsx global>` (styled-jsx) renders a plain <style> tag appended
+    // to <head> in this test environment, not inside the RTL render container.
+    const styleContent = Array.from(document.querySelectorAll('style'))
+      .map((style) => style.textContent ?? '')
+      .join('\n');
+
+    expect(styleContent).toContain(
+      'background-color: var(--grw-inline-comment-marker-bg)',
+    );
+    expect(styleContent).not.toContain('rgba(255, 193, 7, 0.35)');
+    expect(styleContent).not.toContain('--bs-warning-bg-subtle');
+  });
 });

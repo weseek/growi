@@ -38,7 +38,7 @@
   - _Boundary: InlineCommentForm_
 
 - [ ] 3. ハイライト色の3状態統一
-- [ ] 3.1 (P) 保存済みコメントのハイライト色をテーマ対応トークンに切り替える
+- [x] 3.1 (P) 保存済みコメントのハイライト色をテーマ対応トークンに切り替える
   - `InlineCommentHighlight.tsx` の `::highlight()` の `background-color` を `var(--bs-warning-bg-subtle, rgba(255, 193, 7, 0.35))` から `var(--grw-inline-comment-marker-bg)` に変更する（テーマ非追随のフォールバックは削除する）
   - 観測できる完了条件：既存のユニットテストを更新し、生成されるスタイル文字列が新しいカスタムプロパティを参照することを確認できる
   - _Requirements: 12.1, 12.3, 12.8_

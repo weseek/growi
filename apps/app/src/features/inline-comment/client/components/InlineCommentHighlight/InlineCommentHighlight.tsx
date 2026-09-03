@@ -100,7 +100,7 @@ export const InlineCommentHighlight = ({
     <style jsx global>
       {`
         ::highlight(${HIGHLIGHT_NAME}) {
-          background-color: var(--bs-warning-bg-subtle, rgba(255, 193, 7, 0.35));
+          background-color: var(--grw-inline-comment-marker-bg);
         }
       `}
     </style>
