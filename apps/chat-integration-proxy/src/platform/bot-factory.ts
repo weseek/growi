@@ -29,7 +29,7 @@ import {
  * `plainReply` is unverified on all four services -- so this name is part of
  * the user-facing contract, not a cosmetic default.
  */
-const BOT_USER_NAME = 'growi';
+export const BOT_USER_NAME = 'growi';
 
 /**
  * Prefix applied to every key handed to `DistributedLock` below.
@@ -127,6 +127,14 @@ export interface AppBot {
  * Assembly only -- nothing here opens a socket or a database connection, which
  * is what keeps it unit-testable. Connecting is the caller's step; see the
  * warning on `AppBot.state`.
+ *
+ * **No production code calls this today.** `AppBot.bot` is typed
+ * `ChatInstance`, which carries no way to register handlers, serve webhooks,
+ * or reach the adapter behind one connection unit, so a caller that needs any
+ * of those cannot use what this returns -- `platform/index.ts` builds instead
+ * from `adapter-set.ts` plus one `Chat` per adapter. Whether this should
+ * return `Chat` and expose its adapters, or be removed, is an open decision
+ * for whoever next changes this file.
  */
 export const createAppBot = (appConfig: PlatformAppConfig): AppBot => {
   const state = createChatState(appConfig);
@@ -151,6 +159,12 @@ export const createAppBot = (appConfig: PlatformAppConfig): AppBot => {
  *
  * `state` is passed in rather than created here so that every bot in the
  * process -- app-wide and per-installation alike -- shares one lock key space.
+ *
+ * **No production code calls this today**, for the same reason as
+ * `createAppBot`: a `ChatInstance` cannot register handlers, serve webhooks or
+ * expose its adapter, so `platform/index.ts` composes per-installation
+ * connections directly from `adapter-set.ts`. Changing the return type or
+ * removing this is an open decision for whoever next changes this file.
  */
 export const createInstallationBot = (
   platform: PlatformName,
