@@ -26,7 +26,7 @@
   - _Depends: 1.3_
   - _Boundary: SelectionActionButton_
 
-- [ ] 2.2 (P) 入力フォームの引用表示・操作ボタン群をBootstrap5・テーマ対応のスタイルにする
+- [x] 2.2 (P) 入力フォームの引用表示・操作ボタン群をBootstrap5・テーマ対応のスタイルにする
   - `InlineCommentForm.tsx` の引用要素に新規 `InlineCommentForm.module.scss` の `inline-comment-form-quote`（`border-left: 3px solid var(--grw-inline-comment-marker-bg)`）を適用する
   - 取り消しボタンに `btn btn-sm btn-outline-secondary`、送信ボタンに `btn btn-sm btn-primary` を適用し、文言を既存キー `t('Cancel')`/`t('page_comment.comment')` に置き換える（`--bs-primary`/`--bs-secondary` はテーマごとに再生成される数少ない色であるため採用する）
   - `MentionPickerButton` の `DropdownToggle` に `color="link"` と `className="btn-sm text-body-secondary"` を渡し、既定の `btn-secondary`（テーマ非追随の濃い灰色）をやめる
@@ -154,3 +154,7 @@
   - _Depends: 6.3, 7.1, 7.2_
 
 ## Implementation Notes
+
+- 2.2: `InlineCommentForm.tsx` の引用要素は design.md のJSX断片どおりCSSモジュールのクラスのみにはせず、素の `inline-comment-form-quote` クラスも残した（`playwright/20-basic-features/inline-comment.spec.ts:124,693` がこのクラス名でロケートしているため。CSSモジュールのクラス名はビルド時ハッシュ化されるので、断片どおりにすると既存のe2eが壊れる。対応するCSS規則は無いので実質テスト用の目印のみ）。
+- 2.2 レビュー時の申し送り: 決定5（エディタのツールバー・行番号余白の非表示）の見た目をブラウザで確認する予定がタスク7.x のどこにも無い。7.1 のE2Eアサーションに含めるか、フィーチャ全体のGO判定前に一度ブラウザで確認すること。
+- 2.2 レビュー時の申し送り（別issue、スペック外・対応不要）: `MentionPickerButton.tsx` の "No candidates" と `InlineCommentForm.tsx` のエラーメッセージが英語直書きのまま（Requirement 11.6は未達だが、このタスクの指示にも新規キー一覧にも無く、本amendの対象外）。

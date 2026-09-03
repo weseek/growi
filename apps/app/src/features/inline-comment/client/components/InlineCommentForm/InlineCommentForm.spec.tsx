@@ -12,6 +12,13 @@ import { InlineCommentForm } from './InlineCommentForm';
 
 const editorState = vi.hoisted(() => ({ docText: '' }));
 
+// Captures the props InlineCommentForm hands to CodeMirrorEditorComment, so the
+// editor-chrome expectations (design.md 決定5) are asserted on the observable
+// prop contract rather than on CodeMirror internals.
+const editorProps = vi.hoisted(
+  () => ({ current: undefined }) as { current?: Record<string, unknown> },
+);
+
 const codeMirrorEditorMock = vi.hoisted(() => ({
   getDocString: vi.fn(() => editorState.docText),
   initDoc: vi.fn(),
@@ -26,16 +33,19 @@ vi.mock('@growi/editor', () => ({
 vi.mock('@growi/editor/dist/client/components/CodeMirrorEditorComment', () => ({
   CodeMirrorEditorComment: (props: {
     cmProps?: { onChange?: (value: string) => void };
-  }) => (
-    // eslint-disable-next-line jsx-a11y/no-onchange
-    <textarea
-      data-testid="inline-comment-textarea"
-      onChange={(e) => {
-        editorState.docText = e.target.value;
-        props.cmProps?.onChange?.(e.target.value);
-      }}
-    />
-  ),
+  }) => {
+    editorProps.current = props;
+    return (
+      // eslint-disable-next-line jsx-a11y/no-onchange
+      <textarea
+        data-testid="inline-comment-textarea"
+        onChange={(e) => {
+          editorState.docText = e.target.value;
+          props.cmProps?.onChange?.(e.target.value);
+        }}
+      />
+    );
+  },
 }));
 
 const createMentionCompletionExtension = vi.hoisted(() => vi.fn(() => ({})));
@@ -46,6 +56,14 @@ vi.mock('@growi/editor/dist/client/services', () => ({
 
 vi.mock('@growi/editor/dist/client/stores/codemirror-editor', () => ({
   useCodeMirrorEditorIsolated: () => ({ data: codeMirrorEditorMock }),
+}));
+
+// `t` returns the i18n key verbatim, so the label assertions below prove the
+// component picked the right existing key without coupling to translated text
+// (which lives in the locale JSON, not here). Same pattern as
+// SelectionActionButton.spec.tsx.
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key: string) => key }),
 }));
 
 vi.mock('~/stores-universal/use-next-themes', () => ({
@@ -96,6 +114,7 @@ const validAnchor = {
 describe('InlineCommentForm', () => {
   beforeEach(() => {
     editorState.docText = '';
+    editorProps.current = undefined;
     create.mockReset();
     create.mockResolvedValue({});
   });
@@ -187,5 +206,60 @@ describe('InlineCommentForm', () => {
     expect(createMentionCompletionExtension).toHaveBeenCalledWith(
       fetchMentionUsersMock,
     );
+  });
+
+  describe('theme-aware appearance (Requirement 11.1, 11.2, 11.5, 11.6, 13.3)', () => {
+    const renderForm = () =>
+      render(
+        <InlineCommentForm
+          pageId="page-1"
+          anchorOriginRevisionId="rev-1"
+          anchor={validAnchor}
+        />,
+      );
+
+    it('renders the submit button as a Bootstrap 5 primary button labelled by the existing page_comment.comment key', () => {
+      renderForm();
+
+      const submitButton = screen.getByTestId('inline-comment-submit-button');
+      expect(submitButton).toHaveClass('btn', 'btn-sm', 'btn-primary');
+      expect(submitButton).toHaveTextContent('page_comment.comment');
+    });
+
+    it('renders the cancel button as a Bootstrap 5 outline-secondary button labelled by the existing Cancel key', () => {
+      renderForm();
+
+      const cancelButton = screen.getByRole('button', { name: 'Cancel' });
+      expect(cancelButton).toHaveClass(
+        'btn',
+        'btn-sm',
+        'btn-outline-secondary',
+      );
+    });
+
+    it('renders the quote with the theme-following utility classes and keeps the quoted text', () => {
+      renderForm();
+
+      const quote = screen.getByText(validAnchor.quote);
+      expect(quote.tagName).toBe('BLOCKQUOTE');
+      expect(quote).toHaveClass(
+        'small',
+        'text-body-secondary',
+        'mb-2',
+        'ps-2',
+        // Kept as a plain (non-hashed) class: the inline-comment Playwright
+        // suite locates the quote by `.inline-comment-form-quote`.
+        'inline-comment-form-quote',
+      );
+    });
+
+    it('hides the editor toolbar, line numbers and fold gutter (design.md 決定5)', () => {
+      renderForm();
+
+      expect(editorProps.current?.hideToolbar).toBe(true);
+      expect(editorProps.current?.cmProps).toMatchObject({
+        basicSetup: { lineNumbers: false, foldGutter: false },
+      });
+    });
   });
 });

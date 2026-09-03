@@ -24,6 +24,7 @@ import {
   mentionDecorationSettings,
 } from '@growi/editor/dist/client/services';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
+import { useTranslation } from 'react-i18next';
 
 import { useNextThemes } from '~/stores-universal/use-next-themes';
 
@@ -31,6 +32,8 @@ import { fetchMentionUsers } from '../../services/fetch-mention-users';
 import { useSWRxInlineComments } from '../../stores/inline-comment';
 import type { CapturedSelection } from '../SelectionCapture/use-text-selection';
 import { MentionPickerButton } from './MentionPickerButton';
+
+import styles from './InlineCommentForm.module.scss';
 
 type InlineCommentFormProps = {
   pageId: string;
@@ -49,6 +52,8 @@ export const InlineCommentForm = (
 ): JSX.Element => {
   const { pageId, anchorOriginRevisionId, anchor, onSubmitted, onCanceled } =
     props;
+
+  const { t } = useTranslation();
 
   const { create } = useSWRxInlineComments(pageId);
 
@@ -82,6 +87,10 @@ export const InlineCommentForm = (
   const cmProps = useMemo(
     () => ({
       onChange: (value: string) => setCommentText(value),
+      // The line-number and fold gutters come from @uiw/react-codemirror's
+      // default `basicSetup: true`; the form is a one-to-few line input where
+      // that gutter width is pure wasted space (design.md 決定5).
+      basicSetup: { lineNumbers: false, foldGutter: false },
     }),
     [],
   );
@@ -140,27 +149,38 @@ export const InlineCommentForm = (
       className="inline-comment-form bg-body border rounded shadow-sm p-2"
       data-testid="inline-comment-form"
     >
-      <blockquote className="inline-comment-form-quote">
+      {/* `inline-comment-form-quote` is kept as a plain class alongside the
+          CSS-module one: the inline-comment Playwright suite locates the quote
+          by that selector. */}
+      <blockquote
+        className={`inline-comment-form-quote small text-body-secondary mb-2 ps-2 ${styles['inline-comment-form-quote']}`}
+      >
         {anchor.quote}
       </blockquote>
       <CodeMirrorEditorComment
         editorKey={editorKey}
         cmProps={cmProps}
+        hideToolbar
         onSave={submitHandler}
       />
-      {error != null && <span className="text-danger">{error}</span>}
-      <div className="inline-comment-form-actions">
+      {error != null && <span className="text-danger small">{error}</span>}
+      <div className="d-flex align-items-center gap-2 mt-2">
         <MentionPickerButton onInsert={insertMention} />
-        <button type="button" onClick={onCanceled}>
-          Cancel
+        <button
+          type="button"
+          className="btn btn-sm btn-outline-secondary ms-auto"
+          onClick={onCanceled}
+        >
+          {t('Cancel')}
         </button>
         <button
           type="button"
+          className="btn btn-sm btn-primary"
           data-testid="inline-comment-submit-button"
           disabled={!canSubmit}
           onClick={submitHandler}
         >
-          Comment
+          {t('page_comment.comment')}
         </button>
       </div>
     </div>

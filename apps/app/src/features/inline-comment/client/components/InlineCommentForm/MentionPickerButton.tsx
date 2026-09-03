@@ -58,7 +58,16 @@ export const MentionPickerButton = (
 
   return (
     <Dropdown isOpen={isOpen} toggle={toggle}>
-      <DropdownToggle type="button" data-testid="mention-picker-button" caret>
+      {/* `color="link"` instead of reactstrap's default `secondary`: the
+          `btn-secondary` background is a fixed dark grey that does not follow
+          the active theme. */}
+      <DropdownToggle
+        type="button"
+        color="link"
+        className="btn-sm text-body-secondary"
+        data-testid="mention-picker-button"
+        caret
+      >
         @
       </DropdownToggle>
       <DropdownMenu>

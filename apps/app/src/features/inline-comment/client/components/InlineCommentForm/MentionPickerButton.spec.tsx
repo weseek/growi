@@ -66,6 +66,18 @@ describe('MentionPickerButton', () => {
     expect(onInsert).toHaveBeenCalledWith('bob');
   });
 
+  it('renders the toggle as a theme-following link button, not the default btn-secondary (Requirement 11.1, 11.2)', () => {
+    fetchMentionUsersMock.mockResolvedValue([]);
+    render(<MentionPickerButton onInsert={vi.fn()} />);
+
+    const toggle = screen.getByTestId('mention-picker-button');
+    expect(toggle).toHaveClass('btn', 'btn-link', 'btn-sm');
+    expect(toggle).toHaveClass('text-body-secondary');
+    // btn-secondary resolves to a fixed dark grey that does not follow the
+    // active theme, which is exactly what this component must stop using.
+    expect(toggle).not.toHaveClass('btn-secondary');
+  });
+
   it('shows a no-candidates state, without crashing or calling onInsert, when fetchMentionUsers resolves an empty list', async () => {
     fetchMentionUsersMock.mockResolvedValue([]);
     const onInsert = vi.fn();
