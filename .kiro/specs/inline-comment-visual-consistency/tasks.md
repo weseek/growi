@@ -45,7 +45,7 @@
   - _Depends: 1.1_
   - _Boundary: InlineCommentHighlight_
 
-- [ ] 3.2 (P) 作成中の範囲を示すハイライトコンポーネントを新設する
+- [x] 3.2 (P) 作成中の範囲を示すハイライトコンポーネントを新設する
   - `PendingSelectionHighlight`（`range: Range | null`, `containerRef`を受け取る）を新規実装する。渡された`range`を`CSS.highlights`に登録し、`containerRef`にスコープ用のdata属性を付けて`::selection`の背景色・文字色を`--grw-inline-comment-marker-bg`/`--bs-body-color`で上書きするグローバルスタイルを出す。`range`が`null`のときは登録・属性とも行わない
   - 観測できる完了条件：モックした`Range`を渡すとCSSハイライトへの登録とdata属性の付与が行われ、アンマウントまたは`range`が`null`になったときに両方とも取り除かれることをユニットテストで確認できる
   - _Requirements: 12.1, 12.4, 12.7_
