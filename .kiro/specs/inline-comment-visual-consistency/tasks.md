@@ -12,7 +12,7 @@
   - _Requirements: 13.3_
   - _Boundary: packages/editor_
 
-- [ ] 1.3 (P) インラインコメント用の翻訳キーを追加する
+- [x] 1.3 (P) インラインコメント用の翻訳キーを追加する
   - `apps/app/public/static/locales/en_US/translation.json` に `inline_comment.start_comment` / `inline_comment.resolved` / `inline_comment.unresolved` / `inline_comment.resolve` / `inline_comment.reopen` / `inline_comment.label` の6キーを追加する
   - 観測できる完了条件：6キーすべてが `en_US/translation.json` から取得できる
   - _Requirements: 11.6_
