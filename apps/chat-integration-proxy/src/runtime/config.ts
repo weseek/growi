@@ -16,32 +16,27 @@
 import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 
-import type { PlatformAppConfig, SecretCipher } from '../types/index.js';
+import type {
+  ClosedNetworkConfig,
+  PlatformAppConfig,
+  SecretCipher,
+} from '../types/index.js';
 
 // Re-exported so `runtime/index.ts` -- and anything reading this module as the
 // place storage encryption is configured -- still names the type here, while
 // `types/secret-cipher.ts` stays its single declaration (see that file for why
 // the declaration cannot live in `runtime/`).
-export type { SecretCipher } from '../types/index.js';
+// `ClosedNetworkConfig` is re-exported for the same reason: this is the file
+// that builds the value, even though `types/` declares its shape (see
+// `types/closed-network-config.ts` for why the declaration cannot live here).
+export type {
+  ClosedNetworkConfig,
+  SecretCipher,
+} from '../types/index.js';
 
 // ---------------------------------------------------------------------------
 // Public types
 // ---------------------------------------------------------------------------
-
-/**
- * The operator's closed-network declaration (Requirement 13.1). `allowList`
- * goes to `judgeGrowiUri`'s third argument verbatim; `trustedCaCertsFor`
- * answers "what certificate authority do we trust when connecting to this
- * host", which the networking layer feeds to its TLS options. Without the
- * second half, the only working closed-network configuration would be turning
- * certificate verification off altogether (design.md, 閉域 section).
- */
-export interface ClosedNetworkConfig {
-  /** Hostnames, already normalised the way `judgeGrowiUri` normalises them. */
-  readonly allowList: ReadonlyArray<string>;
-  /** PEM certificates to trust for that hostname; empty when none was declared. */
-  readonly trustedCaCertsFor: (hostname: string) => ReadonlyArray<string>;
-}
 
 export interface ProxyConfig {
   readonly platformApp: PlatformAppConfig;
