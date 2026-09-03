@@ -19,3 +19,8 @@ export {
   createGrowiUriResolver,
   GrowiRequestTimeoutError,
 } from './growi-uri-resolver.js';
+export type {
+  RelationKeyService,
+  RelationKeyServiceDeps,
+} from './relation-key-service.js';
+export { createRelationKeyService } from './relation-key-service.js';
