@@ -26,10 +26,43 @@ export type OutboundMessage =
   | {
       readonly kind: 'choice';
       readonly prompt: string;
+      /**
+       * What `ArgumentCollector.resume` looks the in-flight collection up by.
+       * It is carried on the message rather than passed to `post()` because
+       * `PlatformFacade.post(target, message)` takes nothing else, and a
+       * rendered choice is un-resumable without it: `platform/outbound.ts`
+       * feeds it to `encodeActionId()` so a button press comes back as an
+       * `action` event naming this collection (Implementation Note 3.3).
+       */
+      readonly correlationId: string;
       readonly options: ReadonlyArray<{
         readonly id: string;
         readonly label: string;
       }>;
+    };
+
+/**
+ * What every outbound operation on `PlatformFacade` answers with. design.md's
+ * postcondition for this layer is that `post` never throws and always returns
+ * one of these (Requirement 1.4 / 2.4), so the two failure arms are not
+ * decoration: `bot-not-in-channel` is the one a user can act on, and it
+ * carries the `remedy` to show them.
+ *
+ * `messageId` is the platform's own id for the posted message, not a
+ * `MessageRef` -- the caller builds a `MessageRef` from it (its own
+ * `ChannelRef` plus this id) when it later wants to `replace()` that message.
+ */
+export type PostOutcome =
+  | { readonly ok: true; readonly messageId: string }
+  | {
+      readonly ok: false;
+      readonly reason: 'bot-not-in-channel';
+      readonly remedy: string;
+    }
+  | {
+      readonly ok: false;
+      readonly reason: 'platform-error';
+      readonly detail: string;
     };
 
 /**

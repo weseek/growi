@@ -70,6 +70,7 @@ export type {
   HistoryMessage,
   HistoryOutcome,
   OutboundMessage,
+  PostOutcome,
 } from './outbound-message.js';
 export type {
   InstallationCredentials,

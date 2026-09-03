@@ -13,6 +13,7 @@ import type {
   PlatformAppConfig,
   PlatformEvent,
   PlatformEventSink,
+  PostOutcome,
   Relation,
   TimeRange,
 } from './index.js';
@@ -145,12 +146,32 @@ describe('OutboundMessage / HistoryOutcome / HistoryMessage', () => {
     const choice: OutboundMessage = {
       kind: 'choice',
       prompt: 'Which GROWI?',
+      correlationId: 'corr_1',
       options: [{ id: 'rel_1', label: 'Engineering GROWI' }],
     };
     expect([markdown.kind, list.kind, choice.kind]).toEqual([
       'markdown',
       'list',
       'choice',
+    ]);
+  });
+
+  it('constructs every PostOutcome branch', () => {
+    const posted: PostOutcome = { ok: true, messageId: 'm1' };
+    const notInChannel: PostOutcome = {
+      ok: false,
+      reason: 'bot-not-in-channel',
+      remedy: 'invite the bot to this channel',
+    };
+    const failed: PostOutcome = {
+      ok: false,
+      reason: 'platform-error',
+      detail: 'socket hang up',
+    };
+    expect([posted.ok, notInChannel.ok, failed.ok]).toEqual([
+      true,
+      false,
+      false,
     ]);
   });
 

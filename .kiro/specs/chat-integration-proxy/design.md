@@ -647,6 +647,8 @@ export type OutboundMessage =
       readonly rows: ReadonlyArray<{ readonly markdown: string; readonly sourceLabel: string }>;
       readonly footer?: string }
   | { readonly kind: 'choice'; readonly prompt: string;
+      /** `ArgumentCollector.resume` が進行中のやり取りを引く鍵。`outbound.ts` が `encodeActionId()` でボタンの action id に載せる */
+      readonly correlationId: string;
       readonly options: ReadonlyArray<{ readonly id: string; readonly label: string }> };
 
 export type HistoryOutcome =
