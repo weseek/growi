@@ -183,6 +183,30 @@ describe('fetchHistory', () => {
     expect(outcome).toEqual({ ok: true, messages: [] });
   });
 
+  it('keeps the in-range half of the page that reaches back past the start, and stops there', async () => {
+    const adapter = adapterMock();
+    adapter.fetchChannelMessages
+      .mockResolvedValueOnce({
+        // One message inside the range and one before it, on the same page:
+        // this is the boundary the stop condition governs.
+        messages: [
+          messageAt('before', '2026-08-31T23:00:00.000Z', 'before'),
+          messageAt('inside', '2026-09-01T01:00:00.000Z', 'inside'),
+        ],
+        nextCursor: 'page-1',
+      })
+      .mockResolvedValueOnce({
+        messages: [messageAt('older', '2026-08-30T10:00:00.000Z', 'older')],
+      });
+
+    const outcome = await fetchHistory(contextOf(adapter), CHANNEL, RANGE);
+
+    expect(adapter.fetchChannelMessages).toHaveBeenCalledTimes(1);
+    expect(outcome.ok).toBe(true);
+    if (!outcome.ok) throw new Error('expected ok');
+    expect(outcome.messages.map((message) => message.text)).toEqual(['inside']);
+  });
+
   it('gives up after a bounded number of pages instead of paging forever', async () => {
     const adapter = adapterMock();
     // Every page sits inside the range and offers another cursor, so only the
@@ -195,10 +219,9 @@ describe('fetchHistory', () => {
     const outcome = await fetchHistory(contextOf(adapter), CHANNEL, RANGE);
 
     expect(outcome.ok).toBe(true);
-    expect(adapter.fetchChannelMessages.mock.calls.length).toBeLessThanOrEqual(
-      50,
-    );
-    expect(adapter.fetchChannelMessages.mock.calls.length).toBeGreaterThan(1);
+    // The bound itself is the contract, so it is asserted exactly: raising it
+    // raises how long one command can spend before answering.
+    expect(adapter.fetchChannelMessages).toHaveBeenCalledTimes(20);
   });
 
   it('says the service cannot do this at all when its adapter reads no channel history', async () => {

@@ -84,6 +84,15 @@ const toHistoryMessage = (
  * The stop condition reads the *page*, not the collected messages: a page whose
  * oldest message predates the range means everything older does too, so there
  * is nothing left to ask for even when the service still offers a cursor.
+ *
+ * **This assumes pages arrive newest-first.** Slack, Discord and Teams are
+ * explicit about it -- each reads `direction` and pages accordingly. Mattermost
+ * does not: its adapter ignores `direction` and pages by number (`0`, `1`, …),
+ * so the assumption there rests on page 0 being the most recent posts. If it
+ * were the other way round, this walk would stop on the first page and answer
+ * an empty history for every past range -- a wrong answer rather than a
+ * failure, so a Mattermost run must confirm it before this is trusted (see
+ * tasks.md, Implementation Note 3.5).
  */
 const collectInRange = async (
   fetchPage: (cursor: string | undefined) => Promise<FetchResult<unknown>>,
