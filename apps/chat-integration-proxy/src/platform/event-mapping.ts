@@ -30,7 +30,7 @@ import type {
   Thread,
 } from 'chat';
 
-import type { PlatformEvent } from '../types/index.js';
+import type { InteractionRef, PlatformEvent } from '../types/index.js';
 import { ADAPTER_FACTORIES } from './adapter-set.js';
 
 /**
@@ -82,8 +82,15 @@ const toChannelRef = (
   isPrivate: source.isDM || source.channelVisibility === 'private',
 });
 
-/** `fullName` is what the platform shows; the handle is the fallback when it is empty. */
-const toChatAccountRef = (platform: PlatformName, author: Author) => ({
+/**
+ * `fullName` is what the platform shows; the handle is the fallback when it is
+ * empty.
+ *
+ * Exported for `history.ts` (task 3.5), which names the author of every
+ * imported message: one derivation means a person appears under the same name
+ * whether they are quoted in a page or addressed the bot.
+ */
+export const toChatAccountRef = (platform: PlatformName, author: Author) => ({
   platform,
   accountId: author.userId,
   displayName: author.fullName === '' ? author.userName : author.fullName,
@@ -131,10 +138,6 @@ const channelRefOfThread = (platform: PlatformName, thread: ThreadSource) =>
     isDM: thread.isDM,
     channelVisibility: thread.channelVisibility,
   });
-
-/** A modal handle when the platform supplied one; see `PlatformEvent`'s `interaction`. */
-const toInteractionRef = (triggerId: string | undefined) =>
-  triggerId == null || triggerId === '' ? null : { token: triggerId };
 
 /**
  * A button carries two slots the platform gives back on a press (`actionId`
@@ -238,8 +241,26 @@ export const fromMessage = (
   };
 };
 
+/**
+ * `interaction` is a **parameter, not something derived from the event**, and
+ * that is the resolution of design.md's own warning that 「『有効な手がかりが
+ * ある』を `interaction != null` と実装してはならない」.
+ *
+ * A modal is opened by handing the form back to this very event's own
+ * `openModal()` closure -- see `prompt.ts` for why that is the only mechanism
+ * that works on both services whose `modal` capability is `full`. So the handle
+ * that names it is minted by whoever still holds the event (the handler
+ * registration, task 3.8) and passed in here. Deriving it from `event.triggerId`
+ * instead would produce `null` on Teams, whose events carry no trigger id at
+ * all, and the caller would wrongly fall back to asking questions in the
+ * channel on a service that renders modals perfectly well.
+ *
+ * `null` stays meaningful: it says this invocation has no way to open a modal,
+ * which is 「手がかりが切れているなら、聞き返しの経路へ落とす」.
+ */
 export const fromSlashCommand = (
   event: SlashCommandEvent,
+  interaction: InteractionRef | null,
 ): PlatformEvent | null => {
   const platform = toPlatformName(event.adapter.name);
   if (platform == null) return null;
@@ -251,11 +272,15 @@ export const fromSlashCommand = (
     actor: toChatAccountRef(platform, event.user),
     command: event.command,
     text: event.text,
-    interaction: toInteractionRef(event.triggerId),
+    interaction,
   };
 };
 
-export const fromAction = (event: ActionEvent): PlatformEvent | null => {
+/** `interaction` is passed in for the same reason as on `fromSlashCommand`. */
+export const fromAction = (
+  event: ActionEvent,
+  interaction: InteractionRef | null,
+): PlatformEvent | null => {
   const platform = toPlatformName(event.adapter.name);
   if (platform == null) return null;
 
@@ -275,7 +300,7 @@ export const fromAction = (event: ActionEvent): PlatformEvent | null => {
     correlationId: decoded.correlationId,
     actionId: decoded.actionId,
     value: event.value ?? null,
-    interaction: toInteractionRef(event.triggerId),
+    interaction,
   };
 };
 

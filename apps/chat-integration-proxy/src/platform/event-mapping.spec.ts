@@ -28,7 +28,7 @@ import type {
 } from 'chat';
 import { mock } from 'vitest-mock-extended';
 
-import type { PlatformEvent } from '../types/index.js';
+import type { InteractionRef, PlatformEvent } from '../types/index.js';
 import {
   decodeActionId,
   encodeActionId,
@@ -37,6 +37,13 @@ import {
   fromModalSubmit,
   fromSlashCommand,
 } from './event-mapping.js';
+
+/**
+ * A minted modal handle. It names the event's own `openModal()` closure (see
+ * `prompt.ts`), so it is opaque here on purpose -- nothing in this file reads
+ * inside it.
+ */
+const TRIGGER: InteractionRef = { token: 'trigger-1' };
 
 const author = (overrides: Partial<Author> = {}): Author => ({
   userId: 'U0001',
@@ -298,7 +305,7 @@ describe('fromSlashCommand', () => {
     });
 
   it('turns a slash command into a slash-command event carrying the command, its arguments and the modal handle', () => {
-    const event = fromSlashCommand(slashCommandEvent());
+    const event = fromSlashCommand(slashCommandEvent(), TRIGGER);
 
     expect(event).toEqual({
       kind: 'slash-command',
@@ -316,30 +323,46 @@ describe('fromSlashCommand', () => {
       },
       command: '/growi',
       text: 'search foo',
-      interaction: { token: 'trigger-1' },
+      interaction: TRIGGER,
     });
   });
 
-  it('still delivers the command when the platform supplies no modal handle', () => {
-    // Only the Slack adapter fills `triggerId` in; Discord supports slash
-    // commands and never does. Dropping the event would make the whole
-    // command unusable there, so the handle is reported as absent instead.
-    const event = fromSlashCommand(slashCommandEvent({ triggerId: undefined }));
+  it('still delivers the command when there is no way to open a modal', () => {
+    // The handle names the event's own `openModal()` closure (see
+    // `prompt.ts`), so it is passed in rather than read off the event.
+    // Dropping the event when there is none would make the whole command
+    // unusable on a service that cannot show a modal, so the absence is
+    // reported instead.
+    const event = fromSlashCommand(slashCommandEvent(), null);
 
     expect(event?.kind).toBe('slash-command');
     expect(event).toMatchObject({ interaction: null });
+  });
+
+  it('carries the modal handle it was given even when the platform sent no trigger id', () => {
+    // Teams' `modal` capability is `full` and its events never carry a
+    // trigger id, so reading one off the event would make every Teams
+    // invocation look modal-less. The handle names the event's own
+    // `openModal()` closure instead (see `prompt.ts`).
+    const event = fromSlashCommand(
+      slashCommandEvent({ triggerId: undefined }),
+      TRIGGER,
+    );
+
+    expect(event).toMatchObject({ interaction: TRIGGER });
   });
 
   it('produces nothing for an adapter this proxy does not serve', () => {
     expect(
       fromSlashCommand(
         slashCommandEvent({ adapter: mock({ name: 'whatsapp' }) }),
+        TRIGGER,
       ),
     ).toBeNull();
   });
 
   it('lets no Chat SDK value through', () => {
-    const event = fromSlashCommand(slashCommandEvent());
+    const event = fromSlashCommand(slashCommandEvent(), TRIGGER);
 
     expect(event).not.toBeNull();
     if (event == null) return;
@@ -397,7 +420,7 @@ describe('fromAction', () => {
     });
 
   it('turns a button press into an action event carrying the correlation id, the action and its value', () => {
-    const event = fromAction(actionEvent());
+    const event = fromAction(actionEvent(), TRIGGER);
 
     expect(event).toEqual({
       kind: 'action',
@@ -416,18 +439,18 @@ describe('fromAction', () => {
       correlationId: 'corr-1',
       actionId: 'choose-growi',
       value: 'growi-a',
-      interaction: { token: 'trigger-1' },
+      interaction: TRIGGER,
     });
   });
 
   it('reports a button carrying no payload as no value rather than as an empty string', () => {
-    const event = fromAction(actionEvent({ value: undefined }));
+    const event = fromAction(actionEvent({ value: undefined }), TRIGGER);
 
     expect(event).toMatchObject({ value: null });
   });
 
-  it('still delivers the press when the platform supplies no modal handle', () => {
-    const event = fromAction(actionEvent({ triggerId: undefined }));
+  it('still delivers the press when there is no way to open a modal', () => {
+    const event = fromAction(actionEvent(), null);
 
     expect(event?.kind).toBe('action');
     expect(event).toMatchObject({ interaction: null });
@@ -436,17 +459,19 @@ describe('fromAction', () => {
   it('produces nothing for a button this proxy did not encode', () => {
     // A leftover button from an older deploy: guessing a correlation id here
     // would resume someone else's collection.
-    expect(fromAction(actionEvent({ actionId: 'approve' }))).toBeNull();
+    expect(
+      fromAction(actionEvent({ actionId: 'approve' }), TRIGGER),
+    ).toBeNull();
   });
 
   it('produces nothing for a press with no conversation behind it', () => {
     // Home-tab buttons arrive with `thread: null`; there is no channel to
     // answer in.
-    expect(fromAction(actionEvent({ thread: null }))).toBeNull();
+    expect(fromAction(actionEvent({ thread: null }), TRIGGER)).toBeNull();
   });
 
   it('lets no Chat SDK value through', () => {
-    const event = fromAction(actionEvent());
+    const event = fromAction(actionEvent(), TRIGGER);
 
     expect(event).not.toBeNull();
     if (event == null) return;

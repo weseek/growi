@@ -26,6 +26,7 @@ import type { OutboundMessage } from '../types/index.js';
 import { decodeActionId } from './event-mapping.js';
 import {
   attachPreview,
+  channelAccessFailure,
   channelThreadId,
   classifyOutboundFailure,
   type OutboundContext,
@@ -36,6 +37,24 @@ import {
 } from './outbound.js';
 
 const BOT_NAME = 'growi';
+
+/**
+ * The real shape a Slack failure arrives in. `@chat-adapter/slack` rethrows
+ * `@slack/web-api`'s own error untouched (its `handleSlackError` re-maps only
+ * rate limiting), and that error is a plain `Error` carrying
+ * `code: 'slack_webapi_platform_error'` with the API's name under `data.error`.
+ * There is no `SlackApiError` class anywhere in the adapter -- an earlier
+ * version of this test asserted one, and so never exercised the Slack arm.
+ */
+const slackPlatformError = (error: string) =>
+  Object.assign(new Error(`An API error occurred: ${error}`), {
+    code: 'slack_webapi_platform_error',
+    data: { ok: false, error },
+  });
+
+/** `@chat-adapter/shared`'s errors: a `name` and the adapter that threw. */
+const adapterError = (name: string, adapter: string, message: string) =>
+  Object.assign(new Error(message), { name, adapter });
 
 const channelOf = (platform: PlatformName, channelId: string): ChannelRef => ({
   platform,
@@ -308,13 +327,7 @@ describe('post', () => {
   });
 
   it('reports that the bot is not in the channel, with a remedy, instead of throwing', async () => {
-    const notInChannel = Object.assign(
-      new Error('Slack chat.postMessage failed: not_in_channel'),
-      {
-        name: 'SlackApiError',
-        response: { ok: false, error: 'not_in_channel' },
-      },
-    );
+    const notInChannel = slackPlatformError('not_in_channel');
     const adapter = adapterMock();
     adapter.postChannelMessage.mockRejectedValue(notInChannel);
 
@@ -351,48 +364,91 @@ describe('post', () => {
   });
 });
 
-describe('classifyOutboundFailure', () => {
-  it('recognises every service own way of saying the bot cannot post to that channel', () => {
+describe('channelAccessFailure', () => {
+  it('recognises every service own way of saying the bot is not in that channel', () => {
     const notInChannel: ReadonlyArray<unknown> = [
-      // Slack: chat.postMessage returns ok:false with a named error.
-      Object.assign(
-        new Error('Slack chat.postMessage failed: channel_not_found'),
-        {
-          name: 'SlackApiError',
-          response: { ok: false, error: 'channel_not_found' },
-        },
+      slackPlatformError('channel_not_found'),
+      slackPlatformError('not_in_channel'),
+      // Discord: the adapter wraps a non-ok HTTP response in NetworkError, and
+      // a 404 means the channel is not visible to this bot at all.
+      adapterError('NetworkError', 'discord', 'Discord API error: 404 {}'),
+      // Mattermost answers 403 to a bot that has not joined the channel.
+      adapterError(
+        'PermissionError',
+        'mattermost',
+        'Permission denied: cannot post in mattermost',
       ),
-      // Discord: the adapter wraps a non-ok HTTP response in NetworkError.
-      Object.assign(
-        new Error(
-          'Discord API error: 403 {"message":"Missing Access","code":50001}',
-        ),
-        {
-          name: 'NetworkError',
-        },
-      ),
-      // Mattermost / Teams: @chat-adapter/shared PermissionError on HTTP 403.
-      Object.assign(
-        new Error('Bot lacks permission to post message in mattermost'),
-        {
-          name: 'PermissionError',
-        },
+      adapterError(
+        'ResourceNotFoundError',
+        'mattermost',
+        "channel 'C1' not found in mattermost",
       ),
     ];
 
     for (const error of notInChannel) {
-      expect(classifyOutboundFailure(error).reason).toBe('bot-not-in-channel');
+      expect(channelAccessFailure(error)).toBe('not-in-channel');
     }
+  });
+
+  it('tells a missing permission apart from a missing invitation', () => {
+    const notPermitted: ReadonlyArray<unknown> = [
+      slackPlatformError('missing_scope'),
+      // Discord: in the server, but denied on this channel.
+      adapterError(
+        'NetworkError',
+        'discord',
+        'Discord API error: 403 {"message":"Missing Access","code":50001}',
+      ),
+      // Teams reads through Graph application permissions, not membership.
+      adapterError(
+        'PermissionError',
+        'teams',
+        'Permission denied: cannot fetchChannelMessages in teams',
+      ),
+    ];
+
+    for (const error of notPermitted) {
+      expect(channelAccessFailure(error)).toBe('not-permitted');
+    }
+  });
+
+  it('says nothing about channel access for a failure that is about something else', () => {
+    const others: ReadonlyArray<unknown> = [
+      adapterError('AuthenticationError', 'slack', 'Token expired'),
+      adapterError('AdapterRateLimitError', 'slack', 'Rate limited by slack'),
+      new Error('socket hang up'),
+      'a thrown string',
+    ];
+
+    for (const error of others) {
+      expect(channelAccessFailure(error)).toBeNull();
+    }
+  });
+});
+
+describe('classifyOutboundFailure', () => {
+  it('turns a missing invitation into the one outcome a reader can act on', () => {
+    expect(
+      classifyOutboundFailure(slackPlatformError('not_in_channel')),
+    ).toEqual({
+      ok: false,
+      reason: 'bot-not-in-channel',
+      remedy: expect.any(String),
+    });
+  });
+
+  it('does not tell someone to invite the bot when the fault is a missing permission', () => {
+    // `PostOutcome` has one actionable arm and its remedy says "invite the
+    // bot", which would be the wrong instruction here.
+    expect(
+      classifyOutboundFailure(slackPlatformError('missing_scope')).reason,
+    ).toBe('platform-error');
   });
 
   it('does not mistake an authentication or rate-limit failure for a missing invitation', () => {
     const others: ReadonlyArray<unknown> = [
-      Object.assign(new Error('Token expired'), {
-        name: 'AuthenticationError',
-      }),
-      Object.assign(new Error('Rate limited by slack'), {
-        name: 'RateLimitError',
-      }),
+      adapterError('AuthenticationError', 'slack', 'Token expired'),
+      adapterError('AdapterRateLimitError', 'slack', 'Rate limited by slack'),
       'a thrown string',
     ];
 

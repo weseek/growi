@@ -217,12 +217,24 @@ modal を開くには、そのサービスが modal に対応しているかと�
 **したがって modal を選ぶ条件は「能力表が対応と言っている**かつ**有効な手がかりがある」。**
 
 **手がかりは `PlatformEvent` の `interaction` に載る。無いときは `null`。**
-実際に載るのは Slack だけで（`trigger_id`）、Discord は slash コマンドに対応しているのに載せてこない。
+そして**この手がかりは、サービスが渡してくる `trigger_id` そのものではない。**
+Chat SDK は modal を「イベント自身が持つ `openModal()`」で開く形になっており、これを通さない開き方は使えない。
+
+- **Teams には `adapter.openModal` が無い。** 4 つのアダプタのうちこれを実装しているのは Slack だけで、
+  Teams は webhook の応答の中で modal を返す（`WebhookOptions.onOpenModal`）。Teams は `modal` が ○ なので、
+  `trigger_id` を頼りにすると「対応と宣言しているのに一度も開けない」ことになる。
+- **SDK は開く前に、その modal がどの会話のものかを保存する。** `SlashCommandEvent.openModal` /
+  `ActionEvent.openModal` はイベントごとに作られる関数で、`contextId` を発行して元のスレッド・チャンネルを
+  保存してから開く。送信されてきた modal はこの `contextId` で会話が引き直される。
+  自前で `adapter.openModal` を呼ぶとこの保存が行われず、**送信された modal がどれも会話を引けずに捨てられる**。
+
+したがって `InteractionRef` が持つのは**そのイベント自身の `openModal()` を指す手形**であり、
+`platform/prompt.ts` がイベント処理中だけ保持する（`prompt.ts` の冒頭コメントに根拠を記載）。
+`event-mapping.ts` はこれを**引数で受け取る**（`triggerId` から導出しない）。
+これで Teams も開けるようになり、`interaction` が `null` なのは
+「このやり取りには modal を開く手立てが無い」という意味だけになる。
 そのため `slash-command` と `action` の `interaction` は `InteractionRef | null` である
-（非 null にすると、手がかりの無いサービスではイベント自体を作れず、コマンドが丸ごと使えなくなる）。
-なお Teams は `modal` が ○ でありながら手がかりを載せないので、
-**「有効な手がかりがある」を `interaction != null` と実装してはならない** — Chat SDK 側は
-イベントそのものが持つ `openModal()` で開く形になっている。
+（非 null にすると、手立ての無いサービスではイベント自体を作れず、コマンドが丸ごと使えなくなる）。
 
 mention から始まったときの段取り:
 
@@ -404,6 +416,11 @@ export interface FieldSpec {
   readonly maxLength?: number;
 }
 ```
+
+**`FieldSpec` 1 つは、modal の入力欄 1 つになる**（欄の名前は `FieldSpec.name`、
+`modal-submit` の `values` の鍵もこれ）。`time-range` も 1 欄で、範囲は 1 つの文字列として書いてもらう —
+聞き返しの経路は 1 つの問いに 1 つの答えしか作れないので、modal だけ 2 欄（開始日・終了日）にすると
+両方の経路で `values` の形が変わり、`ArgumentCollector` がどちらから来たかを知る必要が出てしまう。
 
 **`link` だけ送るものが違う。** 紐付けの開始は `CommandRequest` ではなく `AccountLinkStartRequest` という
 別の契約なので、**`COMMAND_NAMES` には足さない**。共有する契約を広げずに済み、
@@ -673,8 +690,10 @@ export interface DistributedLock {
 export interface PlatformFacade {
   post(target: ChannelRef, message: OutboundMessage): Promise<PostOutcome>;
   postEphemeral(target: ChannelRef, user: ChatAccountRef, message: OutboundMessage): Promise<PostOutcome>;
-  /** modal を開くだけ。送信は後から `modal-submit` として届く */
-  openModal(trigger: InteractionRef, form: ModalForm, correlationId: string): Promise<void>;
+  /** modal を開くだけ。送信は後から `modal-submit` として届く。
+   *  **開けたかどうかを返す。** 開けなかったとき（手形が失効した・サービスが開かなかった）に
+   *  呼ぶ側が「聞き返しの経路へ落とす」ためには、この 1 つの真偽値が要る */
+  openModal(trigger: InteractionRef, form: ModalForm, correlationId: string): Promise<boolean>;
   /** installation のチャンネル一覧。**周期で取り直して保存するために使う**（通知のたびには呼ばない） */
   listChannels(installationId: string): Promise<ChannelInventory>;
   /** 要件 6.1 */
@@ -697,7 +716,11 @@ export const createPlatformFacade: (
 ) => Promise<PlatformFacade>;
 ```
 
-- Preconditions: `openModal` は **`supports(platform, 'modal')` が真 かつ `trigger` が失効していない**ときだけ呼べる
+- Preconditions: `openModal` は **`supports(platform, 'modal')` が真**のときだけ呼べる。
+  手形が生きているかどうかは呼ぶ前に判定しない — 判定できるのは実際に開こうとしたサービス側だけなので、
+  `openModal` が `false` を返したら聞き返しの経路へ落とす
+- Postconditions: `openModal` は例外を投げず、開けたかどうかを返す（失効した手形は 3 秒の窓では普通に起きることで、
+  コマンド全体を投げ出す理由にはならない）
 - Postconditions: `post` は例外を投げず、必ず `PostOutcome` を返す（要件 1.4 / 2.4）
 - Invariants: **platform 層の出入口に Chat SDK の型を含めない。** 出入口は `PlatformAppConfig` / `InstallationCredentials` /
   `PlatformEvent` / `OutboundMessage` / `HistoryOutcome` / `HistoryMessage` / `DistributedLock` の 7 つ。これらがどれも proxy 自身の型だけで書けることが、

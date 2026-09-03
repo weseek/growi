@@ -274,52 +274,146 @@ export const channelThreadId = (
 // --------------------------------------------------------------------------
 
 /**
- * How each service says "this bot cannot post to that channel".
+ * Why the bot could not reach a channel, told apart into the two answers a
+ * reader can act on differently.
  *
- * Recognised structurally -- by the thrown value's `name` and message -- rather
- * than with `instanceof`, because the error classes live in
- * `@chat-adapter/shared`, which this app does not depend on directly. Adding
- * that dependency to narrow three `if`s would put a second copy of the adapter
- * toolchain in the lockfile for no gain in certainty: `name` is set explicitly
- * by every one of those constructors.
- *
- * Anything not listed here becomes `platform-error`. Being conservative is the
- * right bias: telling a user to invite the bot when the real fault was an
- * expired token sends them to fix something that is not broken.
+ * `not-in-channel` is fixed by inviting the bot; `not-permitted` is fixed by
+ * granting the app a permission (a Slack scope, a Graph permission) and usually
+ * needs an administrator. Sending someone to do the wrong one of those wastes
+ * their time, which is why the two are separated here rather than collapsed.
  */
-const NOT_IN_CHANNEL_RECOGNIZERS: ReadonlyArray<(error: Error) => boolean> = [
-  // Slack: `chat.postMessage` answers `ok: false` with a named error, which
-  // `SlackApiError` carries both in `message` and in `response.error`.
-  (error) =>
-    error.name === 'SlackApiError' &&
-    /\b(not_in_channel|channel_not_found|is_archived|not_in_conversation)\b/.test(
-      error.message,
-    ),
+export type ChannelAccessFailure = 'not-in-channel' | 'not-permitted';
+
+/**
+ * How each service says it -- one row per error shape actually produced by the
+ * installed adapters, verified against their source.
+ *
+ * Recognised structurally rather than with `instanceof`, because the error
+ * classes live in `@chat-adapter/shared`, which this app does not depend on
+ * directly. Adding that dependency to narrow a few `if`s would put a second
+ * copy of the adapter toolchain in the lockfile for no gain in certainty:
+ * `name`, `adapter` and `code` are all set explicitly by those constructors.
+ *
+ * The `adapter` field is read where the same class means different things per
+ * service. Mattermost answers HTTP 403 to a bot that is simply not a member of
+ * the channel, so its `PermissionError` is `not-in-channel`; Teams reads
+ * messages through Graph application permissions rather than membership, so
+ * the same class there really is a missing permission.
+ *
+ * Anything not listed stays unrecognised. Being conservative is the right bias:
+ * telling a user to invite the bot when the real fault was an expired token
+ * sends them to fix something that is not broken.
+ */
+interface FailureRow {
+  readonly failure: ChannelAccessFailure;
+  readonly matches: (error: Error & Record<string, unknown>) => boolean;
+}
+
+/**
+ * The Slack adapter rethrows `@slack/web-api`'s own error untouched (its
+ * `handleSlackError` re-maps only rate limiting), and that error is a plain
+ * `Error` carrying `code: 'slack_webapi_platform_error'` with the API's own
+ * name under `data.error`. There is no `SlackApiError` class anywhere in
+ * `@chat-adapter/slack`.
+ */
+const slackApiErrorName = (error: Record<string, unknown>): string | null => {
+  if (error.code !== 'slack_webapi_platform_error') return null;
+  const data = error.data;
+  if (data == null || typeof data !== 'object') return null;
+  const name = (data as { error?: unknown }).error;
+  return typeof name === 'string' ? name : null;
+};
+
+const FAILURE_ROWS: ReadonlyArray<FailureRow> = [
+  {
+    failure: 'not-in-channel',
+    matches: (error) => {
+      const name = slackApiErrorName(error);
+      return (
+        name != null &&
+        ['not_in_channel', 'channel_not_found', 'is_archived'].includes(name)
+      );
+    },
+  },
+  {
+    failure: 'not-permitted',
+    matches: (error) => {
+      const name = slackApiErrorName(error);
+      return (
+        name != null &&
+        ['missing_scope', 'not_allowed_token_type'].includes(name)
+      );
+    },
+  },
   // Discord: a non-ok HTTP response becomes `NetworkError` whose message is
-  // `Discord API error: <status> <body>`. 403 / 404 and error code 50001
-  // ("Missing Access") are the shapes a missing invitation takes.
-  (error) =>
-    error.name === 'NetworkError' &&
-    /Discord API error: (403|404)\b/.test(error.message),
-  (error) => error.name === 'NetworkError' && /\b50001\b/.test(error.message),
-  // Mattermost and Teams both map HTTP 403 onto `@chat-adapter/shared`'s
-  // `PermissionError`, and a missing channel onto `ResourceNotFoundError`.
-  (error) =>
-    error.name === 'PermissionError' || error.name === 'ResourceNotFoundError',
+  // `Discord API error: <status> <body>`. A 404 means the channel is not
+  // visible to this bot at all; 403 / error code 50001 ("Missing Access") mean
+  // the bot is in the server but lacks the permission on that channel.
+  {
+    failure: 'not-in-channel',
+    matches: (error) =>
+      error.name === 'NetworkError' &&
+      /Discord API error: 404\b/.test(error.message),
+  },
+  {
+    failure: 'not-permitted',
+    matches: (error) =>
+      error.name === 'NetworkError' &&
+      (/Discord API error: 403\b/.test(error.message) ||
+        /\b50001\b/.test(error.message)),
+  },
+  // Teams maps HTTP 404 onto `NetworkError` and HTTP 403 onto `PermissionError`.
+  {
+    failure: 'not-in-channel',
+    matches: (error) =>
+      error.adapter === 'teams' &&
+      error.name === 'NetworkError' &&
+      error.message.startsWith('Resource not found during'),
+  },
+  {
+    failure: 'not-permitted',
+    matches: (error) =>
+      error.adapter === 'teams' && error.name === 'PermissionError',
+  },
+  // Mattermost: 403 for a channel the bot has not joined, 404 for one that is
+  // not there.
+  {
+    failure: 'not-in-channel',
+    matches: (error) =>
+      error.name === 'ResourceNotFoundError' ||
+      (error.adapter === 'mattermost' && error.name === 'PermissionError'),
+  },
 ];
+
+/**
+ * Why the bot could not reach the channel, or `null` when the failure says
+ * nothing about channel access. Shared by every operation that touches a
+ * channel -- `outbound.ts`'s four and `history.ts`'s `fetchHistory` -- so that
+ * one recognition serves both rather than each growing its own copy.
+ */
+export const channelAccessFailure = (
+  error: unknown,
+): ChannelAccessFailure | null => {
+  if (!(error instanceof Error)) return null;
+  const carrier = error as Error & Record<string, unknown>;
+  return FAILURE_ROWS.find((row) => row.matches(carrier))?.failure ?? null;
+};
 
 /**
  * Turns whatever an adapter threw into the failure half of a `PostOutcome`.
  * Exported so the classification is testable on its own, and so every
  * operation below shares one answer rather than each inventing its own.
+ *
+ * `PostOutcome` has a single actionable arm, so only `not-in-channel` reaches
+ * it. A missing permission becomes `platform-error` with its detail: the
+ * remedy this layer knows how to word ("invite the bot") would be the wrong
+ * instruction for it, and inventing an outcome that carries the right one
+ * belongs to a change of `PostOutcome`, not to a guess here.
  */
 export const classifyOutboundFailure = (
   error: unknown,
 ): Extract<PostOutcome, { ok: false }> => {
-  if (
-    error instanceof Error &&
-    NOT_IN_CHANNEL_RECOGNIZERS.some((recognizes) => recognizes(error))
-  ) {
+  if (channelAccessFailure(error) === 'not-in-channel') {
     return {
       ok: false,
       reason: 'bot-not-in-channel',

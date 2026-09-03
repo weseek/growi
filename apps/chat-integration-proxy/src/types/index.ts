@@ -13,14 +13,20 @@
 // package anywhere in this directory -- see each file's own comment for why.
 
 /**
- * A platform-native UI-interaction trigger (Slack's `trigger_id`, Teams'
- * equivalent), carried opaquely so `PlatformFacade.openModal()` can use it
- * without this app's non-`platform/` layers ever seeing the Chat SDK's own
- * representation of it. Included on `PlatformEvent`'s `mention` /
- * `slash-command` / `action` kinds (platform-event.ts) and consumed by
- * `openModal(trigger: InteractionRef, ...)` (design.md, PlatformFacade
- * section). Whether a given `token` has expired is judged by the Chat SDK
- * call it is handed back to, not by a field on this type.
+ * A handle naming one interaction's way of opening a modal, carried opaquely so
+ * this app's non-`platform/` layers never see the Chat SDK's own
+ * representation of it.
+ *
+ * It is deliberately **not** a platform trigger id. A modal can only be opened
+ * by handing the form back to the SDK event that produced the interaction --
+ * `platform/prompt.ts` explains why that is the only mechanism that works on
+ * every service whose `modal` capability is `full` -- so `token` names that
+ * event's own opener, held by `platform/` for as long as the interaction lasts.
+ *
+ * Included on `PlatformEvent`'s `mention` / `slash-command` / `action` kinds
+ * (platform-event.ts) and consumed by `openModal(trigger: InteractionRef, ...)`.
+ * Whether it still works is judged by the attempt itself, not by a field on
+ * this type: `openModal` answers `false` when it does not.
  */
 export interface InteractionRef {
   readonly token: string;
