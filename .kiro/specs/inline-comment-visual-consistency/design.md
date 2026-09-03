@@ -250,13 +250,25 @@ apps/app/src/client/components/PageComment/CommentCard/
 export type CommentCardProps = {
   /** アンカーリンクの対象になる id（通常コメントは comment の _id） */
   id?: string;
-  /** 投稿者。null なら UserPicture / Username を描かない */
-  creator: IUserHasId | null;
+  /**
+   * 投稿者。UserPicture / Username にそのまま渡す（この2つのコンポーネントは
+   * どちらも既に「投稿者情報が無い」場合の見た目を自前で持っている ——
+   * UserPicture は既定アイコン、Username は "(anyone)" — ので、CommentCard
+   * 側で「渡さない」判断はしない。通常コメントの現在の挙動（isPopulated が
+   * false でも UserPicture・Username を常に描く）と、CommentCard を使った後
+   * の挙動を一致させるための決定）
+   */
+  creator: IUserHasId | Ref<IUser> | null;
   /** 型は Date だが実体は ISO 文字列で届く。FormattedDistanceDate に素通しする */
   createdAt: Date | string;
   /** page-comment に付く修飾クラス（page-comment-me / -newer / -older など） */
   rootClassName?: string;
-  /** 見出し行の右側。通常コメントはリビジョンへのリンク、インラインは解決トグル */
+  /**
+   * 見出し行の右側。通常コメントはリビジョンへのリンク、インラインは解決トグル。
+   * 右寄せ（ms-auto）や間隔（gap-2 等）は CommentCard 側では付けない —
+   * 呼び出し側ごとに必要な余白が異なる（後述）ため、渡す ReactNode 自身に
+   * 呼び出し側が包んで指定する。
+   */
   headerEnd?: ReactNode;
   /** 本文の前。インラインコメントの引用文がここに入る */
   beforeBody?: ReactNode;
@@ -274,14 +286,12 @@ export type CommentCardProps = {
   <div id={id} className={`page-comment flex-column ${rootClassName ?? ''}`}>
     <div className="page-comment-main bg-comment rounded mb-2">
       <div className="d-flex align-items-center">
-        {creator != null && <UserPicture user={creator} className="me-2" />}
-        {creator != null && (
-          <div className="small fw-bold me-3"><Username user={creator} /></div>
-        )}
+        <UserPicture user={creator} className="me-2" />
+        <div className="small fw-bold me-3"><Username user={creator} /></div>
         <Link href={`#${id}`} prefetch={false} className="small page-comment-revision">
           <FormattedDistanceDate id={id} date={createdAt} />
         </Link>
-        {headerEnd != null && <span className="ms-auto">{headerEnd}</span>}
+        {headerEnd}
       </div>
       {beforeBody}
       <div className="page-comment-body">{children}</div>
@@ -291,9 +301,13 @@ export type CommentCardProps = {
 </>
 ```
 
+**なぜ `creator === null` で `UserPicture` / `Username` を隠さないのか（この節はレビューで見つかった design.md 自身の矛盾を訂正したもの）。** 現在の `Comment.tsx:161-164` は `creator` が `undefined`（`isPopulated(comment.creator)` が false のとき）でも `UserPicture` と `Username` を無条件に描いている。`UserPicture` は既定アイコンを、`Username` は "(anyone)" を出す作りに既になっているため、これは「何も表示しない」ではなく「代替表示をする」という既存の挙動である。CommentCard がここで `creator != null` 条件を追加して丸ごと隠すと、投稿者が populate されていない通常コメント（レアだが起こり得る）の見た目が変わり、**Requirement 13.9（通常コメントの一覧項目の見た目を変えない）に違反する。** そこで CommentCard は条件分岐をせず、`creator` をそのまま両コンポーネントに渡すだけにする。`UserPicture`（`Partial<IUser> | Ref<IUser> | null` を受け付ける）・`Username`（`IUserHasId | Ref<IUser>` を受け付け、`null`/未 populate は自前で "(anyone)" にフォールバックする）のどちらも `null` を安全に扱えるため、この変更で崩れるものはない。
+
+**なぜ `headerEnd` に `ms-auto` の入れ物を付けないのか（同じくレビューで見つかった矛盾の訂正）。** 通常コメントの現在の見出し行は、リビジョン履歴アイコンを `<span className="ms-2">`（投稿日時のすぐ右、0.5rem 空けて）で包んでいる（`Comment.tsx:175`）。一方インラインコメントの解決トグル（決定6・`InlineCommentItem`側の`headerEnd`)は見出し行の右端に寄せたい。この2つは同じ余白では両立しないので、CommentCard 側で `ms-auto` を固定するのは誤りだった。`headerEnd` はラップせずにそのまま描き、必要な余白（`ms-2` か `ms-auto` か）は各呼び出し側が `headerEnd` に渡す ReactNode 自身に付ける。通常コメント側は `<span className="ms-2">...</span>` を、インラインコメント側（決定6の`InlineCommentItem`のJSXにある`headerEnd`）は `<span className="ms-auto d-flex align-items-center gap-2">...</span>` のように、それぞれ自分の余白を明示する。
+
 **なぜ `Comment.tsx` を共有せず、枠だけを切り出すのか。** `Comment.tsx` は本文の編集・削除、リビジョンへのリンク、返信の扱いを一緒に抱えている。インラインコメントは `revision: Ref<IRevision>` を持たず（持っているのは `anchorOriginRevisionId: string`）、v1 では編集・削除の対象外なので、`Comment.tsx` をそのまま使うとインラインコメント側で使わない分岐を通すことになる。一方、クラス名を写し取って並行実装にすると、`_comment-inheritance.scss` を直したときに片方だけ変わる状態が起き得る（型でもテストでも結び付いていないため気付けない）。差が出るのは見出し行の右端と本文の前後の中身だけで、箱そのものは同一なので、箱を差し込み口付きのコンポーネントとして 1 つ持つのが最も小さい形になる。`coding-style.md` の「共有の抽象を無理に押し付けない」は、振る舞いが分かれる部分（編集・削除・リビジョン）を共有しないことで満たしている。
 
-`Comment.tsx` は `CommentCard` を使う側に書き換える。`headerEnd` にリビジョンへのリンクと吹き出し、`footer` に `page-comment-meta` と `CommentControl` を渡す。`rootClassName` には現在の `getRootClassName()` の結果から `'page-comment flex-column'` を除いた修飾部分だけを渡す。通常コメントの出力 DOM は変わらないので、Requirement 13.9 を満たす。
+`Comment.tsx` は `CommentCard` を使う側に書き換える。`headerEnd` にリビジョンへのリンクと吹き出し（`ms-2` の入れ物ごと）、`footer` に `page-comment-meta` と `CommentControl` を渡す。`creator` には現在の `isPopulated(comment.creator) ? comment.creator : undefined` の結果をそのまま渡す（`?? null` で変換しない — `undefined` のままで `UserPicture` / `Username` は現在と同じフォールバックをする）。`rootClassName` には現在の `getRootClassName()` の結果から `'page-comment flex-column'` を除いた修飾部分だけを渡す。通常コメントの出力 DOM は変わらないので、Requirement 13.9 を満たす。
 
 ### 決定3: インラインコメントは props で渡し、`PageComment` 自身では取得しない
 
@@ -559,7 +573,7 @@ return (
   createdAt={comment.createdAt}
   rootClassName={isResolved ? 'inline-comment-item-resolved' : undefined}
   headerEnd={
-    <span className="d-flex align-items-center gap-2">
+    <span className="ms-auto d-flex align-items-center gap-2">
       <span
         data-testid="inline-comment-status"
         className={`badge ${isResolved ? 'bg-secondary' : 'bg-warning text-dark'}`}
@@ -639,8 +653,7 @@ export interface IInlineComment {
 ```
 apps/app/src/client/components/PageComment/CommentCard/
 ├── index.ts
-├── CommentCard.tsx
-├── CommentCard.module.scss
+├── CommentCard.tsx（CSS モジュールは持たない。決定2参照）
 └── CommentCard.spec.tsx
 
 apps/app/src/features/inline-comment/client/components/PendingSelectionHighlight/

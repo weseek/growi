@@ -155,6 +155,13 @@
 
 ## Implementation Notes
 
+- 4.2 レビューで design.md 自身の矛盾（Req 13.9 違反の恐れ）が見つかり、design.md を訂正した（決定2の`CommentCardProps`/JSX/rationale、決定6の`InlineCommentItem`の`headerEnd`例、File Structure Planの誤記）。訂正内容:
+  - `CommentCard`は`headerEnd`を`<span className="ms-auto">`で包まない。余白は呼び出し側が`headerEnd`に渡す中身自身に付ける（通常コメントは`ms-2`のまま、`InlineCommentItem`は`ms-auto`を自分で付ける）。
+  - `CommentCard`は`creator`が`null`/未populateでも`UserPicture`/`Username`を隠さない（両コンポーネントとも既に自前のフォールバック表示を持つため、素通しするだけでよい）。
+  - `CommentCardProps.creator`の型は`IUserHasId | Ref<IUser> | null`（`IUserHasId`単独ではない）。
+  - File Structure Planの`CommentCard.module.scss`の記載は誤り（決定2の「CSSモジュールを持たない」と矛盾）。実装（CSSモジュール無し）が正しい。
+  - この訂正は task 4.2 で一度APPROVED・コミット済みのCommentCard実装に対する追加のフォローアップコミットとして反映した（詳細は該当コミットのメッセージ参照）。task 4.3・5.2 はこの訂正後の契約に従うこと。
+
 - 2.2: `InlineCommentForm.tsx` の引用要素は design.md のJSX断片どおりCSSモジュールのクラスのみにはせず、素の `inline-comment-form-quote` クラスも残した（`playwright/20-basic-features/inline-comment.spec.ts:124,693` がこのクラス名でロケートしているため。CSSモジュールのクラス名はビルド時ハッシュ化されるので、断片どおりにすると既存のe2eが壊れる。対応するCSS規則は無いので実質テスト用の目印のみ）。
 - 2.2 レビュー時の申し送り: 決定5（エディタのツールバー・行番号余白の非表示）の見た目をブラウザで確認する予定がタスク7.x のどこにも無い。7.1 のE2Eアサーションに含めるか、フィーチャ全体のGO判定前に一度ブラウザで確認すること。
 - 2.2 レビュー時の申し送り（別issue、スペック外・対応不要）: `MentionPickerButton.tsx` の "No candidates" と `InlineCommentForm.tsx` のエラーメッセージが英語直書きのまま（Requirement 11.6は未達だが、このタスクの指示にも新規キー一覧にも無く、本amendの対象外）。
