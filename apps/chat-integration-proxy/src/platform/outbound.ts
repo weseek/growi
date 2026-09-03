@@ -346,20 +346,22 @@ const FAILURE_ROWS: ReadonlyArray<FailureRow> = [
     },
   },
   // Discord: a non-ok HTTP response becomes `NetworkError` whose message is
-  // `Discord API error: <status> <body>`. A 404 means the channel is not
-  // visible to this bot at all; 403 / error code 50001 ("Missing Access") mean
-  // the bot is in the server but lacks the permission on that channel.
+  // `Discord API error: <status> <body>`. Discord's access model is
+  // channel-membership-based, not permission-grant-based like Teams: a 404
+  // means the channel is not visible to this bot at all, and a 403 / error
+  // code 50001 ("Missing Access") means the bot has not been added to that
+  // channel either -- there is no separate "invited but missing a scope"
+  // state to tell apart from it the way Slack's `missing_scope` or Teams's
+  // `PermissionError` are. So all three map to `not-in-channel`, whose
+  // remedy ("invite the bot to this channel") is the one that actually fixes
+  // a Discord 403/50001 -- unlike Teams, where the same HTTP status means a
+  // missing Graph API permission and needs an administrator instead.
   {
     failure: 'not-in-channel',
     matches: (error) =>
       error.name === 'NetworkError' &&
-      /Discord API error: 404\b/.test(error.message),
-  },
-  {
-    failure: 'not-permitted',
-    matches: (error) =>
-      error.name === 'NetworkError' &&
-      (/Discord API error: 403\b/.test(error.message) ||
+      (/Discord API error: 404\b/.test(error.message) ||
+        /Discord API error: 403\b/.test(error.message) ||
         /\b50001\b/.test(error.message)),
   },
   // Teams maps HTTP 404 onto `NetworkError` and HTTP 403 onto `PermissionError`.

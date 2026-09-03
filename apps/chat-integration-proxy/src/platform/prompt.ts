@@ -1,8 +1,21 @@
 // design.md's File Structure Plan for this file: 「modal の開閉」. Only the
-// opening half exists -- neither the Chat SDK nor any of the four adapters
-// offers a way to close a modal from the server, and design.md's own note on
-// `openModal` says 「modal を開くだけ。送信は後から `modal-submit` として届く」:
-// a modal closes when the reader submits or dismisses it.
+// opening half is implemented here.
+//
+// The SDK does have a way to close a modal -- but only as the *response* to a
+// submission, not as a proactive, arbitrary-later-time operation. A
+// `ModalSubmitHandler` may return a `ModalCloseResponse` (`{ action: 'close' }`)
+// or `ModalClearResponse` (`{ action: 'clear' }`) from `chat`'s own types
+// (`ModalSubmitHandler`, `chat/dist/types-*.d.ts`), and `@chat-adapter/slack`
+// separately exposes `updateModal(viewId, modal)` for replacing a modal's
+// content while it is open. Neither of those is reachable from this file:
+// this module only ever *opens* a modal (`openModal` below), and has no
+// involvement in the `modal-submit` response path where a close/clear would
+// be returned. design.md's own note on `openModal` says 「modal を開くだけ。
+// 送信は後から `modal-submit` として届く」 -- whichever task registers
+// `onModalSubmit` / handles the `modal-submit` event (task 3.8 or later) is
+// the one that would return a `ModalCloseResponse` / `ModalClearResponse` if
+// closing a modal from its submission handler is ever needed. This file has
+// no "close" operation and does not need one.
 //
 // --------------------------------------------------------------------------
 // Why a modal is opened through the event, not through the adapter

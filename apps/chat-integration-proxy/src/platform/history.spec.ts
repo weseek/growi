@@ -264,6 +264,18 @@ describe('fetchHistory', () => {
         adapterError('NetworkError', 'discord', 'Discord API error: 404 {}'),
       ],
       [
+        // Discord's access model is channel-membership-based: 403 / error
+        // code 50001 ("Missing Access") means the bot has not been added to
+        // this channel, same fix as a 404 -- unlike Teams, where the same
+        // HTTP status means a missing Graph API permission instead.
+        'discord is denied access to the channel',
+        adapterError(
+          'NetworkError',
+          'discord',
+          'Discord API error: 403 {"message":"Missing Access","code":50001}',
+        ),
+      ],
+      [
         'mattermost refuses a non-member',
         adapterError(
           'PermissionError',
@@ -295,14 +307,6 @@ describe('fetchHistory', () => {
       [
         'slack is missing the history scope',
         slackPlatformError('missing_scope'),
-      ],
-      [
-        'discord is denied access to the channel',
-        adapterError(
-          'NetworkError',
-          'discord',
-          'Discord API error: 403 {"message":"Missing Access","code":50001}',
-        ),
       ],
       [
         'teams has not been granted the graph permission',

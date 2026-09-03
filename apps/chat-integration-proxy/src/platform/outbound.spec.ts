@@ -369,9 +369,18 @@ describe('channelAccessFailure', () => {
     const notInChannel: ReadonlyArray<unknown> = [
       slackPlatformError('channel_not_found'),
       slackPlatformError('not_in_channel'),
-      // Discord: the adapter wraps a non-ok HTTP response in NetworkError, and
-      // a 404 means the channel is not visible to this bot at all.
+      // Discord: the adapter wraps a non-ok HTTP response in NetworkError. A
+      // 404 means the channel is not visible to this bot at all, and 403 /
+      // error code 50001 ("Missing Access") means the bot has not been added
+      // to that channel either -- Discord's access model is
+      // channel-membership-based, so both are fixed the same way: invite the
+      // bot to the channel.
       adapterError('NetworkError', 'discord', 'Discord API error: 404 {}'),
+      adapterError(
+        'NetworkError',
+        'discord',
+        'Discord API error: 403 {"message":"Missing Access","code":50001}',
+      ),
       // Mattermost answers 403 to a bot that has not joined the channel.
       adapterError(
         'PermissionError',
@@ -393,12 +402,6 @@ describe('channelAccessFailure', () => {
   it('tells a missing permission apart from a missing invitation', () => {
     const notPermitted: ReadonlyArray<unknown> = [
       slackPlatformError('missing_scope'),
-      // Discord: in the server, but denied on this channel.
-      adapterError(
-        'NetworkError',
-        'discord',
-        'Discord API error: 403 {"message":"Missing Access","code":50001}',
-      ),
       // Teams reads through Graph application permissions, not membership.
       adapterError(
         'PermissionError',
@@ -435,6 +438,33 @@ describe('classifyOutboundFailure', () => {
       reason: 'bot-not-in-channel',
       remedy: expect.any(String),
     });
+  });
+
+  it('tells the user to invite the bot when Discord answers 403/50001 -- its access model is membership-based, unlike Teams', () => {
+    // Discord's `PermissionError`-shaped 403 and its "Missing Access" (50001)
+    // error both mean the bot was never added to the channel, so the fix is
+    // the same as a 404: invite the bot. This is the actual end-to-end
+    // outcome a caller sees, not just the intermediate `channelAccessFailure`
+    // classification -- guarding against the two being changed in lockstep
+    // and drifting apart again.
+    const forbidden = adapterError(
+      'NetworkError',
+      'discord',
+      'Discord API error: 403 {"message":"Forbidden"}',
+    );
+    const missingAccess = adapterError(
+      'NetworkError',
+      'discord',
+      'Discord API error: 400 {"message":"Missing Access","code":50001}',
+    );
+
+    for (const error of [forbidden, missingAccess]) {
+      expect(classifyOutboundFailure(error)).toEqual({
+        ok: false,
+        reason: 'bot-not-in-channel',
+        remedy: expect.any(String),
+      });
+    }
   });
 
   it('does not tell someone to invite the bot when the fault is a missing permission', () => {
