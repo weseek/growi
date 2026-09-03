@@ -11,6 +11,7 @@ import type { JSX, RefObject } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
 import { InlineCommentForm } from '../InlineCommentForm/InlineCommentForm';
+import { PendingSelectionHighlight } from '../PendingSelectionHighlight/PendingSelectionHighlight';
 import { SelectionPopover } from '../SelectionPopover/SelectionPopover';
 import { SelectionActionButton } from './SelectionActionButton';
 import type { CapturedSelection } from './use-text-selection';
@@ -117,30 +118,48 @@ export const SelectionCapture = (
 
   if (state.stage === 'selecting') {
     return (
-      <SelectionPopover range={state.liveRange}>
-        {/* mousedown's default action collapses the document selection before
-            `click` fires, which would report an empty selection and unmount
-            this button mid-gesture — so `onCommit` would never run. Preventing
-            the default keeps the selection alive through the click. Deliberately
-            NOT applied to the form below: there, the user must be able to put
-            the caret into the textarea. */}
-        {/* biome-ignore lint/a11y/noStaticElementInteractions: not an interactive element itself — it only suppresses mousedown's selection-collapsing default for the button it wraps */}
-        <div onMouseDown={(event) => event.preventDefault()}>
-          <SelectionActionButton onCommit={commit} />
-        </div>
-      </SelectionPopover>
+      <>
+        {/* Requirement 12.4: same marker color while merely selecting, before
+            the create action is chosen. */}
+        <PendingSelectionHighlight
+          range={state.liveRange}
+          containerRef={containerRef}
+        />
+        <SelectionPopover range={state.liveRange}>
+          {/* mousedown's default action collapses the document selection before
+              `click` fires, which would report an empty selection and unmount
+              this button mid-gesture — so `onCommit` would never run. Preventing
+              the default keeps the selection alive through the click. Deliberately
+              NOT applied to the form below: there, the user must be able to put
+              the caret into the textarea. */}
+          {/* biome-ignore lint/a11y/noStaticElementInteractions: not an interactive element itself — it only suppresses mousedown's selection-collapsing default for the button it wraps */}
+          <div onMouseDown={(event) => event.preventDefault()}>
+            <SelectionActionButton onCommit={commit} />
+          </div>
+        </SelectionPopover>
+      </>
     );
   }
 
   return (
-    <SelectionPopover range={state.committedRange}>
-      <InlineCommentForm
-        pageId={pageId}
-        anchorOriginRevisionId={anchorOriginRevisionId}
-        anchor={state.committedAnchor}
-        onSubmitted={closeForm}
-        onCanceled={closeForm}
+    <>
+      {/* Requirement 12.5 / 12.6: the committed range keeps the highlight
+          painted for as long as the form is open, independent of the
+          document selection (which is lost once the caret moves into the
+          textarea). */}
+      <PendingSelectionHighlight
+        range={state.committedRange}
+        containerRef={containerRef}
       />
-    </SelectionPopover>
+      <SelectionPopover range={state.committedRange}>
+        <InlineCommentForm
+          pageId={pageId}
+          anchorOriginRevisionId={anchorOriginRevisionId}
+          anchor={state.committedAnchor}
+          onSubmitted={closeForm}
+          onCanceled={closeForm}
+        />
+      </SelectionPopover>
+    </>
   );
 };

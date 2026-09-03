@@ -52,7 +52,7 @@
   - _Depends: 1.1_
   - _Boundary: PendingSelectionHighlight_
 
-- [ ] 3.3 `SelectionCapture`に作成中ハイライトを組み込む
+- [x] 3.3 `SelectionCapture`に作成中ハイライトを組み込む
   - `selecting`段階では`PendingSelectionHighlight`に`liveRange`を、`composing`段階では`committedRange`を渡す。`idle`段階では`SelectionCapture`が`null`を返すため自然に消える（状態機械そのものは変更しない）
   - 観測できる完了条件：選択中・入力フォームを開いて入力欄にカーソルを移した後の両方で、対象範囲に同じハイライト色が表示され続けることをユニットテストまたはブラウザ操作で確認できる
   - _Requirements: 12.4, 12.5, 12.6, 12.7_

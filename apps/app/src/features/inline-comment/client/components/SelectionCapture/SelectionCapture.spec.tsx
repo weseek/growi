@@ -43,6 +43,21 @@ vi.mock('../InlineCommentForm/InlineCommentForm', () => ({
   ),
 }));
 
+// `PendingSelectionHighlight` (task 3.2) is mocked down to the one thing this
+// task's requirements (12.4-12.7) care about: which `Range` it was handed at
+// each stage. It renders a marker only when `range` is non-null, so its
+// absence directly proves the highlight is gone (Requirement 12.7).
+type PendingHighlightCall = { range: Range | null };
+const pendingHighlightCalls: PendingHighlightCall[] = [];
+vi.mock('../PendingSelectionHighlight/PendingSelectionHighlight', () => ({
+  PendingSelectionHighlight: (props: PendingHighlightCall) => {
+    pendingHighlightCalls.push(props);
+    return props.range == null ? null : (
+      <div data-testid="pending-selection-highlight" />
+    );
+  },
+}));
+
 // `SelectionPopover` is deliberately NOT mocked — this task is the first to
 // mount it, and the range it receives (a live range while selecting, a frozen
 // clone while composing) is the crux of Requirement 2.3. Popper itself is
@@ -162,6 +177,7 @@ describe('SelectionCapture', () => {
     }));
     removeAllRanges.mockClear();
     setLiveSelection(null);
+    pendingHighlightCalls.length = 0;
   });
 
   afterEach(() => {
@@ -325,5 +341,70 @@ describe('SelectionCapture', () => {
       screen.queryByTestId('selection-action-button'),
     ).not.toBeInTheDocument();
     expect(removeAllRanges).toHaveBeenCalled();
+  });
+
+  // Requirement 12.4: while selecting (before the create action is chosen),
+  // the highlight tracks the live selection range.
+  it('paints the live range while selecting', () => {
+    const { live } = buildLiveRange();
+    setLiveSelection(live);
+    textSelectionStore.captured = ANCHOR;
+
+    renderCapture();
+
+    expect(
+      screen.getByTestId('pending-selection-highlight'),
+    ).toBeInTheDocument();
+    expect(pendingHighlightCalls.at(-1)?.range).toBe(live);
+  });
+
+  // Requirement 12.5 / 12.6: once the form is open, the highlight tracks the
+  // range committed at that moment — and stays put (does not disappear) once
+  // moving the caret into the form's textarea drops the document selection.
+  it('paints the committed range while composing, even after the document selection is lost', () => {
+    const { live, cloned } = buildLiveRange();
+    setLiveSelection(live);
+    textSelectionStore.captured = ANCHOR;
+
+    const { rerender } = renderCapture();
+    fireEvent.click(screen.getByTestId('selection-action-button'));
+
+    expect(
+      screen.getByTestId('pending-selection-highlight'),
+    ).toBeInTheDocument();
+    expect(pendingHighlightCalls.at(-1)?.range).toBe(cloned);
+
+    // Caret moves into the textarea: the document selection is reported empty.
+    textSelectionStore.captured = null;
+    setLiveSelection(null);
+    rerenderCapture(rerender);
+
+    expect(
+      screen.getByTestId('pending-selection-highlight'),
+    ).toBeInTheDocument();
+    expect(pendingHighlightCalls.at(-1)?.range).toBe(cloned);
+  });
+
+  // Requirement 12.7: closing the form (submit or cancel) removes the
+  // highlight along with the rest of the composing UI.
+  it.each([
+    ['submitted', 'form-submit'],
+    ['canceled', 'form-cancel'],
+  ])('removes the highlight when the form is %s', (_label, testId) => {
+    const { live } = buildLiveRange();
+    setLiveSelection(live);
+    textSelectionStore.captured = ANCHOR;
+
+    renderCapture();
+    fireEvent.click(screen.getByTestId('selection-action-button'));
+    expect(
+      screen.getByTestId('pending-selection-highlight'),
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId(testId));
+
+    expect(
+      screen.queryByTestId('pending-selection-highlight'),
+    ).not.toBeInTheDocument();
   });
 });
