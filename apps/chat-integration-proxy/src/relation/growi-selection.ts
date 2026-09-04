@@ -26,6 +26,7 @@ import {
   createChannelPermissionRepository,
   createRelationRepository,
   type DbClient,
+  type PermittedChannels,
 } from '../db/index.js';
 import type { Relation } from '../types/index.js';
 import { growiBasePathOf } from './growi-uri-resolver.js';
@@ -204,7 +205,7 @@ const matchByUrl = (
 const settingsFor = (
   relationId: string,
   commandName: CommandName,
-  channels: ReadonlyArray<string> | null,
+  channels: PermittedChannels | null,
 ): RelationSettings | null =>
   channels == null
     ? null

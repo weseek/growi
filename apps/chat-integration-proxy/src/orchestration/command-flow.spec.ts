@@ -6,7 +6,7 @@ import {
   type PlatformName,
 } from '@growi/chat';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mock } from 'vitest-mock-extended';
+import { type MockProxy, mock } from 'vitest-mock-extended';
 
 import {
   type ArgumentCollector,
@@ -16,6 +16,7 @@ import {
 import { createFanOutCollector, type GrowiClient } from '../growi/index.js';
 import type { GrowiSelector, SelectionRequest } from '../relation/index.js';
 import type { Invocation, OutboundMessage, Relation } from '../types/index.js';
+import type { AdminFlow } from './admin-flow.js';
 import {
   type CommandFlowDeps,
   type CommandFlowPlatform,
@@ -67,6 +68,7 @@ interface Harness {
   readonly collector: CommandFlowDeps['collector'];
   readonly growiClient: GrowiClient;
   readonly resolveInstallationId: CommandFlowDeps['resolveInstallationId'];
+  readonly adminFlow: MockProxy<AdminFlow>;
   readonly ephemeralMessages: () => ReadonlyArray<OutboundMessage>;
   readonly postedMessages: () => ReadonlyArray<OutboundMessage>;
 }
@@ -103,6 +105,11 @@ const createHarness = (): Harness => {
 
   const resolveInstallationId = vi.fn(() => Promise.resolve(INSTALLATION_ID));
 
+  // Operator words are executed by their own flow (`admin-flow.ts`); this one
+  // only routes to it.
+  const adminFlow = mock<AdminFlow>();
+  adminFlow.run.mockResolvedValue();
+
   const flow = createCommandFlow({
     platform,
     selector,
@@ -112,6 +119,7 @@ const createHarness = (): Harness => {
     // and the answer each one gives are what these tests are about.
     fanOutCollector: createFanOutCollector({ growiClient }),
     resolveInstallationId,
+    adminFlow,
     newRequestId: (() => {
       // Requirement 10.4 keys duplicate-execution detection on this value, so
       // the fixture has to make two targets' ids actually differ.
@@ -130,6 +138,7 @@ const createHarness = (): Harness => {
     collector,
     growiClient,
     resolveInstallationId,
+    adminFlow,
     ephemeralMessages: () =>
       vi.mocked(platform.postEphemeral).mock.calls.map((call) => call[2]),
     postedMessages: () =>
@@ -749,12 +758,31 @@ describe('dead ends the user is told about', () => {
     expect(harness.ephemeralMessages()).toHaveLength(1);
   });
 
-  it('leaves an operator word alone -- executing those is task 7.3', async () => {
-    await harness.flow.startCommand(invocationOf('rotate-key'));
+  it('hands an operator word to the admin flow, and does nothing else with it', async () => {
+    // Operator words arrive here because `EventSink` routes every command
+    // through one entrance. Which of the two flows runs them is decided here
+    // and nowhere else -- and a user command must never reach the admin flow,
+    // nor an operator word the GROWI selection.
+    const invocation = invocationOf('rotate-key');
 
+    await harness.flow.startCommand(invocation);
+
+    expect(harness.adminFlow.run).toHaveBeenCalledWith(invocation);
     expect(harness.platform.postEphemeral).not.toHaveBeenCalled();
     expect(harness.platform.post).not.toHaveBeenCalled();
     expect(harness.selector.select).not.toHaveBeenCalled();
+  });
+
+  it('does not send a user command to the admin flow', async () => {
+    vi.mocked(harness.selector.select).mockResolvedValue({
+      kind: 'explain',
+      reason: 'not-linked',
+      excluded: [],
+    });
+
+    await harness.flow.startCommand(invocationOf(COMMAND_NAMES.search, 'foo'));
+
+    expect(harness.adminFlow.run).not.toHaveBeenCalled();
   });
 });
 

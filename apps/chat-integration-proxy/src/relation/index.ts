@@ -59,6 +59,7 @@ export type {
   RelationKeyService,
   RelationKeyServiceDeps,
   RotationResult,
+  RotationStatus,
   SendKeyRegistration,
   SendKeyRevocation,
 } from './relation-key-service.js';

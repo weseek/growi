@@ -7,7 +7,10 @@
 // `tsconfig.build.json` alongside `*.spec.ts` / `*.integ.ts`), not part of this
 // layer's public contract.
 
-export type { ChannelPermissionRepository } from './channel-permission-repository.js';
+export type {
+  ChannelPermissionRepository,
+  PermittedChannels,
+} from './channel-permission-repository.js';
 export { createChannelPermissionRepository } from './channel-permission-repository.js';
 export type {
   InstallationChannelRecord,

@@ -209,6 +209,13 @@ model ChannelPermission {
   relationId  String   @map("relation_id") @db.Uuid
   commandName String   @map("command_name")
   channels    String[]
+  // `RelationSettings.allowedChannels` has three values -- `'all'`, `'none'`
+  // and a list of channel ids -- and `channels` alone can only carry two of
+  // them. An empty list already means `'none'` (nothing matches), so storing
+  // `'all'` as an empty list would read back as its exact opposite, and
+  // deleting the row instead reads as `'no-settings'`, which `judge()` turns
+  // into a DENIAL for write commands. This flag is the third value.
+  allowAll    Boolean  @default(false) @map("allow_all")
 
   relation Relation @relation(fields: [relationId], references: [id], onDelete: Restrict)
 

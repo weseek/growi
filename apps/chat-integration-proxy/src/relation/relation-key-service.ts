@@ -88,6 +88,20 @@ export interface RelationKeyService {
     send: SendKeyRegistration,
   ): Promise<ReadonlyArray<RotationResult>>;
   /**
+   * What a rotation of this installation has and has not reached, relation by
+   * relation -- what `rotate-key status` shows an operator before step 4 runs
+   * (design.md: 「入れ替えの途中経過（関係ごとの未達）を見る」).
+   *
+   * Read-only: nothing is minted, marked or revoked by looking. It lives here
+   * rather than being assembled from `own_key` rows at the call site because
+   * "which key is in charge, and which one is coming in" is {@link standingOf}'s
+   * rule, and a second reading of those rows elsewhere is a second place for
+   * that rule to live.
+   */
+  rotationStatus(
+    installationId: string,
+  ): Promise<ReadonlyArray<RotationStatus>>;
+  /**
    * Step 4, deliberately a separate operation. Folding it into `rotate` as a
    * condition would put 「未達があるうちは失効させない」 one forgotten branch
    * away from breaking; kept apart, not calling it is all the protection
@@ -163,6 +177,33 @@ export interface RotationResult {
   readonly delivery:
     | { readonly ok: true }
     | { readonly ok: false; readonly reason: string };
+}
+
+/**
+ * One relation's place in an in-progress rotation.
+ *
+ * A relation with nothing under way is reported with `newKeyId: null` rather
+ * than left out: an operator reading the list has to be able to tell "this
+ * GROWI is holding the rotation up" from "this GROWI is not in the list I
+ * expected".
+ */
+export interface RotationStatus {
+  readonly relationId: string;
+  /** Carried so the answer can name the GROWI without a second read. */
+  readonly growiLabel: string;
+  /** The key being moved to, or `null` when no rotation is under way. */
+  readonly newKeyId: string | null;
+  readonly deliveredToPeer: boolean;
+  /**
+   * Why this relation's keys could not be read as a rotation at all -- the
+   * three states {@link standingOf} refuses to guess about. `null` when the
+   * keys were readable, whether or not a rotation is under way.
+   */
+  readonly problem:
+    | 'no-valid-key'
+    | 'ambiguous-keys'
+    | 'no-key-in-charge'
+    | null;
 }
 
 export interface RelationKeyServiceDeps {
@@ -527,6 +568,27 @@ export const createRelationKeyService = (
         results.push(await rotateOne(relation, send));
       }
       return results;
+    },
+
+    rotationStatus: async (installationId) => {
+      const statuses: RotationStatus[] = [];
+      for (const relation of await relations.listByInstallation(
+        installationId,
+      )) {
+        // biome-ignore lint/performance/noAwaitInLoops: sequential so the list reads in a stable order, as `rotate` does.
+        const standing = await standingFor(relation.relationId);
+        statuses.push({
+          relationId: relation.relationId,
+          growiLabel: relation.growiLabel,
+          newKeyId:
+            standing.kind === 'ok' ? (standing.incoming?.keyId ?? null) : null,
+          deliveredToPeer:
+            standing.kind === 'ok' &&
+            standing.incoming?.deliveredToPeerAt != null,
+          problem: standing.kind === 'ok' ? null : standing.kind,
+        });
+      }
+      return statuses;
     },
 
     revokeOldIfAllDelivered: async (installationId, send) => {

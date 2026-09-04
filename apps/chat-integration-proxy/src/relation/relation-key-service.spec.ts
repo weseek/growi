@@ -1008,3 +1008,100 @@ describe('relationKeyService.revokeOldIfAllDelivered (Requirement 10.6)', () => 
     expect(store.rows().filter((row) => row.revokedAt != null)).toEqual([]);
   });
 });
+
+describe('relationKeyService.rotationStatus (Requirement 10.5)', () => {
+  // What `rotate-key status` shows an operator BEFORE step 4 runs
+  // (design.md: 「入れ替えの途中経過（関係ごとの未達）を見る」).
+  // `revokeOldIfAllDelivered` answers one boolean for the whole installation,
+  // which cannot say WHICH GROWI is holding the rotation up -- and the rule
+  // for "which key is in charge" lives in this module, so re-deriving it from
+  // `listKeys` at the call site would put the same policy in two places.
+  it('names, per relation, the key being moved to and whether the GROWI has it', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.relation.findMany.mockResolvedValue([ALPHA, BRAVO]);
+    withOwnKeyStore(prisma, [
+      pairedKey('relation-1', 'old-1'),
+      ownKeyRow({
+        id: 'row-new-1',
+        relationId: 'relation-1',
+        keyId: 'new-1',
+        supersededKeyId: 'old-1',
+        deliveredToPeerAt: new Date('2026-06-01T00:00:00.000Z'),
+      }),
+      pairedKey('relation-2', 'old-2'),
+      ownKeyRow({
+        id: 'row-new-2',
+        relationId: 'relation-2',
+        keyId: 'new-2',
+        supersededKeyId: 'old-2',
+        deliveredToPeerAt: null,
+      }),
+    ]);
+
+    await expect(
+      serviceOver(prisma).rotationStatus(INSTALLATION),
+    ).resolves.toEqual([
+      {
+        relationId: 'relation-1',
+        growiLabel: 'relation-1',
+        newKeyId: 'new-1',
+        deliveredToPeer: true,
+        problem: null,
+      },
+      {
+        relationId: 'relation-2',
+        growiLabel: 'relation-2',
+        newKeyId: 'new-2',
+        deliveredToPeer: false,
+        problem: null,
+      },
+    ]);
+  });
+
+  it('says a relation has no rotation under way rather than leaving it out', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.relation.findMany.mockResolvedValue([ALPHA]);
+    withOwnKeyStore(prisma, [pairedKey('relation-1', 'old-1')]);
+
+    await expect(
+      serviceOver(prisma).rotationStatus(INSTALLATION),
+    ).resolves.toEqual([
+      {
+        relationId: 'relation-1',
+        growiLabel: 'relation-1',
+        newKeyId: null,
+        deliveredToPeer: false,
+        problem: null,
+      },
+    ]);
+  });
+
+  it('reports a relation whose keys do not say which one signs, instead of guessing', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.relation.findMany.mockResolvedValue([ALPHA]);
+    withOwnKeyStore(prisma, []);
+
+    await expect(
+      serviceOver(prisma).rotationStatus(INSTALLATION),
+    ).resolves.toEqual([
+      {
+        relationId: 'relation-1',
+        growiLabel: 'relation-1',
+        newKeyId: null,
+        deliveredToPeer: false,
+        problem: 'no-valid-key',
+      },
+    ]);
+  });
+
+  it('changes nothing: no key is minted, marked or revoked by looking', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.relation.findMany.mockResolvedValue([ALPHA]);
+    withOwnKeyStore(prisma, [pairedKey('relation-1', 'old-1')]);
+
+    await serviceOver(prisma).rotationStatus(INSTALLATION);
+
+    expect(prisma.ownKey.create).not.toHaveBeenCalled();
+    expect(prisma.ownKey.update).not.toHaveBeenCalled();
+  });
+});

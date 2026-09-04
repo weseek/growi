@@ -185,3 +185,53 @@ describe('relationRepository (Requirement 8.1)', () => {
     ).rejects.toBe(notPrisma);
   });
 });
+
+describe('relationRepository.updateSearchWeight (Requirement 3.8)', () => {
+  it('writes the weight of exactly one relation, addressed by its id', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.relation.update.mockResolvedValue(row({ searchWeight: 5 }));
+
+    await createRelationRepository(prisma).updateSearchWeight('relation-1', 5);
+
+    expect(prisma.relation.update).toHaveBeenCalledWith({
+      where: { id: 'relation-1' },
+      data: { searchWeight: 5 },
+    });
+  });
+});
+
+describe('relationRepository.bumpSettingsVersionIfNewer (Requirement 11.4)', () => {
+  // design.md: 「設定の版が自分の持つものより大きいときだけ書く」. Expressed as a
+  // condition ON the update rather than a read followed by a write: two pushes
+  // that both read the old version would otherwise both write, and whichever
+  // finished last would win regardless of its version -- which is the exact
+  // thing the version rule exists to prevent.
+  it('updates only while the stored version is strictly smaller', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.relation.updateMany.mockResolvedValue({ count: 1 });
+
+    await expect(
+      createRelationRepository(prisma).bumpSettingsVersionIfNewer(
+        'relation-1',
+        7,
+      ),
+    ).resolves.toBe(true);
+
+    expect(prisma.relation.updateMany).toHaveBeenCalledWith({
+      where: { id: 'relation-1', settingsVersion: { lt: 7 } },
+      data: { settingsVersion: 7 },
+    });
+  });
+
+  it('answers false when no row matched, so the caller writes nothing', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.relation.updateMany.mockResolvedValue({ count: 0 });
+
+    await expect(
+      createRelationRepository(prisma).bumpSettingsVersionIfNewer(
+        'relation-1',
+        2,
+      ),
+    ).resolves.toBe(false);
+  });
+});

@@ -65,6 +65,31 @@ export interface RelationRepository {
   ): Promise<Relation | null>;
   listByInstallation(installationId: string): Promise<ReadonlyArray<Relation>>;
   /**
+   * Sets this relation's weight in the search fusion (Requirement 3.8). The
+   * range is not checked here: `search_weight` is an ordinary integer column,
+   * and what counts as a sensible weight is a question about the fusion
+   * formula, which lives to the right of this layer.
+   */
+  updateSearchWeight(relationId: string, searchWeight: number): Promise<void>;
+  /**
+   * Raises the stored settings version to `version`, and answers whether it
+   * did (Requirement 11.4). **A push whose version is not strictly greater
+   * changes nothing** -- design.md: 「設定の版が自分の持つものより大きいときだけ
+   * 書く」.
+   *
+   * The comparison is a condition ON the update rather than a read followed
+   * by a write, for the same reason `pairing_order.consumeIfUnconsumed` is:
+   * two pushes that both read the old version would both go on to write, and
+   * whichever finished last would win regardless of its version -- which is
+   * exactly what the version rule exists to prevent. Answering `false` is how
+   * the caller learns to write nothing else, so this must be called BEFORE
+   * the settings rows and inside the same transaction as them.
+   */
+  bumpSettingsVersionIfNewer(
+    relationId: string,
+    version: number,
+  ): Promise<boolean>;
+  /**
    * Deletes the relation row alone. Its children are `Restrict`, so this fails
    * while any remain; the ordered removal design.md specifies is composed by
    * `deleteRelationCascade` (`db/relation-cascade.ts`), which owns that whole
@@ -124,6 +149,25 @@ export const createRelationRepository = (db: DbClient): RelationRepository => ({
   listByInstallation: async (installationId) => {
     const rows = await db.relation.findMany({ where: { installationId } });
     return rows.map(toRelation);
+  },
+
+  updateSearchWeight: async (relationId, searchWeight) => {
+    await db.relation.update({
+      where: { id: relationId },
+      data: { searchWeight },
+    });
+  },
+
+  bumpSettingsVersionIfNewer: async (relationId, version) => {
+    // `updateMany` rather than `update`: `update` needs a unique `where`, and
+    // the version comparison is not part of one. `updateMany` answers how many
+    // rows matched, which is the whole answer -- 0 means the stored version is
+    // already at or past `version`.
+    const result = await db.relation.updateMany({
+      where: { id: relationId, settingsVersion: { lt: version } },
+      data: { settingsVersion: version },
+    });
+    return result.count > 0;
   },
 
   remove: async (relationId) => {

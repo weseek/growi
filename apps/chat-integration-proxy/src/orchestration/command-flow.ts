@@ -25,12 +25,11 @@
 //    the request body's own shape differs (`buildSingleRequest`), which is
 //    the discriminant of `CommandRequest` itself.
 //
-// **Operator words are not executed here.** `startCommand` receives them (see
-// `event-sink.ts`'s `KNOWN_COMMAND_WORDS`), but this task's requirements are
-// entirely the user-facing ones, and `AdminCommandSet`'s missing half -- where
-// the actor's workspace roles are read from, which no `PlatformFacade` method
-// offers (task 4.3's hand-off) -- is unresolved. They are left untouched for
-// task 7.3 rather than half-wired here.
+// **Operator words are not executed here, but the split is decided here.**
+// `startCommand` receives them (see `event-sink.ts`'s `KNOWN_COMMAND_WORDS`)
+// and hands them to `AdminFlow`, which is where the operator commands actually
+// reach `relation/` and `growi/`. Keeping the routing in this one entrance is
+// what makes it impossible for a word to be answered twice, or by neither.
 import type {
   ChannelRef,
   CommandName,
@@ -69,6 +68,7 @@ import type {
   PlatformEvent,
   Relation,
 } from '../types/index.js';
+import type { AdminFlow } from './admin-flow.js';
 import type { CommandFlow, LinkPostedEvent } from './event-sink.js';
 import { parseTimeRange, TIME_RANGE_USAGE } from './time-range.js';
 
@@ -108,6 +108,13 @@ export interface CommandFlowDeps {
   readonly resolveInstallationId: (
     channel: ChannelRef,
   ) => Promise<string | null>;
+  /**
+   * Where an operator word goes. Injected rather than built here so this flow
+   * keeps one job -- deciding which of the two vocabularies a word belongs to
+   * -- and so the admin flow's own dependencies (`PairingService`,
+   * `RelationKeyService`, `GrowiClient`) do not become this flow's.
+   */
+  readonly adminFlow: AdminFlow;
   /** Requirement 10.4 keys duplicate-execution detection on this. */
   readonly newRequestId?: () => string;
   readonly searchLimit?: number;
@@ -286,6 +293,7 @@ export const createCommandFlow = (deps: CommandFlowDeps): CommandFlow => {
     growiClient,
     fanOutCollector,
     resolveInstallationId,
+    adminFlow,
     newRequestId = () => crypto.randomUUID(),
     searchLimit = SEARCH_DEFAULT_LIMIT,
   } = deps;
@@ -800,8 +808,12 @@ export const createCommandFlow = (deps: CommandFlowDeps): CommandFlow => {
   return {
     startCommand: async (invocation) => {
       const word = invocation.commandName;
-      // Left for task 7.3 -- see this file's header.
-      if (ADMIN_WORDS.has(word)) return;
+      // The operator vocabulary is carried out by its own flow. Answering it
+      // here as well would tell the operator twice.
+      if (ADMIN_WORDS.has(word)) {
+        await adminFlow.run(invocation);
+        return;
+      }
 
       const trait = traitOf(word);
       if (trait == null) {

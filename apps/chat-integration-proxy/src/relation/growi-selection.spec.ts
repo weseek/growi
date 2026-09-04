@@ -62,15 +62,23 @@ const BRAVO = relationRow('rel-b', 'https://bravo.example.com/', 'Bravo');
  */
 const withPermissions = (
   prisma: DeepMockProxy<PrismaClient>,
-  permitted: Readonly<Record<string, ReadonlyArray<string>>>,
+  permitted: Readonly<Record<string, ReadonlyArray<string> | 'all'>>,
 ): void => {
   prisma.channelPermission.findUnique.mockImplementation(((args: {
     where: { relationId_commandName: { relationId: string } };
   }) => {
     const { relationId } = args.where.relationId_commandName;
     const channels = permitted[relationId];
+    if (channels == null) {
+      return Promise.resolve(null);
+    }
+    // `'all'` lives in its own column, because an empty `channels` array
+    // already means "no channel permitted". The row is written the way
+    // `ChannelPermissionRepository.upsert` writes it.
     return Promise.resolve(
-      channels == null ? null : { channels: [...channels] },
+      channels === 'all'
+        ? { channels: [], allowAll: true }
+        : { channels: [...channels], allowAll: false },
     );
     // The mocked delegate's own parameter type is Prisma's generic
     // find-unique shape, which cannot be named outside `db/` (the architecture
@@ -544,6 +552,35 @@ describe('url-match targeting (Requirement 6.4)', () => {
           reason: 'not-permitted-in-channel',
         },
       ],
+    });
+  });
+});
+
+describe("a row that permits every channel ('all')", () => {
+  it('selects the GROWI for a WRITE command from a channel the row does not list', async () => {
+    // The one thing task 5.3's hand-off (a) warned about, read from this end.
+    // `RelationSettings.allowedChannels` has three values and `channels`
+    // alone can carry two, so `'all'` is stored in its own column -- and if
+    // the store had folded it into an empty list, this exact call would come
+    // back `not-permitted-in-channel`. Deleting the row instead would answer
+    // `no-settings`, which `judge()` turns into a denial for `create-page`.
+    // Both wrong answers are the OPPOSITE of what was configured, and a write
+    // command from a channel the row does not list is where they show.
+    const prisma = mockDeep<PrismaClient>();
+    prisma.relation.findMany.mockResolvedValue([ALPHA]);
+    withPermissions(prisma, { 'rel-a': 'all' });
+
+    const outcome = await selectorOver(prisma).select({
+      targeting: 'exactly-one',
+      installationId: INSTALLATION,
+      channel: CHANNEL,
+      commandName: 'create-page',
+    });
+
+    expect(outcome).toEqual({
+      kind: 'execute',
+      targets: [expect.objectContaining({ relationId: 'rel-a' })],
+      excluded: [],
     });
   });
 });
