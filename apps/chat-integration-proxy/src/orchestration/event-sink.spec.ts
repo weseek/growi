@@ -256,10 +256,42 @@ describe('what each resume outcome leads to', () => {
     });
   });
 
+  it('runs the command against the GROWI the user picked, values and all', async () => {
+    // Requirement 8.2. The values were collected BEFORE the question was
+    // asked, so they come back with the answer and nothing is asked twice.
+    const { sink, flow, collector } = setup();
+    collector.resume.mockResolvedValue({
+      status: 'growi-chosen',
+      invocation: anInvocation,
+      values: { path: '/memo', body: 'text' },
+      relationId: 'rel-b',
+    });
+
+    await sink.handle(actionEvent);
+
+    expect(flow.runChosenGrowi).toHaveBeenCalledWith(
+      anInvocation,
+      { path: '/memo', body: 'text' },
+      'rel-b',
+    );
+    expect(flow.runCollected).not.toHaveBeenCalled();
+  });
+
+  it('tells the user when their half-finished input has expired', async () => {
+    // The user is present and reachable here, so the input vanishing is worth
+    // saying -- and only the flow can post.
+    const { sink, flow, collector } = setup();
+    collector.resume.mockResolvedValue({ status: 'expired' });
+
+    await sink.handle(modalSubmitEvent);
+
+    expect(flow.reportExpired).toHaveBeenCalledWith(modalSubmitEvent);
+    expect(flow.runCollected).not.toHaveBeenCalled();
+  });
+
   it.each([
     'pending',
     'cancelled',
-    'expired',
     'not-mine',
   ] as const)('leaves the flow untouched when the collector answers %s', async (status) => {
     const { sink, flow, collector } = setup();
@@ -270,5 +302,7 @@ describe('what each resume outcome leads to', () => {
     expect(flow.runCollected).not.toHaveBeenCalled();
     expect(flow.startCommand).not.toHaveBeenCalled();
     expect(flow.previewLinks).not.toHaveBeenCalled();
+    expect(flow.runChosenGrowi).not.toHaveBeenCalled();
+    expect(flow.reportExpired).not.toHaveBeenCalled();
   });
 });

@@ -51,13 +51,45 @@ export type ResumeOutcome =
       readonly values: Readonly<Record<string, string>>;
       readonly invocation: Invocation;
     }
+  /**
+   * The user has said WHICH GROWI the command runs against (Requirement 8.2).
+   * The values collected before the question was asked come back with it, so
+   * the caller does not have to ask for them a second time.
+   */
+  | {
+      readonly status: 'growi-chosen';
+      readonly invocation: Invocation;
+      readonly values: Readonly<Record<string, string>>;
+      readonly relationId: string;
+    }
   | { readonly status: 'pending' }
   | { readonly status: 'cancelled' | 'expired' | 'not-mine' };
+
+/** One GROWI a choice offers, as the user reads it and as it is answered. */
+export interface GrowiChoiceOption {
+  readonly relationId: string;
+  readonly growiLabel: string;
+}
 
 export interface ArgumentCollector {
   start(
     invocation: Invocation,
     fields: ReadonlyArray<FieldSpec>,
+  ): Promise<StartOutcome>;
+  /**
+   * Asks which GROWI to act on, and keeps the answer resumable.
+   *
+   * It lives here rather than in `GrowiSelector` because the question is
+   * answered by a LATER event, possibly on another process -- exactly what
+   * `pending_collection` and `resume` already exist for. `GrowiSelector`
+   * decides which GROWIs are candidates and holds no state at all; putting a
+   * second writer on this table there would mean two components enforcing
+   * design.md's 「1 チャンネル・1 利用者につき同時に 1 件」 invariant.
+   */
+  startGrowiChoice(
+    invocation: Invocation,
+    values: Readonly<Record<string, string>>,
+    options: ReadonlyArray<GrowiChoiceOption>,
   ): Promise<StartOutcome>;
   resume(event: PlatformEvent): Promise<ResumeOutcome>;
   sweepExpired(now: Date): Promise<number>;
@@ -109,6 +141,16 @@ export const PENDING_COLLECTION_TTL_MS = 15 * 60 * 1000;
  */
 const STATE_MARKER = 'argument-collection';
 
+/**
+ * The `collected` column's shape for the OTHER kind of row this component
+ * owns: a command whose values are already in, waiting on the user to say
+ * which GROWI it runs against. Its own marker is what lets `resume` tell a
+ * pressed choice button apart from an answer to a follow-up question, and
+ * what keeps `advance` -- which would read the press as a field value --
+ * from ever seeing it.
+ */
+const CHOICE_MARKER = 'growi-choice';
+
 interface CollectionState {
   readonly marker: typeof STATE_MARKER;
   readonly fields: ReadonlyArray<FieldSpec>;
@@ -117,10 +159,40 @@ interface CollectionState {
   readonly awaiting: string | null;
 }
 
+interface ChoiceState {
+  readonly marker: typeof CHOICE_MARKER;
+  readonly values: Readonly<Record<string, string>>;
+}
+
+const markerOf = (value: unknown): unknown =>
+  typeof value === 'object' && value !== null
+    ? (value as { marker?: unknown }).marker
+    : undefined;
+
 const isCollectionState = (value: unknown): value is CollectionState =>
-  typeof value === 'object' &&
-  value !== null &&
-  (value as { marker?: unknown }).marker === STATE_MARKER;
+  markerOf(value) === STATE_MARKER;
+
+const isChoiceState = (value: unknown): value is ChoiceState =>
+  markerOf(value) === CHOICE_MARKER;
+
+/**
+ * The options a choice row offered, read back out of the opaque
+ * `offeredOptions` column. Anything that does not parse is treated as no
+ * options at all, which makes every answer fall through as "not one of mine"
+ * rather than as a target -- the safe direction, since this list is the
+ * permission-filtered set the answer is checked against.
+ */
+const offeredOptionsOf = (value: unknown): ReadonlyArray<GrowiChoiceOption> =>
+  Array.isArray(value)
+    ? value.flatMap((entry) =>
+        typeof entry === 'object' &&
+        entry !== null &&
+        typeof (entry as GrowiChoiceOption).relationId === 'string' &&
+        typeof (entry as GrowiChoiceOption).growiLabel === 'string'
+          ? [entry as GrowiChoiceOption]
+          : [],
+      )
+    : [];
 
 /**
  * Fills the declared fields from the command line, positionally: each field
@@ -182,6 +254,29 @@ const discardNoticeFor = (commandName: string): OutboundMessage => ({
 const questionFor = (field: FieldSpec): OutboundMessage => ({
   kind: 'markdown',
   markdown: `${field.label} を入力してください。この投稿に返信せず、bot に呼びかけて（例: \`@growi <入力>\`）お答えください。`,
+});
+
+/**
+ * The wording of the "which GROWI?" question, as a `choice` so that
+ * `platform/outbound.ts` renders it as one button per GROWI where the service
+ * can, and as a numbered list answered by addressing the bot where it cannot.
+ *
+ * The option's `id` is the `relationId`: it comes back as the pressed
+ * button's `actionId`, and is checked against the offered list before it is
+ * acted on.
+ */
+const growiChoiceMessage = (
+  commandName: string,
+  correlationId: string,
+  options: ReadonlyArray<GrowiChoiceOption>,
+): OutboundMessage => ({
+  kind: 'choice',
+  prompt: `\`${commandName}\` をどの GROWI に対して実行しますか？`,
+  correlationId,
+  options: options.map((option) => ({
+    id: option.relationId,
+    label: option.growiLabel,
+  })),
 });
 
 export const createArgumentCollector = (
@@ -329,19 +424,69 @@ export const createArgumentCollector = (
     return { status: 'pending' };
   };
 
+  /** A choice answered: the row is done, and the caller gets everything back. */
+  const chosen = async (
+    record: PendingCollectionRecord,
+    state: ChoiceState,
+    relationId: string,
+  ): Promise<ResumeOutcome> => {
+    await pendingCollections.remove(record.correlationId);
+    return {
+      status: 'growi-chosen',
+      invocation: record.invocation,
+      values: state.values,
+      relationId,
+    };
+  };
+
+  /**
+   * The typed answer on a service that cannot render buttons: the reader is
+   * asked for a POSITION (`platform/outbound.ts`'s numbered fallback), so the
+   * stored order is what turns it back into a GROWI.
+   *
+   * An answer naming no option asks the question again instead of being
+   * ignored: it arrived as a deliberate address to the bot while a choice was
+   * outstanding, so silence would leave the user with no way to find out what
+   * a valid answer looks like. It is NOT read as a field value -- there is no
+   * field outstanding on this row.
+   */
+  const answerChoiceByPosition = async (
+    record: PendingCollectionRecord,
+    state: ChoiceState,
+    text: string,
+  ): Promise<ResumeOutcome> => {
+    const offered = offeredOptionsOf(record.offeredOptions);
+    const position = Number.parseInt(text.trim(), 10);
+    const picked =
+      Number.isInteger(position) && position >= 1 && position <= offered.length
+        ? offered[position - 1]
+        : undefined;
+    if (picked != null) return chosen(record, state, picked.relationId);
+
+    await platform.postEphemeral(
+      record.invocation.channel,
+      record.invocation.actor,
+      growiChoiceMessage(record.commandName, record.correlationId, offered),
+    );
+    return { status: 'pending' };
+  };
+
   const loadOwn = async (
     correlationId: string,
   ): Promise<
     | {
         readonly kind: 'ok';
         readonly record: PendingCollectionRecord;
-        readonly state: CollectionState;
+        readonly state: CollectionState | ChoiceState;
       }
     | { readonly kind: 'not-mine' }
     | { readonly kind: 'expired' }
   > => {
     const record = await pendingCollections.findByCorrelationId(correlationId);
-    if (record == null || !isCollectionState(record.collected)) {
+    if (
+      record == null ||
+      !(isCollectionState(record.collected) || isChoiceState(record.collected))
+    ) {
       return { kind: 'not-mine' };
     }
     if (record.expiresAt.getTime() <= now().getTime()) {
@@ -390,6 +535,57 @@ export const createArgumentCollector = (
       return beginPending(invocation, fields, values, missing);
     },
 
+    startGrowiChoice: async (invocation, values, options) => {
+      // No in-flight row is discarded here, unlike `start`: this is the SAME
+      // command continuing (its values have just been collected), not a new
+      // one superseding an old one.
+      if (!supports('ephemeralMessage', invocation.platform)) {
+        return {
+          status: 'unavailable',
+          reason:
+            'このチャットサービスでは、対象の GROWI を選んでもらう手段がないため、このコマンドを実行できません。',
+        };
+      }
+
+      const correlationId = newCorrelationId();
+      // Written BEFORE the question is asked, for the same reason
+      // `beginPending` writes before opening a modal: the answer may reach a
+      // different process than the one that asked.
+      await pendingCollections.create({
+        correlationId,
+        platform: invocation.platform,
+        channelId: invocation.channel.channelId,
+        actorAccountId: invocation.actor.accountId,
+        commandName: invocation.commandName,
+        invocation,
+        collected: { marker: CHOICE_MARKER, values } satisfies ChoiceState,
+        offeredOptions: options,
+        // `relationId` stays NULL: which relation this row belongs to is
+        // precisely what has not been decided yet.
+        expiresAt: new Date(now().getTime() + ttlMs),
+      });
+
+      const posted = await platform.postEphemeral(
+        invocation.channel,
+        invocation.actor,
+        growiChoiceMessage(invocation.commandName, correlationId, options),
+      );
+      if (!posted.ok) {
+        // Nothing can answer a question that was never shown, and the row
+        // would block this user's next command in the channel until it
+        // expired.
+        await pendingCollections.remove(correlationId);
+        return {
+          status: 'unavailable',
+          reason:
+            posted.reason === 'bot-not-in-channel'
+              ? posted.remedy
+              : posted.detail,
+        };
+      }
+      return { status: 'pending', correlationId };
+    },
+
     resume: async (event) => {
       // A follow-up answer can only arrive as a mention: `reply` was removed
       // from `PlatformEvent` (design.md: 「`plainReply` に依存しない」), so the
@@ -406,6 +602,13 @@ export const createArgumentCollector = (
 
         const loaded = await loadOwn(inFlight.correlationId);
         if (loaded.kind !== 'ok') return { status: loaded.kind };
+        if (isChoiceState(loaded.state)) {
+          return answerChoiceByPosition(
+            loaded.record,
+            loaded.state,
+            stripAddressToken(event.text),
+          );
+        }
         if (loaded.state.awaiting == null) return { status: 'not-mine' };
 
         return advance(
@@ -419,6 +622,9 @@ export const createArgumentCollector = (
       if (event.kind === 'modal-submit') {
         const loaded = await loadOwn(event.correlationId);
         if (loaded.kind !== 'ok') return { status: loaded.kind };
+        // A modal is never opened for a GROWI choice, so a submission naming
+        // one is not an answer this component can apply.
+        if (isChoiceState(loaded.state)) return { status: 'not-mine' };
 
         return advance(
           event.correlationId,
@@ -431,9 +637,21 @@ export const createArgumentCollector = (
       if (event.kind === 'action') {
         const loaded = await loadOwn(event.correlationId);
         if (loaded.kind !== 'ok') return { status: loaded.kind };
-        // A button that carries no value cannot supply one, and choosing which
-        // GROWI to act on is a later component's row (which `loadOwn` has
-        // already rejected as not this component's shape).
+        if (isChoiceState(loaded.state)) {
+          // The pressed option's own id arrives as `actionId`, not as
+          // `value`: `platform/outbound.ts` puts it there deliberately (a
+          // `value` would be a second copy of it, and Discord caps the two
+          // together at 100 characters).
+          //
+          // It is checked against the offered list rather than trusted,
+          // because that list is the permission-filtered one -- an id from
+          // outside it would reach a GROWI this channel was not offered.
+          const offered = offeredOptionsOf(loaded.record.offeredOptions);
+          return offered.some((option) => option.relationId === event.actionId)
+            ? chosen(loaded.record, loaded.state, event.actionId)
+            : { status: 'not-mine' };
+        }
+        // A button that carries no value cannot supply one.
         if (loaded.state.awaiting == null || event.value == null) {
           return { status: 'not-mine' };
         }

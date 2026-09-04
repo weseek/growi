@@ -7,9 +7,12 @@ describe('orchestration/ public entry point', () => {
     // someone adds `export *`, and this layer's contract is what `routes/`
     // reads it through.
     //
-    // **NOT final**: task 7.3 adds the two flows design.md lists under
-    // `orchestration/` and settles this list. Only value exports appear here --
-    // the types travel with them and are checked by the compiler.
-    expect(Object.keys(orchestrationLayer).sort()).toEqual(['createEventSink']);
+    // **NOT final**: task 7.3 adds `inbound-flow.ts` and settles this list.
+    // Only value exports appear here -- the types travel with them and are
+    // checked by the compiler.
+    expect(Object.keys(orchestrationLayer).sort()).toEqual([
+      'createCommandFlow',
+      'createEventSink',
+    ]);
   });
 });

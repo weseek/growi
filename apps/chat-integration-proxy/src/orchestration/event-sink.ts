@@ -74,7 +74,19 @@ export interface CommandFlow {
     invocation: Invocation,
     values: Readonly<Record<string, string>>,
   ): Promise<void>;
+  /**
+   * The user has said which GROWI the command runs against (Requirement 8.2).
+   * The values collected before the question was asked come back with the
+   * answer, so nothing is asked twice.
+   */
+  runChosenGrowi(
+    invocation: Invocation,
+    values: Readonly<Record<string, string>>,
+    relationId: string,
+  ): Promise<void>;
   previewLinks(event: LinkPostedEvent): Promise<void>;
+  /** Says that a half-finished input is gone; this layer cannot post. */
+  reportExpired(event: PlatformEvent): Promise<void>;
 }
 
 export interface EventSinkDeps {
@@ -103,6 +115,16 @@ export const createEventSink = (deps: EventSinkDeps): PlatformEventSink => {
         // command name of its own.
         await flow.runCollected(outcome.invocation, outcome.values);
         return;
+      case 'growi-chosen':
+        // Requirement 8.2's button (or, where a service renders no buttons,
+        // the numbered answer): which GROWI to act on is now settled, and
+        // the values collected before the question came back with it.
+        await flow.runChosenGrowi(
+          outcome.invocation,
+          outcome.values,
+          outcome.relationId,
+        );
+        return;
       case 'pending':
         // The collector has just asked the next question; the next event
         // continues from there.
@@ -112,18 +134,15 @@ export const createEventSink = (deps: EventSinkDeps): PlatformEventSink => {
         // (task 4.4), so there is no channel left to say anything through.
         return;
       case 'expired':
-        // Hand-off to task 7.2: the user IS present and reachable here, so
-        // telling them their half-finished input has expired would be a real
-        // improvement. It needs a post, which this layer does not do -- the
-        // signal is available in this branch when the flow can carry it.
+        // The user IS present and reachable here, so their half-finished
+        // input quietly vanishing is worth saying. Only the flow can post.
+        await flow.reportExpired(event);
         return;
       case 'not-mine':
         // On a mention: an ordinary message, so nothing happens (design.md's
-        // step 3). On an `action`: a button belonging to something other than
-        // an argument collection -- today only the GROWI choice of Requirement
-        // 8.2, which nothing writes yet (`GrowiSelector` does not touch
-        // `pending_collection`). Task 7.2, which adds that row, resumes it
-        // from this branch.
+        // step 3). On an `action`: a button that belongs to no collection of
+        // ours -- a stale press from a superseded command, or an id that was
+        // never among the ones offered.
         return;
     }
   };

@@ -657,3 +657,169 @@ describe('the field declaration this component is driven by', () => {
     expect(names).toEqual(['path', 'body']);
   });
 });
+
+describe('ArgumentCollector.startGrowiChoice / resuming a GROWI choice', () => {
+  let repository: ReturnType<typeof createFakeRepository>;
+  let platform: ArgumentCollectorPlatform;
+
+  const OPTIONS = [
+    { relationId: 'rel-a', growiLabel: 'GROWI A' },
+    { relationId: 'rel-b', growiLabel: 'GROWI B' },
+  ];
+
+  beforeEach(() => {
+    repository = createFakeRepository();
+    platform = mock<ArgumentCollectorPlatform>();
+    vi.mocked(platform.postEphemeral).mockResolvedValue({
+      ok: true,
+      messageId: 'M1',
+    });
+  });
+
+  const collector = () =>
+    createArgumentCollector({
+      pendingCollections: repository,
+      platform,
+      now: () => NOW,
+      newCorrelationId: () => 'corr-choice',
+    });
+
+  const buttonPress = (
+    platformName: PlatformName,
+    correlationId: string,
+    actionId: string,
+  ): PlatformEvent => ({
+    kind: 'action',
+    platform: platformName,
+    channel: channelOf(platformName),
+    actor: actorOf(platformName),
+    correlationId,
+    actionId,
+    // The rendered choice deliberately carries no `value` -- the option's own
+    // id travels inside the action id (`platform/outbound.ts`).
+    value: null,
+    interaction: null,
+  });
+
+  it('offers the choice as buttons only this user sees, one per GROWI', async () => {
+    const outcome = await collector().startGrowiChoice(
+      invocationOf('slack', COMMAND_NAMES.createPage),
+      { path: '/memo', body: 'text' },
+      OPTIONS,
+    );
+
+    expect(outcome).toEqual({
+      status: 'pending',
+      correlationId: 'corr-choice',
+    });
+    const [, , message] = vi.mocked(platform.postEphemeral).mock.calls[0] ?? [];
+    expect(message).toMatchObject({
+      kind: 'choice',
+      correlationId: 'corr-choice',
+      options: [
+        { id: 'rel-a', label: 'GROWI A' },
+        { id: 'rel-b', label: 'GROWI B' },
+      ],
+    });
+  });
+
+  it('keeps the already-collected values with the row so pressing a button does not ask again', async () => {
+    const invocation = invocationOf('slack', COMMAND_NAMES.createPage);
+    await collector().startGrowiChoice(
+      invocation,
+      { path: '/memo', body: 'text' },
+      OPTIONS,
+    );
+
+    const resumed = await collector().resume(
+      buttonPress('slack', 'corr-choice', 'rel-b'),
+    );
+
+    expect(resumed).toEqual({
+      status: 'growi-chosen',
+      invocation,
+      values: { path: '/memo', body: 'text' },
+      relationId: 'rel-b',
+    });
+    expect(repository.rows.size).toBe(0);
+  });
+
+  it('refuses a pressed id that was never offered', async () => {
+    // The offered list is the permission-filtered one. Accepting an id from
+    // outside it would let a crafted press reach a GROWI this channel is not
+    // allowed to use.
+    await collector().startGrowiChoice(
+      invocationOf('slack', COMMAND_NAMES.createPage),
+      {},
+      OPTIONS,
+    );
+
+    const resumed = await collector().resume(
+      buttonPress('slack', 'corr-choice', 'rel-elsewhere'),
+    );
+
+    expect(resumed).toEqual({ status: 'not-mine' });
+    expect(repository.rows.size).toBe(1);
+  });
+
+  it('accepts the numbered answer a service without buttons falls back to', async () => {
+    const invocation = invocationOf('mattermost', COMMAND_NAMES.createPage);
+    await collector().startGrowiChoice(invocation, { path: '/memo' }, OPTIONS);
+
+    const resumed = await collector().resume(mentionAnswer('mattermost', '2'));
+
+    expect(resumed).toMatchObject({
+      status: 'growi-chosen',
+      relationId: 'rel-b',
+    });
+  });
+
+  it('asks again, rather than acting, when the typed answer names no option', async () => {
+    await collector().startGrowiChoice(
+      invocationOf('mattermost', COMMAND_NAMES.createPage),
+      {},
+      OPTIONS,
+    );
+    vi.mocked(platform.postEphemeral).mockClear();
+
+    const resumed = await collector().resume(mentionAnswer('mattermost', '9'));
+
+    expect(resumed).toEqual({ status: 'pending' });
+    expect(repository.rows.size).toBe(1);
+    expect(platform.postEphemeral).toHaveBeenCalledTimes(1);
+  });
+
+  it('drops the row when the choice could not be shown at all', async () => {
+    vi.mocked(platform.postEphemeral).mockResolvedValue({
+      ok: false,
+      reason: 'bot-not-in-channel',
+      remedy: 'invite the bot',
+    });
+
+    const outcome = await collector().startGrowiChoice(
+      invocationOf('slack', COMMAND_NAMES.createPage),
+      {},
+      OPTIONS,
+    );
+
+    expect(outcome).toEqual({
+      status: 'unavailable',
+      reason: 'invite the bot',
+    });
+    expect(repository.rows.size).toBe(0);
+  });
+
+  it('leaves an ordinary field collection unaffected by the choice shape', async () => {
+    // Both shapes share `collected`; the marker is what keeps them apart.
+    await collector().start(
+      invocationOf('slack', COMMAND_NAMES.createPage),
+      CREATE_PAGE_FIELDS,
+    );
+
+    const resumed = await collector().resume(
+      buttonPress('slack', 'corr-choice', 'rel-a'),
+    );
+
+    expect(resumed).toEqual({ status: 'not-mine' });
+  });
+});

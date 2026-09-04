@@ -30,6 +30,7 @@ export type {
   ArgumentCollector,
   ArgumentCollectorDeps,
   ArgumentCollectorPlatform,
+  GrowiChoiceOption,
   ResumeOutcome,
   StartOutcome,
 } from './argument-collector.js';
