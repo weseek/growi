@@ -1185,3 +1185,173 @@ test.describe('Inline comment - highlight correctness on a page with an async ls
     expect(highlightedText).toBe(childBasename);
   });
 });
+
+test.describe('Inline comment - shares one list and one box style with normal comments (Req 13.1-13.4, 13.9)', () => {
+  // Serial: each test below posts one more comment on top of what the
+  // previous test posted, and the final test reads the accumulated state --
+  // the same reasoning the other suites in this file use for serial mode.
+  test.describe.configure({ mode: 'serial' });
+
+  const mixedListPagePath = (retry: number) =>
+    `/inline-comment-e2e-mixed-list${retry}`;
+
+  const targetSentence =
+    'This sentence anchors the mixed-comment-list end-to-end test.';
+  const pageBody = [
+    '# Inline comment E2E - mixed comment list',
+    '',
+    targetSentence,
+    '',
+  ].join('\n');
+
+  // Ordering matters here: "before" posted first, the inline comment second,
+  // "after" third. Requirement 13.1/13.2 asks for the merged list to be
+  // ordered by posting date, not grouped by kind -- a broken merge that
+  // appended one kind after the other would put the inline comment first or
+  // last instead of in the middle, so these three texts (and their expected
+  // middle position for the inline one) are the decisive fixture.
+  const normalCommentBeforeText =
+    'a normal comment posted before the inline one';
+  const inlineCommentText =
+    'an inline comment posted between two normal comments';
+  const normalCommentAfterText = 'a normal comment posted after the inline one';
+
+  let createdPage: CreatedPage | undefined;
+
+  test.afterAll(async ({ request }) => {
+    if (createdPage != null) {
+      await deletePagesCompletely(request, [createdPage]);
+    }
+  });
+
+  test('Create a page containing the target sentence', async ({
+    page,
+    request,
+  }, testInfo) => {
+    createdPage = await createPage(request, {
+      path: mixedListPagePath(testInfo.retry),
+      body: pageBody,
+    });
+
+    await page.goto(createdPage.path);
+    await expect(page.locator('.wiki').first()).toContainText(targetSentence);
+  });
+
+  test('Post a normal (page-bottom) comment first', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(mixedListPagePath(testInfo.retry));
+
+    // Same page-bottom comment flow as `20-basic-features/comments.spec.ts`.
+    await page.getByTestId('page-comment-button').click();
+    await page.getByTestId('open-comment-editor-button').click();
+    await page.locator('.cm-content').fill(normalCommentBeforeText);
+    await page.getByTestId('comment-submit-button').first().click();
+
+    await expect(page.locator('.page-comment-body')).toContainText(
+      normalCommentBeforeText,
+    );
+  });
+
+  test('Post an inline comment second', async ({ page }, testInfo) => {
+    await page.goto(mixedListPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    await selectTextInPageBody(page, targetSentence);
+    await page.getByTestId('selection-action-button').click();
+    const form = page.getByTestId('inline-comment-form');
+    await expect(form).toBeVisible();
+
+    await form.locator('.cm-content').fill(inlineCommentText);
+    await form.getByTestId('inline-comment-submit-button').click();
+    await expect(form).not.toBeVisible();
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+    await expect(item).toContainText(inlineCommentText);
+  });
+
+  test('Post a second normal comment third', async ({ page }, testInfo) => {
+    await page.goto(mixedListPagePath(testInfo.retry));
+
+    await page.getByTestId('page-comment-button').click();
+    await page.getByTestId('open-comment-editor-button').click();
+    await page.locator('.cm-content').fill(normalCommentAfterText);
+    await page.getByTestId('comment-submit-button').first().click();
+
+    await expect(page.locator('.page-comment-body').last()).toContainText(
+      normalCommentAfterText,
+    );
+  });
+
+  test('The three comments sit in one list, ordered by posting date, and the normal/inline items share the exact same box styling', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(mixedListPagePath(testInfo.retry));
+
+    // Requirement 13.1: one list -- the single container `PageComment.tsx`
+    // renders both kinds into (design.md 決定3). Scoped via the `.page-comments`
+    // wrapper class, not `#page-comments-list` alone: `Comments.tsx`'s own
+    // outer wrapper (a pre-existing, out-of-boundary issue unrelated to this
+    // task) reuses the exact same id on a different element, so an id-only
+    // locator would silently match both elements' children combined.
+    const listItems = page.locator(
+      '.page-comments > #page-comments-list > div',
+    );
+    await expect(listItems).toHaveCount(3);
+
+    // Requirement 13.2: ordered by posting date, not by kind. If the merge
+    // were grouped by type instead of interleaved (e.g. the pre-amend
+    // `[...comments].reverse()` that never merged inline comments in at
+    // all, or a broken merge that appended one kind after the other), the
+    // inline comment would not land in the middle position.
+    await expect(listItems.nth(0)).toContainText(normalCommentBeforeText);
+    await expect(listItems.nth(1)).toContainText(inlineCommentText);
+    await expect(listItems.nth(2)).toContainText(normalCommentAfterText);
+
+    // Confirm the middle item is genuinely the inline one (not merely a
+    // normal comment whose text happens to overlap), and that the other two
+    // are not.
+    await expect(
+      listItems.nth(1).getByTestId('inline-comment-item'),
+    ).toBeVisible();
+    await expect(
+      listItems.nth(0).getByTestId('inline-comment-item'),
+    ).toHaveCount(0);
+    await expect(
+      listItems.nth(2).getByTestId('inline-comment-item'),
+    ).toHaveCount(0);
+
+    // Requirement 13.3/13.4: both kinds render through the shared
+    // `CommentCard` (design.md 決定2), so the box each one paints --
+    // `.page-comment-main.bg-comment.rounded` -- must resolve to the exact
+    // same computed style, not merely a similar-looking one.
+    const readBoxStyle = (locator: ReturnType<Page['locator']>) =>
+      locator.evaluate((el) => {
+        const style = window.getComputedStyle(el);
+        return {
+          backgroundColor: style.backgroundColor,
+          borderColor: style.borderColor,
+          borderStyle: style.borderStyle,
+          borderWidth: style.borderWidth,
+          borderRadius: style.borderRadius,
+        };
+      });
+
+    const normalBox = listItems
+      .nth(0)
+      .locator('.page-comment-main.bg-comment.rounded');
+    const inlineBox = listItems
+      .nth(1)
+      .locator('.page-comment-main.bg-comment.rounded');
+
+    const normalBoxStyle = await readBoxStyle(normalBox);
+    const inlineBoxStyle = await readBoxStyle(inlineBox);
+    expect(inlineBoxStyle).toEqual(normalBoxStyle);
+
+    // Sanity: the box actually paints something distinguishable, ruling out
+    // the comparison above passing vacuously because neither side has any
+    // rounding/background at all.
+    expect(normalBoxStyle.borderRadius).not.toBe('0px');
+  });
+});

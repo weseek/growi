@@ -147,13 +147,21 @@
   - _Requirements: 12.4, 12.5, 12.6, 12.8_
   - _Depends: 3.3_
 
-- [ ] 7.3 E2E: 通常コメントとインラインコメントが1つの一覧に同じ見た目で並ぶことを確認する
+- [x] 7.3 E2E: 通常コメントとインラインコメントが1つの一覧に同じ見た目で並ぶことを確認する
   - 通常コメントとインラインコメントを両方投稿し、末尾コメント一覧の中に投稿日時順で並び、双方が同じ背景色・境界線・角丸の箱で表示されることを確認する。あわせて既存の`Comment.spec.tsx`（タスク4.1）とインラインコメントE2Eの回帰が崩れていないことを確認する
   - 観測できる完了条件：E2Eテストがgreenになる
   - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.9_
   - _Depends: 6.3, 7.1, 7.2_
 
 ## Implementation Notes
+
+- 7.3レビューで判明、feature-level validation（`/kiro-validate-impl`）への申し送り:
+  1. 返信の投稿者データ欠落（5.3由来）: `inline-comment-service.ts`の返信側`findMany()`は`include: { creator: true }`で取得しているのに`toInlineCommentReplyFromListRow()`が`row.creator`を捨てている。無駄なjoin＋実データ欠落。フォローアップ課題として起票されているか要確認。
+  2. E2Eの実証はChromiumのみ（7.1由来）: `playwright.config.ts`の`devices`辞書キー不一致でfirefox/webkitがChromiumにフォールバックする既存バグ。7.1〜7.3すべての確信度の上限。
+  3. `/comment-retry0`・`/comment-retry1`に残置コメントあり（7.3レビュー実行で一部増加）。次回`comments.spec.ts`実行前に削除推奨。
+  4. Requirement 11.6未達の既知箇所（2.2で対象外と判断済み）: `MentionPickerButton.tsx`の"No candidates"、`InlineCommentForm.tsx`のエラー文言が英語直書きのまま。
+  5. `Comments.tsx`と`PageComment.tsx`の両方が`id="page-comments-list"`を持つ（既存の重複、本amend以前から）。将来のE2Eも同じ罠を踏むため別issue化を推奨。
+  6. Requirement 13.4「同じ大きさ」（`%user-picture`の見た目）を直接比較するテストが無い（`InlineCommentItem.spec.tsx`は3要素の存在のみ確認、順序はCommentCard経由で構造的に担保）。
 
 - 5.2: `CommentCardProps.creator`（task 4.2）は`IUserSerializedSecurely<IUserHasId>`を受けられなかった（インラインコメントの`creator`はまさにこの型）。修正として`CommentCard.tsx`と`apps/app/src/components/User/Username.tsx`の`creator`/`user`の型union に`IUserSerializedSecurely<IUserHasId>`を追加した（型のみ・`isPopulated()`はオブジェクトかどうかしか見ないため実行時の挙動は不変）。両ファイルとも task 5.2 の`_Boundary: InlineCommentItem_`の外だが、5.2がコンパイルするために必須だったため含めた。
 - 5.2のRED実測: `InlineCommentItem.spec.tsx`はファイル新規作成のため、実装前に`pnpm vitest run InlineCommentItem.spec`を実行すると`Error: Failed to resolve import "./InlineCommentItem"`で全件失敗することを実装者が確認済み（該当タスクの実装者レポート参照）。追加のミューテーション確認として、`RevisionRenderer`から`additionalClassName="comment"`を外すと該当テストが1件RED化することも確認済み。
