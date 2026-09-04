@@ -77,7 +77,9 @@ export type GrowiCallFailure =
   | 'uri-refused'
   /**
    * No usable signing key for the relation: either `signerFor` refused (no
-   * active key, or more than one), or the key material it handed back is not
+   * valid key, or several valid ones that do not say which is in charge -- two
+   * valid keys ARE the normal mid-rotation state and are not refused), or the
+   * key material it handed back is not
    * one `sign()` will sign with (nothing validates the stored key's type on
    * the way in or out of `own_key`, so a corrupted row for ONE relation
    * arrives here).

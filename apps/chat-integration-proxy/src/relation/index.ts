@@ -55,8 +55,12 @@ export {
   REGISTRATION_CODE_TTL_MS,
 } from './pairing-service.js';
 export type {
+  KeyDeliveryOutcome,
   RelationKeyService,
   RelationKeyServiceDeps,
+  RotationResult,
+  SendKeyRegistration,
+  SendKeyRevocation,
 } from './relation-key-service.js';
 export { createRelationKeyService } from './relation-key-service.js';
 export type { UnpairService, UnpairServiceDeps } from './unpair-service.js';
