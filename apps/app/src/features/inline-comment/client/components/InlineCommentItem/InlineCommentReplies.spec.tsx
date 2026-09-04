@@ -15,6 +15,30 @@ import {
 import type { InlineCommentReply } from '../../../interfaces';
 import { InlineCommentReplies } from './InlineCommentReplies';
 
+// ---------------------------------------------------------------------------
+// Module mocks
+//
+// Same collaborators as InlineCommentItem.spec.tsx mocks — CommentCard's own
+// header row (author picture / name / posted date) is CommentCard's own
+// concern, not this component's.
+// ---------------------------------------------------------------------------
+
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key: string) => key }),
+}));
+
+vi.mock('@growi/ui/dist/components', () => ({
+  UserPicture: () => <span data-testid="user-picture" />,
+}));
+
+vi.mock('~/components/User/Username', () => ({
+  Username: () => <span data-testid="username" />,
+}));
+
+vi.mock('~/client/components/FormattedDistanceDate', () => ({
+  default: () => <span data-testid="formatted-distance-date" />,
+}));
+
 /**
  * Same construction as InlineCommentList.spec.tsx: real mention plugin +
  * real rehype-sanitize, skipping the rest of `generateCommentViewOptions`'s
@@ -62,6 +86,47 @@ describe('InlineCommentReplies', () => {
     expect(renderedReplies[0]).toHaveClass('ms-sm-5');
   });
 
+  it('wraps each reply in the same shared comment box a normal comment uses (Req 13.3 / 13.4)', () => {
+    render(
+      <InlineCommentReplies
+        parentId="comment1"
+        replies={[reply({ id: 'reply1', comment: 'first reply' })]}
+        rendererOptions={buildMentionAwareRendererOptions()}
+        onSubmitReply={vi.fn()}
+      />,
+    );
+
+    const replyContainer = screen.getByTestId('inline-comment-reply');
+
+    // The indentation classes stay on the same element that wraps the box.
+    expect(replyContainer).toHaveClass('ms-4', 'ms-sm-5', 'mt-2');
+
+    const pageComment = replyContainer.querySelector('.page-comment');
+    expect(pageComment).not.toBeNull();
+    expect(pageComment?.parentElement).toBe(replyContainer);
+
+    const main = pageComment?.querySelector(
+      '.page-comment-main.bg-comment.rounded',
+    );
+    expect(main).not.toBeNull();
+    expect(main?.parentElement).toBe(pageComment);
+
+    const body = main?.querySelector('.page-comment-body');
+    expect(body).not.toBeNull();
+    expect(body).toHaveTextContent('first reply');
+
+    // The header row shows the same author picture / name / date collaborators
+    // a normal comment's box shows -- owned by CommentCard, not this component.
+    const header = main?.querySelector('.d-flex.align-items-center');
+    expect(
+      header?.querySelector('[data-testid="user-picture"]'),
+    ).not.toBeNull();
+    expect(header?.querySelector('[data-testid="username"]')).not.toBeNull();
+    expect(
+      header?.querySelector('[data-testid="formatted-distance-date"]'),
+    ).not.toBeNull();
+  });
+
   it('renders no reply items when there are no replies yet', () => {
     render(
       <InlineCommentReplies
@@ -87,7 +152,9 @@ describe('InlineCommentReplies', () => {
     );
 
     await userEvent.type(screen.getByLabelText('Reply'), 'thanks for the note');
-    await userEvent.click(screen.getByRole('button', { name: 'Reply' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'page_comment.reply' }),
+    );
 
     expect(onSubmitReply).toHaveBeenCalledWith(
       'comment1',
@@ -107,7 +174,9 @@ describe('InlineCommentReplies', () => {
     );
 
     await userEvent.type(screen.getByLabelText('Reply'), '   ');
-    expect(screen.getByRole('button', { name: 'Reply' })).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: 'page_comment.reply' }),
+    ).toBeDisabled();
     expect(onSubmitReply).not.toHaveBeenCalled();
   });
 
@@ -124,7 +193,9 @@ describe('InlineCommentReplies', () => {
 
     const textarea = screen.getByLabelText('Reply');
     await userEvent.type(textarea, 'a reply');
-    await userEvent.click(screen.getByRole('button', { name: 'Reply' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'page_comment.reply' }),
+    );
 
     await waitFor(() => expect(textarea).toHaveValue(''));
   });
@@ -142,7 +213,9 @@ describe('InlineCommentReplies', () => {
 
     const textarea = screen.getByLabelText('Reply');
     await userEvent.type(textarea, 'a reply');
-    await userEvent.click(screen.getByRole('button', { name: 'Reply' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'page_comment.reply' }),
+    );
 
     await waitFor(() => {
       expect(

@@ -103,7 +103,7 @@
   - _Depends: 4.2, 5.1, 1.3_
   - _Boundary: InlineCommentItem_
 
-- [ ] 5.3 (P) 返信表示を`CommentCard`を使う形に書き換える
+- [x] 5.3 (P) 返信表示を`CommentCard`を使う形に書き換える
   - `InlineCommentReplies.tsx`の各返信を`CommentCard`で包む。字下げ（`ms-4 ms-sm-5 mt-2`）は維持する。返信の「Reply」ボタンの文言を既存キー`t('page_comment.reply')`に置き換える。返信入力欄の素の`<textarea>`はそのままにする
   - 観測できる完了条件：返信が通常コメントと同じ箱の中に表示されることをユニットテストで確認できる
   - _Requirements: 13.3, 13.4_
@@ -158,7 +158,8 @@
 - 5.2: `CommentCardProps.creator`（task 4.2）は`IUserSerializedSecurely<IUserHasId>`を受けられなかった（インラインコメントの`creator`はまさにこの型）。修正として`CommentCard.tsx`と`apps/app/src/components/User/Username.tsx`の`creator`/`user`の型union に`IUserSerializedSecurely<IUserHasId>`を追加した（型のみ・`isPopulated()`はオブジェクトかどうかしか見ないため実行時の挙動は不変）。両ファイルとも task 5.2 の`_Boundary: InlineCommentItem_`の外だが、5.2がコンパイルするために必須だったため含めた。
 - 5.2のRED実測: `InlineCommentItem.spec.tsx`はファイル新規作成のため、実装前に`pnpm vitest run InlineCommentItem.spec`を実行すると`Error: Failed to resolve import "./InlineCommentItem"`で全件失敗することを実装者が確認済み（該当タスクの実装者レポート参照）。追加のミューテーション確認として、`RevisionRenderer`から`additionalClassName="comment"`を外すと該当テストが1件RED化することも確認済み。
 
-- 5.1: `IInlineComment.creator`を必須にした結果、`PageView.spec.tsx`・`InlineCommentList.spec.tsx`・`apps/app/src/features/inline-comment/client/inline-comment.spec.tsx`のテスト内フィクスチャがtsgoで型エラーになる（`creator`欠落）。5.2/5.3でこの3ファイルすべてのフィクスチャに`creator`を足すこと（`InlineCommentList.spec.tsx`は5.2で移設される想定だが、`PageView.spec.tsx`は5.2のBoundaryの外なので見落とし注意）。
+- 5.1: `IInlineComment.creator`を必須にした結果、`PageView.spec.tsx`・`InlineCommentList.spec.tsx`・`apps/app/src/features/inline-comment/client/stores/inline-comment.spec.tsx`のテスト内フィクスチャがtsgoで型エラーになる（`creator`欠落）。`InlineCommentList.spec.tsx`は5.2で修正済み。`PageView.spec.tsx`・`inline-comment.spec.tsx`の2件は5.2・5.3のBoundary外で未着手のまま残っている（5.3レビューで確認済み）。6.3（`PageView.tsx`配線）で`PageView.spec.tsx`を、6.1/6.2いずれかで`inline-comment.spec.tsx`を直すこと。7.x（検証フェーズ）の前に必ずtsgoがcleanになっていることを確認する。
+- 5.3レビューで判明: `InlineCommentReply`は`creatorId`のみで投稿者の実データ（`creator`）を持たない。`inline-comment-service.ts`の返信側`findMany()`は`include: { creator: true }`を要求しているのに`toInlineCommentReplyFromListRow()`が`row.creator`を捨てている（5.1由来の無駄なjoin＋欠落）。返信の投稿者アイコン・名前が実データで出ない状態。本amendのRequirement 13.4は起点コメントの並びを指しており返信は対象外と判断し、このamendでは対応しない（別途フォローアップ課題として記録）。
 
 - 4.2 レビューで design.md 自身の矛盾（Req 13.9 違反の恐れ）が見つかり、design.md を訂正した（決定2の`CommentCardProps`/JSX/rationale、決定6の`InlineCommentItem`の`headerEnd`例、File Structure Planの誤記）。訂正内容:
   - `CommentCard`は`headerEnd`を`<span className="ms-auto">`で包まない。余白は呼び出し側が`headerEnd`に渡す中身自身に付ける（通常コメントは`ms-2`のまま、`InlineCommentItem`は`ms-auto`を自分で付ける）。

@@ -26,9 +26,21 @@
  * same `try { ... } catch (err) { setError(...) }` convention
  * `InlineCommentForm.tsx` (task 4.2) already established for this feature,
  * rather than letting a rejected `onSubmitReply` promise go unhandled.
+ *
+ * Each already-posted reply is wrapped in the shared `CommentCard` (the same
+ * box `InlineCommentItem` uses for the origin comment), so a reply reads as
+ * the same kind of comment box, not a lighter-weight variant (requirement
+ * 13.3, 13.4). The `ms-4 ms-sm-5 mt-2` indentation stays on the wrapping
+ * element around that box (design.md: `InlineCommentReplies` は
+ * `ms-4 ms-sm-5 mt-2` の字下げをそのまま残しつつ、各返信を `CommentCard`
+ * で包む). The reply-composition `<textarea>` below is left untouched except
+ * for its submit button label, which switches to the existing
+ * `page_comment.reply` key already used by the ordinary comment form.
  */
 import { type FC, type JSX, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
+import { CommentCard } from '~/client/components/PageComment/CommentCard';
 import RevisionRenderer from '~/components/PageView/RevisionRenderer';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 
@@ -50,6 +62,7 @@ export const InlineCommentReplies: FC<InlineCommentRepliesProps> = (
   props,
 ): JSX.Element => {
   const { parentId, replies, rendererOptions, onSubmitReply } = props;
+  const { t } = useTranslation();
 
   const [draftComment, setDraftComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -88,14 +101,24 @@ export const InlineCommentReplies: FC<InlineCommentRepliesProps> = (
           data-testid="inline-comment-reply"
           className="inline-comment-reply ms-4 ms-sm-5 mt-2"
         >
-          {rendererOptions != null ? (
-            <RevisionRenderer
-              rendererOptions={rendererOptions}
-              markdown={reply.comment}
-            />
-          ) : (
-            <span>{reply.comment}</span>
-          )}
+          {/*
+           * `InlineCommentReply` carries only `creatorId` (design.md's reply
+           * aggregate holds no serialized creator relation), which is a
+           * plain string -- a valid, unpopulated `Ref<IUser>`. CommentCard
+           * already renders that the same way a normal comment's
+           * unpopulated creator ref renders (UserPicture/Username fall back
+           * to their own defaults), so this passes through as-is.
+           */}
+          <CommentCard creator={reply.creatorId} createdAt={reply.createdAt}>
+            {rendererOptions != null ? (
+              <RevisionRenderer
+                rendererOptions={rendererOptions}
+                markdown={reply.comment}
+              />
+            ) : (
+              <span>{reply.comment}</span>
+            )}
+          </CommentCard>
         </div>
       ))}
 
@@ -121,7 +144,7 @@ export const InlineCommentReplies: FC<InlineCommentRepliesProps> = (
           disabled={draftComment.trim().length === 0 || isSubmitting}
           onClick={handleSubmit}
         >
-          Reply
+          {t('page_comment.reply')}
         </button>
       </div>
     </div>
