@@ -29,8 +29,15 @@ export type {
   ResolveAddresses,
   ResolvedAddress,
 } from './growi-uri-resolver.js';
-// `buildPinnedRequestOptions` is deliberately absent: it is how this layer
-// builds one request, not something another layer calls.
+// `buildPinnedRequestOptions` is deliberately absent from the PRODUCTION
+// surface: it is how this layer builds one request, not something another
+// layer calls at run time. It is not unreachable, though -- `growi/`'s
+// `growi-client.spec.ts` imports it straight from `./growi-uri-resolver.js`
+// so that "the GROWI base path is applied once, not twice" is checked against
+// the real joining rule instead of one re-derived inside the test. A test
+// reaching past a barrel is not a caller: re-exporting it here would widen
+// what `orchestration/` and `routes/` may reach for, which is exactly what
+// this barrel exists to hold down.
 export {
   createGrowiUriResolver,
   GrowiRequestTimeoutError,
