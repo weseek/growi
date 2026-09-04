@@ -35,6 +35,7 @@ import type {
   ProcessedNotificationRepository,
   RelationRepository,
 } from '../db/index.js';
+import { deleteRelationCascade } from '../db/index.js';
 import type { InstallationCredentials } from '../types/index.js';
 
 /**
@@ -158,17 +159,13 @@ export const createInstallationStore = (
       // one starts: `relation`'s children are `Restrict`, so the relation row
       // can only go once its own children have.
       //
-      // `request_nonce` is absent on purpose -- it is the one child declared
-      // `Cascade` (task 1.4: a nonce is left to expire rather than deleted, so
-      // it must never block a removal), and deleting it here would be a second
-      // place to keep in step with the schema.
+      // The sequence itself is `db/relation-cascade.ts`, shared with
+      // `UnpairService` (task 5.5) so that the order -- which the database
+      // enforces and which puts the private key first -- is written down once.
+      // `deps` carries more repositories than it needs; the extra ones are
+      // installation-scoped and handled below.
       // biome-ignore lint/performance/noAwaitInLoops: the deletions are ordered by the foreign keys, so they cannot run concurrently
-      await deps.ownKeys.deleteByRelation(relationId);
-      await deps.peerKeys.deleteByRelation(relationId);
-      await deps.channelPermissions.deleteByRelation(relationId);
-      await deps.pendingCollections.deleteByRelation(relationId);
-      await deps.processedNotifications.deleteByRelation(relationId);
-      await deps.relations.remove(relationId);
+      await deleteRelationCascade(deps, relationId);
     }
 
     // Installation-scoped children next. `pairing_order` -> `installation` is

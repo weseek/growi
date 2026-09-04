@@ -66,8 +66,10 @@ export interface RelationRepository {
   listByInstallation(installationId: string): Promise<ReadonlyArray<Relation>>;
   /**
    * Deletes the relation row alone. Its children are `Restrict`, so this fails
-   * while any remain; the ordered removal design.md specifies for unpairing is
-   * composed by `PairingService.unpair()`, which owns that whole unit of work.
+   * while any remain; the ordered removal design.md specifies is composed by
+   * `deleteRelationCascade` (`db/relation-cascade.ts`), which owns that whole
+   * unit of work for both of its callers -- `UnpairService.unpair()` and
+   * `InstallationStore.remove()`.
    */
   remove(relationId: string): Promise<void>;
 }

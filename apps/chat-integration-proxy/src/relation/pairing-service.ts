@@ -67,6 +67,7 @@ import {
 import type { SecretCipher } from '../types/index.js';
 import type { GrowiUriResolver } from './growi-uri-resolver.js';
 import { createRelationKeyService } from './relation-key-service.js';
+import { createUnpairService } from './unpair-service.js';
 
 /**
  * Delivers the ownership challenge to the declared URI and answers what came
@@ -102,6 +103,15 @@ export interface PairingService {
     submission: PairingSubmission,
     send: SendChallenge,
   ): Promise<PairingResult>;
+  /**
+   * Disconnects one GROWI from its chat workspace (Requirement 9.7).
+   *
+   * Delegated to {@link createUnpairService}, which owns the ordered deletion
+   * and documents what it does and does not remove. It is reachable from here
+   * because design.md declares it on this interface: pairing and its undoing
+   * are one surface for `orchestration/` to hold.
+   */
+  unpair(relationId: string): Promise<void>;
 }
 
 /**
@@ -262,6 +272,7 @@ export const createPairingService = (
   const relations = createRelationRepository(db);
   const installations = createInstallationRepository(db, cipher);
   const keys = createRelationKeyService({ db, cipher, now });
+  const unpairing = createUnpairService({ db, cipher });
 
   /** The workspace a relation belongs to, as `PairingResult` carries it. */
   const workspaceOf = async (installationId: string) => {
@@ -526,5 +537,7 @@ export const createPairingService = (
         publicKey: paired.publicKey,
       };
     },
+
+    unpair: (relationId) => unpairing.unpair(relationId),
   };
 };

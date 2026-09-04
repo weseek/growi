@@ -808,3 +808,31 @@ describe('pairingService.submit — resending and double pairing (Requirement 8.
     );
   });
 });
+
+describe('pairingService.unpair (Requirement 9.7)', () => {
+  // design.md declares `unpair` on `PairingService` (line 986) AND lists
+  // `relation/unpair-service.ts` in its File Structure Plan. Both hold: the
+  // deletion lives in `unpair-service.ts` and is tested there, and this is the
+  // contract that it is reachable through `PairingService` -- what makes
+  // pairing and its undoing one surface for `orchestration/` to call.
+  it('undoes a pairing through the same ordered deletion UnpairService performs', async () => {
+    const prisma = pairablePrisma();
+    prisma.ownKey.deleteMany.mockResolvedValue({ count: 1 });
+    prisma.peerKey.deleteMany.mockResolvedValue({ count: 1 });
+    prisma.channelPermission.deleteMany.mockResolvedValue({ count: 0 });
+    prisma.pendingCollection.deleteMany.mockResolvedValue({ count: 0 });
+    prisma.processedNotificationTarget.deleteMany.mockResolvedValue({
+      count: 0,
+    });
+    prisma.relation.delete.mockResolvedValue(relationRow());
+
+    await serviceOver(prisma).unpair(RELATION_ID);
+
+    expect(prisma.ownKey.deleteMany).toHaveBeenCalledWith({
+      where: { relationId: RELATION_ID },
+    });
+    expect(prisma.relation.delete).toHaveBeenCalledWith({
+      where: { id: RELATION_ID },
+    });
+  });
+});
