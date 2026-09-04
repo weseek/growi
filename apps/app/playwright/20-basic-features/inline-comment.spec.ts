@@ -606,6 +606,212 @@ test.describe('Inline comment - best-effort fallback after the anchored text is 
   });
 });
 
+test.describe('Inline comment - visual consistency of the creation UI', () => {
+  // Serial: every test in this suite reuses the one page created by the
+  // first test, the same reasoning the other suites in this file use.
+  test.describe.configure({ mode: 'serial' });
+
+  const visualConsistencyPagePath = (retry: number) =>
+    `/inline-comment-e2e-visual-consistency${retry}`;
+
+  const targetSentence =
+    'This sentence anchors the visual-consistency end-to-end test.';
+  const pageBody = [
+    '# Inline comment E2E - visual consistency',
+    '',
+    targetSentence,
+    '',
+  ].join('\n');
+
+  let createdPage: CreatedPage | undefined;
+
+  test.afterAll(async ({ request }) => {
+    if (createdPage != null) {
+      await deletePagesCompletely(request, [createdPage]);
+    }
+  });
+
+  /**
+   * `next-themes` only writes the `data-bs-theme` attribute in reaction to a
+   * user-triggered theme change; nothing was observed to overwrite it once
+   * set directly (verified by reading the attribute right back after each
+   * call below across all three tests in this suite). Writing it directly
+   * on `<html>` is therefore a faithful stand-in for a real theme switch:
+   * it is the exact attribute/selector Bootstrap's `color-mode` mixin reads
+   * (`[data-bs-theme="dark"] { ... }`, `bootstrap/scss/mixins/_color-mode.scss`).
+   * Design.md's Testing Strategy ("テーマ追随") calls out this same technique
+   * for exercising Req 11.3/11.4 without going through the admin
+   * theme-customize screen.
+   */
+  const setBsTheme = async (
+    targetPage: Page,
+    theme: 'light' | 'dark',
+  ): Promise<void> => {
+    await targetPage.evaluate((t) => {
+      document.documentElement.setAttribute('data-bs-theme', t);
+    }, theme);
+  };
+
+  /**
+   * Bootstrap's base `.btn` rule (and other themed elements exercised here)
+   * transitions `background-color`/`border-color`/`color` over ~150ms
+   * (`bootstrap/scss/_variables.scss`'s `$btn-transition`): the CSS custom
+   * property driving the color (e.g. `--bs-btn-bg`) updates the instant
+   * `data-bs-theme` changes, but the *painted* value animates toward it, so
+   * a `getComputedStyle` read taken right after `setBsTheme` was observed
+   * (empirically, including via Chrome DevTools Protocol's
+   * `CSS.getComputedStyleForNode`) to still be mid-transition rather than
+   * the settled target color.
+   *
+   * Bootstrap's own transition mixin already turns transitions off under
+   * `prefers-reduced-motion: reduce`, and that would normally be the
+   * cleaner opt-out (`test.use({ reducedMotion: 'reduce' })`) — but that
+   * was tried first and, in this environment, left
+   * `window.matchMedia('(prefers-reduced-motion: reduce)').matches` false
+   * (verified empirically; `test.use({ colorScheme: 'dark' })` in the same
+   * spot correctly flips `prefers-color-scheme`, so this is specific to the
+   * `reducedMotion` context option here, not `test.use` in general).
+   * Injecting a `!important` stylesheet after each navigation is a
+   * deterministic substitute that does not depend on that context option
+   * behaving as documented.
+   */
+  const disableCssTransitions = async (targetPage: Page): Promise<void> => {
+    await targetPage.addStyleTag({
+      content:
+        '*, *::before, *::after { transition: none !important; animation: none !important; }',
+    });
+  };
+
+  type ThemedColors = {
+    backgroundColor: string;
+    borderColor: string;
+    color: string;
+  };
+
+  const readThemedColors = (
+    locator: ReturnType<Page['locator']>,
+  ): Promise<ThemedColors> =>
+    locator.evaluate((el) => {
+      const style = window.getComputedStyle(el);
+      return {
+        backgroundColor: style.backgroundColor,
+        borderColor: style.borderColor,
+        color: style.color,
+      };
+    });
+
+  test('Create a page containing the target sentence', async ({
+    page,
+    request,
+  }, testInfo) => {
+    createdPage = await createPage(request, {
+      path: visualConsistencyPagePath(testInfo.retry),
+      body: pageBody,
+    });
+
+    await page.goto(createdPage.path);
+    await expect(page.locator('.wiki').first()).toContainText(targetSentence);
+  });
+
+  test('Switching data-bs-theme changes the action button colors, and switching back restores them (Req 11.3, 11.4)', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(visualConsistencyPagePath(testInfo.retry));
+    await disableCssTransitions(page);
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    await selectTextInPageBody(page, targetSentence);
+    const actionButton = page.getByTestId('selection-action-button');
+    await expect(actionButton).toBeVisible();
+
+    await setBsTheme(page, 'light');
+    const lightColors = await readThemedColors(actionButton);
+
+    // Requirement 11.3/11.4: switching the theme (light -> dark here, the
+    // direction Req 11.4 names explicitly) changes background/border/text
+    // color, because SelectionActionButton.module.scss maps its Bootstrap
+    // button variables onto --bs-body-bg / --bs-border-color / --bs-body-color,
+    // which the dark [data-bs-theme="dark"] rule set redefines.
+    await setBsTheme(page, 'dark');
+    const darkColors = await readThemedColors(actionButton);
+    expect(darkColors.backgroundColor).not.toBe(lightColors.backgroundColor);
+    expect(darkColors.borderColor).not.toBe(lightColors.borderColor);
+    expect(darkColors.color).not.toBe(lightColors.color);
+
+    // Non-vacuousness / round-trip check: switching back to light restores
+    // the exact colors captured the first time. This rules out the earlier
+    // "changed" assertion being a false positive from unrelated timing/CSS
+    // recalculation noise rather than a genuine theme-attribute dependency
+    // (e.g. it would fail this round-trip if the color depended on paint
+    // order or some one-shot transition instead of the live attribute).
+    await setBsTheme(page, 'light');
+    const lightColorsAgain = await readThemedColors(actionButton);
+    expect(lightColorsAgain).toEqual(lightColors);
+  });
+
+  test('Switching data-bs-theme changes the input form colors, and switching back restores them (Req 11.3, 11.4)', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(visualConsistencyPagePath(testInfo.retry));
+    await disableCssTransitions(page);
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    await selectTextInPageBody(page, targetSentence);
+    await page.getByTestId('selection-action-button').click();
+    const form = page.getByTestId('inline-comment-form');
+    await expect(form).toBeVisible();
+
+    await setBsTheme(page, 'light');
+    const lightColors = await readThemedColors(form);
+
+    // Requirement 11.3/11.4: the form's `bg-body border` classes
+    // (InlineCommentForm.tsx) read --bs-body-bg / --bs-border-color, and the
+    // form has no explicit text-color class so it inherits --bs-body-color —
+    // all three change value under [data-bs-theme="dark"].
+    await setBsTheme(page, 'dark');
+    const darkColors = await readThemedColors(form);
+    expect(darkColors.backgroundColor).not.toBe(lightColors.backgroundColor);
+    expect(darkColors.borderColor).not.toBe(lightColors.borderColor);
+    expect(darkColors.color).not.toBe(lightColors.color);
+
+    // Round-trip, same reasoning as the action-button test above.
+    await setBsTheme(page, 'light');
+    const lightColorsAgain = await readThemedColors(form);
+    expect(lightColorsAgain).toEqual(lightColors);
+  });
+
+  test('The input form hides the CodeMirror toolbar and the line-number/fold gutters (design.md decision 5)', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(visualConsistencyPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    await selectTextInPageBody(page, targetSentence);
+    await page.getByTestId('selection-action-button').click();
+    const form = page.getByTestId('inline-comment-form');
+    await expect(form).toBeVisible();
+    // Wait for the CodeMirror editor itself to be mounted before asserting
+    // on the absence of its sub-parts, so a "0 matches" result reliably
+    // means "hidden by hideToolbar/basicSetup", not "editor not mounted yet".
+    await expect(form.locator('.cm-content')).toBeVisible();
+
+    // `hideToolbar` (InlineCommentForm.tsx passing it to
+    // CodeMirrorEditorComment, packages/editor's CodeMirrorEditor.tsx:248)
+    // must suppress the whole Toolbar, including the template button — a
+    // control that renders unconditionally whenever the toolbar exists
+    // (TemplateButton.tsx has no feature gate), so its absence is a direct
+    // proxy for "the toolbar is not rendered" rather than merely CSS-hidden.
+    await expect(form.getByTestId('open-template-button')).toHaveCount(0);
+
+    // `cmProps.basicSetup: { lineNumbers: false, foldGutter: false }`
+    // (InlineCommentForm.tsx) must remove the gutter container entirely --
+    // `.cm-gutters` is CodeMirror's own wrapper for the line-number and fold
+    // gutters (@codemirror/view), and it is only emitted when at least one
+    // gutter extension is active.
+    await expect(form.locator('.cm-gutters')).toHaveCount(0);
+  });
+});
+
 test.describe('Inline comment - highlight correctness on a page with an async lsx widget', () => {
   // Serial for the same reason as the suites above: the second test depends
   // on the comment created by the first, real backend state.

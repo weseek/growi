@@ -135,7 +135,7 @@
   - _Boundary: PageView_
 
 - [ ] 7. 検証：横断的な確認
-- [ ] 7.1 E2E: テーマ切り替えで作成UIの配色が追随することを確認する
+- [x] 7.1 E2E: テーマ切り替えで作成UIの配色が追随することを確認する
   - `data-bs-theme`を`light`/`dark`に切り替え、作成の起点ボタン・入力フォームの背景色・境界線色・文字色が変わることを確認する
   - 観測できる完了条件：E2Eテストがgreenになる
   - _Requirements: 11.3, 11.4_
@@ -159,6 +159,8 @@
 - 5.2のRED実測: `InlineCommentItem.spec.tsx`はファイル新規作成のため、実装前に`pnpm vitest run InlineCommentItem.spec`を実行すると`Error: Failed to resolve import "./InlineCommentItem"`で全件失敗することを実装者が確認済み（該当タスクの実装者レポート参照）。追加のミューテーション確認として、`RevisionRenderer`から`additionalClassName="comment"`を外すと該当テストが1件RED化することも確認済み。
 
 - 5.1: `IInlineComment.creator`を必須にした結果、`PageView.spec.tsx`・`InlineCommentList.spec.tsx`・`apps/app/src/features/inline-comment/client/stores/inline-comment.spec.tsx`のテスト内フィクスチャがtsgoで型エラーになる（`creator`欠落）。`InlineCommentList.spec.tsx`は5.2で修正済み。`PageView.spec.tsx`・`inline-comment.spec.tsx`の2件は5.2・5.3のBoundary外で未着手のまま残っている（5.3レビューで確認済み）。6.3（`PageView.tsx`配線）で`PageView.spec.tsx`を、6.1/6.2いずれかで`inline-comment.spec.tsx`を直すこと。7.x（検証フェーズ）の前に必ずtsgoがcleanになっていることを確認する。
+- 7.1: `playwright.config.ts`の`devices[\`Desktop ${browser}\`]`は`browser`が小文字（`'firefox'`/`'webkit'`）のため実際のdevices辞書キー（`'Desktop Firefox'`/`'Desktop Webkit'`）と一致せず、firefox/webkitプロジェクトは実質Chromiumにフォールバックしている（本amend発見の既存バグ、対象外・別途要修正）。本タスクの検証は`--project=chromium`のみで実施。
+- 7.1レビューで判明: 実装者の「デバッグ用ページを削除済み」という自己申告は事実と異なり、レビュー時点で`/debug-visual-consistency2`が本番相当のMongoDBに残存していた（レビュアーが削除して解消済み）。以降のこの実装者の後片付け系の自己申告は要検証。
 - 6.1: `PageComment.tsx`の`inlineComments`propは設計の記述（配列そのもの）と異なり、`{ comments, resolve, createReply }`をまとめたオブジェクトにした。`InlineCommentItem`（5.2）が`resolve`/`createReply`を必須で要求し、これらは`useSWRxInlineComments`と同じフックの戻り値なので、データと分離すると`PageComment`内で2本目の取得が要る＝Requirement 13.8（共有リンクに漏れない）の構造的な担保が崩れるため。6.2は`Comments`にこのオブジェクトをそのまま素通しさせること（「省略時は空配列」ではなく「省略時はprop自体を渡さない」）。6.3は`PageView.tsx`側で`resolve`/`createReply`も`useSWRxInlineComments`の戻り値から渡すこと（現状は`data`しか使っていない）。
 - 6.1で対応しなかった`apps/app/src/features/inline-comment/client/stores/inline-comment.spec.tsx`のtsgoエラー（5.1由来）は6.2で直すこと。7.x（検証）前に`tsgo`がcleanになっているか確認必須。
 - 5.3レビューで判明: `InlineCommentReply`は`creatorId`のみで投稿者の実データ（`creator`）を持たない。`inline-comment-service.ts`の返信側`findMany()`は`include: { creator: true }`を要求しているのに`toInlineCommentReplyFromListRow()`が`row.creator`を捨てている（5.1由来の無駄なjoin＋欠落）。返信の投稿者アイコン・名前が実データで出ない状態。本amendのRequirement 13.4は起点コメントの並びを指しており返信は対象外と判断し、このamendでは対応しない（別途フォローアップ課題として記録）。
