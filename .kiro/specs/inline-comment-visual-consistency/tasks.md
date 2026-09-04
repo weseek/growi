@@ -88,7 +88,7 @@
   - _Boundary: Comment_
 
 - [ ] 5. インラインコメント側の投稿者情報とカード表示
-- [ ] 5.1 (P) 一覧取得に投稿者情報を含める
+- [x] 5.1 (P) 一覧取得に投稿者情報を含める
   - `IInlineComment`に`creator: IUserHasId | null`を追加する（`creatorId`は残す）。`InlineCommentService.listByPageId()`の2本の`findMany()`に`include: { creator: true }`を追加し、`toInlineCommentFromListRow()`で`serializeUserSecurely`を通した`creator`を設定する
   - 観測できる完了条件：一覧取得の結果に、投稿者の秘匿処理済みユーザー情報が含まれることをユニットテストで確認できる
   - _Requirements: 13.5_
@@ -154,6 +154,8 @@
   - _Depends: 6.3, 7.1, 7.2_
 
 ## Implementation Notes
+
+- 5.1: `IInlineComment.creator`を必須にした結果、`PageView.spec.tsx`・`InlineCommentList.spec.tsx`・`apps/app/src/features/inline-comment/client/inline-comment.spec.tsx`のテスト内フィクスチャがtsgoで型エラーになる（`creator`欠落）。5.2/5.3でこの3ファイルすべてのフィクスチャに`creator`を足すこと（`InlineCommentList.spec.tsx`は5.2で移設される想定だが、`PageView.spec.tsx`は5.2のBoundaryの外なので見落とし注意）。
 
 - 4.2 レビューで design.md 自身の矛盾（Req 13.9 違反の恐れ）が見つかり、design.md を訂正した（決定2の`CommentCardProps`/JSX/rationale、決定6の`InlineCommentItem`の`headerEnd`例、File Structure Planの誤記）。訂正内容:
   - `CommentCard`は`headerEnd`を`<span className="ms-auto">`で包まない。余白は呼び出し側が`headerEnd`に渡す中身自身に付ける（通常コメントは`ms-2`のまま、`InlineCommentItem`は`ms-auto`を自分で付ける）。

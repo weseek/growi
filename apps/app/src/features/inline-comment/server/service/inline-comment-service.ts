@@ -8,7 +8,8 @@
  * all implemented here as sibling methods on this same class.
  */
 
-import type { IPageHasId } from '@growi/core';
+import type { IPageHasId, IUserHasId } from '@growi/core';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import { Types } from 'mongoose';
 
 import type { Prisma } from '~/generated/prisma/client';
@@ -99,16 +100,17 @@ type InlineCommentReplyCreateResult = Prisma.Result<
 // return type, which is already derived from the real `PrismaClient`.
 
 /**
- * The `comments` row shape `listByPageId()`'s two `findMany()` queries (no
- * `include`) read back — one row shape shared by both the origin-comment
- * query and the replies query. Derived the same way
- * `activity-export-cursor.ts` derives `activities.findMany()`'s row type
- * (`Awaited<ReturnType<...>>[number]`), an equally-proven alternative to
- * `Prisma.Result<...>` for this codebase (see
- * `.kiro/specs/inline-comment/tasks.md`'s Implementation Notes).
+ * The `comments` row shape `listByPageId()`'s two `findMany()` queries
+ * (both now requesting `include: { creator: true }`, requirement 13.5) read
+ * back — one row shape shared by both the origin-comment query and the
+ * replies query. Derived via `Prisma.Result<...>`, matching
+ * `InlineCommentCreateResult`'s pattern above, so the row type reflects the
+ * `creator` relation the queries now request.
  */
-type InlineCommentListRow = Awaited<
-  ReturnType<PrismaClient['comments']['findMany']>
+type InlineCommentListRow = Prisma.Result<
+  PrismaClient['comments'],
+  { include: { creator: true } },
+  'findMany'
 >[number];
 
 // The `findUnique()` lookup `setResolved()` uses to validate its `id` (must
@@ -174,6 +176,10 @@ function toIInlineComment(row: InlineCommentCreateResult): IInlineComment {
     id: row.id,
     pageId: row.pageId,
     creatorId: row.creatorId,
+    // create() requests no `creator` include (see InlineCommentCreateResult's
+    // doc) and its response does not need one (design.md: the client
+    // re-fetches the list via `mutate()` right after create).
+    creator: null,
     comment: row.comment,
     anchorOriginRevisionId: row.anchorOriginRevisionId,
     anchor: {
@@ -227,6 +233,11 @@ function toInlineCommentReply(
  * for every viewer; skip it and let the rest of the list render, consistent
  * with this feature's degrade-gracefully philosophy (`matchQuote`'s
  * `not_found` fallback, the client's highlight-absent behavior).
+ *
+ * `creator` is set from the row's populated `creator` relation, run through
+ * `serializeUserSecurely` — the same sanitization the ordinary comment list
+ * applies (requirement 13.5, `apps/app/src/server/routes/comment.js:159-176`
+ * is the precedent). `null` when the relation did not resolve to a user.
  */
 function toIInlineCommentFromListRow(
   row: InlineCommentListRow,
@@ -249,6 +260,10 @@ function toIInlineCommentFromListRow(
     id: row.id,
     pageId: row.pageId,
     creatorId: row.creatorId,
+    creator:
+      row.creator != null
+        ? serializeUserSecurely(row.creator as IUserHasId)
+        : null,
     comment: row.comment,
     anchorOriginRevisionId: row.anchorOriginRevisionId,
     anchor: {
@@ -322,6 +337,9 @@ function toIInlineCommentFromUpdateResult(
     id: row.id,
     pageId: row.pageId,
     creatorId: row.creatorId,
+    // setResolved()'s update() requests no `creator` include, same reason as
+    // toIInlineComment() above.
+    creator: null,
     comment: row.comment,
     anchorOriginRevisionId: row.anchorOriginRevisionId,
     anchor: {
@@ -544,6 +562,7 @@ export class InlineCommentService {
   async listByPageId(pageId: string): Promise<InlineCommentWithReplies[]> {
     const originRows = await this.deps.prisma.comments.findMany({
       where: { pageId, isInline: true, replyToId: null },
+      include: { creator: true },
       orderBy: { createdAt: 'desc' },
     });
 
@@ -556,6 +575,7 @@ export class InlineCommentService {
         isInline: true,
         replyToId: { in: originRows.map((row) => row.id) },
       },
+      include: { creator: true },
       orderBy: { createdAt: 'desc' },
     });
 

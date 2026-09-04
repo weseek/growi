@@ -717,6 +717,54 @@ describe('InlineCommentService.listByPageId', () => {
     expect(deps.prisma.comments.findMany).toHaveBeenCalledTimes(1);
   });
 
+  it('投稿者が populate された行は、通常コメント一覧と同じ秘匿処理（serializeUserSecurely）を通した creator を返す（Requirement 13.5）', async () => {
+    const pageId = makeId();
+    // Fields serializeUserSecurely must strip: password, apiToken, email
+    // (email is kept only when isEmailPublished is true).
+    const creatorRow = {
+      id: makeId(),
+      username: 'alice',
+      name: 'Alice',
+      password: 'super-secret-hash',
+      apiToken: 'secret-api-token',
+      email: 'alice@example.com',
+      isEmailPublished: false,
+    };
+    const originRow = {
+      ...makeOriginRow({ pageId, comment: 'origin with creator' }),
+      creator: creatorRow,
+    } as CommentsRow & { creator: typeof creatorRow };
+    const deps = makeListDeps([originRow], []);
+    const service = new InlineCommentService(deps);
+
+    const result = await service.listByPageId(pageId);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].creator).not.toBeNull();
+    expect(result[0].creator?.username).toBe('alice');
+    // Secured fields must not leak through.
+    expect(result[0].creator).not.toHaveProperty('password');
+    expect(result[0].creator).not.toHaveProperty('apiToken');
+    expect(result[0].creator?.email).toBeUndefined();
+    // creatorId must still be present alongside the new creator field.
+    expect(result[0].creatorId).toBe(originRow.creatorId);
+  });
+
+  it('投稿者が populate されていない行は creator を null で返す', async () => {
+    const pageId = makeId();
+    const originRow = {
+      ...makeOriginRow({ pageId, comment: 'origin without creator' }),
+      creator: null,
+    } as CommentsRow & { creator: null };
+    const deps = makeListDeps([originRow], []);
+    const service = new InlineCommentService(deps);
+
+    const result = await service.listByPageId(pageId);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].creator).toBeNull();
+  });
+
   it('アンカー必須フィールドが欠けた不正な行はスキップし、残りの正常な行だけを返す（1件の不正行で一覧全体を失敗させない）', async () => {
     // BLOCKING 2 regression: toIInlineCommentFromListRow used to throw on a
     // row missing an anchor field (e.g. quote: null), which propagated out

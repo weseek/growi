@@ -9,6 +9,9 @@
  * next touches the client anchor-matching code.
  */
 
+import type { IUserHasId } from '@growi/core';
+import type { IUserSerializedSecurely } from '@growi/core/dist/models/serializers';
+
 /**
  * The stored anchor of an inline comment: the exact quote as it was
  * selected, its surrounding context windows, and a rough offset of the
@@ -34,6 +37,21 @@ export interface IInlineComment {
   id: string;
   pageId: string;
   creatorId: string;
+  /**
+   * Populated only by `listByPageId()` (requirement 13.5). The creator, run
+   * through `serializeUserSecurely`, the same sanitization the ordinary
+   * comment list applies. `null` when the user could not be resolved, or
+   * when this `IInlineComment` was produced by `create()`/`setResolved()`
+   * (neither of those fetches the creator relation — requirement 13.5's
+   * scope is the list response, and the client re-fetches the list via
+   * `mutate()` right after create anyway).
+   *
+   * Typed as `IUserSerializedSecurely<IUserHasId>` (not `IUserHasId`)
+   * because sanitization actually removes `password`/`apiToken` (and
+   * conditionally `email`) — the same convention as
+   * `access-token-parser.ts`'s `AccessTokenParserReq.user`.
+   */
+  creator: IUserSerializedSecurely<IUserHasId> | null;
   comment: string;
   /**
    * The revision the anchor was computed against. Set once at creation and
