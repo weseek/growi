@@ -79,7 +79,7 @@
   - _Requirements: 13.3, 13.4_
   - _Boundary: CommentCard_
 
-- [ ] 4.3 通常コメント表示を`CommentCard`を使う形に書き換える
+- [x] 4.3 通常コメント表示を`CommentCard`を使う形に書き換える
   - `Comment.tsx`の内側を`CommentCard`の呼び出しに置き換える。外側の`comment-styles`モジュールの入れ物は残す。`headerEnd`にリビジョンへのリンクと吹き出し、`footer`に`page-comment-meta`と`CommentControl`を渡す
   - `Comment.module.scss`は変更しない
   - 観測できる完了条件：タスク4.1で作成した`Comment.spec.tsx`がこの書き換え後もgreenになる（出力DOMが変わっていないことの確認）

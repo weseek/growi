@@ -258,7 +258,7 @@ export type CommentCardProps = {
    * false でも UserPicture・Username を常に描く）と、CommentCard を使った後
    * の挙動を一致させるための決定）
    */
-  creator: IUserHasId | Ref<IUser> | null;
+  creator: IUserHasId | Ref<IUser> | null | undefined;
   /** 型は Date だが実体は ISO 文字列で届く。FormattedDistanceDate に素通しする */
   createdAt: Date | string;
   /** page-comment に付く修飾クラス（page-comment-me / -newer / -older など） */

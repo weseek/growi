@@ -2,7 +2,6 @@ import { type JSX, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { type IUser, isPopulated } from '@growi/core';
 import * as pathUtils from '@growi/core/dist/utils/path-utils';
-import { UserPicture } from '@growi/ui/dist/components';
 import { format } from 'date-fns/format';
 import { parseISO } from 'date-fns/parseISO';
 import { useTranslation } from 'next-i18next';
@@ -12,9 +11,8 @@ import urljoin from 'url-join';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 
 import RevisionRenderer from '../../../components/PageView/RevisionRenderer';
-import { Username } from '../../../components/User/Username';
 import type { ICommentHasId } from '../../../interfaces/comment';
-import FormattedDistanceDate from '../FormattedDistanceDate';
+import { CommentCard } from './CommentCard';
 import { CommentControl } from './CommentControl';
 import { CommentEditor } from './CommentEditor';
 
@@ -81,8 +79,14 @@ export const Comment = (props: CommentProps): JSX.Element => {
     return creator.username === currentUser.username;
   };
 
-  const getRootClassName = (comment: ICommentHasId) => {
-    let className = 'page-comment flex-column';
+  /**
+   * Only the modifier classes for `.page-comment`. `CommentCard` supplies the
+   * `page-comment flex-column` prefix itself, so this must not repeat it.
+   * Returns undefined when there is no modifier, to avoid a trailing space in
+   * the emitted class attribute.
+   */
+  const getRootClassName = (comment: ICommentHasId): string | undefined => {
+    const modifiers: string[] = [];
 
     // TODO: fix so that `comment.createdAt` to be type Date https://redmine.weseek.co.jp/issues/113876
     const commentCreatedAtFixed =
@@ -97,21 +101,21 @@ export const Comment = (props: CommentProps): JSX.Element => {
     // Conditional for called from SearchResultContext
     if (revisionId != null && revisionCreatedAt != null) {
       if (comment.revision === revisionId) {
-        className += ' page-comment-current';
+        modifiers.push('page-comment-current');
       } else if (
         commentCreatedAtFixed.getTime() > revisionCreatedAtFixed.getTime()
       ) {
-        className += ' page-comment-newer';
+        modifiers.push('page-comment-newer');
       } else {
-        className += ' page-comment-older';
+        modifiers.push('page-comment-older');
       }
     }
 
     if (isCurrentUserEqualsToAuthor()) {
-      className += ' page-comment-me';
+      modifiers.push('page-comment-me');
     }
 
-    return className;
+    return modifiers.length > 0 ? modifiers.join(' ') : undefined;
   };
 
   const deleteBtnClickedHandler = () => {
@@ -155,64 +159,57 @@ export const Comment = (props: CommentProps): JSX.Element => {
           revisionId={revisionId}
         />
       ) : (
-        <div id={commentId} className={rootClassName}>
-          <div className="page-comment-main bg-comment rounded mb-2">
-            <div className="d-flex align-items-center">
-              <UserPicture user={creator} className="me-2" />
-              <div className="small fw-bold me-3">
-                <Username user={creator} />
-              </div>
+        <CommentCard
+          id={commentId}
+          creator={creator}
+          createdAt={comment.createdAt}
+          rootClassName={rootClassName}
+          headerEnd={
+            <span className="ms-2">
               <Link
-                href={`#${commentId}`}
+                id={`page-comment-revision-${commentId}`}
+                href={urljoin(returnPathForURL(pagePath, pageId), revHref)}
+                className="page-comment-revision"
                 prefetch={false}
-                className="small page-comment-revision"
               >
-                <FormattedDistanceDate
-                  id={commentId}
-                  date={comment.createdAt}
-                />
+                <span className="material-symbols-outlined">history</span>
               </Link>
-              <span className="ms-2">
-                <Link
-                  id={`page-comment-revision-${commentId}`}
-                  href={urljoin(returnPathForURL(pagePath, pageId), revHref)}
-                  className="page-comment-revision"
-                  prefetch={false}
-                >
-                  <span className="material-symbols-outlined">history</span>
-                </Link>
-                <UncontrolledTooltip
-                  placement="bottom"
-                  fade={false}
-                  target={`page-comment-revision-${commentId}`}
-                >
-                  {t('page_comment.display_the_page_when_posting_this_comment')}
-                </UncontrolledTooltip>
-              </span>
-            </div>
-            <div className="page-comment-body">{commentBody}</div>
-            <div className="page-comment-meta">
-              {isEdited && (
-                <>
-                  <span id={editedDateId}>&nbsp;(edited)</span>
-                  <UncontrolledTooltip
-                    placement="bottom"
-                    fade={false}
-                    target={editedDateId}
-                  >
-                    {editedDateFormatted}
-                  </UncontrolledTooltip>
-                </>
+              <UncontrolledTooltip
+                placement="bottom"
+                fade={false}
+                target={`page-comment-revision-${commentId}`}
+              >
+                {t('page_comment.display_the_page_when_posting_this_comment')}
+              </UncontrolledTooltip>
+            </span>
+          }
+          footer={
+            <>
+              <div className="page-comment-meta">
+                {isEdited && (
+                  <>
+                    <span id={editedDateId}>&nbsp;(edited)</span>
+                    <UncontrolledTooltip
+                      placement="bottom"
+                      fade={false}
+                      target={editedDateId}
+                    >
+                      {editedDateFormatted}
+                    </UncontrolledTooltip>
+                  </>
+                )}
+              </div>
+              {isCurrentUserEqualsToAuthor() && !isReadOnly && (
+                <CommentControl
+                  onClickDeleteBtn={deleteBtnClickedHandler}
+                  onClickEditBtn={() => setIsReEdit(true)}
+                />
               )}
-            </div>
-            {isCurrentUserEqualsToAuthor() && !isReadOnly && (
-              <CommentControl
-                onClickDeleteBtn={deleteBtnClickedHandler}
-                onClickEditBtn={() => setIsReEdit(true)}
-              />
-            )}
-          </div>
-        </div>
+            </>
+          }
+        >
+          {commentBody}
+        </CommentCard>
       )}
     </div>
   );
