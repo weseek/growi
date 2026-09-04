@@ -72,7 +72,7 @@
   - _Requirements: 13.9_
   - _Boundary: Comment_
 
-- [ ] 4.2 (P) コメントの箱を担う共有コンポーネント`CommentCard`を切り出す
+- [x] 4.2 (P) コメントの箱を担う共有コンポーネント`CommentCard`を切り出す
   - `apps/app/src/client/components/PageComment/CommentCard/`に、`id`/`creator`（`null`可）/`createdAt`（`Date | string`）/`rootClassName`/`headerEnd`/`beforeBody`/`children`/`footer`を受け取る`CommentCard`を新規実装する。`Comment.tsx`の現在の`.page-comment`以下のDOM構造をそのまま移す
   - `CommentCard`自身はCSSモジュールを持たない（`Comment.module.scss`の規則が`:global(.page-comment)`の入れ子で書かれているため、使う側が`_comment-inheritance.scss`の`%bg-comment`/`%comment-section`/`%user-picture`を`@use`/`@extend`する入れ物を用意する）
   - 観測できる完了条件：`headerEnd`/`beforeBody`/`footer`に渡した内容がそれぞれ正しい位置に描画されることをユニットテストで確認できる
@@ -160,7 +160,7 @@
   - `CommentCard`は`creator`が`null`/未populateでも`UserPicture`/`Username`を隠さない（両コンポーネントとも既に自前のフォールバック表示を持つため、素通しするだけでよい）。
   - `CommentCardProps.creator`の型は`IUserHasId | Ref<IUser> | null`（`IUserHasId`単独ではない）。
   - File Structure Planの`CommentCard.module.scss`の記載は誤り（決定2の「CSSモジュールを持たない」と矛盾）。実装（CSSモジュール無し）が正しい。
-  - この訂正は task 4.2 で一度APPROVED・コミット済みのCommentCard実装に対する追加のフォローアップコミットとして反映した（詳細は該当コミットのメッセージ参照）。task 4.3・5.2 はこの訂正後の契約に従うこと。
+  - この訂正はtask 4.2の実装（レビュー1回目でAPPROVEDだが、コミット前に本矛盾が見つかった）に反映し、`CommentCardProps.creator`は`IUserHasId | Ref<IUser> | null | undefined`とした（`undefined`も受ける。通常コメントの`isPopulated`結果は`undefined`であり`null`ではないため）。task 4.2はこの訂正を含めて1コミットとしてまとめてコミットした。task 4.3・5.2 はこの訂正後の契約に従うこと。
 
 - 2.2: `InlineCommentForm.tsx` の引用要素は design.md のJSX断片どおりCSSモジュールのクラスのみにはせず、素の `inline-comment-form-quote` クラスも残した（`playwright/20-basic-features/inline-comment.spec.ts:124,693` がこのクラス名でロケートしているため。CSSモジュールのクラス名はビルド時ハッシュ化されるので、断片どおりにすると既存のe2eが壊れる。対応するCSS規則は無いので実質テスト用の目印のみ）。
 - 2.2 レビュー時の申し送り: 決定5（エディタのツールバー・行番号余白の非表示）の見た目をブラウザで確認する予定がタスク7.x のどこにも無い。7.1 のE2Eアサーションに含めるか、フィーチャ全体のGO判定前に一度ブラウザで確認すること。
