@@ -7,8 +7,13 @@ describe('growi/ public entry point', () => {
     // when someone adds `export *`, and this layer's contract is what every
     // later layer reads it through.
     //
-    // NOT final: task 6.3 adds `FanOutCollector` and `SearchFusion` here and
-    // is the task that declares this layer's surface complete.
-    expect(Object.keys(growiLayer).sort()).toEqual(['createGrowiClient']);
+    // Final as of task 6.3, the last task of this layer: the three modules
+    // design.md lists under `growi/` are all built. Only value exports appear
+    // here -- the types travel with them and are checked by the compiler.
+    expect(Object.keys(growiLayer).sort()).toEqual([
+      'createFanOutCollector',
+      'createGrowiClient',
+      'fuseResults',
+    ]);
   });
 });
