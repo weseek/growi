@@ -4,10 +4,11 @@
 //
 // Opened by task 8.1 with the signature guard alone. Task 8.2 added the
 // notification and settings-push endpoints, task 8.3 the two key endpoints and
-// the three read-only ones, task 8.4 the unsigned pairing submission; the
-// remaining ones (`install-routes.ts`, `webhook-routes.ts`,
-// `health-routes.ts`) are added by task 8.5, which is also where this layer's
-// entry point is settled.
+// the three read-only ones, task 8.4 the unsigned pairing submission, and task
+// 8.5 the OAuth callback, the inbound webhook and the health check -- and with
+// them `createRoutesApp`, the composed app that is what `runtime/` actually
+// starts. The composition lives in `app.ts` rather than in this file: a barrel
+// re-exports, it does not build (see that file's header).
 //
 // `INBOUND_OP_BY_PATH` is exported because the endpoints GROWI signs requests
 // to have to be registered on exactly the paths it names -- reading the table
@@ -16,6 +17,15 @@
 // `pairing-routes.ts` builds ONE exchange, not something another layer calls,
 // and its own spec reaches it directly as a sibling. Same rule
 // `relation/index.ts` records for `buildPinnedRequestOptions`.
+export type { RoutesAppDeps } from './app.js';
+export { createRoutesApp } from './app.js';
+export type { HealthRoutesDeps } from './health-routes.js';
+export { HEALTH_PATH, registerHealthRoutes } from './health-routes.js';
+export type { InstallFailure, InstallRoutesDeps } from './install-routes.js';
+export {
+  installCallbackPath,
+  registerInstallRoutes,
+} from './install-routes.js';
 export type { KeyRoutesDeps } from './key-routes.js';
 export { registerKeyRoutes } from './key-routes.js';
 export type { NotificationRoutesDeps } from './notification-routes.js';
@@ -38,3 +48,5 @@ export {
   pathForOp,
   signatureGuard,
 } from './signature-guard.js';
+export type { WebhookRoutesDeps } from './webhook-routes.js';
+export { registerWebhookRoutes, webhookPath } from './webhook-routes.js';

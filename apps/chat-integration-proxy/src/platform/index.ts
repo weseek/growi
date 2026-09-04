@@ -417,3 +417,13 @@ export type {
   InstallationStoreDeps,
 } from './installation-store.js';
 export { createInstallationStore } from './installation-store.js';
+// Only the names `routes/install-routes.ts` actually needs. The rest of
+// `oauth-callback.ts` (`OAuthCallbackDeps`, `OAuthExchangeContext`,
+// `OAuthInstallation`, `OAuthCallbackResult`, `OAuthExchange`) has no caller
+// outside this layer and stays unpublished -- `.claude/rules/coding-style.md`,
+// "re-export only what callers need".
+export type {
+  OAuthCallbackFailureReason,
+  OAuthExchangeTable,
+} from './oauth-callback.js';
+export { completeOAuthCallback, OAUTH_EXCHANGES } from './oauth-callback.js';
