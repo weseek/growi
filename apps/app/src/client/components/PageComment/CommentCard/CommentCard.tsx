@@ -1,6 +1,7 @@
 import type { JSX, ReactNode } from 'react';
 import Link from 'next/link';
 import type { IUser, IUserHasId, Ref } from '@growi/core';
+import type { IUserSerializedSecurely } from '@growi/core/dist/models/serializers';
 import { UserPicture } from '@growi/ui/dist/components';
 
 import { Username } from '~/components/User/Username';
@@ -17,9 +18,19 @@ export type CommentCardProps = {
    * decides to hide them itself. This keeps a normal comment whose creator is
    * unpopulated rendering exactly as it does today (Req 13.9). A normal
    * comment passes `undefined` here (its own `isPopulated` check leaves the
-   * creator undefined, never null), so this accepts both.
+   * creator undefined, never null), so this accepts both. An inline comment
+   * (task 5.1) passes an already-serialized `IUserSerializedSecurely<IUserHasId>`
+   * (or `null`), since its `listByPageId()` response already ran the row
+   * through `serializeUserSecurely` server-side -- so that shape is accepted
+   * too, alongside the unpopulated `Ref<IUser>` shape a normal comment can
+   * pass when its creator wasn't populated.
    */
-  creator: IUserHasId | Ref<IUser> | null | undefined;
+  creator:
+    | IUserHasId
+    | Ref<IUser>
+    | IUserSerializedSecurely<IUserHasId>
+    | null
+    | undefined;
   /**
    * Declared as Date but actually arrives as an ISO string. Forwarded to
    * FormattedDistanceDate as-is; this component never parses or converts it.

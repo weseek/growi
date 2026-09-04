@@ -29,6 +29,14 @@ vi.mock('~/stores/renderer', () => ({
   useCommentForCurrentPageOptions: () => useCommentForCurrentPageOptions(),
 }));
 
+// The list item's labels come from `inline_comment.*` translation keys since
+// it was moved to `InlineCommentItem` and rewritten around `CommentCard`;
+// echo the key back so this spec asserts stable strings instead of depending
+// on the locale files.
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key: string) => key }),
+}));
+
 /**
  * Builds `RendererOptions` around the REAL mention remark plugin
  * (`~/services/renderer/remark-plugins/mention`) — the same module
@@ -50,6 +58,7 @@ const originComment = (
   id: 'comment1',
   pageId: 'page1',
   creatorId: 'user1',
+  creator: null,
   comment: 'first comment',
   anchorOriginRevisionId: 'revision1',
   anchor: { quote: 'quoted text', prefix: '', suffix: '', approxOffset: 0 },
@@ -122,8 +131,8 @@ describe('InlineCommentList', () => {
     render(<InlineCommentList pageId="page1" />);
 
     const statuses = screen.getAllByTestId('inline-comment-status');
-    expect(statuses[0]).toHaveTextContent('Unresolved');
-    expect(statuses[1]).toHaveTextContent('Resolved');
+    expect(statuses[0]).toHaveTextContent('inline_comment.unresolved');
+    expect(statuses[1]).toHaveTextContent('inline_comment.resolved');
 
     const items = screen.getAllByTestId('inline-comment-item');
     expect(items[0]).toHaveAttribute('data-resolved', 'false');
@@ -140,7 +149,9 @@ describe('InlineCommentList', () => {
 
     render(<InlineCommentList pageId="page1" />);
 
-    await userEvent.click(screen.getByRole('button', { name: 'Resolve' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'inline_comment.resolve' }),
+    );
 
     expect(resolve).toHaveBeenCalledWith('comment1', true);
   });
@@ -161,7 +172,9 @@ describe('InlineCommentList', () => {
 
     render(<InlineCommentList pageId="page1" />);
 
-    await userEvent.click(screen.getByRole('button', { name: 'Reopen' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'inline_comment.reopen' }),
+    );
 
     expect(resolve).toHaveBeenCalledWith('comment1', false);
   });
@@ -176,7 +189,9 @@ describe('InlineCommentList', () => {
 
     render(<InlineCommentList pageId="page1" />);
 
-    await userEvent.click(screen.getByRole('button', { name: 'Resolve' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'inline_comment.resolve' }),
+    );
 
     await waitFor(() => {
       expect(

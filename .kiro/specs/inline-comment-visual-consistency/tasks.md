@@ -94,7 +94,7 @@
   - _Requirements: 13.5_
   - _Boundary: InlineCommentService_
 
-- [ ] 5.2 インラインコメントの一覧項目を`CommentCard`を使う形に書き換える
+- [x] 5.2 インラインコメントの一覧項目を`CommentCard`を使う形に書き換える
   - `InlineCommentList/`内の項目コンポーネントを`InlineCommentItem/`（新規ディレクトリ）に移し、`CommentCard`を使う形に書き換える。`headerEnd`に未解決/解決済みの札と解決トグル、`beforeBody`に種別ラベル行（アイコン＋`t('inline_comment.label')`）と引用文（`inline-comment-quote`、左3pxの`--grw-inline-comment-marker-bg`縦線）を渡す
   - `RevisionRenderer`に`additionalClassName="comment"`を渡す（現状渡しておらず、`Comment.module.scss`の段落・引用の余白規則が効いていない）
   - 未解決/解決済みの札の配色（`bg-warning text-dark`）は変更しない
@@ -154,6 +154,9 @@
   - _Depends: 6.3, 7.1, 7.2_
 
 ## Implementation Notes
+
+- 5.2: `CommentCardProps.creator`（task 4.2）は`IUserSerializedSecurely<IUserHasId>`を受けられなかった（インラインコメントの`creator`はまさにこの型）。修正として`CommentCard.tsx`と`apps/app/src/components/User/Username.tsx`の`creator`/`user`の型union に`IUserSerializedSecurely<IUserHasId>`を追加した（型のみ・`isPopulated()`はオブジェクトかどうかしか見ないため実行時の挙動は不変）。両ファイルとも task 5.2 の`_Boundary: InlineCommentItem_`の外だが、5.2がコンパイルするために必須だったため含めた。
+- 5.2のRED実測: `InlineCommentItem.spec.tsx`はファイル新規作成のため、実装前に`pnpm vitest run InlineCommentItem.spec`を実行すると`Error: Failed to resolve import "./InlineCommentItem"`で全件失敗することを実装者が確認済み（該当タスクの実装者レポート参照）。追加のミューテーション確認として、`RevisionRenderer`から`additionalClassName="comment"`を外すと該当テストが1件RED化することも確認済み。
 
 - 5.1: `IInlineComment.creator`を必須にした結果、`PageView.spec.tsx`・`InlineCommentList.spec.tsx`・`apps/app/src/features/inline-comment/client/inline-comment.spec.tsx`のテスト内フィクスチャがtsgoで型エラーになる（`creator`欠落）。5.2/5.3でこの3ファイルすべてのフィクスチャに`creator`を足すこと（`InlineCommentList.spec.tsx`は5.2で移設される想定だが、`PageView.spec.tsx`は5.2のBoundaryの外なので見落とし注意）。
 

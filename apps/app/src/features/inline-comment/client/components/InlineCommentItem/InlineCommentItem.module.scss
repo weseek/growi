@@ -1,0 +1,24 @@
+// The comment box's own look is owned by `_comment-inheritance.scss`, shared
+// with the normal comment (`Comment.module.scss`) and the comment editor
+// (`CommentEditor.module.scss`). `CommentCard` deliberately carries no CSS
+// module of its own, so this file is the third container that extends those
+// placeholders — that is what keeps an inline comment's box identical to a
+// normal comment's without copying any of its values (design.md 決定2).
+//
+// `next.config.ts` sets `loadPaths: [<app>/src]`, which is what lets this
+// `@use` be written from anywhere under `src`.
+@use 'client/components/PageComment/comment-inheritance';
+
+.inline-comment-item-styles {
+  :global(.page-comment) {
+    :global(.bg-comment) { @extend %bg-comment; }
+    :global(.user-picture) { @extend %user-picture; }
+    :global(.page-comment-main) { @extend %comment-section; }
+    // Rules that only the normal comment has (the revision link color and so
+    // on) are intentionally not copied here.
+  }
+
+  :global(.inline-comment-quote) {
+    border-left: 3px solid var(--grw-inline-comment-marker-bg);
+  }
+}
