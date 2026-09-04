@@ -39,6 +39,16 @@ export interface InstallationChannelRepository {
     channelId: string,
   ): Promise<InstallationChannelRecord | null>;
   /**
+   * The whole saved inventory of one installation, in the order the database
+   * returns it. Added for the `channels` endpoint (Requirements 2.2, 11.1),
+   * which answers a GROWI with its own installation's channels and nothing
+   * else -- the scoping is this `where` clause, not a filter applied after
+   * reading, so no other tenant's rows are ever fetched.
+   */
+  listByInstallation(
+    installationId: string,
+  ): Promise<ReadonlyArray<InstallationChannelRecord>>;
+  /**
    * Whether ANY channel is recorded for this installation. Combined with
    * `installation.channelsSyncedAt` (read via `installation-repository.ts`),
    * this is what lets a caller tell "never synced" apart from "synced, found
@@ -90,6 +100,13 @@ export const createInstallationChannelRepository = (
         refreshedAt: channel.refreshedAt,
       },
     });
+  },
+
+  listByInstallation: async (installationId) => {
+    const rows = await db.installationChannel.findMany({
+      where: { installationId },
+    });
+    return rows.map(toRecord);
   },
 
   find: async (installationId, channelId) => {

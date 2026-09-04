@@ -89,3 +89,42 @@ describe('installationChannelRepository.deleteByInstallation', () => {
     });
   });
 });
+
+describe('installationChannelRepository.listByInstallation (Requirements 2.2, 11.1)', () => {
+  it("reads by installation id, so no other installation's rows are ever fetched", () => {
+    // The scoping of the `channels` endpoint rests on this `where`: fetching
+    // everything and filtering afterwards would carry every tenant's inventory
+    // through the process before answering.
+    const prisma = mockDeep<PrismaClient>();
+    prisma.installationChannel.findMany.mockResolvedValue([CHANNEL]);
+    const repository = createInstallationChannelRepository(prisma);
+
+    void repository.listByInstallation('installation-1');
+
+    expect(prisma.installationChannel.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { installationId: 'installation-1' },
+      }),
+    );
+  });
+
+  it('answers the saved rows', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.installationChannel.findMany.mockResolvedValue([CHANNEL]);
+    const repository = createInstallationChannelRepository(prisma);
+
+    await expect(
+      repository.listByInstallation('installation-1'),
+    ).resolves.toEqual([CHANNEL]);
+  });
+
+  it('answers an empty list for an installation with nothing saved', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.installationChannel.findMany.mockResolvedValue([]);
+    const repository = createInstallationChannelRepository(prisma);
+
+    await expect(
+      repository.listByInstallation('installation-2'),
+    ).resolves.toEqual([]);
+  });
+});

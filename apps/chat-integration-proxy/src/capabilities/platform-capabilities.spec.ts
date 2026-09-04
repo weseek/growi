@@ -2,6 +2,7 @@ import type { PlatformName } from '@growi/chat';
 import { describe, expect, it } from 'vitest';
 
 import {
+  buildCapabilityReport,
   CAPABILITY_TABLE,
   CONNECTION_UNIT_TABLE,
   levelOf,
@@ -116,5 +117,69 @@ describe('inbound-reachability axis (separate from the capability table)', () =>
       teams: true,
       mattermost: false,
     });
+  });
+});
+
+describe('buildCapabilityReport() (Requirement 1.3)', () => {
+  it('reports every (service, capability) pair the table declares', () => {
+    // `CapabilityReport`'s `capability` field is a plain `string`, so nothing
+    // in the type system makes this report complete -- the check has to be
+    // here. Derived from the table rather than a literal count, for the same
+    // reason the completeness test above is.
+    const report = buildCapabilityReport();
+    const capabilityNames = Object.keys(CAPABILITY_TABLE);
+
+    expect(report.platforms.map((entry) => entry.platform).sort()).toEqual(
+      [...ALL_PLATFORMS].sort(),
+    );
+    for (const entry of report.platforms) {
+      expect(entry.capabilities.map((row) => row.capability).sort()).toEqual(
+        [...capabilityNames].sort(),
+      );
+    }
+  });
+
+  it('carries the level straight from the table', () => {
+    const report = buildCapabilityReport();
+
+    for (const entry of report.platforms) {
+      for (const row of entry.capabilities) {
+        expect(row.level).toBe(
+          CAPABILITY_TABLE[row.capability as keyof typeof CAPABILITY_TABLE][
+            entry.platform
+          ],
+        );
+      }
+    }
+  });
+
+  it('names a substitute exactly where a capability is not fully usable', () => {
+    // design.md's 「無いときの代わり」 column is per capability, while the wire
+    // shape carries one substitute per (service, capability) pair. A `full`
+    // level has nothing to fall back to, so it reads `null` there; every row
+    // that is not `full` and has a documented fallback carries its text.
+    const report = buildCapabilityReport();
+
+    for (const entry of report.platforms) {
+      for (const row of entry.capabilities) {
+        if (row.level === 'full') {
+          expect(row.substitute).toBeNull();
+        }
+      }
+    }
+
+    const substituteOf = (platform: PlatformName, capability: string) =>
+      report.platforms
+        .find((entry) => entry.platform === platform)
+        ?.capabilities.find((row) => row.capability === capability)?.substitute;
+
+    // The three rows design.md gives a fallback for, at the levels it gives
+    // them: a degraded one, a missing one, and an unverified one.
+    expect(substituteOf('mattermost', 'card')).toEqual(expect.any(String));
+    expect(substituteOf('teams', 'slashCommand')).toEqual(expect.any(String));
+    expect(substituteOf('slack', 'plainReply')).toEqual(expect.any(String));
+    // `—` in design.md's column: nothing to fall back to even where the
+    // capability is missing.
+    expect(substituteOf('slack', 'ephemeralMessage')).toBeNull();
   });
 });

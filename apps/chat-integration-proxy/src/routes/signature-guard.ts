@@ -119,6 +119,27 @@ export const INBOUND_OP_BY_PATH: ReadonlyMap<string, OpName> = new Map(
     ]),
 );
 
+/**
+ * The path the protocol's endpoint table gives this op.
+ *
+ * Reversed out of `INBOUND_OP_BY_PATH` rather than written out again: that map
+ * is what the guard consults, so deriving from it is what keeps a route and
+ * the op its guard expects from ever naming different paths. A hand-written
+ * path with a typo would not fail loudly -- the guard refuses any path the
+ * table does not name, so the endpoint would serve 401s with no visible cause.
+ *
+ * It lives here, beside the table, because every GROWI-facing route module
+ * needs it; keeping it private to one of them would have the next one copy it.
+ */
+export const pathForOp = (op: OpName): string => {
+  for (const [path, name] of INBOUND_OP_BY_PATH) {
+    if (name === op) {
+      return path;
+    }
+  }
+  throw new Error(`no GROWI-facing endpoint is declared for op '${op}'`);
+};
+
 interface Envelope {
   readonly relationId: string;
   readonly op: OpName;

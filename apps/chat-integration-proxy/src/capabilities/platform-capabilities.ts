@@ -17,7 +17,11 @@
 //   ("this platform is capable") -- folding it into `CAPABILITY_TABLE` would
 //   silently invert that meaning for whoever reads it next to a capability
 //   row.
-import type { CapabilityLevel, PlatformName } from '@growi/chat';
+import type {
+  CapabilityLevel,
+  CapabilityReport,
+  PlatformName,
+} from '@growi/chat';
 
 /**
  * Every capability row design.md's プラットフォーム能力表 declares.
@@ -102,6 +106,42 @@ export const CAPABILITY_TABLE: Readonly<Record<CapabilityName, CapabilityRow>> =
     },
   };
 
+/**
+ * design.md's 「無いときの代わり」 column -- what to do instead when a service
+ * cannot do this. **One text per capability, not per service**, because that
+ * is how design.md declares it: the fallback for a missing `modal` is the same
+ * fallback whichever service is missing it.
+ *
+ * Written in English while design.md's column is in Japanese: the report goes
+ * out over the wire to a GROWI whose administrator's language this proxy never
+ * learns (`OpOnlyRequest` carries no locale), so translating it is the reading
+ * side's business, not this table's. Each entry carries design.md's own
+ * wording in a trailing comment so a reviewer can check the transcription
+ * against the source column.
+ *
+ * A capability whose column reads `—` is absent here: there is nothing
+ * documented to fall back to, and inventing a sentence for it would be this
+ * file claiming a design decision design.md did not make.
+ */
+export const CAPABILITY_SUBSTITUTE: Readonly<
+  Partial<Record<CapabilityName, string>>
+> = {
+  // mention で起動する（決定 4）
+  slashCommand: 'Invoke the command by mentioning the bot instead.',
+  // コマンド行の引数 + 聞き返し（決定 5）
+  modal: 'Take the arguments on the command line and ask follow-up questions.',
+  // 番号つきの一覧を出して返信で選ばせる
+  interactiveActions:
+    'Post a numbered list and let the user pick by replying with a number.',
+  // markdown で投稿する
+  card: 'Post the same content as plain markdown.',
+  // 要件 6.5 に従い「使えない」と示す
+  linkPreview:
+    'Tell the user that link previews are unavailable on this service.',
+  // 呼びかけ付きの返信にする
+  plainReply: 'Reply with the user mentioned in the message.',
+};
+
 /** The raw level, for a caller that needs to tell `degraded` apart from `none`. */
 export function levelOf(
   capability: CapabilityName,
@@ -164,3 +204,49 @@ export const REQUIRES_INBOUND_REACHABILITY: Readonly<
   teams: true,
   mattermost: false,
 };
+
+/**
+ * The services this table covers, from a table that has one entry per
+ * `PlatformName` rather than from a hand-written list. Both tables in this
+ * file are `Record<PlatformName, ...>`, so either would do; the connection
+ * unit table is used because it is keyed by service at the top level, while
+ * `CAPABILITY_TABLE` is keyed by capability and would need an arbitrary row
+ * picked out of it. `Object.keys` always widens to `string[]`, so this narrows
+ * back -- the same step `platform/index.ts` takes over `ADAPTER_FACTORIES`.
+ */
+const PLATFORM_NAMES = Object.keys(
+  CONNECTION_UNIT_TABLE,
+) as ReadonlyArray<PlatformName>;
+
+/**
+ * The whole capability table in the shape it leaves this proxy
+ * (`CapabilityReport`, `@growi/chat`; Requirement 1.3).
+ *
+ * **Proxy-wide, and deliberately takes no relation.** The table is static and
+ * identical for every workspace, so design.md's 「返す範囲」 column has nothing
+ * to say here -- a signature is not what decides the answer, and a parameter
+ * would suggest otherwise.
+ *
+ * Two shapes differ from the table itself. The wire type carries one row per
+ * (service, capability) pair while `CAPABILITY_TABLE` is one row per
+ * capability, and it carries a substitute per pair while design.md declares
+ * one per capability. A `full` level reads `null`: a capability that works has
+ * nothing to fall back to, and repeating the fallback text there would read as
+ * "do this instead" for a service that needs no instead.
+ */
+export const buildCapabilityReport = (): CapabilityReport => ({
+  platforms: PLATFORM_NAMES.map((platform) => ({
+    platform,
+    capabilities: (
+      Object.keys(CAPABILITY_TABLE) as ReadonlyArray<CapabilityName>
+    ).map((capability) => {
+      const level = CAPABILITY_TABLE[capability][platform];
+      return {
+        capability,
+        level,
+        substitute:
+          level === 'full' ? null : (CAPABILITY_SUBSTITUTE[capability] ?? null),
+      };
+    }),
+  })),
+});

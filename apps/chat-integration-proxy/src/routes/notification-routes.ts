@@ -45,7 +45,6 @@
 // transaction, and re-checking `relationId` against the verified key would be
 // a second copy of the cross-check `acceptEnvelope()` made in the guard --
 // against this very same parsed value.
-import type { OpName } from '@growi/chat';
 import {
   OP_NAMES,
   parseNotificationRequest,
@@ -58,7 +57,7 @@ import type {
   SignatureGuardDeps,
   SignedRequestEnv,
 } from './signature-guard.js';
-import { INBOUND_OP_BY_PATH, signatureGuard } from './signature-guard.js';
+import { pathForOp, signatureGuard } from './signature-guard.js';
 
 export interface NotificationRoutesDeps {
   readonly signature: SignatureGuardDeps;
@@ -69,22 +68,6 @@ export interface NotificationRoutesDeps {
    */
   readonly inboundFlow: Pick<InboundFlow, 'notify' | 'pushSettings'>;
 }
-
-/**
- * The path the protocol's endpoint table gives this op.
- *
- * Reversed out of `INBOUND_OP_BY_PATH` rather than written out again: that
- * map is what the guard consults, so deriving from it is what keeps a route
- * and the op its guard expects from ever naming different paths.
- */
-const pathForOp = (op: OpName): string => {
-  for (const [path, name] of INBOUND_OP_BY_PATH) {
-    if (name === op) {
-      return path;
-    }
-  }
-  throw new Error(`no GROWI-facing endpoint is declared for op '${op}'`);
-};
 
 export const registerNotificationRoutes = (
   app: Hono<SignedRequestEnv>,

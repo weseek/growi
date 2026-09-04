@@ -15,6 +15,8 @@ export type {
   ConnectionUnit,
 } from './platform-capabilities.js';
 export {
+  buildCapabilityReport,
+  CAPABILITY_SUBSTITUTE,
   CAPABILITY_TABLE,
   CONNECTION_UNIT_TABLE,
   levelOf,
