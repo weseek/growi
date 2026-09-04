@@ -111,7 +111,7 @@
   - _Boundary: InlineCommentReplies_
 
 - [ ] 6. 通常コメントとインラインコメントの一覧統合
-- [ ] 6.1 `PageComment`で2種類のコメントを1つの一覧に統合する
+- [x] 6.1 `PageComment`で2種類のコメントを1つの一覧に統合する
   - `PageComment.tsx`が`inlineComments`をpropsで受け取り、通常コメント（返信を除く起点）とインラインコメントを`createdAt`順に混ぜた1つの配列として並べる。`createdAt`は`Date`型で宣言されているが実体はISO文字列であるため、比較前に必ず`parseISO`等で`Date`化してから比較する（文字列同士の減算は`NaN`になり並び替えが機能しない）
   - 観測できる完了条件：通常コメント2件とインラインコメント1件を投稿日時が交互になるように与えたとき、一覧の子要素の順序が投稿日時順になることをユニットテストで確認できる
   - _Requirements: 13.1, 13.2_
@@ -159,6 +159,8 @@
 - 5.2のRED実測: `InlineCommentItem.spec.tsx`はファイル新規作成のため、実装前に`pnpm vitest run InlineCommentItem.spec`を実行すると`Error: Failed to resolve import "./InlineCommentItem"`で全件失敗することを実装者が確認済み（該当タスクの実装者レポート参照）。追加のミューテーション確認として、`RevisionRenderer`から`additionalClassName="comment"`を外すと該当テストが1件RED化することも確認済み。
 
 - 5.1: `IInlineComment.creator`を必須にした結果、`PageView.spec.tsx`・`InlineCommentList.spec.tsx`・`apps/app/src/features/inline-comment/client/stores/inline-comment.spec.tsx`のテスト内フィクスチャがtsgoで型エラーになる（`creator`欠落）。`InlineCommentList.spec.tsx`は5.2で修正済み。`PageView.spec.tsx`・`inline-comment.spec.tsx`の2件は5.2・5.3のBoundary外で未着手のまま残っている（5.3レビューで確認済み）。6.3（`PageView.tsx`配線）で`PageView.spec.tsx`を、6.1/6.2いずれかで`inline-comment.spec.tsx`を直すこと。7.x（検証フェーズ）の前に必ずtsgoがcleanになっていることを確認する。
+- 6.1: `PageComment.tsx`の`inlineComments`propは設計の記述（配列そのもの）と異なり、`{ comments, resolve, createReply }`をまとめたオブジェクトにした。`InlineCommentItem`（5.2）が`resolve`/`createReply`を必須で要求し、これらは`useSWRxInlineComments`と同じフックの戻り値なので、データと分離すると`PageComment`内で2本目の取得が要る＝Requirement 13.8（共有リンクに漏れない）の構造的な担保が崩れるため。6.2は`Comments`にこのオブジェクトをそのまま素通しさせること（「省略時は空配列」ではなく「省略時はprop自体を渡さない」）。6.3は`PageView.tsx`側で`resolve`/`createReply`も`useSWRxInlineComments`の戻り値から渡すこと（現状は`data`しか使っていない）。
+- 6.1で対応しなかった`apps/app/src/features/inline-comment/client/stores/inline-comment.spec.tsx`のtsgoエラー（5.1由来）は6.2で直すこと。7.x（検証）前に`tsgo`がcleanになっているか確認必須。
 - 5.3レビューで判明: `InlineCommentReply`は`creatorId`のみで投稿者の実データ（`creator`）を持たない。`inline-comment-service.ts`の返信側`findMany()`は`include: { creator: true }`を要求しているのに`toInlineCommentReplyFromListRow()`が`row.creator`を捨てている（5.1由来の無駄なjoin＋欠落）。返信の投稿者アイコン・名前が実データで出ない状態。本amendのRequirement 13.4は起点コメントの並びを指しており返信は対象外と判断し、このamendでは対応しない（別途フォローアップ課題として記録）。
 
 - 4.2 レビューで design.md 自身の矛盾（Req 13.9 違反の恐れ）が見つかり、design.md を訂正した（決定2の`CommentCardProps`/JSX/rationale、決定6の`InlineCommentItem`の`headerEnd`例、File Structure Planの誤記）。訂正内容:

@@ -3,10 +3,13 @@ import React, { memo, useCallback, useMemo, useState } from 'react';
 import type { IRevision, Ref } from '@growi/core';
 import { getIdStringForRef, isPopulated } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
+import { parseISO } from 'date-fns/parseISO';
 import { useTranslation } from 'next-i18next';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastError } from '~/client/util/toastr';
+import { InlineCommentItem } from '~/features/inline-comment/client/components/InlineCommentItem/InlineCommentItem';
+import type { InlineCommentWithReplies } from '~/features/inline-comment/interfaces';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useSWRMUTxPageInfo } from '~/stores/page';
 import { useCommentForCurrentPageOptions } from '~/stores/renderer';
@@ -32,7 +35,46 @@ type PageCommentProps = {
   revision: Ref<IRevision>;
   currentUser: any;
   isReadOnly: boolean;
+  /**
+   * The page's inline comments together with the writers that revalidate
+   * them, supplied by the caller (design.md 決定3): this component must not
+   * fetch them itself, because `Comments` is also mounted by
+   * `ShareLinkPageView`, where inline comments must never be requested
+   * (requirement 13.8).
+   *
+   * The three values travel as one object because they belong to one
+   * `useSWRxInlineComments` call — `resolve`/`createReply` revalidate exactly
+   * the list held in `comments`. Bundling them also makes "all three or none"
+   * a type rather than a convention, so a caller cannot supply a list whose
+   * resolve toggle silently does nothing.
+   *
+   * Omitted by callers that show no inline comments at all (the share-link
+   * view, and the search-result preview in `SearchResultContent`).
+   */
+  inlineComments?: {
+    comments: InlineCommentWithReplies[];
+    resolve: (id: string, resolved: boolean) => Promise<unknown>;
+    createReply: (parentId: string, comment: string) => Promise<unknown>;
+  };
 };
+
+/**
+ * One entry of the merged list. Replies are NOT entries — they stay nested
+ * under their parent, as they were before the two lists were merged.
+ */
+type CommentListItem =
+  | { kind: 'normal'; sortKey: number; comment: ICommentHasId }
+  | { kind: 'inline'; sortKey: number; comment: InlineCommentWithReplies };
+
+/**
+ * `createdAt` is declared as `Date` on both comment interfaces but actually
+ * arrives as an ISO string, because the value is whatever the API's JSON
+ * carried (see the same workaround in `Comment.tsx`). Subtracting two strings
+ * yields `NaN`, which would silently turn the sort into a no-op, so parse
+ * before comparing.
+ */
+const toSortKey = (createdAt: Date | string): number =>
+  (typeof createdAt === 'string' ? parseISO(createdAt) : createdAt).valueOf();
 
 export const PageComment: FC<PageCommentProps> = memo(
   (props: PageCommentProps): JSX.Element => {
@@ -43,6 +85,7 @@ export const PageComment: FC<PageCommentProps> = memo(
       revision,
       currentUser,
       isReadOnly,
+      inlineComments: inline,
     } = props;
 
     const { data: comments, mutate } = useSWRxPageComment(pageId);
@@ -68,6 +111,31 @@ export const PageComment: FC<PageCommentProps> = memo(
       () => commentsFromOldest?.filter((comment) => comment.replyTo == null),
       [commentsFromOldest],
     );
+    /**
+     * The single list requirement 13.1/13.2 asks for: origin normal comments
+     * and inline comments interleaved by posting date, ascending.
+     */
+    const items = useMemo<CommentListItem[]>(
+      () =>
+        [
+          ...(commentsExceptReply ?? []).map(
+            (comment): CommentListItem => ({
+              kind: 'normal',
+              sortKey: toSortKey(comment.createdAt),
+              comment,
+            }),
+          ),
+          ...(inline?.comments ?? []).map(
+            (comment): CommentListItem => ({
+              kind: 'inline',
+              sortKey: toSortKey(comment.createdAt),
+              comment,
+            }),
+          ),
+        ].sort((a, b) => a.sortKey - b.sortKey),
+      [commentsExceptReply, inline?.comments],
+    );
+
     const allReplies = {};
 
     if (commentsFromOldest != null) {
@@ -134,18 +202,13 @@ export const PageComment: FC<PageCommentProps> = memo(
       [removeShowEditorId, mutate, mutatePageInfo],
     );
 
-    if (comments?.length === 0) {
-      return <></>;
-    }
-
     const rendererOptions =
       rendererOptionsByProps ?? rendererOptionsForCurrentPage;
 
-    if (
-      commentsFromOldest == null ||
-      commentsExceptReply == null ||
-      rendererOptions == null
-    ) {
+    // Nothing to show when neither kind of comment is present. Note this is
+    // checked on the merged list, not on the normal comments alone: a page
+    // whose only comments are inline ones must still render the list.
+    if (items.length === 0 || rendererOptions == null) {
       return <></>;
     }
 
@@ -190,7 +253,30 @@ export const PageComment: FC<PageCommentProps> = memo(
       >
         <div className="page-comments">
           <div className="page-comments-list mb-3" id="page-comments-list">
-            {commentsExceptReply.map((comment) => {
+            {items.map((item) => {
+              // An inline comment brings its own box, quote and replies, so it
+              // only needs the same thread wrapper the normal comments use.
+              if (item.kind === 'inline') {
+                // Unreachable: an inline item only exists when `inline` was
+                // supplied. The guard is what lets TypeScript see that.
+                if (inline == null) return null;
+
+                return (
+                  <div
+                    key={`inline-${item.comment.id}`}
+                    className="page-comment-thread mb-2"
+                  >
+                    <InlineCommentItem
+                      comment={item.comment}
+                      rendererOptions={rendererOptions}
+                      resolve={inline.resolve}
+                      createReply={inline.createReply}
+                    />
+                  </div>
+                );
+              }
+
+              const comment = item.comment;
               const defaultCommentThreadClasses = 'page-comment-thread mb-2';
               const hasReply: boolean = Object.keys(allReplies).includes(
                 comment._id,
@@ -202,7 +288,10 @@ export const PageComment: FC<PageCommentProps> = memo(
                 : defaultCommentThreadClasses;
 
               return (
-                <div key={comment._id} className={commentThreadClasses}>
+                <div
+                  key={`normal-${comment._id}`}
+                  className={commentThreadClasses}
+                >
                   {/* Comment */}
                   {commentElement(comment)}
                   {/* Reply comments */}
