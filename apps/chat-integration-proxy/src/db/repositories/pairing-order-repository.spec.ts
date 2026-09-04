@@ -77,19 +77,63 @@ describe('pairingOrderRepository (Requirement 10.6)', () => {
     });
   });
 
-  it('remembers which relation a consumed code produced', async () => {
+  it('remembers which relation a consumed code produced, and says it won', async () => {
     // Without this, submitting the same code a second time could not answer
     // with the same `PairingResult` and would create a second relation.
     const prisma = mockDeep<PrismaClient>();
-    prisma.pairingOrder.update.mockResolvedValue(row());
+    prisma.pairingOrder.updateMany.mockResolvedValue({ count: 1 });
     const repository = createPairingOrderRepository(prisma);
     const consumedAt = new Date('2026-06-01T00:05:00.000Z');
 
-    await repository.consume('pairing-order-1', 'relation-1', consumedAt);
+    await expect(
+      repository.consumeIfUnconsumed(
+        'pairing-order-1',
+        'relation-1',
+        consumedAt,
+      ),
+    ).resolves.toBe(true);
 
-    expect(prisma.pairingOrder.update.mock.calls[0][0]).toEqual({
-      where: { id: 'pairing-order-1' },
+    expect(prisma.pairingOrder.updateMany.mock.calls[0][0]).toEqual({
+      // Conditional on purpose: `pairing/submit` carries neither a signature
+      // nor a nonce, so two copies of one submission arriving together is
+      // ordinary. Only the writer that flips `consumed_at` may go on.
+      where: { id: 'pairing-order-1', consumedAt: null },
       data: { relationId: 'relation-1', consumedAt },
+    });
+  });
+
+  it('says it lost when the order was already consumed', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.pairingOrder.updateMany.mockResolvedValue({ count: 0 });
+    const repository = createPairingOrderRepository(prisma);
+
+    await expect(
+      repository.consumeIfUnconsumed(
+        'pairing-order-1',
+        'relation-1',
+        new Date(),
+      ),
+    ).resolves.toBe(false);
+  });
+});
+
+describe('pairingOrderRepository.countLive', () => {
+  it('counts only the orders that are still usable -- unconsumed, unexpired, and with attempts left', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.pairingOrder.count.mockResolvedValue(3);
+    const repository = createPairingOrderRepository(prisma);
+    const now = new Date('2026-06-01T00:00:00.000Z');
+
+    await expect(repository.countLive('inst-1', now, 5)).resolves.toBe(3);
+    expect(prisma.pairingOrder.count).toHaveBeenCalledWith({
+      where: {
+        installationId: 'inst-1',
+        consumedAt: null,
+        expiresAt: { gt: now },
+        // A code that has spent its attempts answers nothing any more, so
+        // counting it would hold a slot nobody can use.
+        attempts: { lt: 5 },
+      },
     });
   });
 });

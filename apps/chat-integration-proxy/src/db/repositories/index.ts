@@ -48,6 +48,9 @@ export type {
   NewRelation,
   RelationRepository,
 } from './relation-repository.js';
-export { createRelationRepository } from './relation-repository.js';
+export {
+  createRelationRepository,
+  RelationAlreadyExistsError,
+} from './relation-repository.js';
 export type { RequestNonceRepository } from './request-nonce-repository.js';
 export { createRequestNonceRepository } from './request-nonce-repository.js';

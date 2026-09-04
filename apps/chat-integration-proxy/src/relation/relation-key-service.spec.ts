@@ -13,7 +13,7 @@
 // is `own-key-repository`'s contract, and `own-key-repository.spec.ts` already
 // proves it against a real AES-256-GCM cipher. This service never sees a
 // ciphertext; it only has to hand the repository the PEM.
-import { createPublicKey } from 'node:crypto';
+import { createPublicKey, generateKeyPairSync } from 'node:crypto';
 import {
   isValidKeyIdShape,
   isValidPublicKeyMaterial,
@@ -252,5 +252,40 @@ describe('relationKeyService.signerFor (Requirement 9.6)', () => {
     await expect(serviceOver(prisma).signerFor('relation-1')).rejects.toThrow(
       /vanished/i,
     );
+  });
+});
+
+describe('relationKeyService.publicKeyFor (Requirement 9.5)', () => {
+  it('derives the public half of the relation key it would sign with', async () => {
+    // `own_key` stores the private key alone, so the public half is derived --
+    // and it has to be the public half of the very key `signerFor` hands out,
+    // or the peer would be registering a key nothing signs with.
+    const { privateKey } = generateKeyPairSync('ed25519');
+    const stored = ownKeyRow({
+      privateKeyPem: fakeCipher.encrypt(
+        privateKey.export({ type: 'pkcs8', format: 'pem' }).toString(),
+      ),
+    });
+    const prisma = mockDeep<PrismaClient>();
+    prisma.ownKey.findMany.mockResolvedValue([rowForListing(stored)]);
+    prisma.ownKey.findUnique.mockResolvedValue(stored);
+
+    const registration = await serviceOver(prisma).publicKeyFor('relation-1');
+
+    expect(registration.keyId).toBe('proxy-key-1');
+    expect(registration.validFrom).toBe(stored.validFrom.toISOString());
+    expect(registration.publicKeyJwk).toEqual(
+      createPublicKey(privateKey).export({ format: 'jwk' }),
+    );
+    expect(registration.publicKeyJwk).not.toHaveProperty('d');
+  });
+
+  it('refuses for the same reasons signing does, rather than inventing a key', async () => {
+    const prisma = mockDeep<PrismaClient>();
+    prisma.ownKey.findMany.mockResolvedValue([]);
+
+    await expect(
+      serviceOver(prisma).publicKeyFor('relation-1'),
+    ).rejects.toThrow(/No valid signing key/i);
   });
 });

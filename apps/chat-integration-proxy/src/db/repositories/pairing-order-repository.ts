@@ -35,11 +35,41 @@ export interface PairingOrderRepository {
   /** Counts one submission and answers the new total. */
   recordAttempt(id: string): Promise<number>;
   /**
-   * Records which relation this code produced. Without it, submitting the same
-   * code a second time could not answer with the same `PairingResult` and would
-   * create a second relation instead (design.md's Data Models note).
+   * Records which relation this code produced, and answers whether THIS caller
+   * was the one that did it.
+   *
+   * The update is conditional on `consumed_at` still being empty
+   * (design.md: 「`consumed_at` を条件つき更新で立てた 1 本だけが先へ進む」).
+   * `pairing/submit` carries neither a signature nor a nonce, so two copies of
+   * one submission arriving together is the ordinary case, not the rare one;
+   * an unconditional write would let both copies believe they had won and mint
+   * a relation each. The loser reads the winner's `relationId` back and answers
+   * with the same `PairingResult` instead.
    */
-  consume(id: string, relationId: string, consumedAt: Date): Promise<void>;
+  consumeIfUnconsumed(
+    id: string,
+    relationId: string,
+    consumedAt: Date,
+  ): Promise<boolean>;
+  /**
+   * How many of an installation's codes are still usable -- not consumed, not
+   * past their expiry, and not already at their attempt cap. The cap this
+   * feeds is per installation (protocol design.md: 「installation ごとに、
+   * 発行数と間違えた試行の回数に上限を置く」): every usable code is another
+   * window in which a guess could land.
+   *
+   * `maxAttempts` is a parameter rather than a constant here because the cap
+   * is declared by the caller (`relation/pairing-service.ts`), which is also
+   * the one that enforces it on a submission. A code that has spent its
+   * attempts answers nothing any more, so counting it would hold a slot no one
+   * can use and leave an operator unable to ask for a working code until the
+   * dead ones expire.
+   */
+  countLive(
+    installationId: string,
+    now: Date,
+    maxAttempts: number,
+  ): Promise<number>;
   /**
    * Deletes every order of an installation. Needed by
    * `InstallationStore.remove()` and by nothing else: `pairing_order` ->
@@ -92,12 +122,29 @@ export const createPairingOrderRepository = (
     return row.attempts;
   },
 
-  consume: async (id, relationId, consumedAt) => {
-    await db.pairingOrder.update({
-      where: { id },
+  consumeIfUnconsumed: async (id, relationId, consumedAt) => {
+    // `updateMany` rather than `update`: only it accepts a non-unique `where`,
+    // which is what makes the write conditional on `consumedAt` still being
+    // null, and it answers with the number of rows it actually changed.
+    const result = await db.pairingOrder.updateMany({
+      where: { id, consumedAt: null },
       data: { relationId, consumedAt },
     });
+    return result.count === 1;
   },
+
+  countLive: async (installationId, now, maxAttempts) =>
+    db.pairingOrder.count({
+      where: {
+        installationId,
+        consumedAt: null,
+        expiresAt: { gt: now },
+        // `lt`, not `lte`: a submission is refused once the count PAST the
+        // increment exceeds the cap, so a code with exactly `maxAttempts`
+        // spent is already dead.
+        attempts: { lt: maxAttempts },
+      },
+    }),
 
   deleteByInstallation: async (installationId) => {
     const result = await db.pairingOrder.deleteMany({

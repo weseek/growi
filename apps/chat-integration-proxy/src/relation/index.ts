@@ -28,6 +28,18 @@ export {
   GrowiRequestTimeoutError,
 } from './growi-uri-resolver.js';
 export type {
+  PairingService,
+  PairingServiceDeps,
+  SendChallenge,
+} from './pairing-service.js';
+export {
+  createPairingService,
+  MAX_LIVE_PAIRING_ORDERS,
+  MAX_SUBMISSION_ATTEMPTS,
+  PairingOrderLimitError,
+  REGISTRATION_CODE_TTL_MS,
+} from './pairing-service.js';
+export type {
   RelationKeyService,
   RelationKeyServiceDeps,
 } from './relation-key-service.js';

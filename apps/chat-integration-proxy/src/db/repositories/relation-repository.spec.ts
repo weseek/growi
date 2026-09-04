@@ -4,8 +4,12 @@
 // layers to the right read.
 import { mockDeep } from 'vitest-mock-extended';
 
+import { Prisma } from '../../generated/prisma/client.js';
 import type { PrismaClient } from '../prisma-client.js';
-import { createRelationRepository } from './relation-repository.js';
+import {
+  createRelationRepository,
+  RelationAlreadyExistsError,
+} from './relation-repository.js';
 
 const row = (overrides: Partial<Record<string, unknown>> = {}) => ({
   id: 'relation-1',
@@ -107,5 +111,77 @@ describe('relationRepository (Requirement 8.1)', () => {
       settingsVersion: 0,
     });
     expect(created.relationId).toBe('relation-1');
+  });
+
+  it('reports the unique-constraint violation as RelationAlreadyExistsError (Requirement 8.5)', async () => {
+    // The `(installation_id, growi_uri)` constraint is the half of the
+    // double-pairing defence that survives a race: two submissions may both
+    // look first, both find nothing, and both try to create. The loser has to
+    // come back as something `PairingService` can answer `already-paired` to,
+    // and only this repository may see the Prisma error -- `src/generated/**`
+    // is importable from `db/` alone (`architecture.spec.ts` guard 3).
+    const prisma = mockDeep<PrismaClient>();
+    prisma.relation.create.mockRejectedValue(
+      new Prisma.PrismaClientKnownRequestError(
+        'Unique constraint failed on the fields: (`installation_id`,`growi_uri`)',
+        {
+          code: 'P2002',
+          clientVersion: 'test',
+          meta: { target: ['installation_id', 'growi_uri'] },
+        },
+      ),
+    );
+    const repository = createRelationRepository(prisma);
+
+    const failure = await repository
+      .create({
+        installationId: 'installation-1',
+        growiUri: 'https://wiki.example.com',
+        growiLabel: 'Wiki',
+        searchWeight: 1,
+        settingsVersion: 0,
+      })
+      .then(
+        () => null,
+        (error: unknown) => error,
+      );
+
+    expect(failure).toBeInstanceOf(RelationAlreadyExistsError);
+    // Which pairing collided is carried through, so the caller can name it
+    // without re-reading the row.
+    expect(failure).toMatchObject({
+      installationId: 'installation-1',
+      growiUri: 'https://wiki.example.com',
+    });
+  });
+
+  it('lets any other failure through untranslated', async () => {
+    // The translation must be a decision about the CODE, not a blanket
+    // catch: reporting a dropped connection or a constraint on some other
+    // column as `already-paired` would answer a submission that never paired
+    // with the result of one that did.
+    const prisma = mockDeep<PrismaClient>();
+    const newRelation = {
+      installationId: 'installation-1',
+      growiUri: 'https://wiki.example.com',
+      growiLabel: 'Wiki',
+      searchWeight: 1,
+      settingsVersion: 0,
+    };
+
+    const otherPrismaError = new Prisma.PrismaClientKnownRequestError(
+      'Foreign key constraint failed on the field: `installation_id`',
+      { code: 'P2003', clientVersion: 'test' },
+    );
+    prisma.relation.create.mockRejectedValue(otherPrismaError);
+    await expect(
+      createRelationRepository(prisma).create(newRelation),
+    ).rejects.toBe(otherPrismaError);
+
+    const notPrisma = new Error('connection lost');
+    prisma.relation.create.mockRejectedValue(notPrisma);
+    await expect(
+      createRelationRepository(prisma).create(newRelation),
+    ).rejects.toBe(notPrisma);
   });
 });

@@ -21,10 +21,20 @@
 // the `KeyObject` that `sign()` takes, which callers hand on without ever
 // unwrapping (Requirement 9.6).
 
-import { generateKeyPairSync, type KeyObject, randomUUID } from 'node:crypto';
+import {
+  createPublicKey,
+  generateKeyPairSync,
+  type KeyObject,
+  randomUUID,
+} from 'node:crypto';
+import type { PublicKeyRegistration } from '@growi/chat';
 import { type KeyRef, SIGNATURE_ALGORITHM } from '@growi/chat/server';
 
-import { createOwnKeyRepository, type DbClient } from '../db/index.js';
+import {
+  createOwnKeyRepository,
+  type DbClient,
+  type OwnKeyRecord,
+} from '../db/index.js';
 import type { SecretCipher } from '../types/index.js';
 
 export interface RelationKeyService {
@@ -42,6 +52,16 @@ export interface RelationKeyService {
   signerFor(
     relationId: string,
   ): Promise<{ readonly key: KeyRef; readonly privateKey: KeyObject }>;
+  /**
+   * The relation's current key, in the shape the peer registers it in.
+   *
+   * Needed because `own_key` stores the private key alone: the public half is
+   * derived, never a column. `PairingService` uses this to answer a REPEATED
+   * pairing submission with the same `PairingResult` the first one got --
+   * that result carries this proxy's public key, and re-minting a key to
+   * answer would hand the peer a key it is not holding.
+   */
+  publicKeyFor(relationId: string): Promise<PublicKeyRegistration>;
 }
 
 export interface RelationKeyServiceDeps {
@@ -66,6 +86,55 @@ export const createRelationKeyService = (
   const generateKeyId = deps.generateKeyId ?? (() => randomUUID());
   const now = deps.now ?? (() => new Date());
 
+  /**
+   * The relation's one usable key, with both the row (for `validFrom`) and the
+   * means to sign. Shared by `signerFor` and `publicKeyFor` so the two can
+   * never disagree about WHICH key is current.
+   */
+  const currentKey = async (
+    relationId: string,
+  ): Promise<{
+    readonly record: OwnKeyRecord;
+    readonly signer: { readonly key: KeyRef; readonly privateKey: KeyObject };
+  }> => {
+    const keys = await ownKeys.listKeys(relationId);
+    // Only `revokedAt` is read. `validFrom` is deliberately not compared
+    // against the clock: nothing writes a future-dated key, and adding the
+    // comparison would put a second, untested rule in front of signing.
+    const valid = keys.filter((key) => key.revokedAt == null);
+
+    if (valid.length === 0) {
+      throw new Error(
+        `No valid signing key for relation ${relationId}. A relation is paired with a key or not at all, so this means the key was revoked or deleted without the relation being removed.`,
+      );
+    }
+    if (valid.length > 1) {
+      // **Task 6.2 must replace this rule.** Rotation's first step writes
+      // the new key while the old one is still valid, on purpose
+      // (design.md: 「この時点で古い鍵も有効なまま」), and the old key is the
+      // one that signs until every GROWI has accepted the new one. Until
+      // that policy exists, picking either key here would sign with one the
+      // peer may not hold -- so this refuses instead.
+      const keyIds = valid.map((key) => key.keyId).join(', ');
+      throw new Error(
+        `Relation ${relationId} has more than one valid signing key (${keyIds}). Choosing between them is rotation policy, which this proxy does not implement yet.`,
+      );
+    }
+
+    const signer = await ownKeys.loadSigner({
+      relationId,
+      keyId: valid[0].keyId,
+    });
+    if (signer == null) {
+      // Distinct from the empty case above: the listing saw this row, so it
+      // was deleted in between rather than never having existed.
+      throw new Error(
+        `Signing key ${valid[0].keyId} of relation ${relationId} vanished between listing and load.`,
+      );
+    }
+    return { record: valid[0], signer };
+  };
+
   return {
     issue: async (relationId) => {
       const { publicKey, privateKey } =
@@ -86,43 +155,19 @@ export const createRelationKeyService = (
       return { keyId, publicKeyJwk: publicKey.export({ format: 'jwk' }) };
     },
 
-    signerFor: async (relationId) => {
-      const keys = await ownKeys.listKeys(relationId);
-      // Only `revokedAt` is read. `validFrom` is deliberately not compared
-      // against the clock: nothing writes a future-dated key, and adding the
-      // comparison would put a second, untested rule in front of signing.
-      const valid = keys.filter((key) => key.revokedAt == null);
-
-      if (valid.length === 0) {
-        throw new Error(
-          `No valid signing key for relation ${relationId}. A relation is paired with a key or not at all, so this means the key was revoked or deleted without the relation being removed.`,
-        );
-      }
-      if (valid.length > 1) {
-        // **Task 6.2 must replace this rule.** Rotation's first step writes
-        // the new key while the old one is still valid, on purpose
-        // (design.md: 「この時点で古い鍵も有効なまま」), and the old key is the
-        // one that signs until every GROWI has accepted the new one. Until
-        // that policy exists, picking either key here would sign with one the
-        // peer may not hold -- so this refuses instead.
-        const keyIds = valid.map((key) => key.keyId).join(', ');
-        throw new Error(
-          `Relation ${relationId} has more than one valid signing key (${keyIds}). Choosing between them is rotation policy, which this proxy does not implement yet.`,
-        );
-      }
-
-      const signer = await ownKeys.loadSigner({
-        relationId,
-        keyId: valid[0].keyId,
-      });
-      if (signer == null) {
-        // Distinct from the empty case above: the listing saw this row, so it
-        // was deleted in between rather than never having existed.
-        throw new Error(
-          `Signing key ${valid[0].keyId} of relation ${relationId} vanished between listing and load.`,
-        );
-      }
-      return signer;
+    publicKeyFor: async (relationId) => {
+      const { record, signer } = await currentKey(relationId);
+      return {
+        keyId: signer.key.keyId,
+        // Derived from the private key rather than stored: `own_key` has no
+        // public column, and deriving cannot drift from what actually signs.
+        publicKeyJwk: createPublicKey(signer.privateKey).export({
+          format: 'jwk',
+        }),
+        validFrom: record.validFrom.toISOString(),
+      };
     },
+
+    signerFor: async (relationId) => (await currentKey(relationId)).signer,
   };
 };

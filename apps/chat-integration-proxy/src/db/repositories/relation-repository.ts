@@ -11,8 +11,33 @@
 // sequential value would leak how many relations exist and let one be guessed
 // from another (design.md's Data Models note on this column).
 
+import { Prisma } from '../../generated/prisma/client.js';
 import type { Relation } from '../../types/index.js';
 import type { DbClient } from '../prisma-client.js';
+
+/**
+ * The `(installation_id, growi_uri)` unique constraint, reported as something
+ * a caller outside `db/` can act on.
+ *
+ * It has to be translated here rather than at the call site: Prisma reports a
+ * constraint violation as `PrismaClientKnownRequestError` with code `P2002`,
+ * and that type lives under `src/generated/**`, which only `db/` may import
+ * (`architecture.spec.ts` guard 3). Without this, `PairingService` could only
+ * recognise the race by string-matching an opaque error.
+ */
+export class RelationAlreadyExistsError extends Error {
+  constructor(
+    readonly installationId: string,
+    readonly growiUri: string,
+  ) {
+    super(`${growiUri} is already paired with installation ${installationId}.`);
+    this.name = 'RelationAlreadyExistsError';
+  }
+}
+
+const isUniqueViolation = (error: unknown): boolean =>
+  error instanceof Prisma.PrismaClientKnownRequestError &&
+  error.code === 'P2002';
 
 /** The columns a caller supplies; `id` and `createdAt` come from the database. */
 export interface NewRelation {
@@ -25,10 +50,12 @@ export interface NewRelation {
 
 export interface RelationRepository {
   /**
-   * Fails when the same GROWI is already paired with this installation --
-   * `(installation_id, growi_uri)` is unique, which is what makes a second
-   * pairing attempt answer `already-paired` (Requirement 8.5) instead of
-   * silently creating a duplicate.
+   * Throws {@link RelationAlreadyExistsError} when the same GROWI is already
+   * paired with this installation -- `(installation_id, growi_uri)` is unique,
+   * which is what makes a second pairing attempt answer `already-paired`
+   * (Requirement 8.5) instead of silently creating a duplicate. A caller that
+   * looked first still needs this: the constraint is what settles two
+   * submissions that both looked and both found nothing.
    */
   create(relation: NewRelation): Promise<Relation>;
   findById(relationId: string): Promise<Relation | null>;
@@ -66,8 +93,19 @@ const toRelation = (row: RelationRow): Relation => ({
 });
 
 export const createRelationRepository = (db: DbClient): RelationRepository => ({
-  create: async (relation) =>
-    toRelation(await db.relation.create({ data: { ...relation } })),
+  create: async (relation) => {
+    try {
+      return toRelation(await db.relation.create({ data: { ...relation } }));
+    } catch (error) {
+      if (isUniqueViolation(error)) {
+        throw new RelationAlreadyExistsError(
+          relation.installationId,
+          relation.growiUri,
+        );
+      }
+      throw error;
+    }
+  },
 
   findById: async (relationId) => {
     const row = await db.relation.findUnique({ where: { id: relationId } });
