@@ -125,7 +125,7 @@
   - _Depends: 6.1_
   - _Boundary: Comments_
 
-- [ ] 6.3 `PageView`から`inlineComments`をpropsで渡し、旧`InlineCommentList`の直接描画をやめる
+- [x] 6.3 `PageView`から`inlineComments`をpropsで渡し、旧`InlineCommentList`の直接描画をやめる
   - `PageView.tsx`の既存の`useSWRxInlineComments(isSharedPageView ? null : page._id)`呼び出しはそのまま維持し（新しい取得を増やさない）、その結果を`<Comments inlineComments={inlineComments} .../>`として渡す。`<InlineCommentList>`を`<Comments>`の兄弟として直接描画している現在の配線を削除する
   - `ShareLinkPageView.tsx`は`inlineComments`を渡さない（既存のまま）
   - `apps/app/src/features/inline-comment/client/components/InlineCommentList/`ディレクトリを削除する（中身は5.2/5.3で`InlineCommentItem/`へ移設済み）
@@ -173,3 +173,5 @@
 - 2.2: `InlineCommentForm.tsx` の引用要素は design.md のJSX断片どおりCSSモジュールのクラスのみにはせず、素の `inline-comment-form-quote` クラスも残した（`playwright/20-basic-features/inline-comment.spec.ts:124,693` がこのクラス名でロケートしているため。CSSモジュールのクラス名はビルド時ハッシュ化されるので、断片どおりにすると既存のe2eが壊れる。対応するCSS規則は無いので実質テスト用の目印のみ）。
 - 2.2 レビュー時の申し送り: 決定5（エディタのツールバー・行番号余白の非表示）の見た目をブラウザで確認する予定がタスク7.x のどこにも無い。7.1 のE2Eアサーションに含めるか、フィーチャ全体のGO判定前に一度ブラウザで確認すること。
 - 2.2 レビュー時の申し送り（別issue、スペック外・対応不要）: `MentionPickerButton.tsx` の "No candidates" と `InlineCommentForm.tsx` のエラーメッセージが英語直書きのまま（Requirement 11.6は未達だが、このタスクの指示にも新規キー一覧にも無く、本amendの対象外）。
+
+- 6.3のREJECTED所見の修正: 6.3で`InlineCommentList.tsx`本体を削除したところ、そのコンポーネントが出していた`data-testid="inline-comment-list"`（クライアント専用バンドルが実際にマウントし終えたことを示す唯一のDOM上の目印で、`playwright/20-basic-features/inline-comment.spec.ts`が6箇所でこれを待ってから`page.evaluate`ベースの選択操作ヘルパー — 組み込みのリトライを持たない — を呼んでいた）も一緒に失われ、6箇所すべてが「そのtestId自体が存在しない」で失敗する状態になっていた。対応として、待ち受け先を`InlineCommentList`ではなく`SelectionCapture`（実際にe2eが待ちたかった対象そのもの）に付け替えた：`SelectionCapture.tsx`のidleステージ（何も選択されておらず、フォームも開いていない状態）が`null`ではなく`<span data-testid="inline-comment-ready" hidden />`という、レイアウトにもアクセシビリティツリーにも影響しない常時マウントの目印を返すようにした（`selecting`/`composing`側の分岐はそのまま・追加のみ）。`inline-comment.spec.ts`側は6箇所とも`getByTestId('inline-comment-list')`→`getByTestId('inline-comment-ready')`に置き換え、説明コメントも「`InlineCommentList`が別途マウントする」という記述から「`SelectionCapture`自身がidleで目印を出す」という記述に更新した。7.3（e2eの回帰確認）はこの`inline-comment-ready`が現行の待ち受け先であることを前提にすること。

@@ -111,9 +111,16 @@ export const SelectionCapture = (
     window.getSelection()?.removeAllRanges();
   }, []);
 
-  // Requirement 1.2 / 1.4: nothing selected and nothing being composed.
+  // Requirement 1.2 / 1.4: nothing selected and nothing being composed. Still
+  // render an invisible marker rather than `null`: it is the only DOM trace
+  // that this client-only bundle (SelectionCapture + friends, mounted via
+  // `next/dynamic({ ssr: false })` in PageView.tsx) has actually mounted, and
+  // Playwright specs wait on it before firing a plain `page.evaluate`-based
+  // text-selection helper that has no built-in retry (see
+  // playwright/20-basic-features/inline-comment.spec.ts). `hidden` keeps it
+  // out of layout and the accessibility tree.
   if (state.stage === 'idle') {
-    return null;
+    return <span data-testid="inline-comment-ready" hidden />;
   }
 
   if (state.stage === 'selecting') {

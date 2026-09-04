@@ -1,27 +1,33 @@
 /**
- * Wiring test for task 5.2 (inline-comment): PageView.tsx connects the
- * container ref RevisionRenderer.tsx forwards (task 5.1) to
+ * Wiring test for task 6.3 (inline-comment-visual-consistency, amending
+ * inline-comment's task 5.2): PageView.tsx connects the container ref
+ * RevisionRenderer.tsx forwards (task 5.1) to
  * SelectionCapture/InlineCommentForm (4.2), the AnchorResolver hook +
- * InlineCommentHighlight (4.3), and InlineCommentList (4.4), alongside the
- * existing page-footer `Comments` component.
+ * InlineCommentHighlight (4.3), alongside the existing page-footer
+ * `Comments` component, which now receives the fetched inline comments
+ * bundled with `resolve`/`createReply` as its `inlineComments` prop
+ * (design.md 決定3 / tasks.md 6.1's Implementation Notes) instead of a
+ * separately-rendered `InlineCommentList`.
  *
  * This test does not re-verify any of those components' own internal
  * behavior (already covered by their own specs) — it only verifies that
  * PageView.tsx wires them together correctly:
- *   - normal page view: all three UI pieces mount, sharing one container
- *     ref with `useAnchorResolver`, and the anchors passed to
- *     `useAnchorResolver` come from `useSWRxInlineComments(pageId).data`.
- *   - share-link view (`useShareLinkId()` non-null): none of them mount and
- *     `useSWRxInlineComments` is called with `null` (no inline-comment
- *     network request at all) — the client-side defense-in-depth half of
- *     Requirement 6.2. Note PageView.tsx is, today, only ever rendered by
- *     the normal page route (`pages/[[...path]]/index.page.tsx`); the
- *     share-link route renders the separate `ShareLinkPageView` component
- *     instead, which never imports any inline-comment piece. So this
- *     scenario is a guard against a *future* reuse of PageView.tsx under a
- *     share-link context, not a currently-reachable one — see PageView.tsx's
- *     own comment at the `useShareLinkId()` call site for the full
- *     reasoning, and CONCERNS in the task report.
+ *   - normal page view: SelectionCapture/InlineCommentHighlight mount,
+ *     sharing one container ref with `useAnchorResolver`, and `Comments`
+ *     receives `inlineComments={{ comments, resolve, createReply }}` built
+ *     from `useSWRxInlineComments(pageId)`'s own return value.
+ *   - share-link view (`useShareLinkId()` non-null): none of the
+ *     inline-comment UI mounts, `useSWRxInlineComments` is called with
+ *     `null` (no inline-comment network request at all) — the client-side
+ *     defense-in-depth half of Requirement 6.2 — and `Comments` receives no
+ *     `inlineComments` prop at all. Note PageView.tsx is, today, only ever
+ *     rendered by the normal page route (`pages/[[...path]]/index.page.tsx`);
+ *     the share-link route renders the separate `ShareLinkPageView`
+ *     component instead, which never imports any inline-comment piece. So
+ *     this scenario is a guard against a *future* reuse of PageView.tsx
+ *     under a share-link context, not a currently-reachable one — see
+ *     PageView.tsx's own comment at the `useShareLinkId()` call site for the
+ *     full reasoning, and CONCERNS in the task report.
  */
 
 import type { ReactNode } from 'react';
@@ -77,9 +83,18 @@ vi.mock('./PageContentRenderer', () => ({
   PageContentRenderer: () => <div data-testid="page-content-renderer" />,
 }));
 
-// ---- Comments: the EXISTING page-footer comment thread. Must keep
-// rendering unchanged, side-by-side with InlineCommentList. ----
-type CommentsProps = { pageId: string };
+// ---- Comments: the EXISTING page-footer comment thread. It now receives
+// the fetched inline comments bundled with resolve/createReply as its
+// `inlineComments` prop (task 6.3) instead of InlineCommentList being
+// rendered as a sibling. ----
+type CommentsProps = {
+  pageId: string;
+  inlineComments?: {
+    comments: InlineCommentWithReplies[];
+    resolve: (id: string, resolved: boolean) => Promise<unknown>;
+    createReply: (parentId: string, comment: string) => Promise<unknown>;
+  };
+};
 const commentsSpy = vi.fn<(props: CommentsProps) => void>();
 vi.mock('~/client/components/Comments', () => ({
   Comments: (props: CommentsProps) => {
@@ -128,18 +143,6 @@ vi.mock(
     InlineCommentHighlight: (props: InlineCommentHighlightProps) => {
       inlineCommentHighlightSpy(props);
       return <div data-testid="inline-comment-highlight" />;
-    },
-  }),
-);
-
-type InlineCommentListProps = { pageId: string };
-const inlineCommentListSpy = vi.fn<(props: InlineCommentListProps) => void>();
-vi.mock(
-  '~/features/inline-comment/client/components/InlineCommentList/InlineCommentList',
-  () => ({
-    InlineCommentList: (props: InlineCommentListProps) => {
-      inlineCommentListSpy(props);
-      return <div data-testid="inline-comment-list" />;
     },
   }),
 );
@@ -212,6 +215,7 @@ const buildInlineComment = (
   id: 'inline-comment-1',
   pageId: PAGE_ID,
   creatorId: 'user-1',
+  creator: null,
   comment: 'a comment',
   anchorOriginRevisionId: REVISION_ID,
   anchor: buildAnchor(),
@@ -252,15 +256,21 @@ describe('PageView', () => {
     mockedUseAnchorResolver.mockReturnValue(new Map<string, ResolvedRange>());
     mockedUseSWRxInlineComments.mockReturnValue({
       data: [],
+      resolve: vi.fn(),
+      createReply: vi.fn(),
     } as unknown as ReturnType<typeof useSWRxInlineComments>);
     mockedUseShareLinkId.mockReturnValue(undefined);
   });
 
   describe('normal page view (no share link)', () => {
-    it('mounts SelectionCapture, InlineCommentHighlight and InlineCommentList alongside the existing Comments, sharing one container ref with useAnchorResolver', async () => {
+    it('mounts SelectionCapture and InlineCommentHighlight, and passes the fetched inline comments bundled with resolve/createReply to the existing Comments, sharing one container ref with useAnchorResolver', async () => {
       const inlineComments = [buildInlineComment()];
+      const resolveMock = vi.fn();
+      const createReplyMock = vi.fn();
       mockedUseSWRxInlineComments.mockReturnValue({
         data: inlineComments,
+        resolve: resolveMock,
+        createReply: createReplyMock,
       } as unknown as ReturnType<typeof useSWRxInlineComments>);
       mockedUseCurrentPageData.mockReturnValue(buildPage());
 
@@ -270,7 +280,6 @@ describe('PageView', () => {
 
       await screen.findByTestId('selection-capture');
       await screen.findByTestId('inline-comment-highlight');
-      await screen.findByTestId('inline-comment-list');
       await screen.findByTestId('comments');
 
       expect(selectionCaptureSpy).toHaveBeenCalledWith(
@@ -279,12 +288,26 @@ describe('PageView', () => {
           anchorOriginRevisionId: REVISION_ID,
         }),
       );
-      expect(inlineCommentListSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ pageId: PAGE_ID }),
-      );
       expect(commentsSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ pageId: PAGE_ID }),
+        expect.objectContaining({
+          pageId: PAGE_ID,
+          inlineComments: expect.objectContaining({
+            comments: inlineComments,
+            resolve: resolveMock,
+            createReply: expect.any(Function),
+          }),
+        }),
       );
+
+      // createReply is adapted from the store's (parentId, { comment })
+      // request-body shape to Comments'/PageComment's (parentId, comment)
+      // shape (task 6.1's Implementation Notes) -- verify the delegation.
+      const passedInlineComments =
+        commentsSpy.mock.calls[0]?.[0]?.inlineComments;
+      await passedInlineComments?.createReply('parent-1', 'a reply');
+      expect(createReplyMock).toHaveBeenCalledWith('parent-1', {
+        comment: 'a reply',
+      });
 
       // The same container ref must reach SelectionCapture, InlineCommentHighlight,
       // AND useAnchorResolver — three components reading/writing one DOM subtree,
@@ -342,7 +365,7 @@ describe('PageView', () => {
   });
 
   describe('share-link view (useShareLinkId() reports a share link)', () => {
-    it('mounts none of the inline-comment UI and makes no inline-comment request', () => {
+    it('mounts none of the inline-comment UI, makes no inline-comment request, and passes no inlineComments prop to Comments', () => {
       mockedUseShareLinkId.mockReturnValue('a-share-link-id');
       mockedUseCurrentPageData.mockReturnValue(buildPage());
 
@@ -354,15 +377,18 @@ describe('PageView', () => {
       expect(
         screen.queryByTestId('inline-comment-highlight'),
       ).not.toBeInTheDocument();
-      expect(
-        screen.queryByTestId('inline-comment-list'),
-      ).not.toBeInTheDocument();
 
       // Requirement 6.2's client-side defense-in-depth half: no inline-comment
       // list request is even made when this component is viewed via a share link.
       expect(mockedUseSWRxInlineComments).toHaveBeenCalledWith(null);
       // ...and never with the actual page id, on any render.
       expect(mockedUseSWRxInlineComments).not.toHaveBeenCalledWith(PAGE_ID);
+
+      // Requirement 13.8: no inlineComments prop reaches Comments at all in
+      // the share-link view (not even an empty bundle), since Comments is
+      // also reachable from ShareLinkPageView and must never render
+      // inline-comment content for an unauthenticated share-link viewer.
+      expect(screen.queryByTestId('comments')).not.toBeInTheDocument();
     });
   });
 });

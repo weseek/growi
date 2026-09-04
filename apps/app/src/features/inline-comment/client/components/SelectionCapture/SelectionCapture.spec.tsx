@@ -195,6 +195,19 @@ describe('SelectionCapture', () => {
     expect(screen.queryByTestId('inline-comment-form')).not.toBeInTheDocument();
   });
 
+  // Task 6.3 fix: the idle stage still renders an invisible marker, so
+  // Playwright can detect that this client-only bundle has mounted before it
+  // is safe to fire the raw-selection helper (no other observable DOM change
+  // — this is purely additive to the `null` branch it replaces).
+  it('renders an invisible readiness marker while idle', () => {
+    renderCapture();
+
+    const marker = screen.getByTestId('inline-comment-ready');
+    expect(marker).toBeInTheDocument();
+    expect(marker).toHaveAttribute('hidden');
+    expect(marker).toBeEmptyDOMElement();
+  });
+
   // Requirement 1.1: a non-empty selection shows the lightweight create action
   // — not the full form (that is Requirement 2.1's job).
   it('shows only the action button once a non-empty selection exists', () => {
@@ -207,6 +220,11 @@ describe('SelectionCapture', () => {
     expect(screen.getByTestId('selection-action-button')).toBeInTheDocument();
     expect(screen.queryByTestId('inline-comment-form')).not.toBeInTheDocument();
     expect(capturedReference(0).getBoundingClientRect()).toEqual(LIVE_RECT);
+    // The idle-only marker is not rendered once selecting — that stage
+    // already has an observable DOM footprint of its own.
+    expect(
+      screen.queryByTestId('inline-comment-ready'),
+    ).not.toBeInTheDocument();
   });
 
   // Requirement 1.3: the action button follows a changing selection.
@@ -260,6 +278,10 @@ describe('SelectionCapture', () => {
     expect(screen.getByTestId('form-quote')).toHaveTextContent('hello world');
     expect(
       screen.queryByTestId('selection-action-button'),
+    ).not.toBeInTheDocument();
+    // The idle-only marker is not rendered once composing.
+    expect(
+      screen.queryByTestId('inline-comment-ready'),
     ).not.toBeInTheDocument();
   });
 

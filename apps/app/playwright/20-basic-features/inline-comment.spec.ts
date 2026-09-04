@@ -102,13 +102,14 @@ test.describe('Inline comment', () => {
     await expect(page.locator('.wiki').first()).toContainText(targetSentence);
 
     // `.wiki` being visible only proves the SSR'd markdown is on the page —
-    // SelectionCapture and InlineCommentList mount separately, via
-    // `next/dynamic({ ssr: false })` (PageView.tsx), as their own
-    // client-only chunk. Waiting for the list to attach is a simple,
-    // one-time readiness signal that the inline-comment client bundle has
-    // mounted before the one-shot `selectTextInPageBody` (a plain
-    // `page.evaluate`, not a Playwright action with built-in retry) fires.
-    await expect(page.getByTestId('inline-comment-list')).toBeAttached();
+    // SelectionCapture mounts separately, via `next/dynamic({ ssr: false })`
+    // (PageView.tsx), as its own client-only chunk. It renders an invisible
+    // `inline-comment-ready` marker once it settles into its idle stage, and
+    // waiting for that marker to attach is a simple, one-time readiness
+    // signal that the inline-comment client bundle has mounted before the
+    // one-shot `selectTextInPageBody` (a plain `page.evaluate`, not a
+    // Playwright action with built-in retry) fires.
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
 
     await selectTextInPageBody(page, targetSentence);
 
@@ -238,7 +239,7 @@ test.describe('Inline comment - mention picker and multi-line submission', () =>
     page,
   }, testInfo) => {
     await page.goto(mentionPagePath(testInfo.retry));
-    await expect(page.getByTestId('inline-comment-list')).toBeAttached();
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
 
     await selectTextInPageBody(page, targetSentence);
     await page.getByTestId('selection-action-button').click();
@@ -294,7 +295,7 @@ test.describe('Inline comment - mention picker and multi-line submission', () =>
     page,
   }, testInfo) => {
     await page.goto(mentionPagePath(testInfo.retry));
-    await expect(page.getByTestId('inline-comment-list')).toBeAttached();
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
 
     await selectTextInPageBody(page, targetSentence);
     await page.getByTestId('selection-action-button').click();
@@ -417,7 +418,7 @@ test.describe('Inline comment - action button lifecycle before the form opens', 
   }, testInfo) => {
     await page.goto(actionButtonPagePath(testInfo.retry));
     await expect(page.locator('.wiki').first()).toContainText(firstSentence);
-    await expect(page.getByTestId('inline-comment-list')).toBeAttached();
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
 
     const actionButton = page.getByTestId('selection-action-button');
 
@@ -526,7 +527,7 @@ test.describe('Inline comment - best-effort fallback after the anchored text is 
 
     await page.goto(createdPage.path);
     await expect(page.locator('.wiki').first()).toContainText(targetSentence);
-    await expect(page.getByTestId('inline-comment-list')).toBeAttached();
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
 
     await selectTextInPageBody(page, targetSentence);
 
@@ -682,7 +683,7 @@ test.describe('Inline comment - highlight correctness on a page with an async ls
       page.locator('.wiki .lsx').getByRole('link', { name: childBasename }),
     ).toBeVisible();
 
-    await expect(page.getByTestId('inline-comment-list')).toBeAttached();
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
 
     await selectTextInPageBody(page, childBasename);
 

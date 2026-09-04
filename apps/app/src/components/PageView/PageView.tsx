@@ -75,13 +75,6 @@ const InlineCommentHighlight = dynamic(
     ).then((mod) => mod.InlineCommentHighlight),
   { ssr: false },
 );
-const InlineCommentList = dynamic(
-  () =>
-    import(
-      '~/features/inline-comment/client/components/InlineCommentList/InlineCommentList'
-    ).then((mod) => mod.InlineCommentList),
-  { ssr: false },
-);
 const UsersHomepageFooter = dynamic(
   () =>
     import('~/client/components/UsersHomepageFooter').then(
@@ -176,9 +169,11 @@ const PageViewComponent = (props: Props): JSX.Element => {
   // routes happening to stay separate.
   const shareLinkId = useShareLinkId();
   const isSharedPageView = shareLinkId != null;
-  const { data: inlineComments } = useSWRxInlineComments(
-    isSharedPageView ? null : (page?._id ?? null),
-  );
+  const {
+    data: inlineComments,
+    resolve: resolveInlineComment,
+    createReply: createInlineCommentReply,
+  } = useSWRxInlineComments(isSharedPageView ? null : (page?._id ?? null));
   const inlineCommentAnchors = useMemo(
     () =>
       (inlineComments ?? []).map((comment) => ({
@@ -190,6 +185,30 @@ const PageViewComponent = (props: Props): JSX.Element => {
   const resolvedInlineCommentRanges = useAnchorResolver(
     pageBodyContainerRef,
     inlineCommentAnchors,
+  );
+  // Bundled with resolve/createReply from the SAME useSWRxInlineComments()
+  // call as the data (design.md 決定3 / tasks.md 6.1's Implementation Notes)
+  // -- InlineCommentItem needs those callbacks bound to this exact fetch, so
+  // that no second fetch site is introduced (Requirement 13.8: the
+  // share-link view must never fetch inline comments at all). Omitted
+  // entirely (not an empty bundle) while data hasn't arrived yet or the
+  // fetch is disabled, matching Comments'/PageComment's own "omit when
+  // absent" default.
+  const inlineCommentsForComments = useMemo(
+    () =>
+      inlineComments == null
+        ? undefined
+        : {
+            comments: inlineComments,
+            resolve: resolveInlineComment,
+            // Comments'/PageComment's inlineComments.createReply prop takes
+            // the reply text directly; the store's createReply takes the
+            // POST body ({ comment }). Adapt the shape here rather than in
+            // Comments.tsx/PageComment.tsx (outside this task's boundary).
+            createReply: (parentId: string, comment: string) =>
+              createInlineCommentReply(parentId, { comment }),
+          },
+    [inlineComments, resolveInlineComment, createInlineCommentReply],
   );
 
   const specialContents = useMemo(() => {
@@ -269,11 +288,11 @@ const PageViewComponent = (props: Props): JSX.Element => {
               />
 
               <div id="comments-container" ref={commentsContainerRef}>
-                <InlineCommentList pageId={page._id} />
                 <Comments
                   pageId={page._id}
                   pagePath={pagePath}
                   revision={page.revision}
+                  inlineComments={inlineCommentsForComments}
                 />
               </div>
             </>
@@ -293,6 +312,7 @@ const PageViewComponent = (props: Props): JSX.Element => {
     page,
     resolvedInlineCommentRanges,
     isSharedPageView,
+    inlineCommentsForComments,
   ]);
 
   return (
