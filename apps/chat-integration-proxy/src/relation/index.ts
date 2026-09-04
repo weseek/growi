@@ -3,6 +3,14 @@
 // here, never from the files below.
 
 export type {
+  ExcludedGrowi,
+  GrowiSelector,
+  GrowiSelectorDeps,
+  SelectionOutcome,
+  SelectionRequest,
+} from './growi-selection.js';
+export { createGrowiSelector } from './growi-selection.js';
+export type {
   ConnectResult,
   GrowiHttpRequest,
   GrowiHttpResponse,

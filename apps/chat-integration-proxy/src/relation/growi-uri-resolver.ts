@@ -144,6 +144,16 @@ export interface PinnedRequestParams {
  * certificate identity check wrong there is not visible until a real
  * certificate is presented.
  */
+/**
+ * The base a GROWI's own paths hang off: its URI's `pathname`, always ending
+ * in `/`. Shared with `growi-selection.ts`'s URL matching -- both need a
+ * GROWI served under a prefix (`https://example.com/growi/`) resolved by the
+ * same rule, one to build a request path relative to it, the other to
+ * recognise a posted URL as belonging to it.
+ */
+export const growiBasePathOf = (uri: URL): string =>
+  uri.pathname.endsWith('/') ? uri.pathname : `${uri.pathname}/`;
+
 export const buildPinnedRequestOptions = (
   params: PinnedRequestParams,
 ): RequestOptions => {
@@ -153,9 +163,7 @@ export const buildPinnedRequestOptions = (
   // under a prefix (`https://example.com/growi/`) keeps it. Taking only
   // `pathname`/`search` off the result also means a caller cannot move the
   // exchange to another host by writing a whole URL here.
-  const basePath = uri.pathname.endsWith('/')
-    ? uri.pathname
-    : `${uri.pathname}/`;
+  const basePath = growiBasePathOf(uri);
   const target = new URL(
     request.path.replace(/^\/+/, ''),
     new URL(basePath, uri),
