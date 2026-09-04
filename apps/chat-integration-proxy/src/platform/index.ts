@@ -102,6 +102,17 @@ export interface PlatformFacade {
   ): (request: Request) => Promise<Response>;
   connections(): ConnectionManager;
   locks(): DistributedLock;
+  /**
+   * Gives back everything this facade opened: every chat connection, and the
+   * Postgres state connection this file opened with `state.connect()`.
+   *
+   * Separate from `connections().stopAll()`, which deliberately leaves the
+   * state connected so locks and posting still work after it. Nothing outside
+   * this layer can close the state itself -- it is a Chat SDK value, and the
+   * SDK may only be named here -- so the process's own teardown
+   * (`runtime/server.ts`) reaches it through this method.
+   */
+  shutdown(): Promise<void>;
 }
 
 /**
@@ -394,6 +405,13 @@ export const createPlatformFacade = async (
 
     connections: () => connections,
     locks: () => locks,
+
+    async shutdown() {
+      // Connections first: closing the state underneath an adapter that is
+      // still giving its lock back would leave the lock held until it expires.
+      await connections.stopAll();
+      await state.disconnect();
+    },
   };
 };
 

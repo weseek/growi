@@ -12,6 +12,7 @@ const VALID_KEY = Buffer.alloc(32, 7).toString('base64');
 const minimalEnv = (): NodeJS.ProcessEnv => ({
   SECRET_ENCRYPTION_KEY: VALID_KEY,
   CHAT_SDK_DATABASE_URL: 'postgresql://user:pass@postgres:5432/db',
+  DATABASE_URL: 'postgresql://user:pass@postgres:5432/proxy',
 });
 
 const slackEnv = {
@@ -395,6 +396,124 @@ describe('loadConfig', () => {
           ]),
         }),
       ).toThrow(/BEGIN CERTIFICATE/);
+    });
+  });
+
+  describe(`the app's own storage connection`, () => {
+    it('carries DATABASE_URL, which is what the Prisma client is built from', () => {
+      expect(loadConfig(minimalEnv()).databaseUrl).toBe(
+        'postgresql://user:pass@postgres:5432/proxy',
+      );
+    });
+
+    it('refuses to start without it, naming the variable', () => {
+      const env = minimalEnv();
+      env.DATABASE_URL = undefined;
+
+      expect(() => loadConfig(env)).toThrow(/DATABASE_URL/);
+    });
+  });
+
+  describe('the HTTP listener', () => {
+    it('serves on a default port when none is configured, because the endpoints are always open', () => {
+      expect(loadConfig(minimalEnv()).http.port).toBe(8080);
+    });
+
+    it('takes the configured port', () => {
+      expect(loadConfig({ ...minimalEnv(), PORT: '3210' }).http.port).toBe(
+        3210,
+      );
+    });
+
+    it('refuses a port that is not a usable port number', () => {
+      for (const port of ['0', '-1', '70000', 'http', '80.5']) {
+        expect(() => loadConfig({ ...minimalEnv(), PORT: port })).toThrow(
+          /PORT/,
+        );
+      }
+    });
+
+    it('caps request bodies by default, so an unauthenticated caller cannot choose how much memory to use', () => {
+      expect(loadConfig(minimalEnv()).http.bodyLimitBytes).toBeGreaterThan(0);
+    });
+
+    it('takes a configured cap', () => {
+      expect(
+        loadConfig({ ...minimalEnv(), MAX_REQUEST_BODY_BYTES: '65536' }).http
+          .bodyLimitBytes,
+      ).toBe(65536);
+    });
+
+    it('refuses a cap that is not a positive whole number of bytes', () => {
+      for (const size of ['0', '-1', '1mb', '1.5']) {
+        expect(() =>
+          loadConfig({ ...minimalEnv(), MAX_REQUEST_BODY_BYTES: size }),
+        ).toThrow(/MAX_REQUEST_BODY_BYTES/);
+      }
+    });
+  });
+
+  describe('Mattermost installations declared up front', () => {
+    const declared = [
+      {
+        workspaceId: 'team-1',
+        workspaceName: 'Example Team',
+        baseUrl: 'https://mattermost.internal',
+        botToken: 'bot-token',
+      },
+    ];
+
+    it('is empty when nothing is declared', () => {
+      expect(loadConfig(minimalEnv()).mattermostInstallations).toEqual([]);
+    });
+
+    it('reads every declared installation', () => {
+      expect(
+        loadConfig({
+          ...minimalEnv(),
+          MATTERMOST_INSTALLATIONS: JSON.stringify(declared),
+        }).mattermostInstallations,
+      ).toEqual(declared);
+    });
+
+    it('refuses a declaration that is not readable as JSON', () => {
+      expect(() =>
+        loadConfig({ ...minimalEnv(), MATTERMOST_INSTALLATIONS: 'not json' }),
+      ).toThrow(/MATTERMOST_INSTALLATIONS/);
+    });
+
+    it('refuses an entry missing a field the connection cannot be opened without, naming the field', () => {
+      for (const field of [
+        'workspaceId',
+        'workspaceName',
+        'baseUrl',
+        'botToken',
+      ]) {
+        const incomplete = { ...declared[0] };
+        delete (incomplete as Record<string, unknown>)[field];
+
+        expect(() =>
+          loadConfig({
+            ...minimalEnv(),
+            MATTERMOST_INSTALLATIONS: JSON.stringify([incomplete]),
+          }),
+        ).toThrow(new RegExp(field));
+      }
+    });
+
+    it('never repeats a declared bot token in the error', () => {
+      expect(() =>
+        loadConfig({
+          ...minimalEnv(),
+          MATTERMOST_INSTALLATIONS: JSON.stringify([
+            { ...declared[0], baseUrl: undefined },
+          ]),
+        }),
+      ).toThrow(
+        expect.objectContaining({
+          message: expect.not.stringContaining('bot-token'),
+        }),
+      );
     });
   });
 });

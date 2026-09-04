@@ -15,7 +15,8 @@
     "lint": "run-p lint:*",
     "test": "vitest run",
     "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate deploy"
+    "db:migrate": "prisma migrate deploy",
+    "start": "node dist/runtime/server.js"
   },
   "dependencies": {
     "@chat-adapter/discord": "4.38.1",
@@ -23,6 +24,7 @@
     "@chat-adapter/state-pg": "4.38.1",
     "@chat-adapter/teams": "4.38.1",
     "@growi/chat": "workspace:^",
+    "@hono/node-server": "^1.19.14",
     "@prisma/client": "6.19.2",
     "chat": "4.38.1",
     "chat-adapter-mattermost": "1.1.3",

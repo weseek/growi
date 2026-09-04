@@ -1149,6 +1149,9 @@ importers:
       '@growi/chat':
         specifier: workspace:^
         version: link:../../packages/chat
+      '@hono/node-server':
+        specifier: ^1.19.14
+        version: 1.19.14(hono@4.13.5)
       '@prisma/client':
         specifier: 6.19.2
         version: 6.19.2(prisma@6.19.2(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3)
@@ -18709,6 +18712,10 @@ snapshots:
   '@hono/node-server@1.19.14(hono@4.12.23)':
     dependencies:
       hono: 4.12.23
+
+  '@hono/node-server@1.19.14(hono@4.13.5)':
+    dependencies:
+      hono: 4.13.5
 
   '@ibm-cloud/openapi-ruleset-utilities@1.4.0': {}
 

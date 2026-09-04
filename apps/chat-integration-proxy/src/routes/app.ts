@@ -60,13 +60,11 @@ export const createRoutesApp = (
 ): Hono<SignedRequestEnv> => {
   const app = new Hono<SignedRequestEnv>();
 
-  // TODO(runtime, task 9.x): a `bodyLimit` middleware belongs in front of this
-  // whole app. `signatureGuard` reads the body into memory BEFORE the signature
-  // is checked (it has to -- the signature covers the bytes), so an unbounded
-  // body is memory an unauthenticated caller can make this proxy hold. Task
-  // 8.1's hand-off (b) assigns the limit to `runtime/`, where the server is
-  // started, and this note is here so that hand-off is not lost between the two
-  // files.
+  // The body cap is NOT here: it stands in front of this whole app, in
+  // `runtime/server.ts`'s `createProxyApp`. `signatureGuard` reads the body
+  // into memory before the signature can be checked (it has to -- the signature
+  // covers the bytes), so the cap has to run before every endpoint including
+  // the unsigned ones, and its size is configuration this layer cannot see.
 
   // Each module builds its own `signatureGuard` from `SignatureGuardDeps`
   // (Implementation Note 8.2): mounting a ready-made middleware here would make

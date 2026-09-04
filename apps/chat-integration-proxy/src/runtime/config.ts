@@ -38,10 +38,48 @@ export type {
 // Public types
 // ---------------------------------------------------------------------------
 
+/**
+ * One Mattermost installation an operator declared up front.
+ *
+ * Mattermost is the one service whose installation cannot be created by the
+ * two other routes: there is no OAuth callback to complete, and the chat
+ * admin command cannot be typed because the bot is not connected to the
+ * server yet -- the connection is what this declaration provides (design.md's
+ * installation-entry table).
+ */
+export interface MattermostInstallationConfig {
+  readonly workspaceId: string;
+  readonly workspaceName: string;
+  readonly baseUrl: string;
+  readonly botToken: string;
+}
+
+export interface HttpConfig {
+  readonly port: number;
+  /**
+   * The largest request body this proxy reads. Declared HERE and nowhere else
+   * (Implementation Note 8.4): `signatureGuard` reads the whole body before it
+   * can check the signature, and the pairing endpoint carries no signature at
+   * all, so an unauthenticated caller would otherwise choose how much memory
+   * this process holds. A second declaration elsewhere would be a second
+   * number to drift from this one.
+   */
+  readonly bodyLimitBytes: number;
+}
+
 export interface ProxyConfig {
   readonly platformApp: PlatformAppConfig;
   readonly closedNetwork: ClosedNetworkConfig;
   readonly cipher: SecretCipher;
+  /** This app's own Prisma connection -- never the Chat SDK's (see below). */
+  readonly databaseUrl: string;
+  readonly http: HttpConfig;
+  readonly mattermostInstallations: ReadonlyArray<MattermostInstallationConfig>;
+  /**
+   * Only needed when the OAuth callback arrives through a TLS terminator that
+   * rewrites the address the chat service sees -- see `OAuthCallbackDeps.redirectUri`.
+   */
+  readonly oauthRedirectUri?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -373,6 +411,126 @@ const readClosedNetworkConfig = (
 };
 
 // ---------------------------------------------------------------------------
+// HTTP listener
+// ---------------------------------------------------------------------------
+
+/** Gen 1's port, so an operator moving over keeps the address they published. */
+const DEFAULT_PORT = 8080;
+
+/**
+ * 1 MiB. Large enough for every body this proxy is sent -- a notification
+ * carries a page excerpt, a settings push a channel list -- and small enough
+ * that holding one per in-flight request costs nothing worth measuring.
+ */
+const DEFAULT_BODY_LIMIT_BYTES = 1024 * 1024;
+
+/**
+ * A whole number written in full, within bounds. Read by hand rather than with
+ * `Number()`, which answers 0 for an empty string and accepts '80.5' and
+ * '1e3' -- each of which would start the process listening somewhere the
+ * operator did not write.
+ */
+const readWholeNumber = (
+  env: NodeJS.ProcessEnv,
+  name: string,
+  fallback: number,
+  { min, max }: { min: number; max: number },
+): number => {
+  const raw = read(env, name);
+  if (raw == null) return fallback;
+  if (!/^[0-9]+$/.test(raw)) {
+    throw new ConfigurationError(
+      `${name} is ${raw}, which is not a whole number. Write the number in full, in decimal digits.`,
+    );
+  }
+  const value = Number(raw);
+  if (value < min || value > max) {
+    throw new ConfigurationError(
+      `${name} is ${value}, outside the range this value may take (${min}-${max}).`,
+    );
+  }
+  return value;
+};
+
+const readHttpConfig = (env: NodeJS.ProcessEnv): HttpConfig => ({
+  port: readWholeNumber(env, 'PORT', DEFAULT_PORT, { min: 1, max: 65535 }),
+  bodyLimitBytes: readWholeNumber(
+    env,
+    'MAX_REQUEST_BODY_BYTES',
+    DEFAULT_BODY_LIMIT_BYTES,
+    { min: 1, max: Number.MAX_SAFE_INTEGER },
+  ),
+});
+
+// ---------------------------------------------------------------------------
+// Mattermost installations declared up front
+// ---------------------------------------------------------------------------
+
+const MATTERMOST_ENV_NAME = 'MATTERMOST_INSTALLATIONS';
+
+/** Every field, so a reader sees that all four are required. */
+const MATTERMOST_FIELDS = [
+  'workspaceId',
+  'workspaceName',
+  'baseUrl',
+  'botToken',
+] as const;
+
+/**
+ * Read from the environment in the same JSON shape the closed-network
+ * destinations use, rather than from a file of its own: one of the four fields
+ * is a bot token, and every other secret this process holds already arrives
+ * the same way -- a second mechanism would mean a second thing to protect.
+ */
+const readMattermostInstallations = (
+  env: NodeJS.ProcessEnv,
+): ReadonlyArray<MattermostInstallationConfig> => {
+  const rawJson = read(env, MATTERMOST_ENV_NAME);
+  if (rawJson == null) return [];
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(rawJson);
+  } catch (error) {
+    throw new ConfigurationError(
+      `${MATTERMOST_ENV_NAME} is not readable as JSON: ${
+        error instanceof Error ? error.message : String(error)
+      }. Expected a list such as [{workspaceId:team-1,workspaceName:Example,baseUrl:https://mattermost.internal,botToken:...}].`,
+    );
+  }
+  if (!Array.isArray(parsed)) {
+    throw new ConfigurationError(
+      `${MATTERMOST_ENV_NAME} must be a JSON list of installations.`,
+    );
+  }
+
+  return parsed.map((entry, index) => {
+    const fields = entry as Partial<Record<string, unknown>>;
+    if (typeof entry !== 'object' || entry == null) {
+      throw new ConfigurationError(
+        `Entry ${index + 1} of ${MATTERMOST_ENV_NAME} is not an object.`,
+      );
+    }
+    for (const field of MATTERMOST_FIELDS) {
+      // Only the FIELD NAME is reported, never the entry: one of the four is a
+      // bot token, and a message that echoed the entry would put it in the
+      // operator's logs.
+      if (typeof fields[field] !== 'string' || fields[field] === '') {
+        throw new ConfigurationError(
+          `Entry ${index + 1} of ${MATTERMOST_ENV_NAME} has no ${field} written as text. Every installation needs ${MATTERMOST_FIELDS.join(', ')}.`,
+        );
+      }
+    }
+    return {
+      workspaceId: fields.workspaceId as string,
+      workspaceName: fields.workspaceName as string,
+      baseUrl: fields.baseUrl as string,
+      botToken: fields.botToken as string,
+    };
+  });
+};
+
+// ---------------------------------------------------------------------------
 // Entry point
 // ---------------------------------------------------------------------------
 
@@ -390,5 +548,13 @@ export const loadConfig = (
     platformApp: readPlatformAppConfig(env),
     closedNetwork: readClosedNetworkConfig(env),
     cipher,
+    // Deliberately DATABASE_URL and not CHAT_SDK_DATABASE_URL: the two point at
+    // different schemas of the same database, and swapping them would have this
+    // app's tables and the Chat SDK's state overwrite each other's expectations
+    // (Implementation Note 1.2).
+    databaseUrl: requireValue(env, 'DATABASE_URL'),
+    http: readHttpConfig(env),
+    mattermostInstallations: readMattermostInstallations(env),
+    oauthRedirectUri: read(env, 'OAUTH_REDIRECT_URI'),
   };
 };
