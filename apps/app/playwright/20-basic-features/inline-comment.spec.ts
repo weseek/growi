@@ -812,6 +812,215 @@ test.describe('Inline comment - visual consistency of the creation UI', () => {
   });
 });
 
+test.describe('Inline comment - highlight color stays the same across the selecting/composing/saved states (Req 12.4-12.8)', () => {
+  // Serial: every test in this suite reuses the one page created by the
+  // first test, the same reasoning the other suites in this file use.
+  test.describe.configure({ mode: 'serial' });
+
+  const highlightConsistencyPagePath = (retry: number) =>
+    `/inline-comment-e2e-highlight-consistency${retry}`;
+
+  const targetSentence =
+    'This sentence anchors the highlight-color-consistency end-to-end test.';
+  const pageBody = [
+    '# Inline comment E2E - highlight color consistency',
+    '',
+    targetSentence,
+    '',
+  ].join('\n');
+
+  let createdPage: CreatedPage | undefined;
+
+  test.afterAll(async ({ request }) => {
+    if (createdPage != null) {
+      await deletePagesCompletely(request, [createdPage]);
+    }
+  });
+
+  /**
+   * Reads the *computed* `background-color` of a CSS pseudo-element
+   * (`::selection` or `::highlight(<name>)`) as it applies to the element
+   * that wraps `text`, via `getComputedStyle(el, pseudo)`.
+   *
+   * This was chosen over sampling painted pixels from a screenshot (the
+   * more obvious "read the rendered color" technique) after an empirical
+   * probe against this repo's own Playwright/Chromium build confirmed both
+   * pseudo forms resolve through `getComputedStyle`'s second (pseudo-element)
+   * argument -- Chromium computes the cascade for `::selection` and for
+   * `::highlight()` independently of whether any text is presently
+   * selected/registered, so this reads the *rule* that would paint, not a
+   * rasterized snapshot of it. That is the more robust and maintainable
+   * choice here: no PNG-decoding dependency (this repo has none -- `sharp`
+   * only appears in the lockfile as an unrelated transitive dependency), no
+   * pixel-coordinate math tied to font metrics/line-wrapping, and no
+   * flakiness from anti-aliased edges. It is a faithful stand-in for "what
+   * gets painted" specifically because each state below queries the one
+   * pseudo that CSS's own highlight-painting order
+   * (`::highlight() < ::selection`, see design.md decision 1) actually puts
+   * on top in that state: `::selection` while a real browser selection
+   * exists (selecting), `::highlight(growi-inline-comment-pending)` once
+   * the browser selection is dropped but the form is still open (composing,
+   * PendingSelectionHighlight), and `::highlight(growi-inline-comment)` once
+   * saved (InlineCommentHighlight).
+   */
+  const getPseudoBackgroundColor = (
+    targetPage: Page,
+    text: string,
+    pseudo: string,
+  ): Promise<string> =>
+    targetPage.evaluate(
+      ({ needle, pseudoSelector }) => {
+        const container = document.querySelector('.wiki');
+        if (container == null) {
+          throw new Error('page body container (.wiki) not found');
+        }
+        const walker = document.createTreeWalker(
+          container,
+          NodeFilter.SHOW_TEXT,
+        );
+        let node = walker.nextNode();
+        while (node != null) {
+          if (node.textContent?.includes(needle)) {
+            const el = node.parentElement;
+            if (el == null) {
+              throw new Error('matched text node has no parent element');
+            }
+            return window.getComputedStyle(el, pseudoSelector).backgroundColor;
+          }
+          node = walker.nextNode();
+        }
+        throw new Error(`text not found in page body: ${needle}`);
+      },
+      { needle: text, pseudoSelector: pseudo },
+    );
+
+  /**
+   * Independently resolves `--grw-inline-comment-marker-bg` to a computed
+   * color, by applying it to a throwaway element rather than hard-coding the
+   * expected color (e.g. `#FFFA90`) in the test -- design.md decision 4
+   * notes the default is a deliberate, revisitable choice, so this test
+   * should keep passing if that default value alone ever changes.
+   */
+  const readInlineCommentMarkerColor = (targetPage: Page): Promise<string> =>
+    targetPage.evaluate(() => {
+      const probe = document.createElement('div');
+      probe.style.backgroundColor = 'var(--grw-inline-comment-marker-bg)';
+      document.body.appendChild(probe);
+      const color = window.getComputedStyle(probe).backgroundColor;
+      probe.remove();
+      return color;
+    });
+
+  test('Create a page containing the target sentence', async ({
+    page,
+    request,
+  }, testInfo) => {
+    createdPage = await createPage(request, {
+      path: highlightConsistencyPagePath(testInfo.retry),
+      body: pageBody,
+    });
+
+    await page.goto(createdPage.path);
+    await expect(page.locator('.wiki').first()).toContainText(targetSentence);
+  });
+
+  test('The target range is painted the same marker color while selecting, while composing, and after saving', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(highlightConsistencyPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    const markerColor = await readInlineCommentMarkerColor(page);
+    // Sanity: the marker color itself must not be the browser's fully
+    // transparent default -- otherwise every comparison below would pass
+    // vacuously (three states all painting "nothing").
+    expect(markerColor).not.toBe('rgba(0, 0, 0, 0)');
+
+    // --- State 1: selecting (Req 12.4) ---
+    // Requirement 12.4: a plain text selection, before the create action is
+    // even chosen, is painted the marker color -- CSS's own painting order
+    // (`::highlight() < ::selection`) puts `::selection` on top here, so
+    // this is the pseudo that actually determines what's painted.
+    await selectTextInPageBody(page, targetSentence);
+    await expect(page.getByTestId('selection-action-button')).toBeVisible();
+    const selectingColor = await getPseudoBackgroundColor(
+      page,
+      targetSentence,
+      '::selection',
+    );
+    expect(selectingColor).toBe(markerColor);
+
+    // --- State 2: composing (Req 12.5, 12.6) ---
+    // Choosing the create action opens the form; clicking into its editor
+    // moves focus into the input, which drops the browser's native
+    // selection -- the same "input欄にカーソルを移してブラウザ上の選択が解除
+    // された" state Req 12.6 names. Confirmed below via `window.getSelection()`
+    // before reading the composing-state color, so a false pass can't be
+    // hiding behind a selection that never actually cleared.
+    await page.getByTestId('selection-action-button').click();
+    const form = page.getByTestId('inline-comment-form');
+    await expect(form).toBeVisible();
+    await form.locator('.cm-content').click();
+    await expect
+      .poll(() => page.evaluate(() => window.getSelection()?.toString() ?? ''))
+      .toBe('');
+
+    // Confirm the pending highlight is actually registered under
+    // CSS.highlights before reading its color -- otherwise this assertion
+    // could pass vacuously if PendingSelectionHighlight's registration
+    // effect were removed while its <style jsx global> rule stayed behind,
+    // since that rule is emitted unconditionally. Mirrors the equivalent
+    // wait used for the saved-comment state below.
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () => CSS.highlights.get('growi-inline-comment-pending')?.size ?? 0,
+        ),
+      )
+      .toBeGreaterThan(0);
+
+    const composingColor = await getPseudoBackgroundColor(
+      page,
+      targetSentence,
+      '::highlight(growi-inline-comment-pending)',
+    );
+    expect(composingColor).toBe(markerColor);
+
+    // --- State 3: saved (Req 12.8) ---
+    const commentText = 'a comment used to check the saved highlight color';
+    await form.locator('.cm-content').fill(commentText);
+    await form.getByTestId('inline-comment-submit-button').click();
+    await expect(form).not.toBeVisible();
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+    await expect(item).toContainText(commentText);
+
+    // The saved highlight is drawn asynchronously, once AnchorResolver
+    // re-resolves the just-created anchor against the rendered body (same
+    // poll pattern as the reload test above).
+    await expect
+      .poll(async () =>
+        page.evaluate(
+          () => CSS.highlights.get('growi-inline-comment')?.size ?? 0,
+        ),
+      )
+      .toBeGreaterThan(0);
+
+    const savedColor = await getPseudoBackgroundColor(
+      page,
+      targetSentence,
+      '::highlight(growi-inline-comment)',
+    );
+    expect(savedColor).toBe(markerColor);
+
+    // Decisive assertion (Req 12.8): all three states painted the exact same
+    // color as each other, not merely each matching the token independently.
+    expect(selectingColor).toBe(composingColor);
+    expect(composingColor).toBe(savedColor);
+  });
+});
+
 test.describe('Inline comment - highlight correctness on a page with an async lsx widget', () => {
   // Serial for the same reason as the suites above: the second test depends
   // on the comment created by the first, real backend state.
