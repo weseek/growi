@@ -38,6 +38,7 @@ const originComment = (
   id: 'comment1',
   pageId: 'page1',
   creatorId: 'user1',
+  creator: null,
   comment: 'first comment',
   anchorOriginRevisionId: 'revision1',
   anchor: { quote: 'quoted text', prefix: '', suffix: '', approxOffset: 0 },

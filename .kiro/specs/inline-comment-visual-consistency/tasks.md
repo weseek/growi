@@ -118,7 +118,7 @@
   - _Depends: 5.2, 5.3_
   - _Boundary: PageComment_
 
-- [ ] 6.2 (P) `Comments`が`inlineComments`を受け取って渡す
+- [x] 6.2 (P) `Comments`が`inlineComments`を受け取って渡す
   - `Comments.tsx`に`inlineComments`propを追加し、`PageComment`にそのまま渡す。省略時は空配列として扱う
   - 観測できる完了条件：`inlineComments`を渡さずに`Comments`をレンダーしてもエラーにならないことをユニットテストで確認できる
   - _Requirements: 13.8_
