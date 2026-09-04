@@ -11,7 +11,7 @@
 // parameters with real defaults, so the wiring itself is provable without
 // either.
 
-import type { ChannelRef } from '@growi/chat';
+import type { ChannelRef, PlatformName } from '@growi/chat';
 
 import {
   CONNECTION_UNIT_TABLE,
@@ -64,6 +64,17 @@ import {
   ensureMattermostInstallations,
   type MattermostInstallationFailure,
 } from './mattermost-installations.js';
+import { createSweeper, type Sweeper, type SweeperDeps } from './sweeper.js';
+
+/**
+ * The services this app knows about, from the table that declares one entry
+ * per `PlatformName`. `Object.keys` widens to `string[]`, so this narrows it
+ * back rather than claiming anything the table does not already guarantee --
+ * the same step `platform/index.ts` takes.
+ */
+const PLATFORM_NAMES = Object.keys(
+  CONNECTION_UNIT_TABLE,
+) as ReadonlyArray<PlatformName>;
 
 /**
  * A sink that can be handed out before the flows behind it exist.
@@ -132,12 +143,20 @@ export interface ProxyDependencyOverrides {
   readonly createInstallationStore?: (
     deps: InstallationStoreDeps,
   ) => Pick<InstallationStore, 'save'>;
+  /** A seam for the periodic work, so its lifecycle is provable without a schedule. */
+  readonly createSweeper?: (deps: SweeperDeps) => Sweeper;
   readonly reporters?: ProxyReporters;
 }
 
 export interface ProxyDependencies {
   readonly routes: RoutesAppDeps;
   readonly facade: PlatformFacade;
+  /**
+   * The periodic work. Built here and **started by `server.ts`**, the same
+   * split `ConnectionManager` follows: this function assembles, the process
+   * shell decides when things begin.
+   */
+  readonly sweeper: Sweeper;
   /**
    * Gives back everything startup opened, in the order that keeps work in
    * flight whole: the chat and state connections first, this app's storage
@@ -162,6 +181,7 @@ export const createProxyDependencies = async (
     createDb = createPrismaClient,
     createFacade = createPlatformFacade,
     createInstallationStore: buildInstallationStore = createInstallationStore,
+    createSweeper: buildSweeper = createSweeper,
     reporters = defaultReporters,
   } = overrides;
   const { cipher } = config;
@@ -186,6 +206,23 @@ export const createProxyDependencies = async (
     deferred.sink,
   );
 
+  /**
+   * Re-takes one installation's channel inventory. Shared by the two callers
+   * design.md names: `InstallationStore.save()`'s 「最初の 1 回」, and the
+   * periodic run below -- one closure, so the two cannot drift into refreshing
+   * by different rules.
+   */
+  const refreshChannels = (installationId: string): Promise<void> =>
+    refreshChannelInventory(
+      {
+        listChannels: (id) => facade.listChannels(id),
+        channels,
+        installations,
+        now: () => new Date(),
+      },
+      installationId,
+    );
+
   const installationStore = buildInstallationStore({
     installations,
     relations,
@@ -196,16 +233,7 @@ export const createProxyDependencies = async (
     processedNotifications,
     pairingOrders,
     channels,
-    refreshChannels: (installationId) =>
-      refreshChannelInventory(
-        {
-          listChannels: (id) => facade.listChannels(id),
-          channels,
-          installations,
-          now: () => new Date(),
-        },
-        installationId,
-      ),
+    refreshChannels,
     onChannelRefreshFailed: (failure) =>
       reporters.reportOperationalFailure(
         `the channel inventory of installation ${failure.installationId} could not be refreshed; the periodic refresh will retry`,
@@ -335,9 +363,41 @@ export const createProxyDependencies = async (
     reachability: REQUIRES_INBOUND_REACHABILITY,
   };
 
+  /**
+   * The one schedule this app runs. The four tables design.md lists under
+   * 期限切れの掃除 are declared here rather than imported by the sweeper, so
+   * adding a fifth is a change to this list alone.
+   */
+  const sweeper = buildSweeper({
+    locks: facade.locks(),
+    sweeps: [
+      { name: 'request_nonce', deleteExpired: requestNonces.deleteExpired },
+      {
+        name: 'processed_notification_target',
+        deleteExpired: processedNotifications.deleteExpired,
+      },
+      {
+        name: 'pending_collection',
+        deleteExpired: pendingCollections.deleteExpired,
+      },
+      { name: 'pairing_order', deleteExpired: pairingOrders.deleteExpired },
+    ],
+    listInstallationIds: async () => {
+      const listed = await Promise.all(
+        PLATFORM_NAMES.map((platform) =>
+          installations.listByPlatform(platform),
+        ),
+      );
+      return listed.flatMap((rows) => rows.map((row) => row.installationId));
+    },
+    refreshChannels,
+    reportFailure: reporters.reportOperationalFailure,
+  });
+
   return {
     routes,
     facade,
+    sweeper,
     shutdown: async () => {
       try {
         await facade.shutdown();

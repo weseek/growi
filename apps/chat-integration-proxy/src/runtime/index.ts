@@ -2,10 +2,10 @@
 // dependency order ends here; nothing imports this layer back). Only the
 // startup entry point reads from it.
 //
-// `dependencies.ts` and `mattermost-installations.ts` are deliberately absent:
-// both exist for `server.ts` to call, nothing outside this layer composes an
-// object graph or declares an installation, and their own specs reach them as
-// siblings.
+// `dependencies.ts`, `mattermost-installations.ts` and `sweeper.ts` are
+// deliberately absent: all three exist for `server.ts` to call -- nothing
+// outside this layer composes an object graph, declares an installation, or
+// runs the periodic work -- and their own specs reach them as siblings.
 export type {
   ClosedNetworkConfig,
   HttpConfig,

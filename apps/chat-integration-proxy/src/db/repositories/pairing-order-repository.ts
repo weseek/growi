@@ -79,6 +79,32 @@ export interface PairingOrderRepository {
    * history with its `relation_id` cleared (design.md's Data Models note).
    */
   deleteByInstallation(installationId: string): Promise<number>;
+  /**
+   * Reaps orders that expired **without ever being consumed**. Only the
+   * primitive (design.md: 「期限切れを消す処理は関数として用意するだけにする」)
+   * -- the periodic, lock-held run belongs to `runtime/sweeper.ts`.
+   *
+   * **`consumed_at` is part of the condition, unlike the other three sweeps**
+   * (`request_nonce`, `processed_notification_target`, `pending_collection`),
+   * which reap on `expires_at` alone. A consumed order is not stale state that
+   * outlived its purpose -- it is the material `pairing/submit` answers a
+   * RESUBMISSION from (design.md: 「2 度目は同じ `PairingResult` を返す」), and
+   * `PairingService.submit` reads `consumed_at` BEFORE it looks at
+   * `expires_at`. So a consumed order keeps answering after its expiry, and
+   * reaping it would turn 「2 度目は同じものを返す」 into `code-expired` for a
+   * GROWI that is already paired -- the resubmission being the ordinary case
+   * on the one endpoint carrying neither a signature nor a nonce.
+   *
+   * `consumed_at`, never `relation_id`: unpairing clears `relation_id` by
+   * `SetNull` while leaving `consumed_at` set, so a filter on `relation_id`
+   * would reap exactly the orders of the relations that were unpaired.
+   *
+   * The cost this leaves is bounded and worth naming: `code_hash` is unique,
+   * so a kept row keeps its hash unusable forever. That collides with nothing
+   * -- a code is random per issue, not chosen -- and it is the same row the
+   * `installation`'s own removal deletes (`deleteByInstallation`).
+   */
+  deleteExpired(now: Date): Promise<number>;
 }
 
 interface PairingOrderRow {
@@ -149,6 +175,13 @@ export const createPairingOrderRepository = (
   deleteByInstallation: async (installationId) => {
     const result = await db.pairingOrder.deleteMany({
       where: { installationId },
+    });
+    return result.count;
+  },
+
+  deleteExpired: async (now) => {
+    const result = await db.pairingOrder.deleteMany({
+      where: { consumedAt: null, expiresAt: { lte: now } },
     });
     return result.count;
   },

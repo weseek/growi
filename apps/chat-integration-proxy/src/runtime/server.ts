@@ -132,6 +132,10 @@ export const startProxy = async (
   );
 
   await dependencies.facade.connections().start();
+  // Last, and deliberately: a cycle re-takes channel inventories through the
+  // chat connections, so starting it before they reconcile would spend its
+  // first cycle failing.
+  dependencies.sweeper.start();
 
   return {
     dependencies,
@@ -141,7 +145,16 @@ export const startProxy = async (
         new Promise<void>((resolve, reject) => {
           server.close((error) => (error == null ? resolve() : reject(error)));
         }),
-      shutdownDependencies: dependencies.shutdown,
+      // The periodic work stops FIRST -- before the connections and this app's
+      // storage are given back. A cycle firing during teardown would reach a
+      // state connection that is already closing, and would be holding the
+      // sweep lock while it did, keeping every other instance out until the
+      // grant expired. `createShutdown` runs this once however many signals
+      // arrive, so the schedule is not taken down twice.
+      shutdownDependencies: async () => {
+        await dependencies.sweeper.stop();
+        await dependencies.shutdown();
+      },
     }),
   };
 };

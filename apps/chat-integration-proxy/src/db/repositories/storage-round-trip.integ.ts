@@ -324,6 +324,55 @@ describe('storage round trip through real PostgreSQL (Requirements 8.1, 10.5, 10
     });
     expect(await pairingOrders.recordAttempt(issued.id)).toBe(1);
   });
+
+  it('reaps an expired code that was never used, and keeps an expired one that already paired', async () => {
+    // Against the real table because the invariant is about a row surviving,
+    // not about a `where` clause: `pairing/submit` answers a resubmission from
+    // `consumed_at` before it looks at `expires_at`, so reaping a consumed
+    // order would answer an already-paired GROWI with `code-expired`.
+    const { prisma, installationId } = await context();
+    const pairingOrders = createPairingOrderRepository(prisma);
+    const relations = createRelationRepository(prisma);
+    const relation = await relations.create({
+      installationId,
+      growiUri: `https://order-sweep-${WORKSPACE_ID}.example.com`,
+      growiLabel: 'OrderSweep',
+      searchWeight: 1,
+      settingsVersion: 0,
+    });
+    const past = new Date(Date.now() - 1_000);
+
+    const unused = await pairingOrders.issue(
+      installationId,
+      `hash-${randomUUID()}`,
+      past,
+    );
+    const consumedHash = `hash-${randomUUID()}`;
+    const consumed = await pairingOrders.issue(
+      installationId,
+      consumedHash,
+      past,
+    );
+    await expect(
+      pairingOrders.consumeIfUnconsumed(
+        consumed.id,
+        relation.relationId,
+        new Date(),
+      ),
+    ).resolves.toBe(true);
+
+    const removed = await pairingOrders.deleteExpired(new Date());
+    expect(removed).toBeGreaterThanOrEqual(1);
+
+    const survivor = await pairingOrders.findByCodeHash(consumedHash);
+    expect(survivor?.id).toBe(consumed.id);
+    expect(survivor?.relationId).toBe(relation.relationId);
+    // The unused one is gone: nothing can be resubmitted against it.
+    const rows = await prisma.pairingOrder.findMany({
+      where: { id: unused.id },
+    });
+    expect(rows).toHaveLength(0);
+  });
 });
 
 // Task 2.2's five repositories, against the same real PostgreSQL. Reuses

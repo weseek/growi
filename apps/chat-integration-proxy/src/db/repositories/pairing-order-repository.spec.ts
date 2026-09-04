@@ -152,3 +152,23 @@ describe('pairingOrderRepository.deleteByInstallation', () => {
     });
   });
 });
+
+describe('pairingOrderRepository.deleteExpired', () => {
+  it('reaps only orders that were never consumed', async () => {
+    // The discriminating condition. `pairing-service.submit` answers a
+    // resubmission from `consumed_at` BEFORE it looks at `expires_at`, so a
+    // consumed order still answers the second submission of its code with the
+    // same `PairingResult` long after it expired. A plain `expiresAt <= now`
+    // filter -- the shape the other three sweeps use -- would delete exactly
+    // the rows that guarantee is built on.
+    const prisma = mockDeep<PrismaClient>();
+    prisma.pairingOrder.deleteMany.mockResolvedValue({ count: 3 });
+    const repository = createPairingOrderRepository(prisma);
+    const now = new Date('2026-06-01T00:20:00.000Z');
+
+    await expect(repository.deleteExpired(now)).resolves.toBe(3);
+    expect(prisma.pairingOrder.deleteMany).toHaveBeenCalledWith({
+      where: { consumedAt: null, expiresAt: { lte: now } },
+    });
+  });
+});

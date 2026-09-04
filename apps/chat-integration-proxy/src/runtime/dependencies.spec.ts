@@ -1,14 +1,19 @@
-import { mock } from 'vitest-mock-extended';
+import { type DeepMockProxy, mock, mockDeep } from 'vitest-mock-extended';
 
 import { REQUIRES_INBOUND_REACHABILITY } from '../capabilities/index.js';
 import type { PrismaClient } from '../db/index.js';
 import type { ConnectionManager, PlatformFacade } from '../platform/index.js';
-import type { PlatformEvent, PlatformEventSink } from '../types/index.js';
+import type {
+  DistributedLock,
+  PlatformEvent,
+  PlatformEventSink,
+} from '../types/index.js';
 import type { ProxyConfig } from './config.js';
 import {
   createDeferredEventSink,
   createProxyDependencies,
 } from './dependencies.js';
+import type { Sweeper, SweeperDeps } from './sweeper.js';
 
 const config = (overrides: Partial<ProxyConfig> = {}): ProxyConfig => ({
   platformApp: {
@@ -256,5 +261,111 @@ describe('createProxyDependencies', () => {
     // The operator is told, rather than the failure disappearing behind the
     // teardown that carried on regardless.
     expect(reportOperationalFailure).toHaveBeenCalled();
+  });
+});
+
+describe('the periodic work createProxyDependencies composes', () => {
+  /** Captures the work-set the sweeper is built with, without running it. */
+  const capture = async (): Promise<{
+    readonly deps: SweeperDeps;
+    readonly db: DeepMockProxy<PrismaClient>;
+    readonly locks: DistributedLock;
+  }> => {
+    // Deep, unlike the other tests here: this one calls THROUGH to the Prisma
+    // delegates to prove each sweep reaches the table it is named after.
+    const db = mockDeep<PrismaClient>();
+    for (const delegate of [
+      db.requestNonce,
+      db.processedNotificationTarget,
+      db.pendingCollection,
+      db.pairingOrder,
+    ]) {
+      delegate.deleteMany.mockResolvedValue({ count: 0 });
+    }
+    db.installation.findMany.mockResolvedValue([]);
+    const locks = mock<DistributedLock>();
+    // Built here rather than through `facadeMock()`: this test needs the
+    // facade's own mock handle to say which lock `locks()` answers with.
+    const facade = mock<PlatformFacade>();
+    facade.connections.mockReturnValue(mock<ConnectionManager>());
+    facade.locks.mockReturnValue(locks);
+    let captured: SweeperDeps | null = null;
+
+    await createProxyDependencies(config(), {
+      createDb: () => db,
+      createFacade: () => Promise.resolve(facade),
+      createSweeper: (deps) => {
+        captured = deps;
+        return mock<Sweeper>();
+      },
+    });
+
+    if (captured == null) throw new Error('no sweeper was built');
+    return { deps: captured, db, locks };
+  };
+
+  it('declares exactly the four tables design.md lists under 期限切れの掃除', async () => {
+    const { deps } = await capture();
+
+    // Asserted by name and as a whole list: a missing entry is a table that
+    // grows forever, and the names are what an operator reads in the failure
+    // message the sweeper reports.
+    expect(deps.sweeps.map((sweep) => sweep.name)).toEqual([
+      'request_nonce',
+      'processed_notification_target',
+      'pending_collection',
+      'pairing_order',
+    ]);
+  });
+
+  it('binds each declared sweep to the table of that name', async () => {
+    const { deps, db } = await capture();
+    const at = new Date('2026-04-01T00:00:00.000Z');
+    const delegates = {
+      request_nonce: db.requestNonce,
+      processed_notification_target: db.processedNotificationTarget,
+      pending_collection: db.pendingCollection,
+      pairing_order: db.pairingOrder,
+    } as const;
+
+    // Called through the extracted function rather than through the
+    // repository: this is how `sweeper.ts` calls it, so calling it any other
+    // way would not prove the extracted one still reaches its table.
+    await Promise.all(deps.sweeps.map((sweep) => sweep.deleteExpired(at)));
+
+    for (const [name, delegate] of Object.entries(delegates)) {
+      expect(
+        delegate.deleteMany,
+        `${name} was not reached by the sweep named after it`,
+      ).toHaveBeenCalledTimes(1);
+    }
+    expect(db.pairingOrder.deleteMany).toHaveBeenCalledWith({
+      // The one sweep whose condition is not `expiresAt` alone -- a consumed
+      // order still answers a resubmission of its code.
+      where: { consumedAt: null, expiresAt: { lte: at } },
+    });
+  });
+
+  it("takes the lock from the facade's own state, the one the connections contend on", async () => {
+    const { deps, locks } = await capture();
+
+    // Not a second lock built here: the sweep has to contend in the same key
+    // space, which only the facade's state adapter provides.
+    expect(deps.locks).toBe(locks);
+  });
+
+  it('refreshes the channel inventory of every installation, whichever service it belongs to', async () => {
+    const { deps, db } = await capture();
+    db.installation.findMany.mockResolvedValue([
+      { id: 'inst-1', workspaceId: 'T1' },
+      { id: 'inst-2', workspaceId: 'T2' },
+    ] as never);
+
+    const ids = await deps.listInstallationIds();
+
+    // Two rows per service, and this app serves four -- the point being that
+    // the walk is over the declared services, not over one hard-coded name.
+    expect(new Set(ids)).toEqual(new Set(['inst-1', 'inst-2']));
+    expect(ids).toHaveLength(8);
   });
 });

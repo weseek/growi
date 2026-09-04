@@ -32,6 +32,7 @@ import {
 import type { PlatformAppConfig } from '../types/index.js';
 import type { ProxyConfig } from './config.js';
 import { createProxyApp, createShutdown, startProxy } from './server.js';
+import type { Sweeper } from './sweeper.js';
 
 const APP_CONFIG: PlatformAppConfig = {
   stateConnectionString: 'postgres://unused',
@@ -177,19 +178,42 @@ describe('startProxy', () => {
   });
 
   const overrides = () => {
+    // One array for the whole lifecycle: asserting each call happened would
+    // pass on an order that leaves a sweep running against a connection that
+    // is already being torn down.
+    const lifecycle: string[] = [];
     const connections = mock<ConnectionManager>();
+    connections.start.mockImplementation(() => {
+      lifecycle.push('connections.start');
+      return Promise.resolve();
+    });
     const facade = mock<PlatformFacade>();
     facade.connections.mockReturnValue(connections);
+    facade.shutdown.mockImplementation(() => {
+      lifecycle.push('facade.shutdown');
+      return Promise.resolve();
+    });
+    const sweeper = mock<Sweeper>();
+    sweeper.start.mockImplementation(() => {
+      lifecycle.push('sweeper.start');
+    });
+    sweeper.stop.mockImplementation(() => {
+      lifecycle.push('sweeper.stop');
+      return Promise.resolve();
+    });
     const close = vi.fn((cb?: (error?: Error) => void) => cb?.());
     const listen = vi.fn(() => ({ close }) as unknown as ServerType);
     return {
       connections,
+      sweeper,
+      lifecycle,
       close,
       listen,
       startOverrides: {
         listen,
         createDb: () => mock<PrismaClient>(),
         createFacade: () => Promise.resolve(facade),
+        createSweeper: () => sweeper,
         reporters: { reportOperationalFailure: vi.fn() },
       },
     };
@@ -220,5 +244,34 @@ describe('startProxy', () => {
     expect(close).toHaveBeenCalled();
     expect(proxy.dependencies.facade.shutdown).toHaveBeenCalled();
     expect(connections.start).toHaveBeenCalledTimes(1);
+  });
+
+  it('runs the periodic work through the whole lifecycle, started after the connections and stopped before them', async () => {
+    const { lifecycle, startOverrides } = overrides();
+
+    const proxy = await startProxy(config(), startOverrides);
+    await proxy.stop();
+
+    // Started last: a cycle re-taking a channel inventory needs the chat
+    // connections it asks through. Stopped first: a cycle firing into a
+    // facade that is already shutting down would reach a state connection
+    // mid-teardown, and would hold the sweep lock while doing it.
+    expect(lifecycle).toEqual([
+      'connections.start',
+      'sweeper.start',
+      'sweeper.stop',
+      'facade.shutdown',
+    ]);
+  });
+
+  it('stops the periodic work even when it was never started as far as the caller knows', async () => {
+    const { sweeper, startOverrides } = overrides();
+
+    const proxy = await startProxy(config(), startOverrides);
+    await proxy.stop();
+    await proxy.stop();
+
+    // `stop()` is idempotent, so the schedule is not taken down twice.
+    expect(sweeper.stop).toHaveBeenCalledTimes(1);
   });
 });
