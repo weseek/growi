@@ -29,10 +29,14 @@ import type { InlineCommentWithReplies } from '../../../interfaces';
 // replies subtree is a separate component with its own spec.
 // ---------------------------------------------------------------------------
 
+// `inline-comment-quote` is declared as `:global(.inline-comment-quote)` in the
+// real SCSS, so CSS Modules never adds it to the JS-side lookup table — the
+// mock must not fabricate that key, or a regression where the component reads
+// `styles['inline-comment-quote']` (always `undefined` in the real build)
+// would still pass here.
 vi.mock('./InlineCommentItem.module.scss', () => ({
   default: {
     'inline-comment-item-styles': 'inline-comment-item-styles',
-    'inline-comment-quote': 'inline-comment-quote',
   },
 }));
 

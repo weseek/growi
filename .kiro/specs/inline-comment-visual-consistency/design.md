@@ -591,7 +591,7 @@ return (
         <span className="material-symbols-outlined fs-6">chat</span>
         {t('inline_comment.label')}
       </div>
-      <blockquote className={`small text-body-secondary mb-2 ps-2 ${styles['inline-comment-quote']}`}>
+      <blockquote className="inline-comment-quote small text-body-secondary mb-2 ps-2">
         {comment.anchor.quote}
       </blockquote>
     </>
@@ -766,11 +766,17 @@ beforeBody={
       <span className="material-symbols-outlined fs-6">chat</span>
       {t('inline_comment.label')}
     </div>
-    <blockquote className={`small text-body-secondary mb-2 ps-2 ${styles['inline-comment-quote']}`}>
+    <blockquote className="inline-comment-quote small text-body-secondary mb-2 ps-2">
       {comment.anchor.quote}
     </blockquote>
   </>
 }
 ```
+
+Note: `.inline-comment-quote` is declared as `:global(.inline-comment-quote)` in
+`InlineCommentItem.module.scss` (it needs to be a plain global class name so the
+Playwright suite and the CSS rule can target it directly), so it is never added to
+the CSS-module `styles` lookup table — referencing `styles['inline-comment-quote']`
+here would resolve to `undefined` at runtime.
 
 新規i18nキーに`inline_comment.label`（値: `Inline Comment`）を追加する。

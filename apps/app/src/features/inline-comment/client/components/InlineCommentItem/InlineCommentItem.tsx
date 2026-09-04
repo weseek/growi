@@ -112,9 +112,12 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
               <span className="material-symbols-outlined fs-6">chat</span>
               {t('inline_comment.label')}
             </div>
-            <blockquote
-              className={`small text-body-secondary mb-2 ps-2 ${styles['inline-comment-quote']}`}
-            >
+            {/* `inline-comment-quote` is `:global(.inline-comment-quote)` in
+                the CSS module (see InlineCommentItem.module.scss), so it is
+                referenced here as a plain class name — CSS Modules never adds
+                a `:global()` selector to the `styles` lookup table, so
+                `styles['inline-comment-quote']` would always be `undefined`. */}
+            <blockquote className="inline-comment-quote small text-body-secondary mb-2 ps-2">
               {comment.anchor.quote}
             </blockquote>
           </>
