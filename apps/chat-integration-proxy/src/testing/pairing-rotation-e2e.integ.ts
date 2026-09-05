@@ -11,20 +11,14 @@
 // `beforeAll` -- a failing one SKIPS the bodies, so not one assertion below
 // would ever be parsed while storage is unreachable.
 //
-// **Where the registration code comes from, and why not from chat.**
-// Requirement 9.1 says a code is issued 「管理者がチャット側で登録操作を行った」
-// とき. That path does not work today and this task did not break it:
-// `runtime/dependencies.ts` wires `observeActorRoles` to a function that
-// always answers `null`, because nothing in this app can read an actor's roles
-// on a chat service yet (Implementation Note 9.1, hand-off (a), which asks for
-// a separate task). `AdminFlow` reads `null` as 「判定できませんでした」 and
-// refuses, so `register` -- and with it every chat-started pairing -- cannot
-// complete through a running proxy at all. Issuance was never an HTTP endpoint
-// by design either (design.md's endpoint table has no row for it), so this
-// file calls `PairingService.issueCode` against the same PostgreSQL the
-// running proxy uses, and drives the half that IS an endpoint --
-// `/chat-integration/pairing/submit` -- over a real socket. Asserting the
-// current refusal instead would only pin the gap in place.
+// **Where the registration code comes from.** Requirement 9.1 says a code is
+// issued 「管理者がチャット側で登録操作を行った」とき, and the first case below
+// drives exactly that: `register` typed in a channel, by an actor the chat
+// service reports as a workspace administrator. Issuance is deliberately not
+// an HTTP endpoint (design.md's endpoint table has no row for it), so the
+// other cases -- which are about the SUBMIT half, the URL judgement and the
+// key rotation -- call `PairingService.issueCode` against the same PostgreSQL
+// the running proxy uses rather than repeating the chat path each time.
 //
 // **Which requirement each case actually answers.** Of 11.5's list, 7.8, 9.1,
 // 9.2, 9.5, 9.7 and 13.1 are 「the chat-integration proxy shall」 criteria and
@@ -64,6 +58,7 @@ import {
 } from '../relation/index.js';
 import { PAIRING_SUBMIT_PATH } from '../routes/index.js';
 import type { ClosedNetworkConfig, ProxyConfig } from '../runtime/index.js';
+import { mentionOn } from './chat-events.js';
 import type { FakeChatService } from './fake-chat-service.js';
 import { createFakeChatService } from './fake-chat-service.js';
 import type { FakeGrowi, FakeGrowiOptions } from './fake-growi.js';
@@ -263,6 +258,54 @@ describe('pairing, from an issued code through to a working relation', () => {
       op: OP_NAMES.capabilities,
     });
     expect(afterUnpair.status).toBe(401);
+  });
+
+  it('issues the code from a `register` typed in chat by a workspace administrator, and that code pairs (Requirement 9.1)', async () => {
+    const growi = await openGrowi();
+    // The chat service reports this actor the way `ADMIN_CHECK_TABLE` says
+    // Slack is read (`is_admin`). Unscripted, this fake answers `null` --
+    // 「役割を読み取れなかった」 -- and every operator command is refused, so
+    // acting as an administrator has to be said out loud.
+    const chat = createFakeChatService({
+      observeActorRoles: () => ({ grantedFields: ['is_admin'] }),
+    });
+    const db = openDb();
+    const workspace = await openWorkspace(db, 'slack');
+
+    const listener = await startOneProxy(chat);
+    const proxyBaseUrl = await listener.baseUrl();
+
+    const typed = await chat.deliver(
+      mentionOn('slack', {
+        text: '@growi register',
+        channel: workspace.channel,
+        actor: workspace.actor,
+      }),
+    );
+    expect(typed).toEqual({ handled: true });
+
+    // 「登録コードは本人にだけ見えるメッセージで返す。チャンネルに平文で出さ
+    // ない」: asserted as the whole list of what was posted, so a code that
+    // ALSO reached the channel would fail here.
+    const answers = chat.posts();
+    expect(answers.map((post) => post.kind)).toEqual(['ephemeral']);
+    const shown = answers[0].message;
+    const code = (shown.kind === 'markdown' ? shown.markdown : '').match(
+      /`([^`]+)`/,
+    )?.[1];
+    expect(code).toBeDefined();
+
+    // The code is a real one: it pairs, over the same HTTP endpoint GROWI's
+    // admin screen submits it to.
+    const answer = await submitPairing(proxyBaseUrl, {
+      registrationCode: code ?? '',
+      growiUri: growi.baseUrl,
+      growiLabel: 'GROWI A',
+      publicKey: growi.pairingRegistration,
+    });
+
+    expect(answer.status).toBe(200);
+    expect(pairedOrThrow(answer.body).relationId).toEqual(expect.any(String));
   });
 });
 

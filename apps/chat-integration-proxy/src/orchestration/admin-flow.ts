@@ -10,14 +10,13 @@
 // The decisions that live here and nowhere else:
 //
 //  - **Where the actor's roles come from.** `isWorkspaceAdmin` needs the
-//    actor's roles, and `PlatformFacade` has no method that answers "what
-//    roles does this account hold?" -- there is no Chat SDK call behind it
-//    today (task 4.3's hand-off). Rather than adding one from this layer, the
-//    observation is a REQUIRED dependency, exactly as `CommandFlow` takes
-//    `resolveInstallationId`: the gap stays in one visible place for whoever
-//    composes this flow (task 9.x) to fill. It is required, not optional with
-//    a default, because a default is precisely the "forgot to pass it" path
-//    task 4.3 closed by making `actor` a required parameter.
+//    actor's roles, and reading them means calling the chat service -- which
+//    only `platform/` may do. So the observation is a REQUIRED dependency,
+//    exactly as `CommandFlow` takes `resolveInstallationId`: whoever composes
+//    this flow joins `PlatformFacade.observeActorRoles` to the channel it was
+//    typed in (`runtime/dependencies.ts`). It is required, not optional with a
+//    default, because a default is precisely the "forgot to pass it" path task
+//    4.3 closed by making `actor` a required parameter.
 //  - **Where the answer is shown.** Driven off `intent.delivery`, never off
 //    the operation. That is what makes 「登録コードは本人にだけ見えるメッセージ
 //    で返す」 structural: `issue-pairing-code` pins the literal `'ephemeral'`
@@ -34,7 +33,6 @@
 import type { ChannelRef } from '@growi/chat';
 
 import {
-  type AdminActorRoles,
   type AdminCommandIntent,
   type AdminDelivery,
   parseAdminCommand,
@@ -48,7 +46,12 @@ import {
   type RelationKeyService,
   type RotationStatus,
 } from '../relation/index.js';
-import type { Invocation, OutboundMessage, Relation } from '../types/index.js';
+import type {
+  AdminActorRoles,
+  Invocation,
+  OutboundMessage,
+  Relation,
+} from '../types/index.js';
 
 /**
  * The two facade operations an operator command uses. Narrowed with `Pick`

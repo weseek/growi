@@ -23,6 +23,7 @@ import { type Adapter, Chat, type StateAdapter } from 'chat';
 
 import { CONNECTION_UNIT_TABLE } from '../capabilities/index.js';
 import type {
+  AdminActorRoles,
   DistributedLock,
   HistoryOutcome,
   InteractionRef,
@@ -33,6 +34,10 @@ import type {
   PostOutcome,
   TimeRange,
 } from '../types/index.js';
+import {
+  observeActorRoles as observeActorRolesOf,
+  ROLE_READERS,
+} from './actor-roles.js';
 import {
   ADAPTER_FACTORIES,
   createAppAdapters,
@@ -100,6 +105,26 @@ export interface PlatformFacade {
   webhookHandler(
     platform: PlatformName,
   ): (request: Request) => Promise<Response>;
+  /**
+   * The roles the person who typed an operator command holds on the chat
+   * service, read the way `capabilities/admin-check.ts` declares for that
+   * service -- or `null` when they could not be read at all.
+   *
+   * On this facade rather than anywhere else because the answer only exists on
+   * the chat service, and this layer is the only one allowed to reach it. The
+   * caller judges the facts (`isWorkspaceAdmin`); this method never decides
+   * whether the actor may do anything.
+   *
+   * `null` is NOT "not an admin" -- see `AdminActorRoles`. It also covers an
+   * installation this proxy no longer holds, or one carrying no credentials
+   * for its service: both leave the question unanswered rather than answered
+   * in the negative.
+   */
+  observeActorRoles(
+    installationId: string,
+    channel: ChannelRef,
+    actor: ChatAccountRef,
+  ): Promise<AdminActorRoles | null>;
   connections(): ConnectionManager;
   locks(): DistributedLock;
   /**
@@ -179,6 +204,14 @@ export const createPlatformFacade = async (
   appConfig: PlatformAppConfig,
   installations: InstallationProvider,
   sink: PlatformEventSink,
+  /**
+   * Where a fact the operator has to see is reported, on a path that has
+   * already answered its caller -- the same shape `InstallationStoreDeps`
+   * takes for a failed channel refresh. Optional so a caller that reports
+   * nothing still gets a working facade; `runtime/dependencies.ts` passes its
+   * own reporter.
+   */
+  reportOperationalFailure?: (message: string, error?: unknown) => void,
 ): Promise<PlatformFacade> => {
   // `PostgresStateAdapter` does not connect lazily -- every one of its methods
   // throws until `connect()` has resolved -- which is why this function is
@@ -401,6 +434,39 @@ export const createPlatformFacade = async (
         // modal path has to finish inside the response cycle.
         return await handler(request, webhookOptionsFor(platform));
       };
+    },
+
+    async observeActorRoles(installationId, channel, actor) {
+      const located = await locateInstallation(installationId);
+      if (located == null) return null;
+      const credentials = await installations.resolve(
+        located.platform,
+        located.workspaceId,
+      );
+      if (credentials == null) return null;
+
+      // The installation's own service, not the channel's: the installation is
+      // what carries the credentials the question is asked with.
+      return await observeActorRolesOf(
+        located.platform,
+        {
+          workspaceId: located.workspaceId,
+          credentials,
+          appConfig,
+          channel,
+          actor,
+          fetch,
+        },
+        ROLE_READERS,
+        // `null` alone reaches the operator as 「権限を読み取れません」, which
+        // is a direction rather than a diagnosis. The missing scope, the HTTP
+        // status or the service that cannot be asked at all travels here.
+        (error) =>
+          reportOperationalFailure?.(
+            `the roles of a ${located.platform} account in installation ${installationId} could not be read, so an operator command was refused`,
+            error,
+          ),
+      );
     },
 
     connections: () => connections,

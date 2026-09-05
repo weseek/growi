@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import type {
+  AdminActorRoles,
   DistributedLock,
   FieldSpec,
   HistoryMessage,
@@ -32,6 +33,21 @@ describe('types/index barrel', () => {
     // if any of these names is missing from the barrel. This assertion
     // exists so the test file has at least one runtime expectation.
     expect(true).toBe(true);
+  });
+});
+
+describe('AdminActorRoles', () => {
+  it('separates "read, but holds no admin role" from "not read at all"', () => {
+    // Both refuse an operator command, and the operator has to be told which
+    // happened -- the empty set is their own permissions, `null` is this
+    // proxy's configuration. Declared here rather than in `command/` because
+    // `platform/` (which reads these facts off the chat service) sits to the
+    // left of `command/` in the dependency order.
+    const readButNotAdmin: AdminActorRoles = { grantedFields: [] };
+    const notRead: AdminActorRoles | null = null;
+
+    expect(readButNotAdmin.grantedFields).toEqual([]);
+    expect(notRead).toBeNull();
   });
 });
 

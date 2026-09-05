@@ -313,7 +313,8 @@ apps/chat-integration-proxy/
 │   │   ├── outbound.ts
 │   │   ├── prompt.ts              # modal の開閉
 │   │   ├── history.ts
-│   │   └── channels.ts            # listChannels（周期で取り直して保存）
+│   │   ├── channels.ts            # listChannels（周期で取り直して保存）
+│   │   └── actor-roles.ts         # observeActorRoles（要件9.1・チャット起点の運用者判定）
 │   ├── command/
 │   │   ├── invocation.ts          # mention / slash を 1 つの内部表現へ
 │   │   ├── argument-collector.ts  # start / resume / sweepExpired
@@ -475,7 +476,7 @@ export interface FieldSpec {
 | Slack | 利用者情報の `is_admin` / `is_owner` |
 | Discord | ギルドの権限のビット（`ADMINISTRATOR` または `MANAGE_GUILD`） |
 | Mattermost | 利用者のロールに `system_admin` または対象チームの `team_admin` |
-| Teams | 所属の役割（`owner`） |
+| Teams | 所属の役割（`owner`）——**現状は判定できず、常に「判定できませんでした」で断る**（`platform/actor-roles.ts`）。`Invocation`/`PlatformEvent` が運ぶのは Bot Framework の利用者 ID だけで Graph が所属を引くための AAD オブジェクト ID が届かず、保存済みのチャンネル一覧にもチーム ID の列が無いため。閉じるには `types/` と `db/` の両方に変更が要り、今後の別タスクの対象 |
 
 **登録コードは本人にだけ見えるメッセージで返す。** チャンネルに平文で出さない（protocol spec 手順 ①）。
 
@@ -707,17 +708,41 @@ export interface PlatformFacade {
   replace(message: MessageRef, replacement: OutboundMessage): Promise<PostOutcome>;
   /** 外部から接続を受けるサービス（Teams）のための受け口 */
   webhookHandler(platform: PlatformName): (request: Request) => Promise<Response>;
+  /** チャットで打たれた運用者コマンドの実行者が、その installation で管理者かどうかを
+   *  `capabilities/admin-check.ts` の `ADMIN_CHECK_TABLE` に従って読む（要件 9.1）。
+   *  読めなかったときは `null`——「管理者でない」と「判定できない」を区別し、
+   *  後者を「管理者でない」と偽らない */
+  observeActorRoles(
+    installationId: string,
+    channel: ChannelRef,
+    actor: ChatAccountRef,
+  ): Promise<AdminActorRoles | null>;
   connections(): ConnectionManager;
   /** Chat SDK の state が持つ分散ロック。`sweeper` と `ConnectionManager` が使う */
   locks(): DistributedLock;
+  /** この facade が開いたものをすべて返す（各チャット接続と、Postgres の state 接続）。
+   *  `connections().stopAll()` とは別——そちらは state をつないだままにして
+   *  ロックと投稿を機能させ続ける。state 自体を閉じられるのはこの層だけなので、
+   *  プロセスの後始末（`runtime/server.ts`）はここを通る */
+  shutdown(): Promise<void>;
 }
 
 export const createPlatformFacade: (
   appConfig: PlatformAppConfig,
   installations: InstallationProvider,
   sink: PlatformEventSink,
+  /** 運用者向けの事実（読み取り失敗の理由など）を報告する先。省略可——
+   *  何も渡さなくても facade は動く */
+  reportOperationalFailure?: (message: string, error?: unknown) => void,
 ) => Promise<PlatformFacade>;
 ```
+
+**Teams は `observeActorRoles` にまだ答えられない。** `Invocation`/`PlatformEvent`（`types/`）は
+Bot Framework の利用者 ID しか運ばず、Graph が所属を引くための AAD オブジェクト ID が届かない。
+加えて保存済みのチャンネル一覧（`db/`）にチーム ID の列が無く、Graph は所属をチーム単位でしか
+答えない。どちらも `platform/` の外側（`types/`・`db/`）の変更が要るため、`platform/actor-roles.ts`
+は「判定できませんでした」を返す——空の役割 `[]` を返すと、本物のチーム所有者に「あなたは
+所有者ではない」と偽ることになるため。
 
 - Preconditions: `openModal` は **`supports(platform, 'modal')` が真**のときだけ呼べる。
   手形が生きているかどうかは呼ぶ前に判定しない — 判定できるのは実際に開こうとしたサービス側だけなので、

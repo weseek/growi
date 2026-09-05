@@ -17,10 +17,7 @@ import {
   CONNECTION_UNIT_TABLE,
   REQUIRES_INBOUND_REACHABILITY,
 } from '../capabilities/index.js';
-import {
-  type AdminActorRoles,
-  createArgumentCollector,
-} from '../command/index.js';
+import { createArgumentCollector } from '../command/index.js';
 import {
   createChannelPermissionRepository,
   createInstallationChannelRepository,
@@ -58,7 +55,12 @@ import {
   createRelationKeyService,
 } from '../relation/index.js';
 import type { RoutesAppDeps, SignatureGuardDeps } from '../routes/index.js';
-import type { PlatformEvent, PlatformEventSink } from '../types/index.js';
+import type {
+  AdminActorRoles,
+  Invocation,
+  PlatformEvent,
+  PlatformEventSink,
+} from '../types/index.js';
 import type { ProxyConfig } from './config.js';
 import {
   ensureMattermostInstallations,
@@ -204,6 +206,7 @@ export const createProxyDependencies = async (
     config.platformApp,
     createInstallationProvider(installations),
     deferred.sink,
+    reporters.reportOperationalFailure,
   );
 
   /**
@@ -276,17 +279,32 @@ export const createProxyDependencies = async (
   };
 
   /**
-   * Nothing in this app can observe an actor's roles on a chat service yet:
-   * `capabilities/admin-check.ts` declares WHICH field each service's answer
-   * is read from, but no layer makes the call, and this layer structurally
-   * cannot -- the Chat SDK may only be named inside `platform/`.
+   * `AdminFlowDeps.observeActorRoles` -- the gap task 7.3 left open, filled the
+   * way it said it had to be: `platform/` grew the method that actually asks
+   * the chat service (`PlatformFacade.observeActorRoles`, reading whichever
+   * field `capabilities/admin-check.ts` declares for that service), and this
+   * layer only joins it to what `AdminFlow` has in hand.
    *
-   * `null` is the honest answer for "could not be observed", which `AdminFlow`
-   * already separates from "is not an admin" and refuses, telling the operator
-   * this proxy could not read their roles. Answering anything else here would
-   * mean inventing an authorization result.
+   * Joining means resolving the channel to an installation first, since that
+   * is what carries the credentials the question is asked with. An
+   * unresolvable channel therefore answers `null` here, and the operator is
+   * told the roles could not be read -- rather than reaching `AdminFlow`'s own
+   * message about a missing workspace registration, which now only answers a
+   * channel that stopped resolving between the two lookups. Both refuse, and
+   * both point at this proxy's configuration; putting the resolution first is
+   * what keeps the observation from being asked without an installation.
    */
-  const observeActorRoles = async (): Promise<AdminActorRoles | null> => null;
+  const observeActorRoles = async (
+    invocation: Invocation,
+  ): Promise<AdminActorRoles | null> => {
+    const installationId = await resolveInstallationId(invocation.channel);
+    if (installationId == null) return null;
+    return await facade.observeActorRoles(
+      installationId,
+      invocation.channel,
+      invocation.actor,
+    );
+  };
 
   const uriResolver = createGrowiUriResolver({
     closedNetwork: config.closedNetwork,

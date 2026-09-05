@@ -70,6 +70,7 @@ export interface FieldSpec {
   readonly maxLength?: number;
 }
 
+export type { AdminActorRoles } from './actor-roles.js';
 export type { ClosedNetworkConfig } from './closed-network-config.js';
 export type { DistributedLock } from './distributed-lock.js';
 export type { Invocation } from './invocation.js';

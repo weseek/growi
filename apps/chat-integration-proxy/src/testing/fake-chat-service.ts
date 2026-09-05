@@ -32,6 +32,7 @@ import type {
   PlatformFacade,
 } from '../platform/index.js';
 import type {
+  AdminActorRoles,
   DistributedLock,
   HistoryOutcome,
   InteractionRef,
@@ -84,6 +85,20 @@ export interface FakeChatScript {
     platform: PlatformName,
     request: Request,
   ) => Promise<Response>;
+  /**
+   * The roles the actor holds, as the chat service would report them
+   * (`ADMIN_CHECK_TABLE`'s vocabulary: `is_admin`, `ADMINISTRATOR`, ...).
+   *
+   * Unscripted, this fake answers `null` -- 「役割を読み取れなかった」, which
+   * refuses every operator command. That is the fail-closed default on
+   * purpose: a test that means to act as a workspace administrator has to say
+   * so, rather than becoming one because nothing said otherwise.
+   */
+  readonly observeActorRoles?: (
+    installationId: string,
+    channel: ChannelRef,
+    actor: ChatAccountRef,
+  ) => AdminActorRoles | null;
 }
 
 export interface FakeChatService {
@@ -203,6 +218,9 @@ export const createFakeChatService = (
       modals.push(modal);
       return Promise.resolve(script.openModal?.(modal) ?? true);
     },
+
+    observeActorRoles: async (installationId, channel, actor) =>
+      script.observeActorRoles?.(installationId, channel, actor) ?? null,
 
     listChannels: async (installationId) =>
       script.listChannels?.(installationId) ?? { channels: [] },

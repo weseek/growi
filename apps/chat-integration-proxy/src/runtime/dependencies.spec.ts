@@ -113,7 +113,25 @@ describe('createProxyDependencies', () => {
       proxyConfig.platformApp,
       expect.anything(),
       expect.anything(),
+      expect.anything(),
     );
+  });
+
+  it('gives the platform the same reporter every other operational failure is told through', async () => {
+    // Reading an actor's roles can fail for reasons only the chat service
+    // knows (a missing Slack scope, an HTTP 403). The operator is told to
+    // investigate, so what they need to investigate WITH has to reach the one
+    // place this app writes such facts.
+    const { createDb, createFacade } = built();
+    const reportOperationalFailure = vi.fn();
+
+    await createProxyDependencies(config(), {
+      createDb,
+      createFacade,
+      reporters: { reportOperationalFailure },
+    });
+
+    expect(createFacade.mock.calls[0]?.[3]).toBe(reportOperationalFailure);
   });
 
   it('gives the facade a sink that is already wired, so an event arriving on the first connection is handled', async () => {
@@ -367,5 +385,126 @@ describe('the periodic work createProxyDependencies composes', () => {
     // the walk is over the declared services, not over one hard-coded name.
     expect(new Set(ids)).toEqual(new Set(['inst-1', 'inst-2']));
     expect(ids).toHaveLength(8);
+  });
+});
+
+/**
+ * Requirement 9.1's own trigger: 「管理者がチャット側で登録操作を行った」.
+ *
+ * Driven through the graph this file builds rather than through `AdminFlow`
+ * directly, because what is under test is the wiring: the bridge that answers
+ * 「この人はこの workspace の管理者か」 used to be a stub returning `null`, and a
+ * test that hands `AdminFlow` its roles itself would pass either way.
+ *
+ * The facade is the mocked edge (it reaches a live chat service), so the three
+ * cases below are stated as what the facade answers, and what the operator is
+ * shown as a result:
+ *
+ *  - roles that include `is_admin` -> a registration code, to that person only
+ *  - roles read, but none of them admin -> refused, and no code is minted
+ *  - roles that could not be read at all -> a different refusal, naming the
+ *    proxy's own configuration rather than the operator's permissions
+ */
+describe('a register command typed in chat (Requirement 9.1)', () => {
+  const channel = {
+    platform: 'slack' as const,
+    channelId: 'C1',
+    channelName: 'general',
+    isPrivate: false,
+  };
+  const actor = {
+    platform: 'slack' as const,
+    accountId: 'U1',
+    displayName: 'Taro',
+  };
+
+  const registerTypedBy = async (
+    roles: { readonly grantedFields: ReadonlyArray<string> } | null,
+  ): Promise<{
+    readonly facade: PlatformFacade;
+    readonly db: DeepMockProxy<PrismaClient>;
+    readonly said: () => string;
+  }> => {
+    const db = mockDeep<PrismaClient>();
+    db.installation.findMany.mockResolvedValue([
+      { id: 'inst-1', workspaceId: 'T1' },
+    ] as never);
+    db.installationChannel.findUnique.mockResolvedValue({
+      installationId: 'inst-1',
+      platform: 'slack',
+      channelId: 'C1',
+      channelName: 'general',
+      isPrivate: false,
+      refreshedAt: new Date('2026-09-01T00:00:00.000Z'),
+    } as never);
+    db.pairingOrder.count.mockResolvedValue(0);
+    db.pairingOrder.create.mockResolvedValue({} as never);
+
+    const facade = mock<PlatformFacade>();
+    facade.connections.mockReturnValue(mock<ConnectionManager>());
+    facade.postEphemeral.mockResolvedValue({ ok: true, messageId: 'M1' });
+    facade.post.mockResolvedValue({ ok: true, messageId: 'M2' });
+    facade.observeActorRoles.mockResolvedValue(roles);
+
+    let sink: PlatformEventSink | null = null;
+    await createProxyDependencies(config(), {
+      createDb: () => db,
+      createFacade: (_appConfig, _installations, target) => {
+        sink = target;
+        return Promise.resolve(facade);
+      },
+    });
+    if (sink == null) throw new Error('the facade was built without a sink');
+
+    await (sink as PlatformEventSink).handle({
+      kind: 'slash-command',
+      platform: 'slack',
+      channel,
+      actor,
+      command: 'register',
+      text: '',
+      interaction: null,
+    });
+
+    return {
+      facade,
+      db,
+      said: () =>
+        vi
+          .mocked(facade.postEphemeral)
+          .mock.calls.map(([, , message]) =>
+            message.kind === 'markdown' ? message.markdown : '',
+          )
+          .join('\n'),
+    };
+  };
+
+  it('issues a registration code to the administrator who typed it, and to nobody else', async () => {
+    const { facade, db, said } = await registerTypedBy({
+      grantedFields: ['is_admin'],
+    });
+
+    // The code was actually minted -- a `pairing_order` row is what a later
+    // submission from GROWI's admin screen is matched against.
+    expect(db.pairingOrder.create).toHaveBeenCalledTimes(1);
+    expect(said()).toContain('登録コード');
+    // 「登録コードは本人にだけ見えるメッセージで返す」: never the channel.
+    expect(facade.post).not.toHaveBeenCalled();
+    expect(facade.observeActorRoles).toHaveBeenCalled();
+  });
+
+  it('refuses someone whose roles were read and hold no admin, without minting a code', async () => {
+    const { db, said } = await registerTypedBy({ grantedFields: [] });
+
+    expect(db.pairingOrder.create).not.toHaveBeenCalled();
+    expect(said()).toContain('管理者');
+    expect(said()).not.toContain('登録コード');
+  });
+
+  it("tells the operator it is the proxy's own configuration at fault when no roles could be read", async () => {
+    const { db, said } = await registerTypedBy(null);
+
+    expect(db.pairingOrder.create).not.toHaveBeenCalled();
+    expect(said()).toContain('判定できませんでした');
   });
 });

@@ -24,7 +24,7 @@
 import type { PlatformName } from '@growi/chat';
 
 import { ADMIN_CHECK_TABLE } from '../capabilities/index.js';
-import type { Invocation } from '../types/index.js';
+import type { AdminActorRoles, Invocation } from '../types/index.js';
 
 /**
  * The words an operator can type. `rotate-key status` is not a sixth word --
@@ -45,25 +45,12 @@ const isAdminCommandWord = (word: string): word is AdminCommandWord =>
   (ADMIN_COMMAND_WORDS as ReadonlyArray<string>).includes(word);
 
 /**
- * The actor's role/permission facts, as the caller observed them on the chat
- * service. `grantedFields` holds the role names or permission flags the actor
- * actually has, in the same vocabulary `ADMIN_CHECK_TABLE` declares
- * (`is_admin`, `ADMINISTRATOR`, `system_admin`, `owner`, ...).
- *
- * Passing the facts in rather than fetching them keeps this file pure and
- * keeps the ordered dependency intact -- fetching them means calling the chat
- * service, and `PlatformFacade` (the only thing allowed to touch the Chat SDK)
- * exposes no method that answers "what roles does this account hold?". So the
- * caller observes, and this file decides.
- *
- * Mattermost's `team_admin` is scoped to a team, so a caller must include it
- * only when the actor holds it on the team the command was typed in --
- * `ADMIN_CHECK_TABLE` records that scoping in its `description`, and no
- * boolean answer can carry it.
+ * Re-exported so this file's own vocabulary stays complete for its readers:
+ * `isWorkspaceAdmin` below takes one, and `command/index.ts` publishes it.
+ * It is DECLARED in `types/` because `platform/actor-roles.ts` -- which reads
+ * these facts off the chat service -- sits to the left of this layer.
  */
-export interface AdminActorRoles {
-  readonly grantedFields: ReadonlyArray<string>;
-}
+export type { AdminActorRoles };
 
 /**
  * Where an intent's answer may be shown. `'ephemeral'` means only the person

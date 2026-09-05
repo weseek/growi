@@ -493,7 +493,7 @@
   - _Depends: 11.1_
 
 - [ ] 12. `/kiro-validate-impl` の NO-GO を是正する
-- [ ] 12.1 実行者の権限を読み、チャット起点の運用者操作を機能させる
+- [x] 12.1 実行者の権限を読み、チャット起点の運用者操作を機能させる
   - `runtime/dependencies.ts` の `observeActorRoles` は常に `null` を返し、`AdminFlow` が
     運用者コマンド（`register`・`unregister`・`weight`・`rotate-key`）を全部「判定できませんでした」
     で断り続けている——**新しく立てた proxy を業務に乗せる経路が1つも無い**（要件9.1が動かない）
@@ -695,3 +695,8 @@
   **「対応表を持たない」はschema.prismaの全カラムを機械的に洗い出して確認した**——人を指しうる列は`pending_collection.actor_account_id`の1つだけ、GROWIを指す列は`relation.growi_uri`・`relation.growi_label`の2つだけで、この2種類が並ぶ行はどこにも作れないというのが構造的な意味。登録コードそのものとチャットアカウント識別子がどのテーブルのどの行にも現れないことは、まずコードのsha256が`pairing_order`にちょうど1件見つかることを確認してから（検索そのものが壊れていないことの正の対照）否定側を見る順にした。**検索範囲はpublic schemaのみ**（Chat SDKが使うchat_sdk schemaは対象外だが、GROWIという概念自体を持たないため決定的な確認には影響しない）。
 
   **申し送り**: (a) **これが`/kiro-validate-impl`の直前の最後のタスクである。検証の最初の行動は、生きたPostgreSQLに対して5つの結合試験ファイル（`harness-round-trip.integ.ts`・`command-flow-e2e.integ.ts`・`notification-linking-e2e.integ.ts`・`instance-ownership-e2e.integ.ts`・`pairing-rotation-e2e.integ.ts`）を一緒に走らせることだが、まず`paired-workspace.ts`のopenWorkspace/pairGrowiが緑になることを確認すること**——ここが壊れていると5ファイル全部が同時に落ちる。(b) `/kiro-validate-impl`へ——要件10.5の誤引用と9.7の本文欠落の2点を直すこと。(c) 9.1申し送り(a)（`observeActorRoles`を埋める新タスク）が片付いていない限り、チャットから始まる紐付けと運用者コマンドは全部断られたまま——feature全体のGO判定の前に明示的に確認すること。
+- **12.1**: **要件9.1の引き金（チャット側での管理者の登録操作）が実際に動くようになった。**9.1申し送り(a)・11.5申し送り(c)が指していた穴——`runtime/dependencies.ts`の`observeActorRoles`が常に`null`——を埋めた。実行者の役割を読む処理は**`platform/actor-roles.ts`**に置いた（`platform/`だけがChat SDKを名指しできるため）。`ROLE_READERS`は`Record<PlatformName, ActorRoleReader>`の1枚の表で、各リーダーは探すフィールド名を文字列で書かず`ADMIN_CHECK_TABLE`（1.6）から受け取るので、`isWorkspaceAdmin`が突き合わせる語彙の出どころは1つのまま。実際の呼び先はSlackが`users.info`（`is_admin`/`is_owner`、Discordのパーミッションビット確認済み: `ADMINISTRATOR`=8=1n<<3n・`MANAGE_GUILD`=32=1n<<5nは`discord-api-types`と実測一致）、Mattermostが利用者のロール＋対象チャンネルのチームの`team_admin`。**Chat SDKのアダプタは使っていない**——`Adapter`インタフェースには所属や役割を答えるメソッドが1つも無い。
+
+  **Teamsは依然として判定できず、常に「判定できませんでした」で断る（意図的・偽らない設計）。** レビューで、当初のコードコメントが「識別子の橋渡しが原理的にできない」と書いていたのは言い過ぎと判明したため訂正した——正しい理由は「境界の外」であって「不可能」ではない：`@chat-adapter/teams`の公開された`./webhook`型（`TeamsActivity.from.aadObjectId`等）を経由すればAADオブジェクトIDには実際に到達できるが、この app 自身の`Invocation`/`PlatformEvent`（`types/`）がBot Frameworkの利用者IDしか運ばずAADオブジェクトIDを捨てていること、保存済みのチャンネル一覧（`db/`）にチームIDの列が無いことの2点が真の障壁——どちらも`platform/`+`runtime/`という本タスクの境界の外側にあり、閉じるには別タスクが要る。design.md（`platform/actor-roles.ts`のFile Structure Plan・`PlatformFacade`のメソッド一覧・`createPlatformFacade`の第4引数・Teamsの調べ方の表）も本タスクで実装に合わせて修正済み。
+
+  **申し送り**: (a) **Teamsのチャット起点ペアリングを閉じる別タスクが必要**——`types/`（Invocationにaadオブジェクトidを運ぶ）と`db/`（チャンネル一覧にチームidの列を足す。`platform/channels.ts`の`listTeamsChannels`は既にteam.idをスコープ内に持っているが保存前に捨てている）の両方の変更が要る。(b) `AdminActorRoles`は`command/admin-command-set.ts`から**`types/actor-roles.ts`へ移した**（`command/index.ts`からの公開は従来どおりで既存の import は変わらない。実行者の役割を**読む**層`platform/`は依存順で`command/`の左にあるため、両者が使う型はここにしか置けない）。(c) 配線は「チャンネル→installationを引き当ててからfacadeに役割を聞く」順にしたため、`resolveInstallationId`が運用者コマンド1回につき2回走る（既知の費用であって事故ではない）。(d) `createPlatformFacade`に第4引数（省略可の運用者向け報告関数）を足し、読み取り失敗の理由（スコープ不足・HTTPエラー等）を`null`だけでなく運用者に見える形で残せるようにした。(e) **生きたサービスに対しては1回も確かめていない**——エンドポイント・フィールド名・必要な権限（Slackの`users:read`、Discordのguild members intent、Mattermostの`read_other_users_teams`）は公開リファレンスに従っただけ。10.xの導入ドキュメントはこの3サービスぶんの権限を追記する必要がある。(f) `pairing-rotation-e2e.integ.ts`にチャットで`register`を打って発行されたコードでペアリングが成立するケースを1件足した（他5ファイルと同じくこのdevcontainerでは`postgres`未到達で赤）。`fake-chat-service.ts`の`observeActorRoles`注入口は明示しなければ`null`（役割を読めなかった）が既定——安全側。
