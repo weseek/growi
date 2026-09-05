@@ -1083,9 +1083,11 @@ Chat SDK の state（購読・分散ロック・重複排除）は `@chat-adapte
 - **1 つのトランザクションにはまとめない。** `platform/` 層は Prisma のクライアントを持たない
   （持つのは `db/` だけ）という決まりを崩さないため。途中で失敗しても `Restrict` により
   行が孤立することは無く、`installation` の行は残るので、**`remove()` をもう一度呼べば続きから終わる**
-- 関係 1 つ分の削除の順番は `PairingService.unpair()` と同じである。**共通の関数にはまだしていない** —
-  `unpair()` が未実装で形が決まっていないため。`unpair()` を書くときは**この順番に揃え**、
-  そのときに共通の置き場所（`relation/` 側）へ出すこと
+- 関係 1 つ分の削除の順番は `PairingService.unpair()` と同じで、共通の関数 `db/relation-cascade.ts` の
+  `deleteRelationCascade()` に1か所だけ書く。**置き場所は `relation/` ではなく `db/`** ——呼ぶ側が2つあり、
+  片方の `platform/installation-store.ts`（`InstallationStore.remove()`）は層の依存の順序で `relation/` の
+  **左**にいるため、`relation/` に置くと既存の呼ぶ側から import できない。`db/` は両方の左にあり、この関数は
+  `db/` 自身のリポジトリを順に呼ぶだけで `relation/` の語彙を必要としないため、この層の性格から外れない
 
 **保存時の暗号化**: `installation.credentials` と `own_key.private_key_pem`。
 暗号化に使う鍵は `runtime/config.ts` が環境変数から読み、他の層へは復号済みの値ではなく**復号する関数**を渡す。
