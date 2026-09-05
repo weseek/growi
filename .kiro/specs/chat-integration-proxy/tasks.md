@@ -456,7 +456,7 @@
   - _Requirements: 1.1_
   - _Depends: 9.1, 1.2_
 
-- [ ] 11.2 コマンドの流れを 4 サービスで確かめる
+- [x] 11.2 コマンドの流れを 4 サービスで確かめる
   - 入力欄が使えるサービス — 呼びかけ → ボタン → 入力欄 → ページ作成 → リンクが投稿される
   - 入力欄が使えないサービス — 呼びかけ → 番号つき一覧 → 呼びかけ付きの返信で選択 → 聞き返しでページ作成
   - 検索が 2 台の GROWI の結果を出典つきで返す
@@ -602,3 +602,14 @@
   **実装中に事故が1件あった**: lintの前後比較のため実装者が `git stash push`（パス指定）→`git stash pop` を使ったところ、push が静かに失敗し pop が別ブランチ（`feat/plugin-for-server-side`）の無関係な既存stashを取り込みコンフリクトを起こした。実装者が直ちに気づいて自分の作業を退避、chat-integration-proxy以外の全パスをHEADへ戻し、stashが新規追加したファイルを削除して復旧した。**親セッションが独立に `git status --porcelain`（このタスクの変更ファイルのみ）と `git stash list`（該当stashが残存）を確認し、作業消失が無いことを検証済み。** このリポジトリの規約（bare `git stash`/`git stash pop` を使わない）に反する行為ではあったが、結果的にクリーンに復旧している。
 
   **申し送り**: (a) 11.2へ——結合試験の中に書いたDBの下ごしらえ（`installations.save()`→`relations.create()`→`peerKeys.register()`）は型検査とbuildは通るが`postgres`に届かないため一度も実行できていない。動く足場だと思わずに、生きたPostgreSQLにつないだ最初の1回で直す前提で扱うこと。(b) 11.4へ——偽のチャットサービスの`locks()`はプロセス内だけで完結し取り合いをしない。11.4は持ち分を確かめるインスタンスについて本物の`createPlatformFacade`で起動すること（cluster はインスタンスごとに`overrides`を素通しするので混在できる）。(c) 11.2へ——Teamsの受け口は`webhookHandler`経由で経路の登録とfacadeへの到達までしか確かめられず、本物のChat SDKのハンドラがactivityを捌くところまでは確かめられない。そこまで要るなら`FakeChatScript.webhook`に応答を書くこと。(d) イベントを流し込む口は`emit`と`deliver`の2つがあり、例外の有無を区別できる`deliver`を使うこと。(e) `RunningProxy.port`は実際に開いた番号を返さない（ポート0を頼むと0が返る）——`free-port.ts`の`listenOnFreePort()`を`listen`の差し替えとして渡し、非同期の`baseUrl()`で実際の番号を読むこと。(f) 偽のGROWIはplain http・loopbackなので、`closedNetwork.allowList`へ`127.0.0.1`を入れないとソケットが開く前に断られる。
+- **11.2**: 通しのコマンドの流れを **`src/testing/command-flow-e2e.integ.ts`**（4件）に置いた。11.1の土台（偽のGROWI・偽のチャットサービス・複数インスタンスの起動）をそのまま使い、実際の`startProxy`起動・実Prisma・実ソケットの署名往復を通す。**この devcontainer では `postgres` が引けないため赤のまま**——`postgres`は`.devcontainer/compose.yml`に宣言されているがホスト名が解決できず、コンテナを起動するdocker CLIも無いため、11.1と同じ性質の赤（欠陥ではない）。`beforeAll`を置いていないのも11.1と同じ理由（落ちると本体がskipされ中の誤りが隠れるため）。
+
+  **どのサービスがどの流れを担うかは能力表の実測から決めている**（親からの当初の想定「Teamsは入力欄が使えない」は誤りで、`capabilities/platform-capabilities.ts`の実際の表では`modal.teams = 'full'`・`slashCommand.teams = 'none'`——tasks.md 11.2自身の文言「スラッシュコマンドが使えず入力欄が使えるという他と違う組み合わせ」と一致し、レビューでもこの組み合わせがTeamsだけであることを確認済み）。「入力欄が使えるサービス」はSlackとTeams、「入力欄も番号つき一覧のボタンも使えないサービス」はMattermost（`interactiveActions: none`）、検索はDiscordに割り当てて4サービスすべてを覆った。
+
+  **tasks.mdの文言と実装の並びが1点ずれている**（レビューで「実装の欠陥ではなく文言の不正確さ」と確認済み）。11.2は「呼びかけ→ボタン→入力欄」と書いているが、`orchestration/command-flow.ts`にはどのGROWIかを問う質問をあえて値が揃った後に出すという設計コメントがあり、実際の並びは**呼びかけ→入力欄（modal）→どのGROWIかのボタン→ページ作成→リンク投稿**。試験は実装の並びで書いた。
+
+  **下ごしらえに必要な4行**（11.1の申し送り(a)はここまで書いていない）: (1)`installations.save()`、(2)`installationChannels.upsert()`（`runtime/dependencies.ts`の`resolveInstallationId`がチャンネル台帳を引いて installation を決めるため、これが無いと「このチャットのworkspaceがまだ登録されていません」で終わる）、(3)偽のGROWI1台につき`relations.create()`を1行、(4)送信先の関係すべてに`RelationKeyService.issue()`（無いと`GrowiClient`が`no-signing-key`を返す）。加えて**書き込みコマンドには`channel_permission`の行が要る**（`judge`は行の無い書き込みを`no-settings`で拒み、読み取りは既定で許可するため、`search`にはあえて行を作っていない）。**11.1が使っている`peerKeys.register`はここでは使っていない**——この4件の通信はすべてproxy→偽GROWI方向で、proxyへ署名して入ってくる経路（11.1の2件目が担当）が無いため。
+
+  **確かめられたことと、確かめられていないこと。** 実行できないため、4つの流れそのものはまだ生きたPostgreSQLで確認されていない——`postgres`につないだ最初の1回で、11.1・11.2両方の試験を一緒に走らせて確認すること。代わりの根拠として、各シナリオ冒頭のサービス能力の前提（`levelOf(...)`）はDB呼び出しより前で実際に実行・確認済みであり、能力に基づくサービス割り当て自体は実測で裏づけられている。加えて、4件とも最初のDB書き込み（`installation.upsert`）でのみ`Can't reach database server at postgres:5432`として落ち、`TypeError`や輸出漏れではないことを確認済み。**Teamsの受け口の確認は、11.1の申し送り(c)の範囲どおり経路の登録とfacadeへの到達までであり、本物のChat SDKのハンドラがactivityを捌くところまでは確かめていない。** また `/webhook/slack` が404であることの確認自体は、`routes/webhook-routes.spec.ts`が単体レベルで既に確かめている事実の再確認であり、要件13.2への新規の裏付けというわけではない（レビューで指摘・訂正済み）。
+
+  **申し送り**: (a) 11.3〜11.5へ——上の4行の下ごしらえ（`openWorkspace`/`pairGrowi`/`permitWrite`）は同ファイル内に置いてある。別ファイルから使うなら`src/testing/`側へ切り出すこと。(b) 11.1自身の2件（とくに`peerKeyRepository.register`の鍵材料の検査）もいまだ一度も実行されていない——生きたPostgreSQLにつないだ最初の1回は11.1・11.2を両方回して見ること。(c) 偽のGROWIが署名を断ると`received()`は空のままなので、「流れが動かなかった」と見分けがつくよう`refusals()`が空であることも各シナリオで併せて確認している。同じ書き方を11.3〜11.5でも取ること。(d) 番号つき一覧の見た目（整形）は`platform/outbound.ts`側で既にテスト済みのため重複させず、この土台では利用者が打つ番号が提示された順のGROWIを選ぶという対応関係だけを確認している。
