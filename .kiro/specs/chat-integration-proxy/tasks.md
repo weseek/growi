@@ -446,7 +446,7 @@
   - _Requirements: 13.4, 13.5_
   - _Boundary: docs_
 
-- [ ] 11. 通しで動くことを確かめる
+- [x] 11. 通しで動くことを確かめる
 - [x] 11.1 通しの試験を回す土台を用意する
   - **偽の GROWI** — 署名を検証して応答を返す HTTP サーバ。実際の往復に使う
   - **偽のチャットサービス** — 4 サービス分のイベントを流し込み、投稿を受け取れるもの
@@ -482,7 +482,7 @@
   - _Requirements: 1.1, 1.4, 8.1_
   - _Depends: 11.1, 9.2_
 
-- [ ] 11.5 紐付けと鍵の入れ替えを通しで確かめる
+- [x] 11.5 紐付けと鍵の入れ替えを通しで確かめる
   - 登録コードの発行から成立まで、実際の HTTP を通して往復すること
   - **申告された URL が条件を外れるとき拒まれること。明示した宛先は 3 条件とも通ること**
   - 鍵の入れ替えで、届かない相手が 1 台あるうちは古い鍵が失効せず、
@@ -635,3 +635,18 @@
   **掃除の二重防止は、片方の台が`proxy:sweep`を先に押さえた状態でもう片方の`sweepOnce()`を直接呼ぶ形で確かめた**（自動周回同士のタイミング勝負にしていない）。`sweepOnce`は自動周回と同じロック取得の経路を通るため、これは本番と同じ条件での確認になる。
 
   **申し送り**: (a) 11.5へ——11.1〜11.4のどれもまだ生きたPostgreSQLで一度も実行できていない。つないだ最初の1回は4つまとめて回すこと。(b) 11.5へ——本物のfacadeで起動したい場合、Discordだけを設定した`proxyConfig()`と`onlyInstallations`の包み方をこのファイルから借りられる。別ファイルから使うなら`paired-workspace.ts`の隣へ切り出すこと。(c) `/kiro-validate-impl`へ——上記の要件番号の食い違い（11.4の1.4・8.1）とTeams/Mattermostの取り違えの2点を直すこと。(d) 9.2が残した「1周の中で`renew`を呼ばない」改善は今回も触っていない——この試験は1周を通す前にロックの取り合いだけを見るため、その改善が入っても赤くならない。
+- **11.5**: 紐付けと鍵の入れ替えの通しの確認を **`src/testing/pairing-rotation-e2e.integ.ts`**（4件）に置いた。**この devcontainer では `postgres` を引けないため4件とも赤のまま**——4件とも`openWorkspace`の`installation.upsert`で`Can't reach database server at postgres:5432`として落ちることを確認済みで、11.1〜11.4と同じ性質の赤。5つの結合試験ファイル全体を`pnpm vitest run src/testing`で回すと19件失敗するが、これは**5ファイルすべてが`paired-workspace.ts`の`openWorkspace`/`pairGrowi`を経由するため一度も実行されたことのない共通部品を等しく踏んでいる**だけであり、5つの独立した不具合ではない。内訳は16件がPrismaの`Can't reach database server`、残り3件（`harness-round-trip.integ.ts`と`instance-ownership-e2e.integ.ts`にある）はChat SDKのstate adapter側の`ENOTFOUND postgres`・5秒タイムアウト・`handled:false`照合失敗で、どれも同じくpostgres未到達の下流。**生きたPostgreSQLに繋いだ最初の作業は、他の失敗を読む前にまず`paired-workspace.ts`（`openWorkspace`/`pairGrowi`）を緑にすることであるべき**——ここが壊れていると5ファイル全部が同時に落ちて別々の不具合に見えてしまう。
+
+  **偽のGROWIに「紐付けられる側」の半分を足し、11.x で唯一 RED→GREEN を実際に踏んだタスクになった**（`pairingRegistration`宣言・`challenges()`記録・確認要求への署名応答の3つ。単体906→909、内訳は`fake-growi.spec.ts`に3件追加）。**設計判断2つ**: (1) 申告する鍵と紐付け後に外向きの署名に使う鍵を同じにした——別々にすると「紐付けは成立したが以後どちらの向きも通らない」状態を試験が緑で通してしまうため。この判断のおかげで`trustGrowiSignature`を1度も呼ばずに紐付け直後の署名付きリクエストが通ることが、要件9.5「双方に登録する」の振る舞いによる裏づけになっている。(2) 確認への答えをわざと間違える差し替え口は作らなかった——答えは方針でなく一意に決まる暗号の導出であり、改竄した形は`pairing-service.spec.ts`が既に`submit`に対して直接覆っている。
+
+  **要件番号の対応**: 11.5が挙げる8つのうち、7.8・9.1・9.2・9.5・9.7・13.1は「the chat-integration proxy shall」で答えている。10.6はGROWI application主語だが要件10.7が「1〜4および6と同じ確認をproxyも行う」と明記して写しているため答えている。**10.5はこのタスクに対応しない**——「the GROWI application shall 新旧どちらの鍵で送られたリクエストも処理する」であり、10.7が写すのは10.6までで10.5は含まれない。ここで確かめている「全員に届くまで古い鍵を失効させない」はdesign.md側の制約であって要件10.5ではない。**9.7は要件一覧にあるが4つの箇条書きのどれにも現れておらず**、1件目の試験に「解除後、同じ鍵で署名した同じ要求が401になる」を追加してこれを満たしている。**この2点（10.5誤引用・9.7の本文欠落）は`/kiro-validate-impl`で扱うこと。**
+
+  **登録コードの発行はチャットからは通せない**——`runtime/dependencies.ts`の`observeActorRoles`が常に`null`を返すため（9.1申し送り(a)が既に記録している未着手の穴）、`AdminFlow`は運用者コマンドを全部「判定できませんでした」で断る。発行はHTTPの口でもない（design.mdのエンドポイント表に行が無い）ので、この試験は`PairingService.issueCode`を直接呼び、実際にHTTPの口がある`/chat-integration/pairing/submit`はfetchで実ソケットに対して駆動している。**この試験の承認は要件9.1が満たされたことの証明ではない**——9.1の引き金（チャット側での管理者の登録操作）自体は動作しない経路のままであり、`/kiro-validate-impl`はfeature全体のGO判定の前に9.1申し送り(a)（`observeActorRoles`を埋める新タスク）の状況を明示的に確認すること。
+
+  **3条件のURL判定は、どの条件で断られたかを区別せず「通信が1本も出ていないこと」（`challenges()`が空）を確認する形にした**——`PairingService`は失敗の種類だけを運用者に返し相手の応答の中身は返さないため、断り方の区別は`growi-uri-guard.spec.ts`の担当。3本のURLはアドレスのlietral（`93.184.216.34`系）を使い、ホスト名にするとDNS解決の失敗が条件判定より先に起きて何も示さない試験になるため避けた。閉域向けの許可URL（3条件すべてを技術的に破るが明示的に許可されている）が通ることで要件13.1も確認している。
+
+  **鍵の入れ替えは`revokeOldIfAllDelivered()`の戻り値ではなく`own_key.revokedAt`を直接読んで判定している**——戻り値の`false`は実際には4つの異なる状態（鍵の状態が読めない・未配達・進行中の入れ替えが無い・送信失敗、しかも最後は一部の鍵を実際に失効させた上で`false`を返す）に共通するため。新しい鍵の申し出も古い鍵の失効通知も、本文の申告ではなく偽のGROWI自身の`verify()`が解決した`verifiedKey.keyId`（署名そのものが証明した身元）で確認している。「届かない相手」はソケットを閉じるのではなく503を返す形でシミュレートした——関係は`growi_uri`を1本しか持たないため、閉じたポートを再利用するとレースになるため。ソケット断そのものの形は`relation-key-service.spec.ts`が単体で既に覆っている。
+
+  **「対応表を持たない」はschema.prismaの全カラムを機械的に洗い出して確認した**——人を指しうる列は`pending_collection.actor_account_id`の1つだけ、GROWIを指す列は`relation.growi_uri`・`relation.growi_label`の2つだけで、この2種類が並ぶ行はどこにも作れないというのが構造的な意味。登録コードそのものとチャットアカウント識別子がどのテーブルのどの行にも現れないことは、まずコードのsha256が`pairing_order`にちょうど1件見つかることを確認してから（検索そのものが壊れていないことの正の対照）否定側を見る順にした。**検索範囲はpublic schemaのみ**（Chat SDKが使うchat_sdk schemaは対象外だが、GROWIという概念自体を持たないため決定的な確認には影響しない）。
+
+  **申し送り**: (a) **これが`/kiro-validate-impl`の直前の最後のタスクである。検証の最初の行動は、生きたPostgreSQLに対して5つの結合試験ファイル（`harness-round-trip.integ.ts`・`command-flow-e2e.integ.ts`・`notification-linking-e2e.integ.ts`・`instance-ownership-e2e.integ.ts`・`pairing-rotation-e2e.integ.ts`）を一緒に走らせることだが、まず`paired-workspace.ts`のopenWorkspace/pairGrowiが緑になることを確認すること**——ここが壊れていると5ファイル全部が同時に落ちる。(b) `/kiro-validate-impl`へ——要件10.5の誤引用と9.7の本文欠落の2点を直すこと。(c) 9.1申し送り(a)（`observeActorRoles`を埋める新タスク）が片付いていない限り、チャットから始まる紐付けと運用者コマンドは全部断られたまま——feature全体のGO判定の前に明示的に確認すること。

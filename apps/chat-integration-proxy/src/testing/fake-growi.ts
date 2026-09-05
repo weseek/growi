@@ -23,18 +23,30 @@
 // filled in gaps by itself would let 11.2-11.5 assert against this file's
 // guesses instead of against GROWI's contract.
 
-import type { KeyObject } from 'node:crypto';
-import type { OpName, RequestEnvelope } from '@growi/chat';
-import { OP_ENDPOINTS } from '@growi/chat';
+import { type KeyObject, sign as nodeSign } from 'node:crypto';
+import type {
+  ChallengeResponse,
+  OpName,
+  OwnershipChallenge,
+  PublicKeyRegistration,
+  RequestEnvelope,
+} from '@growi/chat';
+import { OP_ENDPOINTS, parseOwnershipChallenge } from '@growi/chat';
 import type { KeyRef, VerifyFailure } from '@growi/chat/server';
 import {
   acceptEnvelope,
   DEFAULT_EXPIRES_IN_SEC,
+  pairingChallengePayload,
   sign,
   verify,
 } from '@growi/chat/server';
 import { Hono } from 'hono';
 
+// Reached past `routes/index.ts` on purpose: that barrel deliberately keeps
+// `challenge-sender.ts` out of itself, and this constant is the app's ONE
+// declaration of where the challenge is served. Writing the literal out again
+// here would let the two drift apart without anything noticing.
+import { CHALLENGE_ENDPOINT_PATH } from '../routes/challenge-sender.js';
 import { LOOPBACK, serveOnFreePort } from './free-port.js';
 import { createSigningIdentity, type PeerKey } from './signing-identity.js';
 
@@ -123,6 +135,19 @@ export interface FakeGrowi {
   readonly hostname: string;
   /** The public half of this GROWI's own key, for the proxy to store as a peer. */
   readonly ownKey: { readonly keyId: string; readonly publicKey: KeyObject };
+  /**
+   * What this GROWI declares about itself at pairing step 3, ready to be put
+   * into a `PairingSubmission`.
+   *
+   * **It names the same key as `ownKey`, and that is the contract rather than
+   * a shortcut.** The key a GROWI submits while pairing is the key it later
+   * signs its requests INTO the proxy with, so a fake that used two keys here
+   * would let a pairing test pass while the relation it established was
+   * useless for anything afterwards.
+   */
+  readonly pairingRegistration: PublicKeyRegistration;
+  /** Every ownership challenge this GROWI was asked to answer, oldest first. */
+  readonly challenges: () => ReadonlyArray<OwnershipChallenge>;
   /** Accepts signatures from this proxy key. Callable more than once. */
   readonly registerPeerKey: (peer: PeerKey) => void;
   /** Everything verified and answered so far, oldest first. */
@@ -152,13 +177,81 @@ export const startFakeGrowi = async (
 
   const received: FakeGrowiRequest[] = [];
   const refusals: FakeGrowiRefusal[] = [];
+  const challenges: OwnershipChallenge[] = [];
   const peerKeys = new Map<string, KeyObject>();
   /** Spent nonces, namespaced by relation AND key (never by nonce alone). */
   const spentNonces = new Set<string>();
 
   const peerKeyId = (ref: KeyRef): string => `${ref.relationId}:${ref.keyId}`;
 
+  const own = createSigningIdentity(
+    // Replaced per call: this side's key is one key used across every relation
+    // it is paired with, and the relation is only known when a call is made.
+    'placeholder',
+    options.ownKeyId ?? 'fake-growi-key-1',
+  );
+  const pairingRegistration: PublicKeyRegistration = {
+    keyId: own.key.keyId,
+    publicKeyJwk: own.publicKey.export({ format: 'jwk' }),
+    validFrom: new Date(0).toISOString(),
+  };
+
   const app = new Hono();
+
+  // Pairing step 5, and the ONE answer this fake decides for itself.
+  //
+  // The file header's rule -- an op's answer comes from a responder, never
+  // from a guess made here -- is about answers that are POLICY: what GROWI
+  // decides to do with a command is GROWI's business, and inventing one would
+  // let a test assert against this file. The ownership proof is not policy.
+  // It is a cryptographic derivation with exactly one correct value, fixed by
+  // `pairingChallengePayload` and by the key declared in
+  // `pairingRegistration`, so producing it here invents nothing.
+  //
+  // Registered BEFORE the catch-all below, which answers 404 to any path the
+  // shared endpoint table does not name -- and this path is deliberately
+  // absent from that table (it carries no `op` and no `relationId`).
+  //
+  // There is no hook for answering dishonestly. Every tampered form -- a
+  // challenge echoed back changed, a signature made with another key, a body
+  // that is not a `ChallengeResponse` -- is already driven directly against
+  // `PairingService.submit` in `pairing-service.spec.ts`, and a second way to
+  // produce them would be a second place for what "wrong" means to live.
+  app.post(CHALLENGE_ENDPOINT_PATH, async (c) => {
+    let raw: unknown;
+    try {
+      raw = await c.req.json();
+    } catch {
+      return c.body(null, 400);
+    }
+    const challenge = parseOwnershipChallenge(raw);
+    if ('error' in challenge) {
+      return c.body(null, 400);
+    }
+
+    challenges.push(challenge);
+    const answer: ChallengeResponse = {
+      // Echoed back rather than left out: `submit` compares this against the
+      // value it generated before it looks at the signature at all.
+      challenge: challenge.challenge,
+      challengeSignature: nodeSign(
+        // Ed25519 signs the message itself -- no digest algorithm is named.
+        null,
+        Buffer.from(
+          // NOT the bare challenge: the purpose prefix is what keeps step 5
+          // from being a window that signs any string a caller chooses.
+          pairingChallengePayload(
+            challenge.registrationCode,
+            challenge.challenge,
+          ),
+          'utf8',
+        ),
+        own.privateKey,
+      ).toString('base64url'),
+    };
+    return c.json(answer);
+  });
+
   app.post('*', async (c) => {
     const path = new URL(c.req.url).pathname;
     const op = OP_BY_PATH.get(path);
@@ -223,17 +316,12 @@ export const startFakeGrowi = async (
 
   const { server, baseUrl } = await serveOnFreePort(app);
 
-  const own = createSigningIdentity(
-    // Replaced per call: this side's key is one key used across every relation
-    // it is paired with, and the relation is only known when a call is made.
-    'placeholder',
-    options.ownKeyId ?? 'fake-growi-key-1',
-  );
-
   return {
     baseUrl,
     hostname: LOOPBACK,
     ownKey: { keyId: own.key.keyId, publicKey: own.publicKey },
+    pairingRegistration,
+    challenges: () => [...challenges],
     registerPeerKey: (peer) => {
       peerKeys.set(peerKeyId(peer.key), peer.publicKey);
     },
