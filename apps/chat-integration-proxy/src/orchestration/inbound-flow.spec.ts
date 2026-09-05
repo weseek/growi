@@ -164,12 +164,17 @@ const createPrisma = (
 const flowOver = (
   prisma: PrismaClient,
   platform: InboundFlowPlatform,
+  deadlines: {
+    readonly notificationTargetTimeoutMs?: number;
+    readonly notificationDeadlineMs?: number;
+  } = {},
 ): ReturnType<typeof createInboundFlow> =>
   createInboundFlow({
     db: prisma,
     cipher: fakeCipher,
     platform,
     now: () => NOW,
+    ...deadlines,
   });
 
 const postingPlatform = () => {
@@ -358,6 +363,138 @@ describe('notification -- retrying one that partly failed (Requirement 10.7)', (
     );
     expect(written.map((row) => row.channelId)).toEqual(['C-a', 'C-b']);
     expect(written.every((row) => row.requestId === 'req-1')).toBe(true);
+  });
+});
+
+describe("notification -- the proxy's own deadline", () => {
+  // `NotificationResult`'s `timeout` exists so a long target list cannot hold
+  // GROWI's single request open (design.md 「`timeout` があるのは、宛先が多い
+  // ときに GROWI の 1 リクエストが待たされないよう proxy 側にも締め切りを
+  // 設けるため」). The values below are injected and tiny for the reason
+  // `fan-out-collector.spec.ts` injects 20-30 ms ones: what is being tested is
+  // that the caps exist and are obeyed, not what the shipped numbers are.
+  const hangingOn = (hangingChannelIds: ReadonlyArray<string>) => {
+    const platform = mock<InboundFlowPlatform>();
+    platform.post.mockImplementation((channel) =>
+      hangingChannelIds.includes(channel.channelId)
+        ? // Never settles: the chat service accepted the call and went quiet.
+          new Promise(() => {})
+        : Promise.resolve({ ok: true, messageId: `M-${channel.channelId}` }),
+    );
+    return platform;
+  };
+
+  it('answers a destination that never responds as timeout, and still posts to the rest', async () => {
+    const prisma = createPrisma([channelRow('C-silent'), channelRow('C-ok')]);
+    const platform = hangingOn(['C-silent']);
+
+    const result = await flowOver(prisma, platform, {
+      notificationTargetTimeoutMs: 20,
+      notificationDeadlineMs: 500,
+    }).notify(notificationOf(['C-silent', 'C-ok']));
+
+    // The silent destination is first on purpose: the destination behind it
+    // is the one that proves the wait was given up rather than merely
+    // survived.
+    expect(result.outcomes.map((outcome) => outcome.status)).toEqual([
+      'timeout',
+      'posted',
+    ]);
+  });
+
+  it('stops posting once the whole request has run out of time, and answers the rest as timeout', async () => {
+    // Three silent destinations against a whole-request budget shorter than
+    // one destination's own cap. Without the whole-request budget the answer
+    // would take three times the per-destination cap; without taking the
+    // smaller of the two remaining budgets it would overshoot by a full
+    // per-destination cap on the last destination it starts.
+    const prisma = createPrisma([
+      channelRow('C-1'),
+      channelRow('C-2'),
+      channelRow('C-3'),
+    ]);
+    const platform = hangingOn(['C-1', 'C-2', 'C-3']);
+
+    const startedAt = Date.now();
+    const result = await flowOver(prisma, platform, {
+      notificationTargetTimeoutMs: 500,
+      notificationDeadlineMs: 80,
+    }).notify(notificationOf(['C-1', 'C-2', 'C-3']));
+    const elapsedMs = Date.now() - startedAt;
+
+    expect(result.outcomes.map((outcome) => outcome.status)).toEqual([
+      'timeout',
+      'timeout',
+      'timeout',
+    ]);
+    expect(elapsedMs).toBeLessThan(300);
+    // The destinations the deadline never reached are not posted to at all --
+    // answering `timeout` for a post that was never attempted is what keeps
+    // the whole answer inside the budget.
+    expect(platform.post.mock.calls.length).toBeLessThan(3);
+  });
+
+  it('never records a timed-out destination as posted, so a later retry reaches it', async () => {
+    // The record is the only thing that stops a retry from posting twice, so
+    // a timeout recorded as a success would silently drop the notification
+    // for good.
+    const prisma = createPrisma([channelRow('C-silent')]);
+    const platform = hangingOn(['C-silent']);
+    const request = notificationOf(['C-silent']);
+
+    const first = await flowOver(prisma, platform, {
+      notificationTargetTimeoutMs: 20,
+      notificationDeadlineMs: 500,
+    }).notify(request);
+    expect(first.outcomes[0].status).toBe('timeout');
+
+    const written = prisma.processedNotificationTarget.upsert.mock.calls.map(
+      (call) => (call[0] as unknown as { create: ProcessedRow }).create,
+    );
+    // A timeout leaves no record at all -- and above all never one saying
+    // `posted`, which is the status a retry skips.
+    expect(written).toEqual([]);
+
+    const answering = postingPlatform();
+    const second = await flowOver(prisma, answering, {
+      notificationTargetTimeoutMs: 20,
+      notificationDeadlineMs: 500,
+    }).notify(request);
+
+    expect(answering.post).toHaveBeenCalledTimes(1);
+    expect(second.outcomes[0].status).toBe('posted');
+  });
+
+  it('still reports a destination an earlier attempt posted to, even with no time left at all', async () => {
+    // The deadline must never cost a success that is already recorded. If the
+    // budget were consulted BEFORE the record, a retry that arrives with the
+    // budget gone would answer `timeout` for destinations that were posted to
+    // -- and GROWI, writing the answer back into its outbox row, would erase
+    // them. A zero budget is spent by the storage reads that precede the loop,
+    // so this pins the order of the two checks.
+    const prisma = createPrisma([channelRow('C-a'), channelRow('C-b')]);
+    const platform = mock<InboundFlowPlatform>();
+    platform.post.mockImplementation((channel) =>
+      Promise.resolve(
+        channel.channelId === 'C-b'
+          ? { ok: false, reason: 'platform-error', detail: 'rate limited' }
+          : { ok: true, messageId: 'M-a' },
+      ),
+    );
+    const request = notificationOf(['C-a', 'C-b']);
+
+    await flowOver(prisma, platform).notify(request);
+    platform.post.mockClear();
+
+    const retried = await flowOver(prisma, platform, {
+      notificationDeadlineMs: 0,
+    }).notify(request);
+
+    expect(retried.outcomes.map((outcome) => outcome.status)).toEqual([
+      'posted',
+      'timeout',
+    ]);
+    expect(platform.post).not.toHaveBeenCalled();
   });
 });
 
