@@ -37,40 +37,26 @@
 // can prove -- and what actually matters to a user on Mattermost -- is that
 // the position they typed selects the GROWI that was offered in that position.
 
-import {
-  type JsonWebKey as CryptoJsonWebKey,
-  createPublicKey,
-  randomUUID,
-} from 'node:crypto';
-import type { ChannelRef, ChatAccountRef, PlatformName } from '@growi/chat';
 import { COMMAND_NAMES, OP_NAMES } from '@growi/chat';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { levelOf } from '../capabilities/index.js';
-import {
-  createChannelPermissionRepository,
-  createInstallationChannelRepository,
-  createInstallationRepository,
-  createPrismaClient,
-  createRelationRepository,
-  type PrismaClient,
-} from '../db/index.js';
-import { createRelationKeyService } from '../relation/index.js';
+import { createPrismaClient, type PrismaClient } from '../db/index.js';
 import type { ProxyConfig } from '../runtime/index.js';
 import type { OutboundMessage } from '../types/index.js';
-import {
-  actionOn,
-  actorOn,
-  channelOn,
-  mentionOn,
-  modalSubmitOn,
-} from './chat-events.js';
+import { actionOn, mentionOn, modalSubmitOn } from './chat-events.js';
 import type { CapturedPost, FakeChatService } from './fake-chat-service.js';
 import { createFakeChatService } from './fake-chat-service.js';
-import type { FakeGrowi, OpResponder } from './fake-growi.js';
+import type { OpResponder } from './fake-growi.js';
 import { startFakeGrowi } from './fake-growi.js';
 import type { FreePortListener } from './free-port.js';
 import { LOOPBACK, listenOnFreePort } from './free-port.js';
+import {
+  openWorkspace,
+  pairGrowi,
+  passthroughCipher,
+  permitWrite,
+} from './paired-workspace.js';
 import { type ProxyCluster, startProxyCluster } from './proxy-cluster.js';
 
 const DATABASE_URL =
@@ -79,12 +65,6 @@ const DATABASE_URL =
 const CHAT_SDK_DATABASE_URL =
   process.env.CHAT_SDK_DATABASE_URL ??
   `${DATABASE_URL}?options=-c%20search_path%3Dchat_sdk`;
-
-/** A cipher that leaves values readable: what it protects is not under test. */
-const passthroughCipher = {
-  encrypt: (value: string) => value,
-  decrypt: (value: string) => value,
-};
 
 /**
  * Every fake GROWI listens on loopback, so one allow-list entry serves them
@@ -120,114 +100,13 @@ const openDb = (): PrismaClient => {
   return db;
 };
 
-interface Workspace {
-  readonly installationId: string;
-  readonly channel: ChannelRef;
-  readonly actor: ChatAccountRef;
-}
-
 /**
- * One chat workspace this proxy knows, with one channel the bot can be
- * addressed in.
- *
- * The `installation_channel` row is NOT optional dressing: `resolveInstallationId`
- * (`runtime/dependencies.ts`) turns a `ChannelRef` into an installation by
- * looking the channel up in the saved inventory, and without it every command
- * below would end at 「この…workspace がまだ登録されていません」 rather than in
- * the flow under test.
- *
- * The channel and the actor get fresh ids per test rather than the harness's
- * fixed ones: `pending_collection` enforces 「1 チャンネル・1 利用者につき
- * 同時に 1 件」 against a PERSISTENT database, so a row left behind by an
- * earlier test -- or an earlier run -- would make the next `start` discard it
- * and post a notice, in front of the post this test is reading.
+ * The rows every case below needs are built by `paired-workspace.ts`: task
+ * 11.2 wrote them here, and 11.3 moved them there when a second file came to
+ * need them (Implementation Note 11.2 (a)). `trustGrowiSignature` is not among
+ * the ones used here -- all four flows travel proxy -> GROWI, and nothing in
+ * this file signs its way INTO the proxy.
  */
-const openWorkspace = async (
-  db: PrismaClient,
-  platform: PlatformName,
-): Promise<Workspace> => {
-  const channel = channelOn(platform, { channelId: `chan-${randomUUID()}` });
-  const actor = actorOn(platform, { accountId: `user-${randomUUID()}` });
-
-  const installationId = await createInstallationRepository(
-    db,
-    passthroughCipher,
-  ).save(platform, `W-${randomUUID()}`, `${platform} workspace`, {});
-
-  await createInstallationChannelRepository(db).upsert({
-    installationId,
-    platform,
-    channelId: channel.channelId,
-    channelName: channel.channelName,
-    isPrivate: channel.isPrivate,
-    refreshedAt: new Date(),
-  });
-
-  return { installationId, channel, actor };
-};
-
-/**
- * Pairs one fake GROWI with the workspace and makes the two able to talk.
- *
- * Both halves are needed and neither is decoration: `RelationKeyService.issue`
- * mints the `own_key` this proxy signs with (without it `GrowiClient` answers
- * `no-signing-key` and the user reads 「届きませんでした」), and handing its
- * PUBLIC half to the fake GROWI is what lets that side's real `verify()`
- * accept the request. The private half never leaves `own-key-repository`.
- */
-const pairGrowi = async (
-  db: PrismaClient,
-  installationId: string,
-  growi: FakeGrowi,
-  growiLabel: string,
-): Promise<string> => {
-  const relation = await createRelationRepository(db).create({
-    installationId,
-    growiUri: growi.baseUrl,
-    growiLabel,
-    searchWeight: 1,
-    settingsVersion: 1,
-  });
-  const issued = await createRelationKeyService({
-    db,
-    cipher: passthroughCipher,
-  }).issue(relation.relationId);
-
-  growi.registerPeerKey({
-    key: { relationId: relation.relationId, keyId: issued.keyId },
-    // `node:crypto` declares its own `JsonWebKey` (an index-signature-bearing
-    // record) separately from the global one the contract type uses, so the
-    // issued key is named as the former here -- the same step
-    // `peer-key-repository.ts` takes for the other side's keys.
-    publicKey: createPublicKey({
-      key: issued.publicKeyJwk as CryptoJsonWebKey,
-      format: 'jwk',
-    }),
-  });
-
-  return relation.relationId;
-};
-
-/**
- * Lets this channel run a WRITE command against that GROWI.
- *
- * Required for `create-page` and for nothing else here: `judge` denies a write
- * command that has no stored row (`no-settings`) and allows a read one, so
- * `search` below is deliberately left without a row -- that absence is the
- * ordinary state of a freshly paired GROWI, and writing one anyway would test
- * a fixture rather than the default.
- */
-const permitWrite = (
-  db: PrismaClient,
-  relationId: string,
-  channelId: string,
-): Promise<void> =>
-  createChannelPermissionRepository(db).upsert(
-    relationId,
-    COMMAND_NAMES.createPage,
-    [channelId],
-  );
-
 const startOneProxy = async (
   chat: FakeChatService,
 ): Promise<FreePortListener> => {
