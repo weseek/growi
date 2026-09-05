@@ -492,6 +492,51 @@
   - _Requirements: 7.8, 9.1, 9.2, 9.5, 9.7, 10.5, 10.6, 13.1_
   - _Depends: 11.1_
 
+- [ ] 12. `/kiro-validate-impl` の NO-GO を是正する
+- [ ] 12.1 実行者の権限を読み、チャット起点の運用者操作を機能させる
+  - `runtime/dependencies.ts` の `observeActorRoles` は常に `null` を返し、`AdminFlow` が
+    運用者コマンド（`register`・`unregister`・`weight`・`rotate-key`）を全部「判定できませんでした」
+    で断り続けている——**新しく立てた proxy を業務に乗せる経路が1つも無い**（要件9.1が動かない）
+  - `PlatformFacade` に、`capabilities/admin-check.ts` の `ADMIN_CHECK_TABLE` に従って
+    実行者の役割をチャットサービスから読むメソッドを足す（Chat SDK を名指しできるのは
+    `platform/` だけなので実体はここに置く）
+  - `runtime/dependencies.ts` の `observeActorRoles` をこのメソッドへ差し替える
+  - チャット起点の `register` コマンドが実際に登録コードを発行し、紐付けが成立することが
+    試験で示される
+  - _Requirements: 9.1_
+  - _Depends: 9.1, 3.1_
+  - _Boundary: platform（実行者の権限を読む部分）、runtime（配線）_
+
+- [ ] 12.2 スラッシュコマンドの能力表と実装の食い違いを解消する
+  - `capabilities/platform-capabilities.ts` は Slack・Discord の `slashCommand` を `full`
+    と宣言しているが、`command/invocation.ts` はサービスから届く生の文字列（先頭に `/` が
+    付いたまま）をそのままコマンド名にするため、登録された言葉のどれとも一致せず**実際には
+    1つも起動しない**——運用者に「使える」と誤って報告している
+  - `capabilities/platform-capabilities.ts` の Slack・Discord の `slashCommand` を `none`
+    に直す（スラッシュコマンドを実際に動かす対応は別タスクとし、ここでは能力表を実装に
+    合わせる）
+  - `command/invocation.spec.ts` の作り物の値（`command: 'search'`，先頭に `/` が無い）を
+    実物のアダプタが渡す形（先頭に `/` が付く）に直し、既存の試験が実物と食い違う前提で
+    緑になっていないことを確かめる
+  - 能力の一覧を返す口が Slack・Discord の `slashCommand` を `none` として返すことが
+    試験で示される
+  - _Requirements: 1.3_
+  - _Depends: 1.6_
+  - _Boundary: capabilities, command（試験の修正のみ）_
+
+- [ ] 12.3 通知1リクエスト全体の締め切りを実装する
+  - `packages/chat/src/contract/notification.ts` の `NotificationResult` は `'timeout'`
+    という状態を宣言し、「宛先が多くても GROWI の1リクエストを止め続けないために `timeout`
+    がある、proxy も自分の締め切りを守る」とコメントで約束しているが、`orchestration/
+    inbound-flow.ts` はこれを実装しておらず、宛先を1件ずつ無期限に `await` する
+  - 1件ごとと全体の締め切りを `notify()` に足し、超えた宛先を `'timeout'` として返す
+  - 宛先の1つが応答しなくても、締め切りを過ぎた時点で残りの宛先の結果とともに応答が
+    返ることが試験で示される
+  - _Requirements: (design.md の通知処理の締め切りに関する記述を根拠とする——proxy 側の
+    受け入れ基準として明記された要件番号は無い)_
+  - _Depends: 7.3_
+  - _Boundary: orchestration（通知の締め切り）_
+
 ---
 
 ## Implementation Notes
