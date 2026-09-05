@@ -72,8 +72,14 @@ describe('supports()', () => {
 
 describe('design.md-declared capability values (spot checks)', () => {
   it('matches the ○/△/×/要確認 table for a representative sample', () => {
-    expect(levelOf('slashCommand', 'slack')).toBe('full');
+    // Task 12.2: `command/invocation.ts` never strips the leading `/` a real
+    // adapter sends on a slash command, so no service can actually invoke a
+    // command this way today -- all four rows read `none` (see
+    // `platform-capabilities.ts`'s comment on this row and `invocation.spec.ts`).
+    expect(levelOf('slashCommand', 'slack')).toBe('none');
+    expect(levelOf('slashCommand', 'discord')).toBe('none');
     expect(levelOf('slashCommand', 'teams')).toBe('none');
+    expect(levelOf('slashCommand', 'mattermost')).toBe('none');
     expect(levelOf('modal', 'discord')).toBe('none');
     expect(levelOf('modal', 'teams')).toBe('full');
     expect(levelOf('interactiveActions', 'mattermost')).toBe('none');
@@ -181,5 +187,20 @@ describe('buildCapabilityReport() (Requirement 1.3)', () => {
     // `—` in design.md's column: nothing to fall back to even where the
     // capability is missing.
     expect(substituteOf('slack', 'ephemeralMessage')).toBeNull();
+  });
+
+  it("reports slashCommand as none for every service, Requirement 1.3's stated value (task 12.2)", () => {
+    // command/invocation.ts does not yet strip the leading `/` a real Slack or
+    // Discord slash-command event carries, so no registered command name ever
+    // matches one -- reporting `full` here would tell an operator this works
+    // when it does not (task 10.1's finding, closed by task 12.2).
+    const report = buildCapabilityReport();
+    const levelOf = (platform: PlatformName) =>
+      report.platforms
+        .find((entry) => entry.platform === platform)
+        ?.capabilities.find((row) => row.capability === 'slashCommand')?.level;
+
+    expect(levelOf('slack')).toBe('none');
+    expect(levelOf('discord')).toBe('none');
   });
 });

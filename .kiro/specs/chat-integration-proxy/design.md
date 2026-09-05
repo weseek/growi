@@ -73,10 +73,17 @@ types → capabilities → db → platform → command → relation → growi �
 
 **唯一の宣言箇所。** 各所で `if (platform === 'mattermost')` と書かない。
 
+**umbrella（`.kiro/specs/chat-integration/design.md`）の能力表とは測っているものが違う。** あちらは
+研究ログ3のとおり「そのサービス／SDKのアダプタがスラッシュコマンドを受け取れるか」（Slack・Discordは○）
+の実測を持つ。この proxy の表は「proxy 自身が今それを認識して起動できるか」（要件1.3で運用者に報告する値）
+であり、`command/invocation.ts` の `normalize` が `/` を剥がしてコマンド語彙と突き合わせる正規化を
+まだ実装していないため、Slack・Discordも含め4サービスとも`×`が正しい（`Testing Strategy`の該当項目・
+本タスクの申し送りを参照）。
+
 | 能力 | Slack | Discord | Teams | Mattermost | 無いときの代わり |
 |---|:--:|:--:|:--:|:--:|---|
 | `ephemeralMessage`（その場限りのメッセージ） | ○ | ○ | ○ | ○ | — （聞き返しと要件 11.3 の提示が寄りかかる） |
-| `slashCommand` | ○ | ○ | × | × | mention で起動する（決定 4） |
+| `slashCommand` | × | × | × | × | mention で起動する（決定 4）。proxy が正規化を実装すれば Slack・Discord は将来 ○ に変わりうる |
 | `mention` | ○ | ○ | ○ | ○ | — |
 | `modal` | ○ | × | ○ | × | コマンド行の引数 + 聞き返し（決定 5） |
 | `interactiveActions` | ○ | ○ | ○ | × | 番号つきの一覧を出して返信で選ばせる |
@@ -1148,7 +1155,12 @@ Chat SDK の state（購読・分散ロック・重複排除）は `@chat-adapte
 
 1. `fuseResults` — 重みが等しいと交互に並ぶこと。重みで順位が変わること。同点が `relationId` で安定すること（3.2・3.3・3.8）
 2. `PlatformCapabilities` — **表に載っている全ての能力について** 4 サービス分が埋まっていること（数を書かない。行が増えるたびに書き換える形にしない）。**`unverified` に対して `supports()` が `false`** を返すこと（1.2）
-3. `CommandInvocation.normalize` — mention と slash command が同じ `Invocation` になること（決定 4）
+3. `CommandInvocation.normalize` — **これは目標であって、今の到達点ではない。** mention と slash command が同じ
+   `Invocation` になる（決定 4）のは、`event.command` の先頭の `/` を剥がしてコマンド語彙と突き合わせる正規化が
+   入ってから。現状の `normalize` はこれを行わないため、Slack・Discord が送る `/` 付きの生の文字列はどの登録語彙
+   とも一致せず、mention 経由と同じ `Invocation` にならない——これは欠陥ではなく未着手（能力表の
+   `slashCommand` を Slack・Discord とも `none` にしたのはこのため。将来この正規化を実装するタスクで、
+   ここを「mention と同じ `Invocation` になること」を確かめる単体試験に戻すこと）
 4. **modal を選ぶ条件** — 能力表が対応と言っていても、手がかりが無い／失効していれば聞き返しへ落ちること（4.1・8.3）
 
 ### Integration Tests

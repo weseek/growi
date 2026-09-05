@@ -56,9 +56,18 @@ export const CAPABILITY_TABLE: Readonly<Record<CapabilityName, CapabilityRow>> =
       teams: 'full',
       mattermost: 'full',
     },
+    // `full` would be a lie here: `command/invocation.ts` normalizes a
+    // slash-command event's raw `command` field (which every adapter sends
+    // WITH its leading `/`, confirmed against `@chat-adapter/slack`'s and
+    // `@chat-adapter/discord`'s actual payload construction) with only a
+    // `.trim()`, so the result never matches any registered command name (none
+    // of which carries a `/`) -- no slash command actually invokes anything on
+    // any service today. Requirement 1.3 requires this table to tell the
+    // operator only what is actually usable, so both rows read `none` until a
+    // future task teaches `invocation.ts` to normalize the `/`-prefixed form.
     slashCommand: {
-      slack: 'full',
-      discord: 'full',
+      slack: 'none',
+      discord: 'none',
       teams: 'none',
       mattermost: 'none',
     },

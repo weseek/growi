@@ -507,7 +507,7 @@
   - _Depends: 9.1, 3.1_
   - _Boundary: platform（実行者の権限を読む部分）、runtime（配線）_
 
-- [ ] 12.2 スラッシュコマンドの能力表と実装の食い違いを解消する
+- [x] 12.2 スラッシュコマンドの能力表と実装の食い違いを解消する
   - `capabilities/platform-capabilities.ts` は Slack・Discord の `slashCommand` を `full`
     と宣言しているが、`command/invocation.ts` はサービスから届く生の文字列（先頭に `/` が
     付いたまま）をそのままコマンド名にするため、登録された言葉のどれとも一致せず**実際には
@@ -536,6 +536,26 @@
     受け入れ基準として明記された要件番号は無い)_
   - _Depends: 7.3_
   - _Boundary: orchestration（通知の締め切り）_
+
+- [ ] 12.4 スラッシュコマンドを実際に動かす
+  - 12.2 が能力表を実装に合わせて `none` に直した際、`command/invocation.ts` の
+    `normalize` が Slack・Discord の送る `/` 付きの生の文字列を剥がしていないことが
+    未着手のまま残った——この対応を行う
+  - **SlackとDiscordで`command`フィールドの意味が異なる点に注意**（12.2 の申し送り）:
+    Slack は登録した1つのスラッシュコマンド名（例: `/growi`）だけが`command`に入り、
+    残りの語（`search foo`のような）は`text`側に入る。Discordの`command`はサブコマンド名まで
+    連結済み（例: `/project issue create`）で、`text`はオプション由来の平文——「先頭の`/`を
+    剥がすだけ」では済まず、Slack側は`event.text`の最初の語をコマンド名として拾い直す
+    変更も合わせて要る
+  - mention と slash command が同じ `Invocation` になること（design.md 決定4、
+    `Testing Strategy`の該当項目）を単体試験で確かめる
+  - `capabilities/platform-capabilities.ts`のSlack・Discordの`slashCommand`を`full`へ戻し、
+    design.md 79行目の表・`Testing Strategy`の該当項目も実装に合わせて書き戻す
+  - 実際にSlackで`/growi search foo`、Discordで`/project issue create`と打つと
+    mention経由の呼びかけと同じコマンドが起動することが試験で示される
+  - _Requirements: 1.3_
+  - _Depends: 12.2_
+  - _Boundary: command（正規化）_
 
 ---
 
@@ -700,3 +720,12 @@
   **Teamsは依然として判定できず、常に「判定できませんでした」で断る（意図的・偽らない設計）。** レビューで、当初のコードコメントが「識別子の橋渡しが原理的にできない」と書いていたのは言い過ぎと判明したため訂正した——正しい理由は「境界の外」であって「不可能」ではない：`@chat-adapter/teams`の公開された`./webhook`型（`TeamsActivity.from.aadObjectId`等）を経由すればAADオブジェクトIDには実際に到達できるが、この app 自身の`Invocation`/`PlatformEvent`（`types/`）がBot Frameworkの利用者IDしか運ばずAADオブジェクトIDを捨てていること、保存済みのチャンネル一覧（`db/`）にチームIDの列が無いことの2点が真の障壁——どちらも`platform/`+`runtime/`という本タスクの境界の外側にあり、閉じるには別タスクが要る。design.md（`platform/actor-roles.ts`のFile Structure Plan・`PlatformFacade`のメソッド一覧・`createPlatformFacade`の第4引数・Teamsの調べ方の表）も本タスクで実装に合わせて修正済み。
 
   **申し送り**: (a) **Teamsのチャット起点ペアリングを閉じる別タスクが必要**——`types/`（Invocationにaadオブジェクトidを運ぶ）と`db/`（チャンネル一覧にチームidの列を足す。`platform/channels.ts`の`listTeamsChannels`は既にteam.idをスコープ内に持っているが保存前に捨てている）の両方の変更が要る。(b) `AdminActorRoles`は`command/admin-command-set.ts`から**`types/actor-roles.ts`へ移した**（`command/index.ts`からの公開は従来どおりで既存の import は変わらない。実行者の役割を**読む**層`platform/`は依存順で`command/`の左にあるため、両者が使う型はここにしか置けない）。(c) 配線は「チャンネル→installationを引き当ててからfacadeに役割を聞く」順にしたため、`resolveInstallationId`が運用者コマンド1回につき2回走る（既知の費用であって事故ではない）。(d) `createPlatformFacade`に第4引数（省略可の運用者向け報告関数）を足し、読み取り失敗の理由（スコープ不足・HTTPエラー等）を`null`だけでなく運用者に見える形で残せるようにした。(e) **生きたサービスに対しては1回も確かめていない**——エンドポイント・フィールド名・必要な権限（Slackの`users:read`、Discordのguild members intent、Mattermostの`read_other_users_teams`）は公開リファレンスに従っただけ。10.xの導入ドキュメントはこの3サービスぶんの権限を追記する必要がある。(f) `pairing-rotation-e2e.integ.ts`にチャットで`register`を打って発行されたコードでペアリングが成立するケースを1件足した（他5ファイルと同じくこのdevcontainerでは`postgres`未到達で赤）。`fake-chat-service.ts`の`observeActorRoles`注入口は明示しなければ`null`（役割を読めなかった）が既定——安全側。
+- **12.2**: `capabilities/platform-capabilities.ts`の能力表がSlack・Discordの`slashCommand`を`full`（要件1.3で運用者に報告される値）と宣言していたが、`command/invocation.ts`の`normalize`はスラッシュコマンドイベントの生の`command`フィールドを`.trim()`するだけで先頭の`/`を取り除かず、コマンド語彙には`/`付きの語が1つも無いため、実際にはどのサービスでもスラッシュコマンドは1つも起動しない——という食い違いを解消した（task 10.1が先に見つけていた問題）。`@chat-adapter/slack`の実装（`dist/index.js:1992`の`params.get("command") || ""`、Slackの生パラメータをそのまま渡す）と`@chat-adapter/discord`の実装（`dist/index.js:1270`の`commandParts = [name.startsWith("/") ? name : \`/${name}\`]`、明示的に`/`を先頭に付ける）を直接確認し、両サービスとも`command`フィールドに先頭`/`が必ず付くことを確定させた。
+
+  修正内容: (1) `platform-capabilities.ts`のSlack・Discordの`slashCommand`行を`full`→`none`に直した（Teams・Mattermostは元から`none`で変更なし）。(2) `platform-capabilities.spec.ts`に、`buildCapabilityReport()`が Slack・Discord の`slashCommand`を`none`として返すことを直接確認する試験を1件足した。(3) `command/invocation.spec.ts`の作り物の値（`command: 'search'`、先頭`/`無し）を実物のアダプタが渡す形（`command: '/growi'`、先頭`/`付き）に直し、旧テストが「mentionとslash commandは同じInvocationになる」という**目標**設計をあたかも**現状**であるかのように誤って緑にしていたことを確認したうえで、現状の不一致（mention経由とは一致しない）を検証する形に書き換えた。
+
+  **design.md側にも同じ食い違いが複数残っていたため、あわせて修正した**（レビューで指摘・差し戻し理由）: (a) `Testing Strategy`の単体試験項目3が「mentionとslash commandが同じInvocationになること」を**達成済みの受け入れ基準として試験に指示していた**——これは決定4が指す**目標**であり今の到達点ではないことを明記し、正規化を実装する将来タスクで元の形に戻すよう書いた。(b) proxy自身の能力表（design.md 79行目）に、umbrella（`chat-integration/design.md`179行目）の能力表とは**測っているものが違う**ことを明記した——umbrellaは「サービス／SDKのアダプタが受け取れるか」（研究ログ3の実測、Slack・Discordは○）、proxy側は「proxy自身が今認識して起動できるか」（要件1.3の報告値、実装が正規化を持たないため4サービスとも×）。
+
+  **能力表を`none`に直しただけで実行時の振る舞いは変わっていない**——`supports('slashCommand', ...)`で分岐しているコード箇所は1つも無く、この変更は「報告する値が変わるだけ」であることをレビューで確認済み。
+
+  **申し送り**: (a) **タスク12.4を新設し、「スラッシュコマンドを実際に動かす」対応（design.mdの3箇所を`full`/目標達成済みへ戻す作業を含む）を割り当てた。** SlackとDiscordで`command`フィールドの意味が異なる点に要注意——Slackは登録した1つのスラッシュコマンド名（例:`/growi`）だけが`command`に入り残りは`text`側、Discordはサブコマンド名まで連結済み（例:`/project issue create`）で`text`はオプション由来の平文。「`/`を剥がすだけ」では済まず、Slack側は`event.text`の最初の語をコマンド名として拾い直す変更も要る。(b) 実装作業中、旧テストの前提を確かめるため`git stash`を使ったが、このリポジトリの規約（bare `git stash`/`git stash pop`を使わない）に反する行為だった——今回は結果としてstashは無傷（`stash@{0}`は別ブランチのもので日付も変わっておらず、作業ファイルも全て残っていることを親セッションが独立に確認済み）だが、11.1と同種の危険を伴う手順だったことを記録しておく。今後は対象を名指しする（`git stash push -m <名前>`・`git stash apply stash@{n}`）か別のworktreeで確かめること。
