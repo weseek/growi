@@ -65,6 +65,16 @@ type Layer = (typeof LAYER_ORDER)[number];
  */
 const OUTERMOST_DIR = 'runtime';
 const GENERATED_DIR = 'generated';
+/**
+ * The end-to-end harness (task 11.1). Outside the ordered chain for the same
+ * reason `runtime/` is -- it drives the whole app, so it may import any layer,
+ * and nothing in the chain may import it back. It is deliberately NOT in
+ * `EXCLUDED_DIRS`: that list is skipped by the walk entirely, which would also
+ * lift the Chat SDK, generated-client and db-barrel guards off it. Naming it
+ * here instead leaves all three in force -- so the fakes have to be built out
+ * of this app's own vocabulary rather than out of Chat SDK types.
+ */
+const TESTING_DIR = 'testing';
 const EXCLUDED_DIRS = [GENERATED_DIR];
 
 /** A file that belongs to no layer: `src/*.ts` and `src/runtime/**`. Same rules as runtime. */
@@ -188,10 +198,15 @@ describe('layer order', () => {
     expect(new Set(SOURCE_FILES.map(layerOf))).toContain('types');
   });
 
-  it('every directory under src/ is a declared layer, runtime/, or generated/', () => {
+  it('every directory under src/ is a declared layer, runtime/, testing/, or generated/', () => {
     // Without this, a new top-level directory would fall through to OUTERMOST and escape
     // the layer-order guard entirely.
-    const known = [...LAYER_ORDER, OUTERMOST_DIR, ...EXCLUDED_DIRS];
+    const known = [
+      ...LAYER_ORDER,
+      OUTERMOST_DIR,
+      TESTING_DIR,
+      ...EXCLUDED_DIRS,
+    ];
     const unknown = readdirSync(SRC_DIR, { withFileTypes: true })
       .filter((entry) => entry.isDirectory() && !known.includes(entry.name))
       .map((entry) => entry.name);
