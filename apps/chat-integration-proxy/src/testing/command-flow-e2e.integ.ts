@@ -487,11 +487,15 @@ describe('a command run end to end', () => {
     expect(lastPost(chat).kind).toBe('replace');
   });
 
-  it('runs the whole flow on Teams -- no slash command, an input field, and the one inbound route this proxy opens', async () => {
-    // The combination that makes Teams worth checking on its own: it is the
-    // only service that cannot be invoked by a slash command yet CAN take the
-    // values in an input field. `platform-capabilities.spec.ts` owns the table
-    // itself; this is the premise the rest of this case rests on.
+  it('runs the whole flow on Teams -- an input field, and the one inbound route this proxy opens', async () => {
+    // The combination that makes Teams worth checking on its own: it CAN take
+    // the values in an input field despite being the one service reached
+    // inbound rather than by connecting out. (Task 12.2: every service now
+    // reports `slashCommand: 'none'`, since command/invocation.ts does not
+    // yet recognize one on any of them -- Teams no longer stands out on that
+    // axis, only on modal support plus inbound reachability.)
+    // `platform-capabilities.spec.ts` owns the table itself; this is the
+    // premise the rest of this case rests on.
     expect(levelOf('slashCommand', 'teams')).toBe('none');
     expect(levelOf('modal', 'teams')).toBe('full');
 
