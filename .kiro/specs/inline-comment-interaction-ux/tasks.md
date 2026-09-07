@@ -6,7 +6,7 @@
   - 観測できる完了条件：新しいカスタムプロパティが `_marker.scss` の `:root` から取得でき、既存の `--grw-inline-comment-marker-bg` の既定値と異なる値に解決されることを確認できる
   - _Requirements: 1.3, 1.4_
 
-- [ ] 1.2 (P) 解決済みRangeの再構築ロジックを共有ユーティリティへ切り出す
+- [x] 1.2 (P) 解決済みRangeの再構築ロジックを共有ユーティリティへ切り出す
   - `apps/app/src/features/inline-comment/client/services/resolved-range.ts` を新設し、`InlineCommentHighlight.tsx` の非公開関数 `rangeFor()` と同じロジックを `rangeForResolved()` として移す。さらに、コメントidをキーにした `ReadonlyMap<string, Range>` を返す `rangesById()` を追加する（`not_found` の範囲は含めない）
   - `InlineCommentHighlight.tsx` をこのユーティリティを使う形に書き換える（実行時の挙動は変えない）
   - 観測できる完了条件：既存の `InlineCommentHighlight.spec.tsx` が無変更のままgreenになる。新設した `resolved-range.spec.ts` で、`not_found` の解決結果が `rangesById()` の戻り値に含まれないことを確認できる

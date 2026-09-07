@@ -2,7 +2,7 @@ import type { RefObject } from 'react';
 import { useEffect } from 'react';
 
 import type { ResolvedRange } from '../../../interfaces';
-import { renderedTextOf } from '../../services/rendered-text';
+import { rangesById } from '../../services/resolved-range';
 
 /**
  * Name registered with `CSS.highlights` (the CSS Custom Highlight API) for
@@ -30,26 +30,6 @@ const supportsCustomHighlightApi = (): boolean =>
   CSS.highlights != null &&
   typeof Highlight !== 'undefined';
 
-const rangeFor = (
-  renderedText: ReturnType<typeof renderedTextOf>,
-  resolved: ResolvedRange,
-): Range | null => {
-  if (resolved.status === 'not_found') {
-    return null;
-  }
-
-  const start = renderedText.resolveDomPosition(resolved.startOffset);
-  const end = renderedText.resolveDomPosition(resolved.endOffset);
-  if (start == null || end == null) {
-    return null;
-  }
-
-  const range = new Range();
-  range.setStart(start.node, start.offset);
-  range.setEnd(end.node, end.offset);
-  return range;
-};
-
 /**
  * Draws a highlight for every resolved (non-`not_found`) range, using the
  * CSS Custom Highlight API (`CSS.highlights` + `::highlight()`).
@@ -75,14 +55,7 @@ export const InlineCommentHighlight = ({
       return;
     }
 
-    const renderedText = renderedTextOf(container);
-    const ranges: Range[] = [];
-    for (const resolved of resolvedRanges.values()) {
-      const range = rangeFor(renderedText, resolved);
-      if (range != null) {
-        ranges.push(range);
-      }
-    }
+    const ranges = Array.from(rangesById(container, resolvedRanges).values());
 
     if (ranges.length === 0) {
       CSS.highlights.delete(HIGHLIGHT_NAME);
