@@ -17,6 +17,13 @@ export {
   isChatKeyEncryptionConfigured,
   isEncryptedChatKeyEnvelope,
 } from './key-encryption';
+export type { SignWithOwnKeyParams } from './key-store';
+export {
+  resolvePeerKey,
+  signWithOwnKey,
+  storeOwnKey,
+  storePeerKey,
+} from './key-store';
 
 // `chatKeyGenerationOf` and `ChatKeyEncryptionEnv` are also left off: the
 // generation reader belongs to the key change this spec defers, and the env
