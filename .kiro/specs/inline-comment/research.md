@@ -151,3 +151,37 @@ jsdomにはレイアウト・ペイントエンジインが無いため、ユニ
 ### Visual Verification（モックアップとの目視比較）は自動ゲート化しない
 
 見た目の作り込みはモックアップ画像との目視比較で担保するが、これは自動合否判定（pixel diff等）ではなく、(a) 実装時にPlaywrightでスクリーンショットを撮り実装エージェント自身が見比べて明らかな差異があれば修正する自己修正ループ、(b) 最終的な見た目の合否は人間のレビュー（PRに添付したスクリーンショット）に委ねる、という2つの役割に限定した。`kiro-validate-impl`のGO/NO-GO判定の機械的チェックにも含めない——見た目の良し悪しは人間が最終判断する領域であり、自動ゲートで機能の完成をブロックしないという判断による。
+
+## 操作性の改善（amend spec `inline-comment-interaction-ux` より統合）
+
+ユーザーから寄せられた4件のUX指摘（作成中と保存済みのハイライト色が同じで区別できない、本文中のハイライトから内容を確認する手段がない、一覧からハイライトへ移動する手段がない、一覧内の返信UIが通常コメントと不揃い）を受けて、表示・操作の一部を作り直した。以下は、この見直しの過程で確定した決定事項と、実装時に見つかった限界。
+
+### ハイライト色の2トークン化と半透明化
+
+作成中（選択中・入力中）と保存済みのハイライトに別々のカスタムプロパティ（`--grw-inline-comment-marker-bg-pending` / `--grw-inline-comment-marker-bg`）を与え、それぞれ独立にテーマから上書きできるようにした（旧`inline-comment-visual-consistency`のRequirement 12.8「同じ色を使う」という決定を撤回）。両者が重なったときにどちらも見えなくならないよう、境界線（`::highlight()`は`border`/`outline`に対応しない）ではなく、作成中側の適用色を`color-mix(in srgb, ... 70%, transparent)`で半透明にする方式を選んだ。トークン自体は不透明な値のまま定義し、半透明化は`PendingSelectionHighlight`が適用する箇所（`::selection`と`::highlight(growi-inline-comment-pending)`）だけに限定することで、トークンの再利用性を保ちながら影響範囲を最小化している。`color-mix()`非対応の古いブラウザでは透明度が効かないが、CSS Custom Highlight API自体がその種の環境では動作しないため、既存の`supportsCustomHighlightApi()`フォールバックと同じ範囲に収まる。
+
+### 保存済みハイライトの当たり判定は新規実装（DOM要素を持たないため）
+
+保存済みハイライトは`Range`オブジェクトの`CSS.highlights`登録のみで、対応するDOM要素・idを持たない。そのため素朴な`onMouseEnter`/`onClick`が使えず、本文コンテナに`pointermove`（`requestAnimationFrame`でスロットリング）／`click`を委譲し、解決済みの各`Range`の`getClientRects()`に対してポインタ座標を比較する新規フック（`use-highlight-hit-test.ts`）を実装した。デスクトップ幅ではhoverとclick両方、タブレット以下ではclick（タップ）のみを検出する（`useDeviceLargerThanMd()`で分岐）。
+
+**このフックは「現在の当たり」だけを都度報告し、クリックで選ばれた状態を自分では保持しない**（ポインタがハイライトから離れると次の`pointermove`で`null`に戻る。戻り値の`source: 'hover' | 'click'`でどちらの操作由来かを呼び出し側に伝える）。クリックで開いたポップオーバーをホバーが外れても開いたままにする「固定」状態は、消費側（`InlineCommentBodyInteraction`）が持つ設計になっている。
+
+閉じた直後にポップオーバーを即座に開き直さないための「再表示の抑制」は、`(commentId, source)`の組をキーに行っている。そのため、クリックで開いたポップオーバーを閉じた直後、閉じるボタンがハイライト上に重なっていてポインタが実際には動いていない場合、次の`pointermove`が`hover`扱いとなり抑制が効かず即座に開き直ることがある（AC 2.4の「外側クリックまたは閉じる操作で閉じる」自体には違反しないが、体感の使いにくさとして報告されたら、キーを`commentId`単独にし、フックが別のidまたは`null`を報告した時点で解除する形に直すとよい）。
+
+### 一覧・本文双方が使う「オフセット→現在のRange」再構築ロジックを共有ユーティリティ化
+
+`useAnchorResolver`が返すのはオフセットのみで、`Range`オブジェクト自体は`InlineCommentHighlight.tsx`の非公開関数`rangeFor()`が都度組み立てていた。本文中の当たり判定（新規）と一覧からのスクロール（新規）の両方がこのロジックを必要としたため、`resolved-range.ts`という共有モジュールに切り出し、`rangeForResolved`（単体変換）と`rangesById`（idキー付きの一括変換、未解決分は除外）の2関数として公開した。「解決済みオフセットの永続キャッシュは持たず都度再計算する」という既存方針は変えていない。
+
+一覧からのスクロールは`PageView.tsx`の`scrollToRange(commentId)`が担う。対象の`Range`が見つかれば`scrollIntoView({block: 'center'})`した上で、既存の`growi-inline-comment`（保存済み）・`growi-inline-comment-pending`（作成中）とは別の3つ目のハイライト名（`growi-inline-comment-emphasis`）を2秒間だけ登録して一時的に強調し、見つからなければ`toastError()`で通知して`false`を返す（スクロールはしない）。
+
+**既知の限界（2件、実装時に軽微・許容と判断し先送り）**:
+- `InlineCommentHighlight.tsx`の副作用は`resolvedRanges`が新しい参照になるたびに保存済みハイライトを再登録する。これが強調表示の2秒の窓の最中に起きると、`CSS.highlights`の「後から登録した名前が上に描かれる」性質により、保存済み（黄）が強調（赤）の上に再度乗り、色が一瞬もとに戻ることがある。スクロール自体は影響を受けない、色のちらつきに留まる限界。
+- `supportsCustomHighlightApi()`（`CSS.highlights`が使えるかの判定）が`InlineCommentHighlight.tsx`と`PageView.tsx`の2箇所に重複している（各タスクの担当範囲がそれぞれのファイルの外に出なかったため）。直すなら`resolved-range.ts`の隣に共有関数として切り出し、両方から呼ぶ形にするのが素直。
+
+### 一覧内の返信UIは通常コメントの開閉パターンを踏襲し、エディタ組み立てを共有部品化
+
+通常コメントの「Reply...」ボタン⇄入力欄の開閉（`PageComment.tsx`の`showEditorIds`パターン）と同じ見た目・状態管理を、インラインコメント側の返信トグル（`InlineCommentReplies.tsx`）にも採用した。`CommentEditor.tsx`自体は`useSWRxPageComment`に直結しており汎用化の影響範囲が大きいため再利用せず、代わりに`InlineCommentForm.tsx`が既に持っていたエディタ組み立て部分（`CodeMirrorEditorComment`＋メンション補完拡張＋送信/取り消しボタン）を`MentionAwareCommentInput`という共有部品に切り出し、起点フォーム（`InlineCommentForm`）と返信トグル（`InlineCommentReplies`）の両方から使う形にした。`CommentEditor.tsx`（通常コメント側）は無変更。
+
+### i18nキーの新規追加とbaselineの整合
+
+`inline_comment.reply_placeholder`（ポップオーバーの返信欄）・`inline_comment.range_not_found`（再アンカー失敗時の通知）をen_US専用キーとして追加した（本プロジェクトの英語ファースト方針により、他言語は未翻訳のまま据え置き）。`apps/app/tools/i18n-audit/baseline.json`の`missingByLocale`（ja_JP/zh_CN/fr_FR/ko_KR）を各+8引き上げているが、この内訳は「新規2キー×4言語」ではない（それでは+2にしかならない）。実際は、先行するamend spec `inline-comment-visual-consistency`が追加した`inline_comment.start_comment/resolved/unresolved/resolve/reopen/label`の6キー分のbaseline引き上げが漏れていた分と、本amendの新規2キー分の合計8。つまりこのブランチの`pnpm run lint:i18n`は本amend着手前から既に失敗しており、今回の引き上げがその積み残しも一緒に解消した。各言語のbaseline値は実測値と完全に一致しており、余裕はない。
