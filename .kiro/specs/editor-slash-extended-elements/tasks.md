@@ -1,11 +1,12 @@
 # Implementation Plan
 
-> **前提（着手ゲート）**: 本スペックの全タスクは、基盤 `editor-slash-command` の公開インタフェースが**実装・凍結**されていることを前提とする。とくに本スペックは基盤のアクションモデル一般化に依存する:
-> - `SlashCommandAction = SlashInsertAction { kind:'insert'; buildInsertion } | SlashRunAction { kind:'run'; run }`
-> - `SlashCommand.action: SlashCommandAction`（旧 `buildInsertion` 直持ちからの変更）
-> - 基盤 `apply` が `action.kind` で分岐（`insert` は単一 dispatch、`run` は `/query` 削除後に `run(view, from)`）
-> - コマンド集合の合成点が **React レイヤ**で `[...SLASH_COMMANDS, ...useExtendedElementCommands(editorKey)]` を組め、`editorKey` を取得できること
-> 別ストーリーで並行着手する場合は、基盤側でこのアクションモデルと合成点を先行実装すること（design.md「着手前提条件」参照）。
+> **前提（充足済み）**: 基盤 `editor-slash-command` は**実装済み**で、本スペックが依存する公開インタフェースは既に提供されている。着手前に現物で存在確認するだけでよい（新たな基盤の型変更は不要）:
+> - `SlashCommandAction = SlashInsertAction { kind:'insert'; buildInsertion } | SlashRunAction { kind:'run'; run }` — 実装済み（`slash-command-types.ts`、公開バレルから export 済み）
+> - `SlashCommand.action: SlashCommandAction`（`disallowedIn` / `syntaxHint` を含む）— 実装済み
+> - 基盤 `apply`（`applyCommand`）が `action.kind` で分岐（`insert` は単一 dispatch、`run` は `/query` 削除後に `run(view, from)`）— 実装済み
+> - `resolveSlashCommands(t, commands = SLASH_COMMANDS)` / `createSlashCommandSource(commands)` は既に work-set を引数化済み
+>
+> **唯一の未達（本スペックで対応する基盤側配線）**: 合成点 `use-default-extensions.ts` は現状 `resolveSlashCommands(t)` を基盤コマンドのみで呼ぶ。ここに `[...SLASH_COMMANDS, ...useExtendedElementCommands(editorKey)]` を渡す**注入シームを開ける**こと、および合成点が `editorKey` を取得できるよう配線することが残作業（Task 3.1）。基盤の型・`apply`・source ロジックは触らない。
 
 - [ ] 1. 静的挿入: ビルダー・変種・コマンド・ロケール
 
@@ -27,9 +28,10 @@
 
 - [ ] 1.3 静的拡張コマンド集合を宣言
   - plantuml（insert）+ callout×7（insert、`CALLOUT_VARIANTS` からデータ駆動生成）を、id・i18n キー・キーワード・action とともに宣言する
+  - **`disallowedIn: ['list','table']` を宣言する**（plantuml のフェンス・callout の `:::` ディレクティブはいずれもブロック要素。基盤の heading/codeBlock/table と同じくリスト項目内・テーブルセル内では候補から除外する）
   - callout は共通キーワード `callout` を含め `/callout` で全種別が絞り込まれるようにする。未選択要素（math/mermaid）は含めない
-  - 観測: plantuml と callout×7 が公開され、各 i18n キー/キーワード/action.kind='insert' を持つこと・未選択要素を含まないことをテストで確認
-  - _Requirements: 1.1, 1.5, 1.6, 4.1, 4.4_
+  - 観測: plantuml と callout×7 が公開され、各 i18n キー/キーワード/action.kind='insert'/`disallowedIn=['list','table']` を持つこと・未選択要素を含まないことをテストで確認
+  - _Requirements: 1.1, 1.5, 1.8, 4.1, 4.4, 6.4_
   - _Boundary: static-commands_
   - _Depends: 1.1, 1.2_
 
@@ -71,15 +73,17 @@
 
 - [ ] 2.4 drawio/lsx の run コマンド合成フックを実装
   - `useExtendedElementCommands(editorKey)` を実装。drawio/lsx の `run` は `ensureBlockLineStart(view, from)` で行頭正規化してから、それぞれ `useDrawioModalForEditorActions().open(editorKey)` / `useLsxModalForEditorActions().open(editorKey)` を呼ぶ。`STATIC_EXTENDED_COMMANDS` と合成して返す
-  - 観測: drawio/lsx コマンドが `kind:'run'` を持ち、`run(view, from)` で（行途中なら行頭正規化後に）対応オープナーが `editorKey` 付きで呼ばれること（モックで検証）。返り値に plantuml/callout も含むこと
-  - _Requirements: 1.1, 1.2, 1.4, 2.1, 2.4, 5.4_
+  - **drawio/lsx は `disallowedIn: ['list','table']` を宣言する**（挿入されるフェンス / `$lsx(...)` はブロック要素。`ensureBlockLineStart` は表セル内では空行を持てず無力なため、そもそも候補から除外する）
+  - 観測: drawio/lsx コマンドが `kind:'run'` と `disallowedIn=['list','table']` を持ち、`run(view, from)` で（行途中なら行頭正規化後に）対応オープナーが `editorKey` 付きで呼ばれること（モックで検証）。返り値に plantuml/callout も含むこと
+  - _Requirements: 1.1, 1.2, 1.4, 2.1, 2.4, 5.4, 6.4_
   - _Boundary: use-extended-element-commands_
   - _Depends: 1.3, 1.4, 2.1_
 
 - [ ] 2.5 (P) リンクコマンドを `useExtendedElementCommands` に合流（既存モーダル再利用、新規ファイルなし）
   - 既存の `useLinkEditModalActions`（`packages/editor/src/states/modal/link-edit.ts`）・`getMarkdownLink` / `replaceFocusedMarkdownLinkWithEditor`（`packages/editor/src/client/services-internal/link-util/markdown-link-util.ts`）はいずれも既存。新規ファイルは作らない
   - `run(view, from)` は `ensureBlockLineStart` を呼ば**ない**（インライン要素）。`getMarkdownLink(view)` を初期値として `openLink(defaultMarkdownLink, onSave)` を呼び、`onSave = (linkText) => replaceFocusedMarkdownLinkWithEditor(view, linkText)` を渡す
-  - 観測: リンクコマンドが `kind:'run'` を持ち、`run(view, from)` で `getMarkdownLink(view)` が読まれ `openLink` が呼ばれること、返された `onSave` を呼ぶと `replaceFocusedMarkdownLinkWithEditor(view, linkText)` が呼ばれること（モックで検証）。行の途中で `run` してもドキュメントに改行が入らないこと（`ensureBlockLineStart` 未呼出の確認）
+  - **`disallowedIn` は宣言しない**（インライン要素なのでリスト項目内・テーブルセル内でも挿入可）
+  - 観測: リンクコマンドが `kind:'run'` を持ち `disallowedIn` を持たないこと、`run(view, from)` で `getMarkdownLink(view)` が読まれ `openLink` が呼ばれること、返された `onSave` を呼ぶと `replaceFocusedMarkdownLinkWithEditor(view, linkText)` が呼ばれること（モックで検証）。行の途中で `run` してもドキュメントに改行が入らないこと（`ensureBlockLineStart` 未呼出の確認）
   - _Requirements: 1.1, 1.6, 9.1, 9.2, 9.3, 9.4_
   - _Boundary: use-extended-element-commands_
   - _Depends: 1.4_
@@ -87,19 +91,22 @@
 - [ ] 2.6 (P) テーブルビルダーコマンドを `useExtendedElementCommands` に合流（既存モーダル再利用、新規ファイルなし）
   - 既存の `useHandsontableModalForEditorActions`（`packages/editor/src/states/modal/handsontable.ts`）を再利用。新規ファイルは作らない。基盤の `table` コマンド（プレーンな2列テーブル即挿入）とは**別 id**（例 `tableBuilder`）として共存させる
   - `run(view, from)` は `ensureBlockLineStart(view, from)` で行頭正規化してから `openTableBuilder(view)` を呼ぶ（`editorKey` は不要、`view` を直接渡す）
-  - 観測: テーブルビルダーコマンドが `kind:'run'` を持ち、`run(view, from)` で（行途中なら行頭正規化後に）`openTableBuilder` が `view` 付きで呼ばれること（モックで検証）。基盤 `SLASH_COMMANDS` の `table` と id が競合しないこと
-  - _Requirements: 1.1, 1.7, 10.1, 10.2, 10.3, 10.4, 10.5_
+  - **`disallowedIn: ['list','table']` を宣言する**（挿入される Markdown テーブルはブロック要素。基盤の `table` コマンドと同じ扱い）
+  - 観測: テーブルビルダーコマンドが `kind:'run'` と `disallowedIn=['list','table']` を持ち、`run(view, from)` で（行途中なら行頭正規化後に）`openTableBuilder` が `view` 付きで呼ばれること（モックで検証）。基盤 `SLASH_COMMANDS` の `table` と id が競合しないこと
+  - _Requirements: 1.1, 1.7, 10.1, 10.2, 10.3, 10.4, 10.5, 6.4_
   - _Boundary: use-extended-element-commands_
   - _Depends: 1.4_
 
 - [ ] 3. 統合: 基盤コマンド集合への合流
 
-- [ ] 3.1 拡張コマンドを基盤の有効コマンド集合へ合流（React 合成点）
-  - 合成点（`use-default-extensions` 相当）で `editorKey` を取得し、`[...SLASH_COMMANDS, ...useExtendedElementCommands(editorKey)]` を `resolveSlashCommands(t, ...)` に渡す（基盤 core は拡張を import しない＝依存逆転なし）
-  - 観測: エディタ起動時に `/drawio` `/plantuml` `/lsx` `/callout` `/link` および テーブルビルダーコマンドが基本コマンドと同一の補完メニューに現れ、絵文字補完（`:`）と同時に機能する
-  - _Requirements: 6.1, 6.2, 8.2_
+- [ ] 3.1 拡張コマンドを基盤の有効コマンド集合へ合流（React 合成点／注入シームのみ）
+  - **これが本スペックで変更する唯一の基盤ファイル**。基盤の `resolveSlashCommands(t, commands)` / `createSlashCommandSource(commands)` は既に work-set 引数化済みのため、型・`apply`・source は触らない
+  - まず `use-default-extensions.ts` の現行シグネチャを確認し、`editorKey` を取得できるか調べる（drawio の `DiagramButton` が `editorKey` を prop で受けるのと同経路）。取得できない場合は `editorKey` を合成点まで通す配線を追加する（drawio/lsx の run 用。リンク/テーブルビルダーは `view` で足りるため不要）
+  - 合成点で `editorKey` を取得し、`resolveSlashCommands(t, [...SLASH_COMMANDS, ...useExtendedElementCommands(editorKey)])` を `createSlashCommandSource(...)` に渡す（基盤 core は拡張を import しない＝依存逆転なし）
+  - 観測: エディタ起動時に `/drawio` `/plantuml` `/lsx` `/callout` `/link` および テーブルビルダーコマンドが基本コマンドと同一の補完メニューに現れ、絵文字補完（`:`）と同時に機能する。リスト項目内・テーブルセル内ではブロック系拡張コマンドが候補に出ない（`disallowedIn`）
+  - _Requirements: 6.1, 6.2, 6.4, 8.2_
   - _Depends: 2.4, 2.5, 2.6_
-  - _Boundary: コマンド集合合成点（基盤側）_
+  - _Boundary: コマンド集合合成点（基盤側・注入シームのみ）_
 
 - [ ] 4. 検証
 
@@ -109,9 +116,10 @@
   - `/link` 選択で `/query` が削除され Edit Link Modal が起動し、確定でリンクがカーソル位置（行の途中ならその位置のまま）に挿入されること、キャンセルで未挿入であることを実アプリで確認
   - テーブルビルダーコマンド選択で `/query` が削除され Handsontable Modal が起動し、確定で Markdown テーブルが挿入されること、キャンセルで未挿入であることを実アプリで確認。基盤の `table` コマンドも引き続き選べ、両者が共存すること
   - **行の途中（例 `図: /drawio`、テーブルビルダーも同様）で起動しても、挿入されるブロックが独立行に置かれ描画が壊れないこと**（行頭正規化）を確認。**リンクは行の途中で起動してもその位置にインラインで挿入されること**（行頭正規化されないことの確認）
+  - **リスト項目内・テーブルセル内で `/` を打っても、ブロック系拡張コマンド（drawio/lsx/plantuml/callout/テーブルビルダー）が候補に出ないこと（`disallowedIn`）。同じ位置でリンクは候補に出ること**を確認
   - 既存 drawio モーダル・Edit Link Modal・Handsontable Modal のツールバー起動・書き戻しが回帰しないこと
   - 観測: 上記シナリオが統合テスト/手動スモークで再現し、`turbo run lint/test/build --filter @growi/app` 相当が green
-  - _Requirements: 1.2, 1.4, 4.4, 5.1, 5.2, 5.3, 5.4, 6.2, 6.3, 8.2, 8.3, 8.4, 9.1, 9.2, 9.3, 10.1, 10.2, 10.3, 10.5_
+  - _Requirements: 1.2, 1.4, 4.4, 5.1, 5.2, 5.3, 5.4, 6.2, 6.3, 6.4, 8.2, 8.3, 8.4, 9.1, 9.2, 9.3, 10.1, 10.2, 10.3, 10.5_
   - _Depends: 3.1_
 
 ## Implementation Notes
