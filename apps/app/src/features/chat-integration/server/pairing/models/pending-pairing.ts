@@ -4,6 +4,8 @@ import { Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
+import { isEncryptedChatKeyEnvelope } from '../../keys';
+
 export interface IChatPendingPairing {
   /** Random code issued by the proxy and entered by the admin (Requirement 9.1/9.2). */
   registrationCode: string;
@@ -26,9 +28,12 @@ export interface IChatPendingPairing {
   ownKeyId: string;
 
   /**
-   * Encrypted key pair (AES-256-GCM, same scheme as
-   * `chat_integration_keys.key` for `side: 'own'`). Encryption itself is a
-   * later task; declared here as an opaque string.
+   * The key pair encrypted for storage by `encryptChatKeyForStorage` (the
+   * same form as `chat_integration_keys.key` for `side: 'own'`). This is
+   * always a secret, so the schema refuses anything that is not in that
+   * form -- which is what makes "未設定ならペアリングを始められない" hold: the
+   * encryption refuses without `CHAT_INTEGRATION_KEY_ENCRYPTION_KEY`, and
+   * a pairing attempt cannot be recorded without this field.
    */
   ownKeyPair: string;
 
@@ -52,7 +57,15 @@ const chatPendingPairingSchema = new Schema<
     growiUri: { type: String, required: true },
     createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     ownKeyId: { type: String, required: true },
-    ownKeyPair: { type: String, required: true },
+    ownKeyPair: {
+      type: String,
+      required: true,
+      validate: {
+        validator: isEncryptedChatKeyEnvelope,
+        message:
+          'ownKeyPair must be encrypted by encryptChatKeyForStorage before it is stored.',
+      },
+    },
     expiresAt: { type: Date, required: true },
   },
   {

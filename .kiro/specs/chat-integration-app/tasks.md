@@ -40,7 +40,7 @@
   - _Requirements: 7.4, 10.4_
   - _Depends: 1.1_
 
-- [ ] 1.3 秘密鍵を暗号化して保存する仕組みを作る
+- [x] 1.3 秘密鍵を暗号化して保存する仕組みを作る
   - **GROWI に前例が無いので、仕組みごと作る**（設定を伏せ字にする既存の仕組みは暗号化ではない）
   - 暗号化に使う鍵は**環境変数から読む**。設定画面からは入れられないようにする
     （保存に入れると、保存を取られた人が暗号化した鍵も一緒に取れて意味が無くなる）
@@ -410,3 +410,23 @@
   - 停止した利用者と読み取り専用の利用者が、それぞれ正しく断られること
   - _Requirements: 4.3, 4.4, 7.3, 7.6_
   - _Depends: 6.2, 5.3_
+
+---
+
+## Implementation Notes
+
+- **task 1.3 の暗号化仕組み（`server/keys/key-encryption.ts`）**:
+  - 暗号化に使う鍵の入れ替え（世代を進めて古い行を入れ直す移行）を持つタスクが tasks.md に無い。
+    design.md の決定表は「古い鍵で復号して新しい鍵で入れ直す移行を1本用意する」を求めているが、
+    今実装したのは「行に世代を記録する」までで、実際の移行スクリプトは未着手。
+    **feature 全体の検証（`/kiro-validate-impl`）でこの空白を拾うこと。**
+  - `withDecryptedChatKey` は現在の世代の鍵1本だけで復号する。旧世代の鍵を渡す手段がまだ無いため、
+    上記の移行が実装されるまでは「入れ替えの最中に読めない行が出ない」という design.md の目標に届いていない。
+  - 世代の値を読む環境変数 `CHAT_INTEGRATION_KEY_ENCRYPTION_KEY_GENERATION` が新設されたが、
+    design.md の決定表にはまだ載っていない。**design.md 側への反映が必要。**
+  - task 9.1（管理画面）は、暗号化鍵が「未設定」な場合と「世代の値が不正」な場合を区別して表示すること。
+    `isChatKeyEncryptionConfigured` は両方とも `false` を返すため、画面側で分けないと運用者が原因に気づけない。
+  - `chat_integration_keys.key` の検査関数は `save`/`create` 経由の書き込みでしか効かない
+    （`updateOne` 系は Mongoose が `this` を Query に束縛するため `side` を読めない）。
+    task 3.1（KeyStore）は自分側の鍵の書き込みに必ず `save`/`create` を使うこと。
+    `chat_pending_pairings.ownKeyPair` 側の検査関数は無条件のため両方の書き込み経路で効く。

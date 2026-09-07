@@ -1,6 +1,14 @@
+import mongoose from 'mongoose';
 import { describe, expect, it } from 'vitest';
 
+import type { ChatKeyEncryptionEnv } from '../../keys/key-encryption';
+import { encryptChatKeyForStorage } from '../../keys/key-encryption';
 import { ChatPendingPairing } from './pending-pairing';
+
+/** A clearly-fake 32-byte value; the tests only need a key AES-256 accepts. */
+const TEST_ENV: ChatKeyEncryptionEnv = {
+  CHAT_INTEGRATION_KEY_ENCRYPTION_KEY: Buffer.alloc(32, 5).toString('base64'),
+};
 
 describe('ChatPendingPairing schema', () => {
   const allFields = [
@@ -60,5 +68,35 @@ describe('ChatPendingPairing schema', () => {
       }
     ).options?.collection;
     expect(collectionName).toBe('chat_pending_pairings');
+  });
+});
+
+describe('ChatPendingPairing own key material', () => {
+  const baseFields = {
+    registrationCode: 'code-1',
+    proxyUri: 'https://proxy.example.com',
+    growiUri: 'https://growi.example.com',
+    createdBy: new mongoose.Types.ObjectId(),
+    ownKeyId: 'key-1',
+    expiresAt: new Date(),
+  };
+
+  it('refuses a key pair that was not encrypted for storage', () => {
+    const doc = new ChatPendingPairing({
+      ...baseFields,
+      ownKeyPair:
+        '-----BEGIN PRIVATE KEY-----\nFAKE\n-----END PRIVATE KEY-----\n',
+    });
+
+    expect(doc.validateSync()?.errors.ownKeyPair).toBeDefined();
+  });
+
+  it('accepts a key pair that went through encryptChatKeyForStorage', () => {
+    const doc = new ChatPendingPairing({
+      ...baseFields,
+      ownKeyPair: encryptChatKeyForStorage('fake-own-key-pair', TEST_ENV),
+    });
+
+    expect(doc.validateSync()?.errors.ownKeyPair).toBeUndefined();
   });
 });

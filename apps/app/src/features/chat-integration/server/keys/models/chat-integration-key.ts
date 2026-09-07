@@ -3,6 +3,8 @@ import { Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
+import { isEncryptedChatKeyEnvelope } from '../key-encryption';
+
 /**
  * 'own' -- this GROWI's own signing key, sent to the proxy.
  * 'peer' -- the proxy's public key, used to verify incoming requests.
@@ -14,12 +16,13 @@ export interface IChatIntegrationKey {
   side: ChatIntegrationKeySide;
   keyId: string;
   /**
-   * Opaque serialized key material. For `side: 'own'`, this is the
-   * AES-256-GCM-encrypted private key (design.md "秘密鍵の暗号化は GROWI
-   * に前例が無いので、この spec が仕組みごと決める") -- encryption/decryption
-   * is out of scope for this task and is added by a later task; here the
-   * field is declared as an opaque string so that later task can populate
-   * it without a schema change.
+   * Serialized key material.
+   *
+   * For `side: 'own'` this is the private key encrypted for storage by
+   * `encryptChatKeyForStorage` (design.md "秘密鍵の暗号化は GROWI に前例が無い
+   * ので、この spec が仕組みごと決める"), and the schema refuses any other
+   * form -- see the validator below. For `side: 'peer'` it is the proxy's
+   * public key, which is not a secret and is stored as it arrived.
    */
   key: string;
   validFrom: Date;
@@ -46,7 +49,33 @@ const chatIntegrationKeySchema = new Schema<
       required: true,
     },
     keyId: { type: String, required: true },
-    key: { type: String, required: true },
+    key: {
+      type: String,
+      required: true,
+      validate: {
+        // An own-side private key must already be encrypted by the time it
+        // reaches the database (design.md "平文で保存に落とさない"). Peer keys
+        // are public, so they are stored as they arrived.
+        //
+        // This only fires on a document-path write (`save`/`create`): on an
+        // `updateOne`/`findOneAndUpdate`-style write, Mongoose binds `this`
+        // to the Query rather than the document, so `side` is unreadable
+        // here and the check silently passes anything through. Own-side key
+        // writes must go through `save`/`create` to stay guarded by this
+        // validator.
+        validator: function (
+          this: { side?: ChatIntegrationKeySide },
+          value: string,
+        ): boolean {
+          if (this?.side !== 'own') {
+            return true;
+          }
+          return isEncryptedChatKeyEnvelope(value);
+        },
+        message:
+          'An own-side key must be encrypted by encryptChatKeyForStorage before it is stored.',
+      },
+    },
     validFrom: { type: Date, required: true, default: () => new Date() },
     revokedAt: { type: Date, default: null },
   },
