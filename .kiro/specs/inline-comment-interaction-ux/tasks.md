@@ -56,7 +56,7 @@
   - _Depends: 1.2, 3.3_
   - _Boundary: PageView_
 
-- [ ] 4.2 inlineCommentsバンドルに scrollToRange を追加し一覧側へ伝搬する
+- [x] 4.2 inlineCommentsバンドルに scrollToRange を追加し一覧側へ伝搬する
   - `PageView.tsx` の `inlineCommentsForComments` バンドル（`{ comments, resolve, createReply }`）に `scrollToRange` を追加する。`Comments.tsx` / `PageComment.tsx` の `inlineComments` prop の型定義を更新し、そのまま素通しする（ロジック変更なし）
   - 観測できる完了条件：`Comments.spec.tsx` で、`scrollToRange` を含むオブジェクトがそのまま `PageComment` に転送されることを確認できる
   - _Requirements: 3.1_

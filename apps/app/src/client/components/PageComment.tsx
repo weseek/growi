@@ -55,6 +55,14 @@ type PageCommentProps = {
     comments: InlineCommentWithReplies[];
     resolve: (id: string, resolved: boolean) => Promise<unknown>;
     createReply: (parentId: string, comment: string) => Promise<unknown>;
+    /**
+     * Scrolls the page body to the highlighted range this comment anchors
+     * to; returns `false` when the range no longer resolves (failed
+     * re-anchor) so the caller can surface that instead of scrolling to
+     * nothing (design.md 決定4 / Requirement 3.1, 3.2). Not yet wired to a
+     * click handler here -- that is task 4.3 (`InlineCommentItem.tsx`).
+     */
+    scrollToRange: (commentId: string) => boolean;
   };
 };
 

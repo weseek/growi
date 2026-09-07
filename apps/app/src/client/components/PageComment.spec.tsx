@@ -161,6 +161,7 @@ const renderPageComment = (inlineComments: InlineCommentWithReplies[] = []) =>
         comments: inlineComments,
         resolve: resolveInlineComment,
         createReply: createInlineCommentReply,
+        scrollToRange: vi.fn(() => true),
       }}
     />,
   );

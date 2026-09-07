@@ -44,6 +44,13 @@ type CommentsProps = {
     comments: InlineCommentWithReplies[];
     resolve: (id: string, resolved: boolean) => Promise<unknown>;
     createReply: (parentId: string, comment: string) => Promise<unknown>;
+    /**
+     * Scrolls the page body to the highlighted range this comment anchors
+     * to; returns `false` when the range no longer resolves (failed
+     * re-anchor). Passed straight through to `PageComment` unchanged --
+     * see `PageComment.tsx`'s own `inlineComments` doc comment.
+     */
+    scrollToRange: (commentId: string) => boolean;
   };
 };
 

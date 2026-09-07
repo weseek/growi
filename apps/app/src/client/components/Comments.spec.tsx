@@ -58,6 +58,7 @@ const renderComments = (
     comments: InlineCommentWithReplies[];
     resolve: (id: string, resolved: boolean) => Promise<unknown>;
     createReply: (parentId: string, comment: string) => Promise<unknown>;
+    scrollToRange: (commentId: string) => boolean;
   },
 ) =>
   render(
@@ -135,6 +136,7 @@ describe('Comments.tsx', () => {
       comments: [] as InlineCommentWithReplies[],
       resolve: vi.fn(),
       createReply: vi.fn(),
+      scrollToRange: vi.fn(() => true),
     };
 
     renderComments(false, inlineComments);
@@ -142,5 +144,24 @@ describe('Comments.tsx', () => {
 
     expect(pageCommentPropsCalls).toHaveLength(1);
     expect(pageCommentPropsCalls[0].inlineComments).toBe(inlineComments);
+  });
+
+  it('forwards scrollToRange within the inlineComments bundle to PageComment unchanged (task 4.2, Requirement 3.1)', async () => {
+    const scrollToRange = vi.fn(() => true);
+    const inlineComments = {
+      comments: [] as InlineCommentWithReplies[],
+      resolve: vi.fn(),
+      createReply: vi.fn(),
+      scrollToRange,
+    };
+
+    renderComments(false, inlineComments);
+    await screen.findByTestId('page-comment');
+
+    expect(pageCommentPropsCalls).toHaveLength(1);
+    const forwarded = pageCommentPropsCalls[0].inlineComments as
+      | typeof inlineComments
+      | undefined;
+    expect(forwarded?.scrollToRange).toBe(scrollToRange);
   });
 });
