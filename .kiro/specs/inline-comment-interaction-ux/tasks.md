@@ -71,7 +71,7 @@
   - _Boundary: InlineCommentItem_
 
 - [ ] 5. 返信UIの通常コメントとの統一
-- [ ] 5.1 (P) InlineCommentFormのエディタ組み立て部分を共有部品として切り出す
+- [x] 5.1 (P) InlineCommentFormのエディタ組み立て部分を共有部品として切り出す
   - `apps/app/src/features/inline-comment/client/components/MentionAwareCommentInput/MentionAwareCommentInput.tsx` を新設し、`InlineCommentForm.tsx` が持つ `CodeMirrorEditorComment` ＋ `useCodeMirrorEditorIsolated` ＋ メンション補完拡張の組み立て・送信・エラー表示ロジックを移す。`InlineCommentForm.tsx` はこの部品を使う形に書き換える（外部から見た挙動は変えない）
   - 観測できる完了条件：既存の `InlineCommentForm.spec.tsx` が無変更のままgreenになる（起点フォームの挙動が変わっていないことの確認）
   - _Requirements: 4.2_
