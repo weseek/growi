@@ -5,7 +5,7 @@
 実装済みのインラインコメント機能の表示部分を、GROWI 本体の見た目の仕組みに合わせ直す。変更は3つの領域に分かれる。
 
 1. 作成 UI（作成の起点ボタン、入力フォーム、操作ボタン群）に Bootstrap 5 のクラスとテーマ由来の CSS カスタムプロパティを与える
-2. 本文中のハイライト色を、テーマ側から上書きできる 1 つのカスタムプロパティに寄せ、選択中・入力中・保存後の3状態で同じ色にする
+2. 本文中のハイライト色を、テーマ側から上書きできるカスタムプロパティに寄せる。作成中（選択中・入力中）は保存後とは異なる色にし、両者はそれぞれ独立にテーマから上書きできるようにする（重なったときも両方が見分けられること）
 3. インラインコメントの一覧項目を通常コメントと同じ箱で表示し、1つの一覧に混ぜて並べる
 
 アンカーの計算、あいまい一致、再アンカー、選択→起点→フォームの2段階の流れは変更しない。
@@ -154,28 +154,33 @@
 
 ## Architecture
 
-### 決定1: ハイライトは 1 つのトークンと 2 つの仕組みで塗る
+### 決定1: ハイライトは 2 つのトークンと 2 つの仕組みで塗る
 
-**新しいトークンを 1 つ置く。**
+**新しいトークンを 2 つ置く。1 つではなく 2 つにしたのは、作成中（選択中・入力中）の範囲と保存済みコメントの範囲を異なる色にする、という決定（後述、Requirement 12.8/12.9 参照）を反映したもの。**
 
 ```scss
 // apps/app/src/styles/_marker.scss の末尾に追記
 // （このファイルは apps/app/src/styles/style-app.scss:29 の `@import 'marker';`
 //  経由で文書全体に読み込まれるので、CSS モジュールの局所化を受けない）
 :root {
-  // 既定では検索キーワードのマーカー色をそのまま使う。
+  // 保存済みコメントの対象範囲。既定では検索キーワードのマーカー色をそのまま使う。
   // テーマ側でこのプロパティを上書きすれば、検索マーカーとは別の色にできる。
   --grw-inline-comment-marker-bg: var(--grw-marker-bg, var(--grw-marker-bg-yellow));
+
+  // 作成中（選択中・入力中）の範囲。保存済み用のトークンとは独立にテーマから
+  // 上書きできる。既定値は保存済み側と別系統の色（--grw-marker-bg-blue）にして
+  // おき、テーマが両方とも上書きしていない場合でも見分けがつくようにする。
+  --grw-inline-comment-marker-bg-pending: var(--grw-inline-comment-marker-bg-pending-override, var(--grw-marker-bg-blue));
 }
 ```
 
-`--grw-marker-bg` / `--grw-marker-bg-yellow` はどちらも `[data-bs-theme=light|dark]` 配下や `:root[data-bs-theme=...]` 配下で宣言されているが、CSS カスタムプロパティの値の解決は使う側の要素で起きるので、`:root` に置いた 1 段の間接参照でも正しくテーマの値に解決される。
+`--grw-marker-bg` / `--grw-marker-bg-yellow` / `--grw-marker-bg-blue` はどれも `[data-bs-theme=light|dark]` 配下や `:root[data-bs-theme=...]` 配下で宣言されているが、CSS カスタムプロパティの値の解決は使う側の要素で起きるので、`:root` に置いた 1 段の間接参照でも正しくテーマの値に解決される。
 
-なぜ `--grw-marker-bg` を直接使わず 1 段はさむのか。テーマは検索マーカーの色を目的に `--grw-marker-bg` を上書きしている（16 テーマ中 12 テーマが cyan / red / blue / green に変えている）。インラインコメントのハイライトを直接そこに縛ると、「検索マーカーは水色にしたいが、インラインコメントは黄色のままにしたい」という指定ができなくなる。1 段はさむと、既定では要望どおり検索マーカーと同じ色になり、必要なテーマだけ別の色にできる。間接参照は 1 段で、消費側は 2 か所しかない。
+なぜ `--grw-marker-bg` を直接使わず 1 段はさむのか。テーマは検索マーカーの色を目的に `--grw-marker-bg` を上書きしている（16 テーマ中 12 テーマが cyan / red / blue / green に変えている）。インラインコメントのハイライトを直接そこに縛ると、「検索マーカーは水色にしたいが、インラインコメントは黄色のままにしたい」という指定ができなくなる。1 段はさむと、既定では要望どおり検索マーカーと同じ色になり、必要なテーマだけ別の色にできる。間接参照は 1 段で、消費側は 2 か所しかない。作成中用のトークンも同じ理由で `--grw-inline-comment-marker-bg-pending-override` を 1 段はさむ。
 
 **塗る仕組みは 2 つ必要で、片方だけでは足りない。**
 
-CSS のハイライトの描画順は「カスタムハイライト（`::highlight()`）＜ 綴り・文法 ＜ 対象テキスト ＜ 選択（`::selection`）」で、`::selection` が最も手前になる。したがってテキストを選択している最中は、`::highlight()` に何を指定してもブラウザ既定の青（実測 `#3367D1`）が上に乗る。選択中も黄色にするには `::selection` 側も指定する。
+CSS のハイライトの描画順は「カスタムハイライト（`::highlight()`）＜ 綴り・文法 ＜ 対象テキスト ＜ 選択（`::selection`）」で、`::selection` が最も手前になる。したがってテキストを選択している最中は、`::highlight()` に何を指定してもブラウザ既定の青（実測 `#3367D1`）が上に乗る。選択中も作成中の色にするには `::selection` 側も指定する。
 
 一方、入力フォームを開いて入力欄にカーソルを移すと文書上の選択が解除されるため（実測: `screenshot-03` の対象行は `#FFFFFF`）、`::selection` だけでは入力中に何も塗られない。`SelectionCapture` は `composing` の段で `committedRange`（`liveRange.cloneRange()` の結果）を保持しているので、これを `CSS.highlights` に登録すれば入力中も塗れる。
 
@@ -185,7 +190,9 @@ composing  段: ::highlight(growi-inline-comment-pending) に committedRange を
 保存済み    : ::highlight(growi-inline-comment) に解決済み Range を登録して塗る（既存）
 ```
 
-3 つとも同じ `--grw-inline-comment-marker-bg` を読むので、色は 1 か所で決まる。
+`selecting`/`composing` の 2 段はどちらも `--grw-inline-comment-marker-bg-pending` を読み、保存済みは `--grw-inline-comment-marker-bg` を読む。色は状態ごとに 1 か所で決まる。
+
+**作成中の範囲が保存済みコメントの範囲と重なっていても、両方が見分けられる必要がある（Requirement 12.9）。** 作成中側の `::selection` / `::highlight(growi-inline-comment-pending)` は `background-color: color-mix(in srgb, var(--grw-inline-comment-marker-bg-pending) 70%, transparent)` と半透明にして塗る。`::highlight()` の描画順は保存済み（`growi-inline-comment`）より作成中（`growi-inline-comment-pending`）の方が後に登録される分だけ手前に来るため、半透明にしておくことで下にある保存済みハイライトの色が透けて見え、2 色が混ざった見た目になる。どちらか一方の色だけに塗りつぶされて他方が見えなくなることを避けるための実装であり、色の値そのものを混ぜ合わせて 1 色に決め打ちしているわけではない。
 
 **検索マーカーの「ペンで塗った」見え方は引き継げない。** 検索側は `linear-gradient(transparent 40%, <色> 40%)` で行の下 60% だけを塗っている（`SearchPageBase.module.scss:11-14`）。理由は 2 つあり、どちらも技術的に確定している。(1) `::highlight()` が指定できるのは `color` / `background-color` / 文字装飾 / 影に限られ、`background-image` は使えないのでグラデーションが描けない。(2) モックアップ側の塗りは行の箱を上から下まで一様に塗っている（`01-selection-popup.png` の `x=300` 縦走査で `y229`〜`y255` がすべて `#F9EFBC`）。よってグラデーションではなく平らな塗りにする。共通化するのは色の値だけ。
 
@@ -713,7 +720,8 @@ apps/app/src/features/inline-comment/client/no-literal-colors.spec.ts
 | 12.4 | `PendingSelectionHighlight` の `::selection` 上書き |
 | 12.5, 12.6 | `PendingSelectionHighlight` が `committedRange` を `CSS.highlights` に登録すること |
 | 12.7 | `stage === 'idle'` で `SelectionCapture` が `null` を返すこと |
-| 12.8 | 3 つの規則がすべて同じカスタムプロパティを読むこと |
+| 12.8 | `--grw-inline-comment-marker-bg-pending`（作成中）と `--grw-inline-comment-marker-bg`（保存済み）を別トークンにし、それぞれ独立にテーマから上書きできること。既定値も別系統の色（`--grw-marker-bg-blue` と `--grw-marker-bg-yellow`）にすること |
+| 12.9 | `PendingSelectionHighlight` の `::selection` / `::highlight(growi-inline-comment-pending)` を `color-mix(in srgb, var(--grw-inline-comment-marker-bg-pending) 70%, transparent)` で半透明にし、保存済みハイライトと重なったときに両方が透けて見えること |
 | 13.1, 13.2 | `PageComment.tsx` の投稿日時順の並べ替え |
 | 13.3, 13.4 | `CommentCard` の共有 |
 | 13.5 | `listByPageId()` の `include: { creator: true }` ＋ `serializeUserSecurely` |
@@ -729,7 +737,8 @@ apps/app/src/features/inline-comment/client/no-literal-colors.spec.ts
 
 - **色の直値が無いこと**（Req 11.2 / 12.2）: `apps/app/src/features/inline-comment/` 配下の `*.ts` / `*.tsx` / `*.scss` / `*.module.scss` を読み（`*.spec.*` は除く）、`#[0-9a-fA-F]{3,8}` / `rgb(` / `rgba(` に一致しないことを確かめる単体テスト。拡張子に `.scss` を必ず含める — 本設計は同じツリーの下に SCSS モジュールを 3 つ増やすので、今後直値が入り込むならそこが最も入りやすい。現在の該当は 1 件（`InlineCommentHighlight.tsx:103` の `rgba(255, 193, 7, 0.35)`）なので、変更前は落ち、変更後に通る。
 - **テーマ追随**（Req 11.3 / 11.4 / 12.3）: 単体テストでは計算後の色を取れないため、Playwright で確かめる。`data-bs-theme` を `light` / `dark` に切り替え、`getComputedStyle` で作成の起点ボタンの `background-color` が変わることを確かめる。テーマ本体の切り替え（`customize:theme`）は管理画面を経由するため、`--grw-marker-bg` を実行時に直接上書きして `::highlight` の色が追随することの確認に代える。
-- **3 状態のハイライト**（Req 12.4〜12.8）: Playwright。選択直後 → 起点ボタンを押す → 入力欄をクリック、の各段で対象範囲の背景色を読み、3 つが同じ値であることを確かめる。今の実装では 3 つが `#3367D1` / `#3367D1` / `#FFFFFF` に分かれるので、変更前は落ちる。
+- **3 状態のハイライト**（Req 12.4〜12.7）: Playwright。選択直後 → 起点ボタンを押す → 入力欄をクリック、の各段で対象範囲の背景色を読み、選択中と入力中の2つが同じ値（`--grw-inline-comment-marker-bg-pending` 由来）であることを確かめる。今の実装では 3 つが `#3367D1` / `#3367D1` / `#FFFFFF` に分かれるので、変更前は落ちる。
+- **作成中・保存済みの色の区別と重なり時の見分けやすさ**（Req 12.8 / 12.9）: Playwright。作成中と保存済みそれぞれの `getComputedStyle` 上の背景色が異なる値であること、および保存済みコメントの範囲と重なる位置で新規選択したときに、選択中の半透明色を通して下の保存済み色が透けて見える（合成後の色が単純な選択中色とも保存済み色とも異なる）ことを確かめる。
 - **1 つの一覧**（Req 13.1 / 13.2）: `PageComment.spec.tsx` に、通常コメント 2 件とインラインコメント 1 件を投稿日時が交互になるように与え、`page-comments-list` の子の順序が投稿日時順になることを確かめるテストを足す。
 - **同じ箱**（Req 13.3 / 13.4）: `InlineCommentItem.spec.tsx` で、`page-comment-main`・`bg-comment`・`rounded` を持つ要素の中に `UserPicture` と投稿者名と日時が出ることを確かめる。クラス名の文字列一致だけに頼らず、`CommentCard` を通していることを DOM の構造で見る。
 - **共有リンクに漏れないこと**（Req 13.8）: `ShareLinkPageView` の経路で `useSWRxInlineComments` に対応する `apiv3Get` が呼ばれないことを確かめる。

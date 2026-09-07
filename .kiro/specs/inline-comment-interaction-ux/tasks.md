@@ -111,7 +111,7 @@
   - _Depends: 5.2_
 
 - [ ] 7. 変更を対象スペックへ戻し、本スペックを削除する
-- [ ] 7.1 `inline-comment-visual-consistency` の Requirement 12.8 を上書きする
+- [x] 7.1 `inline-comment-visual-consistency` の Requirement 12.8 を上書きする
   - `.kiro/specs/inline-comment-visual-consistency/requirements.md` の Requirement 12.8（「作成中の範囲を示すハイライトと、保存済みコメントの対象範囲を示すハイライトに、同じ色を使う」）を、本スペックの Requirement 1 の内容（異なる色を使う・重なったときに両方見分けられる）に置き換える。同スペックの `design.md`（決定1）にも、実装した2トークン構成・半透明化の内容を反映する
   - まだ `inline-comment-visual-consistency` 自体の fold-back（`.kiro/specs/inline-comment/` への統合）が完了していない場合は、上記のファイルへ直接反映する。fold-back が既に完了していた場合は `.kiro/specs/inline-comment/requirements.md`／`design.md` の該当箇所（12.8相当）に反映する
   - 観測できる完了条件：対象ファイルの記述が、実装済みの2トークン・半透明化の内容と矛盾しないこと
