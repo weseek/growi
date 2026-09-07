@@ -1623,3 +1623,364 @@ test.describe('Inline comment - a new selection overlapping a saved comment stay
     expect(topPaintedColor).not.toBe(savedHighlightColor);
   });
 });
+
+test.describe('Inline comment - hover/click/tap on a saved body highlight opens a preview popover with simple reply (Req 2.1-2.5)', () => {
+  // Serial: every test in this suite reuses the one saved comment created by
+  // the first test, the same reasoning the other suites in this file use.
+  test.describe.configure({ mode: 'serial' });
+
+  const bodyPopoverPagePath = (retry: number) =>
+    `/inline-comment-e2e-body-popover${retry}`;
+
+  const targetSentence =
+    'This sentence anchors the body-popover end-to-end test.';
+  const introText = 'Some intro text before the target, hovered to move away.';
+  const pageBody = [
+    '# Inline comment E2E - body popover',
+    '',
+    introText,
+    '',
+    targetSentence,
+    '',
+    'Some trailing text after the target.',
+    '',
+  ].join('\n');
+
+  let createdPage: CreatedPage | undefined;
+
+  test.afterAll(async ({ request }) => {
+    if (createdPage != null) {
+      await deletePagesCompletely(request, [createdPage]);
+    }
+  });
+
+  /**
+   * The viewport-relative center point of the exact text run `text` --
+   * located via a `TreeWalker` + a throwaway `Range` around just that text
+   * (same technique `selectTextInPageBody` uses to build a selection Range,
+   * reused here to read `getBoundingClientRect()` instead).
+   *
+   * This is deliberately NOT "hover/click the wrapping element" (e.g.
+   * `locator.hover()` on the paragraph): a `.hover()`/`.click()` targets the
+   * center of the ELEMENT's own box, but a block-level `<p>` spans the full
+   * container width while its rendered text is left-aligned and narrower --
+   * so the element's center can sit well past the end of the actual glyphs,
+   * outside every rect `useHighlightHitTest`'s `getClientRects()`-based hit
+   * test compares against (see `use-highlight-hit-test.ts`). Moving the mouse
+   * to the middle of the TEXT's own bounding rect is what actually lands
+   * inside the saved highlight's hit-testable area.
+   */
+  const centerOfText = (
+    targetPage: Page,
+    text: string,
+  ): Promise<{ x: number; y: number }> =>
+    targetPage.evaluate((needle) => {
+      const container = document.querySelector('.wiki');
+      if (container == null) {
+        throw new Error('page body container (.wiki) not found');
+      }
+      const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+      let node = walker.nextNode();
+      while (node != null) {
+        const index = node.textContent?.indexOf(needle) ?? -1;
+        if (index !== -1) {
+          const range = document.createRange();
+          range.setStart(node, index);
+          range.setEnd(node, index + needle.length);
+          const rect = range.getBoundingClientRect();
+          return {
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2,
+          };
+        }
+        node = walker.nextNode();
+      }
+      throw new Error(`text not found in page body: ${needle}`);
+    }, text);
+
+  /**
+   * Moves the mouse to the middle of `text`'s own rendered rect -- the
+   * `pointermove` this dispatches bubbles to `document`, which is where
+   * `useHighlightHitTest`'s desktop-only hover listener is attached (the
+   * saved highlight has no DOM element of its own to target directly; see
+   * design.md 決定2).
+   */
+  const hoverText = async (targetPage: Page, text: string): Promise<void> => {
+    const { x, y } = await centerOfText(targetPage, text);
+    await targetPage.mouse.move(x, y);
+  };
+
+  /** Same rationale as `hoverText`, for a real click/tap at that same point. */
+  const clickText = async (targetPage: Page, text: string): Promise<void> => {
+    const { x, y } = await centerOfText(targetPage, text);
+    await targetPage.mouse.click(x, y);
+  };
+
+  const commentText = 'a comment surfaced through the body popover';
+
+  test('Create a page and save an inline comment on the target sentence', async ({
+    page,
+    request,
+  }, testInfo) => {
+    createdPage = await createPage(request, {
+      path: bodyPopoverPagePath(testInfo.retry),
+      body: pageBody,
+    });
+
+    await page.goto(createdPage.path);
+    await expect(page.locator('.wiki').first()).toContainText(targetSentence);
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    await selectTextInPageBody(page, targetSentence);
+    await page.getByTestId('selection-action-button').click();
+    const form = page.getByTestId('inline-comment-form');
+    await expect(form).toBeVisible();
+
+    await form.locator('.cm-content').fill(commentText);
+    await form.getByTestId('inline-comment-submit-button').click();
+    await expect(form).not.toBeVisible();
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+    await expect(item).toContainText(commentText);
+
+    // The saved highlight (and therefore its hit-testable Range) is only
+    // registered once AnchorResolver resolves the just-created anchor -- same
+    // poll pattern used throughout this file.
+    await expect
+      .poll(async () =>
+        page.evaluate(
+          () => CSS.highlights.get('growi-inline-comment')?.size ?? 0,
+        ),
+      )
+      .toBeGreaterThan(0);
+  });
+
+  test('Desktop: hovering the highlight shows the comment content, and moving away closes it (Req 2.1, 2.4, 2.5)', async ({
+    page,
+  }, testInfo) => {
+    // The default viewport (1400x1024, playwright.config.ts) is well above
+    // Bootstrap's `md` breakpoint (768px) -- the desktop case Req 2.1 covers.
+    await page.goto(bodyPopoverPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    const popover = page.getByTestId('inline-comment-preview-popover');
+    await expect(popover).not.toBeVisible();
+
+    await hoverText(page, targetSentence);
+    await expect(popover).toBeVisible();
+    await expect(popover).toContainText(commentText);
+
+    // Requirement 2.5: no element for editing the origin comment's own body
+    // exists anywhere in the popover -- only its (single) reply textarea.
+    await expect(popover.locator('textarea')).toHaveCount(1);
+    await expect(popover.getByRole('button', { name: /edit/i })).toHaveCount(0);
+
+    // Requirement 2.4 (hover case): moving the mouse to an unrelated part of
+    // the body (not merely off-screen, so the pointer's target is still
+    // inside the body container and the hit test actually re-runs) drops the
+    // hover-only hit, and with nothing pinning it, the popover closes.
+    await hoverText(page, introText);
+    await expect(popover).not.toBeVisible();
+  });
+
+  test('Desktop: clicking the highlight opens and pins the popover, which stays open once the mouse moves away (Req 2.1)', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(bodyPopoverPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    const popover = page.getByTestId('inline-comment-preview-popover');
+    await clickText(page, targetSentence);
+    await expect(popover).toBeVisible();
+    await expect(popover).toContainText(commentText);
+
+    // Decisive proof of "pinned": a plain hover elsewhere, which alone closes
+    // a hover-only popover (proven in the previous test), does NOT close a
+    // click-pinned one.
+    await hoverText(page, introText);
+    await expect(popover).toBeVisible();
+
+    // Requirement 2.4: the popover's own explicit close control still works
+    // on a pinned popover.
+    await popover.getByRole('button', { name: 'Close' }).click();
+    await expect(popover).not.toBeVisible();
+  });
+
+  test('Requirement 2.4: clicking outside the popover closes it', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(bodyPopoverPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    const popover = page.getByTestId('inline-comment-preview-popover');
+    await clickText(page, targetSentence);
+    await expect(popover).toBeVisible();
+
+    await clickText(page, introText);
+    await expect(popover).not.toBeVisible();
+  });
+
+  test('Requirement 2.3: submitting a reply from the popover posts it, and it appears nested under the origin item in the bottom list', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(bodyPopoverPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    const popover = page.getByTestId('inline-comment-preview-popover');
+    await clickText(page, targetSentence);
+    await expect(popover).toBeVisible();
+
+    const replyText = 'a reply posted through the body popover';
+    // The popover's reply input is a deliberately plain textarea (design.md
+    // 決定2's "簡易な返信欄") -- not the mention-aware editor the bottom list
+    // uses -- so it is driven by its placeholder/aria-label rather than the
+    // shared `.cm-content` + `inline-comment-submit-button` idiom used
+    // elsewhere in this file.
+    await popover.getByPlaceholder('Write a reply...').fill(replyText);
+    await popover.getByRole('button', { name: 'Commment' }).click();
+
+    // The popover clears its draft and keeps itself open on a successful
+    // submit (InlineCommentPreviewPopover.tsx has no self-close-on-submit
+    // behavior); the decisive proof is the bottom-of-page list, the single
+    // source of truth `createReply` writes to either way (design.md 決定2:
+    // this popover calls the exact same `createReply` prop `PageView.tsx`
+    // wires into the bottom list).
+    await expect(popover.getByPlaceholder('Write a reply...')).toHaveValue('');
+
+    const item = page.getByTestId('inline-comment-item').first();
+    const reply = item.getByTestId('inline-comment-reply').last();
+    await expect(reply).toBeVisible();
+    await expect(reply).toContainText(replyText);
+  });
+
+  test('Tablet-and-below: tapping the highlight opens the popover (Req 2.2)', async ({
+    page,
+  }, testInfo) => {
+    // 600px is at/below Bootstrap's `md` breakpoint (768px) -- the same
+    // narrow width `sticky-features.spec.ts` uses for its own tablet/mobile
+    // check. A tap and a mouse click dispatch the same `click` event in a
+    // real browser, and `useHighlightHitTest` treats tablet-and-below width
+    // as click-only (its `pointermove`/hover branch is desktop-only), so a
+    // plain `.click()` at this viewport width IS the tap interaction under
+    // test here -- no separate touch-emulation API is required.
+    await page.setViewportSize({ width: 600, height: 1024 });
+    await page.goto(bodyPopoverPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    const popover = page.getByTestId('inline-comment-preview-popover');
+    await expect(popover).not.toBeVisible();
+
+    await clickText(page, targetSentence);
+    await expect(popover).toBeVisible();
+    await expect(popover).toContainText(commentText);
+  });
+});
+
+test.describe('Inline comment - a re-anchor-failed comment never surfaces a body popover (Req 2.6)', () => {
+  // Serial: the second test depends on the comment created by the first, and
+  // deliberately breaks that same comment's anchor -- the same reasoning the
+  // "best-effort fallback" suite above uses for its own two-test structure.
+  test.describe.configure({ mode: 'serial' });
+
+  const notFoundPopoverPagePath = (retry: number) =>
+    `/inline-comment-e2e-popover-not-found${retry}`;
+
+  // Same fixture shape as the "best-effort fallback" suite above: long enough
+  // that the fuzzy matcher's tolerance cannot bridge the gap to its
+  // replacement, so the anchor is deterministically `not_found` after the edit.
+  const targetSentence =
+    'This sentence anchors a comment whose target will be removed so the popover has nothing left to hit-test against.';
+  const replacementSentence = 'Unrelated replacement text.';
+  const pageBody = [
+    '# Inline comment E2E - popover not-found anchor',
+    '',
+    'Some intro text before the target.',
+    '',
+    targetSentence,
+    '',
+    'Some trailing text after the target.',
+    '',
+  ].join('\n');
+
+  let createdPage: CreatedPage | undefined;
+
+  test.afterAll(async ({ request }) => {
+    if (createdPage != null) {
+      await deletePagesCompletely(request, [createdPage]);
+    }
+  });
+
+  test('Create a page, then save an inline comment on the sentence that will later be removed', async ({
+    page,
+    request,
+  }, testInfo) => {
+    createdPage = await createPage(request, {
+      path: notFoundPopoverPagePath(testInfo.retry),
+      body: pageBody,
+    });
+
+    await page.goto(createdPage.path);
+    await expect(page.locator('.wiki').first()).toContainText(targetSentence);
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    await selectTextInPageBody(page, targetSentence);
+    await page.getByTestId('selection-action-button').click();
+    const form = page.getByTestId('inline-comment-form');
+    await expect(form).toBeVisible();
+
+    await form
+      .locator('.cm-content')
+      .fill('a comment whose target will be removed');
+    await form.getByTestId('inline-comment-submit-button').click();
+    await expect(form).not.toBeVisible();
+
+    await expect
+      .poll(async () =>
+        page.evaluate(
+          () => CSS.highlights.get('growi-inline-comment')?.size ?? 0,
+        ),
+      )
+      .toBeGreaterThan(0);
+  });
+
+  test('After the commented-on text is edited away and the page reloads, hovering/clicking where it used to be shows no popover (Req 2.6)', async ({
+    page,
+    request,
+  }) => {
+    if (createdPage == null) {
+      throw new Error('createdPage was not set by the previous test');
+    }
+
+    const editedBody = pageBody.replace(targetSentence, replacementSentence);
+    createdPage = await updatePage(request, createdPage, editedBody);
+
+    await page.goto(createdPage.path);
+    await expect(page.locator('.wiki').first()).toContainText(
+      replacementSentence,
+    );
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    // Requirement 2.6: the anchor could not be re-resolved (`not_found`), so
+    // `rangesById()` never produces a Range for it (design.md 決定2/決定3) --
+    // there is nothing left in the body to hit-test against. Confirm this
+    // precondition first (no highlight drawn at all), then confirm hovering
+    // and clicking the text that replaced it still surfaces no popover.
+    expect(
+      await page.evaluate(
+        () => CSS.highlights.get('growi-inline-comment')?.size ?? 0,
+      ),
+    ).toBe(0);
+
+    const popover = page.getByTestId('inline-comment-preview-popover');
+    const replacementElement = page
+      .locator('.wiki')
+      .getByText(replacementSentence, { exact: true });
+
+    await replacementElement.hover();
+    await expect(popover).not.toBeVisible();
+
+    await replacementElement.click();
+    await expect(popover).not.toBeVisible();
+  });
+});
