@@ -187,3 +187,11 @@ GROWIのページ閲覧者は、開いているページの内容を素早く把
 #### Acceptance Criteria
 1. When API呼び出しが失敗する（ネットワークエラー、サーバエラー、レート制限等）, then ユーザーに向けた簡潔なエラーメッセージを通知する。
 2. The メッセージ shall 技術的詳細（スタックトレース等）は含めない。既存のエラー表示パターンに合わせる。
+
+### Requirement 18: 生成アクションのAudit Log記録
+**Objective:** As a GROWIの運用者, I want 要約が生成されるたびに誰がどのページを要約したかを記録に残せる, so that 利用状況の調査や不正利用の追跡ができる
+
+#### Acceptance Criteria
+1. When 要約が1件生成される, the AI要約機能 shall 既存のAudit Log機構（Activity）に、生成を要求した閲覧者・対象ページ・アクション種別を記録する。
+2. The AI要約機能 shall 上記の記録を、既存のAI関連アクション（`ADMIN_AI_SETTING_UPDATE`等）と同じ既定の記録階層（`LargeActionGroup`）に位置づける。
+3. The AI要約機能 shall 「残す」による永続化操作自体には、本要件のAudit Logアクションを適用しない（対象は要約の生成アクションのみであり、永続化ルートは対象外とする）。

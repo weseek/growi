@@ -36,6 +36,7 @@
 - 読み取り量の上限を強制する専用ツール（`limitedGetPageContentTool`）。既存の `getPageContentTool` 自体は変更しない。
 - 要約を1回だけ起動する新規APIルート（トリガー結果を受けてサーバ側で要約対話を開始する契約）。
 - 要約生成イベントに対するOpenTelemetryカウンタメトリクスの追加。
+- 要約生成イベントに対する既存Audit Log機構（Activity）への記録の追加（新規アクション `PAGE_AI_SUMMARIZE`、既定の記録階層 `LargeActionGroup`）。「残す」による永続化ルートには適用しない（Requirement 18.3）。OpenTelemetryメトリクス（集計・匿名）とは別の記録経路であり、こちらは個々の実行者・対象ページを記録する。
 - 要約リクエストにおける閲覧権限の担保 — ルート層の `Page.findByIdAndViewer` による短絡ゲート（権限なし時の唯一の応答経路）と、既存 `getPageContentTool` 経由の都度チェック（TOCTOU窓の二重防護）の両立。
 - `Page` スキーマへの永続化フィールド（要約本文＋生成元revision ID）の追加。
 - 永続化された要約の保存を行う新規APIルート（サーバ側の削除APIは持たない）。
@@ -56,6 +57,8 @@
 - `features/mastra/server/services/mastra-modules/memory`（既存の `Memory` + `MongoDBStore`）— 要約スレッドの永続化に、`growiAgent` と共有で利用する。新規のデータストアは追加しない。
 - `features/mastra/server/routes/ai-ready-guard.ts`（既存）— AI未設定・無効時の利用不可化にそのまま流用する。
 - `features/opentelemetry/server/custom-metrics/`（既存ディレクトリ構成）— 新規Counterメトリクスをこのパターンに追加する。
+- `apps/app/src/server/middlewares/add-activity.ts`（既存）＋ `crowi.events.activity`（既存の `ActivityEvent`）— Audit Logの記録経路。`generateAddActivityMiddleware()` をルート層で `aiReadyGuard` 適用範囲内・バリデータより前に挟み、ハンドラ内でストリーム正常終了時（レスポンス送信前）に `activityEvent.emit('update', res.locals.activity._id, { action, targetModel, target, contributor })` を呼ぶ、既存のページ系ルート（`create-page.ts`）と同じパターンを流用する。
+- `apps/app/src/interfaces/activity.ts`（既存の `SupportedAction`/`SupportedTargetModel`/`LargeActionGroup`）— 新規アクション `ACTION_PAGE_AI_SUMMARIZE`（文字列値 `PAGE_AI_SUMMARIZE`）をここに追加し、既存のカテゴリ分類（プレフィックス `PAGE_` による正規表現判定）にそのまま乗せる。新規カテゴリは追加しない。
 - `apps/app/src/server/models/page.ts`（既存の `Page` Mongooseモデル）— 永続化フィールドの追加先。既存のスキーマ定義パターンに1フィールド追加する。
 - `Page.findByIdAndViewer` / 既存のページ閲覧権限判定ロジック（既存）— 永続化された要約の表示可否判定にそのまま流用する。
 - `apps/app/src/components/PageView/RevisionRenderer.tsx`（既存、無変更）— `summary.body` のMarkdown描画の唯一の経路。任意のMarkdown文字列を描画する既存の先例（コメント・プレビュー・カスタムサイドバー）と同じ使い方をする。要約専用のレンダラは新設しない。
@@ -211,7 +214,9 @@ apps/app/src/components/PageView/
 
 ### Modified Files
 - `features/mastra/server/services/mastra-modules/index.ts` — `summarizeAgent` を `Mastra` の `agents` に追加登録する。
-- `features/mastra/server/routes/index.ts` — `router.post('/summary', summarizeMessageHandlersFactory(crowi))` を、既存の `/message` 登録と同じ並びに追加する。
+- `features/mastra/server/routes/index.ts` — `router.post('/summary', summarizeMessageHandlersFactory(crowi))` を、既存の `/message` 登録と同じ並びに追加する。`aiReadyGuard` の適用範囲内・バリデータより前に `generateAddActivityMiddleware()` を挟む。
+- `apps/app/src/interfaces/activity.ts` — `ACTION_PAGE_AI_SUMMARIZE = 'PAGE_AI_SUMMARIZE'` を追加し、`SupportedAction` および `LargeActionGroup` に登録する。
+- `apps/app/public/static/locales/{en_US,fr_FR,ja_JP,ko_KR,zh_CN}/admin.json` — `audit_log_action.PAGE_AI_SUMMARIZE` の表示ラベルを5ロケール分追加する（`/admin/audit-log` での表示用）。
 - `features/opentelemetry/server/custom-metrics/index.ts` — `addAiSummarizeMetrics()` の呼び出しを追加する。
 - `apps/app/src/server/models/page.ts` — `summary: { body: String, sourceRevisionId: ObjectId, capturedAt: Date }`（既定値 `null`）をスキーマに追加する。既存のフィールド・インデックス・staticsは変更しない。
 - `apps/app/prisma/schema.prisma` — `model pages`（既存、Mongooseのpagesコレクションからintrospectされたもの）に `summary` フィールドを追加する。`Page` モデルはMongooseからPrismaへの移行途上にあり（`.claude/rules/model.md`）、Mongoose側だけを更新すると型不整合が後から表面化するため、両方を同時に更新する。埋め込みオブジェクトの表現は、同スキーマ内の既存の埋め込みフィールド（`grantedGroups` が `Json?` として表現されている）と同じ扱いに揃える。追加後に Prisma の型生成（`generator` の出力先 `src/generated/prisma`）が成功することを確認する。
@@ -374,6 +379,9 @@ sequenceDiagram
 | 9.2 | 追加呼び出しなしの鮮度判定 | PersistedSummaryView（クライアント側計算） | — | 永続化・共有表示・ローカル非表示 |
 | 9.3 | 閲覧者ごとのローカル非表示手段の提供 | PersistedSummaryView（クライアント側 `localStorage`） | `localStorage` キー `growi.summary.hidden.{userId}.{pageId}`（ブラウザ×ユーザー×ページ単位） | 永続化・共有表示・ローカル非表示 |
 | 9.4 | 再表示機能なし | PersistedSummaryView（明示的な再表示UIを持たない） | — | 永続化・共有表示・ローカル非表示 |
+| 18.1 | 生成のAudit Log記録 | SummarizeMessageRoute, `add-activity` middleware, Activity（既存） | `activityEvent.emit('update', ..., { action: ACTION_PAGE_AI_SUMMARIZE, targetModel: MODEL_PAGE, target, contributor })` | 要約開始フロー |
+| 18.2 | 既定の記録階層 | `interfaces/activity.ts` | `LargeActionGroup` への登録 | — |
+| 18.3 | 永続化ルートは対象外 | AiSummaryPersistenceRoute（Audit Logアクションを追加しない） | — | 永続化・共有表示・ローカル非表示 |
 
 ## Components and Interfaces
 
@@ -476,15 +484,16 @@ export const limitedGetPageContentTool: Tool; // used only by summarizeAgent
 | Field | Detail |
 |-------|--------|
 | Intent | 要約対話を1回だけ起動し、既存のUIメッセージストリーム形式で応答する |
-| Requirements | 1.1, 1.2, 1.3, 1.4, 1.5, 4.1, 4.2, 5.1, 6.1, 7.2 |
+| Requirements | 1.1, 1.2, 1.3, 1.4, 1.5, 4.1, 4.2, 5.1, 6.1, 7.2, 18.1, 18.2, 18.3 |
 
 **Responsibilities & Constraints**
 - `router.use(aiReadyGuard)`（既存、`routes/index.ts` で全 `mastra` ルートに適用済み）により、AI未設定・無効時は自動的に利用不可となる（5.1、追加実装不要）。
 - **適用ミドルウェア（順序どおり）**: `aiReadyGuard` は「AI機能が使えるか」しか見ないため、認可は別途必要である。既存の姉妹ルート `post-message.ts` の `postMessageHandlersFactory` と**同一の並び**にする:
   1. `accessTokenParser([SCOPE.WRITE.FEATURES.AI], { acceptLegacy: true })` — `/message` と同じスコープ（AI機能の書き込み。ページ書き込みスコープではない）。
   2. **`loginRequiredStrictly`** — `import loginRequiredFactory from '~/server/middlewares/login-required';` のデフォルトエクスポートから `loginRequiredFactory(crowi)` でハンドラファクトリ内にローカル生成する（`post-message.ts` と同じパターン）。
-  3. バリデータ（`summarize-message-validator.ts`）＋ `apiV3FormValidator`。
-  4. 本体ハンドラ。
+  3. **`generateAddActivityMiddleware()`**（既存、`apps/app/src/server/middlewares/add-activity.ts`）— Audit Log記録（18.1）のための前段処理。認可済み・バリデータ未満の位置に置く（`.claude/rules`の既存Activity記録規約と同じ順序）。
+  4. バリデータ（`summarize-message-validator.ts`）＋ `apiV3FormValidator`。
+  5. 本体ハンドラ。
   - **理由**: これを欠くと未ログインのゲストがLLM呼び出しルートを直接叩けてしまい、トークンコストを外部から任意に発生させられる。加えて `getPageContentTool` は `RequestContext` の `user` が無い場合 `context_error` を返すため、`req.user` が確定していない経路では要約自体が成立しない。ハンドラは `req.user` が存在することを前提にできる（`post-message.ts` の `Req` 型と同じ扱い）。
 - **レート制限**: 本ルートはLLM呼び出しを伴い1リクエストあたりのコストが大きいため、永続化ルートと同様に `features/rate-limiter` の設定マップにエントリを追加する。パスは固定（`/_api/v3/mastra/summary`）であるため、正規表現マップではなく**完全一致マップ `defaultConfig`** に `{ method: 'POST', maxRequests: MAX_REQUESTS_TIER_1 }` を追加する（`DEFAULT_DURATION_SEC` 60秒に対して1ユーザーあたり5回）。超過時は `res.sendStatus(429)`。
 - リクエストボディは `{ pageId?: string; pagePath?: string; modelKey?: string }` とし、`pageId`／`pagePath` のいずれか一方を必須とする（`post-message-validator.ts` と対になる `summarize-message-validator.ts` で検証）。`pageId`/`pagePath` を運ぶことで「現在ページを開いていない」状態はリクエスト不成立として扱われる（1.3）。
@@ -495,6 +504,7 @@ export const limitedGetPageContentTool: Tool; // used only by summarizeAgent
 - `capturedAt` を、`sourceRevisionId` を取得するのと**同じ時点（生成開始時点、`findByIdAndViewer` 直後）**に `new Date()` でサーバ側に生成し、`threadId`・`sourceRevisionId` と併せてストリーム応答に含める。クライアントから受け取った日時は使わない（7.2）。両者が同一の瞬間を指すことで、鮮度表示と生成時刻表示の基準時刻が一致する。
 - ストリーミング応答の構築（`createUIMessageStream` / `toAISdkStream` / `pipeUIMessageStreamToResponse`）は `post-message.ts` と同型のパターンを踏襲し、`CustomUIMessage`（既存の型）と互換のストリームを返す。将来のトリガーUIが、既存のチャット表示コンポーネント（`ChatSidebar` のメッセージレンダリング）をそのまま再利用できるようにするため。
 - ストリームが正常終了した時点で `AiSummarizeMetrics` のCounterをインクリメントする（6.1）。エラー終了時はインクリメントしない。
+- 同じくストリームが正常終了した時点（レスポンス送信前）で、`crowi.events.activity.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_PAGE_AI_SUMMARIZE, targetModel: SupportedTargetModel.MODEL_PAGE, target: page, contributor: req.user })` を呼び、Audit Logに記録する（18.1）。既存の `create-page.ts` と同じ呼び出し形。`emit` はレスポンス送信より前に完了させる必要がある（既存規約: 送信後に呼ぶと記録の `user` が欠落する）。エラー終了時は記録しない（Counterと同じ扱い）。永続化ルート（`AiSummaryPersistenceRoute`）にはこの `emit` を追加しない（18.3）。
 - 重複生成の抑止（1.5）は、サーバ側の新しい排他制御を追加せず、`ChatSidebar` の `handleSubmit` が既に用いている「送信中は再送信しない」という状態ガードと同じ考え方をトリガーUIコンポーネント側（別PR）に適用する前提とする。要約はページ側の状態やページに紐づく永続データを書き換えないため、二重送信が発生してもページの内容・閲覧権限に不整合は生じない。ただし要約対話自体は毎回新規スレッドとして`Memory`に永続化されるため、二重送信は「無駄なリクエスト」に加えて「使われない要約スレッドがMongoDBに残る」という無駄も生む。この判断のトレードオフは research.md 7.5 に記録済み。
 
 **Dependencies**
@@ -512,6 +522,7 @@ export const limitedGetPageContentTool: Tool; // used only by summarizeAgent
 
 **Implementation Notes**
 - Integration: `routes/index.ts` に `router.post('/summary', summarizeMessageHandlersFactory(crowi))` を追加し、`loadHandlersRouter` の動的importリストに `./summarize-message` を加える（既存の遅延ロードパターンを維持し、AI未使用インスタンスの起動コストを増やさない）。
+- Audit Log: `apps/app/src/interfaces/activity.ts` に `ACTION_PAGE_AI_SUMMARIZE = 'PAGE_AI_SUMMARIZE'` を追加し、`SupportedAction` と `LargeActionGroup` に登録する（18.2）。プレフィックス `PAGE_` により既存の `PageActions` フィルタ（`/admin/audit-log` の絞り込みUI）に自動的に含まれる。表示ラベルは `admin.json` の `audit_log_action.PAGE_AI_SUMMARIZE` を5ロケールに追加する。
 - Validation: `pageId`／`pagePath` のいずれか一方が必須。`modelKey` は `post-message-validator.ts` と同じ制約（文字列・長さ上限）を課す。
 - Risks: `pageId` がクライアントから渡された時点で既に古くなっている（ページが削除された等）可能性は、`getPageContentTool` の `not_found_or_forbidden` 応答でハンドリング済み（新規リスクではない）。
 
@@ -699,6 +710,7 @@ export const limitedGetPageContentTool: Tool; // used only by summarizeAgent
 - **権限なし／存在しないページへのリクエストが 403（または404、実装で統一した側）で短絡すること**: ルート層の `Page.findByIdAndViewer` が `null` を返した時点でエラー応答となり、**ストリームが開始されない**こと（`summarizeAgent.stream()` のモックが呼ばれていないこと、およびレスポンスがUIメッセージストリーム形式でないこと）。権限なしと存在しないページの2ケースで**同一のステータスコード・同一の応答本文**になり、ページの存在有無が判別できないこと（4.2）。
 - **`RequestContext` と `pageReadBudget` がリクエスト毎に新規生成されること**: 連続する2リクエストで捕捉した `requestContext` が別インスタンスであり、2回目の `pageReadBudget.used` が0から始まること（1回目の消費が漏れていないこと）。
 - **`capturedAt` がサーバ側で生成され、ストリーム応答に含まれること**: 応答に含まれる `capturedAt` が有効なISO Date Stringであり、リクエスト時刻の近傍であること。
+- **Audit Logへの記録**（18.1）: ストリームが正常終了したとき、`crowi.events.activity.emit` が `action: SupportedAction.ACTION_PAGE_AI_SUMMARIZE`、`targetModel: SupportedTargetModel.MODEL_PAGE`、対象ページ、`req.user` を引数として1回呼ばれること（`mock<Crowi>({ events: { activity: { emit } } })` で検証。既存の `put-ai-settings.spec.ts` と同じ検証パターン）。エラー終了時は呼ばれないこと。永続化ルート（`ai-summary-persistence`）のテストでは、この `emit` が呼ばれないことを確認する（18.3）。
 - 要約後、同じ `threadId` を使って既存の `POST /message` に追質問を送ると、`growiAgent` がスレッド履歴（要約メッセージ）を認識して応答できること（1.4 のE2E相当の検証）。
 - AI未設定・無効時に `POST /summary` が501を返すこと（`aiReadyGuard` の既存挙動の回帰確認）。
 - 閲覧権限のあるページに要約を永続化すると、以後の `GET` でその要約が返り、権限のない別ユーザーの `GET` には含まれないこと（8.1, 8.2）。

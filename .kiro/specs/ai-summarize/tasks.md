@@ -75,8 +75,19 @@
 
 - [ ] 3.3 要約ルートがExpressに登録され、AI未設定時は既存ガードで利用不可になる
   - `routes/index.ts` の遅延ロードパターンに沿って `POST /_api/v3/mastra/summary` を追加登録する（既存の `router.use(aiReadyGuard)` の適用範囲内）
+  - `generateAddActivityMiddleware()`（既存、`apps/app/src/server/middlewares/add-activity.ts`）を、認可ミドルウェアの後・バリデータの前に挟む
   - AI未設定・無効時に本ルートが501を返すことを統合テストで確認できる（既存の `aiReadyGuard` の回帰確認）
   - _Requirements: 5.1_
+
+- [ ] 3.4 要約の生成イベントがAudit Logに記録される
+  - `apps/app/src/interfaces/activity.ts` に `ACTION_PAGE_AI_SUMMARIZE = 'PAGE_AI_SUMMARIZE'` を追加し、`SupportedAction` と `LargeActionGroup` に登録する（既存の `ACTION_ADMIN_AI_SETTING_UPDATE` 追加時と同じ形。カテゴリ分類は `PAGE_` プレフィックスにより既存の正規表現判定で自動的に `PageActions` に含まれるため、新規カテゴリの追加は不要）
+  - 要約ハンドラ（タスク3.2）で、ストリームが正常終了した時点（レスポンス送信前）に `crowi.events.activity.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_PAGE_AI_SUMMARIZE, targetModel: SupportedTargetModel.MODEL_PAGE, target: page, contributor: req.user })` を呼ぶ（既存の `create-page.ts` と同じ呼び出し形）。エラー終了時は呼ばない
+  - `apps/app/public/static/locales/{en_US,fr_FR,ja_JP,ko_KR,zh_CN}/admin.json` に `audit_log_action.PAGE_AI_SUMMARIZE` の表示ラベルを5ロケール分追加する（`/admin/audit-log` での表示用）
+  - **永続化ルート（`ai-summary-persistence.ts`）にはこの `emit` を追加しない**（対象は生成アクションのみ）
+  - `ACTION_PAGE_AI_SUMMARIZE` が `SupportedAction` と `AllLargeGroupActions` の両方に含まれることをユニットテストで確認できる（既存の `activity.spec.ts` のパターンに追加）
+  - ストリームが正常終了したとき `emit` が上記の引数で1回呼ばれ、エラー終了時は呼ばれないことを統合テストで確認できる（`mock<Crowi>({ events: { activity: { emit } } })` を用い、既存の `put-ai-settings.spec.ts` と同じ検証パターン）
+  - _Requirements: 18.1, 18.2, 18.3_
+  - _Depends: 3.2, 3.3_
 
 - [ ] 4. Integration & Validation（生成側）
 - [ ] 4.1 権限のないページ／存在しないページへの要約要求が、ルート層で短絡し存在を明らかにしない
