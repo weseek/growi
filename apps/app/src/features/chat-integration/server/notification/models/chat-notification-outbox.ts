@@ -1,0 +1,127 @@
+import type { PlatformName } from '@growi/chat';
+import type { Document, Model } from 'mongoose';
+import { Schema } from 'mongoose';
+
+import { getOrCreateModel } from '~/server/util/mongoose-utils';
+
+/**
+ * Retention period for a `sent` outbox row, in seconds. `given-up` rows are
+ * NOT covered by this TTL -- they stay until an operator looks at them
+ * (design.md `chat_notification_outbox` row).
+ */
+export const NOTIFICATION_OUTBOX_SENT_TTL_SECONDS = 30 * 24 * 60 * 60;
+
+export type ChatNotificationOutboxState =
+  | 'pending'
+  | 'claimed'
+  | 'sent'
+  | 'given-up';
+
+/** One notification-fan-out target, mirrors `NotificationRequest.targets`. */
+export interface ChatNotificationOutboxTarget {
+  platform: PlatformName;
+  channelId: string;
+}
+
+export interface IChatNotificationOutbox {
+  requestId: string;
+  relationId: string;
+  targets: ChatNotificationOutboxTarget[];
+  markdown: string;
+  state: ChatNotificationOutboxState;
+  attempts: number;
+  /** Set when `drain` claims this row for delivery; null while `pending`. */
+  claimedAt: Date | null;
+  /**
+   * The proxy's `NotificationResult` written back after a delivery attempt.
+   * Opaque at the schema level -- shape is owned by `@growi/chat`'s
+   * `NotificationResult` contract, not duplicated here.
+   */
+  result: unknown;
+  createdAt: Date;
+}
+
+export interface ChatNotificationOutboxDocument
+  extends IChatNotificationOutbox,
+    Document {}
+
+export interface ChatNotificationOutboxModel
+  extends Model<ChatNotificationOutboxDocument> {}
+
+const chatNotificationOutboxTargetSchema =
+  new Schema<ChatNotificationOutboxTarget>(
+    {
+      platform: {
+        type: String,
+        enum: [
+          'slack',
+          'discord',
+          'teams',
+          'mattermost',
+        ] satisfies PlatformName[],
+        required: true,
+      },
+      channelId: { type: String, required: true },
+    },
+    { _id: false },
+  );
+
+const chatNotificationOutboxSchema = new Schema<
+  ChatNotificationOutboxDocument,
+  ChatNotificationOutboxModel
+>(
+  {
+    requestId: { type: String, required: true },
+    relationId: { type: String, required: true },
+    targets: {
+      type: [chatNotificationOutboxTargetSchema],
+      required: true,
+      default: [],
+    },
+    markdown: { type: String, required: true },
+    state: {
+      type: String,
+      enum: [
+        'pending',
+        'claimed',
+        'sent',
+        'given-up',
+      ] satisfies ChatNotificationOutboxState[],
+      required: true,
+      default: 'pending',
+    },
+    attempts: { type: Number, required: true, default: 0 },
+    claimedAt: { type: Date, default: null },
+    result: { type: Schema.Types.Mixed, default: null },
+    createdAt: { type: Date, required: true, default: () => new Date() },
+  },
+  {
+    collection: 'chat_notification_outbox',
+    timestamps: false,
+  },
+);
+
+// `drain` claims rows to process by (state, claimedAt) -- e.g. "pending
+// rows, oldest claim first". This is a different access pattern than the
+// write-back-by-request lookup below, so it is a separate index rather than
+// a single combined one (design.md is explicit that these are two indexes).
+chatNotificationOutboxSchema.index({ state: 1, claimedAt: 1 });
+
+// The proxy's result write-back looks up the row by (relationId, requestId).
+chatNotificationOutboxSchema.index({ relationId: 1, requestId: 1 });
+
+// Only `sent` rows are subject to the 30-day TTL; `given-up` rows must
+// survive until an operator inspects them, so the TTL index is scoped with
+// partialFilterExpression rather than applied to every row's createdAt.
+chatNotificationOutboxSchema.index(
+  { createdAt: 1 },
+  {
+    expireAfterSeconds: NOTIFICATION_OUTBOX_SENT_TTL_SECONDS,
+    partialFilterExpression: { state: 'sent' },
+  },
+);
+
+export const ChatNotificationOutbox = getOrCreateModel<
+  ChatNotificationOutboxDocument,
+  ChatNotificationOutboxModel
+>('ChatNotificationOutbox', chatNotificationOutboxSchema);

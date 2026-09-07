@@ -1,7 +1,43 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import request from 'supertest';
 
 import { createChatIntegrationRouter } from './index';
+
+describe('chat-integration feature entry point statically wires all 11 models', () => {
+  // Task 1.2 completion criterion: "起動すると 11 個のコレクションと索引が
+  // 実際に作られる" -- importing this entry point (as `server/routes/apiv3`
+  // does at boot) must be sufficient, by itself, to register every model
+  // this spec owns with Mongoose. If a model were only reachable via a
+  // lazy/dynamic import, this test would fail because `mongoose.models`
+  // would be missing it even though `./index` was already imported above.
+  const expectedModelNames = [
+    'ChatRelation',
+    'ChatNotificationDestination',
+    'ChatProcessedRequest',
+    'ChatRequestNonce',
+    'ChatAccountLink',
+    'ChatAccountLinkOrder',
+    'ChatIntegrationKey',
+    'ChatPendingPairing',
+    'ChatChallengeAttempt',
+    'ChatNotificationOutbox',
+    'ChatChannelPermission',
+  ];
+
+  it.each(
+    expectedModelNames,
+  )('registers the %s model as a side effect of importing the entry point', (modelName) => {
+    expect(mongoose.models[modelName]).toBeDefined();
+  });
+
+  it('registers exactly 11 models', () => {
+    const registered = expectedModelNames.filter(
+      (name) => mongoose.models[name] != null,
+    );
+    expect(registered).toHaveLength(11);
+  });
+});
 
 describe('createChatIntegrationRouter', () => {
   it('returns an Express Router that can be mounted without throwing', () => {

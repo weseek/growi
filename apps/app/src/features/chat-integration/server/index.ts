@@ -19,10 +19,26 @@ import express from 'express';
  * import), so anything this file imports — directly or transitively — is
  * guaranteed to load before the application accepts traffic. This mirrors
  * `features/growi-vault/server/index.ts`.
- *
- * No models exist yet; they are added by later tasks in this spec and must
- * be imported from here.
  */
+
+// All 11 collections this spec owns (design.md "Data Models"). Side-effect
+// imports only: each module's `getOrCreateModel(...)` call registers the
+// model (and its indexes) with Mongoose at import time. Do NOT move these
+// into `setup-models.ts`'s `setupIndependentModels()` -- that path is only
+// reached from import/restore, not from server boot (see design.md "新しい
+// model がいつ読み込まれるか").
+import './models/chat-relation';
+import './models/chat-notification-destination';
+import './models/chat-processed-request';
+import './models/chat-request-nonce';
+import './account-link/models/chat-account-link';
+import './account-link/models/chat-account-link-order';
+import './keys/models/chat-integration-key';
+import './pairing/models/pending-pairing';
+import './pairing/models/chat-challenge-attempt';
+import './notification/models/chat-notification-outbox';
+import './settings/models/chat-channel-permission';
+
 export const createChatIntegrationRouter = (): express.Router => {
   return express.Router();
 };
