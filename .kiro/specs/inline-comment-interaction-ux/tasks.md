@@ -184,10 +184,24 @@
     cross-task regression, so budget for it rather than trusting each
     task's own green run in isolation.
   - Also bumped `apps/app/tools/i18n-audit/baseline.json` (missing-key count
-    for ja_JP/zh_CN/fr_FR/ko_KR, +2 keys × 4 locales = +8 each) so
-    `pnpm run lint:i18n` passes — the two new en_US-only keys from task 1.3
-    are deliberately not translated yet, per this project's English-first
-    i18n policy; this is a deliberate baseline bump, not a translation task.
+    for ja_JP/zh_CN/fr_FR/ko_KR, +8 each). This +8 is NOT "2 new keys × 4
+    locales" (that arithmetic doesn't hold — 2 new keys means +2 missing per
+    locale, not +8). The actual breakdown, confirmed via `git show
+    8a010bbe5e0` and `git show 61348a6e377`: 6 keys came from an earlier,
+    already-landed commit (`inline_comment.start_comment/resolved/
+    unresolved/resolve/reopen/label`, added by `inline-comment-visual-
+    consistency` commit 61348a6e377) whose baseline bump was missed at the
+    time, plus 2 new keys from this spec's task 1.3
+    (`reply_placeholder`/`range_not_found`). So `lint:i18n` on this branch
+    was already failing before this spec's commit `8a010bbe5e0`, which
+    incidentally paid down that pre-existing debt along with its own. All 8
+    are deliberately en_US-only per this project's English-first i18n
+    policy (not a translation task); ja_JP/zh_CN/fr_FR/ko_KR's baseline
+    values now match measured missing-key counts exactly, with zero
+    headroom. **Read this corrected breakdown before folding this note into
+    `inline-comment` in task 7.2/7.3** — the original text here (now fixed)
+    had the wrong arithmetic and would have propagated it into the target
+    spec's permanent record.
 
 - Task 4.1 (`PageView.scrollToRange`): two known, narrow limitations,
   reviewed as acceptable to defer rather than fixed in-boundary:
