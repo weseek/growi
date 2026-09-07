@@ -1,5 +1,7 @@
 import express from 'express';
 
+import type Crowi from '~/server/crowi';
+
 /**
  * Chat Integration (Gen 2) feature — server entry point.
  *
@@ -41,12 +43,18 @@ import './settings/models/chat-channel-permission';
 
 import { createPeerRouter } from './peer/peer-router';
 
-export const createChatIntegrationRouter = (): express.Router => {
+/**
+ * `crowi` is threaded through to the `command` op's handler (task 5.1),
+ * which needs `crowi.searchService`, `crowi.aclService` and
+ * `crowi.appService` -- unlike the model imports above, these are
+ * per-instance services with no module-level singleton to import instead.
+ */
+export const createChatIntegrationRouter = (crowi: Crowi): express.Router => {
   const router = express.Router();
   // The 6 entry points the proxy calls (task 3.5) -- `createPeerRouter`
   // already carries its own full paths (`/peer/...`) relative to this
   // feature's own mount point (`/chat-integration`, registered once in
   // `server/routes/apiv3/index.js`), so no extra prefix is added here.
-  router.use(createPeerRouter());
+  router.use(createPeerRouter(crowi));
   return router;
 };

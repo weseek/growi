@@ -14,23 +14,36 @@ import express from 'express';
 import type { MongoMemoryServer } from 'mongodb-memory-server-core';
 import mongoose from 'mongoose';
 import request from 'supertest';
+import { mock } from 'vitest-mock-extended';
 
 import {
   connectSelfContainedMongo,
   disconnectSelfContainedMongo,
 } from '^/test/setup/mongo/self-contained-connection';
 
+import type Crowi from '~/server/crowi';
+
 import { CHAT_INTEGRATION_PEER_PREFIX } from '../consts';
+import { buildHelpContent } from '../content';
 import { createChatIntegrationRouter } from '../index';
 import { storePeerKey } from '../keys';
 import type { ChatKeyEncryptionEnv } from '../keys/key-encryption';
 import { encryptChatKeyForStorage } from '../keys/key-encryption';
 import { ChatIntegrationKey } from '../keys/models/chat-integration-key';
+import { ChatProcessedRequest } from '../models/chat-processed-request';
 import { ChatRelation } from '../models/chat-relation';
 import { ChatRequestNonce } from '../models/chat-request-nonce';
 import { ChatChallengeAttempt } from '../pairing/models/chat-challenge-attempt';
 import { ChatPendingPairing } from '../pairing/models/pending-pairing';
 import { ChatChannelPermission } from '../settings/models/chat-channel-permission';
+
+/**
+ * `command`'s handler (task 5.1) needs a `Crowi` instance -- `help` (the
+ * kind every fixture below uses) never touches any of its services, so an
+ * auto-stubbed mock is enough to prove the wiring without faking search/ACL
+ * behavior this file has no business asserting on.
+ */
+const buildMockCrowi = (): Crowi => mock<Crowi>();
 
 const JSON_CONTENT_TYPE = 'application/json';
 const MOUNT_PATH = '/_api/v3/chat-integration';
@@ -59,7 +72,7 @@ const buildApp = (): Express => {
     express.raw({ type: JSON_CONTENT_TYPE, limit: '10mb' }),
   );
   app.use(express.urlencoded({ extended: true }));
-  app.use(MOUNT_PATH, createChatIntegrationRouter());
+  app.use(MOUNT_PATH, createChatIntegrationRouter(buildMockCrowi()));
   return app;
 };
 
@@ -175,6 +188,7 @@ describe('peer-router (task 3.5 -- the 6 entry points, wired for real)', () => {
     await ChatChannelPermission.deleteMany({});
     await ChatPendingPairing.deleteMany({});
     await ChatChallengeAttempt.deleteMany({});
+    await ChatProcessedRequest.deleteMany({});
 
     await storePeerKey(
       { relationId: RELATION_ID, keyId: KEY_ID },
@@ -296,14 +310,14 @@ describe('peer-router (task 3.5 -- the 6 entry points, wired for real)', () => {
     });
   });
 
-  describe('command placeholder', () => {
-    it('answers a genuinely valid (if empty) help response, proving the wiring is live', async () => {
+  describe('command (task 5.1 -- real behavior, not a stub)', () => {
+    it('answers a real help response, proving the wiring reaches command-endpoint.ts', async () => {
       const response = await signedPost(app, pathFor('command'), commandBody);
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual({
         kind: RESPONSE_KINDS.help,
-        commands: [],
+        commands: buildHelpContent(),
       });
     });
   });

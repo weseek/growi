@@ -4,15 +4,16 @@
 //
 // This router's own job stops at wiring: attach `signatureGuard(op)`
 // (task 3.2) in front of each of the 5 signed ops, and `pairingEndpoint`
-// (task 3.4) in front of the one unsigned op. Four of the five signed
-// handlers are placeholders -- their business logic belongs to later tasks
-// (`command`: 5.x, `key-register-to-growi`/`key-revoke-to-growi`: 7.2,
+// (task 3.4) in front of the one unsigned op. Three of the five signed
+// handlers are still placeholders -- their business logic belongs to later
+// tasks (`key-register-to-growi`/`key-revoke-to-growi`: 7.2,
 // `account-link-start`: 6.1) -- see each handler's own comment for why its
-// particular placeholder shape was chosen. `settings-pull` is the one
-// exception: task 3.5's own text describes its behavior directly ("押し込
-// みが届かなかったときに proxy が取りに来る保険。版と設定を返す"), so this
-// file gives it real behavior now, backed by `chat_relations.settingsVersion`
-// and `chat_channel_permissions` (task 1.2's models).
+// particular placeholder shape was chosen. `command` (task 5.1) and
+// `settings-pull` (task 3.5's own text: "押し込みが届かなかったときに proxy
+// が取りに来る保険。版と設定を返す") both have real behavior. `command`
+// needs a `Crowi` instance (search, ACL, app title), so `createPeerRouter`
+// now takes one and threads it through -- every other handler here still
+// ignores it.
 //
 // **No handler here re-parses `req.body`.** `signatureGuard` already ran
 // this op's own contract-check function over the verified bytes and
@@ -23,17 +24,18 @@
 
 import {
   type AccountLinkStartResponse,
-  type CommandResponse,
   type KeyOperationResult,
   OP_ENDPOINTS,
   OP_NAMES,
-  RESPONSE_KINDS,
   type RelationSettings,
   type SettingsPullResponse,
 } from '@growi/chat';
 import type { RequestHandler, Router } from 'express';
 import express from 'express';
 
+import type Crowi from '~/server/crowi';
+
+import { createCommandEndpoint } from '../command/command-endpoint';
 import { ChatRelation } from '../models/chat-relation';
 import { pairingEndpoint } from '../pairing/pairing-endpoint';
 import { ChatChannelPermission } from '../settings/models/chat-channel-permission';
@@ -77,18 +79,18 @@ const routerPathFor = (op: InboundPeerOp): string => {
 const PAIRING_CHALLENGE_PATH = '/peer/pairing/challenge';
 
 /**
- * Placeholder for `command` (real behavior: task 5.x). A `help` response
- * with an empty command list is a genuinely valid `CommandResponse` -- it
- * says "here is the list of commands available", which is honestly empty
- * right now, rather than fabricating search/page-creation results this
- * endpoint cannot yet produce.
+ * `command` -- real behavior as of task 5.1 for the 3 read-only kinds
+ * (search, link-preview, help); `create-page`/`keep` still answer with a
+ * well-formed "not available yet" `CommandResponse` until task 5.2 lands
+ * (see `command-endpoint.ts`'s own comment on `handleWriteCommand`).
  */
-const commandPlaceholderHandler: RequestHandler = (_req, res) => {
-  const body: CommandResponse = {
-    kind: RESPONSE_KINDS.help,
-    commands: [],
+const commandHandler = (crowi: Crowi): RequestHandler => {
+  const commandEndpoint = createCommandEndpoint(crowi);
+  return async (req, res) => {
+    const { chatPeer } = req as VerifiedPeerRequest<typeof OP_NAMES.command>;
+    const body = await commandEndpoint.handle(chatPeer.body);
+    res.status(200).json(body);
   };
-  res.status(200).json(body);
 };
 
 /**
@@ -166,13 +168,13 @@ const settingsPullHandler: RequestHandler = async (req, res) => {
  * `signatureGuard` and `pairingEndpoint` already default to their real,
  * DB-backed dependencies).
  */
-export const createPeerRouter = (): Router => {
+export const createPeerRouter = (crowi: Crowi): Router => {
   const router = express.Router();
 
   router.post(
     routerPathFor(OP_NAMES.command),
     signatureGuard(OP_NAMES.command),
-    commandPlaceholderHandler,
+    commandHandler(crowi),
   );
   router.post(
     routerPathFor(OP_NAMES.keyRegisterToGrowi),

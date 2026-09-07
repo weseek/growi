@@ -235,7 +235,7 @@ export const setup = (crowi, app) => {
   router.use('/templates', setupTemplates(crowi));
   router.use('/page-bulk-export', setupPageBulkExport(crowi));
   router.use('/audit-log-bulk-export', auditLogBulkExportRouteFactory(crowi));
-  router.use('/chat-integration', createChatIntegrationRouter());
+  router.use('/chat-integration', createChatIntegrationRouter(crowi));
 
   router.use('/mastra', mastraRouteFactory(crowi));
 
