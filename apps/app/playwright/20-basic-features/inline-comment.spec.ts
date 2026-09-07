@@ -2210,3 +2210,197 @@ test.describe('Inline comment - clicking a list item scrolls to and emphasizes t
     ).toBe(0);
   });
 });
+
+test.describe('Inline comment - the bottom-list reply UI is unified with the normal comment reply UI (Req 4.1-4.5)', () => {
+  // Serial: every test in this suite reuses the one saved inline comment
+  // created by the first test, and the final test's actual submit builds on
+  // the toggle-open/cancel state the middle tests exercise first — the same
+  // reasoning the other suites in this file use for serial mode.
+  test.describe.configure({ mode: 'serial' });
+
+  const unifiedReplyPagePath = (retry: number) =>
+    `/inline-comment-e2e-unified-reply${retry}`;
+
+  const targetSentence =
+    'This sentence anchors the unified-reply-UI end-to-end test.';
+  const pageBody = [
+    '# Inline comment E2E - unified reply UI',
+    '',
+    targetSentence,
+    '',
+  ].join('\n');
+
+  const originCommentText =
+    'an origin comment used for the unified-reply-UI test';
+
+  let createdPage: CreatedPage | undefined;
+
+  test.afterAll(async ({ request }) => {
+    if (createdPage != null) {
+      await deletePagesCompletely(request, [createdPage]);
+    }
+  });
+
+  test('Create a page and save an inline comment on the target sentence', async ({
+    page,
+    request,
+  }, testInfo) => {
+    createdPage = await createPage(request, {
+      path: unifiedReplyPagePath(testInfo.retry),
+      body: pageBody,
+    });
+
+    await page.goto(createdPage.path);
+    await expect(page.locator('.wiki').first()).toContainText(targetSentence);
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    await selectTextInPageBody(page, targetSentence);
+    await page.getByTestId('selection-action-button').click();
+    const form = page.getByTestId('inline-comment-form');
+    await expect(form).toBeVisible();
+
+    await form.locator('.cm-content').fill(originCommentText);
+    await form.getByTestId('inline-comment-submit-button').click();
+    await expect(form).not.toBeVisible();
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+    await expect(item).toContainText(originCommentText);
+  });
+
+  test('Req 4.1, 4.4: before opening, the list item shows only the "Reply..." toggle button, not an always-visible textarea', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(unifiedReplyPagePath(testInfo.retry));
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+
+    // Requirement 4.1: the same wording ("Reply..." -- `t('page_comment.reply')`
+    // plus a literal "...", InlineCommentReplies.tsx) and the same testid/class
+    // combination (`inline-comment-reply-toggle-button`,
+    // `btn btn-secondary btn-comment-reply`) PageComment.tsx's own normal-comment
+    // reply toggle uses.
+    const toggleButton = item.getByTestId('inline-comment-reply-toggle-button');
+    await expect(toggleButton).toBeVisible();
+    // `toContainText` rather than `toHaveText`: the button's rendered text
+    // content also includes the material-symbols ligature text ("reply")
+    // from its icon <span>, ahead of the visible "Reply..." label -- an
+    // implementation detail of the icon font, not part of the wording this
+    // requirement is about.
+    await expect(toggleButton).toContainText('Reply...');
+    await expect(toggleButton).toHaveClass(/btn-comment-reply/);
+
+    // Requirement 4.4: the old always-visible plain-textarea reply UI is gone
+    // -- no bare `<textarea>` exists anywhere in this item before the toggle
+    // is clicked (the mention-aware editor below is a CodeMirror `.cm-content`
+    // div, never a `<textarea>`).
+    await expect(item.locator('textarea')).toHaveCount(0);
+    await expect(item.locator('.cm-content')).toHaveCount(0);
+  });
+
+  test('Req 4.2: clicking the toggle opens the same mention-aware editor the normal comment reply/origin form uses, proven via a real mention-picker completion', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(unifiedReplyPagePath(testInfo.retry));
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+
+    await item.getByTestId('inline-comment-reply-toggle-button').click();
+
+    // Requirement 4.2: the toggle button is replaced by the mention-aware
+    // input component (MentionAwareCommentInput's CodeMirror editor), the
+    // exact same component InlineCommentForm's own creation form uses.
+    await expect(
+      item.getByTestId('inline-comment-reply-toggle-button'),
+    ).toHaveCount(0);
+    const replyEditor = item.locator('.cm-content');
+    await expect(replyEditor).toBeVisible();
+
+    // Prove mention-awareness itself (not merely "looks the same"), reusing
+    // the exact technique the mention-picker end-to-end test above uses for
+    // InlineCommentForm's own editor: type text around the cursor, move the
+    // cursor to the middle, open the mention picker, and confirm the picked
+    // candidate lands AT the cursor rather than merely appended.
+    await replyEditor.click();
+    await replyEditor.pressSequentially('AZ');
+    await page.keyboard.press('ArrowLeft');
+
+    const mentionButton = item.getByTestId('mention-picker-button');
+    await mentionButton.click();
+
+    const mentionMenu = mentionButton.locator(
+      'xpath=following-sibling::div[contains(concat(" ", normalize-space(@class), " "), " dropdown-menu ")]',
+    );
+    const firstCandidate = mentionMenu.locator('.dropdown-item').first();
+    await expect(firstCandidate).toBeVisible();
+    const candidateUsername = await firstCandidate
+      .locator('span')
+      .first()
+      .innerText();
+
+    await firstCandidate.click();
+    await expect(replyEditor).toHaveText(`A@${candidateUsername} Z`);
+  });
+
+  test('Req 4.3: Cancel closes the input, restores the "Reply..." button, and posts nothing', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(unifiedReplyPagePath(testInfo.retry));
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+
+    await item.getByTestId('inline-comment-reply-toggle-button').click();
+    const replyEditor = item.locator('.cm-content');
+    await expect(replyEditor).toBeVisible();
+
+    const unsentText = 'a reply typed but never submitted, via Cancel';
+    await replyEditor.fill(unsentText);
+    await expect(replyEditor).toContainText(unsentText);
+
+    // Requirement 4.3: Cancel, not submit -- MentionAwareCommentInput's own
+    // Cancel button (t('Cancel')).
+    await item.getByRole('button', { name: 'Cancel' }).click();
+
+    // The editor closes and the toggle button reappears.
+    await expect(replyEditor).toHaveCount(0);
+    const toggleButton = item.getByTestId('inline-comment-reply-toggle-button');
+    await expect(toggleButton).toBeVisible();
+    await expect(toggleButton).toContainText('Reply...');
+
+    // The unsent text was never posted -- no reply with that text exists.
+    await expect(item.getByTestId('inline-comment-reply')).toHaveCount(0);
+    await expect(item).not.toContainText(unsentText);
+  });
+
+  test('Req 4.5: submitting a reply through the reopened toggle still posts it and returns to the "Reply..." button', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(unifiedReplyPagePath(testInfo.retry));
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+
+    await item.getByTestId('inline-comment-reply-toggle-button').click();
+    const replyEditor = item.locator('.cm-content');
+    await expect(replyEditor).toBeVisible();
+
+    const replyText = 'a reply submitted through the unified reply UI';
+    await replyEditor.fill(replyText);
+    await item.getByTestId('inline-comment-submit-button').click();
+
+    // Requirement 4.5: the reply appears in the list, and the input closes,
+    // returning to the "Reply..." toggle button -- the existing
+    // submit-and-reflect behavior is unchanged by the UI unification.
+    const reply = item.getByTestId('inline-comment-reply');
+    await expect(reply).toBeVisible();
+    await expect(reply).toContainText(replyText);
+
+    await expect(replyEditor).toHaveCount(0);
+    await expect(
+      item.getByTestId('inline-comment-reply-toggle-button'),
+    ).toBeVisible();
+  });
+});
