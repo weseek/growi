@@ -18,7 +18,7 @@
 ---
 
 - [ ] 1. feature の土台を作る
-- [ ] 1.1 feature の骨組みと依存を用意する
+- [x] 1.1 feature の骨組みと依存を用意する
   - `apps/app/src/features/chat-integration/` を作り、`@growi/chat` を依存に足す
   - **build の順序を宣言する**（同じリポジトリ内の build を作る依存が増えたら書き足す決まり）
   - **feature の入口を作り、そこから起動時に辿れるようにする**（次のタスクで置く model が

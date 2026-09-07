@@ -236,6 +236,9 @@ importers:
       '@google-cloud/storage':
         specifier: ^5.8.5
         version: 5.20.5(encoding@0.1.13)
+      '@growi/chat':
+        specifier: workspace:^
+        version: link:../../packages/chat
       '@growi/core':
         specifier: workspace:^
         version: link:../../packages/core
