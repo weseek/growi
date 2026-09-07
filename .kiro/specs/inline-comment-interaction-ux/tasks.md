@@ -27,14 +27,14 @@
   - _Boundary: PendingSelectionHighlight_
 
 - [ ] 3. 本文ハイライトのhover/click/tapポップオーバー
-- [ ] 3.1 (P) 保存済みハイライトへの当たり判定フックを実装する
+- [x] 3.1 (P) 保存済みハイライトへの当たり判定フックを実装する
   - `apps/app/src/features/inline-comment/client/components/InlineCommentBodyInteraction/use-highlight-hit-test.ts` を新設する。本文コンテナへの `pointermove`（`requestAnimationFrame` でスロットル）・`click` イベントの座標を、`rangesById()` が返す各 `Range` の `getClientRects()` と比較し、一致したコメントidを返す。`useDeviceLargerThanMd()` を使い、デスクトップ幅では hover・click の両方を、タブレット以下の幅では click（タップ）のみを有効にする
   - 観測できる完了条件：モックした `Range`（既知の矩形を返す）に対して、座標がその内側のときは一致するコメントidを返し、外側のときは何も返さないことをユニットテストで確認できる。`not_found` で除外された範囲が候補に含まれないことも確認できる
   - _Requirements: 2.1, 2.2, 2.6_
   - _Depends: 1.2_
   - _Boundary: use-highlight-hit-test_
 
-- [ ] 3.2 (P) 内容確認・簡易返信ポップオーバーを実装する
+- [x] 3.2 (P) 内容確認・簡易返信ポップオーバーを実装する
   - `apps/app/src/features/inline-comment/client/components/InlineCommentBodyInteraction/InlineCommentPreviewPopover.tsx` を新設する。`rangeToVirtualElement` と `usePopperPosition`（`SelectionPopover` と同じ仕組み）でコメントの投稿者・投稿日時・本文・既存の返信を表示し、簡素な（プレーンな）返信入力欄と送信ボタンを持つ。編集用の要素は持たない。外側クリックまたは明示的な閉じる操作で閉じる
   - 観測できる完了条件：ポップオーバーが投稿者・投稿日時・本文・返信一覧を表示し、簡易返信欄からの送信で渡された `createReply` が呼ばれ、外側クリックで閉じることをユニットテストで確認できる
   - _Requirements: 2.3, 2.4, 2.5_
@@ -131,3 +131,14 @@
   - _Depends: 7.2_
 
 ## Implementation Notes
+
+- Task 3.1 (`use-highlight-hit-test.ts`): the hook reports only the *current*
+  hit and does not latch a click-selected comment id — if the pointer moves
+  off the highlight after a click, the next `pointermove` clears it back to
+  `null` (the `source: 'hover' | 'click'` field on the returned hit tells the
+  caller which kind of interaction produced it). Task 3.3
+  (`InlineCommentBodyInteraction`) must keep its own "pinned" state: once a
+  hit with `source === 'click'` opens the popover, ignore subsequent `null`/
+  hover-only updates from this hook while the popover stays open (close only
+  via the popover's own outside-click/close-control per AC 2.4, not because
+  the hook stopped reporting a hover hit).
