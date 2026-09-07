@@ -41,7 +41,7 @@
   - _Depends: 1.3_
   - _Boundary: InlineCommentPreviewPopover_
 
-- [ ] 3.3 当たり判定とポップオーバーを組み合わせ、PageViewへ配線する
+- [x] 3.3 当たり判定とポップオーバーを組み合わせ、PageViewへ配線する
   - `apps/app/src/features/inline-comment/client/components/InlineCommentBodyInteraction/InlineCommentBodyInteraction.tsx` を新設し、3.1のフックの結果に応じて3.2のポップオーバーを開閉する。`PageView.tsx` にこのコンポーネントを描画し、`containerRef`・`resolvedInlineCommentRanges`・`inlineComments`（一覧データ）・`resolve`/`createReply` を渡す
   - 観測できる完了条件：本文中の保存済みハイライトへのhover（デスクトップ幅）・click・tap（タブレット以下の幅）でポップオーバーが開閉することをユニットテストで確認できる
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6_
@@ -142,3 +142,18 @@
   hover-only updates from this hook while the popover stays open (close only
   via the popover's own outside-click/close-control per AC 2.4, not because
   the hook stopped reporting a hover hit).
+
+- Task 3.3 (`InlineCommentBodyInteraction`): design.md 決定2 lists `resolve`
+  among the props passed down alongside `createReply`, but it is genuinely
+  unneeded — Requirement 2's ACs never call for a resolve action inside the
+  popover, and `InlineCommentPreviewPopover` (3.2) has no such prop either.
+  When folding this spec back into `inline-comment` (task 7.2), drop `resolve`
+  from that prop list rather than carrying the unused mention forward.
+  Also: the popover's "reopen suppression" after an explicit close is keyed
+  on `(commentId, source)`, so closing a click-pinned popover and then
+  immediately getting a `hover`-sourced hit on the SAME highlight (e.g. the
+  pointer never left because the close button sits over the highlighted
+  text) is not suppressed and can reopen it right away — reviewed as
+  non-blocking/ambiguous under AC 2.4's literal wording, but worth revisiting
+  (key suppression on `commentId` alone, clearing only when the hook reports
+  a different id or `null`) if this surfaces as a real usability complaint.

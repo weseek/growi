@@ -1,4 +1,4 @@
-import { type JSX, memo, useId, useMemo, useRef } from 'react';
+import { type JSX, memo, useCallback, useId, useMemo, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { isDeepEquals } from '@growi/core/dist/utils/is-deep-equals';
 import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
@@ -73,6 +73,13 @@ const InlineCommentHighlight = dynamic(
     import(
       '~/features/inline-comment/client/components/InlineCommentHighlight/InlineCommentHighlight'
     ).then((mod) => mod.InlineCommentHighlight),
+  { ssr: false },
+);
+const InlineCommentBodyInteraction = dynamic(
+  () =>
+    import(
+      '~/features/inline-comment/client/components/InlineCommentBodyInteraction/InlineCommentBodyInteraction'
+    ).then((mod) => mod.InlineCommentBodyInteraction),
   { ssr: false },
 );
 const UsersHomepageFooter = dynamic(
@@ -186,6 +193,17 @@ const PageViewComponent = (props: Props): JSX.Element => {
     pageBodyContainerRef,
     inlineCommentAnchors,
   );
+  // Comments'/PageComment's (and InlineCommentBodyInteraction's)
+  // inlineComments.createReply prop takes the reply text directly; the
+  // store's createReply takes the POST body ({ comment }). Adapt the shape
+  // once here, shared by both consumers below, rather than duplicating the
+  // same one-line adapter (and risking the two drifting if the DTO shape
+  // ever changes).
+  const createInlineCommentReplyText = useCallback(
+    (parentId: string, comment: string) =>
+      createInlineCommentReply(parentId, { comment }),
+    [createInlineCommentReply],
+  );
   // Bundled with resolve/createReply from the SAME useSWRxInlineComments()
   // call as the data (design.md 決定3 / tasks.md 6.1's Implementation Notes)
   // -- InlineCommentItem needs those callbacks bound to this exact fetch, so
@@ -201,14 +219,9 @@ const PageViewComponent = (props: Props): JSX.Element => {
         : {
             comments: inlineComments,
             resolve: resolveInlineComment,
-            // Comments'/PageComment's inlineComments.createReply prop takes
-            // the reply text directly; the store's createReply takes the
-            // POST body ({ comment }). Adapt the shape here rather than in
-            // Comments.tsx/PageComment.tsx (outside this task's boundary).
-            createReply: (parentId: string, comment: string) =>
-              createInlineCommentReply(parentId, { comment }),
+            createReply: createInlineCommentReplyText,
           },
-    [inlineComments, resolveInlineComment, createInlineCommentReply],
+    [inlineComments, resolveInlineComment, createInlineCommentReplyText],
   );
 
   const specialContents = useMemo(() => {
@@ -286,6 +299,13 @@ const PageViewComponent = (props: Props): JSX.Element => {
                 containerRef={pageBodyContainerRef}
                 resolvedRanges={resolvedInlineCommentRanges}
               />
+              <InlineCommentBodyInteraction
+                containerRef={pageBodyContainerRef}
+                resolvedRanges={resolvedInlineCommentRanges}
+                inlineComments={inlineComments ?? []}
+                createReply={createInlineCommentReplyText}
+                rendererOptions={viewOptions}
+              />
 
               <div id="comments-container" ref={commentsContainerRef}>
                 <Comments
@@ -313,6 +333,8 @@ const PageViewComponent = (props: Props): JSX.Element => {
     resolvedInlineCommentRanges,
     isSharedPageView,
     inlineCommentsForComments,
+    inlineComments,
+    createInlineCommentReplyText,
   ]);
 
   return (

@@ -147,6 +147,30 @@ vi.mock(
   }),
 );
 
+// ---- task 3.3 (inline-comment-interaction-ux): the hover/click/tap preview
+// popover wiring. Its own open/close policy is covered by its own spec; this
+// file only needs to confirm PageView.tsx wires the same containerRef/
+// resolvedRanges/inlineComments/createReply through to it. ----
+type InlineCommentBodyInteractionProps = {
+  containerRef: { current: HTMLElement | null };
+  resolvedRanges: ReadonlyMap<string, ResolvedRange>;
+  inlineComments: InlineCommentWithReplies[];
+  createReply: (parentId: string, comment: string) => Promise<unknown>;
+};
+const inlineCommentBodyInteractionSpy =
+  vi.fn<(props: InlineCommentBodyInteractionProps) => void>();
+vi.mock(
+  '~/features/inline-comment/client/components/InlineCommentBodyInteraction/InlineCommentBodyInteraction',
+  () => ({
+    InlineCommentBodyInteraction: (
+      props: InlineCommentBodyInteractionProps,
+    ) => {
+      inlineCommentBodyInteractionSpy(props);
+      return <div data-testid="inline-comment-body-interaction" />;
+    },
+  }),
+);
+
 vi.mock(
   '~/features/inline-comment/client/components/AnchorResolver/use-anchor-resolver',
   () => ({ useAnchorResolver: vi.fn() }),
@@ -280,6 +304,7 @@ describe('PageView', () => {
 
       await screen.findByTestId('selection-capture');
       await screen.findByTestId('inline-comment-highlight');
+      await screen.findByTestId('inline-comment-body-interaction');
       await screen.findByTestId('comments');
 
       expect(selectionCaptureSpy).toHaveBeenCalledWith(
@@ -288,6 +313,28 @@ describe('PageView', () => {
           anchorOriginRevisionId: REVISION_ID,
         }),
       );
+      expect(inlineCommentBodyInteractionSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          inlineComments,
+        }),
+      );
+      expect(
+        inlineCommentBodyInteractionSpy.mock.calls[0]?.[0]?.resolvedRanges,
+      ).toBe(inlineCommentHighlightSpy.mock.calls[0]?.[0]?.resolvedRanges);
+      // Same container ref reaches InlineCommentBodyInteraction too -- one
+      // DOM subtree, not an independently-scoped one.
+      expect(
+        inlineCommentBodyInteractionSpy.mock.calls[0]?.[0]?.containerRef,
+      ).toBe(selectionCaptureSpy.mock.calls[0]?.[0]?.containerRef);
+
+      // createReply is adapted the same way as inlineCommentsForComments'
+      // own createReply (parentId, { comment }) shape (task 3.3).
+      const bodyInteractionCreateReply =
+        inlineCommentBodyInteractionSpy.mock.calls[0]?.[0]?.createReply;
+      await bodyInteractionCreateReply?.('parent-1', 'a reply');
+      expect(createReplyMock).toHaveBeenCalledWith('parent-1', {
+        comment: 'a reply',
+      });
       expect(commentsSpy).toHaveBeenCalledWith(
         expect.objectContaining({
           pageId: PAGE_ID,
@@ -376,6 +423,9 @@ describe('PageView', () => {
       expect(screen.queryByTestId('selection-capture')).not.toBeInTheDocument();
       expect(
         screen.queryByTestId('inline-comment-highlight'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('inline-comment-body-interaction'),
       ).not.toBeInTheDocument();
 
       // Requirement 6.2's client-side defense-in-depth half: no inline-comment
