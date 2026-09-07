@@ -113,7 +113,7 @@
   - _Depends: 2.1, 3.1_
   - _Boundary: SignatureGuard_
 
-- [ ] 3.3 操作した人を解決する
+- [x] 3.3 操作した人を解決する
   - チャットのアカウントから GROWI ユーザーと所属グループを引く。**関係も鍵に含める**
     （チャットのアカウントの識別子だけでは workspace の軸が無い）
   - **利用者の状態が「有効」でなければ、紐付いていない扱いにする。**
@@ -471,3 +471,19 @@
     「replayed」として断られる**（望ましい挙動）。
   - task 3.5（routes）は、各口で `req.chatPeer.body` を読み、`req.body` を再度 `JSON.parse` しないこと
     （signature-guard が既に契約側の検査関数を通した型付きの本体を渡している）。
+- **task 3.3 の実装で判明した、design.md との食い違い（後続タスクが引き継ぐこと）**:
+  - `ResolvedActor.user` は design.md の記す `IUser | null` ではなく **`HydratedDocument<IUser> | null`**
+    にした（`IUser` 自体に `_id` が無く、実際の消費者（検索・ページ作成）は `_id` を必要とするため。
+    `HydratedDocument<IUser>` は `IUser` の上位互換であり、design.md の記述と矛盾しない）。
+    **design.md 側のインターフェース記述も合わせて直すこと。**
+  - design.md の post-condition だけでは表現できない箇所を埋めるため、**`resolveReadDenial`
+    という関数を新設した**（`resolveActor` とは別の、呼び出し側が使う純粋関数）。
+    **task 5.1（CommandEndpoint）は `resolveActor` に加えて
+    `resolveReadDenial(resolved, crowi.aclService.isGuestAllowedToRead())` も呼び、
+    非 null を返したら読み取りも断ること。** これを呼ばないと、ログインしていない相手に
+    何も見せない設定の GROWI で、紐付いていない利用者の検索やリンク展開が素通りしてしまう
+    （design.md が3段落を割いている閉じた GROWI の情報漏えいがそのまま残る）。
+  - `resolveActor` は未解決の利用者に対して `userGroups: []` を返す（design.md どおり）。
+    **task 4.1 はこれを `searchKeyword` へそのまま渡さないこと。** `server/routes/search.ts` の
+    既存の呼び方は「未解決なら `null`」の意味で使っており、`[]` を渡すと意味が変わる
+    （Gen 1 の欠陥として design.md の Testing Strategy 項目2が名指ししているのと同じ種類の取り違え）。
