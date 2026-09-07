@@ -25,19 +25,18 @@
 // being false collapses to path-only.
 //
 // `excerpt` truncation length: design.md pins Gen 1's 2000-character body
-// truncation (`server/util/slack.js`, referenced at design.md line 415) only
-// for `NotificationContent` (task 4.5, not yet implemented), not explicitly
-// for this mapper. No length is stated for link-preview specifically, so the
-// same 2000-character convention is reused here by analogy rather than by
-// direct citation -- flagged in this task's status report as this
-// implementer's own choice, not a design.md requirement.
+// truncation (`server/util/slack.js`, referenced at design.md line 415)
+// explicitly for `NotificationContent` (task 4.5), not for this mapper. No
+// length is stated for link-preview specifically, so the same 2000-character
+// convention is reused here by analogy. Task 4.5 confirmed `slack.js` as the
+// authoritative source and both mappers now share the constant
+// (`./excerpt-length.ts`) so they cannot drift apart independently.
 
+import { EXCERPT_LENGTH } from './excerpt-length';
 import {
   isPubliclyReadablePage,
   type PublicPageFilterSource,
 } from './public-page-filter';
-
-const EXCERPT_LENGTH = 2000;
 
 /** The fields this mapper reads off a resolved page. */
 export interface LinkPreviewPageSource extends PublicPageFilterSource {
