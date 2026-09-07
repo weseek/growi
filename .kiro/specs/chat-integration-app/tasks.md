@@ -177,7 +177,7 @@
   - _Depends: 1.2_
   - _Boundary: PublicPageFilter_
 
-- [ ] 4.3 発言の列をページの本文へ組み立てる
+- [x] 4.3 発言の列をページの本文へ組み立てる
   - **投稿者は発言ごとに解決する**（操作した人を解決する処理は 1 人ぶんしか返さない）
   - **まとめて 1 回引く**（発言の数だけ問い合わせると、100 件の取り込みで 100 回引くことになる）
   - 紐付いていない投稿者は、チャット上の表示名をそのまま書く
@@ -494,3 +494,11 @@
     （task 1.2 の `chat_challenge_attempts` にこの用途の項目は無く、task 3.4 の文面もこれを求めていない）。
   - 実害は限定的 — 存在しない登録コードへの推測攻撃も、既存の `(registrationCode, sourceKey)` 単位の
     上限がそのまま掛かるため、無制限ではない。**feature 全体の検証で、この2段目の要否を判断すること。**
+- **task 4.3 の実装で判明した、design.md の型名の食い違い（design.md 側への反映が必要）**:
+  - design.md 375行が挙げる `HistoryMessage` という型は `@growi/chat` に存在しない。
+    実際の型名は **`KeepMessage`**（`{ postedAt: string; author: ChatAccountRef; markdown: string }`、
+    `packages/chat/src/contract/command.ts`）。design.md 側の型名を直すこと。
+  - 投稿者の一括解決は design.md の言う「`$in` で1回引く」ではなく、
+    `{ platform, accountId }` の組ごとの `$or` にした（`accountId` は単独では一意でなく、
+    `platform` と組み合わせた複合キーの一部なので、素の `$in` では跨サービスの取り違えが起きうる）。
+    「まとめて1回引く」という制約自体は満たしている。
