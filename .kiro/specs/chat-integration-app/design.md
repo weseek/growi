@@ -56,6 +56,28 @@ GROWI 内のイベントを通知として送り、チャットの利用者を G
 
 - `@growi/chat` の契約が変わったとき
 - GROWI 本体の検索・権限判定の呼び出し契約が変わったとき（要件 3.6 / 3.7 が影響を受ける）
+- `chat-integration-proxy` の能力表・通知契約が変わったとき（下記「proxy 実装で見つかった未解決の論点」を参照）
+
+### proxy 実装で見つかった未解決の論点（要対応）
+
+`chat-integration-proxy` の実装（task 8.4/8.5）で、**Slack/Discord の OAuth 折り返しに CSRF 対策の
+`state` パラメータを発行・検証する処理が、chat-integration・chat-integration-protocol・
+chat-integration-proxy・chat-integration-app のどの spec にも存在しない**ことが判明した。
+
+- proxy 側（`routes/install-routes.ts`）は `code` だけで折り返しを受けており、Gen 1 の
+  `GET /oauth_redirect` が持っていた「`state` が空なら 400 で断る」検査に相当するものが無い
+- `state` を照合するには**発行する側**（"Add to Slack" のような導入 URL を組み立て、`state` を
+  発行する処理）が要るが、proxy 側の設計（design.md「呼ぶ入り口は 2 つ」の表）は折り返しを
+  受ける側の実装しか持たず、導入 URL を組み立てる側は範囲外としている
+- 影響は限定的（この隙間を突かれても、攻撃者自身の workspace が proxy に誤って登録される
+  だけで、紐付けは別途 GROWI 側の所有確認（要件 9.2）を通るため、資格情報の窃取やテナントを
+  跨いだ読み取りには直結しない）が、Gen 1 にあった検査が今は無い状態である
+
+**この spec が発行元の最有力候補である**（管理画面が「新しい workspace を接続する」操作の
+起点になりうるため）が、実際に発行URL を組み立てる主体を GROWI（この spec）にするか proxy
+自身にするかは未決定——**9.1 の実装に着手する前に決めること**。決まったら、そちらの spec の
+`tasks.md` に「導入 URL の発行と `state` の発行・照合を対で追加するタスク」を立て、この段落は
+削除して両方の spec の design.md にある「呼ぶ入り口は 2 つ」相当の記述に反映すること。
 
 ---
 

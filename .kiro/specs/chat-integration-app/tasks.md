@@ -335,9 +335,33 @@
   - _Boundary: NotificationDispatcher_
 
 - [ ] 9. 管理画面と個人設定を作る
+- [ ] 9.0 OAuth 導入 URL の発行元を決め、`state` の発行・照合を実装する
+  - **design.md「proxy 実装で見つかった未解決の論点」を先に読むこと。** Slack/Discord の
+    OAuth 折り返しに CSRF 対策の `state` を発行・検証する処理が、chat-integration・
+    chat-integration-protocol・chat-integration-proxy・chat-integration-app のどの spec にも
+    無いまま proxy の実装が完了している（proxy は `code` だけで折り返しを受ける）
+  - **最初にすること**: 導入 URL（"Add to Slack" 相当）を組み立てて `state` を発行する主体を
+    この spec（管理画面）にするか、`chat-integration-proxy` 自身にするかを決める。決めた結果は
+    両方の spec の design.md「呼ぶ入り口は 2 つ」相当の記述に反映すること
+  - この spec が発行元になる場合: 管理画面に「新しい workspace を接続する」操作を置き、
+    発行した `state` を GROWI 側で一時的に保持し、proxy の OAuth 折り返し
+    （`routes/install-routes.ts`）が呼び戻ってきた時点で照合する経路を用意する
+  - `chat-integration-proxy` 側が発行元になる場合: このタスクは「proxy 側に導入 URL 発行の
+    タスクを立て、この spec からはリンクを踏むだけにする」に縮小し、proxy の tasks.md へ
+    タスクを追加すること
+  - 空の `state` や照合に失敗した折り返しが 400 で断られることが試験で示される
+  - _Requirements: 9.1, 9.2（登録コードの発行・照合と同じ「第三者が勝手に登録できない」目的）_
+  - _Depends: なし（9.1 より前に決めること）_
+  - _Boundary: AdminChatIntegration（この spec が発行元になる場合）。proxy 側になる場合は
+    chat-integration-proxy の tasks.md へ切り出す_
+
 - [ ] 9.1 管理画面の受け皿を置き、連携の状態を出す
   - 管理画面の受け皿を置き、**既存の案内の一覧に 3 か所追記する**（分岐・一覧・スマートフォン用の一覧）
   - ペアリングの操作、**サービスごとに何が使えるか**、**連携の状態**を出す
+  - **「サービスごとに何が使えるか」は proxy の `capabilities` の応答（`CapabilityReport`）を
+    そのまま出す。** 独自に「このサービスはスラッシュコマンドが使える」等を決め打ちしないこと
+    ——proxy 側は現状すべてのサービスで `slashCommand: 'none'` を返す（呼びかけでのみ起動する。
+    chat-integration-proxy task 12.2）
   - **暗号化の鍵が未設定のときはその旨を出し、ペアリングを始められないようにする**
   - 画面が出て、使える機能と連携の状態が読めることが試験で示される
   - _Requirements: 1.3, 1.4, 12.5_
