@@ -1984,3 +1984,229 @@ test.describe('Inline comment - a re-anchor-failed comment never surfaces a body
     await expect(popover).not.toBeVisible();
   });
 });
+
+test.describe('Inline comment - clicking a list item scrolls to and emphasizes the anchored body range, or notifies on a re-anchor failure (Req 3.1-3.3)', () => {
+  // Serial: the scroll test depends on the comment saved by the first test,
+  // and the later re-anchor-failure tests deliberately break that same
+  // comment's anchor afterward — same reasoning the other multi-step suites
+  // in this file use.
+  test.describe.configure({ mode: 'serial' });
+
+  const scrollNavPagePath = (retry: number) =>
+    `/inline-comment-e2e-scroll-nav${retry}`;
+
+  const targetSentence =
+    'This sentence anchors the scroll-navigation end-to-end test, placed well below the initial viewport fold.';
+  const replacementSentence =
+    'Unrelated replacement text that stands in for the removed target sentence.';
+
+  // Enough filler paragraphs that the target starts below the initial
+  // viewport fold on a fresh load (default viewport is 1400x1024,
+  // playwright.config.ts) — same technique as the "action button lifecycle"
+  // suite above.
+  const fillerParagraphs = Array.from(
+    { length: 20 },
+    (_, i) =>
+      `Filler paragraph ${i} pushes the target sentence well below the initial viewport fold.`,
+  );
+  const pageBody = [
+    '# Inline comment E2E - scroll navigation',
+    '',
+    ...fillerParagraphs.flatMap((paragraph) => [paragraph, '']),
+    targetSentence,
+    '',
+    'Some trailing text after the target.',
+    '',
+  ].join('\n');
+
+  let createdPage: CreatedPage | undefined;
+
+  test.afterAll(async ({ request }) => {
+    if (createdPage != null) {
+      await deletePagesCompletely(request, [createdPage]);
+    }
+  });
+
+  const commentText = 'a comment used to test list-to-body scroll navigation';
+
+  test('Create a page and save an inline comment on a target sentence placed well below the initial viewport fold', async ({
+    page,
+    request,
+  }, testInfo) => {
+    createdPage = await createPage(request, {
+      path: scrollNavPagePath(testInfo.retry),
+      body: pageBody,
+    });
+
+    await page.goto(createdPage.path);
+    await expect(page.locator('.wiki').first()).toContainText(targetSentence);
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    await selectTextInPageBody(page, targetSentence);
+    await page.getByTestId('selection-action-button').click();
+    const form = page.getByTestId('inline-comment-form');
+    await expect(form).toBeVisible();
+
+    await form.locator('.cm-content').fill(commentText);
+    await form.getByTestId('inline-comment-submit-button').click();
+    await expect(form).not.toBeVisible();
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+    await expect(item).toContainText(commentText);
+
+    // The saved highlight (and therefore its hit-testable Range, which
+    // `scrollToRange` also relies on via `rangesById()`) is only registered
+    // once AnchorResolver resolves the just-created anchor — same poll
+    // pattern used throughout this file.
+    await expect
+      .poll(async () =>
+        page.evaluate(
+          () => CSS.highlights.get('growi-inline-comment')?.size ?? 0,
+        ),
+      )
+      .toBeGreaterThan(0);
+  });
+
+  test('Req 3.1, 3.3: clicking the list item scrolls the target sentence into view and applies a temporary emphasis highlight that clears after ~2s', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(scrollNavPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    const viewportSize = page.viewportSize();
+    const viewportHeight = viewportSize?.height ?? 1024;
+    const targetLocator = page
+      .locator('.wiki')
+      .getByText(targetSentence, { exact: true });
+
+    // Precondition: on a fresh load the page is scrolled to the top, and the
+    // target sentence — pushed down by the filler paragraphs — starts below
+    // the fold. `boundingBox()` reports viewport-relative coordinates
+    // regardless of whether the element is actually within the viewport (the
+    // "action button lifecycle" suite above relies on the same fact), so
+    // this is the "before" half of the proof that the click below causes a
+    // real scroll rather than the target already being on-screen.
+    const beforeBox = await targetLocator.boundingBox();
+    if (beforeBox == null) {
+      throw new Error('expected a bounding box for the target sentence');
+    }
+    expect(beforeBox.y).toBeGreaterThan(viewportHeight);
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+    // The quote button has no dedicated testid (InlineCommentItem.tsx wraps
+    // the `.inline-comment-quote` blockquote in a plain `<button>`) — located
+    // via its role and the anchored quote text, which distinguishes it from
+    // the item's other buttons (resolve toggle, reply).
+    const quoteButton = item
+      .getByRole('button')
+      .filter({ hasText: targetSentence });
+
+    const emphasisHighlightSize = () =>
+      page.evaluate(
+        () => CSS.highlights.get('growi-inline-comment-emphasis')?.size ?? 0,
+      );
+    expect(await emphasisHighlightSize()).toBe(0);
+
+    await quoteButton.click();
+
+    // Requirement 3.1: the click scrolls the body so the target sentence
+    // ends up inside the viewport. `scrollIntoView({ behavior: 'smooth' })`
+    // animates over time, so this is polled rather than asserted once.
+    await expect
+      .poll(
+        async () => {
+          const box = await targetLocator.boundingBox();
+          return box == null ? Infinity : box.y;
+        },
+        { timeout: 5000 },
+      )
+      .toBeLessThan(viewportHeight);
+
+    const afterBox = await targetLocator.boundingBox();
+    if (afterBox == null) {
+      throw new Error('expected a bounding box for the target sentence');
+    }
+    expect(afterBox.y).toBeGreaterThan(0);
+
+    // Requirement 3.3: a temporary emphasis highlight (a distinct CSS
+    // highlight name from the persistent saved-comment one) registers on the
+    // scrolled-to range, and PageView.tsx's own emphasis timer (2000ms)
+    // clears it again shortly after — polled on both ends rather than a
+    // single `waitForTimeout(2000)` immediately followed by an assertion, to
+    // avoid racing that timer. The clear-side timeout is generously wider
+    // than the 2000ms production timer, since the `setTimeout` can fire late
+    // under a loaded CI/dev machine without that meaning the behavior itself
+    // is broken.
+    await expect.poll(emphasisHighlightSize).toBeGreaterThan(0);
+    await expect.poll(emphasisHighlightSize, { timeout: 10000 }).toBe(0);
+  });
+
+  test('Req 3.2 setup: after the anchored text is edited away and the page reloads, the saved highlight is not restored', async ({
+    page,
+    request,
+  }) => {
+    if (createdPage == null) {
+      throw new Error('createdPage was not set by the previous test');
+    }
+
+    const editedBody = pageBody.replace(targetSentence, replacementSentence);
+    createdPage = await updatePage(request, createdPage, editedBody);
+
+    await page.goto(createdPage.path);
+    await expect(page.locator('.wiki').first()).toContainText(
+      replacementSentence,
+    );
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    // Same "best-effort fallback" precondition used elsewhere in this file:
+    // the anchor could not be re-resolved, so no saved highlight is drawn —
+    // confirming `scrollToRange`'s target Range genuinely does not exist
+    // before the next test tries to click it.
+    expect(
+      await page.evaluate(
+        () => CSS.highlights.get('growi-inline-comment')?.size ?? 0,
+      ),
+    ).toBe(0);
+  });
+
+  test('Req 3.2: clicking the list item for a re-anchor-failed comment shows a notification and does not scroll or emphasize anything', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(scrollNavPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    // The list item itself survives (design.md 決定4: a resolver failure only
+    // means `rangesById()` produces no Range for this id) — its quote still
+    // shows the ORIGINAL anchor text, since that is the stored anchor quote,
+    // not the page's current (edited) content.
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+    const quoteButton = item
+      .getByRole('button')
+      .filter({ hasText: targetSentence });
+
+    await expect(page.locator('.Toastify__toast')).not.toBeVisible();
+    await quoteButton.click();
+
+    // Requirement 3.2: no Range resolves for this comment id, so
+    // `scrollToRange` reports failure through the existing notification UI
+    // instead of scrolling.
+    await expect(page.locator('.Toastify__toast')).toBeVisible();
+    await expect(page.locator('.Toastify__toast')).toContainText(
+      'could not be found',
+    );
+
+    // ...and neither of the two things a successful call does happens: no
+    // temporary emphasis highlight is ever registered — the decisive proof
+    // that no scroll/emphasis branch ran at all (unlike `window.scrollY`,
+    // this is not confounded by Playwright's own scroll-into-view-to-click
+    // behavior on the list item).
+    expect(
+      await page.evaluate(
+        () => CSS.highlights.get('growi-inline-comment-emphasis')?.size ?? 0,
+      ),
+    ).toBe(0);
+  });
+});
