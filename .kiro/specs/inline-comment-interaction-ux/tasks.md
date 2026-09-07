@@ -86,7 +86,7 @@
   - _Boundary: InlineCommentReplies_
 
 - [ ] 6. 検証：横断的な確認
-- [ ] 6.1 E2E: 作成中・保存済みハイライトが重なったときに両方視認できることを確認する
+- [x] 6.1 E2E: 作成中・保存済みハイライトが重なったときに両方視認できることを確認する
   - 保存済みインラインコメントの対象範囲と重なる位置で新しくテキストを選択し、両方の色由来の値が反映されていることを確認する
   - 観測できる完了条件：E2Eテストがgreenになる
   - _Requirements: 1.1, 1.2_
@@ -157,6 +157,37 @@
   non-blocking/ambiguous under AC 2.4's literal wording, but worth revisiting
   (key suppression on `commentId` alone, clearing only when the hook reports
   a different id or `null`) if this surfaces as a real usability complaint.
+
+- Task 6.1 (E2E): running the full `inline-comment.spec.ts` file surfaced
+  two PRE-EXISTING E2E tests broken by earlier tasks already landed in this
+  spec (not introduced by 6.1 itself) — fixed alongside 6.1's own new test,
+  same file, same commit:
+  - The old "highlight color stays the same across selecting/composing/saved"
+    test asserted all three states paint an identical color. Task 2.1 made
+    the pending (selecting/composing) highlight semi-transparent and
+    genuinely different from the saved highlight — exactly the retraction
+    of the old `inline-comment-visual-consistency` spec's Requirement 12.8
+    this amend spec makes. Fixed by keeping every per-state correctness
+    assertion (still required by this spec's own Requirement 1.5, which
+    preserves the old spec's Req 12.1–12.7) and replacing only the
+    cross-state EQUALITY assertions: selecting/composing still equal each
+    other (both pending-mechanism), but saved is now asserted DIFFERENT.
+  - The old "Replying to the inline comment nests the reply..." test filled
+    a plain `<textbox name="Reply">` directly. Task 5.2 replaced that with a
+    "Reply..." toggle button that must be clicked first to reveal
+    `MentionAwareCommentInput`. Fixed to click the toggle
+    (`data-testid="inline-comment-reply-toggle-button"`), fill `.cm-content`,
+    then submit — same final nesting/text assertions as before.
+  - Lesson for any future spec touching this file: task-local review only
+    runs the task's own new/changed test(s); a full-file run (as the E2E
+    verification group already does) is what catches this class of
+    cross-task regression, so budget for it rather than trusting each
+    task's own green run in isolation.
+  - Also bumped `apps/app/tools/i18n-audit/baseline.json` (missing-key count
+    for ja_JP/zh_CN/fr_FR/ko_KR, +2 keys × 4 locales = +8 each) so
+    `pnpm run lint:i18n` passes — the two new en_US-only keys from task 1.3
+    are deliberately not translated yet, per this project's English-first
+    i18n policy; this is a deliberate baseline bump, not a translation task.
 
 - Task 4.1 (`PageView.scrollToRange`): two known, narrow limitations,
   reviewed as acceptable to defer rather than fixed in-boundary:

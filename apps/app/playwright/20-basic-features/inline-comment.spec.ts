@@ -184,8 +184,18 @@ test.describe('Inline comment', () => {
     await expect(item).toBeVisible();
 
     const replyText = 'a reply to the origin inline comment';
-    await item.getByRole('textbox', { name: 'Reply' }).fill(replyText);
-    await item.getByRole('button', { name: 'Reply' }).click();
+    // Since task 5.2, the reply input is not a plain always-visible
+    // `<textarea>`/"Reply" button pair -- it's a "Reply..." toggle that must
+    // be clicked first to reveal `MentionAwareCommentInput`'s own CodeMirror
+    // editor and submit button (design.md 決定5). Reuses the same
+    // `.cm-content` fill + `inline-comment-submit-button` testid interaction
+    // pattern the mention-picker and multi-line-submission tests above
+    // already establish for that shared editor, scoped to this `item` since
+    // `inline-comment-submit-button` is also used by the (currently closed)
+    // origin-comment form elsewhere on the page.
+    await item.getByTestId('inline-comment-reply-toggle-button').click();
+    await item.locator('.cm-content').fill(replyText);
+    await item.getByTestId('inline-comment-submit-button').click();
 
     // Requirement 1.8/2.5: the reply (no anchor of its own) is nested under
     // its origin comment's own list item, not appended as a sibling.
@@ -812,7 +822,7 @@ test.describe('Inline comment - visual consistency of the creation UI', () => {
   });
 });
 
-test.describe('Inline comment - highlight color stays the same across the selecting/composing/saved states (Req 12.4-12.8)', () => {
+test.describe('Inline comment - highlight color stays consistent across the pending (selecting/composing) states, and switches to a distinct color once saved (Req 1.1, 1.2, 1.5, 12.4-12.7)', () => {
   // Serial: every test in this suite reuses the one page created by the
   // first test, the same reasoning the other suites in this file use.
   test.describe.configure({ mode: 'serial' });
@@ -895,16 +905,39 @@ test.describe('Inline comment - highlight color stays the same across the select
     );
 
   /**
-   * Independently resolves `--grw-inline-comment-marker-bg` to a computed
-   * color, by applying it to a throwaway element rather than hard-coding the
-   * expected color (e.g. `#FFFA90`) in the test -- design.md decision 4
-   * notes the default is a deliberate, revisitable choice, so this test
-   * should keep passing if that default value alone ever changes.
+   * Independently resolves `--grw-inline-comment-marker-bg` (the SAVED
+   * highlight's color token) to a computed color, by applying it to a
+   * throwaway element rather than hard-coding the expected color (e.g.
+   * `#FFFA90`) in the test -- design.md decision 4 notes the default is a
+   * deliberate, revisitable choice, so this test should keep passing if that
+   * default value alone ever changes.
    */
   const readInlineCommentMarkerColor = (targetPage: Page): Promise<string> =>
     targetPage.evaluate(() => {
       const probe = document.createElement('div');
       probe.style.backgroundColor = 'var(--grw-inline-comment-marker-bg)';
+      document.body.appendChild(probe);
+      const color = window.getComputedStyle(probe).backgroundColor;
+      probe.remove();
+      return color;
+    });
+
+  /**
+   * Independently resolves the PENDING (selecting/composing) highlight's
+   * actual painted color -- `color-mix(in srgb, var(--grw-inline-comment-marker-bg-pending)
+   * 70%, transparent)`, the exact expression `PendingSelectionHighlight.tsx`
+   * emits -- again by applying it to a throwaway element rather than
+   * hard-coding a resolved color, so this stays correct if the pending
+   * token's default value changes. Kept as its own helper (distinct from
+   * `readInlineCommentMarkerColor` above) because Requirement 1.1/1.2 makes
+   * the pending and saved colors deliberately DIFFERENT tokens now, not two
+   * readings of the same one.
+   */
+  const readPendingHighlightColor = (targetPage: Page): Promise<string> =>
+    targetPage.evaluate(() => {
+      const probe = document.createElement('div');
+      probe.style.backgroundColor =
+        'color-mix(in srgb, var(--grw-inline-comment-marker-bg-pending) 70%, transparent)';
       document.body.appendChild(probe);
       const color = window.getComputedStyle(probe).backgroundColor;
       probe.remove();
@@ -924,21 +957,32 @@ test.describe('Inline comment - highlight color stays the same across the select
     await expect(page.locator('.wiki').first()).toContainText(targetSentence);
   });
 
-  test('The target range is painted the same marker color while selecting, while composing, and after saving', async ({
+  test('The pending range keeps a consistent color across selecting and composing, and switches to the distinct saved color once committed', async ({
     page,
   }, testInfo) => {
     await page.goto(highlightConsistencyPagePath(testInfo.retry));
     await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
 
     const markerColor = await readInlineCommentMarkerColor(page);
-    // Sanity: the marker color itself must not be the browser's fully
-    // transparent default -- otherwise every comparison below would pass
-    // vacuously (three states all painting "nothing").
+    const pendingColor = await readPendingHighlightColor(page);
+    // Sanity: neither color is the browser's fully transparent default --
+    // otherwise every comparison below would pass vacuously (states all
+    // painting "nothing").
     expect(markerColor).not.toBe('rgba(0, 0, 0, 0)');
+    expect(pendingColor).not.toBe('rgba(0, 0, 0, 0)');
+    // Requirement 1.1/1.2 (this spec) retracts the previous
+    // inline-comment-visual-consistency spec's Requirement 12.8, which
+    // required the saved and pending colors to be identical: the pending
+    // (selecting/composing) color must now be genuinely distinguishable
+    // from the saved color, not merely a differently-computed reading of
+    // the same one, so an overlapping selection over an already-saved
+    // comment can show both at once (see the "stays distinguishable" suite
+    // further down this file).
+    expect(pendingColor).not.toBe(markerColor);
 
     // --- State 1: selecting (Req 12.4) ---
     // Requirement 12.4: a plain text selection, before the create action is
-    // even chosen, is painted the marker color -- CSS's own painting order
+    // even chosen, is painted the pending color -- CSS's own painting order
     // (`::highlight() < ::selection`) puts `::selection` on top here, so
     // this is the pseudo that actually determines what's painted.
     await selectTextInPageBody(page, targetSentence);
@@ -948,7 +992,7 @@ test.describe('Inline comment - highlight color stays the same across the select
       targetSentence,
       '::selection',
     );
-    expect(selectingColor).toBe(markerColor);
+    expect(selectingColor).toBe(pendingColor);
 
     // --- State 2: composing (Req 12.5, 12.6) ---
     // Choosing the create action opens the form; clicking into its editor
@@ -984,9 +1028,14 @@ test.describe('Inline comment - highlight color stays the same across the select
       targetSentence,
       '::highlight(growi-inline-comment-pending)',
     );
-    expect(composingColor).toBe(markerColor);
+    expect(composingColor).toBe(pendingColor);
+    // Decisive assertion for the pending half of Requirement 1.5: selecting
+    // and composing are both painted from the same pending token, so they
+    // must still match EACH OTHER, even though the saved state below no
+    // longer matches them.
+    expect(selectingColor).toBe(composingColor);
 
-    // --- State 3: saved (Req 12.8) ---
+    // --- State 3: saved (Req 1.1, 1.2) ---
     const commentText = 'a comment used to check the saved highlight color';
     await form.locator('.cm-content').fill(commentText);
     await form.getByTestId('inline-comment-submit-button').click();
@@ -1014,10 +1063,17 @@ test.describe('Inline comment - highlight color stays the same across the select
     );
     expect(savedColor).toBe(markerColor);
 
-    // Decisive assertion (Req 12.8): all three states painted the exact same
-    // color as each other, not merely each matching the token independently.
-    expect(selectingColor).toBe(composingColor);
-    expect(composingColor).toBe(savedColor);
+    // Decisive assertion (Req 1.1, 1.2): the saved color is genuinely
+    // different from the pending color the range was painted with while
+    // selecting/composing -- not merely each independently matching its own
+    // token, but the two tokens resolving to two distinguishable colors.
+    // (The OLD inline-comment-visual-consistency spec's Requirement 12.8
+    // required all three states to share one identical color; this spec
+    // retracts 12.8 specifically, while Requirement 1.5 keeps 12.4-12.7 --
+    // theme-following, single-source-of-truth token, surviving focus moving
+    // into the input -- intact, which is why those per-state assertions
+    // above are unchanged.)
+    expect(savedColor).not.toBe(composingColor);
   });
 });
 
@@ -1353,5 +1409,217 @@ test.describe('Inline comment - shares one list and one box style with normal co
     // the comparison above passing vacuously because neither side has any
     // rounding/background at all.
     expect(normalBoxStyle.borderRadius).not.toBe('0px');
+  });
+});
+
+test.describe('Inline comment - a new selection overlapping a saved comment stays distinguishable (Req 1.1, 1.2)', () => {
+  // Serial: the second test depends on the saved comment created by the
+  // first, real backend state -- the same reasoning the other suites in this
+  // file use.
+  test.describe.configure({ mode: 'serial' });
+
+  const overlapPagePath = (retry: number) =>
+    `/inline-comment-e2e-overlap${retry}`;
+
+  const targetSentence =
+    'This sentence anchors the overlapping-highlight end-to-end test.';
+  const pageBody = [
+    '# Inline comment E2E - overlapping highlights',
+    '',
+    targetSentence,
+    '',
+  ].join('\n');
+
+  let createdPage: CreatedPage | undefined;
+
+  test.afterAll(async ({ request }) => {
+    if (createdPage != null) {
+      await deletePagesCompletely(request, [createdPage]);
+    }
+  });
+
+  /**
+   * Local copy of the same-named helper in the "highlight color stays the
+   * same across states" suite above -- kept scoped to this describe block
+   * (not hoisted to module scope) to match that suite's own precedent: it,
+   * too, keeps its pseudo-color reader local to its block rather than
+   * sharing it across suites.
+   */
+  const getPseudoBackgroundColor = (
+    targetPage: Page,
+    text: string,
+    pseudo: string,
+  ): Promise<string> =>
+    targetPage.evaluate(
+      ({ needle, pseudoSelector }) => {
+        const container = document.querySelector('.wiki');
+        if (container == null) {
+          throw new Error('page body container (.wiki) not found');
+        }
+        const walker = document.createTreeWalker(
+          container,
+          NodeFilter.SHOW_TEXT,
+        );
+        let node = walker.nextNode();
+        while (node != null) {
+          if (node.textContent?.includes(needle)) {
+            const el = node.parentElement;
+            if (el == null) {
+              throw new Error('matched text node has no parent element');
+            }
+            return window.getComputedStyle(el, pseudoSelector).backgroundColor;
+          }
+          node = walker.nextNode();
+        }
+        throw new Error(`text not found in page body: ${needle}`);
+      },
+      { needle: text, pseudoSelector: pseudo },
+    );
+
+  /**
+   * Resolves the saved-comment token (`--grw-inline-comment-marker-bg`) to a
+   * computed color via a throwaway probe element, the same technique the
+   * "highlight consistency across states" suite above uses for the identical
+   * purpose -- kept as its own local copy rather than shared, per that
+   * suite's own precedent.
+   */
+  const readSavedMarkerColor = (targetPage: Page): Promise<string> =>
+    targetPage.evaluate(() => {
+      const probe = document.createElement('div');
+      probe.style.backgroundColor = 'var(--grw-inline-comment-marker-bg)';
+      document.body.appendChild(probe);
+      const color = window.getComputedStyle(probe).backgroundColor;
+      probe.remove();
+      return color;
+    });
+
+  /**
+   * Resolves the *applied* (already semi-transparent) pending-highlight
+   * value to a computed color, via the exact same `color-mix()` expression
+   * `PendingSelectionHighlight.tsx` uses for its `::selection` /
+   * `::highlight(growi-inline-comment-pending)` rules (design.md decision 1:
+   * "適用箇所は半透明にする" -- `color-mix(in srgb,
+   * var(--grw-inline-comment-marker-bg-pending) 70%, transparent)`). Mirroring
+   * the production expression here (rather than reading the raw
+   * `--grw-inline-comment-marker-bg-pending` token alone) is what proves the
+   * two highlight-origins resolve to genuinely different painted values, not
+   * just different token names.
+   */
+  const readPendingAppliedColor = (targetPage: Page): Promise<string> =>
+    targetPage.evaluate(() => {
+      const probe = document.createElement('div');
+      probe.style.backgroundColor =
+        'color-mix(in srgb, var(--grw-inline-comment-marker-bg-pending) 70%, transparent)';
+      document.body.appendChild(probe);
+      const color = window.getComputedStyle(probe).backgroundColor;
+      probe.remove();
+      return color;
+    });
+
+  test('Create a page containing the target sentence', async ({
+    page,
+    request,
+  }, testInfo) => {
+    createdPage = await createPage(request, {
+      path: overlapPagePath(testInfo.retry),
+      body: pageBody,
+    });
+
+    await page.goto(createdPage.path);
+    await expect(page.locator('.wiki').first()).toContainText(targetSentence);
+  });
+
+  test('Selecting text over an already-saved comment shows both highlights at once, painted with different colors', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(overlapPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    // --- Step 1: save a comment on the target sentence first. ---
+    await selectTextInPageBody(page, targetSentence);
+    await page.getByTestId('selection-action-button').click();
+    const form = page.getByTestId('inline-comment-form');
+    await expect(form).toBeVisible();
+
+    const commentText = 'a saved comment that a later selection overlaps';
+    await form.locator('.cm-content').fill(commentText);
+    await form.getByTestId('inline-comment-submit-button').click();
+    await expect(form).not.toBeVisible();
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+    await expect(item).toContainText(commentText);
+
+    // The saved highlight is registered asynchronously, once AnchorResolver
+    // resolves the just-created anchor against the rendered body (same poll
+    // pattern used throughout this file).
+    await expect
+      .poll(async () =>
+        page.evaluate(
+          () => CSS.highlights.get('growi-inline-comment')?.size ?? 0,
+        ),
+      )
+      .toBeGreaterThan(0);
+
+    // --- Step 2: make a NEW selection overlapping the same, already-saved
+    // range (design.md's "本文選択の監視" / Req 1.2's overlapping-selection
+    // case). Selecting the same sentence again is a straightforward,
+    // guaranteed-overlapping choice: `selectTextInPageBody` already supports
+    // selecting by exact text content. Merely selecting (no click on the
+    // action button yet) is enough to register the pending highlight --
+    // SelectionCapture renders `PendingSelectionHighlight` with
+    // `range={state.liveRange}` as soon as it reaches the `selecting` stage,
+    // the same "Requirement 12.4: same marker color while merely selecting"
+    // state the highlight-consistency suite above exercises. ---
+    await selectTextInPageBody(page, targetSentence);
+    await expect(page.getByTestId('selection-action-button')).toBeVisible();
+
+    // Requirement 1.2, decisive proof of "both shown at once": both the
+    // saved highlight and the new pending highlight are simultaneously
+    // registered under CSS.highlights -- not merely "a different color
+    // exists somewhere", but both actively painting the same overlapping
+    // range right now.
+    await expect
+      .poll(() =>
+        page.evaluate(() => ({
+          saved: CSS.highlights.get('growi-inline-comment')?.size ?? 0,
+          pending:
+            CSS.highlights.get('growi-inline-comment-pending')?.size ?? 0,
+        })),
+      )
+      .toEqual({ saved: 1, pending: 1 });
+
+    // Requirement 1.1: the two highlight-origins resolve to different raw
+    // colors -- the saved token stays opaque, while the pending token's
+    // applied value is composited semi-transparent (design.md decision 1).
+    const savedMarkerColor = await readSavedMarkerColor(page);
+    const pendingAppliedColor = await readPendingAppliedColor(page);
+    // Sanity: neither resolves to fully transparent, which would make every
+    // comparison below pass vacuously.
+    expect(savedMarkerColor).not.toBe('rgba(0, 0, 0, 0)');
+    expect(pendingAppliedColor).not.toBe('rgba(0, 0, 0, 0)');
+    expect(pendingAppliedColor).not.toBe(savedMarkerColor);
+
+    // Strongest, most direct proof: read what is actually painted on the
+    // overlapping text at this exact moment, for both pseudo forms at once.
+    // A real document selection exists right now, so CSS's own
+    // highlight-painting order (`::highlight() < ::selection`, design.md
+    // decision 1) puts `::selection` on top -- it must resolve to the
+    // composited pending color. The saved highlight is still registered
+    // underneath (confirmed above), and its own pseudo resolves to the
+    // opaque saved color independently of what currently paints on top.
+    const topPaintedColor = await getPseudoBackgroundColor(
+      page,
+      targetSentence,
+      '::selection',
+    );
+    const savedHighlightColor = await getPseudoBackgroundColor(
+      page,
+      targetSentence,
+      '::highlight(growi-inline-comment)',
+    );
+    expect(topPaintedColor).toBe(pendingAppliedColor);
+    expect(savedHighlightColor).toBe(savedMarkerColor);
+    expect(topPaintedColor).not.toBe(savedHighlightColor);
   });
 });
