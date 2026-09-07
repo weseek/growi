@@ -335,25 +335,22 @@
   - _Boundary: NotificationDispatcher_
 
 - [ ] 9. 管理画面と個人設定を作る
-- [ ] 9.0 OAuth 導入 URL の発行元を決め、`state` の発行・照合を実装する
+- [ ] 9.0 OAuth 導入 URL の発行元（この spec に決定済み）として `state` の発行・照合を実装する
+  - **決定済み（2026-09-07、ユーザー確認済み）: 発行元はこの spec（chat-integration-app / 管理画面）。**
+    `chat-integration-proxy` 側にタスクを切り出す必要はない。再度この判断をやり直さないこと
   - **design.md「proxy 実装で見つかった未解決の論点」を先に読むこと。** Slack/Discord の
     OAuth 折り返しに CSRF 対策の `state` を発行・検証する処理が、chat-integration・
     chat-integration-protocol・chat-integration-proxy・chat-integration-app のどの spec にも
     無いまま proxy の実装が完了している（proxy は `code` だけで折り返しを受ける）
-  - **最初にすること**: 導入 URL（"Add to Slack" 相当）を組み立てて `state` を発行する主体を
-    この spec（管理画面）にするか、`chat-integration-proxy` 自身にするかを決める。決めた結果は
-    両方の spec の design.md「呼ぶ入り口は 2 つ」相当の記述に反映すること
-  - この spec が発行元になる場合: 管理画面に「新しい workspace を接続する」操作を置き、
-    発行した `state` を GROWI 側で一時的に保持し、proxy の OAuth 折り返し
-    （`routes/install-routes.ts`）が呼び戻ってきた時点で照合する経路を用意する
-  - `chat-integration-proxy` 側が発行元になる場合: このタスクは「proxy 側に導入 URL 発行の
-    タスクを立て、この spec からはリンクを踏むだけにする」に縮小し、proxy の tasks.md へ
-    タスクを追加すること
+  - 管理画面に「新しい workspace を接続する」操作を置き、発行した `state` を GROWI 側で
+    一時的に保持し、proxy の OAuth 折り返し（`routes/install-routes.ts`）が呼び戻ってきた
+    時点で照合する経路を用意する
+  - 実装後、この spec の design.md の「未決の論点」の段落を削除し、決定内容（発行元はこの spec）
+    を反映した記述に置き換える
   - 空の `state` や照合に失敗した折り返しが 400 で断られることが試験で示される
   - _Requirements: 9.1, 9.2（登録コードの発行・照合と同じ「第三者が勝手に登録できない」目的）_
-  - _Depends: なし（9.1 より前に決めること）_
-  - _Boundary: AdminChatIntegration（この spec が発行元になる場合）。proxy 側になる場合は
-    chat-integration-proxy の tasks.md へ切り出す_
+  - _Depends: なし_
+  - _Boundary: AdminChatIntegration_
 
 - [ ] 9.1 管理画面の受け皿を置き、連携の状態を出す
   - 管理画面の受け皿を置き、**既存の案内の一覧に 3 か所追記する**（分岐・一覧・スマートフォン用の一覧）
