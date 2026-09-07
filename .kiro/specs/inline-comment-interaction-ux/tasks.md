@@ -19,7 +19,7 @@
   - _Requirements: 2.3, 3.2, 4.1_
 
 - [ ] 2. ハイライト色の区別
-- [ ] 2.1 作成中ハイライトの適用色を新トークン・半透明値に変更する
+- [x] 2.1 作成中ハイライトの適用色を新トークン・半透明値に変更する
   - `PendingSelectionHighlight.tsx` の `::selection` と `::highlight(growi-inline-comment-pending)` が読む値を、`--grw-inline-comment-marker-bg-pending` を `color-mix()` 等で半透明化した値に変更する。`InlineCommentHighlight.tsx` 側（保存済み）は変更しない
   - 観測できる完了条件：`PendingSelectionHighlight.spec.tsx` を更新し、生成されるスタイル文字列が新トークン・半透明指定を参照し、かつ保存済みハイライトが使う値とは異なることを確認できる
   - _Requirements: 1.1, 1.2, 1.5_

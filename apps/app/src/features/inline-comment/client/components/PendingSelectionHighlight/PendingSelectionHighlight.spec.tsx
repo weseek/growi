@@ -150,7 +150,7 @@ describe('PendingSelectionHighlight', () => {
     expect(container.hasAttribute(SCOPE_ATTR)).toBe(true);
   });
 
-  it('paints both rules with the theme-aware custom properties and no literal colors', () => {
+  it('paints both rules with the pending-token, semi-transparent color and no literal colors', () => {
     render(
       <PendingSelectionHighlight
         range={rangeOver('quick brown fox')}
@@ -170,9 +170,22 @@ describe('PendingSelectionHighlight', () => {
 
     expect(styleContent).toContain('::selection');
     expect(styleContent).toContain(`::highlight(${HIGHLIGHT_NAME})`);
-    expect(styleContent).toContain(
+
+    // The pending (in-creation) highlight must use the dedicated pending
+    // token, made semi-transparent via color-mix(), so a saved highlight
+    // underneath stays visible when the two overlap (Requirement 1.2) — and
+    // must NOT reuse the saved-highlight's opaque token/value, which
+    // InlineCommentHighlight.tsx keeps using unchanged.
+    const pendingBackground =
+      'background-color: color-mix(in srgb, var(--grw-inline-comment-marker-bg-pending) 70%, transparent)';
+    expect(styleContent).toContain(pendingBackground);
+    expect(styleContent).not.toContain(
       'background-color: var(--grw-inline-comment-marker-bg)',
     );
+    expect(styleContent).not.toContain(
+      'background-color: var(--grw-inline-comment-marker-bg-pending);',
+    );
+
     // Pairing the text color with the background keeps the browser's own
     // (usually white) selection text color off the pale marker background.
     expect(styleContent).toContain('color: var(--bs-body-color)');

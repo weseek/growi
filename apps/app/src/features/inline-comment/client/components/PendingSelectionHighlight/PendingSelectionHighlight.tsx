@@ -88,11 +88,11 @@ export const PendingSelectionHighlight = ({
            browser's selection foreground (white in most environments) on top
            of the pale marker background makes the text unreadable. */
         [${SCOPE_ATTR}] ::selection {
-          background-color: var(--grw-inline-comment-marker-bg);
+          background-color: color-mix(in srgb, var(--grw-inline-comment-marker-bg-pending) 70%, transparent);
           color: var(--bs-body-color);
         }
         ::highlight(${PENDING_HIGHLIGHT_NAME}) {
-          background-color: var(--grw-inline-comment-marker-bg);
+          background-color: color-mix(in srgb, var(--grw-inline-comment-marker-bg-pending) 70%, transparent);
         }
       `}
     </style>
