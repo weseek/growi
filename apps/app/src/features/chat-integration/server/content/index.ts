@@ -6,6 +6,8 @@
 // builds both of its inputs -- the actor it got from `resolveActor` and the
 // candidate list it built from the search hits -- and so has to name them.
 
+export type { PublicPageFilterSource } from './public-page-filter';
+export { isPubliclyReadablePage } from './public-page-filter';
 export type {
   PageCandidate,
   ViewerFilterActor,
