@@ -1,6 +1,11 @@
 import { PageGrant } from '@growi/core';
 import type { IUser } from '@growi/core/dist/interfaces';
 
+import {
+  DestinationRegistry,
+  dispatchGen2Destination,
+  findGen2DestinationsForPathAndEvent,
+} from '~/features/chat-integration/server/notification';
 import type Crowi from '~/server/crowi';
 import type { PageDocument } from '~/server/models/page';
 import loggerFactory from '~/utils/logger';
@@ -65,6 +70,8 @@ class GlobalNotificationService {
       return;
     }
 
+    // Gen 1's two existing destinations -- untouched call shape (Requirement
+    // 12.2: setting up Gen 2 must not change Gen 1's behavior).
     await Promise.all([
       this.globalNotificationMailService.fire(event, page, triggeredBy, vars),
       this.globalNotificationSlackService.fire(
@@ -75,6 +82,34 @@ class GlobalNotificationService {
         vars,
       ),
     ]);
+
+    // Gen 2's destinations are dispatched as a separate, additional step
+    // OUTSIDE the Promise.all above -- never merged into Gen 1's fan-out
+    // (Requirement 12.2, 12.3; design.md "既存の Promise.all の外に足す").
+    // A failure here must not affect the Gen 1 sends that already completed.
+    await this.fireGen2Destinations(event, page.path);
+  }
+
+  /**
+   * Dispatches to whichever Gen 2 destinations an admin configured for this
+   * path + event (Requirement 2.1, 12.2, 12.3). `DestinationRegistry`
+   * iterates the resulting set generically -- this method never branches on
+   * destination platform.
+   */
+  private async fireGen2Destinations(
+    event: string,
+    path: string,
+  ): Promise<void> {
+    try {
+      const destinations = await findGen2DestinationsForPathAndEvent(
+        path,
+        event,
+      );
+      const registry = new DestinationRegistry(destinations);
+      await registry.dispatchAll(dispatchGen2Destination);
+    } catch (err) {
+      logger.error('Gen 2 global notification dispatch failed', err);
+    }
   }
 
   /**
