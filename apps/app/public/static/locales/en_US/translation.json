@@ -425,7 +425,9 @@
     "unresolved": "Unresolved",
     "resolve": "Resolve",
     "reopen": "Reopen",
-    "label": "Inline Comment"
+    "label": "Inline Comment",
+    "reply_placeholder": "Write a reply...",
+    "range_not_found": "The commented text could not be found on this page. It may have been edited or removed."
   },
   "page_api_error": {
     "notfound_or_forbidden": "Original page is not found or forbidden.",

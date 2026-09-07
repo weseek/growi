@@ -13,7 +13,7 @@
   - _Requirements: 2.6, 3.1_
   - _Boundary: resolved-range, InlineCommentHighlight_
 
-- [ ] 1.3 (P) 本機能で新たに必要になる翻訳キーを追加する
+- [x] 1.3 (P) 本機能で新たに必要になる翻訳キーを追加する
   - `apps/app/public/static/locales/en_US/translation.json` に、本文ハイライトのポップオーバー（内容確認・簡易返信欄のプレースホルダ・送信ボタン・閉じる操作）、一覧側の再アンカー失敗通知、に必要な文言キーを追加する（英語ファースト。既存キーで代用できるもの—`page_comment.reply`等—は流用し重複させない）
   - 観測できる完了条件：追加した各キーが `en_US/translation.json` から取得できる
   - _Requirements: 2.3, 3.2, 4.1_
