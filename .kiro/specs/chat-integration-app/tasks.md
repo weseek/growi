@@ -52,7 +52,7 @@
   - _Depends: 1.2_
 
 - [ ] 2. 全体に掛かる仕組みに手を入れる
-- [ ] 2.1 proxy から届く口だけ、本文を生のバイト列で受ける
+- [x] 2.1 proxy から届く口だけ、本文を生のバイト列で受ける
   - **全体の JSON 解析より前に**、proxy 向けの口の接頭辞だけ生のバイト列で受ける
   - **掛ける範囲を接頭辞で絞る。**同じ feature の中には管理画面が叩く口もあり、
     そちらまで生のバイト列になると入力検査ごと動かなくなる
@@ -430,3 +430,17 @@
     （`updateOne` 系は Mongoose が `this` を Query に束縛するため `side` を読めない）。
     task 3.1（KeyStore）は自分側の鍵の書き込みに必ず `save`/`create` を使うこと。
     `chat_pending_pairings.ownKeyPair` 側の検査関数は無条件のため両方の書き込み経路で効く。
+- **task 2.1 の実装で判明した、口の絞り込み方の食い違い（task 2.2 が引き継ぐこと）**:
+  - task 2.1 は `app.use(CHAT_INTEGRATION_PEER_PREFIX, ...)` という区切り単位でパスを絞る形にした。
+    これだと `/…/peer` と `/…/peer/…` だけが掛かり、`/…/peering` のような紛らわしい隣接パスは掛からない。
+  - design.md に書かれている task 2.2 の掛け方（`req.path.startsWith(CHAT_INTEGRATION_PEER_PREFIX)`）と、
+    `avoid-session-routes.js` に足す正規表現（`/^\/_api\/v3\/chat-integration\/peer\//`、末尾スラッシュ必須）は、
+    どちらもこの区切り単位の絞り込みより緩いか厳しいかが食い違っている
+    （`startsWith` は `/peering` まで含めてしまい、正規表現は末尾スラッシュが無い `/peer` 単体を取りこぼす）。
+  - **task 2.2 は、この 2 か所も `app.use` と同じ区切り単位の判定に揃えること。**
+    `CHAT_INTEGRATION_PEER_PREFIX` は task 2.1 で `features/chat-integration/server/consts.ts` に
+    切り出し済みなので、そこから import して使う。
+  - task 3.2（SignatureGuard）は、口に届いた本文が JSON でないときの判定を
+    「本文が空かどうか」ではなく **`Buffer.isBuffer(req.body)`** で行うこと。
+    `application/x-www-form-urlencoded` は `express.raw` に掴まれずに全体設定の
+    `bodyParser.urlencoded` まで通ってしまうため、**空ではない別の object** になる。

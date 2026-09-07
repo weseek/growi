@@ -14,6 +14,7 @@ import qs from 'qs';
 
 import { resolveFromRoot } from '~/server/util/project-dir-utils';
 
+import { CHAT_INTEGRATION_PEER_PREFIX } from '../../features/chat-integration/server/consts';
 import {
   PLUGIN_EXPRESS_STATIC_DIR,
   PLUGIN_STORING_PATH,
@@ -112,6 +113,19 @@ export const setup = (crowi, app) => {
   app.use(PLUGIN_EXPRESS_STATIC_DIR, express.static(PLUGIN_STORING_PATH));
 
   app.use(methodOverride());
+
+  // The chat-integration proxy signs the exact bytes it sends (content-digest),
+  // so verification needs the body unparsed. This must be registered before the
+  // app-wide JSON parsing below: once that has read the stream, only the parsed
+  // value is left. express.raw() puts a Buffer in req.body and sets req._body,
+  // which makes the app-wide parsers below skip the request -- no other route is
+  // affected. Scoped to /peer only: the admin-screen endpoints share the
+  // chat-integration base path and must keep the parsed body their validators
+  // rely on. The 10mb limit covers a single page's content.
+  app.use(
+    CHAT_INTEGRATION_PEER_PREFIX,
+    express.raw({ type: 'application/json', limit: '10mb' }),
+  );
 
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
   app.use(bodyParser.json({ limit: '50mb' }));
