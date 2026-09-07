@@ -78,7 +78,7 @@
   - _Depends: 1.3_
   - _Boundary: MentionAwareCommentInput, InlineCommentForm_
 
-- [ ] 5.2 InlineCommentRepliesをReply.../Cancelトグルに書き換える
+- [x] 5.2 InlineCommentRepliesをReply.../Cancelトグルに書き換える
   - `InlineCommentReplies.tsx` に、通常コメントの `showEditorIds` パターンを踏襲したローカルな開閉状態（1スレッドにつき1つの返信欄なので真偽値で足りる）を導入する。閉時は既存キー `t('page_comment.reply')` を使った「Reply...」ボタンを、開時は5.1の `MentionAwareCommentInput` とCancelボタンを表示する。現状の素の `<textarea>` ベースの返信欄は削除する
   - 観測できる完了条件：`InlineCommentReplies.spec.tsx` で、「Reply...」ボタンのクリックで入力コンポーネントが表示され、Cancelのクリックでボタン表示に戻り、送信で `createReply` が呼ばれ返信投稿・一覧反映という既存の振る舞いが変わっていないことを確認できる
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
