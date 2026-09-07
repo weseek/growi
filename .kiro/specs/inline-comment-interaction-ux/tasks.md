@@ -49,7 +49,7 @@
   - _Boundary: InlineCommentBodyInteraction, PageView_
 
 - [ ] 4. 一覧からのスクロールナビゲーション
-- [ ] 4.1 PageViewにスクロール・一時的強調・失敗時通知を実装する
+- [x] 4.1 PageViewにスクロール・一時的強調・失敗時通知を実装する
   - `PageView.tsx` に `scrollToRange(commentId: string): boolean` を実装する。`rangesById()` で対象の `Range` を再構築できた場合はその位置までスクロールし、対象範囲を一時的に別のハイライト名（`growi-inline-comment-emphasis` 等）へ登録して一定時間後に削除する形で強調表示する。再構築できなかった場合は既存の通知UIで利用者に伝える
   - 観測できる完了条件：`PageView.spec.tsx` に `scrollToRange` の単体テストを足し、対象が見つかった場合・見つからなかった場合の両方の戻り値と副作用（スクロール呼び出し・通知呼び出し）を確認できる
   - _Requirements: 3.1, 3.2, 3.3_
@@ -157,3 +157,18 @@
   non-blocking/ambiguous under AC 2.4's literal wording, but worth revisiting
   (key suppression on `commentId` alone, clearing only when the hook reports
   a different id or `null`) if this surfaces as a real usability complaint.
+
+- Task 4.1 (`PageView.scrollToRange`): two known, narrow limitations,
+  reviewed as acceptable to defer rather than fixed in-boundary:
+  (a) `InlineCommentHighlight.tsx`'s effect re-registers the SAVED highlight
+  name whenever `resolvedRanges` gets a new identity; if that happens inside
+  the 2000ms emphasis window, the saved (yellow) highlight repaints over the
+  emphasis (red) per `CSS.highlights`' later-registration-wins order — a
+  color flicker only, scroll itself unaffected, and design.md 決定4 doesn't
+  address re-registration by an unrelated consumer. (b)
+  `supportsCustomHighlightApi()` is now duplicated between
+  `InlineCommentHighlight.tsx` and `PageView.tsx` (each file's own boundary
+  prevented touching the other). If either is worth fixing, do it as a small
+  follow-up: extract the capability probe into a shared module (e.g. next to
+  `resolved-range.ts`), and have `PageView` re-assert emphasis reactively
+  (or otherwise account for a mid-window `resolvedRanges` identity change).

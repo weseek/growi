@@ -32,8 +32,8 @@
 
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
-import { act, render, screen, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type {
   InlineCommentAnchor,
@@ -79,9 +79,22 @@ vi.mock('~/client/components/IdenticalPathPage', () => ({
 vi.mock('~/client/components/Page/SlideRenderer', () => ({
   SlideRenderer: () => null,
 }));
+// Renders real text (not an empty div) so `rangesById()` — which rebuilds a
+// `Range` from the container's live DOM text — has something to resolve the
+// scrollToRange tests' offsets against.
+const PAGE_BODY_TEXT = 'The quick brown fox jumps over the lazy dog.';
 vi.mock('./PageContentRenderer', () => ({
-  PageContentRenderer: () => <div data-testid="page-content-renderer" />,
+  PageContentRenderer: () => (
+    <div data-testid="page-content-renderer">
+      The quick brown fox jumps over the lazy dog.
+    </div>
+  ),
 }));
+
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key: string) => key }),
+}));
+vi.mock('~/client/util/toastr', () => ({ toastError: vi.fn() }));
 
 // ---- Comments: the EXISTING page-footer comment thread. It now receives
 // the fetched inline comments bundled with resolve/createReply as its
@@ -93,6 +106,10 @@ type CommentsProps = {
     comments: InlineCommentWithReplies[];
     resolve: (id: string, resolved: boolean) => Promise<unknown>;
     createReply: (parentId: string, comment: string) => Promise<unknown>;
+    // task 4.1 (inline-comment-interaction-ux): Comments' own declared prop
+    // type does not carry this yet (task 4.2 widens that boundary) -- declared
+    // here so this test can read the callback PageView.tsx now bundles.
+    scrollToRange?: (commentId: string) => boolean;
   };
 };
 const commentsSpy = vi.fn<(props: CommentsProps) => void>();
@@ -199,6 +216,8 @@ vi.mock('@growi/presentation/dist/services', () => ({
   useSlidesByFrontmatter: vi.fn(() => null),
 }));
 
+// biome-ignore lint/style/noRestrictedImports: importing the vi.mock'd module above to get a typed handle on its mock
+import { toastError } from '~/client/util/toastr';
 // biome-ignore lint/style/noRestrictedImports: importing the vi.mock'd module above to get a typed handle on its mock
 import { useAnchorResolver } from '~/features/inline-comment/client/components/AnchorResolver/use-anchor-resolver';
 // biome-ignore lint/style/noRestrictedImports: importing the vi.mock'd module above to get a typed handle on its mock
@@ -408,6 +427,150 @@ describe('PageView', () => {
       expect(selectionCaptureUnmountSpy).not.toHaveBeenCalled();
       expect(selectionCaptureMountSpy).toHaveBeenCalledTimes(1);
       expect(screen.getByTestId('selection-capture')).toBeInTheDocument();
+    });
+  });
+
+  /**
+   * task 4.1 (inline-comment-interaction-ux), Requirements 3.1/3.2/3.3:
+   * `scrollToRange(commentId)` is bundled into the same `inlineComments`
+   * object `Comments` already receives, so the comment list can navigate to
+   * the highlighted range in the page body. Read off the spy rather than
+   * through a new export — the bundle IS the contract (design.md 決定4).
+   *
+   * happy-dom implements neither the CSS Custom Highlight API
+   * (`CSS.highlights` / the global `Highlight` constructor) nor real layout,
+   * so the observables here are "did PageView ask the browser to scroll" and
+   * "did it register/unregister the emphasis highlight over the right text" —
+   * the same approach InlineCommentHighlight.spec.tsx takes.
+   */
+  describe('scrollToRange (comment list -> page body navigation)', () => {
+    class FakeHighlight {
+      readonly ranges: Range[];
+      constructor(...ranges: Range[]) {
+        this.ranges = ranges;
+      }
+    }
+
+    const EMPHASIS_NAME = 'growi-inline-comment-emphasis';
+
+    let highlightRegistry: Map<string, FakeHighlight>;
+    let scrollIntoViewSpy: ReturnType<typeof vi.spyOn>;
+
+    beforeEach(() => {
+      highlightRegistry = new Map();
+      vi.stubGlobal('Highlight', FakeHighlight);
+      vi.stubGlobal('CSS', {
+        ...globalThis.CSS,
+        highlights: highlightRegistry,
+      });
+      scrollIntoViewSpy = vi
+        .spyOn(Element.prototype, 'scrollIntoView')
+        .mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+      // Unmount (running PageView's own emphasis cleanup, which touches
+      // CSS.highlights) BEFORE the stub is removed -- RTL's auto-cleanup
+      // afterEach is registered at file scope and would otherwise run later.
+      cleanup();
+      scrollIntoViewSpy.mockRestore();
+      vi.useRealTimers();
+      vi.unstubAllGlobals();
+    });
+
+    const renderAndGetScrollToRange = async (
+      resolvedRanges: ReadonlyMap<string, ResolvedRange>,
+    ) => {
+      mockedUseCurrentPageData.mockReturnValue(buildPage());
+      mockedUseSWRxInlineComments.mockReturnValue({
+        data: [buildInlineComment()],
+        resolve: vi.fn(),
+        createReply: vi.fn(),
+      } as unknown as ReturnType<typeof useSWRxInlineComments>);
+      mockedUseAnchorResolver.mockReturnValue(resolvedRanges);
+
+      render(
+        <PageView pagePath="/test-page" rendererConfig={rendererConfig} />,
+      );
+      await screen.findByTestId('comments');
+      // PAGE_BODY_TEXT is necessarily duplicated as a literal inside the
+      // hoisted vi.mock factory above; this makes a drift between the two
+      // fail loudly here instead of silently shifting the offsets below.
+      expect(screen.getByTestId('page-content-renderer').textContent).toBe(
+        PAGE_BODY_TEXT,
+      );
+
+      const scrollToRange =
+        commentsSpy.mock.calls.at(-1)?.[0]?.inlineComments?.scrollToRange;
+      expect(scrollToRange).toBeTypeOf('function');
+      // biome-ignore lint/style/noNonNullAssertion: asserted to be a function directly above
+      return scrollToRange!;
+    };
+
+    const QUOTE = 'quick brown fox';
+    const resolvedExact = (): ReadonlyMap<string, ResolvedRange> =>
+      new Map<string, ResolvedRange>([
+        [
+          'inline-comment-1',
+          {
+            status: 'exact',
+            startOffset: PAGE_BODY_TEXT.indexOf(QUOTE),
+            endOffset: PAGE_BODY_TEXT.indexOf(QUOTE) + QUOTE.length,
+          },
+        ],
+      ]);
+
+    it('scrolls to the range, emphasises it temporarily, removes the emphasis after the delay, and returns true', async () => {
+      const scrollToRange = await renderAndGetScrollToRange(resolvedExact());
+
+      // Fake timers are installed only AFTER the dynamic-import mount has
+      // settled -- installing them before render() starves next/dynamic's own
+      // timer-driven resolution and the mount never completes.
+      vi.useFakeTimers();
+
+      expect(scrollToRange('inline-comment-1')).toBe(true);
+
+      expect(scrollIntoViewSpy).toHaveBeenCalled();
+      expect(toastError).not.toHaveBeenCalled();
+
+      const emphasised = highlightRegistry.get(EMPHASIS_NAME);
+      expect(emphasised?.ranges).toHaveLength(1);
+      expect(emphasised?.ranges[0]?.toString()).toBe(QUOTE);
+
+      // Still emphasised just before the removal is due...
+      vi.advanceTimersByTime(1999);
+      expect(highlightRegistry.has(EMPHASIS_NAME)).toBe(true);
+      // ...and gone once it is.
+      vi.advanceTimersByTime(1);
+      expect(highlightRegistry.has(EMPHASIS_NAME)).toBe(false);
+    });
+
+    it('returns false, does not scroll, and notifies the user when the anchor failed to re-anchor', async () => {
+      const scrollToRange = await renderAndGetScrollToRange(
+        new Map<string, ResolvedRange>([
+          ['inline-comment-1', { status: 'not_found' }],
+        ]),
+      );
+
+      expect(scrollToRange('inline-comment-1')).toBe(false);
+
+      expect(scrollIntoViewSpy).not.toHaveBeenCalled();
+      expect(highlightRegistry.has(EMPHASIS_NAME)).toBe(false);
+      expect(toastError).toHaveBeenCalledWith('inline_comment.range_not_found');
+    });
+
+    it('returns false without throwing when the page-body container ref is empty', async () => {
+      const scrollToRange = await renderAndGetScrollToRange(resolvedExact());
+
+      // Unmounting detaches the page-body container, leaving the ref null --
+      // the only way this component's own ref is ever empty at call time.
+      cleanup();
+
+      expect(scrollToRange('inline-comment-1')).toBe(false);
+      expect(scrollIntoViewSpy).not.toHaveBeenCalled();
+      // Same single failure path as a failed re-anchor: there is no highlight
+      // in the body to scroll to, which is the condition AC 3.2 describes.
+      expect(toastError).toHaveBeenCalledWith('inline_comment.range_not_found');
     });
   });
 

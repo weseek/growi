@@ -1,12 +1,25 @@
-import { type JSX, memo, useCallback, useId, useMemo, useRef } from 'react';
+import {
+  type JSX,
+  memo,
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+} from 'react';
 import dynamic from 'next/dynamic';
 import { isDeepEquals } from '@growi/core/dist/utils/is-deep-equals';
 import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import { useSlidesByFrontmatter } from '@growi/presentation/dist/services';
+import { useTranslation } from 'react-i18next';
 
+// biome-ignore lint/style/noRestrictedImports: the existing notification UI, used from this client-only component
+import { toastError } from '~/client/util/toastr';
 import { PagePathNavTitle } from '~/components/Common/PagePathNavTitle';
 // biome-ignore lint/style/noRestrictedImports: client-only hook used in client-only component (must run unconditionally, so it cannot go through next/dynamic like the components below)
 import { useAnchorResolver } from '~/features/inline-comment/client/components/AnchorResolver/use-anchor-resolver';
+// biome-ignore lint/style/noRestrictedImports: client-only service used in client-only component
+import { rangesById } from '~/features/inline-comment/client/services/resolved-range';
 // biome-ignore lint/style/noRestrictedImports: client-only hook used in client-only component (must run unconditionally, so it cannot go through next/dynamic like the components below)
 import { useSWRxInlineComments } from '~/features/inline-comment/client/stores/inline-comment';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -115,6 +128,44 @@ type Props = {
   className?: string;
 };
 
+/**
+ * A THIRD `CSS.highlights` name, alongside `growi-inline-comment` (saved
+ * anchors, drawn by InlineCommentHighlight) and
+ * `growi-inline-comment-pending` (the in-creation selection). Registered for a
+ * moment right after scrolling so the reader can see WHICH range the comment
+ * list just took them to (Requirement 3.3). The same `Range` may be
+ * registered under several names at once; the later-registered name paints on
+ * top, so this wins over the saved highlight while it lasts.
+ */
+const EMPHASIS_HIGHLIGHT_NAME = 'growi-inline-comment-emphasis';
+
+/**
+ * Long enough for the smooth scroll to finish and for the eye to land on the
+ * range, short enough that it reads as a flash rather than a fourth
+ * persistent highlight state.
+ */
+const EMPHASIS_DURATION_MS = 2000;
+
+/**
+ * Mirrors InlineCommentHighlight's own capability probe (that copy is
+ * unexported and its file is outside this task's boundary). Browsers without
+ * the CSS Custom Highlight API still scroll — they just get no emphasis.
+ */
+const supportsCustomHighlightApi = (): boolean =>
+  typeof CSS !== 'undefined' &&
+  CSS.highlights != null &&
+  typeof Highlight !== 'undefined';
+
+/**
+ * `Range` has no `scrollIntoView()`, so scrolling goes through the nearest
+ * enclosing element. `startContainer` is a `Text` node for any range built
+ * from rendered markdown text.
+ */
+const scrollTargetOf = (range: Range): Element | null =>
+  range.startContainer instanceof Element
+    ? range.startContainer
+    : range.startContainer.parentElement;
+
 // Custom comparison function for memo to prevent unnecessary re-renders
 const arePropsEqual = (prevProps: Props, nextProps: Props): boolean =>
   prevProps.pagePath === nextProps.pagePath &&
@@ -134,6 +185,8 @@ const PageViewComponent = (props: Props): JSX.Element => {
   const pageBodyContainerRef = useRef<HTMLDivElement>(null);
 
   const { pagePath, rendererConfig, className } = props;
+
+  const { t } = useTranslation();
 
   const currentPageId = useCurrentPageId();
   const isIdenticalPathPage = useIsIdenticalPath();
@@ -212,6 +265,61 @@ const PageViewComponent = (props: Props): JSX.Element => {
   // entirely (not an empty bundle) while data hasn't arrived yet or the
   // fetch is disabled, matching Comments'/PageComment's own "omit when
   // absent" default.
+
+  // Scroll navigation from the page-footer comment list to the highlighted
+  // range in the page body (Requirements 3.1, 3.2, 3.3 / design.md 決定4).
+  // PageView already owns both inputs -- the container ref and the resolver's
+  // output -- so the capability is implemented here and handed to the list as
+  // a callback rather than re-deriving either of them downstream.
+  const emphasisTimeoutRef = useRef<number | undefined>(undefined);
+  const clearEmphasis = useCallback(() => {
+    if (emphasisTimeoutRef.current != null) {
+      window.clearTimeout(emphasisTimeoutRef.current);
+      emphasisTimeoutRef.current = undefined;
+    }
+    if (supportsCustomHighlightApi()) {
+      CSS.highlights.delete(EMPHASIS_HIGHLIGHT_NAME);
+    }
+  }, []);
+  // A pending emphasis outlives this component without this: the timeout
+  // would fire (or never fire) with the highlight still registered globally.
+  useEffect(() => clearEmphasis, [clearEmphasis]);
+
+  const scrollToRange = useCallback(
+    (commentId: string): boolean => {
+      const container = pageBodyContainerRef.current;
+      const range =
+        container == null
+          ? undefined
+          : rangesById(container, resolvedInlineCommentRanges).get(commentId);
+      if (range == null) {
+        // Requirement 3.2: the anchor no longer resolves to anywhere in the
+        // current body, so there is nothing to scroll to -- say so instead of
+        // failing silently.
+        toastError(t('inline_comment.range_not_found'));
+        return false;
+      }
+
+      scrollTargetOf(range)?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+
+      // Requirement 3.3
+      clearEmphasis();
+      if (supportsCustomHighlightApi()) {
+        CSS.highlights.set(EMPHASIS_HIGHLIGHT_NAME, new Highlight(range));
+        emphasisTimeoutRef.current = window.setTimeout(
+          clearEmphasis,
+          EMPHASIS_DURATION_MS,
+        );
+      }
+
+      return true;
+    },
+    [resolvedInlineCommentRanges, clearEmphasis, t],
+  );
+
   const inlineCommentsForComments = useMemo(
     () =>
       inlineComments == null
@@ -220,8 +328,14 @@ const PageViewComponent = (props: Props): JSX.Element => {
             comments: inlineComments,
             resolve: resolveInlineComment,
             createReply: createInlineCommentReplyText,
+            scrollToRange,
           },
-    [inlineComments, resolveInlineComment, createInlineCommentReplyText],
+    [
+      inlineComments,
+      resolveInlineComment,
+      createInlineCommentReplyText,
+      scrollToRange,
+    ],
   );
 
   const specialContents = useMemo(() => {
@@ -345,6 +459,25 @@ const PageViewComponent = (props: Props): JSX.Element => {
       footerContents={footerContents}
       expandContentWidth={shouldExpandContent}
     >
+      {/*
+        The `::highlight()` rule for the transient emphasis above. Reuses the
+        existing themed marker family (`--grw-marker-bg-red`) rather than
+        introducing a fourth inline-comment token: this is a one-off flash, not
+        a state a theme needs to override independently, and red is the
+        remaining marker colour that is unmistakably distinct from the saved
+        (yellow) and pending (blue) inline-comment highlights in both colour
+        modes. Declared globally, following InlineCommentHighlight's own
+        pattern -- `CSS.highlights` is a document-level registry, so the rule
+        cannot be component-scoped.
+      */}
+      <style jsx global>
+        {`
+          ::highlight(${EMPHASIS_HIGHLIGHT_NAME}) {
+            background-color: var(--grw-marker-bg-red);
+          }
+        `}
+      </style>
+
       <PageAlerts />
 
       {specialContents}
