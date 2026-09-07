@@ -79,16 +79,29 @@ const routerPathFor = (op: InboundPeerOp): string => {
 const PAIRING_CHALLENGE_PATH = '/peer/pairing/challenge';
 
 /**
- * `command` -- real behavior as of task 5.1 for the 3 read-only kinds
- * (search, link-preview, help); `create-page`/`keep` still answer with a
- * well-formed "not available yet" `CommandResponse` until task 5.2 lands
- * (see `command-endpoint.ts`'s own comment on `handleWriteCommand`).
+ * `command` -- real behavior for all 5 command kinds as of task 5.2 (search,
+ * link-preview, help from task 5.1; create-page/keep from task 5.2).
+ *
+ * `requestArrivedAt` is captured as the very first statement, before even
+ * reading `chatPeer.body` -- design.md's audit-logging section is explicit
+ * that a write command's Activity row must carry the request's actual
+ * arrival time, not whenever `handle` happens to reach the write branch deep
+ * inside `computeResponse`. `req.ip` / `req.originalUrl` are threaded
+ * through the same way: `command-endpoint.ts` has no `req` of its own to
+ * read them from (`resolveActor` only resolves the operator partway through
+ * `handle`, unlike a normal apiv3 route where `addActivity` middleware reads
+ * `req.user` at arrival).
  */
 const commandHandler = (crowi: Crowi): RequestHandler => {
   const commandEndpoint = createCommandEndpoint(crowi);
   return async (req, res) => {
+    const requestArrivedAt = new Date();
     const { chatPeer } = req as VerifiedPeerRequest<typeof OP_NAMES.command>;
-    const body = await commandEndpoint.handle(chatPeer.body);
+    const body = await commandEndpoint.handle(chatPeer.body, {
+      ip: req.ip,
+      endpoint: req.originalUrl,
+      requestArrivedAt,
+    });
     res.status(200).json(body);
   };
 };
