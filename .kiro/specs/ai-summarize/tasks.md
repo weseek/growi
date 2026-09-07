@@ -3,7 +3,7 @@
 > **LLMテストダブルの共通方針**: 本specの全テストは実LLMを呼ばない。Agentをモック化し、tool-call / tool-result を偽の `data` で埋める方式を採る（design.md「Testing Strategy → LLM Test Double Strategy」を参照）。前例は `apps/app/src/features/ai-tools/suggest-path/server/integration-tests/suggest-path-agentic-integration.spec.ts`。各タスクの記述では、この方針に従うことを前提に固有の注意点のみを記す。
 
 - [ ] 1. SummarizeAgent: 全文カバレッジ方針で単一ページを要約するAgentができる
-- [ ] 1.1 LimitedGetPageContentTool: 読み取り行数バジェットが強制される
+- [x] 1.1 LimitedGetPageContentTool: 読み取り行数バジェットが強制される
   - `RequestContext` の `pageReadBudget: { used: number; limit: number }` を読み、未設定時は `getPageContentTool` に委譲せず `context_error` を返す
   - `used >= limit` の場合は委譲せず `limit_exceeded` を返す（このとき `used`/`limit` は変更しない）
   - それ以外は既存の `getPageContentTool`（無変更）に委譲し、返された `content` の行数分だけ `used` を加算する
