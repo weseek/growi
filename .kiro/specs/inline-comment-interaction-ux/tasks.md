@@ -117,7 +117,7 @@
   - 観測できる完了条件：対象ファイルの記述が、実装済みの2トークン・半透明化の内容と矛盾しないこと
   - _Depends: 2.1_
 
-- [ ] 7.2 `inline-comment` の requirements.md / design.md へ Requirement 1〜4 を追加する
+- [x] 7.2 `inline-comment` の requirements.md / design.md へ Requirement 1〜4 を追加する
   - `.kiro/specs/inline-comment/requirements.md` の末尾に、本スペックのRequirement 1〜4を新しい番号（既存の最大番号の続き。既存番号は変えない）で追加する
   - `.kiro/specs/inline-comment/design.md` の Components and Interfaces / File Structure Plan に、本スペックで新設・変更したコンポーネント（`InlineCommentBodyInteraction`, `MentionAwareCommentInput`, `resolved-range.ts`, 2トークン化されたハイライト色 等）を反映する
   - 観測できる完了条件：`inline-comment` の requirements.md / design.md だけを読んで、本機能の要件・設計が理解できること

@@ -5,7 +5,7 @@
 インラインコメント機能は、ページ本文の読み取り専用ビュー（`RevisionRenderer.tsx` がレンダリングした結果）に対して、閲覧者が選んだテキスト範囲を対象としたコメントを作成・閲覧できるようにする。位置情報はDOM XPathやmarkdownソースの文字オフセットではなく、レンダリング後のプレーンテキストに対する「選択文字列（exact quote）＋前後文脈（prefix/suffix）＋おおよそのオフセット」（W3C Web Annotation Data Model の TextQuoteSelector/TextPositionSelector 相当）として保存し、表示のたびにクライアント側で再検索してハイライトを復元する。
 
 **Users**: ページ閲覧者・編集者が、本文の特定範囲について議論するために利用する。
-**Impact**: 既存のページ末尾コメントスレッド（`apps/app/src/features/comment/`、`/_api/comments.*`）の**投稿・編集・削除・通知の挙動は変更しない**。データは既存の `comments` Prisma/Mongooseモデルに新しいフィールドを追加する形で共存させ、新しい種類の行（インラインコメント）を区別するための識別フィールドを1つ追加する。既存の一覧取得（`/_api/comments.get`）には、この新しい種類の行を結果から除外するフィルタを追加する（これは既存機能の挙動変更ではなく、新しいデータ種別が増えたことに伴う最小限の対応）。既存の `RevisionRenderer.tsx` に対する変更は「コンテナへのref転送」1点のみに限定する。既存の `PageView.tsx` に対する変更は、そのrefを本文コンテナまで橋渡しする配線と、この機能のクライアントコンポーネント3つ（`SelectionCapture`／`InlineCommentHighlight`／`InlineCommentList`。いずれも `next/dynamic(..., { ssr: false })` 経由）およびフック2つ（`useAnchorResolver`／`useSWRxInlineComments`）の組み込みで構成される（タスク5.2）。`InlineCommentForm` はこの一覧に含まれない——`SelectionCapture` の内部で描画される子コンポーネントであり、`PageView.tsx` が直接組み込むわけではない。また `PageView.tsx` には、この配線とは別にもう1点、既存の不具合修正が入っている——本文サブツリーが `useCallback` を要素の型として使っていたため、依存が変わるたびに（本機能が加えたアンカー再計算の依存を含め）サブツリー全体が再マウントされてしまう問題があり、`useMemo` で値をレンダーする形に直した（経緯は tasks.md の Implementation Notes と `PageView.tsx` 内のコメントを参照）。
+**Impact**: 既存のページ末尾コメントスレッド（`apps/app/src/features/comment/`、`/_api/comments.*`）の**投稿・編集・削除・通知の挙動は変更しない**。データは既存の `comments` Prisma/Mongooseモデルに新しいフィールドを追加する形で共存させ、新しい種類の行（インラインコメント）を区別するための識別フィールドを1つ追加する。既存の一覧取得（`/_api/comments.get`）には、この新しい種類の行を結果から除外するフィルタを追加する（これは既存機能の挙動変更ではなく、新しいデータ種別が増えたことに伴う最小限の対応）。既存の `RevisionRenderer.tsx` に対する変更は「コンテナへのref転送」1点のみに限定する。既存の `PageView.tsx` に対する変更は、そのrefを本文コンテナまで橋渡しする配線と、この機能のクライアントコンポーネント3つ（`SelectionCapture`／`InlineCommentHighlight`／`InlineCommentBodyInteraction`。いずれも `next/dynamic(..., { ssr: false })` 経由）およびフック2つ（`useAnchorResolver`／`useSWRxInlineComments`）の組み込みで構成される（タスク5.2）。`InlineCommentForm` はこの一覧に含まれない——`SelectionCapture` の内部で描画される子コンポーネントであり、`PageView.tsx` が直接組み込むわけではない。また `PageView.tsx` には、この配線とは別にもう1点、既存の不具合修正が入っている——本文サブツリーが `useCallback` を要素の型として使っていたため、依存が変わるたびに（本機能が加えたアンカー再計算の依存を含め）サブツリー全体が再マウントされてしまう問題があり、`useMemo` で値をレンダーする形に直した（経緯は tasks.md の Implementation Notes と `PageView.tsx` 内のコメントを参照）。
 
 ### Goals
 - 文字単位で選択したテキスト範囲にインラインコメントを作成・表示できる（1.1–2.6）
@@ -122,7 +122,7 @@ graph TB
         InlineCommentForm[InlineCommentForm]
         MentionPickerButton[MentionPickerButton]
         FetchMentionUsers[fetchMentionUsers]
-        InlineCommentList[InlineCommentList]
+        InlineCommentItem[InlineCommentItem]
         InlineCommentStore[inline-comment SWR store]
     end
 
@@ -153,7 +153,7 @@ graph TB
     AnchorResolver --> RenderedText
     AnchorResolver --> QuoteMatcher
     AnchorResolver --> HighlightOverlay
-    AnchorResolver --> InlineCommentList
+    AnchorResolver --> InlineCommentItem
 ```
 
 **Architecture Integration**:
@@ -215,19 +215,29 @@ apps/app/src/features/inline-comment/
     │   │   ├── use-anchor-resolver.ts    # (containerEl, anchors[]) → Map<id, ResolvedRange>。詳細契約は後述
     │   │   └── use-container-settle.ts   # GROWI_IS_CONTENT_RENDERING_ATTRプロトコルを使った「静定」検知フック（auto-scrollの仕組みを再利用）
     │   ├── InlineCommentHighlight/
-    │   │   └── InlineCommentHighlight.tsx # ResolvedRangeを受け取りハイライトを描画
+    │   │   └── InlineCommentHighlight.tsx # ResolvedRangeを受け取り保存済みハイライトを描画。RangeそのものはresolvedRangeユーティリティ（servicesの`resolved-range.ts`）経由で構築する
+    │   ├── PendingSelectionHighlight/
+    │   │   └── PendingSelectionHighlight.tsx # 作成中（選択中・入力中）の範囲専用のハイライト。`::selection`と`::highlight(growi-inline-comment-pending)`の両方に、保存済みとは別のテーマ対応トークンを半透明で適用する。SelectionCaptureに組み込まれる
+    │   ├── InlineCommentBodyInteraction/
+    │   │   ├── InlineCommentBodyInteraction.tsx # 保存済みハイライトへのhover/click/tapに応じてInlineCommentPreviewPopoverの開閉・対象コメントを決める。クリックで開いた後は、外側クリック等の明示的な閉じる操作までポップオーバーを維持する「ピン留め」状態もここが持つ
+    │   │   ├── use-highlight-hit-test.ts        # 純粋関数hitTestRanges()＋フックuseHighlightHitTest()。document上のpointermove/clickをコンテナ内判定でフィルタし、解決済みRangeのgetClientRects()との座標比較でコメントidを返す
+    │   │   └── InlineCommentPreviewPopover.tsx  # 内容確認＋簡易返信ポップオーバー本体
     │   ├── InlineCommentForm/
-    │   │   ├── InlineCommentForm.tsx     # コメント作成フォーム。メンション対応テキストエリアはCommentEditor.tsxと同じ入力パターンを踏襲（既存コンポーネントは変更しない）。MentionPickerButtonを組み込む
+    │   │   ├── InlineCommentForm.tsx     # コメント作成フォーム。エディタ組み立て・送信・エラー表示はMentionAwareCommentInputに委譲する
     │   │   └── MentionPickerButton.tsx   # メンション相手をボタン操作で選び、選ばれたユーザー名をonInsertで通知する
-    │   └── InlineCommentList/
-    │       ├── InlineCommentList.tsx     # 一覧表示（作成日時順、解決/未解決を区別）
-    │       └── InlineCommentReplies.tsx  # 返信のネスト表示。ReplyComments.tsxの表示パターンを踏襲（既存コンポーネントは変更しない）
+    │   ├── MentionAwareCommentInput/
+    │   │   └── MentionAwareCommentInput.tsx # メンション対応コメント入力の共有部品（CodeMirrorEditorComment＋useCodeMirrorEditorIsolated＋メンション補完拡張＋送信・エラー表示）。InlineCommentFormの起点フォームと、InlineCommentRepliesの返信入力の両方から使われる。永続化そのものは持たず、呼び出し側がonSubmitで注入する
+    │   └── InlineCommentItem/
+    │       ├── InlineCommentItem.tsx     # 一覧の1項目。起点コメントの本文・状態・アンカーの引用文を表示する。引用文は`<button>`で包み、クリックでPageViewから渡されたscrollToRange(comment.id)を呼ぶ
+    │       └── InlineCommentReplies.tsx  # 返信のネスト表示＋「Reply...」⇄MentionAwareCommentInputのトグル式返信入力（`showEditorIds`パターンを踏襲したローカルなboolean状態）
     ├── services/
     │   ├── rendered-text.ts              # renderedTextOf(container) 純粋関数。詳細契約は後述
     │   ├── quote-matcher.ts              # matchQuote(text, anchor) 純粋関数。approx-string-matchのラッパー
     │   ├── quote-matcher.spec.ts
     │   ├── normalized-offset-mapping.ts  # NFC正規化後オフセット→原文オフセットの逆変換
     │   ├── normalized-offset-mapping.spec.ts
+    │   ├── resolved-range.ts             # rangeForResolved()／rangesById()。詳細契約は後述
+    │   ├── resolved-range.spec.ts
     │   └── fetch-mention-users.ts        # メンション候補取得（`/users/`検索）。`@`タイプ補完・MentionPickerButtonの双方から利用。CommentEditor.tsx側の同種実装とは共有しない
     └── stores/
         └── inline-comment.ts             # SWRフック（一覧取得・起点作成・返信作成・解決トグルのmutate）
@@ -235,12 +245,19 @@ apps/app/src/features/inline-comment/
 
 ### Modified Files
 - `apps/app/src/components/PageView/RevisionRenderer.tsx` — `ReactMarkdown` を包むコンテナ `div` に `ref` を転送するよう変更（新規rehype/remarkプラグインは追加しない）
-- `apps/app/src/components/PageView/PageView.tsx` — 転送されたrefを`AnchorResolver`/`SelectionCapture`/`InlineCommentList`に配線し、既存の `Comments` と並置する。共有リンク経由のページ表示（`!isSharedPageView`）では`SelectionCapture`/`InlineCommentHighlight`/`InlineCommentList`のいずれもレンダーしないガードもここに置く
+- `apps/app/src/components/PageView/PageView.tsx` — 転送されたrefを`AnchorResolver`/`SelectionCapture`に配線し、既存の `Comments` と並置する。共有リンク経由のページ表示（`!isSharedPageView`）では`SelectionCapture`/`InlineCommentHighlight`/`PendingSelectionHighlight`/`InlineCommentBodyInteraction`のいずれもレンダーしないガードもここに置く。`scrollToRange(commentId): boolean`（`rangesById()`で対象の`Range`を再構築できればスクロール＋一時的な強調ハイライト`growi-inline-comment-emphasis`の登録、できなければ既存の通知UIで知らせる）を実装し、`resolve`/`createReply`とあわせて`inlineCommentsForComments`バンドルとして`Comments`に渡す
 - `apps/app/package.json` — `@popperjs/core`を`dependencies`に追加（選択範囲近傍への配置に使用）
 - `apps/app/src/server/routes/apiv3/index.js` — `inline-comment` フィーチャーモジュールのルートファクトリをimportし、`/inline-comments` にマウントする（`revisions` と同じマウントパターン）
 - `apps/app/src/features/comment/server/models/comment.ts` — Mongooseスキーマに `isInline`／アンカー4フィールド／`anchorOriginRevisionId`／`resolvedById`／`resolvedAt` を追加。`findCommentsByPageId`／`findCommentsByRevisionId`／`countCommentByPageId` の `where` 条件に `isInline: { not: true }` を追加（無条件フィルタ。呼び出し元からオーバーライド不可）。`@@index([pageId, isInline])` の宣言を追加
 - `apps/app/prisma/schema.prisma` — `comments` モデルに同じフィールドを追加。既存の `creator` リレーション（現在は無名の暗黙リレーション）に `@relation("CommentCreator", ...)` と明示的な名前を付け、新設する `resolvedBy` リレーションと区別できるようにする（`comments`→`users` 間に2本のリレーションができるため、Prismaの制約でどちらも名前付けが必須になる）。`users` モデル側の `comments comments[]` も `@relation("CommentCreator")` を付け、新設する `resolvedInlineComments comments[] @relation("InlineCommentResolver")` を追加する
 - `apps/app/src/interfaces/activity.ts` — `ACTION_INLINE_COMMENT_CREATE`／`ACTION_INLINE_COMMENT_REPLY`／`ACTION_INLINE_COMMENT_RESOLVE`／`ACTION_INLINE_COMMENT_UNRESOLVE` を追加
+- `apps/app/src/styles/_marker.scss` — `:root` に `--grw-inline-comment-marker-bg-pending` を追加（既定では保存済み用の `--grw-inline-comment-marker-bg` と異なるマーカー色ファミリーにフォールバックする）
+- `.../InlineCommentHighlight/InlineCommentHighlight.tsx` — Rangeの再構築ロジックを`resolved-range.ts`の`rangeForResolved()`へ委譲する（挙動は変えない）
+- `.../InlineCommentForm/InlineCommentForm.tsx` — エディタ組み立て・送信・エラー表示を`MentionAwareCommentInput`に委譲する（外部から見た挙動は変えない）
+- `.../InlineCommentItem/InlineCommentItem.tsx`（旧`InlineCommentList/InlineCommentList.tsx`から移動・構造を変更） — アンカーの引用文を`<button>`で包み、クリックで`scrollToRange(comment.id)`を呼ぶ
+- `.../InlineCommentItem/InlineCommentReplies.tsx` — 素の`<textarea>`ベースの返信欄を、`showEditorIds`パターンを踏襲した「Reply...」⇄`MentionAwareCommentInput`のトグルに置き換える
+- `apps/app/src/client/components/Comments.tsx` / `PageComment.tsx` — `inlineComments` prop の型に `scrollToRange: (commentId: string) => boolean` を追加し、そのまま素通しする（ロジック変更なし）
+- `apps/app/public/static/locales/en_US/translation.json` — 本文ハイライトのポップオーバー（返信欄プレースホルダ等）・一覧側の再アンカー失敗通知に必要な文言キーを追加
 
 ## System Flows
 
@@ -307,6 +324,50 @@ flowchart TD
 - 除外対象サブツリー（`renderedTextOf` が読み飛ばす範囲）は **`.katex`（数式、KaTeXの標準トップレベルクラス）のみ**。KaTeXはアクセシビリティ用の `.katex-mathml` とビジュアル表示用の `.katex-html` を並べて出力する二重構造のため、`textContent` をそのまま使うとテキストが重複・破綻する。`lsx`/`drawio`/`mermaid` は上記のレンダリング状態属性プロトコルで静定を待ってから抽出するため、除外する必要がない。コードブロックも同期的・決定的にレンダリングされるため除外しない。
 - 除外対象セレクタが将来変わった場合、その変更以前に作成されたアンカーが再アンカーできなくなることがある。これは要件2.4/5.3が定める「ハイライトなしでコメントを保持する」という正常系フォールバックとして扱い、データ移行やマイグレーションは行わない。
 
+### 本文ハイライトのhover/click/tapからポップオーバー表示まで
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Document
+    participant HitTest as useHighlightHitTest
+    participant Body as InlineCommentBodyInteraction
+    participant Popover as InlineCommentPreviewPopover
+
+    User->>Document: pointermove（デスクトップ幅のみ） / click
+    Document->>HitTest: イベント（本文コンテナ内が起点かをcontains()で判定）
+    HitTest->>HitTest: 解決済みRangeのgetClientRects()と座標を比較
+    HitTest-->>Body: 一致したコメントidと発生源（hover/click）（無ければnull）
+    Body->>Body: source==='click'ならpinnedIdを更新。既にピン留め中は他のhoverを無視
+    Body->>Popover: 表示するコメント・Rangeを決定
+    Popover->>Popover: rangeToVirtualElement + usePopperPosition で配置（document.bodyへポータル）
+    Popover-->>User: 投稿者・投稿日時・本文・既存の返信＋簡易返信欄を表示
+    User->>Popover: 外側をクリック、または閉じる操作
+    Popover->>Body: onClose（pinnedIdをクリアし、直前の当たり判定結果を一時的に抑制）
+```
+
+タブレット以下の幅では `pointermove` を監視せず、`click`（タップ）のみが当たり判定のトリガーになる。保存済みハイライトはDOM要素を持たない（`CSS.highlights`へのRange登録のみ）ため、当たり判定はコンテナ要素へのイベントリスナーではなく、`document`レベルで拾ったイベントを対象コンテナの内側かどうかで絞り込む形で行う。
+
+### 一覧クリックからスクロール・強調表示まで
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Item as InlineCommentItem
+    participant PageView
+    participant Body as PageBody Container
+
+    User->>Item: 一覧のインラインコメント項目の引用文（ボタン）をクリック
+    Item->>PageView: scrollToRange(commentId)
+    PageView->>PageView: rangesById() でRangeを再構築
+    alt Rangeが見つかった
+        PageView->>Body: scrollIntoView({ behavior: 'smooth', block: 'center' }) でスクロール
+        PageView->>Body: 一時的な強調ハイライト（growi-inline-comment-emphasis）を登録→2秒後に削除
+    else 再アンカーに失敗
+        PageView-->>User: 既存の通知UI（toastr）で知らせる
+    end
+```
+
 ## Requirements Traceability
 
 | Requirement | Summary | Components | Interfaces | Flows |
@@ -319,14 +380,14 @@ flowchart TD
 | 1.8 | 返信を許可する | InlineCommentService, InlineCommentReplies | POST /inline-comments/:id/replies | 作成フロー（返信） |
 | 1.9 | 返信はアンカーを持たない | InlineCommentService, Data Models | `replyToId` 行の全アンカーフィールドが `null` | 作成フロー（返信） |
 | 2.1–2.4 | 完全一致→あいまい一致→ハイライトなしの3段階 | AnchorResolver, rendered-text, quote-matcher | `useAnchorResolver`, `matchQuote` | 表示・再アンカーフロー |
-| 2.5–2.6 | 一覧表示・作成日時順 | InlineCommentList, inline-comment store | GET /inline-comments | — |
-| 3.1–3.2 | メンションハイライト・通知の再利用 | InlineCommentForm・InlineCommentList・InlineCommentReplies（いずれも既存remarkプラグインを利用）, InlineCommentService, CommentService | `prepareMentionNotifications` | 作成フロー |
-| 4.1–4.4 | 解決/未解決管理 | InlineCommentService, InlineCommentList | PUT /inline-comments/:id/resolve | — |
+| 2.5–2.6 | 一覧表示・作成日時順 | InlineCommentItem, inline-comment store | GET /inline-comments | — |
+| 3.1–3.2 | メンションハイライト・通知の再利用 | InlineCommentForm・InlineCommentItem・InlineCommentReplies（いずれも既存remarkプラグインを利用）, InlineCommentService, CommentService | `prepareMentionNotifications` | 作成フロー |
+| 4.1–4.4 | 解決/未解決管理 | InlineCommentService, InlineCommentItem | PUT /inline-comments/:id/resolve | — |
 | 4.5 | 解決状態は起点のみが持つ | Data Models（`resolvedById`/`resolvedAt` は返信では常に`null`） | — | — |
 | 5.1–5.3 | ベストエフォート再アンカー | AnchorResolver, rendered-text, quote-matcher | `useAnchorResolver` | 表示・再アンカーフロー |
 | 5.4–5.5 | アンカー起点リビジョンIDの不変記録 | InlineCommentService, Data Models | `InlineComment.anchorOriginRevisionId` | 作成フロー |
 | 6.1 | 共有リンク閲覧者へ行を返さない | apiv3 inline-comment routes（`certifySharedPage`を通さない） | — | — |
-| 6.2 | 共有リンク画面でUIを表示しない | SelectionCapture, InlineCommentList（share-link文脈では未マウント） | — | — |
+| 6.2 | 共有リンク画面でUIを表示しない | SelectionCapture, InlineCommentItem（share-link文脈では未マウント） | — | — |
 | 6.3 | 既存の一覧取得は共有リンクの有無によらず常に除外する | `findCommentsByPageId`／`findCommentsByRevisionId`（無条件`isInline`フィルタ） | — | — |
 | 7.1 | 選択時に作成の起点を表示 | SelectionCapture, SelectionActionButton, SelectionPopover | `useTextSelection` | 選択→作成起点 |
 | 7.2 | 空選択では起点を表示しない | SelectionCapture | `useTextSelection`が`null`を返す | — |
@@ -342,6 +403,18 @@ flowchart TD
 | 9.4 | 既存の`@`タイプ補完を維持 | InlineCommentForm | `createMentionCompletionExtension` | — |
 | 10.1 | 起点・フォームを選択範囲近くに表示 | SelectionPopover | `usePopperPosition`, `selection-virtual-element` | 全フロー |
 | 10.2 | 共有リンク画面では表示しない | SelectionCapture（`PageView.tsx`側の`!isSharedPageView`ガードにより未マウント） | — | — |
+| 14.1, 14.3, 14.4 | ハイライト色の分離・独立したテーマ上書き | `_marker.scss`, PendingSelectionHighlight | `--grw-inline-comment-marker-bg-pending` | — |
+| 14.2 | 重なったときの視認性 | PendingSelectionHighlight | `color-mix()`による半透明適用 | — |
+| 14.5 | 3時点を通じた一貫表示 | PendingSelectionHighlight, InlineCommentHighlight | 単一のカスタムプロパティを両者が参照 | — |
+| 15.1, 15.2 | hover/click/tapでの内容確認 | InlineCommentBodyInteraction, use-highlight-hit-test | `useHighlightHitTest` | 本文ハイライトのhover/click/tapフロー |
+| 15.3 | 簡易返信欄 | InlineCommentPreviewPopover | `createReply` | 同上 |
+| 15.4 | 外側クリックで閉じる | InlineCommentPreviewPopover | `mousedown`監視 | 同上 |
+| 15.5 | 編集は提供しない | InlineCommentPreviewPopover | — | 同上 |
+| 15.6 | 再アンカー失敗時はトリガーを提供しない | resolved-range (`rangesById`が対象を絞り込む) | — | 同上 |
+| 16.1 | 一覧からのスクロール | InlineCommentItem, PageView (`scrollToRange`) | `scrollToRange` | 一覧クリックからスクロールまでのフロー |
+| 16.2 | 再アンカー失敗時の通知 | PageView (`scrollToRange`) | 既存の通知UI | 同上 |
+| 16.3 | 一時的な強調表示 | PageView (`scrollToRange`) | `CSS.highlights`（`growi-inline-comment-emphasis`） | 同上 |
+| 17.1–17.5 | 返信UIの統一 | InlineCommentReplies, MentionAwareCommentInput | `createReply` | — |
 
 ## Components and Interfaces
 
@@ -355,10 +428,15 @@ flowchart TD
 | SelectionCapture | Client / State | 選択監視から入力フォームのクローズまでの状態機械（`idle`/`selecting`/`composing`の3段階）を管理する | 1.1-1.2, 1.7, 7.1-7.4, 8.1, 8.3-8.4, 10.2 | use-text-selection(P0), SelectionPopover(P0), SelectionActionButton(P0), InlineCommentForm(P0) | State |
 | SelectionActionButton | Client / UI | 選択直後に現れる軽量な作成の起点（提示専用、`onCommit`のみを受け取る） | 7.1, 8.1 | SelectionCapture(P0) | — |
 | SelectionPopover | Client / UI | 与えられた`Range`の近傍へ`children`を浮動配置する汎用コンポーネント。`@popperjs/core`の仮想要素パターンで位置計算し、ゼロ矩形時は直前の有効な位置を保持するフォールバックを持つ | 7.3, 10.1 | `@popperjs/core`(P0) | State |
-| InlineCommentForm | Client / UI | コメント入力・送信。メンション対応テキストエリアはCommentEditor.tsxと同じ入力パターンを踏襲し、`MentionPickerButton`を組み込む | 1.1-1.2, 1.8, 3.1, 8.2, 8.4, 9.1, 9.3-9.4 | useSWRxInlineComments(P0), MentionPickerButton(P1), fetchMentionUsers(P0) | Service |
+| InlineCommentForm | Client / UI | コメント入力・送信。エディタ組み立て・送信・エラー表示は`MentionAwareCommentInput`に委譲し、`MentionPickerButton`を組み込む | 1.1-1.2, 1.8, 3.1, 8.2, 8.4, 9.1, 9.3-9.4 | useSWRxInlineComments(P0), MentionAwareCommentInput(P0), MentionPickerButton(P1) | Service |
 | MentionPickerButton | Client / UI | メンション相手をボタン操作で選び、選ばれたユーザー名を通知する（一覧内の絞り込み検索はしない） | 9.1-9.3 | fetchMentionUsers(P0), `codeMirrorEditor.insertText`(P0, 既存API) | Service |
 | fetchMentionUsers | Client / Service | `/users/`検索APIの呼び出し（`@`タイプ補完・メンションボタン一覧の双方から利用。`CommentEditor.tsx`側の同種実装とは共有しない） | 9.2 | `apiv3Get`(P0) | Service |
-| InlineCommentList / InlineCommentReplies / InlineCommentHighlight | Client / UI | 一覧・返信ネスト表示（読み取り表示でのメンションハイライト含む）・ハイライト描画（提示層） | 1.8, 2.5-2.6, 3.1, 4.4 | 上記ロジック層 | — |
+| InlineCommentItem / InlineCommentReplies / InlineCommentHighlight | Client / UI | 一覧の起点コメント・返信ネスト表示（読み取り表示でのメンションハイライト含む）・保存済みハイライト描画（提示層）。`InlineCommentItem`のアンカー引用文クリックが`scrollToRange`を呼ぶ | 1.8, 2.5-2.6, 3.1, 4.4, 14.1, 14.3-14.4, 16.1 | 上記ロジック層, resolved-range(P0) | — |
+| resolved-range (`rangeForResolved`, `rangesById`) | Client / ロジック | 解決済みオフセット（`ResolvedRange`）からDOM `Range`を再構築する共有ユーティリティ。`InlineCommentHighlight`・`InlineCommentBodyInteraction`・`PageView.scrollToRange`の3箇所から使われる | 14.2, 15.1-15.2, 15.6, 16.1 | rendered-text(P0) | State |
+| PendingSelectionHighlight | Client / UI | 作成中（選択中・入力中）の範囲を、保存済みとは別のテーマ対応トークン（半透明）で描画する | 14.1, 14.2, 14.3, 14.4 | `--grw-inline-comment-marker-bg-pending`(P0) | — |
+| use-highlight-hit-test (`useHighlightHitTest`) | Client / ロジック | document上のpointermove/clickの座標を、`resolved-range`が返す各`Range`の`getClientRects()`と比較し、当たったコメントidと発生源（hover/click）を返す | 15.1, 15.2, 15.6 | resolved-range(P0), `useDeviceLargerThanMd`(P0) | State |
+| InlineCommentBodyInteraction / InlineCommentPreviewPopover | Client / UI | 当たり判定結果に応じてポップオーバーの開閉・対象コメントを決定し（クリックで開いた後は明示的な閉じる操作までピン留め）、内容確認＋簡易返信欄を表示する | 15.1-15.5 | use-highlight-hit-test(P0), resolved-range(P0), CommentCard(P0), createReply(P0) | Service |
+| MentionAwareCommentInput | Client / UI | メンション対応コメント入力の共有部品（CodeMirrorエディタ組み立て・メンション補完・送信・エラー表示）。永続化は持たず`onSubmit`で注入される。`InlineCommentForm`と`InlineCommentReplies`の両方から使われる | 17.2, 17.5 | `CodeMirrorEditorComment`(P0), `createMentionCompletionExtension`(P0), fetchMentionUsers(P0) | Service |
 
 ### Server
 
@@ -512,6 +590,66 @@ function matchQuote(text: string, anchor: InlineCommentAnchor): QuoteMatchResult
 4. `approx-string-match` が複数の候補を返した場合は、`anchor.approxOffset` を同じNFC正規化後の座標系に変換した上で、最も近い開始位置を持つ候補を選ぶ（ステップ1と同じ曖昧性解消の考え方）
 5. 選ばれた候補の一致位置は正規化後の `normalizedText` 上のオフセットである。これを正規化前の `text` 上のオフセットへ逆変換する（`normalized-offset-mapping.ts`）。逆変換は、正規化前後の文字列を先頭から並行して走査し、各正規化ステップが何コード単位を消費・生成したかを記録することで実装する（結合文字・互換分解でコード単位数が変わりうるため、単純な差分オフセットの流用はしない）。この関数はステップ4の `approxOffset` 変換にも同じロジックを使う
 6. あいまい一致でも見つからなければ `status: 'not_found'` を返す（2.4, 5.3）
+
+#### `resolved-range` (`rangeForResolved`, `rangesById`)
+
+| Field | Detail |
+|---|---|
+| Intent | 解決済みオフセット（`ResolvedRange`）から現在のDOMに対するRangeを再構築する共有ユーティリティ |
+| Requirements | 14.2, 15.1, 15.2, 15.6, 16.1 |
+
+**Contracts**: Service [ ] / API [ ] / Event [ ] / Batch [ ] / State [x]
+
+```typescript
+function rangeForResolved(renderedText: RenderedText, resolved: ResolvedRange): Range | null;
+
+function rangesById(
+  container: HTMLElement,
+  resolvedRanges: ReadonlyMap<string, ResolvedRange>,
+): ReadonlyMap<string, Range>;
+```
+- `rangeForResolved` は `InlineCommentHighlight` が元々持っていた非公開の `rangeFor()` と同じロジック（`resolved.status === 'not_found'` または DOM位置に解決できない場合は `null`）。`InlineCommentHighlight` はこの関数を呼ぶ形に書き換えられており、実行時の挙動は変えていない
+- `rangesById` は `resolvedRanges` の各エントリに対して `rangeForResolved` を呼び、解決できたものだけを同じidキーの `Map` に詰めて返す（`not_found` は結果に含まれない）
+- `Range` オブジェクトは呼び出しのたびに `container` の現在のDOMから再構築し、キャッシュしない（rendered-text/quote-matcherと同じ方針）
+- 3つの呼び出し元がある: `InlineCommentHighlight`（保存済みハイライトの描画）、`InlineCommentBodyInteraction`（当たり判定・ポップオーバーの位置決め）、`PageView.scrollToRange`（一覧からのスクロール・一時的強調のためのRange取得）
+
+#### `use-highlight-hit-test` (`useHighlightHitTest`)
+
+| Field | Detail |
+|---|---|
+| Intent | 本文中の保存済みハイライトへのpointermove/clickを当たり判定し、当たったコメントidと発生源（hover/click）を供給する |
+| Requirements | 15.1, 15.2, 15.6 |
+
+**Contracts**: Service [ ] / API [ ] / Event [ ] / Batch [ ] / State [x]
+
+```typescript
+interface HitTestTarget {
+  getClientRects(): ArrayLike<DOMRectReadOnly>;
+}
+
+type HighlightHitSource = 'hover' | 'click';
+
+interface HighlightHit {
+  commentId: string;
+  source: HighlightHitSource;
+}
+
+function hitTestRanges(
+  candidates: Iterable<readonly [string, HitTestTarget]>,
+  clientX: number,
+  clientY: number,
+): string | null;
+
+function useHighlightHitTest(
+  containerRef: RefObject<HTMLElement | null>,
+  ranges: ReadonlyMap<string, HitTestTarget>,
+): HighlightHit | null;
+```
+- 保存済みハイライトはDOM要素を持たない（`CSS.highlights`へのRange登録のみ）ため、コンテナ要素へリスナーを付けるのではなく、`document`レベルで`pointermove`／`click`を取り、イベントの発生元がコンテナの部分木に含まれるかを`Node.contains()`で絞り込む
+- `pointermove`はデスクトップ幅（`useDeviceLargerThanMd()`）でのみ有効。`requestAnimationFrame`単位でフレームあたり最大1回に間引く。タブレット以下の幅では`click`（タップ）のみが有効
+- 当たり判定は`getClientRects()`の矩形リストに対して行う（`getBoundingClientRect()`ではない）。矩形が0件の候補（折り返し途中で未レイアウトのRange等）は一致しない
+- `not_found`で解決されなかったアンカーは、`rangesById()`の時点で候補から除外されているため、このフック自身は`not_found`を意識する必要がない（15.6）
+- フックは現在の当たり判定結果のみを報告し、クリックで選ばれたコメントidを保持し続けない。クリック後にポインタがハイライトの外へ出れば、次の`pointermove`で結果は`null`に戻る。「クリックで開いたポップオーバーを、明示的に閉じるまで表示し続ける」というピン留めの状態管理は呼び出し側（`InlineCommentBodyInteraction`）の責務
 
 ## Data Models
 
