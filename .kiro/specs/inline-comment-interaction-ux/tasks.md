@@ -63,7 +63,7 @@
   - _Depends: 4.1_
   - _Boundary: PageView, Comments, PageComment_
 
-- [ ] 4.3 InlineCommentItemでscrollToRangeをクリックハンドラに接続する
+- [x] 4.3 InlineCommentItemでscrollToRangeをクリックハンドラに接続する
   - `InlineCommentItem.tsx` の一覧項目内の操作要素（クリック対象）から `scrollToRange(comment.id)` を呼び出す配線を追加する
   - 観測できる完了条件：`InlineCommentItem.spec.tsx` で、対象の操作要素をクリックすると渡された `scrollToRange` が対象コメントのidで呼ばれることを確認できる
   - _Requirements: 3.1_

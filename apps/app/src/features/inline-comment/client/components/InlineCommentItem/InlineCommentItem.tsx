@@ -50,12 +50,22 @@ type InlineCommentItemProps = {
   rendererOptions: RendererOptions | undefined;
   resolve: (id: string, resolved: boolean) => Promise<unknown>;
   createReply: (parentId: string, comment: string) => Promise<unknown>;
+  /**
+   * Scrolls the page body to the highlighted range this comment anchors to
+   * (design.md 決定4 / requirement 3.1). Wired to the anchored quote below —
+   * clicking the quote is the natural trigger since it is literally the text
+   * being jumped to. The boolean re-anchor-failure result is handled entirely
+   * inside `scrollToRange` itself (task 4.1); this component does not need to
+   * interpret it.
+   */
+  scrollToRange: (commentId: string) => boolean;
 };
 
 export const InlineCommentItem: FC<InlineCommentItemProps> = (
   props,
 ): JSX.Element => {
-  const { comment, rendererOptions, resolve, createReply } = props;
+  const { comment, rendererOptions, resolve, createReply, scrollToRange } =
+    props;
   const { t } = useTranslation();
 
   const [resolveError, setResolveError] = useState<string>();
@@ -72,6 +82,10 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
           : 'An unknown error occurred when updating the resolved status',
       );
     }
+  };
+
+  const handleQuoteClick = (): void => {
+    scrollToRange(comment.id);
   };
 
   return (
@@ -117,9 +131,22 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
                 referenced here as a plain class name — CSS Modules never adds
                 a `:global()` selector to the `styles` lookup table, so
                 `styles['inline-comment-quote']` would always be `undefined`. */}
-            <blockquote className="inline-comment-quote small text-body-secondary mb-2 ps-2">
-              {comment.anchor.quote}
-            </blockquote>
+            {/* A real `<button>` wraps the quote so the click target is
+                keyboard-accessible by default (biome's a11y rules reject a
+                `role="button"` div/blockquote in favor of a real button
+                element) -- clicking or activating it (Enter/Space, native to
+                `<button>`) jumps to the anchored range in the page body
+                (requirement 3.1). Reset to plain-text styling so it still
+                reads as the quote, not a button. */}
+            <button
+              type="button"
+              className="btn p-0 border-0 bg-transparent text-start w-100"
+              onClick={handleQuoteClick}
+            >
+              <blockquote className="inline-comment-quote small text-body-secondary mb-2 ps-2">
+                {comment.anchor.quote}
+              </blockquote>
+            </button>
           </>
         }
         footer={

@@ -106,6 +106,7 @@ const renderItem = (
   handlers: {
     resolve?: (id: string, resolved: boolean) => Promise<unknown>;
     createReply?: (parentId: string, comment: string) => Promise<unknown>;
+    scrollToRange?: (commentId: string) => boolean;
   } = {},
 ) =>
   render(
@@ -114,6 +115,7 @@ const renderItem = (
       rendererOptions={rendererOptions}
       resolve={handlers.resolve ?? vi.fn().mockResolvedValue(undefined)}
       createReply={handlers.createReply ?? vi.fn().mockResolvedValue(undefined)}
+      scrollToRange={handlers.scrollToRange ?? vi.fn(() => true)}
     />,
   );
 
@@ -210,9 +212,14 @@ describe('InlineCommentItem', () => {
         children.indexOf(el as Element);
 
       const labelRowElement = children.find((child) => child.contains(label));
+      // the quote lives inside a clickable `<button>` wrapper (task 4.3), so
+      // its box-order position is the wrapper's index, not its own.
+      const quoteRowElement = children.find((child) =>
+        child.contains(quote ?? null),
+      );
       expect(indexOf(labelRowElement)).toBeGreaterThanOrEqual(0);
-      expect(indexOf(labelRowElement)).toBeLessThan(indexOf(quote));
-      expect(indexOf(quote)).toBeLessThan(indexOf(body));
+      expect(indexOf(labelRowElement)).toBeLessThan(indexOf(quoteRowElement));
+      expect(indexOf(quoteRowElement)).toBeLessThan(indexOf(body));
     });
 
     it('shows an icon next to the type label', () => {
@@ -236,6 +243,33 @@ describe('InlineCommentItem', () => {
 
       const quote = container.querySelector('blockquote.inline-comment-quote');
       expect(quote).toHaveTextContent('a distinctive quoted range');
+    });
+
+    it('calls scrollToRange(comment.id) when the quote is clicked (Req 3.1)', async () => {
+      const scrollToRange = vi.fn(() => true);
+      const { container } = renderItem({}, { scrollToRange });
+
+      const quote = container.querySelector('blockquote.inline-comment-quote');
+      expect(quote).not.toBeNull();
+
+      await userEvent.click(quote as Element);
+
+      expect(scrollToRange).toHaveBeenCalledWith('comment1');
+    });
+
+    it('calls scrollToRange(comment.id) when the quote button is activated with the keyboard (Enter)', async () => {
+      const scrollToRange = vi.fn(() => true);
+      const { container } = renderItem({}, { scrollToRange });
+
+      const quoteButton = container
+        .querySelector('blockquote.inline-comment-quote')
+        ?.closest('button');
+      expect(quoteButton).not.toBeNull();
+
+      (quoteButton as HTMLButtonElement).focus();
+      await userEvent.keyboard('{Enter}');
+
+      expect(scrollToRange).toHaveBeenCalledWith('comment1');
     });
   });
 
@@ -346,6 +380,7 @@ describe('InlineCommentItem', () => {
           rendererOptions={undefined}
           resolve={vi.fn()}
           createReply={vi.fn()}
+          scrollToRange={vi.fn(() => true)}
         />,
       );
 

@@ -59,8 +59,8 @@ type PageCommentProps = {
      * Scrolls the page body to the highlighted range this comment anchors
      * to; returns `false` when the range no longer resolves (failed
      * re-anchor) so the caller can surface that instead of scrolling to
-     * nothing (design.md 決定4 / Requirement 3.1, 3.2). Not yet wired to a
-     * click handler here -- that is task 4.3 (`InlineCommentItem.tsx`).
+     * nothing (design.md 決定4 / Requirement 3.1, 3.2). Wired to the anchored
+     * quote's click handler inside `InlineCommentItem`.
      */
     scrollToRange: (commentId: string) => boolean;
   };
@@ -279,6 +279,7 @@ export const PageComment: FC<PageCommentProps> = memo(
                       rendererOptions={rendererOptions}
                       resolve={inline.resolve}
                       createReply={inline.createReply}
+                      scrollToRange={inline.scrollToRange}
                     />
                   </div>
                 );
