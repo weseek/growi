@@ -743,3 +743,12 @@
   **検証で見つかったWarning5件のうち2件をこのタイミングで修正した**（いずれもGOを妨げない非ブロッキングの指摘だが、要件9.1の主要な単体試験の妥当性に関わるため）: (a) `runtime/dependencies.spec.ts`の「チャット起点のregisterコマンドが実際に登録コードを発行する」試験が、production では起こらない入力形状（`kind: 'slash-command'`で`command: 'register'`、先頭に`/`が無い）を使っていた——12.2がまさに同種の問題を`invocation.spec.ts`で直したのと同じ種類の欠陥が別ファイルに残っていたもので、`kind: 'mention'`・`text: '@growi register'`という実際にSlackアダプタが送る形（mention経由）に直した。この形が要件9.1の**現状唯一動く経路**であることは検証で確認済み。(b) `testing/command-flow-e2e.integ.ts`のTeamsのケースの説明コメントが「スラッシュコマンドで呼び出せない唯一のサービス」と古い前提のまま残っていたので、12.2以降は4サービスとも`slashCommand: none`であることを踏まえて書き直した（アサーション自体は元々正しく、コメントのみの修正）。
 
   **残り3件のWarning（(b)`platform/index.ts`の2つの早期return がreportOperationalFailureを呼ばない、(d)要件番号の引用誤り複数件、(e)`actor-roles.spec.ts`の型アサーション3行）は今回は見送り、`/kiro-validate-impl`の記録どおり次の機会の候補として残す。**
+- **生きたPostgreSQLでの初回実行（2026-09-07）**: `.devcontainer/compose.yml`のpostgres/postgres-initをopt-in化した後、docker host側で明示的に起動し、`prisma migrate deploy`でマイグレーションを適用したうえで、実装期間中一度も実行できていなかった結合試験6ファイル・42件を初めて実際に走らせた。**実DBに繋いで初めて表面化した本物のバグを2件発見・修正した**（どちらも過去のImplementation Notesが警告していた「動く足場だと思わずに、最初の1回で直す前提で扱うこと」がまさに当たったケース）。
+
+  (1) **`db/repositories/storage-round-trip.integ.ts`（tasks 2.1・2.2）**: `afterAll`が最初の`describe`ブロック内にネストされていたため、2つ目の`describe`ブロック（task 2.2）の全テストが使うはずの共有installationを、1つ目のブロックのテストが終わった時点で消してしまい、`relation_installation_id_fkey`等の外部キー違反で7件が失敗していた。`context()`が2つの`describe`をまたいで意図的に1つのinstallationを共有する設計（コード自身のコメントが明記）である以上、後始末はファイル全体に対して1回だけ、どちらの`describe`にも属さないトップレベルの`afterAll`にする必要があった——移動して解消。
+
+  (2) **`src/testing/harness-round-trip.integ.ts`（task 11.1）**: `mentionOn('slack', { text: 'help' })`——アドレストークン（`@growi`）を付けずに送っていたため、`CommandInvocation.normalize`が"help"自体を無条件にアドレストークンとして剥がしてしまい、コマンド名が空になって何も応答が返らなかった（`chat.posts()`が空のまま）。他の全ての承認済みe2e試験は`'@growi ...'`の形を使っており、この1件だけが取り残されていた。`'@growi help'`に修正。
+
+  (3) **`src/testing/instance-ownership-e2e.integ.ts`（task 11.4）**: バグではなく試験設定の不足——「延長し続ける限り奪われない」ケースは実時間で約6秒（1/4寿命ごと6回＋最終1.5倍待ち）眠るが、vitestの既定タイムアウト5秒を超えて毎回打ち切られていた。個別に15秒のタイムアウトを明示して解消。
+
+  修正後、`pnpm run build`・`pnpm run lint`・`pnpm vitest run`（結合試験含む全体）を実行し、**81ファイル・979件すべて成功**を確認した。11.1〜11.5・12.1〜12.3の各タスクが「まだ実行されたことがない」として残していた申し送りは、この時点ですべて実行・green化により解消されたものとして扱ってよい。

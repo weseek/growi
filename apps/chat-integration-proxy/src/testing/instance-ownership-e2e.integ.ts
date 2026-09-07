@@ -465,6 +465,10 @@ describe('what two running proxy instances each own (task 11.4)', () => {
     );
   });
 
+  // This case deliberately sleeps in real time (6 rounds of lockTtlMs/4, then
+  // lockTtlMs*1.5) to make renewal-across-expiry observable -- with lockTtlMs
+  // = 2_000 that is ~6s of real waiting, past Vitest's 5s default per-test
+  // timeout, hence the explicit 15_000 below.
   it('keeps an installation while its owner renews, and only lets go once it stops renewing', async () => {
     const db = openDb();
     const workspace = await openWorkspace(db, 'mattermost');
@@ -519,7 +523,7 @@ describe('what two running proxy instances each own (task 11.4)', () => {
       'connected',
     );
     expect(logOf(challenger).opened).toEqual([lockKey]);
-  });
+  }, 15_000);
 
   it('runs the periodic sweep on one instance at a time', async () => {
     const db = openDb();

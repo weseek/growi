@@ -77,63 +77,75 @@ const context = (): Promise<{
   return shared;
 };
 
-describe('storage round trip through real PostgreSQL (Requirements 8.1, 10.5, 10.6)', () => {
-  afterAll(async () => {
-    if (shared == null) return;
-    let prisma: PrismaClient;
-    let installationId: string;
-    try {
-      ({ prisma, installationId } = await shared);
-    } catch {
-      // Never connected, so there is nothing to clean up. Swallowed on purpose:
-      // re-reporting it here would bury the failure the tests themselves show.
-      return;
-    }
+// A single, file-level `afterAll` -- NOT nested inside either `describe`
+// block below. `shared` is one module-scoped installation reused by BOTH
+// `describe` blocks on purpose (the comment on `context()` above says so), so
+// cleanup has to run once, after every test in the file is done, not after
+// just the first `describe`'s tests finish. Nesting this inside the first
+// `describe` was a real bug, caught only once this file could actually reach
+// a live PostgreSQL: Vitest runs a `describe`-scoped `afterAll` as soon as
+// that `describe`'s own tests complete, which deleted the shared installation
+// (and disconnected its Prisma client) while the second `describe`'s tests
+// still expected to use it -- surfacing as a foreign key violation on
+// `relation_installation_id_fkey` / `installation_channel_installation_id_fkey`
+// for every test in the second block, not a connectivity failure.
+afterAll(async () => {
+  if (shared == null) return;
+  let prisma: PrismaClient;
+  let installationId: string;
+  try {
+    ({ prisma, installationId } = await shared);
+  } catch {
+    // Never connected, so there is nothing to clean up. Swallowed on purpose:
+    // re-reporting it here would bury the failure the tests themselves show.
+    return;
+  }
 
-    // The explicit order matters: every foreign key onto `relation` here is
-    // `Restrict`, so the children have to go first (design.md's unpairing
-    // sequence, applied to leave no test rows behind).
-    const relations = await prisma.relation.findMany({
-      where: { installationId },
-      select: { id: true },
-    });
-    const relationIds = relations.map((relation) => relation.id);
-    await prisma.pairingOrder.updateMany({
-      where: { installationId },
-      data: { relationId: null },
-    });
-    await prisma.ownKey.deleteMany({
-      where: { relationId: { in: relationIds } },
-    });
-    await prisma.peerKey.deleteMany({
-      where: { relationId: { in: relationIds } },
-    });
-    // task 2.2's tables: also children of `relation` (Restrict), so they have
-    // to go before `relation` is deleted, same as the two above.
-    await prisma.channelPermission.deleteMany({
-      where: { relationId: { in: relationIds } },
-    });
-    await prisma.pendingCollection.deleteMany({
-      where: { relationId: { in: relationIds } },
-    });
-    await prisma.processedNotificationTarget.deleteMany({
-      where: { relationId: { in: relationIds } },
-    });
-    // `request_nonce` -> `relation` is Cascade (design.md: left to expire
-    // naturally), so it does not need an explicit delete here -- kept anyway
-    // for a clean test database rather than relying on that cascade.
-    await prisma.requestNonce.deleteMany({
-      where: { relationId: { in: relationIds } },
-    });
-    await prisma.relation.deleteMany({ where: { installationId } });
-    await prisma.pairingOrder.deleteMany({ where: { installationId } });
-    // `installation_channel` is per-installation, not per-relation (design.md:
-    // unpairing must not touch it), so it is cleaned up by installationId here.
-    await prisma.installationChannel.deleteMany({ where: { installationId } });
-    await prisma.installation.deleteMany({ where: { id: installationId } });
-    await prisma.$disconnect();
+  // The explicit order matters: every foreign key onto `relation` here is
+  // `Restrict`, so the children have to go first (design.md's unpairing
+  // sequence, applied to leave no test rows behind).
+  const relations = await prisma.relation.findMany({
+    where: { installationId },
+    select: { id: true },
   });
+  const relationIds = relations.map((relation) => relation.id);
+  await prisma.pairingOrder.updateMany({
+    where: { installationId },
+    data: { relationId: null },
+  });
+  await prisma.ownKey.deleteMany({
+    where: { relationId: { in: relationIds } },
+  });
+  await prisma.peerKey.deleteMany({
+    where: { relationId: { in: relationIds } },
+  });
+  // task 2.2's tables: also children of `relation` (Restrict), so they have
+  // to go before `relation` is deleted, same as the two above.
+  await prisma.channelPermission.deleteMany({
+    where: { relationId: { in: relationIds } },
+  });
+  await prisma.pendingCollection.deleteMany({
+    where: { relationId: { in: relationIds } },
+  });
+  await prisma.processedNotificationTarget.deleteMany({
+    where: { relationId: { in: relationIds } },
+  });
+  // `request_nonce` -> `relation` is Cascade (design.md: left to expire
+  // naturally), so it does not need an explicit delete here -- kept anyway
+  // for a clean test database rather than relying on that cascade.
+  await prisma.requestNonce.deleteMany({
+    where: { relationId: { in: relationIds } },
+  });
+  await prisma.relation.deleteMany({ where: { installationId } });
+  await prisma.pairingOrder.deleteMany({ where: { installationId } });
+  // `installation_channel` is per-installation, not per-relation (design.md:
+  // unpairing must not touch it), so it is cleaned up by installationId here.
+  await prisma.installationChannel.deleteMany({ where: { installationId } });
+  await prisma.installation.deleteMany({ where: { id: installationId } });
+  await prisma.$disconnect();
+});
 
+describe('storage round trip through real PostgreSQL (Requirements 8.1, 10.5, 10.6)', () => {
   it('reads back the credentials that were saved (Requirement 10.6)', async () => {
     const { prisma } = await context();
     const installations = createInstallationRepository(prisma, testCipher);

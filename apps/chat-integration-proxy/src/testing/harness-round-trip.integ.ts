@@ -90,7 +90,15 @@ describe('the harness end to end', () => {
       },
     ]);
 
-    const outcome = await chat.deliver(mentionOn('slack', { text: 'help' }));
+    // `mentionOn`'s `text` is the mention's raw text, address token included
+    // -- `CommandInvocation.normalize` strips the FIRST whitespace-delimited
+    // token unconditionally as the address (`command/invocation.ts`), so a
+    // bare `'help'` with no address prefix is consumed as the address itself,
+    // leaving an empty command name that matches nothing. `'@growi help'` is
+    // the shape every other mention-driven e2e test in this app uses.
+    const outcome = await chat.deliver(
+      mentionOn('slack', { text: '@growi help' }),
+    );
 
     // The proxy has no relation for this channel, so what comes back says so --
     // and that it came back at all is the proof the event crossed the whole
