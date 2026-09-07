@@ -39,6 +39,14 @@ import './pairing/models/chat-challenge-attempt';
 import './notification/models/chat-notification-outbox';
 import './settings/models/chat-channel-permission';
 
+import { createPeerRouter } from './peer/peer-router';
+
 export const createChatIntegrationRouter = (): express.Router => {
-  return express.Router();
+  const router = express.Router();
+  // The 6 entry points the proxy calls (task 3.5) -- `createPeerRouter`
+  // already carries its own full paths (`/peer/...`) relative to this
+  // feature's own mount point (`/chat-integration`, registered once in
+  // `server/routes/apiv3/index.js`), so no extra prefix is added here.
+  router.use(createPeerRouter());
+  return router;
 };
