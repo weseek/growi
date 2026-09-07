@@ -1,8 +1,25 @@
 # Changelog
 
-## [Unreleased](https://github.com/growilabs/compare/v8.0.2...HEAD)
+## [Unreleased](https://github.com/growilabs/compare/v8.0.3...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v8.0.3](https://github.com/growilabs/compare/v8.0.2...v8.0.3) - 2026-09-07
+
+### 💎 Features
+
+* feat(editor): Add slash command to the Markdown editor (#11838) @Ryosei-Fukushima
+
+### 🚀 Improvement
+
+* imprv(news): Render GROWI news as Markdown (#11608) @ryotaro-nagahara
+* imprv: Refactoring for extracting shared page-access check for attachment retrieval (#11813) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Clean pages automatically using cron job (#11513) @arvid-e
+* fix(page-bulk-export): Embed attachment images in exported PDFs (RELAY mode) (#11859) @yuki-takei
+* fix: Enforce access control on revision-by-id and attachment-by-id apiv3 routes (#11810) @yuki-takei
 
 ## [v8.0.2](https://github.com/growilabs/compare/v8.0.1...v8.0.2) - 2026-08-25
 
