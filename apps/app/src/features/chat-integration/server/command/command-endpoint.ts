@@ -28,6 +28,7 @@
 // `computeResponse` -- is persisted.
 
 import {
+  type ChannelRef,
   type ChatAccountRef,
   COMMAND_NAMES,
   type CommandRequest,
@@ -119,6 +120,33 @@ export interface CommandEndpoint {
     auditContext?: CommandAuditContext,
   ): Promise<CommandResponse>;
 }
+
+/**
+ * GROWI's `Activity` schema (`server/models/activity.ts`) has no
+ * generic metadata/details field -- only `user` / `ip` / `endpoint` /
+ * `targetModel` / `target` / `eventModel` / `event` / `action` / `snapshot`.
+ * design.md's audit-logging section requires the row to retain "that this
+ * came via chat, and the originating channel" (`CommandEnvelope.channel`,
+ * task 5.3), and `endpoint` is the only free-form string available to carry
+ * it -- appending a readable, parseable tag here is the least invasive
+ * option; extending GROWI's core `Activity` model for one additional string
+ * would be a much larger, unnecessary change for this task's boundary.
+ *
+ * `channelId` (not the mutable, display-only `channelName`) is the part
+ * that must survive verbatim, matching `ChannelRef`'s own contract
+ * (`packages/chat/src/contract/common.ts`: "must never be used for
+ * matching/authorization decisions" applies to matching, not to recording,
+ * but the identifier is still `channelId`, so that is what is recorded);
+ * `channelName` is appended too, in parentheses, purely so a human reading
+ * the row does not have to cross-reference the id.
+ */
+const CHAT_CHANNEL_TAG_PREFIX = 'chat-channel';
+
+const withChatChannelTag = (
+  endpoint: string | undefined,
+  channel: ChannelRef,
+): string =>
+  `${endpoint ?? ''} ${CHAT_CHANNEL_TAG_PREFIX}=${channel.platform}:${channel.channelId} (${channel.channelName})`;
 
 const isDuplicateKeyError = (error: unknown): boolean =>
   typeof error === 'object' &&
@@ -542,10 +570,24 @@ const handleWriteCommand = async (
     );
   }
 
+  // Fold the originating channel into the audit context's `endpoint` here,
+  // once, for both write commands (design.md: "チャット経由であることと
+  // 発言元のチャンネルを残す") -- see `withChatChannelTag` above for why
+  // `endpoint` is where this goes.
+  const auditContextWithChannel: CommandAuditContext = {
+    ...auditContext,
+    endpoint: withChatChannelTag(auditContext.endpoint, request.channel),
+  };
+
   if (request.kind === COMMAND_NAMES.createPage) {
-    return handleCreatePage(request, resolved.user, crowi, auditContext);
+    return handleCreatePage(
+      request,
+      resolved.user,
+      crowi,
+      auditContextWithChannel,
+    );
   }
-  return handleKeep(request, resolved.user, crowi, auditContext);
+  return handleKeep(request, resolved.user, crowi, auditContextWithChannel);
 };
 
 const computeResponse = async (

@@ -392,6 +392,90 @@ describe('createCommandEndpoint -- write commands (task 5.2, real DB)', () => {
     });
   });
 
+  describe('audit log retains the operator and the originating channel (task 5.3, Requirement 4.3)', () => {
+    it('create-page: the Activity row keeps both the operator and the chat channel the command came from', async () => {
+      const actor = nextActor();
+      const user = await createLinkedActiveUser(actor);
+      const request = createPageRequest({ actor });
+
+      const pageId = new Types.ObjectId();
+      vi.spyOn(crowi.pageService, 'create').mockResolvedValue({
+        _id: pageId,
+        path: request.path,
+        // biome-ignore lint/suspicious/noExplicitAny: minimal stub for the page create
+      } as any);
+
+      const endpoint = createCommandEndpoint(crowi);
+      await endpoint.handle(request, buildAuditContext());
+
+      const activityId = vi.mocked(activityModule.beginActivity).mock.results[0]
+        .value.activityId as string;
+      const rows = await waitForActivityRows({ id: activityId });
+      expect(rows).toHaveLength(1);
+      // Operator: who performed the write.
+      expect(rows[0].userId).toBe(user._id.toString());
+      // Originating channel: `CommandEnvelope.channel` (`CHANNEL` here) must
+      // be recoverable from the row -- design.md: "チャット経由であること
+      // と発言元のチャンネルを残す". `Activity` has no dedicated channel
+      // field, so this only checks that the channel's matching identifier
+      // (`platform` + `channelId`) survives somewhere on the row, not any
+      // particular field/format.
+      expect(rows[0].endpoint).toContain(CHANNEL.platform);
+      expect(rows[0].endpoint).toContain(CHANNEL.channelId);
+    });
+
+    it('keep: the Activity row keeps both the operator and the chat channel the command came from', async () => {
+      const runnerActor = nextActor();
+      const runner = await createLinkedActiveUser(runnerActor);
+      const request = keepRequest({ actor: runnerActor });
+
+      const pageId = new Types.ObjectId();
+      vi.spyOn(crowi.pageService, 'create').mockResolvedValue({
+        _id: pageId,
+        path: request.path,
+        // biome-ignore lint/suspicious/noExplicitAny: minimal stub for the page create
+      } as any);
+
+      const endpoint = createCommandEndpoint(crowi);
+      await endpoint.handle(request, buildAuditContext());
+
+      const activityId = vi.mocked(activityModule.beginActivity).mock.results[0]
+        .value.activityId as string;
+      const rows = await waitForActivityRows({ id: activityId });
+      expect(rows).toHaveLength(1);
+      expect(rows[0].userId).toBe(runner._id.toString());
+      expect(rows[0].endpoint).toContain(CHANNEL.platform);
+      expect(rows[0].endpoint).toContain(CHANNEL.channelId);
+    });
+
+    it('a failed write attempt (path-conflict) still keeps the channel on its ACTION_UNSETTLED row', async () => {
+      const actor = nextActor();
+      await createLinkedActiveUser(actor);
+      const request = createPageRequest({ actor });
+
+      // biome-ignore lint/suspicious/noExplicitAny: crowi-wired factory, no exported document type
+      const Page = mongoose.model<any>('Page');
+      await Page.create({ path: request.path, isEmpty: false });
+
+      const endpoint = createCommandEndpoint(crowi);
+      const response = await endpoint.handle(request, buildAuditContext());
+
+      expect(response).toEqual({
+        kind: 'error',
+        code: 'path-conflict',
+        message: expect.any(String),
+      });
+
+      const activityId = vi.mocked(activityModule.beginActivity).mock.results[0]
+        .value.activityId as string;
+      const rows = await waitForActivityRows({ id: activityId });
+      expect(rows).toHaveLength(1);
+      expect(rows[0].action).toBe(SupportedAction.ACTION_UNSETTLED);
+      expect(rows[0].endpoint).toContain(CHANNEL.platform);
+      expect(rows[0].endpoint).toContain(CHANNEL.channelId);
+    });
+  });
+
   describe('idempotency for a write command (Requirement 10.4)', () => {
     it('replays the stored response for a repeated (relationId, requestId), creating the page only once and recording only one Activity', async () => {
       const actor = nextActor();
