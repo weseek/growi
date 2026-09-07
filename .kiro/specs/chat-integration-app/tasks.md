@@ -63,7 +63,7 @@
   - _Requirements: 10.1_
   - _Depends: 1.1_
 
-- [ ] 2.2 proxy 向けの口を、消毒と session の仕組みから外す
+- [x] 2.2 proxy 向けの口を、消毒と session の仕組みから外す
   - **保存の値を消毒する仕組みから外す。** その仕組みは `Buffer` を素の object とみなすので、
     全バイトぶんの添字を列挙して 1 件ずつ判定を回す（実測で 1 MiB あたり 0.13 秒、
     上限に決めた大きさでは 1 秒を超える）。**`Buffer` に保存の演算子は入りようがないので、掛ける意味も無い**
@@ -444,3 +444,21 @@
     「本文が空かどうか」ではなく **`Buffer.isBuffer(req.body)`** で行うこと。
     `application/x-www-form-urlencoded` は `express.raw` に掴まれずに全体設定の
     `bodyParser.urlencoded` まで通ってしまうため、**空ではない別の object** になる。
+- **task 2.2 の実装で判明した、design.md の誤り（design.md 側への反映が必要）**:
+  - design.md 738行「CSRF は障害にならない（確認済み）」という囲みは見落としがある。
+    `csurf` は `cookie: false` のとき秘密の置き場を `req.session` から取る仕組みなので、
+    session が無いと **`ignoreMethods` を見る手前で要求を落とす**
+    （`csurf@1.11.0/index.js` の `verifyConfiguration` 287-291行 → 69行）。
+    「`ignoreMethods` に POST が入っているから実質無効」という筋道だけでは足りない。
+  - `passport.session()` も `req.session` が無いと同じ理由で要求を落とす
+    （`passport@0.6.0/lib/strategies/session.js` の `authenticate` 冒頭）。
+  - **このため task 2.2 では、session の除外と同じ区切り単位の判定で `csurf` と
+    `passport.session()` の両方も `/peer` の下から外している**（元の位置は動かしていない）。
+    これをしないと `/peer` への要求が全て 500 になる（実測済み）。
+  - csurf を外したことで実際に検証が無くなるのは **PATCH だけ**である
+    （`ignoreMethods` が他の方式を全て並べているため）。`/_api` の `CertifyOrigin` は
+    包まずそのまま残しており、design.md は `/peer` の口を全て POST と決めているので、
+    当面は問題にならない。**将来 `/peer` の下に PATCH の口を足すときは、ここを読み直すこと。**
+  - design.md 709行のコード例（`req.path.startsWith(...)`）と、session の節にある
+    正規表現（`/^\/_api\/v3\/chat-integration\/peer\//`、末尾スラッシュ必須）は、
+    どちらも task 2.1/2.2 で区切り単位の判定に置き換わっている。**design.md 側の書き換えが必要。**

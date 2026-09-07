@@ -707,9 +707,17 @@ GROWI は `express-mongo-sanitize` をアプリ全体に登録している（`se
 ```javascript
 // server/crowi/express-init.js
 const sanitizer = mongoSanitize();
+const isChatIntegrationPeerRequest = (req) =>
+  req.path === CHAT_INTEGRATION_PEER_PREFIX
+  || req.path.startsWith(`${CHAT_INTEGRATION_PEER_PREFIX}/`);
 app.use((req, res, next) =>
-  req.path.startsWith(CHAT_INTEGRATION_PEER_PREFIX) ? next() : sanitizer(req, res, next));
+  isChatIntegrationPeerRequest(req) ? next() : sanitizer(req, res, next));
 ```
+
+**区切り単位で判定する。** `req.path.startsWith(CHAT_INTEGRATION_PEER_PREFIX)` のように
+文字列の前方一致だけで判定すると、`/_api/v3/chat-integration/peering` のような紛らわしい
+隣接パスまで巻き込む。`===` か「接頭辞 + `/`」で始まるかの2択にすることで、この口自身と
+その配下だけに絞る。
 
 （実測は `Object.keys()` だけの値である。`sanitize()` 全体では 1 MiB で 133 ms、
 **上限に決めた 10 MiB では 1,071 ms** — 要求 1 本で 1 秒以上、他の処理を止める。）
@@ -730,14 +738,28 @@ proxy が捨てる `Set-Cookie` が返る。** `rolling: true` なので応答�
 その上限は router の中にある。**session はその手前の全体設定で張られるので、
 上限に達して断る要求も、断る前に文書を 1 件書く** — 外から誰でも GROWI の DB に文書を積める経路になる。
 
-→ **`routes/avoid-session-routes.js` に `/^\/_api\/v3\/chat-integration\/peer\//` を足す。**
+→ **`routes/avoid-session-routes.js` に `^${CHAT_INTEGRATION_PEER_PREFIX}(\/|$)` を足す。**
+末尾スラッシュを必須にすると（`/^\/_api\/v3\/chat-integration\/peer\//` のように）、
+接頭辞そのもの（末尾に何も続かない `/peer` 単体）への要求を取りこぼす。
+上記の消毒の判定と同じ「接頭辞そのもの、または接頭辞 + `/`」の区切り単位に揃える。
 この口はチャットの proxy との機械同士のやり取りで、cookie も session も一切使わない。
 
 **Gen 1 の `slack-integration` も同じ状態だが、直さない**（Gen 1 には手を入れない方針）。
 
-> **CSRF は障害にならない**（確認済み）。GROWI の `csurf` は `ignoreMethods` に POST を含めて
-> 実質無効で、`/_api` の守りは `CertifyOrigin` である。この関数は `Origin` ヘッダが無い要求を
-> 同一元とみなすので、サーバ同士の POST は通る。
+> **CSRF は `ignoreMethods` だけでは判断できない（実測で確認、当初の記述は誤り）。**
+> GROWI の `csurf` は `cookie: false` のとき、秘密の置き場を `req.session` から取る
+> （`getSecretBag`）。**session が無いと、`ignoreMethods` を見る手前の `verifyConfiguration`
+> で要求そのものを落とす**（500 相当のエラー）。同じ理由で `passport.session()` も
+> `req.session` が無いと要求を落とす。**したがって session を `/peer/` の下から外すときは、
+> `csurf` と `passport.session()` も同じ判定で同じ場所から外す必要がある**
+> （元の登録位置は動かさない）。
+>
+> こう外しても安全性は落ちない。`csurf` を外して実際に検証が無くなるのは
+> **PATCH だけ**である（`ignoreMethods` が他の方式を全て並べているため）。
+> `/_api` の守りである `CertifyOrigin` は外さずそのまま残す。この関数は `Origin` ヘッダが
+> 無い要求を同一元とみなすので、サーバ同士の POST は通る。`/peer` の口は全て POST と
+> 決めているので当面問題にならないが、**将来 `/peer` の下に PATCH の口を足すときはここを
+> 読み直すこと。**
 
 > **メンテナンスモードでは止まる。** apiv3 は `unavailableWhenMaintenanceModeForApi` の下にある
 > （`server/routes/index.js:215`）ので、メンテナンス中は proxy からの口が全て止まる。

@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import type { Express, Request } from 'express';
 import express from 'express';
+import expressSession from 'express-session';
 import request from 'supertest';
 import { mockDeep } from 'vitest-mock-extended';
 
@@ -28,22 +29,43 @@ const buildMultibyteJsonText = (): string => {
 };
 
 type ReceivedBody = Request['body'];
+type ReceivedQuery = Request['query'];
 
-const buildApp = (): { app: Express; received: { body?: ReceivedBody } } => {
+type Received = {
+  body?: ReceivedBody;
+  query?: ReceivedQuery;
+  hasSession?: boolean;
+};
+
+type Harness = {
+  app: Express;
+  received: Received;
+  sessionStore: expressSession.MemoryStore;
+};
+
+const buildApp = (): Harness => {
   const crowi: Crowi = mockDeep<Crowi>({
     node_env: 'test',
     port: 3000,
     publicDir: resolveFromRoot('public'),
   });
 
+  const sessionStore = new expressSession.MemoryStore();
+  vi.spyOn(sessionStore, 'set');
+
   // Assigned after the mock is built: passing this through mockDeep's
   // overrides would leave the members omitted here as mock proxies, and
   // express-session rejects such values.
+  // `saveUninitialized` / `rolling` mirror the production configuration
+  // (`crowi/index.ts`): with them off, a request that never touches its
+  // session writes nothing anyway, and a spec asserting "no session document
+  // is written" would pass without the exclusion under test.
   crowi.sessionConfig = {
     secret: 'express-init-spec-secret',
     resave: false,
-    saveUninitialized: false,
-    rolling: false,
+    saveUninitialized: true,
+    rolling: true,
+    store: sessionStore,
     cookie: { maxAge: 60000 },
     genid: () => randomUUID(),
   };
@@ -51,19 +73,30 @@ const buildApp = (): { app: Express; received: { body?: ReceivedBody } } => {
   const app = express();
   setup(crowi, app);
 
-  const received: { body?: ReceivedBody } = {};
+  const received: Received = {};
   const record = (req: Request, res: express.Response) => {
     received.body = req.body;
+    received.query = req.query;
+    // `in` rather than a property read: there is no @types/express-session in
+    // this workspace, and the property is genuinely absent (not undefined)
+    // when the session middleware was skipped.
+    received.hasSession = 'session' in req && req.session != null;
     res.status(204).end();
   };
 
-  // Stand-ins for the real endpoints: the proxy-facing one under `/peer`, and
-  // an admin-screen one that shares the same feature base path but is outside
-  // `/peer`.
+  // Stand-ins for the real endpoints. Every path the exclusions have to
+  // distinguish gets one:
+  //  - the proxy-facing sub-tree, both as the bare prefix and with a
+  //    trailing segment,
+  //  - an admin-screen endpoint sharing the feature base path,
+  //  - a path whose name merely starts with the prefix's last segment
+  //    (`/peering`), which must NOT be treated as proxy-facing.
+  app.post(CHAT_INTEGRATION_PEER_PREFIX, record);
   app.post(`${CHAT_INTEGRATION_PEER_PREFIX}/notification`, record);
   app.post('/_api/v3/chat-integration/settings', record);
+  app.post(`${CHAT_INTEGRATION_PEER_PREFIX}ing/oops`, record);
 
-  return { app, received };
+  return { app, received, sessionStore };
 };
 
 describe('express-init setup()', () => {
@@ -139,6 +172,90 @@ describe('express-init setup()', () => {
       expect(received.body).toEqual({
         isEnabled: true,
         label: '日本語のラベル',
+      });
+    });
+  });
+
+  // The app-wide mongo-sanitize walk treats a Buffer as a plain object and
+  // enumerates one key per byte, and the app-wide session writes a document
+  // per request (`saveUninitialized`). Neither is wanted for the
+  // machine-to-machine proxy endpoints. Both exclusions must match the same
+  // way `app.use(CHAT_INTEGRATION_PEER_PREFIX, ...)` does: on path segments,
+  // so the bare prefix and anything below it are covered while a merely
+  // similar-looking sibling (`/peering`) is not.
+  describe('mongo-sanitize and session exclusions for the proxy-facing sub-tree', () => {
+    // A `$`-prefixed query key is the observable trace of the sanitize walk:
+    // it survives only where the walk did not run.
+    const mongoOperatorQuery = '?%24ne=1&plain=2';
+
+    describe.each([
+      ['the bare prefix', CHAT_INTEGRATION_PEER_PREFIX],
+      [
+        'a path below the prefix',
+        `${CHAT_INTEGRATION_PEER_PREFIX}/notification`,
+      ],
+    ])('%s (%s)', (_label, path) => {
+      it('leaves the request untouched by mongo-sanitize', async () => {
+        const { app, received } = buildApp();
+
+        await request(app)
+          .post(`${path}${mongoOperatorQuery}`)
+          .set('content-type', 'application/json')
+          .send('{}')
+          .expect(204);
+
+        expect(received.query).toEqual({ $ne: '1', plain: '2' });
+      });
+
+      it('creates no session, writes nothing to the session store and returns no cookie', async () => {
+        const { app, received, sessionStore } = buildApp();
+
+        const response = await request(app)
+          .post(path)
+          .set('content-type', 'application/json')
+          .send('{}')
+          .expect(204);
+
+        expect(received.hasSession).toBe(false);
+        expect(sessionStore.set).not.toHaveBeenCalled();
+        expect(response.headers['set-cookie']).toBeUndefined();
+      });
+    });
+
+    describe.each([
+      [
+        'an admin-screen endpoint under the same base path',
+        '/_api/v3/chat-integration/settings',
+      ],
+      [
+        'a sibling path that merely starts with the same characters',
+        `${CHAT_INTEGRATION_PEER_PREFIX}ing/oops`,
+      ],
+    ])('%s (%s)', (_label, path) => {
+      it('is still sanitized', async () => {
+        const { app, received } = buildApp();
+
+        await request(app)
+          .post(`${path}${mongoOperatorQuery}`)
+          .set('content-type', 'application/json')
+          .send({})
+          .expect(204);
+
+        expect(received.query).toEqual({ plain: '2' });
+      });
+
+      it('still gets a session, a session-store write and a cookie', async () => {
+        const { app, received, sessionStore } = buildApp();
+
+        const response = await request(app)
+          .post(path)
+          .set('content-type', 'application/json')
+          .send({})
+          .expect(204);
+
+        expect(received.hasSession).toBe(true);
+        expect(sessionStore.set).toHaveBeenCalled();
+        expect(response.headers['set-cookie']).toBeDefined();
       });
     });
   });

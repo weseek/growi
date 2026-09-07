@@ -40,6 +40,14 @@ export const setup = (crowi, app) => {
 
   const env = crowi.node_env;
 
+  // Segment-aware on purpose, matching both `app.use(CHAT_INTEGRATION_PEER_PREFIX, ...)`
+  // below and the entry in `routes/avoid-session-routes.js`: the bare prefix
+  // and anything below it are proxy-facing, a similar-looking sibling such as
+  // `/peering` is not.
+  const isChatIntegrationPeerRequest = (req) =>
+    req.path === CHAT_INTEGRATION_PEER_PREFIX ||
+    req.path.startsWith(`${CHAT_INTEGRATION_PEER_PREFIX}/`);
+
   // see: https://qiita.com/nazomikan/items/9458d591a4831480098d
   // Cannot set a custom query parser after app.use() has been called: https://github.com/expressjs/express/issues/3454
   app.set('query parser', (str) => qs.parse(str, { arrayLimit: Infinity }));
@@ -146,11 +154,16 @@ export const setup = (crowi, app) => {
 
   // csurf should be initialized after express-session
   // default methods + PUT. See: https://expressjs.com/en/resources/middleware/csurf.html#ignoremethods
-  app.use(
-    csrf({
-      ignoreMethods: ['GET', 'HEAD', 'OPTIONS', 'PUT', 'POST', 'DELETE'],
-      cookie: false,
-    }),
+  // Skipped for the proxy-facing sub-tree, which has no session: with
+  // `cookie: false` csurf keeps its secret in the session and fails the
+  // request outright ("misconfigured csrf") when there is none -- before it
+  // ever looks at `ignoreMethods`.
+  const csrfProtection = csrf({
+    ignoreMethods: ['GET', 'HEAD', 'OPTIONS', 'PUT', 'POST', 'DELETE'],
+    cookie: false,
+  });
+  app.use((req, res, next) =>
+    isChatIntegrationPeerRequest(req) ? next() : csrfProtection(req, res, next),
   );
 
   app.use('/_api', CertifyOrigin);
@@ -158,10 +171,30 @@ export const setup = (crowi, app) => {
   // passport
   logger.debug('initialize Passport');
   app.use(passport.initialize());
-  app.use(passport.session());
+  // Also skipped for the proxy-facing sub-tree for the same reason: the
+  // session strategy fails the request when `req.session` is absent. Those
+  // requests carry no login state anyway -- the acting user is resolved from
+  // the signature-verified payload.
+  const passportSession = passport.session();
+  app.use((req, res, next) =>
+    isChatIntegrationPeerRequest(req)
+      ? next()
+      : passportSession(req, res, next),
+  );
 
   app.use(flash());
-  app.use(mongoSanitize());
+
+  // The app-wide mongo-sanitize walk treats a Buffer as a plain object, so for
+  // a raw-body request it enumerates one key per byte and runs the key test on
+  // every one of them (measured: 133 ms per MiB, over a second at this
+  // endpoint's 10mb limit). A Buffer cannot carry a MongoDB operator in the
+  // first place, so the walk has nothing to find there; the feature validates
+  // the parsed value itself. The registration is unconditional, so the only
+  // way to exempt a path is to wrap it.
+  const sanitizer = mongoSanitize();
+  app.use((req, res, next) =>
+    isChatIntegrationPeerRequest(req) ? next() : sanitizer(req, res, next),
+  );
 
   app.use(registerSafeRedirect);
   app.use(injectCurrentuserToLocalvars);
