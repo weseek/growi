@@ -13,7 +13,7 @@
   - 上記4パターン（未設定／上限到達／通常委譲＋加算／`content` undefined で非加算）をユニットテストで確認できる
   - _Requirements: 2.2, 2.3_
 
-- [ ] 1.2 要約instructionsができる
+- [x] 1.2 要約instructionsができる
   - **段階的な全文読み取り手順**を、`getPageContentTool` の実際の入出力契約に沿った具体手順として明文化する:
     - 初回呼び出しは `offset` を省略する。この呼び出しではアウトライン（見出し構成）と `totalLines` が返る
     - ページが1回分（`limit`、既定200行・最大500行）に収まる場合は、初回呼び出しで `content` と `hasMore`（`false`）も同時に返るため1回で読み終わる
@@ -303,3 +303,7 @@
 ## Task Numbering Note
 
 要件7.3（未選択時は永続化しない）に対応するタスクは、永続化ルートの責務であるためタスク**6.4**として配置している（既存のタスク7.3は要件9.3/9.4のローカル非表示であり、別物）。
+
+## Implementation Notes
+
+- タスク1.2完了時点で、instructions.ts の「アウトラインだけで打ち切らず先頭から順に読み進める」（design.md a-2/a-3、`read forward from the start of the page` 文言・2箇所のアンチショートカット文）はユニットテストで文言拘束されていない（残存指摘、非ブロッキング）。後続タスクでinstructions.tsを触る際はこの2文の反転・削除がREDにならない点に注意し、機会があれば`toMatch`を追加する。
