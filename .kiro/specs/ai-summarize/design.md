@@ -58,7 +58,7 @@
 - `features/opentelemetry/server/custom-metrics/`（既存ディレクトリ構成）— 新規Counterメトリクスをこのパターンに追加する。
 - `apps/app/src/server/models/page.ts`（既存の `Page` Mongooseモデル）— 永続化フィールドの追加先。既存のスキーマ定義パターンに1フィールド追加する。
 - `Page.findByIdAndViewer` / 既存のページ閲覧権限判定ロジック（既存）— 永続化された要約の表示可否判定にそのまま流用する。
-- `apps/app/src/components/PageView/RevisionRenderer.tsx`（既存、無変更）— `aiSummary.body` のMarkdown描画の唯一の経路。任意のMarkdown文字列を描画する既存の先例（コメント・プレビュー・カスタムサイドバー）と同じ使い方をする。要約専用のレンダラは新設しない。
+- `apps/app/src/components/PageView/RevisionRenderer.tsx`（既存、無変更）— `summary.body` のMarkdown描画の唯一の経路。任意のMarkdown文字列を描画する既存の先例（コメント・プレビュー・カスタムサイドバー）と同じ使い方をする。要約専用のレンダラは新設しない。
 - `~/stores/renderer.tsx` の `generateSimpleViewOptions` 系オプション生成フック（既存、無変更）— `rehype-sanitize` を含むレンダラオプションの取得元。サニタイズは全面的にこのパイプへ委譲し、独自のサニタイズ処理・独自オプションは作らない。
 - `useCurrentUser`（既存のクライアント側フック）— `localStorage` キーに含める `userId`（現在のログインユーザーの `_id`）の取得元。未ログイン時は `undefined` を返すため、その場合はローカル非表示機能を無効化する。
 - `~/states/page/hooks.ts` の `useCurrentPageId`（既存のクライアント側フック）— 「閲覧中のページ」の識別に用いる想定の依存。本spec自体はページ上部の操作メニューに設置するトリガーUIを実装しないが（実装は別PR）、そのトリガー実装はこのフックを参照する前提でAPI契約を設計する。
@@ -93,7 +93,7 @@
 | **クロスAgent スレッド再生テスト**（§Revalidation Triggers 行71-73、要件1.4） | Task 4.2 | `summarizeAgent` のツール登録キーが `getPageContentTool` であり、`growiAgent` が引き継いだスレッド履歴の tool-call 名が一致することを end-to-end テストで確認 |
 | **バジェット許容幅テスト**（§全文カバレッジ制御 行282、要件2.1-2.2） | Tasks 3.2, 4.3, 4.4 | (3.2) 連続リクエスト間でのバジェット独立性、(4.3) 1500行超ページでの上限到達と打ち切り、(4.4) 同時リクエストの状態安全性 |
 | **権限ゲート維持検証**（§要約の開始から追質問への合流まで 行249-258、要件4.1） | Task 4.1 | ルート層の短絡（ストリーム未開始）、不存在と権限なしの区別なし、TOCTOU窓の二重防護（ルート層＋ツール層） |
-| **Prisma スキーマ検証** | Task 5 | Mongoose側の `aiSummary` フィールド追加、Prisma側への追加（`Json?` で既存 `grantedGroups` パターンに揃える）、型生成（`prisma generate` の成功確認）、Changeset 作成（@growi/core は公開パッケージ） |
+| **Prisma スキーマ検証** | Task 5 | Mongoose側の `summary` フィールド追加、Prisma側への追加（`Json?` で既存 `grantedGroups` パターンに揃える）、型生成（`prisma generate` の成功確認）、Changeset 作成（@growi/core は公開パッケージ） |
 
 ---
 
@@ -125,8 +125,8 @@ graph TB
     GetPageContentTool[getPageContentTool existing]
     Memory[Mastra Memory MongoDBStore existing]
     Metrics[AiSummarizeMetrics new Counter]
-    SaveRoute[POST page aiSummary new]
-    PageModel[Page model existing plus aiSummary field]
+    SaveRoute[POST page summary new]
+    PageModel[Page model existing plus summary field]
     PageViewRoute[GET page existing]
     SummaryView[PersistedSummaryView new client]
     LocalStorage[Browser localStorage hidden flag]
@@ -197,11 +197,11 @@ apps/app/src/features/ai-summarize/server/routes/
 ├── ai-summary-persistence.ts              # 新規: POST（保存のみ）の要約永続化ハンドラファクトリ
 └── ai-summary-persistence-validator.ts    # 新規: リクエストボディのバリデーション（pageId/body/sourceRevisionId/capturedAt）
 apps/app/src/server/models/
-└── page.ts                                # 変更: `aiSummary` フィールドをスキーマに追加（1フィールド追加）
+└── page.ts                                # 変更: `summary` フィールドをスキーマに追加（1フィールド追加）
 apps/app/prisma/
-└── schema.prisma                          # 変更: `model pages` に `aiSummary` を追加（Mongoose と二重管理。`.claude/rules/model.md`）
+└── schema.prisma                          # 変更: `model pages` に `summary` を追加（Mongoose と二重管理。`.claude/rules/model.md`）
 packages/core/src/interfaces/
-└── page.ts                                # 変更: `IPage` に `aiSummary` の型を追加（Changeset対象）
+└── page.ts                                # 変更: `IPage` に `summary` の型を追加（Changeset対象）
 apps/app/src/features/rate-limiter/config/
 └── index.ts                               # 変更: `defaultConfigWithRegExp` に永続化ルートのレート制限エントリを1件追加
 apps/app/src/components/PageView/
@@ -213,16 +213,16 @@ apps/app/src/components/PageView/
 - `features/mastra/server/services/mastra-modules/index.ts` — `summarizeAgent` を `Mastra` の `agents` に追加登録する。
 - `features/mastra/server/routes/index.ts` — `router.post('/summary', summarizeMessageHandlersFactory(crowi))` を、既存の `/message` 登録と同じ並びに追加する。
 - `features/opentelemetry/server/custom-metrics/index.ts` — `addAiSummarizeMetrics()` の呼び出しを追加する。
-- `apps/app/src/server/models/page.ts` — `aiSummary: { body: String, sourceRevisionId: ObjectId, capturedAt: Date }`（既定値 `null`）をスキーマに追加する。既存のフィールド・インデックス・staticsは変更しない。
-- `apps/app/prisma/schema.prisma` — `model pages`（既存、Mongooseのpagesコレクションからintrospectされたもの）に `aiSummary` フィールドを追加する。`Page` モデルはMongooseからPrismaへの移行途上にあり（`.claude/rules/model.md`）、Mongoose側だけを更新すると型不整合が後から表面化するため、両方を同時に更新する。埋め込みオブジェクトの表現は、同スキーマ内の既存の埋め込みフィールド（`grantedGroups` が `Json?` として表現されている）と同じ扱いに揃える。追加後に Prisma の型生成（`generator` の出力先 `src/generated/prisma`）が成功することを確認する。
-- `packages/core/src/interfaces/page.ts` — `IPage` に `aiSummary` の型を追加する（クライアントが `aiSummary` を参照するために必須。Changeset対象）。
+- `apps/app/src/server/models/page.ts` — `summary: { body: String, sourceRevisionId: ObjectId, capturedAt: Date }`（既定値 `null`）をスキーマに追加する。既存のフィールド・インデックス・staticsは変更しない。
+- `apps/app/prisma/schema.prisma` — `model pages`（既存、Mongooseのpagesコレクションからintrospectされたもの）に `summary` フィールドを追加する。`Page` モデルはMongooseからPrismaへの移行途上にあり（`.claude/rules/model.md`）、Mongoose側だけを更新すると型不整合が後から表面化するため、両方を同時に更新する。埋め込みオブジェクトの表現は、同スキーマ内の既存の埋め込みフィールド（`grantedGroups` が `Json?` として表現されている）と同じ扱いに揃える。追加後に Prisma の型生成（`generator` の出力先 `src/generated/prisma`）が成功することを確認する。
+- `packages/core/src/interfaces/page.ts` — `IPage` に `summary` の型を追加する（クライアントが `summary` を参照するために必須。Changeset対象）。
 - `apps/app/src/features/rate-limiter/config/index.ts` — `defaultConfigWithRegExp` に永続化ルート（`/_api/v3/page/[^/]+/ai-summary`、`POST`、`MAX_REQUESTS_TIER_1`）のエントリを1件追加する。レート制限はルートへのミドルウェア適用ではなく、この設定マップへの宣言で有効になる。
 - `apps/app/src/components/PageView/PageView.tsx` — `PersistedSummaryView` をMarkdown本文の描画箇所の外側に追加する。
 - `apps/app/src/features/mastra/interfaces/chat-message.ts` — `CustomUIMessageMetadata` に `threadId` / `sourceRevisionId` / `capturedAt` を追加する。現状は `{ finishReason?: string }` のみであり、`/summary` がこれらをストリームメタデータ（`writer.write({ type: 'message-metadata', ... })`）で返すには拡張が必須。サーバとクライアントが共有する型であるため、既存の `finishReason` は optional のまま維持し、追加分も optional にして `/message` 側の互換を壊さない。
 - `apps/app/src/features/mastra/interfaces/chat-tools.ts` — `GrowiChatTools.getPageContentTool.output` の型を、`limitedGetPageContentTool` が返す `limit_exceeded` を含む形に広げる。`summarizeAgent` は本文取得ツールを `getPageContentTool` という**キー**で登録するため（1.4の成立条件）、要約ストリームの `tool-getPageContentTool` パートの `output` には `limit_exceeded` が現れうる。現状の型は `GetPageContentToolOutput`（`limit_exceeded` を含まない）のみであり、クライアントが型安全に読むには拡張が必要。
-- `apps/app/src/pages/[[...path]]/page-data-props.ts` — SSR（初回描画）で返すページオブジェクトに `aiSummary` を含める。
-- `apps/app/src/server/routes/apiv3/page/index.ts` — ページ取得APIのレスポンスに `aiSummary` を含める。加えて、永続化ルート `POST /:pageId/ai-summary` を同ルータに登録する（`apiv3/index.js:194` の `router.use('/page', setupPage(crowi))` 配下）。
-  - **注**: 共有表示（8.1, 8.2）は SSR とAPIの**両経路**が `aiSummary` を返して初めて成立する。片方の漏れは「ある閲覧者には見えて別の閲覧者には見えない」形で表面化するため、両方を必ず対応する。
+- `apps/app/src/pages/[[...path]]/page-data-props.ts` — SSR（初回描画）で返すページオブジェクトに `summary` を含める。
+- `apps/app/src/server/routes/apiv3/page/index.ts` — ページ取得APIのレスポンスに `summary` を含める。加えて、永続化ルート `POST /:pageId/ai-summary` を同ルータに登録する（`apiv3/index.js:194` の `router.use('/page', setupPage(crowi))` 配下）。
+  - **注**: 共有表示（8.1, 8.2）は SSR とAPIの**両経路**が `summary` を返して初めて成立する。片方の漏れは「ある閲覧者には見えて別の閲覧者には見えない」形で表面化するため、両方を必ず対応する。
 - `apps/app/public/static/locales/{en_US,fr_FR,ja_JP,ko_KR,zh_CN}/translation.json` — `PersistedSummaryView` の文言（見出し「AI要約」・鮮度ヒント・削除ボタンラベル）の翻訳キーを5ロケール分追加する。
 - `apps/app/src/features/rate-limiter/config/index.ts` — 生成ルート（`/_api/v3/mastra/summary`、完全一致マップ `defaultConfig`）と永続化ルート（正規表現マップ `defaultConfigWithRegExp`）の2エントリを追加する。
 
@@ -276,7 +276,7 @@ sequenceDiagram
   - **(a) 権限ゲート（権限なし時の唯一の応答経路）**: 結果が `null`（不存在または閲覧権限なし）の場合、`summarizeAgent.stream()` を呼ばずに**その場で短絡**し、`not_found_or_forbidden` を返す。ストリームは一切開始されない（4.2）。`findByIdAndViewer` は不存在と権限なしを区別せず `null` を返すため、応答も両者を区別しない単一のステータスコード（403 または 404 のいずれか一方に統一）・単一の応答本文とする。これによりページの存在有無は漏れない。
   - **(b) `sourceRevisionId` と `capturedAt` の取得**: 結果が得られた場合、その時点の revision ID と現在時刻を保持する（7.2）。
     - **参照するのは `page.revision` であり `page.revision._id` ではない**。`Page.findByIdAndViewer`（`page.ts`）は populate を伴わない素のクエリであり、スキーマ上 `revision` は `{ type: Schema.Types.ObjectId, ref: 'Revision' }` として定義されている。したがってこの時点の `page.revision` は **ObjectId そのもの**で、`page.revision._id` は `undefined` になる。本文を読むために `populateDataToShowRevision()` を呼ぶ `getPageContentTool` とは異なり、ルート層は populate しない（本文を読まないため必要がない）。
-    - なお、クライアント側の鮮度判定（`aiSummary.sourceRevisionId` と `page.revision._id` の比較）はページ取得APIのレスポンスに対して行われ、そちらは populate 済みであるため `revision._id` で正しい。**サーバ側は `page.revision`、クライアント側は `page.revision._id`** という非対称があることを実装時に取り違えないこと。
+    - なお、クライアント側の鮮度判定（`summary.sourceRevisionId` と `page.revision._id` の比較）はページ取得APIのレスポンスに対して行われ、そちらは populate 済みであるため `revision._id` で正しい。**サーバ側は `page.revision`、クライアント側は `page.revision._id`** という非対称があることを実装時に取り違えないこと。
     - `capturedAt` もこの同じ時点（生成開始時点）で `new Date()` により生成する。`sourceRevisionId` と同一の瞬間を指すことで、鮮度表示（revision比較）と生成時刻表示（`capturedAt`）が同じ基準時刻を持つ。
     - 実装上はツール呼び出しループの前に実行されるため、ページが生成中に更新される場合、`sourceRevisionId` は古い版を指すことになりうる。要件7.2の「生成時点の版」は「生成開始時点」と解釈される。
 - 権限なし／不存在のリクエストは上記のルート層ゲートで必ず短絡するため、通常のフローで `summarizeAgent` のツール呼び出しループが `not_found_or_forbidden` を受け取ることはない。ただし `getPageContentTool` の都度権限チェック（4.1）はこのゲートに置き換えられるものではなく、ゲート通過後にページが削除・権限変更された競合（TOCTOU）の窓を閉じる二重の防護として維持される。
@@ -314,36 +314,36 @@ flowchart TD
 sequenceDiagram
     participant Client
     participant LocalStorage as Browser localStorage
-    participant SaveRoute as POST page aiSummary
+    participant SaveRoute as POST page summary
     participant PageModel as Page model
     participant PageViewRoute as GET page existing
     participant Viewer as Other viewer
 
     Note over Client,PageModel: After a summary is generated (previous flow), the client already holds sourceRevisionId from that flow
     Client->>SaveRoute: pageId, summary body, sourceRevisionId
-    SaveRoute->>PageModel: findByIdAndViewer then set aiSummary.body and aiSummary.sourceRevisionId as received (not re-derived)
+    SaveRoute->>PageModel: findByIdAndViewer then set summary.body and summary.sourceRevisionId as received (not re-derived)
     PageModel-->>SaveRoute: saved or not_found_or_forbidden
     SaveRoute-->>Client: success or error
 
     Note over Viewer,PageViewRoute: Later, any viewer opens the page
     Viewer->>PageViewRoute: request page
     PageViewRoute->>PageModel: findByIdAndViewer existing permission check
-    PageModel-->>PageViewRoute: page plus aiSummary if present
-    PageViewRoute-->>Viewer: page including aiSummary when permitted
-    Viewer->>LocalStorage: read hidden flag at growi.aiSummary.hidden userId pageId (this browser and this user only)
+    PageModel-->>PageViewRoute: page plus summary if present
+    PageViewRoute-->>Viewer: page including summary when permitted
+    Viewer->>LocalStorage: read hidden flag at growi.summary.hidden userId pageId (this browser and this user only)
     LocalStorage-->>Viewer: hidden true or false
-    Viewer->>Viewer: if not hidden, render aiSummary.body as Markdown via existing RevisionRenderer plus sanitized renderer options, and compare sourceRevisionId with page.revision._id for stale hint
+    Viewer->>Viewer: if not hidden, render summary.body as Markdown via existing RevisionRenderer plus sanitized renderer options, and compare sourceRevisionId with page.revision._id for stale hint
 
     Note over Client,LocalStorage: The viewer chooses to hide the summary on their own screen
-    Client->>LocalStorage: set hidden true at growi.aiSummary.hidden userId pageId
-    Note right of LocalStorage: No server call. aiSummary on the Page document is untouched and still shown to every other viewer
+    Client->>LocalStorage: set hidden true at growi.summary.hidden userId pageId
+    Note right of LocalStorage: No server call. summary on the Page document is untouched and still shown to every other viewer
 ```
 
 **フロー上の意思決定**:
 - 保存ルートは、`getPageContentTool` と同じ考え方で `Page.findByIdAndViewer` を経由してから書き込む。要約専用の権限モデルは持たない（7.1）。サーバ側の削除APIは存在しない（Non-Goals参照）。
-- 共有表示は、ページ取得の既存経路（API: `GET /_api/v3/page` 相当、および初回描画時のSSR: `page-data-props.ts` の `populateDataToShowRevision()`）が返すページオブジェクトに `aiSummary` を含めるだけで実現する。要約専用の閲覧APIは新設しない。両経路とも同じ権限ゲートを経由するため、本文が見られない閲覧者には `aiSummary` も含めて何も返らない（8.1, 8.2）。
-- 鮮度判定はクライアント側で `aiSummary.sourceRevisionId` とページの現在の `revision._id`（既存のページ取得レスポンスに既に含まれる）を比較するだけで行い、追加のサーバ呼び出しは発生しない（9.2）。`sourceRevisionId` は要約を生成した時点（Agentが本文を読み取った時点）の値であり、保存操作が行われた時点のrevisionで取り直したものではない（7.2）。
-- 「削除」導線は、ページに紐づく `aiSummary` を変更せず、閲覧者のブラウザの `localStorage` に「このpageIdは非表示」という状態を書き込むだけで実現する（9.3）。サーバへの書き込み・権限チェックは発生しないため、要約専用の権限モデルを設計する必要自体がない。他の閲覧者の表示、および同一ユーザーの別ブラウザ・別デバイスでの表示には一切影響しない。再表示するUIは設けない（9.4）。
+- 共有表示は、ページ取得の既存経路（API: `GET /_api/v3/page` 相当、および初回描画時のSSR: `page-data-props.ts` の `populateDataToShowRevision()`）が返すページオブジェクトに `summary` を含めるだけで実現する。要約専用の閲覧APIは新設しない。両経路とも同じ権限ゲートを経由するため、本文が見られない閲覧者には `summary` も含めて何も返らない（8.1, 8.2）。
+- 鮮度判定はクライアント側で `summary.sourceRevisionId` とページの現在の `revision._id`（既存のページ取得レスポンスに既に含まれる）を比較するだけで行い、追加のサーバ呼び出しは発生しない（9.2）。`sourceRevisionId` は要約を生成した時点（Agentが本文を読み取った時点）の値であり、保存操作が行われた時点のrevisionで取り直したものではない（7.2）。
+- 「削除」導線は、ページに紐づく `summary` を変更せず、閲覧者のブラウザの `localStorage` に「このpageIdは非表示」という状態を書き込むだけで実現する（9.3）。サーバへの書き込み・権限チェックは発生しないため、要約専用の権限モデルを設計する必要自体がない。他の閲覧者の表示、および同一ユーザーの別ブラウザ・別デバイスでの表示には一切影響しない。再表示するUIは設けない（9.4）。
 
 ## Requirements Traceability
 
@@ -364,15 +364,15 @@ sequenceDiagram
 | 6.1 | 利用実績の記録 | AiSummarizeMetrics | `Counter.add(1, ...)` | 要約開始フロー |
 | 6.2 | 既存計測手段での確認 | AiSummarizeMetrics | `custom-metrics/` 登録 | — |
 | 7.1 | 選択時のみ永続化 | AiSummaryPersistenceRoute, Page model | `POST` 永続化ルート | 永続化・共有表示・ローカル非表示 |
-| 7.2 | 生成元revision IDの記録 | SummarizeMessageRoute, AiSummaryPersistenceRoute, Page model | `sourceRevisionId`（生成時に取得しストリーム経由でクライアントへ返す）、`aiSummary.sourceRevisionId` | 要約開始フロー → 永続化・共有表示・ローカル非表示 |
-| 7.3 | 未選択時は永続化しない | AiSummaryPersistenceRoute（呼ばれなければ発生しない）, SummarizeMessageRoute（生成が永続化の副作用を持たない） | 保存ルートを呼ばない限り `Page.aiSummary` は書き込まれない（統合テストで検証） | 永続化・共有表示・ローカル非表示 |
-| 7.4 | 既存永続化要約の置き換え | AiSummaryPersistenceRoute, Page model | `aiSummary` の上書き | 永続化・共有表示・ローカル非表示 |
-| 8.1 | 権限ゲート経由の共有表示 | PageViewRoute（既存）, Page model | 既存のページ取得APIが返す `aiSummary` | 永続化・共有表示・ローカル非表示 |
+| 7.2 | 生成元revision IDの記録 | SummarizeMessageRoute, AiSummaryPersistenceRoute, Page model | `sourceRevisionId`（生成時に取得しストリーム経由でクライアントへ返す）、`summary.sourceRevisionId` | 要約開始フロー → 永続化・共有表示・ローカル非表示 |
+| 7.3 | 未選択時は永続化しない | AiSummaryPersistenceRoute（呼ばれなければ発生しない）, SummarizeMessageRoute（生成が永続化の副作用を持たない） | 保存ルートを呼ばない限り `Page.summary` は書き込まれない（統合テストで検証） | 永続化・共有表示・ローカル非表示 |
+| 7.4 | 既存永続化要約の置き換え | AiSummaryPersistenceRoute, Page model | `summary` の上書き | 永続化・共有表示・ローカル非表示 |
+| 8.1 | 権限ゲート経由の共有表示 | PageViewRoute（既存）, Page model | 既存のページ取得APIが返す `summary` | 永続化・共有表示・ローカル非表示 |
 | 8.2 | 権限なし時の非表示 | PageViewRoute（既存） | 既存の `findByIdAndViewer` | 永続化・共有表示・ローカル非表示 |
 | 8.3 | 本文外への表示 | PersistedSummaryView | `PageView.tsx` への統合 | 永続化・共有表示・ローカル非表示 |
 | 9.1 | 鮮度の控えめな明示 | PersistedSummaryView | `sourceRevisionId` と `revision._id` の比較 | 永続化・共有表示・ローカル非表示 |
 | 9.2 | 追加呼び出しなしの鮮度判定 | PersistedSummaryView（クライアント側計算） | — | 永続化・共有表示・ローカル非表示 |
-| 9.3 | 閲覧者ごとのローカル非表示手段の提供 | PersistedSummaryView（クライアント側 `localStorage`） | `localStorage` キー `growi.aiSummary.hidden.{userId}.{pageId}`（ブラウザ×ユーザー×ページ単位） | 永続化・共有表示・ローカル非表示 |
+| 9.3 | 閲覧者ごとのローカル非表示手段の提供 | PersistedSummaryView（クライアント側 `localStorage`） | `localStorage` キー `growi.summary.hidden.{userId}.{pageId}`（ブラウザ×ユーザー×ページ単位） | 永続化・共有表示・ローカル非表示 |
 | 9.4 | 再表示機能なし | PersistedSummaryView（明示的な再表示UIを持たない） | — | 永続化・共有表示・ローカル非表示 |
 
 ## Components and Interfaces
@@ -552,7 +552,7 @@ export const limitedGetPageContentTool: Tool; // used only by summarizeAgent
 | Requirements | 7.1, 7.2, 7.4, 8.1, 9.2 |
 
 **Responsibilities & Constraints**
-- `Page` スキーマに `aiSummary: { body: String, sourceRevisionId: ObjectId, capturedAt: Date } | null`（既定値 `null`）を追加する。既存のフィールド・インデックス・staticsは変更しない。
+- `Page` スキーマに `summary: { body: String, sourceRevisionId: ObjectId, capturedAt: Date } | null`（既定値 `null`）を追加する。既存のフィールド・インデックス・staticsは変更しない。
 - `sourceRevisionId` は、要約の**生成開始時点**（ルート層が `findByIdAndViewer` を呼んだ時点）のrevision IDである。鮮度判定（9.1, 9.2）はこの値と、ページ取得レスポンスに含まれる現在の `page.revision._id` の比較のみで行う。保存操作が行われた時点のrevisionで取り直した値ではない（7.2）。
 - `capturedAt` は `sourceRevisionId` と**同一時点**（生成開始時点）のタイムスタンプであり、鮮度判定には使わない。UI表示用（「この要約はいつ生成されたか」の文言）にのみ用いる。
 
@@ -607,7 +607,7 @@ export const limitedGetPageContentTool: Tool; // used only by summarizeAgent
 ##### API Contract
 | Method | Endpoint | Request | Response | Errors |
 |--------|----------|---------|----------|--------|
-| POST | `/_api/v3/page/{pageId}/ai-summary` | `{ body: string; sourceRevisionId: ObjectId; capturedAt: ISO Date String }` | 保存後のページ情報（`aiSummary` を含む） | 400（入力不正: `body` 長さ超過／`sourceRevisionId` がObjectId形式でない／`capturedAt` がパース不能）, 401 または 403（未ログイン、`loginRequiredStrictly`）, 403（読み取り専用ユーザー、`excludeReadOnlyUser`）, 403/404（`not_found_or_forbidden`、`Page.findByIdAndViewer` が `null`）, **429（レート制限超過。`rate-limiter` の設定マップに基づき `res.sendStatus(429)`）**, 500（書き込み失敗、詳細はサーバログのみ） |
+| POST | `/_api/v3/page/{pageId}/ai-summary` | `{ body: string; sourceRevisionId: ObjectId; capturedAt: ISO Date String }` | 保存後のページ情報（`summary` を含む） | 400（入力不正: `body` 長さ超過／`sourceRevisionId` がObjectId形式でない／`capturedAt` がパース不能）, 401 または 403（未ログイン、`loginRequiredStrictly`）, 403（読み取り専用ユーザー、`excludeReadOnlyUser`）, 403/404（`not_found_or_forbidden`、`Page.findByIdAndViewer` が `null`）, **429（レート制限超過。`rate-limiter` の設定マップに基づき `res.sendStatus(429)`）**, 500（書き込み失敗、詳細はサーバログのみ） |
 
 **Implementation Notes**
 - Integration: `features/ai-summarize/server/routes/` に新規ルートを追加し、既存のAPIルート登録パターンに沿って `routes/apiv3` 相当のマウント箇所に組み込む。
@@ -624,38 +624,38 @@ export const limitedGetPageContentTool: Tool; // used only by summarizeAgent
 | Requirements | 8.1, 8.2, 8.3, 9.1, 9.2, 9.3, 9.4 |
 
 **Responsibilities & Constraints**
-- `PageView.tsx` から、既存のページ取得結果に含まれる `aiSummary` を受け取って描画する。専用の取得APIは呼ばない（8.1, 8.2 は既存のページ取得APIの権限ゲートにそのまま乗る）。
-- `aiSummary` が存在しない場合は何も描画しない。
-- マウント時に `localStorage` から非表示フラグを読む。キー形式は **`growi.aiSummary.hidden.{userId}.{pageId}`** とし、`userId` は既存の `useCurrentUser()` フックから得た現在のログインユーザーの `_id` を用いる。フラグが立っていれば何も描画しない（9.3）。
+- `PageView.tsx` から、既存のページ取得結果に含まれる `summary` を受け取って描画する。専用の取得APIは呼ばない（8.1, 8.2 は既存のページ取得APIの権限ゲートにそのまま乗る）。
+- `summary` が存在しない場合は何も描画しない。
+- マウント時に `localStorage` から非表示フラグを読む。キー形式は **`growi.summary.hidden.{userId}.{pageId}`** とし、`userId` は既存の `useCurrentUser()` フックから得た現在のログインユーザーの `_id` を用いる。フラグが立っていれば何も描画しない（9.3）。
   - **`userId` をキーに含める理由**: 同一ブラウザを複数ユーザーが使う環境（共用端末、ログアウト→別ユーザーでログイン）で、あるユーザーの非表示操作が別ユーザーの表示に波及することを防ぐ。要件9.3の「閲覧者ごとに自分の画面上でのみ」を、ブラウザ単位ではなく**ブラウザ×ユーザー単位**で満たす。
   - `useCurrentUser()` が `undefined` を返す場合（未ログイン・取得前）は、非表示フラグの読み書きを行わず常に表示する。未ログイン閲覧者に対して安定したキーを与えられないため、ローカル非表示機能はログインユーザーに限定される。
-- `aiSummary.sourceRevisionId` とページの現在の `revision._id` を比較し、不一致であれば、控えめな鮮度ヒント（背景色を変える等の目立つ演出なし）を表示する（9.1, 9.2）。表示文言は `aiSummary.capturedAt` を使ったタイムスタンプベースの表現とし、revision IDそのものはUIに出さない。
-- `aiSummary.body` は**Markdownとして描画する**。要件3.1の出力形式（リード文＋主要ポイント3〜5個の箇条書き）がMarkdown記法で生成されるため、プレーンテキスト表示では箇条書きが崩れて読みづらくなる。描画には**既存のページ本文Markdown描画パイプ（`RevisionRenderer` + `rehype-sanitize`）をそのまま再利用**し、要約専用のレンダラ・独自のMarkdownパーサは新設しない。
+- `summary.sourceRevisionId` とページの現在の `revision._id` を比較し、不一致であれば、控えめな鮮度ヒント（背景色を変える等の目立つ演出なし）を表示する（9.1, 9.2）。表示文言は `summary.capturedAt` を使ったタイムスタンプベースの表現とし、revision IDそのものはUIに出さない。
+- `summary.body` は**Markdownとして描画する**。要件3.1の出力形式（リード文＋主要ポイント3〜5個の箇条書き）がMarkdown記法で生成されるため、プレーンテキスト表示では箇条書きが崩れて読みづらくなる。描画には**既存のページ本文Markdown描画パイプ（`RevisionRenderer` + `rehype-sanitize`）をそのまま再利用**し、要約専用のレンダラ・独自のMarkdownパーサは新設しない。
   - 再利用する具体的なコンポーネントは `apps/app/src/components/PageView/RevisionRenderer.tsx`（`rendererOptions` と `markdown: string` を受け取り、`rehypePlugins` 適用済みの `ReactMarkdown` を描画する）。ページ本文用の `PageContentRenderer` は `pagePath` を前提とするため、**revision本文ではない任意のMarkdown文字列**には `RevisionRenderer` を直接使う（既存の先例: `PageComment/Comment.tsx`、`PageEditor/Preview.tsx`、`Sidebar/Custom/CustomSidebarSubstance.tsx`）。
   - `rendererOptions` は既存のオプション生成フックから得る。要約は本文と同等のフル機能を必要としないため、`generateSimpleViewOptions` 系のフック（`~/stores/renderer.tsx` の `useSelectedPagePreviewOptions` / `useCustomSidebarOptions` と同じ系列）を用いる。オプションを自前で組み立てない。
-  - **サニタイズは既存パイプに委譲する**。上記オプションの `rehypePlugins` には `rehype-sanitize` が `[sanitize, getCommonSanitizeOption(config)]` として既に含まれており、ページ本文（同じくユーザー由来の任意テキスト）に対して適用されているものと同一である。`aiSummary.body`（LLM生成コンテンツ）も同じサニタイザを通ることで、スクリプト・不正なタグの注入に対する防御が本文と同一水準で担保される（`.claude/rules/security.md`）。**本コンポーネント側で独自のHTMLエスケープ・サニタイズ処理を追加実装してはならない**（サニタイズロジックの重複・乖離を防ぐため）。
+  - **サニタイズは既存パイプに委譲する**。上記オプションの `rehypePlugins` には `rehype-sanitize` が `[sanitize, getCommonSanitizeOption(config)]` として既に含まれており、ページ本文（同じくユーザー由来の任意テキスト）に対して適用されているものと同一である。`summary.body`（LLM生成コンテンツ）も同じサニタイザを通ることで、スクリプト・不正なタグの注入に対する防御が本文と同一水準で担保される（`.claude/rules/security.md`）。**本コンポーネント側で独自のHTMLエスケープ・サニタイズ処理を追加実装してはならない**（サニタイズロジックの重複・乖離を防ぐため）。
   - 既存パイプには `verifySanitizePlugin` / `hasSanitizePlugin` によるガードがあり、サニタイズプラグインを欠いたオプションを渡すと例外が投げられる。これを回避するためにガードを外す・独自オプションを作る、といった実装は禁止する。
-- 削除ボタンを表示し、クリックで `localStorage` の `growi.aiSummary.hidden.{userId}.{pageId}` に非表示フラグを書き込み、以後この描画をスキップする。サーバへの書き込みは発生せず、`aiSummary` 自体・他の閲覧者の表示には一切影響しない（9.3）。再表示するUIは設けない（9.4）。
+- 削除ボタンを表示し、クリックで `localStorage` の `growi.summary.hidden.{userId}.{pageId}` に非表示フラグを書き込み、以後この描画をスキップする。サーバへの書き込みは発生せず、`summary` 自体・他の閲覧者の表示には一切影響しない（9.3）。再表示するUIは設けない（9.4）。
 - 表示位置はMarkdown本文のレンダリング箇所の外側とする（8.3）。
 - 見出し「AI要約」・鮮度ヒント文言・削除ボタンラベルは、既存の `react-i18next` パターンに沿って5ロケール分の翻訳キーを追加する。
 
 **Contracts**: Service [x] / API [ ] / Event [ ] / Batch [ ] / State [x]
 
 ##### State Management
-- State model: ブラウザの `localStorage` に、`growi.aiSummary.hidden.{userId}.{pageId}` をキーとした非表示フラグを保持する。サーバ側の状態は持たない。
+- State model: ブラウザの `localStorage` に、`growi.summary.hidden.{userId}.{pageId}` をキーとした非表示フラグを保持する。サーバ側の状態は持たない。
 - Persistence & consistency: 当該ブラウザ内の当該ユーザーに対してのみ有効。別ブラウザ・別デバイスには伝播せず、同一ブラウザを使う別ユーザーにも（キーに `userId` を含むため）伝播しない（意図的な設計、9.3）。
 - Concurrency strategy: 単一ブラウザ内のローカルな読み書きのみであり、排他制御は不要。
 
 **Implementation Notes**
 - Integration: `PageView.tsx` にMarkdown本文の描画箇所の外側で数行追加する。既存の翻訳ファイル（`locales/{locale}/translation.json` 相当）に本コンポーネントの文言キーを追加する。
-- Validation: `aiSummary` の有無・鮮度の一致/不一致・非表示フラグの有無それぞれで正しい表示になることをコンポーネントテストで検証する（`localStorage` はテスト用にモックする）。
+- Validation: `summary` の有無・鮮度の一致/不一致・非表示フラグの有無それぞれで正しい表示になることをコンポーネントテストで検証する（`localStorage` はテスト用にモックする）。
 - Risks: `localStorage` が利用不可（プライベートブラウジング等）な場合、非表示状態が保存されないため毎回表示される可能性がある。**エラーハンドリング**: read失敗時は非表示フラグなしとして常に表示する（機能喪失を避けるため安全側）。write失敗時は画面上の非表示化は反映するが次回訪問時に復活する可能性を容認する。mid-session quota超過時はページ再読み込みで リセット・再試行する。
 
 ## Data Models
 
 - 要約スレッド・メッセージは、既存の `Memory`（`MongoDBStore`）が管理するスレッド／メッセージのスキーマをそのまま利用する。要約であることを示す専用フィールドはスレッドメタデータに追加しない（`getOrCreateThread` の既存方針「アシスタント識別子をメタデータに書き込まない」を踏襲する）。
-- 永続化された要約は、既存の `Page` スキーマに追加する `aiSummary: { body: string; sourceRevisionId: ObjectId; capturedAt: Date } | null` フィールドで表す（既定値 `null`）。専用コレクションは作らない（PageAiSummaryField参照）。
-- クライアントが `aiSummary` を読むには、`@growi/core` の `IPage`（`packages/core/src/interfaces/page.ts`）にも同じ形の型を追加する必要がある。公開パッケージの変更のため、Changesetの対象とする（`.claude/rules/project-structure.md`）。
+- 永続化された要約は、既存の `Page` スキーマに追加する `summary: { body: string; sourceRevisionId: ObjectId; capturedAt: Date } | null` フィールドで表す（既定値 `null`）。専用コレクションは作らない（PageAiSummaryField参照）。
+- クライアントが `summary` を読むには、`@growi/core` の `IPage`（`packages/core/src/interfaces/page.ts`）にも同じ形の型を追加する必要がある。公開パッケージの変更のため、Changesetの対象とする（`.claude/rules/project-structure.md`）。
 
 ## Error Handling
 
@@ -689,10 +689,10 @@ export const limitedGetPageContentTool: Tool; // used only by summarizeAgent
 - `summarize-message-validator`: `pageId`/`pagePath` いずれも欠落時に400相当のバリデーションエラーになること、両方指定時・片方のみ指定時に通過すること。
 - `ai-summarize-metrics`: `addAiSummarizeMetrics()` 呼び出し後、公開されたインクリメント関数を呼ぶとCounterの値が1増えること（モック `Meter`/`Counter` を用いて検証）。Counterが `addAiSummarizeMetrics()` の**内部**で生成されること（モジュール評価だけでは `getMeter()` が呼ばれないこと）。**`addAiSummarizeMetrics()` を呼ばずに（＝OpenTelemetry無効時に）インクリメント関数を呼んでも例外を投げず、静かに何もせずに戻ること。**
 - `ai-summary-persistence-validator`: `body` の長さ上限を超えた場合、`sourceRevisionId` がObjectId形式でない場合、**`capturedAt` が有効なISO Date Stringとしてパースできない場合（不正文字列・数値・オブジェクト等）**に、それぞれ400相当のバリデーションエラーになること。有効なISO Date Stringは通過すること。
-- `PersistedSummaryView`: `aiSummary` が `null` の場合は何も描画しないこと、`sourceRevisionId` と `revision._id` が一致/不一致それぞれで表示が切り替わること、`localStorage` の非表示フラグが立っている場合は描画しないこと、削除ボタン押下で `localStorage` に非表示フラグが書き込まれ以後描画されなくなること。加えて:
-  - **`aiSummary.body` がMarkdownとして描画されること**（箇条書きが `<ul>`/`<li>` としてDOMに現れる等、観察可能な出力で検証する）。
+- `PersistedSummaryView`: `summary` が `null` の場合は何も描画しないこと、`sourceRevisionId` と `revision._id` が一致/不一致それぞれで表示が切り替わること、`localStorage` の非表示フラグが立っている場合は描画しないこと、削除ボタン押下で `localStorage` に非表示フラグが書き込まれ以後描画されなくなること。加えて:
+  - **`summary.body` がMarkdownとして描画されること**（箇条書きが `<ul>`/`<li>` としてDOMに現れる等、観察可能な出力で検証する）。
   - **既存のサニタイザが適用されていること**（`body` にスクリプトタグや危険な属性を含めた場合、描画結果からそれらが除去されること）。独自サニタイズではなく既存パイプ由来であることを、`RevisionRenderer` に渡す `rendererOptions` が `rehype-sanitize` を含むことで担保する。
-  - **`localStorage` のキーに `userId` が含まれること**: `useCurrentUser()` をモックして異なる `userId` を返させたとき、一方のユーザーで非表示にしても他方のユーザーでは表示されること（キーが `growi.aiSummary.hidden.{userId}.{pageId}` である帰結として検証する）。`useCurrentUser()` が `undefined` を返す場合は非表示機能が働かず常に表示されること。
+  - **`localStorage` のキーに `userId` が含まれること**: `useCurrentUser()` をモックして異なる `userId` を返させたとき、一方のユーザーで非表示にしても他方のユーザーでは表示されること（キーが `growi.summary.hidden.{userId}.{pageId}` である帰結として検証する）。`useCurrentUser()` が `undefined` を返す場合は非表示機能が働かず常に表示されること。
 
 ### Integration Tests
 - `summarize-message` ハンドラ: **閲覧権限のあるページ**に対する要約リクエストが、新規スレッドを作成し、ストリーム応答を返すこと。
@@ -702,10 +702,10 @@ export const limitedGetPageContentTool: Tool; // used only by summarizeAgent
 - 要約後、同じ `threadId` を使って既存の `POST /message` に追質問を送ると、`growiAgent` がスレッド履歴（要約メッセージ）を認識して応答できること（1.4 のE2E相当の検証）。
 - AI未設定・無効時に `POST /summary` が501を返すこと（`aiReadyGuard` の既存挙動の回帰確認）。
 - 閲覧権限のあるページに要約を永続化すると、以後の `GET` でその要約が返り、権限のない別ユーザーの `GET` には含まれないこと（8.1, 8.2）。
-- **永続化ルートの認可**: 未ログイン（ゲスト）からの保存リクエストが `loginRequiredStrictly` により拒否されること、読み取り専用ユーザーからの保存リクエストが `excludeReadOnlyUser` により403で拒否されること。いずれの場合も `Page.aiSummary` が書き込まれていないこと。
+- **永続化ルートの認可**: 未ログイン（ゲスト）からの保存リクエストが `loginRequiredStrictly` により拒否されること、読み取り専用ユーザーからの保存リクエストが `excludeReadOnlyUser` により403で拒否されること。いずれの場合も `Page.summary` が書き込まれていないこと。
 - **永続化ルートのレート制限**: 設定した上限を超える回数の保存リクエストを短時間に送ると、上限超過分が **429** を返すこと。上限内のリクエストは正常に処理されること。
-- **要件7.3（未選択時は永続化しない）**: `POST /summary` が正常に完了しても、続けて `POST /_api/v3/page/{pageId}/ai-summary` を**呼ばなかった**場合、対象ページの `aiSummary` が `null` のまま（＝書き込まれていない）であることをDBの状態で確認すること。要約の生成自体が永続化の副作用を持たないことを保証する。
-- 永続化後にページ本文を更新すると新しいrevisionが作られ、以後の `GET` で返る `page.revision._id` が `aiSummary.sourceRevisionId` と一致しなくなり、鮮度判定が「古い可能性あり」に切り替わること（9.1）。本文を変えないメタデータ更新（リネーム等）では `revision._id` が変わらないため、鮮度判定が誤って「古い可能性あり」に切り替わらないこと。
+- **要件7.3（未選択時は永続化しない）**: `POST /summary` が正常に完了しても、続けて `POST /_api/v3/page/{pageId}/ai-summary` を**呼ばなかった**場合、対象ページの `summary` が `null` のまま（＝書き込まれていない）であることをDBの状態で確認すること。要約の生成自体が永続化の副作用を持たないことを保証する。
+- 永続化後にページ本文を更新すると新しいrevisionが作られ、以後の `GET` で返る `page.revision._id` が `summary.sourceRevisionId` と一致しなくなり、鮮度判定が「古い可能性あり」に切り替わること（9.1）。本文を変えないメタデータ更新（リネーム等）では `revision._id` が変わらないため、鮮度判定が誤って「古い可能性あり」に切り替わらないこと。
 
 ### Performance
 - 長いページ（1500行超のフィクスチャ）を用いて、`pageReadBudget` の上限に到達した時点で `limitedGetPageContentTool` が `limit_exceeded` を返し、`maxSteps` のハード上限に達する前に打ち切りが発生し、部分要約である旨が応答に含まれることを確認する。
@@ -719,7 +719,7 @@ export const limitedGetPageContentTool: Tool; // used only by summarizeAgent
 - 永続化の書き込みも同じ権限ゲートを経由してから行う。加えて、`findByIdAndViewer` は**閲覧**権限しか判定しないため、書き込み特有の認可を別途適用する: `loginRequiredStrictly`（未ログインの書き込み拒否）と `excludeReadOnlyUser`（読み取り専用ユーザーの書き込み拒否）。これらを欠くと、ゲストや読み取り専用ユーザーが全閲覧者に表示される共有データを改変できてしまう。
 - 永続化ルートには `features/rate-limiter` の設定マップ経由でレート制限を適用する（超過時429）。共有データへの書き込みエンドポイントを無制限に開放しないことで、要約の反復上書きによる荒らし・DBへの書き込み負荷を抑える。
 - 要約生成ルート（`POST /summary`）では、権限なし／存在しないページに対して**ストリームを開始する前に**短絡し、不存在と権限なしを区別しない単一の応答を返す。ステータスコードや応答本文を出し分けないことで、ページの存在有無という情報の漏えいを防ぐ（4.2）。
-- `aiSummary.body` はLLM生成コンテンツであり信頼できない入力として扱う。描画は既存のページ本文Markdownパイプ（`rehype-sanitize` を含む `rendererOptions`）に委譲し、本機能独自のサニタイズ・独自レンダラを新設しない。サニタイズロジックを重複させないことで、既存パイプの改善が要約表示にも自動的に及ぶ状態を保つ。
+- `summary.body` はLLM生成コンテンツであり信頼できない入力として扱う。描画は既存のページ本文Markdownパイプ（`rehype-sanitize` を含む `rendererOptions`）に委譲し、本機能独自のサニタイズ・独自レンダラを新設しない。サニタイズロジックを重複させないことで、既存パイプの改善が要約表示にも自動的に及ぶ状態を保つ。
 - 「削除」導線はページに紐づく永続データを変更しない、閲覧者のブラウザ内 `localStorage` のみのローカルな非表示状態であるため、共有データへの書き込み権限を判定する必要がそもそも存在しない（9.3）。他の閲覧者のアクセス権限には一切影響しない。
 
 ---

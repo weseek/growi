@@ -111,8 +111,8 @@
   - _Depends: 3.3_
 
 - [ ] 5. PageAiSummaryField: Pageスキーマが要約を保持できる
-  - `apps/app/src/server/models/page.ts` に `aiSummary: { body: String, sourceRevisionId: ObjectId, capturedAt: Date }`（デフォルト `null`）を追加する
-  - **`apps/app/prisma/schema.prisma` の `model pages` に `aiSummary` フィールドを追加し、Prismaの型生成（出力先 `src/generated/prisma`）が成功することを確認できる**。`Page` モデルはMongooseからPrismaへの移行途上（`.claude/rules/model.md`）であり、Mongoose側だけを更新すると型不整合が後から表面化するため両方を同時に更新する。埋め込みオブジェクトの表現は同スキーマ内の既存の埋め込みフィールド（`grantedGroups` が `Json?`）と同じ扱いに揃える
+  - `apps/app/src/server/models/page.ts` に `summary: { body: String, sourceRevisionId: ObjectId, capturedAt: Date }`（デフォルト `null`）を追加する
+  - **`apps/app/prisma/schema.prisma` の `model pages` に `summary` フィールドを追加し、Prismaの型生成（出力先 `src/generated/prisma`）が成功することを確認できる**。`Page` モデルはMongooseからPrismaへの移行途上（`.claude/rules/model.md`）であり、Mongoose側だけを更新すると型不整合が後から表面化するため両方を同時に更新する。埋め込みオブジェクトの表現は同スキーマ内の既存の埋め込みフィールド（`grantedGroups` が `Json?`）と同じ扱いに揃える
   - `packages/core/src/interfaces/page.ts` の `IPage` に同じ形の型を追加する
   - **`npx changeset` で Changeset を作成する**（`@growi/core` は公開パッケージであり `.claude/rules/project-structure.md` により必須）
   - 既存のPageモデルのユニットテストが引き続き通ることを確認できる
@@ -127,7 +127,7 @@
   - _Requirements: 7.1, 7.2_
 
 - [ ] 6.2 要約が保存され、既存の永続化要約を置き換えられる
-  - `Page.findByIdAndViewer` で権限確認後、クライアントから受け取った `aiSummary.body`・`aiSummary.sourceRevisionId`・`aiSummary.capturedAt` をそのまま保存する（サーバ側でrevisionや日時を導出し直さない）
+  - `Page.findByIdAndViewer` で権限確認後、クライアントから受け取った `summary.body`・`summary.sourceRevisionId`・`summary.capturedAt` をそのまま保存する（サーバ側でrevisionや日時を導出し直さない）
   - 既に永続化済みの要約がある場合は新しい内容で置き換わることを統合テストで確認できる
   - 権限のないページ・存在しないページへの保存要求が `not_found_or_forbidden` を返すことを確認できる
   - _Requirements: 7.1, 7.2, 7.4_
@@ -139,34 +139,34 @@
   - `excludeReadOnlyUser` は `~/server/middlewares/exclude-read-only-user` の named export をそのまま使う
   - `findByIdAndViewer` は**閲覧**権限しか判定しないため、これらのミドルウェアの代替にはならないことをコードレビュー観点として明記する
   - **レート制限を `apps/app/src/features/rate-limiter/config/index.ts` の `defaultConfigWithRegExp` にエントリ追加で実装する**（`pageId` を含む動的パスのため完全一致マップ `defaultConfig` ではなく正規表現マップを使う。`/_api/v3/page/[^/]+/ai-summary`、`POST`、`MAX_REQUESTS_TIER_1`）。GROWIのレート制限は `app.use(rateLimiterFactory())` として全体に1回適用される方式であり、ルートにミドルウェアを差し込む実装にはしない。独自の数値をハードコードせず既存のティア定数を使う
-  - **統合テスト**: 未ログイン（ゲスト）からの保存が拒否されること、読み取り専用ユーザーからの保存が403で拒否されること、いずれの場合も `Page.aiSummary` が書き込まれていないことを確認できる
+  - **統合テスト**: 未ログイン（ゲスト）からの保存が拒否されること、読み取り専用ユーザーからの保存が403で拒否されること、いずれの場合も `Page.summary` が書き込まれていないことを確認できる
   - **統合テスト（レート制限）**: 設定した上限を超える回数の保存リクエストを短時間に送ると、上限超過分が **429** を返し、上限内のリクエストは正常に処理されることを確認できる
   - _Requirements: 7.1_
   - _Depends: 6.2_
 
 - [ ] 6.4 要約を残さない選択が永続化を発生させない（要件7.3）
-  - **`POST /_api/v3/mastra/summary` が正常に完了しても、続けて `POST /_api/v3/page/{pageId}/ai-summary` を呼ばなかった場合、対象ページの `aiSummary` が `null` のまま（＝書き込まれていない）であることをDBの状態で統合テストで確認できる**。「留める」ボタンを押さない限り永続化されないことを保証する
+  - **`POST /_api/v3/mastra/summary` が正常に完了しても、続けて `POST /_api/v3/page/{pageId}/ai-summary` を呼ばなかった場合、対象ページの `summary` が `null` のまま（＝書き込まれていない）であることをDBの状態で統合テストで確認できる**。「留める」ボタンを押さない限り永続化されないことを保証する
   - 要約の生成自体が永続化の副作用を一切持たないこと（生成ルートが `Page` への書き込みを行わないこと）をコードレビュー観点として明記する
   - _Requirements: 7.3_
   - _Depends: 5, 6.2_
 
 - [ ] 7. PersistedSummaryView: ページ表示時に永続化要約が共有表示される
 - [ ] 7.1 永続化された要約が本文の外側にMarkdownとして表示される
-  - `PageView.tsx` の既存のページ取得結果から `aiSummary` を受け取り、存在する場合のみ本文の外側に描画する
-  - **`aiSummary.body` をMarkdownとして描画する**。リード文＋箇条書き形式（要件3.1）を正しく表現するため。`apps/app/src/components/PageView/RevisionRenderer.tsx`（`rendererOptions` と `markdown: string` を受け取る既存コンポーネント）を再利用する。`PageContentRenderer` は `pagePath` を前提とするため、revision本文でない任意のMarkdown文字列には `RevisionRenderer` を直接使う（既存の先例: `PageComment/Comment.tsx`、`PageEditor/Preview.tsx`、`Sidebar/Custom/CustomSidebarSubstance.tsx`）
+  - `PageView.tsx` の既存のページ取得結果から `summary` を受け取り、存在する場合のみ本文の外側に描画する
+  - **`summary.body` をMarkdownとして描画する**。リード文＋箇条書き形式（要件3.1）を正しく表現するため。`apps/app/src/components/PageView/RevisionRenderer.tsx`（`rendererOptions` と `markdown: string` を受け取る既存コンポーネント）を再利用する。`PageContentRenderer` は `pagePath` を前提とするため、revision本文でない任意のMarkdown文字列には `RevisionRenderer` を直接使う（既存の先例: `PageComment/Comment.tsx`、`PageEditor/Preview.tsx`、`Sidebar/Custom/CustomSidebarSubstance.tsx`）
   - `rendererOptions` は `~/stores/renderer.tsx` の `generateSimpleViewOptions` 系フックから取得する。オプションを自前で組み立てない
   - **サニタイズは既存パイプに委譲する**。上記オプションの `rehypePlugins` には `rehype-sanitize` が `[sanitize, getCommonSanitizeOption(config)]` として既に含まれている。本コンポーネント側で独自のHTMLエスケープ・サニタイズ処理を追加実装しない。既存パイプの `verifySanitizePlugin` / `hasSanitizePlugin` ガードを回避する実装（ガードを外す・独自オプションを作る）は禁止する
-  - マウント時に `localStorage` の **`growi.aiSummary.hidden.{userId}.{pageId}`** を読み、非表示フラグが立っている場合は描画しない
+  - マウント時に `localStorage` の **`growi.summary.hidden.{userId}.{pageId}`** を読み、非表示フラグが立っている場合は描画しない
   - **`userId` は `useCurrentUser()`（`~/states/global/global`、`IUserHasId | undefined` を直接返すJotaiフック）から `currentUser?._id` として取得し、キーに含める**。`undefined`（未ログイン・取得前）の場合は非表示フラグの読み書きを行わず常に表示する。**このため、ブラウザ×ユーザー単位で非表示状態が独立され、共用端末での他ユーザーへの波及が防がれる**（要件9.3）
   - 見出し「AI要約」を含む表示文言を、既存の `react-i18next` パターンに沿って5ロケール分の翻訳キーとして追加する
   - **コンポーネントテスト**: 箇条書きを含む `body` が `<ul>`/`<li>` としてDOMに現れること（Markdownとして描画されている観察可能な帰結）、および `body` にスクリプトタグや危険な属性を含めた場合に描画結果からそれらが除去されること（既存sanitizerが適用されていること）を確認できる
   - **コンポーネントテスト**: `useCurrentUser()` をモックして異なる `userId` を返させたとき、一方のユーザーで非表示にしても他方のユーザーでは表示されること（キーに `userId` が含まれる帰結）。`useCurrentUser()` が `undefined` を返す場合は非表示機能が働かず常に表示されること
-  - 権限のない閲覧者には `aiSummary` を含むページデータ自体が返らないため、表示もされないことを確認できる
+  - 権限のない閲覧者には `summary` を含むページデータ自体が返らないため、表示もされないことを確認できる
   - _Requirements: 8.1, 8.2, 8.3_
   - _Depends: 5_
 
 - [ ] 7.2 永続化された要約の鮮度が控えめに示される
-  - `aiSummary.sourceRevisionId` と `page.revision._id` をクライアント側で比較し、不一致時に控えめな鮮度ヒント（背景色を変えない、`aiSummary.capturedAt` を使ったタイムスタンプ表現の文言）を表示する
+  - `summary.sourceRevisionId` と `page.revision._id` をクライアント側で比較し、不一致時に控えめな鮮度ヒント（背景色を変えない、`summary.capturedAt` を使ったタイムスタンプ表現の文言）を表示する
   - revision IDそのものはUIに出さない
   - 追加のAPI呼び出しが発生しないことをコードレビュー観点として明記する
   - 一致/不一致それぞれの表示をコンポーネントテストで確認できる
@@ -174,10 +174,10 @@
   - _Depends: 7.1_
 
 - [ ] 7.3 閲覧者ごとに要約をローカルで非表示にできる
-  - 削除ボタンのクリックで `localStorage` の **`growi.aiSummary.hidden.{userId}.{pageId}`** に非表示フラグを書き込む（サーバへのリクエストは発生しない）
+  - 削除ボタンのクリックで `localStorage` の **`growi.summary.hidden.{userId}.{pageId}`** に非表示フラグを書き込む（サーバへのリクエストは発生しない）
   - `localStorage` の read 失敗時はフラグなしとして常に表示し、write 失敗時は画面上の非表示化のみ反映する（次回訪問時に復活しうることを容認する）
   - 非表示化後、表示から要約が消えること、ページ再訪問（再マウント）でも非表示のままであることをコンポーネントテストで確認できる（`localStorage` はテスト用にモックする）
-  - `aiSummary`（Page本体の永続データ）自体は変更されないことをコードレビュー観点として明記する
+  - `summary`（Page本体の永続データ）自体は変更されないことをコードレビュー観点として明記する
   - 再表示するUIを持たないことを確認できる
   - _Requirements: 9.3, 9.4_
   - _Depends: 7.1_
@@ -235,7 +235,7 @@
 
 - [ ] 9.4 削除（非表示）導線がクライアント側で完結する
   - 永続化された要約がページに表示されている場合、要約エリア内に「非表示にする」ボタン（またはメニュー）を表示する
-  - クリック時、`localStorage` の `growi.aiSummary.hidden.{userId}.{pageId}` に非表示フラグを書き込む（サーバへの呼び出しなし）
+  - クリック時、`localStorage` の `growi.summary.hidden.{userId}.{pageId}` に非表示フラグを書き込む（サーバへの呼び出しなし）
   - 「非表示にする」を選択後、以後当該ブラウザ・当該ユーザーでは表示されない
   - 再表示機能は設けない（必要な場合は要約を再生成し、改めて残すことを選択）
   - UIボタン、localStorage書き込み、表示の消失をコンポーネント・統合テストで確認できる

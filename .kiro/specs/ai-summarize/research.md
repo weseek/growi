@@ -60,11 +60,11 @@
 | R7.2 生成元revision IDの記録 | `page.revision._id` は既存資産。ただし「生成開始時点の版をストリーム応答でクライアントへ返し、保存時にそのまま受け取る」という往復の配線は存在しない。サーバ側で取り直さないことが要件なので、クライアント経由の受け渡しが必須 | **Missing**（配線が新規。取り直し禁止という制約付き） |
 | R7.3 未選択時は永続化しない | 該当する既存資産は不要（保存APIを呼ばなければ書き込みは発生しない）。ただし「実際に書き込まれないこと」の検証がタスクに必要 | Constraint（構造的に満たされるが、**検証タスクが必要**） |
 | R7.4 既存永続化要約の置き換え | Mongoose の `$set` による上書き（既存の一般的な更新パターン） | Constraint（既存パターンの再利用） |
-| R8.1 権限ゲート経由の共有表示 | 既存のページ取得経路がそのまま使える: apiv3 のページ取得API、および初回描画時のSSR（`page-data-props.ts` の `populateDataToShowRevision()`）。両経路とも `Page.findByIdAndViewer` を経由する | Constraint（`aiSummary` を返却対象に含めるだけ。要約専用の閲覧APIは新設しない） |
-| R8.2 権限なし時の非表示 | 同上。既存ゲートが `null` を返すため、`aiSummary` を含むページデータ自体が返らない | Constraint（変更不要） |
+| R8.1 権限ゲート経由の共有表示 | 既存のページ取得経路がそのまま使える: apiv3 のページ取得API、および初回描画時のSSR（`page-data-props.ts` の `populateDataToShowRevision()`）。両経路とも `Page.findByIdAndViewer` を経由する | Constraint（`summary` を返却対象に含めるだけ。要約専用の閲覧APIは新設しない） |
+| R8.2 権限なし時の非表示 | 同上。既存ゲートが `null` を返すため、`summary` を含むページデータ自体が返らない | Constraint（変更不要） |
 | R8.3 本文外への表示 | `apps/app/src/components/PageView/PageView.tsx`（Markdown本文の描画箇所があり、その外側に挿入できる） | Missing（軽微。挿入箇所は既存） |
 | R9.1 鮮度の控えめな明示 | 該当する既存UIパターンなし。新規コンポーネント内で実装（背景色を変えない控えめな表現） | Missing |
-| R9.2 追加呼び出しなしの鮮度判定 | ページ取得レスポンスに `revision._id` が既に含まれる。`aiSummary.sourceRevisionId` との比較はクライアント側の純粋計算で完結 | Constraint（既存レスポンスに乗るため追加呼び出し不要） |
+| R9.2 追加呼び出しなしの鮮度判定 | ページ取得レスポンスに `revision._id` が既に含まれる。`summary.sourceRevisionId` との比較はクライアント側の純粋計算で完結 | Constraint（既存レスポンスに乗るため追加呼び出し不要） |
 | R9.3 閲覧者ごとのローカル非表示 | ブラウザ組み込みの `localStorage`。キーに `userId`（`useCurrentUser()` から取得）を含めることで、共用端末での他ユーザーへの波及を防ぐ | Missing（新規。サーバ側資産は不要） |
 | R9.4 再表示機能なし | 該当なし（機能を作らないことが要件） | Constraint |
 
@@ -72,11 +72,11 @@
 
 R7〜R9 のスコープ追加により、R1〜R6 だけを見ていた当初のギャップ分析には現れなかった以下の作業が発生する。これらは §5 の Effort 再算出の主要因である。
 
-- **公開パッケージへの型追加と Changeset**: クライアントが `aiSummary` を読むため、`packages/core/src/interfaces/page.ts` の `IPage` に型を追加する必要がある。`@growi/core` は公開パッケージ（10+ consumers）であり、`.claude/rules/project-structure.md` により Changeset の作成が必須。これは生成側（R1〜R6）には一切なかった作業。
+- **公開パッケージへの型追加と Changeset**: クライアントが `summary` を読むため、`packages/core/src/interfaces/page.ts` の `IPage` に型を追加する必要がある。`@growi/core` は公開パッケージ（10+ consumers）であり、`.claude/rules/project-structure.md` により Changeset の作成が必須。これは生成側（R1〜R6）には一切なかった作業。
 - **Mongoose / Prisma の二重管理**: `.claude/rules/model.md` の通り、`Page` モデルは Mongoose から Prisma への移行途上にある。スキーマ追加は Mongoose 側（`apps/app/src/server/models/page.ts`）だけでなく、Prisma スキーマ側にも追随させ、型生成が通ることを確認する必要がある。
 - **書き込みAPIに伴う認可・レート制限**: R1〜R6 の生成側は `aiReadyGuard` に乗るだけだったが、R7 の永続化ルートは**共有データへの書き込み**である。ログイン必須（`loginRequiredStrictly`）・読み取り専用ユーザーの除外（`excludeReadOnlyUser`）・レート制限の適用が必要になる。
 - **5ロケール分のi18n**: R8.3/R9.1/R9.3 の表示文言（見出し「AI要約」・鮮度ヒント・削除ボタンラベル）について、既存の `react-i18next` パターンに沿って5ロケール分の翻訳キーを追加する必要がある。純粋な追加作業だが、ファイル数×キー数の分だけ確実に工数が乗る。
-- **統合テストの層が増える**: 生成側の統合テスト（クロスAgentスレッド再生、権限ゲート短絡、レート制限）に加えて、永続化・共有表示の統合テスト（権限のある/ないユーザーの `GET` での `aiSummary` 有無、本文更新による鮮度判定の切り替わり、未選択時に書き込まれないこと）が必要になる。
+- **統合テストの層が増える**: 生成側の統合テスト（クロスAgentスレッド再生、権限ゲート短絡、レート制限）に加えて、永続化・共有表示の統合テスト（権限のある/ないユーザーの `GET` での `summary` 有無、本文更新による鮮度判定の切り替わり、未選択時に書き込まれないこと）が必要になる。
 
 ---
 
@@ -159,13 +159,13 @@ R7〜R9 のスコープ追加により、R1〜R6 だけを見ていた当初の�
 
 | 項目 | Effort | Risk | 根拠 |
 |---|---|---|---|
-| `Page` スキーマへの `aiSummary` フィールド追加（Mongoose） | S | Low | 既存スキーマへの1フィールド追加。既存のインデックス・staticsは無変更 |
+| `Page` スキーマへの `summary` フィールド追加（Mongoose） | S | Low | 既存スキーマへの1フィールド追加。既存のインデックス・staticsは無変更 |
 | `IPage`（`@growi/core`）への型追加＋Changeset | S | Low〜Medium | 作業自体は小さいが、公開パッケージの変更であり10+ consumersに波及する。Changeset必須（`.claude/rules/project-structure.md`）。ビルド順序（`turbo`）の確認も伴う |
 | Prisma スキーマへの追随＋型生成の確認 | S〜M | Medium | Mongoose→Prisma移行途上（`.claude/rules/model.md`）のため二重管理。片方だけ更新すると型不整合が後で表面化する |
 | 永続化ルート（`POST /{pageId}/ai-summary`）＋バリデータ | M | Medium | 権限ゲート（`findByIdAndViewer`）・`loginRequiredStrictly`・`excludeReadOnlyUser`・レート制限・`body`長さ上限・`capturedAt` 形式検証。共有データへの書き込みであり、認可の抜けが直接の脆弱性になる |
 | `PersistedSummaryView`（Markdown描画・鮮度ヒント・ローカル非表示） | M | Low〜Medium | 既存の `RevisionRenderer` ＋サニタイズ済みレンダラオプションを再利用するため描画は軽い。`localStorage` の利用不可時フォールバック・`userId` スコープの扱いが細かい |
 | 5ロケール分のi18n追加 | S | Low | 純粋な追加作業。ただしロケール数×キー数の分だけ確実に工数が乗る |
-| `PageView.tsx` への統合＋ページ取得経路（API/SSR両方）での `aiSummary` 返却 | S〜M | Medium | 挿入自体は数行だが、apiv3 と SSR（`page-data-props.ts`）の**両経路**で返却されることを確認する必要がある。片方の漏れは「ある人には見えて別の人には見えない」形で表面化する |
+| `PageView.tsx` への統合＋ページ取得経路（API/SSR両方）での `summary` 返却 | S〜M | Medium | 挿入自体は数行だが、apiv3 と SSR（`page-data-props.ts`）の**両経路**で返却されることを確認する必要がある。片方の漏れは「ある人には見えて別の人には見えない」形で表面化する |
 
 ### 5.3 横断（テスト・レビュー）
 
@@ -236,7 +236,7 @@ R7〜R9 のスコープ追加により、R1〜R6 だけを見ていた当初の�
 - **非開示の担保**: `findByIdAndViewer` は不存在と権限なしを区別せず `null` を返すため、応答も **403/404 のいずれか一方に統一**し、応答本文も両ケースで同一にする。ステータスコードを出し分けるとページの存在有無が漏れる（要件4.2違反）。
 - **`getPageContentTool` の都度権限チェックとの関係**: 置き換えではなく**併存**。ルート層のゲート通過後にページが削除・権限変更された競合（TOCTOU）の窓を閉じる二重防護として維持する。要件4.1の「生成のたびに毎回実行される」保証はツール層が引き続き担う。
 
-### 7.8 決定: `aiSummary.body` は既存のページ本文Markdown描画パイプで描画する
+### 7.8 決定: `summary.body` は既存のページ本文Markdown描画パイプで描画する
 - **代替案**: (a) プレーンテキストとして表示する。(b) 要約専用のMarkdownレンダラ・サニタイザを新設する。(c) 既存のページ本文Markdown描画パイプを再利用する。
 - **選定**: (c)。
 - **理由**: 要件3.1の出力形式（リード文＋箇条書き）はMarkdown記法で生成されるため、(a) では箇条書きが崩れて要件3.1の「要点をすばやく読み取れる」という目的を損なう。(b) はサニタイズロジックが二重化し、既存パイプの改善が要約表示に及ばなくなる（`.claude/rules/coding-style.md` の単一の真実の源に反する）。
@@ -244,7 +244,7 @@ R7〜R9 のスコープ追加により、R1〜R6 だけを見ていた当初の�
 - **サニタイズ**: `rendererOptions` の `rehypePlugins` に `rehype-sanitize` が `[sanitize, getCommonSanitizeOption(config)]` として既に含まれる。オプションは `~/stores/renderer.tsx` の `generateSimpleViewOptions` 系フックから取得し、自前で組み立てない。既存パイプには `verifySanitizePlugin` / `hasSanitizePlugin` ガードがあり、サニタイズを欠いたオプションは例外になる — これを回避する実装は禁止する。
 
 ### 7.9 決定: ローカル非表示フラグの `localStorage` キーに `userId` を含める
-- **代替案**: (a) `growi.aiSummary.hidden.{pageId}`（ブラウザ単位）。(b) `growi.aiSummary.hidden.{userId}.{pageId}`（ブラウザ×ユーザー単位）。
+- **代替案**: (a) `growi.summary.hidden.{pageId}`（ブラウザ単位）。(b) `growi.summary.hidden.{userId}.{pageId}`（ブラウザ×ユーザー単位）。
 - **選定**: (b)。
 - **理由**: `localStorage` はオリジン単位でブラウザ内の全ユーザーに共有されるため、(a) では共用端末やログアウト→別ユーザーでログインした場合に、あるユーザーの非表示操作が別ユーザーの表示に波及する。これは要件9.3の「閲覧者**ごとに**自分の画面上でのみ非表示にする」に反する。
 - **`userId` の取得元**: `useCurrentUser()`（`~/states/global/global`）。SWRの `{ data }` ラッパではなく `IUserHasId | undefined` を直接返すJotaiフックであり、`currentUser?._id` で取得する。
