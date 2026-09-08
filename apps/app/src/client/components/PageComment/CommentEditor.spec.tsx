@@ -8,7 +8,7 @@
  * default gutters, so the type change stays invisible here.
  */
 
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { CommentEditor } from './CommentEditor';
@@ -16,6 +16,8 @@ import { CommentEditor } from './CommentEditor';
 const editorProps = vi.hoisted(
   () => ({ current: undefined }) as { current?: Record<string, unknown> },
 );
+
+const editorState = vi.hoisted(() => ({ docText: '' }));
 
 vi.mock('@growi/editor', () => ({
   GlobalCodeMirrorEditorKey: { COMMENT_NEW: 'comment_new' },
@@ -34,15 +36,15 @@ vi.mock('@growi/editor/dist/client/services', () => ({
   mentionDecorationSettings: {},
 }));
 
+const codeMirrorEditorMock = vi.hoisted(() => ({
+  getDocString: vi.fn(() => editorState.docText),
+  initDoc: vi.fn(),
+  appendExtensions: vi.fn(() => vi.fn()),
+  focus: vi.fn(),
+}));
+
 vi.mock('@growi/editor/dist/client/stores/codemirror-editor', () => ({
-  useCodeMirrorEditorIsolated: () => ({
-    data: {
-      getDocString: vi.fn(() => ''),
-      initDoc: vi.fn(),
-      appendExtensions: vi.fn(() => vi.fn()),
-      focus: vi.fn(),
-    },
-  }),
+  useCodeMirrorEditorIsolated: () => ({ data: codeMirrorEditorMock }),
 }));
 
 vi.mock('@growi/ui/dist/components', () => ({
@@ -71,8 +73,12 @@ vi.mock('~/states/ui/editor', () => ({
 vi.mock('~/states/ui/unsaved-warning', () => ({
   useCommentEditorsDirtyMap: () => ({ markDirty: vi.fn(), markClean: vi.fn() }),
 }));
+const swrxPageCommentMock = vi.hoisted(() => ({
+  update: vi.fn(),
+  post: vi.fn(),
+}));
 vi.mock('~/stores/comment', () => ({
-  useSWRxPageComment: () => ({ update: vi.fn(), post: vi.fn() }),
+  useSWRxPageComment: () => swrxPageCommentMock,
 }));
 vi.mock('~/stores/editor', () => ({
   useEditorSettings: () => ({ data: undefined }),
@@ -103,10 +109,13 @@ vi.mock('./CommentPreview', () => ({
 describe('CommentEditor', () => {
   beforeEach(() => {
     editorProps.current = undefined;
+    editorState.docText = '';
+    swrxPageCommentMock.update.mockClear();
+    swrxPageCommentMock.post.mockClear();
   });
 
-  const renderEditor = () =>
-    render(<CommentEditor pageId="page-1" revisionId="rev-1" />);
+  const renderEditor = (props: Partial<Record<string, unknown>> = {}) =>
+    render(<CommentEditor pageId="page-1" revisionId="rev-1" {...props} />);
 
   it('renders the CodeMirror comment editor', () => {
     renderEditor();
@@ -119,5 +128,50 @@ describe('CommentEditor', () => {
 
     expect(editorProps.current?.hideToolbar).toBeUndefined();
     expect(editorProps.current?.cmProps).not.toHaveProperty('basicSetup');
+  });
+
+  describe('onSubmit override', () => {
+    it('calls the supplied onSubmit with the typed text instead of the default post/update path, and does not call useSWRxPageComment.post', async () => {
+      editorState.docText = 'a reply body';
+      const onSubmit = vi.fn().mockResolvedValue(undefined);
+      const onCommented = vi.fn();
+      renderEditor({ onSubmit, onCommented });
+
+      fireEvent.click(screen.getAllByTestId('comment-submit-button')[0]);
+
+      await waitFor(() => {
+        expect(onSubmit).toHaveBeenCalledWith('a reply body');
+      });
+      expect(swrxPageCommentMock.post).not.toHaveBeenCalled();
+      expect(swrxPageCommentMock.update).not.toHaveBeenCalled();
+      expect(onCommented).toHaveBeenCalled();
+    });
+
+    it('falls back to the default post path when onSubmit is not provided (unchanged behavior)', async () => {
+      editorState.docText = 'a normal comment';
+      swrxPageCommentMock.post.mockResolvedValue(undefined);
+      const onCommented = vi.fn();
+      renderEditor({ onCommented });
+
+      fireEvent.click(screen.getAllByTestId('comment-submit-button')[0]);
+
+      await waitFor(() => {
+        expect(swrxPageCommentMock.post).toHaveBeenCalled();
+      });
+      expect(onCommented).toHaveBeenCalled();
+    });
+
+    it('shows an error and does not close the editor when onSubmit rejects', async () => {
+      const onSubmit = vi.fn().mockRejectedValue(new Error('failed to post'));
+      const onCommented = vi.fn();
+      renderEditor({ onSubmit, onCommented });
+
+      fireEvent.click(screen.getAllByTestId('comment-submit-button')[0]);
+
+      await waitFor(() => {
+        expect(screen.getAllByText('failed to post').length).toBeGreaterThan(0);
+      });
+      expect(onCommented).not.toHaveBeenCalled();
+    });
   });
 });

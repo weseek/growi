@@ -1,13 +1,6 @@
 /**
  * Nested reply display + a Reply.../Cancel-toggled reply-submission UI for
- * an inline comment thread (design.md: File Structure Plan >
- * `InlineCommentList/InlineCommentReplies.tsx`, "返信のネスト表示。
- * ReplyComments.tsxの表示パターンを踏襲。既存コンポーネントは変更しない";
- * 決定5: "`InlineCommentReplies.tsx`は、通常コメントの`showEditorIds`パターンを
- * 踏襲したローカルな開閉状態（1スレッドにつき返信欄は1つなので`boolean`で
- * 足りる）を持ち、閉時は「Reply...」ボタン（既存キー`t('page_comment.reply')`
- * を流用）、開時は`MentionAwareCommentInput`＋Cancelボタンを描画する。現状の
- * 素の`<textarea>`ベースの返信欄は削除する").
+ * an inline comment thread.
  *
  * Visual nesting follows `ReplyComments.tsx`
  * (`~/client/components/PageComment/ReplyComments.tsx`): each reply sits in
@@ -16,8 +9,7 @@
  * legacy page-end comment feature's own state (delete modal, inline edit
  * mode, `ICommentHasId` shape), none of which fits an inline-comment reply
  * (no edit/delete per this spec's Non-Goals) — so this component follows
- * its established visual pattern instead of importing it, per the task
- * boundary ("既存コンポーネントは変更しない").
+ * its established visual pattern instead of importing it.
  *
  * Reply bodies render through `RevisionRenderer` with the caller-supplied
  * `rendererOptions` — the SAME `RendererOptions` the rest of the comment
@@ -31,40 +23,55 @@
  * box `InlineCommentItem` uses for the origin comment), so a reply reads as
  * the same kind of comment box, not a lighter-weight variant (requirement
  * 13.3, 13.4). The `ms-4 ms-sm-5 mt-2` indentation stays on the wrapping
- * element around that box (design.md: `InlineCommentReplies` は
- * `ms-4 ms-sm-5 mt-2` の字下げをそのまま残しつつ、各返信を `CommentCard`
- * で包む).
+ * element regardless of whether it holds the toggle button or the open
+ * editor, so the whole reply area (already-posted replies + the compose UI)
+ * keeps one consistent left indent.
  *
- * The reply-composition input itself is the shared `MentionAwareCommentInput`
- * (task 5.1), extracted from `InlineCommentForm.tsx`, following the same
- * `showEditorIds`-style open/closed pattern `PageComment.tsx` uses for its
- * own reply editors — but since a single origin comment has exactly one
- * reply thread (1:1, not a set of many), a plain `boolean` is enough here
- * (design.md 決定5). Closed state shows a toggle button with the SAME
- * wording and appearance as `PageComment.tsx`'s own reply toggle (avatar +
- * "reply" icon + `t('page_comment.reply')` plus a literal "..." + the same
+ * The reply-composition UI is the literal same `CommentEditor` the normal
+ * page-bottom comment thread uses for its own replies (not a separate,
+ * inline-comment-specific input) — same CodeMirror editor, mention
+ * completion, attachment upload, Slack notification toggle, and preview
+ * tab. It differs from a normal comment reply only in where the text is
+ * persisted: `CommentEditor`'s `onSubmit` override routes it through this
+ * inline comment's own `createReply` (via `onSubmitReply`) instead of the
+ * default `useSWRxPageComment` post path, since inline-comment replies are
+ * created through a separate apiv3 route
+ * (`POST /_api/v3/inline-comments/:id/replies`), not `/comments.add`.
+ * `pageId`/`revisionId` are required by `CommentEditor`'s props but are
+ * inert on this path — they are only read by the default post/update
+ * logic that `onSubmit` bypasses.
+ *
+ * Closed state shows a toggle button with the SAME wording and appearance
+ * as `PageComment.tsx`'s own reply toggle (avatar + "reply" icon +
+ * `t('page_comment.reply')` plus a literal "..." + the same
  * `btn btn-secondary btn-comment-reply` classes) via `useCurrentUser()`
- * (Requirement 4.1); open state renders
- * `MentionAwareCommentInput`, which owns its own text/error state, its own
- * Cancel button, and its own submit button — this component only wires
- * `onSubmit` to the unchanged `onSubmitReply` prop and closes the toggle on
- * `onSubmitted`/`onCancel` (Requirements 4.2, 4.3, 4.5).
+ * (Requirement 4.1), following the same `showEditorIds`-style open/closed
+ * pattern `PageComment.tsx` uses for its own reply editors — but since a
+ * single origin comment has exactly one reply thread (1:1, not a set of
+ * many), a plain `boolean` is enough here.
  */
 
-import { type FC, type JSX, useMemo, useState } from 'react';
+import { type FC, type JSX, useState } from 'react';
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'react-i18next';
 
 import { CommentCard } from '~/client/components/PageComment/CommentCard';
+import { CommentEditor } from '~/client/components/PageComment/CommentEditor';
 import RevisionRenderer from '~/components/PageView/RevisionRenderer';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useCurrentUser } from '~/states/global';
 
 import type { InlineCommentReply } from '../../../interfaces';
-import { MentionAwareCommentInput } from '../MentionAwareCommentInput/MentionAwareCommentInput';
 
 type InlineCommentRepliesProps = {
   parentId: string;
+  pageId: string;
+  /**
+   * Passed through to `CommentEditor`'s required `revisionId` prop, but
+   * never actually read on this path — `onSubmit` bypasses the default
+   * post/update logic that would otherwise consume it.
+   */
+  revisionId: string;
   replies: InlineCommentReply[];
   /**
    * Undefined while the caller's renderer options are still loading — in
@@ -78,20 +85,18 @@ type InlineCommentRepliesProps = {
 export const InlineCommentReplies: FC<InlineCommentRepliesProps> = (
   props,
 ): JSX.Element => {
-  const { parentId, replies, rendererOptions, onSubmitReply } = props;
+  const {
+    parentId,
+    pageId,
+    revisionId,
+    replies,
+    rendererOptions,
+    onSubmitReply,
+  } = props;
   const { t } = useTranslation();
   const currentUser = useCurrentUser();
 
   const [isReplyOpen, setIsReplyOpen] = useState(false);
-
-  // One reply-input editor instance per origin comment's reply thread,
-  // mirroring InlineCommentForm's `inline_comment_new_${pageId}` convention
-  // (task 5.1) but scoped to `parentId` since each origin comment has its
-  // own reply thread rather than one shared "new comment" editor per page.
-  const editorKey = useMemo(
-    () => `inline_comment_reply_${parentId}`,
-    [parentId],
-  );
 
   return (
     <div
@@ -127,11 +132,13 @@ export const InlineCommentReplies: FC<InlineCommentRepliesProps> = (
 
       <div className="inline-comment-reply-form ms-4 ms-sm-5 mt-2">
         {isReplyOpen ? (
-          <MentionAwareCommentInput
-            editorKey={editorKey}
+          <CommentEditor
+            pageId={pageId}
+            revisionId={revisionId}
+            replyTo={parentId}
             onSubmit={(comment) => onSubmitReply(parentId, comment)}
-            onSubmitted={() => setIsReplyOpen(false)}
-            onCancel={() => setIsReplyOpen(false)}
+            onCommented={() => setIsReplyOpen(false)}
+            onCanceled={() => setIsReplyOpen(false)}
           />
         ) : (
           <button

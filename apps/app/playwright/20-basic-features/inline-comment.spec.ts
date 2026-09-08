@@ -184,18 +184,15 @@ test.describe('Inline comment', () => {
     await expect(item).toBeVisible();
 
     const replyText = 'a reply to the origin inline comment';
-    // Since task 5.2, the reply input is not a plain always-visible
-    // `<textarea>`/"Reply" button pair -- it's a "Reply..." toggle that must
-    // be clicked first to reveal `MentionAwareCommentInput`'s own CodeMirror
-    // editor and submit button (design.md 決定5). Reuses the same
-    // `.cm-content` fill + `inline-comment-submit-button` testid interaction
-    // pattern the mention-picker and multi-line-submission tests above
-    // already establish for that shared editor, scoped to this `item` since
-    // `inline-comment-submit-button` is also used by the (currently closed)
-    // origin-comment form elsewhere on the page.
+    // The reply input is not a plain always-visible `<textarea>`/"Reply"
+    // button pair -- it's a "Reply..." toggle that must be clicked first to
+    // reveal `CommentEditor`, the literal same editor the normal
+    // page-bottom comment thread uses for its own replies. `.first()` on
+    // the submit button: `CommentEditor` renders a desktop and a mobile
+    // copy of it (toggled by CSS breakpoint), both present in the DOM.
     await item.getByTestId('inline-comment-reply-toggle-button').click();
     await item.locator('.cm-content').fill(replyText);
-    await item.getByTestId('inline-comment-submit-button').click();
+    await item.getByTestId('comment-submit-button').first().click();
 
     // Requirement 1.8/2.5: the reply (no anchor of its own) is nested under
     // its origin comment's own list item, not appended as a sibling.
@@ -2299,7 +2296,7 @@ test.describe('Inline comment - the bottom-list reply UI is unified with the nor
     await expect(item.locator('.cm-content')).toHaveCount(0);
   });
 
-  test('Req 4.2: clicking the toggle opens the same mention-aware editor the normal comment reply/origin form uses, proven via a real mention-picker completion', async ({
+  test('Req 4.2: clicking the toggle opens the literal same CommentEditor the normal comment reply uses, with genuine @-mention completion still wired', async ({
     page,
   }, testInfo) => {
     await page.goto(unifiedReplyPagePath(testInfo.retry));
@@ -2309,39 +2306,30 @@ test.describe('Inline comment - the bottom-list reply UI is unified with the nor
 
     await item.getByTestId('inline-comment-reply-toggle-button').click();
 
-    // Requirement 4.2: the toggle button is replaced by the mention-aware
-    // input component (MentionAwareCommentInput's CodeMirror editor), the
-    // exact same component InlineCommentForm's own creation form uses.
+    // Requirement 4.2: the toggle button is replaced by `CommentEditor` --
+    // the exact same component the normal page-bottom comment thread uses
+    // for its own replies (not a separate, inline-only input).
     await expect(
       item.getByTestId('inline-comment-reply-toggle-button'),
     ).toHaveCount(0);
     const replyEditor = item.locator('.cm-content');
     await expect(replyEditor).toBeVisible();
 
-    // Prove mention-awareness itself (not merely "looks the same"), reusing
-    // the exact technique the mention-picker end-to-end test above uses for
-    // InlineCommentForm's own editor: type text around the cursor, move the
-    // cursor to the middle, open the mention picker, and confirm the picked
-    // candidate lands AT the cursor rather than merely appended.
+    // `CommentEditor` has no explicit mention-picker button (unlike the
+    // earlier inline-only MentionAwareCommentInput) -- this locks in that
+    // intentional consequence of reusing the normal editor as-is, rather
+    // than letting it silently regress unnoticed.
+    await expect(item.getByTestId('mention-picker-button')).toHaveCount(0);
+
+    // Prove mention-awareness is still genuinely wired (not merely "looks
+    // the same"): typing "@a" triggers CodeMirror's own completion tooltip
+    // via the same `createMentionCompletionExtension` mechanism
+    // InlineCommentForm's editor uses. "a" is guaranteed to match at least
+    // the logged-in admin user (playwright/utils/login.ts), so the
+    // candidate list is never empty in this environment.
     await replyEditor.click();
-    await replyEditor.pressSequentially('AZ');
-    await page.keyboard.press('ArrowLeft');
-
-    const mentionButton = item.getByTestId('mention-picker-button');
-    await mentionButton.click();
-
-    const mentionMenu = mentionButton.locator(
-      'xpath=following-sibling::div[contains(concat(" ", normalize-space(@class), " "), " dropdown-menu ")]',
-    );
-    const firstCandidate = mentionMenu.locator('.dropdown-item').first();
-    await expect(firstCandidate).toBeVisible();
-    const candidateUsername = await firstCandidate
-      .locator('span')
-      .first()
-      .innerText();
-
-    await firstCandidate.click();
-    await expect(replyEditor).toHaveText(`A@${candidateUsername} Z`);
+    await replyEditor.pressSequentially('@a');
+    await expect(page.locator('.cm-tooltip-autocomplete')).toBeVisible();
   });
 
   test('Req 4.3: Cancel closes the input, restores the "Reply..." button, and posts nothing', async ({
@@ -2360,9 +2348,12 @@ test.describe('Inline comment - the bottom-list reply UI is unified with the nor
     await replyEditor.fill(unsentText);
     await expect(replyEditor).toContainText(unsentText);
 
-    // Requirement 4.3: Cancel, not submit -- MentionAwareCommentInput's own
-    // Cancel button (t('Cancel')).
-    await item.getByRole('button', { name: 'Cancel' }).click();
+    // Requirement 4.3: Cancel, not submit -- CommentEditor's own Cancel
+    // button (t('Cancel')). CommentEditor renders this button twice (a
+    // desktop and a mobile row, toggled by CSS breakpoint, both present in
+    // the DOM regardless of viewport) -- `.first()` picks the desktop one,
+    // which is the visible, clickable one at this suite's default viewport.
+    await item.getByRole('button', { name: 'Cancel' }).first().click();
 
     // The editor closes and the toggle button reappears.
     await expect(replyEditor).toHaveCount(0);
@@ -2389,7 +2380,11 @@ test.describe('Inline comment - the bottom-list reply UI is unified with the nor
 
     const replyText = 'a reply submitted through the unified reply UI';
     await replyEditor.fill(replyText);
-    await item.getByTestId('inline-comment-submit-button').click();
+    // CommentEditor's submit button, not the old inline-only
+    // `inline-comment-submit-button` (MentionAwareCommentInput's own
+    // testid) -- `.first()` for the same desktop/mobile duplication reason
+    // as the Cancel button above.
+    await item.getByTestId('comment-submit-button').first().click();
 
     // Requirement 4.5: the reply appears in the list, and the input closes,
     // returning to the "Reply..." toggle button -- the existing

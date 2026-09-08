@@ -173,6 +173,8 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
 
       <InlineCommentReplies
         parentId={comment.id}
+        pageId={comment.pageId}
+        revisionId={comment.anchorOriginRevisionId}
         replies={comment.replies}
         rendererOptions={rendererOptions}
         onSubmitReply={createReply}

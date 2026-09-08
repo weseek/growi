@@ -74,6 +74,14 @@ type CommentEditorProps = {
   commentBody?: string;
   onCanceled?: () => void;
   onCommented?: () => void;
+  /**
+   * Overrides how the typed text is persisted. When provided, this is
+   * called instead of the default `useSWRxPageComment` post/update path —
+   * used by inline-comment replies, which persist through a different
+   * endpoint (`InlineCommentService.createReply`) while reusing this same
+   * editor UI as-is.
+   */
+  onSubmit?: (commentText: string) => Promise<unknown>;
 };
 
 export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
@@ -85,6 +93,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     commentBody,
     onCanceled,
     onCommented,
+    onSubmit,
   } = props;
 
   const currentUser = useCurrentUser();
@@ -163,7 +172,9 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     const commentBodyToPost = codeMirrorEditor?.getDocString() ?? '';
 
     try {
-      if (currentCommentId != null) {
+      if (onSubmit != null) {
+        await onSubmit(commentBodyToPost);
+      } else if (currentCommentId != null) {
         // update current comment
         await updateComment(commentBodyToPost, revisionId, currentCommentId);
       } else {
@@ -204,6 +215,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     isSlackEnabled,
     slackChannels,
     postComment,
+    onSubmit,
   ]);
 
   // the upload event handler

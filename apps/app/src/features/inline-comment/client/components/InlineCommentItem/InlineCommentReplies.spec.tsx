@@ -1,6 +1,12 @@
 // @vitest-environment happy-dom
 
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { defaultSchema } from 'hast-util-sanitize';
 import sanitize from 'rehype-sanitize';
 import ts_deepmerge from 'ts-deepmerge';
@@ -20,75 +26,26 @@ import { InlineCommentReplies } from './InlineCommentReplies';
 // CommentCard's own header row (author picture / name / posted date) is
 // CommentCard's own concern, not this component's -- same as before.
 //
-// The reply-composition input is now the shared `MentionAwareCommentInput`
-// (task 5.1), which itself follows CommentEditor.tsx's mention-aware textarea
-// pattern (CodeMirrorEditorComment + useCodeMirrorEditorIsolated + mention
-// extensions). This file mocks at the SAME boundary
-// InlineCommentForm.spec.tsx / MentionAwareCommentInput.spec.tsx already
-// established -- CodeMirrorEditorComment down -- rather than mocking
-// MentionAwareCommentInput as a whole, so the observable contract under test
-// stays "clicking Reply... opens the shared input, Cancel closes it, submit
-// calls onSubmitReply", without re-testing MentionAwareCommentInput's own
-// internals (already covered by its own spec).
+// The reply-composition UI is now the literal same `CommentEditor` the
+// normal page-bottom comment thread uses. `CommentEditor` has its own
+// dedicated spec (CommentEditor.spec.tsx) covering its internals (CodeMirror
+// assembly, upload, Slack notification, the `onSubmit` override contract),
+// so this file mocks `CommentEditor` at the component boundary rather than
+// re-testing its internals -- the observable contract under test here is
+// "clicking Reply... opens the editor with the right props (pageId /
+// revisionId / replyTo / onSubmit wired to onSubmitReply), Cancel and a
+// successful submit both close it back to the toggle button".
 // ---------------------------------------------------------------------------
 
-const editorState = vi.hoisted(() => ({ docText: '' }));
+const commentEditorProps = vi.hoisted(
+  () => ({ current: undefined }) as { current?: Record<string, unknown> },
+);
 
-const codeMirrorEditorMock = vi.hoisted(() => ({
-  getDocString: vi.fn(() => editorState.docText),
-  initDoc: vi.fn(),
-  appendExtensions: vi.fn(() => vi.fn()),
-  insertText: vi.fn(),
-}));
-
-vi.mock('@growi/editor', () => ({
-  useSetResolvedTheme: () => vi.fn(),
-}));
-
-vi.mock('@growi/editor/dist/client/components/CodeMirrorEditorComment', () => ({
-  CodeMirrorEditorComment: (props: {
-    cmProps?: { onChange?: (value: string) => void };
-  }) => (
-    // eslint-disable-next-line jsx-a11y/no-onchange
-    <textarea
-      data-testid="inline-comment-reply-textarea"
-      onChange={(e) => {
-        editorState.docText = e.target.value;
-        props.cmProps?.onChange?.(e.target.value);
-      }}
-    />
-  ),
-}));
-
-const createMentionCompletionExtension = vi.hoisted(() => vi.fn(() => ({})));
-vi.mock('@growi/editor/dist/client/services', () => ({
-  createMentionCompletionExtension,
-  mentionDecorationSettings: {},
-}));
-
-vi.mock('@growi/editor/dist/client/stores/codemirror-editor', () => ({
-  useCodeMirrorEditorIsolated: () => ({ data: codeMirrorEditorMock }),
-}));
-
-vi.mock('~/stores-universal/use-next-themes', () => ({
-  useNextThemes: () => ({ resolvedTheme: 'light' }),
-}));
-
-// fetchMentionUsers is the shared service extracted in task 1.4.
-const fetchMentionUsersMock = vi.hoisted(() => vi.fn());
-vi.mock('../../services/fetch-mention-users', () => ({
-  fetchMentionUsers: fetchMentionUsersMock,
-}));
-
-// MentionPickerButton is mocked at the module boundary, same as
-// MentionAwareCommentInput.spec.tsx -- its own dropdown/fetch behavior is
-// already covered there.
-vi.mock('../InlineCommentForm/MentionPickerButton', () => ({
-  MentionPickerButton: () => (
-    <button type="button" data-testid="mention-picker-button-mock">
-      @
-    </button>
-  ),
+vi.mock('~/client/components/PageComment/CommentEditor', () => ({
+  CommentEditor: (props: Record<string, unknown>) => {
+    commentEditorProps.current = props;
+    return <div data-testid="inline-comment-reply-editor-mock" />;
+  },
 }));
 
 // Real translation value for `page_comment.reply` (see
@@ -115,7 +72,7 @@ vi.mock('~/client/components/FormattedDistanceDate', () => ({
 }));
 
 /**
- * Same construction as InlineCommentList.spec.tsx: real mention plugin +
+ * Same construction as InlineCommentItem.spec.tsx: real mention plugin +
  * real rehype-sanitize, skipping the rest of `generateCommentViewOptions`'s
  * heavy plugin graph. See that file for the rationale.
  */
@@ -140,23 +97,33 @@ const reply = (
   ...overrides,
 });
 
+const renderReplies = (
+  overrides: Partial<Parameters<typeof InlineCommentReplies>[0]> = {},
+) =>
+  render(
+    <InlineCommentReplies
+      parentId="comment1"
+      pageId="page1"
+      revisionId="revision1"
+      replies={[]}
+      rendererOptions={buildMentionAwareRendererOptions()}
+      onSubmitReply={vi.fn().mockResolvedValue(undefined)}
+      {...overrides}
+    />,
+  );
+
 describe('InlineCommentReplies', () => {
   beforeEach(() => {
-    editorState.docText = '';
+    commentEditorProps.current = undefined;
   });
 
   it('renders each reply nested under the origin comment (indented container)', () => {
-    render(
-      <InlineCommentReplies
-        parentId="comment1"
-        replies={[
-          reply({ id: 'reply1', comment: 'first reply' }),
-          reply({ id: 'reply2', comment: 'second reply' }),
-        ]}
-        rendererOptions={buildMentionAwareRendererOptions()}
-        onSubmitReply={vi.fn()}
-      />,
-    );
+    renderReplies({
+      replies: [
+        reply({ id: 'reply1', comment: 'first reply' }),
+        reply({ id: 'reply2', comment: 'second reply' }),
+      ],
+    });
 
     const renderedReplies = screen.getAllByTestId('inline-comment-reply');
     expect(renderedReplies).toHaveLength(2);
@@ -168,14 +135,9 @@ describe('InlineCommentReplies', () => {
   });
 
   it('wraps each reply in the same shared comment box a normal comment uses (Req 13.3 / 13.4)', () => {
-    render(
-      <InlineCommentReplies
-        parentId="comment1"
-        replies={[reply({ id: 'reply1', comment: 'first reply' })]}
-        rendererOptions={buildMentionAwareRendererOptions()}
-        onSubmitReply={vi.fn()}
-      />,
-    );
+    renderReplies({
+      replies: [reply({ id: 'reply1', comment: 'first reply' })],
+    });
 
     const replyContainer = screen.getByTestId('inline-comment-reply');
 
@@ -209,27 +171,13 @@ describe('InlineCommentReplies', () => {
   });
 
   it('renders no reply items when there are no replies yet', () => {
-    render(
-      <InlineCommentReplies
-        parentId="comment1"
-        replies={[]}
-        rendererOptions={buildMentionAwareRendererOptions()}
-        onSubmitReply={vi.fn()}
-      />,
-    );
+    renderReplies({ replies: [] });
 
     expect(screen.queryAllByTestId('inline-comment-reply')).toHaveLength(0);
   });
 
   it('renders @username in a reply body with the real mention plugin markup', async () => {
-    render(
-      <InlineCommentReplies
-        parentId="comment1"
-        replies={[reply({ comment: 'cc @bob for visibility' })]}
-        rendererOptions={buildMentionAwareRendererOptions()}
-        onSubmitReply={vi.fn()}
-      />,
-    );
+    renderReplies({ replies: [reply({ comment: 'cc @bob for visibility' })] });
 
     await waitFor(() => {
       const mention = document.querySelector('[data-mention]');
@@ -239,16 +187,24 @@ describe('InlineCommentReplies', () => {
     });
   });
 
+  describe('the indentation wrapper stays around whichever child is shown', () => {
+    it('keeps ms-4 ms-sm-5 mt-2 on the reply-form wrapper both closed and open', () => {
+      const { container } = renderReplies();
+
+      const getWrapper = () =>
+        container.querySelector('.inline-comment-reply-form');
+
+      expect(getWrapper()).toHaveClass('ms-4', 'ms-sm-5', 'mt-2');
+
+      fireEvent.click(screen.getByTestId('inline-comment-reply-toggle-button'));
+
+      expect(getWrapper()).toHaveClass('ms-4', 'ms-sm-5', 'mt-2');
+    });
+  });
+
   describe('Reply.../Cancel toggle (Requirement 4.1-4.5)', () => {
-    it('shows the "Reply..." toggle button with the same wording and appearance as the normal comment\'s reply toggle, and no input, by default (Requirement 4.1)', () => {
-      render(
-        <InlineCommentReplies
-          parentId="comment1"
-          replies={[]}
-          rendererOptions={buildMentionAwareRendererOptions()}
-          onSubmitReply={vi.fn()}
-        />,
-      );
+    it('shows the "Reply..." toggle button with the same wording and appearance as the normal comment\'s reply toggle, and no editor, by default (Requirement 4.1)', () => {
+      renderReplies();
 
       const toggleButton = screen.getByTestId(
         'inline-comment-reply-toggle-button',
@@ -256,8 +212,7 @@ describe('InlineCommentReplies', () => {
       expect(toggleButton).toBeInTheDocument();
       // Same wording as PageComment.tsx's reply toggle: the real
       // translation value ("Reply") plus a literal trailing "...", not a
-      // bare "Reply" and not the raw i18n key. Catches a regression that
-      // drops the "..." suffix (the finding this remediation round fixes).
+      // bare "Reply" and not the raw i18n key.
       expect(toggleButton).toHaveTextContent('Reply...');
       // Same appearance: avatar + material-symbols "reply" icon + the
       // shared button classes.
@@ -276,98 +231,81 @@ describe('InlineCommentReplies', () => {
         screen.queryByTestId('comment-reply-button'),
       ).not.toBeInTheDocument();
       expect(
-        screen.queryByTestId('inline-comment-reply-textarea'),
+        screen.queryByTestId('inline-comment-reply-editor-mock'),
       ).not.toBeInTheDocument();
     });
 
-    it('shows the mention-aware input and hides the toggle button when clicked (Requirement 4.2)', () => {
-      render(
-        <InlineCommentReplies
-          parentId="comment1"
-          replies={[]}
-          rendererOptions={buildMentionAwareRendererOptions()}
-          onSubmitReply={vi.fn()}
-        />,
-      );
+    it('shows the CommentEditor and hides the toggle button when clicked (Requirement 4.2), wired to this thread', () => {
+      renderReplies({
+        parentId: 'comment1',
+        pageId: 'page1',
+        revisionId: 'revision1',
+      });
 
       fireEvent.click(screen.getByTestId('inline-comment-reply-toggle-button'));
 
       expect(
-        screen.getByTestId('inline-comment-reply-textarea'),
+        screen.getByTestId('inline-comment-reply-editor-mock'),
       ).toBeInTheDocument();
       expect(
         screen.queryByTestId('inline-comment-reply-toggle-button'),
       ).not.toBeInTheDocument();
+
+      expect(commentEditorProps.current?.pageId).toBe('page1');
+      expect(commentEditorProps.current?.revisionId).toBe('revision1');
+      expect(commentEditorProps.current?.replyTo).toBe('comment1');
+      expect(commentEditorProps.current?.onSubmit).toBeInstanceOf(Function);
+      expect(commentEditorProps.current?.onCommented).toBeInstanceOf(Function);
+      expect(commentEditorProps.current?.onCanceled).toBeInstanceOf(Function);
     });
 
-    it('returns to the "Reply..." button when Cancel is clicked (Requirement 4.3)', () => {
-      render(
-        <InlineCommentReplies
-          parentId="comment1"
-          replies={[]}
-          rendererOptions={buildMentionAwareRendererOptions()}
-          onSubmitReply={vi.fn()}
-        />,
-      );
+    it('returns to the "Reply..." button when the editor\'s onCanceled fires (Requirement 4.3)', () => {
+      renderReplies();
 
       fireEvent.click(screen.getByTestId('inline-comment-reply-toggle-button'));
-      fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+      act(() => {
+        (commentEditorProps.current?.onCanceled as () => void)();
+      });
 
       expect(
         screen.getByTestId('inline-comment-reply-toggle-button'),
       ).toBeInTheDocument();
       expect(
-        screen.queryByTestId('inline-comment-reply-textarea'),
+        screen.queryByTestId('inline-comment-reply-editor-mock'),
       ).not.toBeInTheDocument();
     });
 
-    it('calls onSubmitReply with the parent id and typed comment text on submit, unchanged from before (Requirement 4.5)', async () => {
+    it('calls onSubmitReply with the parent id and the typed comment text via the onSubmit override (Requirement 4.5)', async () => {
       const onSubmitReply = vi.fn().mockResolvedValue(undefined);
-      render(
-        <InlineCommentReplies
-          parentId="comment1"
-          replies={[]}
-          rendererOptions={buildMentionAwareRendererOptions()}
-          onSubmitReply={onSubmitReply}
-        />,
-      );
+      renderReplies({ onSubmitReply });
 
       fireEvent.click(screen.getByTestId('inline-comment-reply-toggle-button'));
-      fireEvent.change(screen.getByTestId('inline-comment-reply-textarea'), {
-        target: { value: 'thanks for the note' },
-      });
-      fireEvent.click(screen.getByTestId('inline-comment-submit-button'));
+      await (
+        commentEditorProps.current?.onSubmit as (
+          comment: string,
+        ) => Promise<unknown>
+      )('thanks for the note');
 
-      await waitFor(() => {
-        expect(onSubmitReply).toHaveBeenCalledWith(
-          'comment1',
-          'thanks for the note',
-        );
-      });
+      expect(onSubmitReply).toHaveBeenCalledWith(
+        'comment1',
+        'thanks for the note',
+      );
     });
 
-    it('returns to the "Reply..." button after a successful submit (Requirement 4.4)', async () => {
-      const onSubmitReply = vi.fn().mockResolvedValue(undefined);
-      render(
-        <InlineCommentReplies
-          parentId="comment1"
-          replies={[]}
-          rendererOptions={buildMentionAwareRendererOptions()}
-          onSubmitReply={onSubmitReply}
-        />,
-      );
+    it('returns to the "Reply..." button when the editor\'s onCommented fires (Requirement 4.4)', () => {
+      renderReplies();
 
       fireEvent.click(screen.getByTestId('inline-comment-reply-toggle-button'));
-      fireEvent.change(screen.getByTestId('inline-comment-reply-textarea'), {
-        target: { value: 'thanks for the note' },
+      act(() => {
+        (commentEditorProps.current?.onCommented as () => void)();
       });
-      fireEvent.click(screen.getByTestId('inline-comment-submit-button'));
 
-      await waitFor(() => {
-        expect(
-          screen.getByTestId('inline-comment-reply-toggle-button'),
-        ).toBeInTheDocument();
-      });
+      expect(
+        screen.getByTestId('inline-comment-reply-toggle-button'),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('inline-comment-reply-editor-mock'),
+      ).not.toBeInTheDocument();
     });
   });
 });
