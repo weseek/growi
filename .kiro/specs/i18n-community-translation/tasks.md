@@ -134,7 +134,7 @@
   - _Depends: 5.2_
   - _Blocked: 4.2の実プロビジョニングに加え、`I18N_SYNC_PUBLISH_TOKEN`（5.2で新設、`docs/i18n-community-translation-setup.md`未記載）と`I18N_SYNC_APPROVAL_TOKEN`（承認ボット、別IDである必要あり）の実登録が人手待ちのため実行不可。_
 
-- [ ] 6.3 リポジトリ全体のlint・test・buildが green であることを確認する
+- [x] 6.3 リポジトリ全体のlint・test・buildが green であることを確認する
   - 新規追加したツール・ワークフローが、既存の `turbo run lint` / `turbo run test` / `turbo run build`（`@growi/app`）に悪影響を与えていないことを確認する
   - 既存の i18n CI ゲート（`i18n-key-audit` で実装済み）が、本機能追加後も引き続き正しく合否判定を行うことを確認する
   - `poeditor-client.spec.ts`（タスク1.2）の20秒スロットルテストが実時間ベースで間欠的に失敗する（3.2のレビューで6回中2回の失敗を確認済み）ため、フェイクタイマー化するか許容誤差を広げて安定させる
@@ -157,3 +157,4 @@
 - (5.2) `readGitHubRunConfig`（`pull-translations.ts`）が使う秘密情報は `I18N_SYNC_PUBLISH_TOKEN` / `GITHUB_TOKEN` / `I18N_SYNC_APPROVAL_TOKEN` の3つで、うち `I18N_SYNC_PUBLISH_TOKEN` は design.md の Security Considerations にも `docs/i18n-community-translation-setup.md`（4.2で作成した手順書）にも載っていない3つ目のシークレットである（手順書は POEDITOR_API_TOKEN と I18N_SYNC_APPROVAL_TOKEN の2つしか登録手順を示していない）。実際に本番用シークレットを登録する6.2のタスクでは、この `I18N_SYNC_PUBLISH_TOKEN` も忘れず登録すること。design.md 側への反映は `kiro-spec-cleanup` 実行時に吸収する。なお、GitHub Actions は登録されていないシークレットを `env:` へ渡すと空文字列としてエクスポートする（未設定にはならない）ため、`I18N_SYNC_PUBLISH_TOKEN ?? GITHUB_TOKEN` のような `??` によるフォールバックは効かず、実運用のワークフロー（`I18N_SYNC_PUBLISH_TOKEN` 未登録・`GITHUB_TOKEN` のみ利用可能なケース）で毎回失敗する不具合がレビューで見つかった。`||` によるフォールバックに修正済み（本人による自己承認を防ぐ等値チェックは変更していない）。
 
 なおこのフォールバックにより、`I18N_SYNC_PUBLISH_TOKEN` を登録せず `GITHUB_TOKEN` のみで運用した場合、ワークフローは失敗せず実行できてしまうが、既定の `GITHUB_TOKEN` が作成したPRイベントは他のワークフロー実行を起動しないため `ci-app-lint` が付かず、承認されてもマージキューに永遠に留まる（早期の分かりやすい失敗が、後段の分かりにくい失敗に置き換わる）。6.2で実際にシークレットを揃える際、`I18N_SYNC_PUBLISH_TOKEN` の登録漏れがないか特に確認すること。
+- (6.3) `poeditor-client.spec.ts` の20秒スロットルテストを `vi.useFakeTimers()` で時計を凍結する形に書き換え、実時間ジッターによる間欠失敗を解消した（負荷をかけた状態で修正前は20回中4回失敗、修正後は20回中0回失敗を実測）。`turbo run lint/test/build --filter @growi/app` はすべて成功。ただしレビューで `turbo run test --filter @growi/app --force`（キャッシュ無視）を実行すると `src/features/growi-vault/__tests__/clone-e2e.integ.ts` が4件失敗することが分かった。今回の差分（`poeditor-client.spec.ts` 1ファイルのみ）とは無関係で、一時gitサーバーへの接続前提が整っていない環境依存の既知の失敗（本spec外、growi-vault機能側の話）。i18n-community-translation の完了判定には影響しない。
