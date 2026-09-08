@@ -33,6 +33,16 @@ describe('ChatRelation schema', () => {
     );
   });
 
+  // An active relation must carry no unpaired instant at all: re-pairing
+  // picks its inheritance source by ordering on this field, and a non-null
+  // default would make every active row look like a candidate source.
+  it('unpairedAt defaults to null', () => {
+    const path = ChatRelation.schema.path('unpairedAt');
+    expect((path as unknown as { defaultValue: unknown }).defaultValue).toBe(
+      null,
+    );
+  });
+
   it('settingsVersion defaults to 0', () => {
     const path = ChatRelation.schema.path('settingsVersion');
     expect((path as unknown as { defaultValue: unknown }).defaultValue).toBe(0);
