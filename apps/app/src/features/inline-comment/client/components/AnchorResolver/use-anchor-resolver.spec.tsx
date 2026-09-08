@@ -73,10 +73,16 @@ describe('useAnchorResolver', () => {
     // technique use-container-settle.spec.tsx uses), after editing the text
     // to something with no exact or fuzzy relation to the original quote.
     // The "unsettle" (rendering element present) and "resettle" (attribute
-    // flipped to false) mutations must be observed as two separate batches —
-    // batching them into one synchronous script (with no await between) lets
-    // the observer's MutationObserver callback see only the already-settled
-    // final state and skip firing, since it was already settled before.
+    // flipped to false) mutations are deliberately kept as two separate
+    // batches, separated by an await: that makes the observer actually see the
+    // intermediate "still rendering" state, so this test walks the same
+    // present-then-absent path the resolver's mid-render guard depends on. One
+    // synchronous batch would settle too — use-container-settle fires whenever
+    // a check finds no rendering element, and its mutation-triggered check is
+    // coalesced into a requestAnimationFrame that re-evaluates the container
+    // after all synchronous mutations (see that module's JSDoc for the
+    // mount-synchronous / mutation-rAF-coalesced contract) — but it would not
+    // exercise the intermediate state.
     const renderingEl = document.createElement('div');
     renderingEl.setAttribute(GROWI_IS_CONTENT_RENDERING_ATTR, 'true');
     container.replaceChildren(
@@ -105,9 +111,9 @@ describe('useAnchorResolver', () => {
 
     // Trigger a second settle without changing the DOM's text content. The
     // "unsettle" and "resettle" steps are separated by an await so the
-    // observer's MutationObserver callback sees the intermediate "still
-    // rendering" state instead of only the batched final one (see the same
-    // note in the not_found test above).
+    // observer sees the intermediate "still rendering" state rather than only
+    // the final one — the same deliberate split as in the not_found test
+    // above, where the reasoning is spelled out.
     const renderingEl = document.createElement('div');
     renderingEl.setAttribute(GROWI_IS_CONTENT_RENDERING_ATTR, 'true');
     container.appendChild(renderingEl);
@@ -147,6 +153,49 @@ describe('useAnchorResolver', () => {
 
     await waitFor(() =>
       expect(result.current.get('c1')).toMatchObject({ status: 'exact' }),
+    );
+  });
+
+  it('defers an anchors change that arrives while the body is still rendering, and resolves it on the following settle', async () => {
+    // The comment list can resolve before an asynchronously-rendered widget
+    // (KaTeX / Mermaid / PlantUML / draw.io) has finished. Resolving against
+    // that mid-render DOM publishes a wrong result — here the only text
+    // present is the placeholder, so the quote cannot be found at all.
+    const renderingEl = document.createElement('div');
+    renderingEl.setAttribute(GROWI_IS_CONTENT_RENDERING_ATTR, 'true');
+    container.replaceChildren(
+      document.createTextNode('Rendering…'),
+      renderingEl,
+    );
+
+    const { result, rerender } = renderHook(
+      ({ anchors }) => useAnchorResolver(containerRef, anchors),
+      { initialProps: { anchors: [] as AnchorResolverInput[] } },
+    );
+
+    // The list fetch resolves while the widget is still rendering.
+    rerender({ anchors: [anchorOf('c1', 'quick brown fox', 4)] });
+
+    // Give the (guarded) anchors-change effect a chance to run before
+    // asserting that it published nothing.
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(result.current.get('c1')).toBeUndefined();
+
+    // Rendering finishes: the placeholder and the rendering element are
+    // replaced by the real body text. That childList mutation makes
+    // use-container-settle re-check the container, find no rendering element
+    // and fire — which is what picks up the deferred anchors.
+    container.replaceChildren(
+      document.createTextNode('The quick brown fox jumps over the lazy dog.'),
+    );
+
+    const start = 'The '.length;
+    await waitFor(() =>
+      expect(result.current.get('c1')).toEqual({
+        status: 'exact',
+        startOffset: start,
+        endOffset: start + 'quick brown fox'.length,
+      }),
     );
   });
 

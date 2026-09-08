@@ -8,7 +8,10 @@ import {
   type QuoteMatchResult,
 } from '../../services/quote-matcher';
 import { renderedTextOf } from '../../services/rendered-text';
-import { useContainerSettle } from './use-container-settle';
+import {
+  hasRenderingElements,
+  useContainerSettle,
+} from './use-container-settle';
 
 /** One origin comment's identity plus the anchor `matchQuote` searches for. */
 export interface AnchorResolverInput {
@@ -82,7 +85,10 @@ const useStableByContent = <T extends object>(value: T): T => {
  * against the DOM. This extends the design's "no persistent cache, always
  * recompute idempotently" principle to a second, independent trigger: an
  * effect that also recomputes whenever `anchors`' own content changes, not
- * only its reference (see `useStableByContent` above).
+ * only its reference (see `useStableByContent` above). That second trigger
+ * resolves only while nothing is mid-render (`hasRenderingElements`); when the
+ * list arrives first it defers to the settle signal instead of matching
+ * against a half-built DOM (Requirement 3.1).
  *
  * Recomputation itself is the same idempotent full-`Map` rebuild either way:
  * `renderedTextOf` is called once and `matchQuote` is run for each anchor,
@@ -118,7 +124,16 @@ export const useAnchorResolver = (
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: containerRef is a stable ref object; only stableAnchors' identity should retrigger this.
   useEffect(() => {
-    setResolved(resolveAll(containerRef.current, stableAnchors));
+    const container = containerRef.current;
+    // The comment list can arrive while an asynchronously-rendered element
+    // (KaTeX / Mermaid / PlantUML / draw.io) is still filling itself in.
+    // Resolving now would match against a half-built DOM and publish a wrong
+    // result, so skip and leave the recomputation to the settle signal above,
+    // which fires once no rendering element is left.
+    if (container != null && hasRenderingElements(container)) {
+      return;
+    }
+    setResolved(resolveAll(container, stableAnchors));
   }, [stableAnchors]);
 
   return resolved;
