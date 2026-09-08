@@ -29,7 +29,7 @@ export interface CapturedSelection {
    * raw `textContent`, which additionally counts the excluded subtrees
    * (`.katex`, `aria-hidden="true"`). Counting it the same way anchor
    * resolution does is what keeps this value comparable at match time
-   * (Requirement 1.1). Used only to disambiguate multiple occurrences
+   * (Requirement 1.2). Used only to disambiguate multiple occurrences
    * of the same quote when re-matching later (see quote-matcher's algorithm
    * contract in design.md) — not read for any other purpose.
    */
@@ -103,7 +103,7 @@ export function captureSelection(
   } = options;
   // Single source of truth for "what text does this container currently hold":
   // counting here the same way anchor resolution counts later is what keeps a
-  // stored approxOffset comparable at match time (Requirement 1.1).
+  // stored approxOffset comparable at match time (Requirement 1.2).
   const rendered = renderedTextOf(containerEl);
   const fullText = rendered.text;
   const startOffset = rendered.textOffsetOf(

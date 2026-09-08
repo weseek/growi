@@ -2584,7 +2584,7 @@ test.describe('Inline comment - the bottom-list reply UI is unified with the nor
   });
 });
 
-test.describe('Inline comment - the highlight keeps tracking a body change that carries no rendering marker, and stays hoverable/clickable (Req 3.4, 4.1-4.3)', () => {
+test.describe('Inline comment - the highlight keeps tracking a body change that carries no rendering marker, and stays hoverable/clickable (Req 2.1-2.4, 5.1-5.3)', () => {
   // Serial: the second test reuses the one saved comment created by the
   // first, the same reasoning the other suites in this file use.
   test.describe.configure({ mode: 'serial' });
@@ -2663,7 +2663,7 @@ test.describe('Inline comment - the highlight keeps tracking a body change that 
     await expect.poll(() => highlightRectCount(page)).toBeGreaterThan(0);
   });
 
-  test('Req 3.4, 4.1-4.3: when the heading edit button appears late, the highlight is re-resolved against the changed body and hover/click keep opening the popover', async ({
+  test('Req 2.1-2.4, 5.1-5.3: when the heading edit button appears late, the highlight is re-resolved against the changed body and hover/click keep opening the popover', async ({
     page,
   }, testInfo) => {
     // The heading's edit button (`Header.tsx`'s `EditLink`) is gated on
@@ -2792,7 +2792,7 @@ test.describe('Inline comment - the highlight keeps tracking a body change that 
   });
 });
 
-test.describe('Inline comment - a heading-adjacent comment restores onto the same occurrence whether the collaborative-editing data loads before or after the first anchor resolution (Req 2.2, 3.1)', () => {
+test.describe('Inline comment - a heading-adjacent comment restores onto the same occurrence whether the collaborative-editing data loads before or after the first anchor resolution (Req 1.1-1.2, 2.1-2.4, 5.1-5.3)', () => {
   // Serial: the timing variants below both read back the single comment the
   // first test really wrote to the backend, the same reasoning the other
   // suites in this file use.
@@ -3001,7 +3001,7 @@ test.describe('Inline comment - a heading-adjacent comment restores onto the sam
     await expect(item).toContainText(commentText);
   });
 
-  test('Req 2.2, 3.1: with the collaborative-editing fetch held back, the first resolution -- taken while the edit button is still absent -- already lands on the first occurrence, and stays there once the button appears', async ({
+  test('Req 1.1-1.2, 2.1-2.4, 5.1-5.3: with the collaborative-editing fetch held back, the first resolution -- taken while the edit button is still absent -- already lands on the first occurrence, and stays there once the button appears', async ({
     page,
   }, testInfo) => {
     // Variant A: the collaborative-editing data lands AFTER the page's first
@@ -3077,7 +3077,7 @@ test.describe('Inline comment - a heading-adjacent comment restores onto the sam
       .toEqual({ text: duplicatedQuote, onFirstOccurrence: true });
   });
 
-  test('Req 2.2: with the comment list held back until after the edit button is up, the restored highlight lands on the same first occurrence', async ({
+  test('Req 1.1-1.2, 2.1-2.4, 5.1-5.3: with the comment list held back until after the edit button is up, the restored highlight lands on the same first occurrence', async ({
     page,
   }, testInfo) => {
     // Variant B: the collaborative-editing data lands BEFORE the page's first
