@@ -306,6 +306,33 @@ describe('peer-router (task 3.5 -- the 6 entry points, wired for real)', () => {
       );
     });
 
+    it.each([
+      'all',
+      'none',
+    ] as const)("answers allowedChannels '%s' when that is what is stored", async (channelScope) => {
+      // The admin screen (task 9.2) can save "allowed in every channel" /
+      // "allowed in no channel", and the proxy's own permission judgement
+      // (`judge()` in @growi/chat) only distinguishes them from an
+      // explicit list if they survive this response unchanged.
+      await ChatChannelPermission.create({
+        relationId: RELATION_ID,
+        commandName: 'create-page',
+        channelScope,
+        allowedChannels: [],
+      });
+
+      const response = await signedPost(
+        app,
+        pathFor('settingsPull'),
+        settingsPullBody,
+      );
+
+      expect(response.status).toBe(200);
+      expect(response.body.settings.channelPermissions).toEqual([
+        { commandName: 'create-page', allowedChannels: channelScope },
+      ]);
+    });
+
     it('reflects a version bump and updated permission rows on the next pull', async () => {
       await ChatRelation.updateOne(
         { relationId: RELATION_ID },

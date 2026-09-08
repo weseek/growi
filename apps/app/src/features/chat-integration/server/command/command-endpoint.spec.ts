@@ -226,6 +226,53 @@ describe('createCommandEndpoint (task 5.1)', () => {
       expect(crowi.searchService.searchKeyword).not.toHaveBeenCalled();
     });
 
+    it("allows the command from a channel it was never listed in when the stored scope is 'all'", async () => {
+      // "Allowed in every channel" is a value an administrator can save
+      // (task 9.2). If this side read the row as its (empty) channel list
+      // instead, a command allowed everywhere would be denied everywhere --
+      // the exact opposite of what was configured.
+      await ChatChannelPermission.create({
+        relationId: RELATION_ID,
+        commandName: 'search',
+        channelScope: 'all',
+        allowedChannels: [],
+      });
+      const crowi = buildCrowi();
+      vi.mocked(crowi.searchService.searchKeyword).mockResolvedValue([
+        { data: [], meta: { total: 0, hitsCount: 0 } },
+        null,
+      ]);
+      vi.mocked(crowi.searchService.formatSearchResult).mockResolvedValue({
+        data: [],
+        meta: { total: 0, hitsCount: 0 },
+      });
+      const endpoint = createCommandEndpoint(crowi);
+
+      const response = await endpoint.handle(searchRequest());
+
+      expect(response.kind).toBe('search');
+    });
+
+    it("refuses the command from any channel when the stored scope is 'none'", async () => {
+      await ChatChannelPermission.create({
+        relationId: RELATION_ID,
+        commandName: 'search',
+        channelScope: 'none',
+        allowedChannels: [],
+      });
+      const crowi = buildCrowi();
+      const endpoint = createCommandEndpoint(crowi);
+
+      const response = await endpoint.handle(searchRequest());
+
+      expect(response).toEqual({
+        kind: 'error',
+        code: 'not-permitted-in-channel',
+        message: expect.any(String),
+      });
+      expect(crowi.searchService.searchKeyword).not.toHaveBeenCalled();
+    });
+
     it('allows the command through when the channel is permitted', async () => {
       await ChatChannelPermission.create({
         relationId: RELATION_ID,

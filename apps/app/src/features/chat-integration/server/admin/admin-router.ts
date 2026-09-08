@@ -1,7 +1,9 @@
 // Task 9.1's admin screen backend: the receiving end for the 3 things the
 // admin screen has to show (design.md "管理画面と個人設定" -- Requirements
-// 1.3, 1.4, 12.5) plus the one write operation it exposes (Requirement 9.1's
-// pairing submission, `submitPairingRequest` from task 7.3).
+// 1.3, 1.4, 12.5) plus the write operations it exposes: Requirement 9.1's
+// pairing submission (`submitPairingRequest`, task 7.3) and task 9.2's
+// channel-permission settings save (`saveRelationSettings`, Requirements
+// 11.1/11.2/11.4).
 //
 // Every endpoint here requires a real, logged-in GROWI ADMIN
 // (`loginRequiredFactory` + `adminRequiredFactory`) -- same convention as
@@ -42,7 +44,9 @@ import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-respo
 import { describeChatKeyEncryptionConfiguration } from '../keys';
 import { submitPairingRequest } from '../pairing/pairing-service';
 import { fetchCapabilities, fetchConnectionStatus } from '../proxy-client';
+import { readRelationSettings } from '../settings/relation-settings-store';
 import { listRelationsForAdmin } from './admin-service';
+import { saveRelationSettings } from './save-relation-settings';
 
 interface AuthenticatedAdminRequest extends Request {
   readonly user: IUserHasId;
@@ -111,6 +115,74 @@ const connectionStatusHandler = async (
     return;
   }
   res.apiv3(result.response);
+};
+
+/**
+ * `GET /relations/:relationId/settings` -- this relation's channel
+ * permissions and its current settings version, read through the very same
+ * function `settings-pull` answers the proxy with
+ * (`readRelationSettings`), so the screen an administrator edits shows what
+ * the proxy is actually being told.
+ */
+const getSettingsHandler = async (
+  req: Request,
+  res: ApiV3Response,
+): Promise<void> => {
+  const { relationId } = req.params;
+  const settings = await readRelationSettings(relationId);
+  if (settings == null) {
+    res.apiv3Err(
+      new ErrorV3(
+        `Relation '${relationId}' is not found`,
+        'relation-not-found',
+      ),
+      404,
+    );
+    return;
+  }
+  res.apiv3(settings);
+};
+
+/**
+ * `POST /relations/:relationId/settings` -- saves the relation's channel
+ * permissions (task 9.2, Requirements 11.1/11.2/11.4).
+ *
+ * The whole set is sent and stored wholesale, matching what goes over the
+ * wire to the proxy; there is no per-command endpoint.
+ *
+ * A push failure is NOT an error here: `saveRelationSettings` still answers
+ * `saved`, and this handler relays that as `200` with `push: { ok: false,
+ * reason }` so the screen can say "saved, but the proxy has not been told
+ * yet -- it will fetch it". Answering an error status would tell the
+ * administrator nothing was saved, which is false (see
+ * `save-relation-settings.ts`).
+ */
+const saveSettingsHandler = async (
+  req: Request,
+  res: ApiV3Response,
+): Promise<void> => {
+  const { relationId } = req.params;
+  const { channelPermissions } = req.body as {
+    readonly channelPermissions?: unknown;
+  };
+
+  const outcome = await saveRelationSettings(relationId, channelPermissions);
+
+  if (outcome.status === 'invalid-settings') {
+    res.apiv3Err(new ErrorV3(outcome.detail, 'invalid-settings'), 400);
+    return;
+  }
+  if (outcome.status === 'relation-not-found') {
+    res.apiv3Err(
+      new ErrorV3(
+        `Relation '${relationId}' is not found`,
+        'relation-not-found',
+      ),
+      404,
+    );
+    return;
+  }
+  res.apiv3(outcome);
 };
 
 interface PairingRequestBody {
@@ -192,6 +264,14 @@ export const createAdminRouter = (crowi: Crowi): Router => {
   router.get(
     '/relations/:relationId/connection-status',
     connectionStatusHandler as unknown as RequestHandler,
+  );
+  router.get(
+    '/relations/:relationId/settings',
+    getSettingsHandler as unknown as RequestHandler,
+  );
+  router.post(
+    '/relations/:relationId/settings',
+    saveSettingsHandler as unknown as RequestHandler,
   );
   router.post('/pairing', submitPairingHandler as unknown as RequestHandler);
 

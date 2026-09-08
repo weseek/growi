@@ -5,6 +5,12 @@
 // feature needs to store a private key is not configured (design.md
 // "秘密鍵の暗号化...未設定ならペアリングを始められない").
 //
+// Task 9.2 adds the per-relation channel-permission editor (Requirements
+// 11.1/11.2/11.4): what an administrator saves here is written
+// transactionally with a version bump and then pushed to the proxy. A push
+// that fails is reported as a SAVE THAT SUCCEEDED, because it is one -- the
+// proxy fetches the settings itself through `settings-pull`.
+//
 // Follows this feature's own client convention (see `MyChatAccountLinks.tsx`
 // and `AccountLinkApproval.tsx`): plain hooks + `~/client/util/apiv3-client`
 // directly, no `~/stores/*` entry, English-first UI text (translation is a
@@ -20,7 +26,13 @@
 // do (task 9.1's own warning against deciding this independently).
 
 import { type JSX, useCallback, useId, useState } from 'react';
-import type { CapabilityReport, ConnectionStatusView } from '@growi/chat';
+import {
+  type CapabilityReport,
+  COMMAND_NAMES,
+  type CommandName,
+  type ConnectionStatusView,
+  type RelationSettings,
+} from '@growi/chat';
 import useSWR from 'swr';
 
 import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
@@ -45,6 +57,19 @@ interface AdminRelationListItem {
   readonly createdAt: string;
   readonly unpairedAt: string | null;
 }
+
+interface RelationSettingsView {
+  readonly settings: RelationSettings;
+  readonly version: number;
+}
+
+type SaveSettingsOutcome = {
+  readonly status: 'saved';
+  readonly version: number;
+  readonly push:
+    | { readonly ok: true }
+    | { readonly ok: false; readonly reason: string };
+};
 
 type PairingOutcome =
   | { readonly status: 'paired'; readonly relationId: string }
@@ -95,6 +120,17 @@ const fetchConnectionStatusFor = (
   };
 };
 
+const fetchSettingsFor = (
+  relationId: string,
+): (() => Promise<RelationSettingsView>) => {
+  return async () => {
+    const res = await apiv3Get<RelationSettingsView>(
+      `/chat-integration/admin/relations/${relationId}/settings`,
+    );
+    return res.data;
+  };
+};
+
 // ============================================================================
 // Sub-sections
 // ============================================================================
@@ -135,6 +171,251 @@ const CapabilityReportTable = ({
     </tbody>
   </table>
 );
+
+// ============================================================================
+// Channel permissions (task 9.2)
+// ============================================================================
+
+/**
+ * What an administrator can say about one command. `'unset'` is not a wire
+ * value: it means "no row for this command", which the protocol's own
+ * judgement treats as its default (a write command is denied, a read command
+ * is allowed). It has to stay expressible, otherwise saving this screen once
+ * would silently turn every command that was merely never configured into an
+ * explicit rule.
+ */
+type ScopeChoice = 'unset' | 'all' | 'none' | 'listed';
+
+const SCOPE_LABELS: Readonly<Record<ScopeChoice, string>> = {
+  unset: 'Not configured (protocol default)',
+  all: 'Every channel',
+  none: 'No channel',
+  listed: 'Only these channels',
+};
+
+interface CommandFormState {
+  readonly scope: ScopeChoice;
+  /** Free text while editing; split into channel ids on save. */
+  readonly channelIds: string;
+}
+
+const ALL_COMMAND_NAMES: ReadonlyArray<CommandName> = Object.values(
+  COMMAND_NAMES,
+) as ReadonlyArray<CommandName>;
+
+const toFormState = (
+  channelPermissions: RelationSettings['channelPermissions'],
+): Record<CommandName, CommandFormState> => {
+  const byCommand = new Map(
+    channelPermissions.map((row) => [row.commandName, row.allowedChannels]),
+  );
+  const entries = ALL_COMMAND_NAMES.map(
+    (commandName): [CommandName, CommandFormState] => {
+      const allowedChannels = byCommand.get(commandName);
+      if (allowedChannels == null) {
+        return [commandName, { scope: 'unset', channelIds: '' }];
+      }
+      if (allowedChannels === 'all' || allowedChannels === 'none') {
+        return [commandName, { scope: allowedChannels, channelIds: '' }];
+      }
+      return [
+        commandName,
+        { scope: 'listed', channelIds: allowedChannels.join(', ') },
+      ];
+    },
+  );
+  return Object.fromEntries(entries) as Record<CommandName, CommandFormState>;
+};
+
+/** Channel IDS, never names -- a name can be changed by anyone in the chat service. */
+const splitChannelIds = (raw: string): string[] =>
+  raw
+    .split(/[\s,]+/)
+    .map((id) => id.trim())
+    .filter((id) => id.length > 0);
+
+const toChannelPermissions = (
+  form: Record<CommandName, CommandFormState>,
+): RelationSettings['channelPermissions'] =>
+  ALL_COMMAND_NAMES.flatMap((commandName) => {
+    const { scope, channelIds } = form[commandName];
+    if (scope === 'unset') {
+      return [];
+    }
+    return [
+      {
+        commandName,
+        allowedChannels:
+          scope === 'listed' ? splitChannelIds(channelIds) : scope,
+      },
+    ];
+  });
+
+const describeSaveOutcome = (outcome: SaveSettingsOutcome): string =>
+  outcome.push.ok
+    ? `Saved (version ${outcome.version}) and pushed to the proxy.`
+    : `Saved (version ${outcome.version}), but the proxy could not be told yet (${outcome.push.reason}). The proxy will fetch these settings itself.`;
+
+/**
+ * Editor for one relation's channel permissions.
+ *
+ * Channels are entered as ids on purpose. Picking them from the proxy's
+ * channel inventory (and warning about a channel that is also a Gen 1
+ * notification target) is task 9.3; it replaces this text field with a
+ * picker, still keyed by id.
+ */
+const ChannelPermissionsForm = ({
+  relationId,
+  initialPermissions,
+  version,
+  onSaved,
+}: {
+  relationId: string;
+  initialPermissions: RelationSettings['channelPermissions'];
+  version: number;
+  onSaved: () => void;
+}): JSX.Element => {
+  const [form, setForm] = useState<Record<CommandName, CommandFormState>>(() =>
+    toFormState(initialPermissions),
+  );
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleScopeChange = useCallback(
+    (commandName: CommandName) => (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const scope = e.target.value as ScopeChoice;
+      setForm((prev) => ({
+        ...prev,
+        [commandName]: { ...prev[commandName], scope },
+      }));
+    },
+    [],
+  );
+
+  const handleChannelIdsChange = useCallback(
+    (commandName: CommandName) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      const channelIds = e.target.value;
+      setForm((prev) => ({
+        ...prev,
+        [commandName]: { ...prev[commandName], channelIds },
+      }));
+    },
+    [],
+  );
+
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      setIsSaving(true);
+      try {
+        const res = await apiv3Post<SaveSettingsOutcome>(
+          `/chat-integration/admin/relations/${relationId}/settings`,
+          { channelPermissions: toChannelPermissions(form) },
+        );
+        toastSuccess(describeSaveOutcome(res.data));
+        onSaved();
+      } catch (err) {
+        toastError(err);
+      } finally {
+        setIsSaving(false);
+      }
+    },
+    [form, onSaved, relationId],
+  );
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      data-testid="grw-chat-integration-permissions-form"
+    >
+      <p className="text-muted mb-2">Settings version: {version}</p>
+      {ALL_COMMAND_NAMES.map((commandName) => (
+        <div
+          className="row align-items-center mb-2"
+          key={commandName}
+          data-testid="grw-chat-integration-permission-row"
+        >
+          <div className="col-3">
+            <label
+              className="form-label mb-0"
+              htmlFor={`${relationId}-${commandName}-scope`}
+            >
+              {commandName}
+            </label>
+          </div>
+          <div className="col-4">
+            <select
+              id={`${relationId}-${commandName}-scope`}
+              className="form-select"
+              value={form[commandName].scope}
+              onChange={handleScopeChange(commandName)}
+            >
+              {(Object.keys(SCOPE_LABELS) as ScopeChoice[]).map((scope) => (
+                <option key={scope} value={scope}>
+                  {SCOPE_LABELS[scope]}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="col-5">
+            {form[commandName].scope === 'listed' && (
+              <input
+                type="text"
+                className="form-control"
+                aria-label={`Channel ids for ${commandName}`}
+                placeholder="C0123ABCDEF, C0456GHIJKL"
+                value={form[commandName].channelIds}
+                onChange={handleChannelIdsChange(commandName)}
+              />
+            )}
+          </div>
+        </div>
+      ))}
+      <button type="submit" className="btn btn-primary" disabled={isSaving}>
+        {isSaving ? 'Saving…' : 'Save channel permissions'}
+      </button>
+    </form>
+  );
+};
+
+const ChannelPermissionsSection = ({
+  relationId,
+}: {
+  relationId: string;
+}): JSX.Element => {
+  const {
+    data,
+    error,
+    mutate: mutateSettings,
+  } = useSWR<RelationSettingsView>(
+    `chat-integration-admin-settings-${relationId}`,
+    fetchSettingsFor(relationId),
+  );
+
+  const handleSaved = useCallback(() => {
+    mutateSettings();
+  }, [mutateSettings]);
+
+  return (
+    <div className="mt-3">
+      <span className="fw-bold">Channel permissions:</span>
+      {error != null && (
+        <p className="text-danger mb-0">Failed to load channel permissions</p>
+      )}
+      {data != null && (
+        // Re-keyed on the version so that a save (which bumps the version)
+        // rebuilds the form from what the server now holds, rather than
+        // leaving the previous edit state in place.
+        <ChannelPermissionsForm
+          key={data.version}
+          relationId={relationId}
+          initialPermissions={data.settings.channelPermissions}
+          version={data.version}
+          onSaved={handleSaved}
+        />
+      )}
+    </div>
+  );
+};
 
 /** One relation's row: static info plus, for an active relation, live capabilities + connection status. */
 const RelationRow = ({
@@ -202,6 +483,10 @@ const RelationRow = ({
             <CapabilityReportTable report={capabilities} />
           )}
         </div>
+      )}
+
+      {isActive && (
+        <ChannelPermissionsSection relationId={relation.relationId} />
       )}
     </div>
   );

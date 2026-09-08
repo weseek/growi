@@ -88,6 +88,17 @@ const CONNECTION_STATUS = {
   since: '2026-01-01T00:00:00.000Z',
 };
 
+const SETTINGS = {
+  settings: {
+    relationId: ACTIVE_RELATION.relationId,
+    channelPermissions: [
+      { commandName: 'create-page', allowedChannels: 'all' },
+      { commandName: 'keep', allowedChannels: ['C0001', 'C0002'] },
+    ],
+  },
+  version: 4,
+};
+
 // Route apiv3Get by URL, matching the exact endpoints AdminChatIntegration
 // calls -- this is the observable contract (which endpoints get hit), not
 // an implementation spy on internal function names.
@@ -114,6 +125,9 @@ const stubApi = ({
     }
     if (url.endsWith('/connection-status')) {
       return Promise.resolve({ data: CONNECTION_STATUS });
+    }
+    if (url.endsWith('/settings')) {
+      return Promise.resolve({ data: SETTINGS });
     }
     return Promise.reject(new Error(`unexpected URL: ${url}`));
   });
@@ -211,6 +225,103 @@ describe('AdminChatIntegration', () => {
     expect(
       await screen.findByTestId('grw-chat-integration-connection-health'),
     ).toHaveTextContent('connected');
+  });
+
+  describe('channel permissions (task 9.2)', () => {
+    const scopeSelectFor = (commandName: string) =>
+      screen.getByLabelText(commandName, { selector: 'select' });
+
+    it("shows each command's saved permission, including 'all' and an explicit channel list", async () => {
+      stubApi({ relations: [ACTIVE_RELATION] });
+
+      renderScreen();
+
+      expect(
+        await screen.findByTestId('grw-chat-integration-permissions-form'),
+      ).toBeInTheDocument();
+      // 'all' is not an empty channel list -- if the screen could not tell
+      // the two apart, an administrator would silently narrow a command that
+      // was allowed everywhere.
+      expect(scopeSelectFor('create-page')).toHaveValue('all');
+      expect(scopeSelectFor('keep')).toHaveValue('listed');
+      expect(screen.getByLabelText(/channel ids for keep/i)).toHaveValue(
+        'C0001, C0002',
+      );
+      // A command with no stored row must stay "not configured" rather than
+      // being shown (and later saved) as an explicit rule.
+      expect(scopeSelectFor('search')).toHaveValue('unset');
+    });
+
+    it('saves the whole set, keeping unchanged commands and omitting the unconfigured ones', async () => {
+      stubApi({ relations: [ACTIVE_RELATION] });
+      mocks.apiv3Post.mockResolvedValue({
+        data: { status: 'saved', version: 5, push: { ok: true } },
+      });
+      const user = userEvent.setup();
+
+      renderScreen();
+
+      await screen.findByTestId('grw-chat-integration-permissions-form');
+      await user.selectOptions(scopeSelectFor('search'), 'listed');
+      await user.type(
+        screen.getByLabelText(/channel ids for search/i),
+        'C0009 C0010',
+      );
+      await user.click(
+        screen.getByRole('button', { name: /save channel permissions/i }),
+      );
+
+      await waitFor(() => {
+        expect(mocks.apiv3Post).toHaveBeenCalledWith(
+          `/chat-integration/admin/relations/${ACTIVE_RELATION.relationId}/settings`,
+          {
+            channelPermissions: [
+              { commandName: 'search', allowedChannels: ['C0009', 'C0010'] },
+              { commandName: 'create-page', allowedChannels: 'all' },
+              { commandName: 'keep', allowedChannels: ['C0001', 'C0002'] },
+            ],
+          },
+        );
+      });
+      expect(mocks.toastSuccess).toHaveBeenCalled();
+    });
+
+    it('reports a save whose push failed as saved, and says the proxy will fetch it', async () => {
+      stubApi({ relations: [ACTIVE_RELATION] });
+      mocks.apiv3Post.mockResolvedValue({
+        data: {
+          status: 'saved',
+          version: 5,
+          push: { ok: false, reason: 'unreachable' },
+        },
+      });
+      const user = userEvent.setup();
+
+      renderScreen();
+
+      await screen.findByTestId('grw-chat-integration-permissions-form');
+      await user.click(
+        screen.getByRole('button', { name: /save channel permissions/i }),
+      );
+
+      await waitFor(() => {
+        expect(mocks.toastSuccess).toHaveBeenCalledWith(
+          expect.stringMatching(/proxy will fetch/i),
+        );
+      });
+      expect(mocks.toastError).not.toHaveBeenCalled();
+    });
+
+    it('does not offer a permission editor for an unpaired relation', async () => {
+      stubApi({ relations: [UNPAIRED_RELATION] });
+
+      renderScreen();
+
+      expect(await screen.findByText('Old label')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('grw-chat-integration-permissions-form'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   it('shows the encryption-key-unconfigured warning and disables the pairing form', async () => {

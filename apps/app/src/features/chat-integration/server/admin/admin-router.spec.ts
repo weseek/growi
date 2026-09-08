@@ -7,6 +7,9 @@
 //     `fetchCapabilities`/`fetchConnectionStatus` VERBATIM -- including a
 //     field this test invents that no real platform sends yet, proving
 //     there is no hardcoded per-platform allowlist silently dropping fields
+//   - `GET`/`POST /relations/:id/settings` (task 9.2) round trip a saved
+//     channel permission, including the 'all'/'none' values, and refuse a
+//     malformed payload with 400 without touching the stored settings
 //   - `POST /pairing` forwards to `submitPairingRequest` and relays whatever
 //     outcome it returns, without a second encryption check duplicating
 //     `pairing-service.ts`'s own
@@ -42,6 +45,7 @@ import { ChatRelation } from '../models/chat-relation';
 import type { PairingOutcome } from '../pairing/pairing-service';
 import * as pairingService from '../pairing/pairing-service';
 import * as proxyClient from '../proxy-client';
+import { ChatChannelPermission } from '../settings/models/chat-channel-permission';
 import { createAdminRouter } from './admin-router';
 
 vi.mock('../pairing/pairing-service', async (importOriginal) => {
@@ -54,6 +58,7 @@ vi.mock('../proxy-client', async (importOriginal) => {
     ...actual,
     fetchCapabilities: vi.fn(),
     fetchConnectionStatus: vi.fn(),
+    pushSettings: vi.fn(),
   };
 });
 
@@ -118,6 +123,7 @@ describe('admin-router', () => {
     ({ mongod } = await connectSelfContainedMongo(
       'growi_test_unit_admin_router',
     ));
+    await ChatChannelPermission.init();
   });
 
   afterAll(async () => {
@@ -126,7 +132,12 @@ describe('admin-router', () => {
 
   beforeEach(async () => {
     await ChatRelation.deleteMany({});
+    await ChatChannelPermission.deleteMany({});
     vi.clearAllMocks();
+    vi.mocked(proxyClient.pushSettings).mockResolvedValue({
+      ok: true,
+      response: undefined,
+    });
   });
 
   afterEach(() => {
@@ -259,6 +270,122 @@ describe('admin-router', () => {
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual(view);
+    });
+  });
+
+  describe('channel permission settings (task 9.2)', () => {
+    const settingsPath = `${MOUNT_PATH}/relations/${RELATION_ID}/settings`;
+
+    it('refuses the save for a logged-in NON-admin user', async () => {
+      await seedRelation();
+      const app = buildApp(nonAdminUser);
+
+      const response = await request(app)
+        .post(settingsPath)
+        .send({
+          channelPermissions: [
+            { commandName: 'create-page', allowedChannels: 'all' },
+          ],
+        });
+
+      expect(response.status).not.toBe(200);
+      expect(await ChatChannelPermission.countDocuments({})).toBe(0);
+    });
+
+    it('reads back what was saved, for all three allowedChannels forms', async () => {
+      await seedRelation();
+      const app = buildApp(adminUser);
+      const channelPermissions = [
+        { commandName: 'create-page', allowedChannels: 'all' },
+        { commandName: 'keep', allowedChannels: 'none' },
+        { commandName: 'search', allowedChannels: ['C0001', 'C0002'] },
+      ];
+
+      const saved = await request(app)
+        .post(settingsPath)
+        .send({ channelPermissions });
+
+      expect(saved.status).toBe(200);
+      expect(saved.body).toEqual({
+        status: 'saved',
+        version: 1,
+        push: { ok: true },
+      });
+
+      const read = await request(app).get(settingsPath);
+
+      expect(read.status).toBe(200);
+      expect(read.body.version).toBe(1);
+      expect(read.body.settings).toEqual({
+        relationId: RELATION_ID,
+        channelPermissions: expect.arrayContaining(channelPermissions),
+      });
+    });
+
+    it('reports a failed push as a successful save the proxy has yet to hear about', async () => {
+      await seedRelation();
+      vi.mocked(proxyClient.pushSettings).mockResolvedValue({
+        ok: false,
+        reason: 'unreachable',
+      });
+      const app = buildApp(adminUser);
+
+      const response = await request(app)
+        .post(settingsPath)
+        .send({
+          channelPermissions: [
+            { commandName: 'search', allowedChannels: 'all' },
+          ],
+        });
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
+        status: 'saved',
+        version: 1,
+        push: { ok: false, reason: 'unreachable' },
+      });
+      const read = await request(app).get(settingsPath);
+      expect(read.body.settings.channelPermissions).toEqual([
+        { commandName: 'search', allowedChannels: 'all' },
+      ]);
+    });
+
+    it('answers 400 for a malformed payload, changing nothing', async () => {
+      await seedRelation();
+      const app = buildApp(adminUser);
+
+      const response = await request(app)
+        .post(settingsPath)
+        .send({
+          channelPermissions: [
+            { commandName: 'search', allowedChannels: 'everything' },
+          ],
+        });
+
+      expect(response.status).toBe(400);
+      expect(proxyClient.pushSettings).not.toHaveBeenCalled();
+      const read = await request(app).get(settingsPath);
+      expect(read.body.version).toBe(0);
+      expect(read.body.settings.channelPermissions).toEqual([]);
+    });
+
+    it('answers 404 for a relation that does not exist', async () => {
+      const app = buildApp(adminUser);
+
+      const saveResponse = await request(app)
+        .post(`${MOUNT_PATH}/relations/no-such-relation/settings`)
+        .send({
+          channelPermissions: [
+            { commandName: 'search', allowedChannels: 'all' },
+          ],
+        });
+      const readResponse = await request(app).get(
+        `${MOUNT_PATH}/relations/no-such-relation/settings`,
+      );
+
+      expect(saveResponse.status).toBe(404);
+      expect(readResponse.status).toBe(404);
+      expect(proxyClient.pushSettings).not.toHaveBeenCalled();
     });
   });
 

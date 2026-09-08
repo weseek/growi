@@ -27,7 +27,6 @@ import {
   type KeyOperationResult,
   OP_ENDPOINTS,
   OP_NAMES,
-  type RelationSettings,
   type SettingsPullResponse,
 } from '@growi/chat';
 import type { IUser } from '@growi/core';
@@ -44,9 +43,8 @@ import {
 import { ChatAccountLink } from '../account-link/models/chat-account-link';
 import { createCommandEndpoint } from '../command/command-endpoint';
 import { registerPeerKey, revokePeerKey } from '../keys';
-import { ChatRelation } from '../models/chat-relation';
 import { pairingEndpoint } from '../pairing/pairing-endpoint';
-import { ChatChannelPermission } from '../settings/models/chat-channel-permission';
+import { readRelationSettings } from '../settings/relation-settings-store';
 import {
   type InboundPeerOp,
   signatureGuard,
@@ -193,20 +191,21 @@ const accountLinkStartHandler: RequestHandler = async (req, res) => {
 /**
  * `settings-pull` -- the one signed endpoint this task gives real behavior
  * (task 3.5's own text: "設定の取り出しは、押し込みが届かなかったときに
- * proxy が取りに来る保険である。版と設定を返す"). Reads
- * `chat_relations.settingsVersion` and `chat_channel_permissions` for the
- * relation the signature proved this request is about, and returns them
- * verbatim as a `SettingsPullResponse` -- no 'all'/'none' encoding decision
- * is made here; each stored row's `allowedChannels` (a plain `string[]`)
- * already satisfies `RelationSettings.channelPermissions[].allowedChannels`
- * (`ReadonlyArray<string> | 'all' | 'none'`) without translation.
+ * proxy が取りに来る保険である。版と設定を返す").
+ *
+ * Reads through `readRelationSettings`, the same function the admin save
+ * flow (task 9.2) writes with, so what an administrator saved and what the
+ * proxy is told cannot become two different readings of the same rows --
+ * including the `'all'`/`'none'` values, whose stored layout only
+ * `settings/allowed-channels.ts` knows.
  */
 const settingsPullHandler: RequestHandler = async (req, res) => {
   const { chatPeer } = req as VerifiedPeerRequest<typeof OP_NAMES.settingsPull>;
   const { relationId } = chatPeer.body;
 
-  const relation = await ChatRelation.findOne({ relationId }).lean();
-  if (relation == null) {
+  const body: SettingsPullResponse | null =
+    await readRelationSettings(relationId);
+  if (body == null) {
     // Unreachable in practice -- `signatureGuard`'s `resolvePeerKey` only
     // resolves a key for a relation that exists, and `acceptEnvelope`
     // already confirmed this body's `relationId` matches the verified key's
@@ -215,20 +214,6 @@ const settingsPullHandler: RequestHandler = async (req, res) => {
     return;
   }
 
-  const permissionRows = await ChatChannelPermission.find({
-    relationId,
-  }).lean();
-
-  const channelPermissions: RelationSettings['channelPermissions'] =
-    permissionRows.map((row) => ({
-      commandName: row.commandName,
-      allowedChannels: row.allowedChannels,
-    }));
-
-  const body: SettingsPullResponse = {
-    settings: { relationId, channelPermissions },
-    version: relation.settingsVersion,
-  };
   res.status(200).json(body);
 };
 
