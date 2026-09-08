@@ -3,10 +3,16 @@ import { mock } from 'vitest-mock-extended';
 import type { PoeditorClient } from './poeditor-client.ts';
 import {
   type ApprovalReviewer,
+  applyStructuralChanges,
   applyTranslationOnlyChanges,
   collectClassifications,
   type I18nLintGate,
+  main,
   type PullRequestRef,
+  runPull,
+  STRUCTURAL_BRANCH,
+  type StructuralCombination,
+  type StructuralPrPublisher,
   TRANSLATION_ONLY_BRANCH,
   type TranslationOnlyCombination,
   type TranslationOnlyPrPublisher,
@@ -216,6 +222,11 @@ describe('collectClassifications', () => {
       language: 'zh_CN',
       addedKeys: ['k3'],
       removedKeys: ['k2'],
+      // Same reasoning as translationOnly's absoluteFilePath/content above,
+      // under different field names (task 3.2's Implementation Notes; see
+      // StructuralCombination's doc comment).
+      filePath: '/base/locales/zh_CN/admin.json',
+      exportedContent: { k1: 'v1', k3: 'v3' },
     });
 
     const adminJaJp = result.translationOnly.find(
@@ -645,5 +656,505 @@ describe('applyTranslationOnlyChanges', () => {
       }),
     );
     expect(harness.prPublisher.publishBranch).toHaveBeenCalledTimes(2);
+  });
+});
+
+const buildStructuralCombination = (
+  overrides: Partial<StructuralCombination> = {},
+): StructuralCombination => ({
+  namespace: 'admin',
+  language: 'zh_CN',
+  addedKeys: ['k3'],
+  removedKeys: ['k2'],
+  filePath: '/base/locales/zh_CN/admin.json',
+  exportedContent: { k1: 'v1', k3: 'v3' },
+  ...overrides,
+});
+
+const EXISTING_STRUCTURAL_PR_NUMBER = 9191;
+
+interface StructuralHarness {
+  readonly calls: string[];
+  readonly writeLocaleFile: WriteLocaleFile;
+  readonly prPublisher: StructuralPrPublisher;
+}
+
+const buildStructuralHarness = (): StructuralHarness => {
+  const calls: string[] = [];
+
+  const writeLocaleFile = vi.fn((absolutePath: string, _content: string) => {
+    calls.push(`write:${absolutePath}`);
+    return Promise.resolve();
+  });
+
+  // Stateful for the same reason as buildApplyHarness's prPublisher fake:
+  // running the flow twice against this harness must reproduce the real
+  // second-run situation (an unmerged PR already open).
+  let openPullRequest: PullRequestRef | null = null;
+
+  const prPublisher = mock<StructuralPrPublisher>();
+  prPublisher.publishBranch.mockImplementation(() => {
+    calls.push('publishBranch');
+    return Promise.resolve();
+  });
+  prPublisher.findExistingPr.mockImplementation(() => {
+    calls.push('findExistingPr');
+    return Promise.resolve(openPullRequest);
+  });
+  prPublisher.createPr.mockImplementation(() => {
+    calls.push('createPr');
+    openPullRequest = { number: EXISTING_STRUCTURAL_PR_NUMBER };
+    return Promise.resolve(openPullRequest);
+  });
+  prPublisher.updatePr.mockImplementation(() => {
+    calls.push('updatePr');
+    return Promise.resolve();
+  });
+
+  return { calls, writeLocaleFile, prPublisher };
+};
+
+describe('applyStructuralChanges', () => {
+  it('does nothing at all when the structural group is empty', async () => {
+    const harness = buildStructuralHarness();
+
+    const result = await applyStructuralChanges({
+      combinations: [],
+      writeLocaleFile: harness.writeLocaleFile,
+      prPublisher: harness.prPublisher,
+    });
+
+    expect(result).toEqual({ ok: true, outcome: 'no_changes' });
+    expect(harness.calls).toEqual([]);
+  });
+
+  it('writes the exported content and opens a single review-required PR, with no approval step of any kind', async () => {
+    const harness = buildStructuralHarness();
+    const combinations = [
+      buildStructuralCombination(),
+      buildStructuralCombination({
+        namespace: 'translation',
+        language: 'fr_FR',
+        addedKeys: [],
+        removedKeys: ['t1'],
+        filePath: '/base/locales/fr_FR/translation.json',
+        exportedContent: { t2: 'b' },
+      }),
+    ];
+
+    const result = await applyStructuralChanges({
+      combinations,
+      writeLocaleFile: harness.writeLocaleFile,
+      prPublisher: harness.prPublisher,
+    });
+
+    expect(result).toEqual({
+      ok: true,
+      outcome: 'pr_ready',
+      pullRequest: { number: EXISTING_STRUCTURAL_PR_NUMBER },
+      created: true,
+    });
+
+    // No approval step exists in this call chain at all -- applyStructuralChanges's
+    // own signature has no ApprovalReviewer parameter, so there is nothing to
+    // assert "was not called" on beyond confirming the calls actually made are
+    // exactly these four, in order.
+    expect(harness.calls).toEqual([
+      'write:/base/locales/zh_CN/admin.json',
+      'write:/base/locales/fr_FR/translation.json',
+      'publishBranch',
+      'findExistingPr',
+      'createPr',
+    ]);
+
+    expect(harness.writeLocaleFile).toHaveBeenCalledWith(
+      '/base/locales/zh_CN/admin.json',
+      `${JSON.stringify({ k1: 'v1', k3: 'v3' }, null, 2)}\n`,
+    );
+    expect(harness.prPublisher.publishBranch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        headBranch: STRUCTURAL_BRANCH,
+        filePaths: [
+          '/base/locales/zh_CN/admin.json',
+          '/base/locales/fr_FR/translation.json',
+        ],
+      }),
+    );
+    expect(harness.prPublisher.createPr).toHaveBeenCalledWith(
+      expect.objectContaining({ headBranch: STRUCTURAL_BRANCH }),
+    );
+  });
+
+  it('updates the already-open structural PR instead of opening a second one when run twice on the same diff', async () => {
+    const harness = buildStructuralHarness();
+    const combinations = [buildStructuralCombination()];
+    const runOnce = () =>
+      applyStructuralChanges({
+        combinations,
+        writeLocaleFile: harness.writeLocaleFile,
+        prPublisher: harness.prPublisher,
+      });
+
+    const firstResult = await runOnce();
+    const secondResult = await runOnce();
+
+    expect(firstResult).toMatchObject({ ok: true, created: true });
+    expect(secondResult).toMatchObject({ ok: true, created: false });
+    expect(harness.prPublisher.createPr).toHaveBeenCalledTimes(1);
+    expect(harness.prPublisher.updatePr).toHaveBeenCalledTimes(1);
+    expect(harness.prPublisher.updatePr).toHaveBeenCalledWith(
+      expect.objectContaining({
+        pullRequest: { number: EXISTING_STRUCTURAL_PR_NUMBER },
+      }),
+    );
+  });
+});
+
+describe('translation-only-empty / structural-only integration (task 3.3 observable completion state)', () => {
+  it('creates only the structural review PR and never touches the approval bot or the translation-only publisher when the translation-only group is empty', async () => {
+    // This is the task's named integration test: 訳文のみのグループが空でも
+    // 構造変更のグループが存在する場合は、構造変更側の変更提案だけが作られる
+    // ことを検証する. Runs both apply functions the way `runPull`/`main()`
+    // would, against a translationOnly=[] / structural=[...] split.
+    const translationOnlyHarness = buildApplyHarness({ lintGatePasses: true });
+    const structuralHarness = buildStructuralHarness();
+    const structuralCombinations = [buildStructuralCombination()];
+
+    const translationOnlyResult = await applyTranslationOnlyChanges({
+      combinations: [],
+      writeLocaleFile: translationOnlyHarness.writeLocaleFile,
+      prPublisher: translationOnlyHarness.prPublisher,
+      approvalReviewer: translationOnlyHarness.approvalReviewer,
+      lintGate: translationOnlyHarness.lintGate,
+    });
+    const structuralResult = await applyStructuralChanges({
+      combinations: structuralCombinations,
+      writeLocaleFile: structuralHarness.writeLocaleFile,
+      prPublisher: structuralHarness.prPublisher,
+    });
+
+    expect(translationOnlyResult).toEqual({ ok: true, outcome: 'no_changes' });
+    expect(structuralResult).toEqual({
+      ok: true,
+      outcome: 'pr_ready',
+      pullRequest: { number: EXISTING_STRUCTURAL_PR_NUMBER },
+      created: true,
+    });
+
+    // The approval bot is never invoked at all -- not "invoked zero times as
+    // a side effect", but structurally never reached, since the empty
+    // translation-only group short-circuits before touching any collaborator.
+    expect(
+      translationOnlyHarness.approvalReviewer.submitApprovalReview,
+    ).toHaveBeenCalledTimes(0);
+    expect(translationOnlyHarness.calls).toEqual([]);
+
+    // Exactly one PR is created, and it is the structural review PR.
+    expect(structuralHarness.prPublisher.createPr).toHaveBeenCalledTimes(1);
+    expect(structuralHarness.prPublisher.createPr).toHaveBeenCalledWith(
+      expect.objectContaining({ headBranch: STRUCTURAL_BRANCH }),
+    );
+  });
+});
+
+const buildRunPullHarness = () => {
+  const translationOnlyHarness = buildApplyHarness({ lintGatePasses: true });
+  const structuralHarness = buildStructuralHarness();
+  return {
+    poeditorClient: buildPoeditorClient(),
+    translationOnlyPrPublisher: translationOnlyHarness.prPublisher,
+    approvalReviewer: translationOnlyHarness.approvalReviewer,
+    lintGate: translationOnlyHarness.lintGate,
+    structuralPrPublisher: structuralHarness.prPublisher,
+  };
+};
+
+describe('runPull', () => {
+  it('returns ok:true when collectClassifications, applyTranslationOnlyChanges, and applyStructuralChanges all succeed', async () => {
+    const harness = buildRunPullHarness();
+    const collectClassificationsFn = vi.fn(async () => ({
+      ok: true as const,
+      translationOnly: [],
+      structural: [],
+      skipped: [],
+    }));
+    const applyTranslationOnlyChangesFn = vi.fn(async () => ({
+      ok: true as const,
+      outcome: 'no_changes' as const,
+    }));
+    const applyStructuralChangesFn = vi.fn(async () => ({
+      ok: true as const,
+      outcome: 'no_changes' as const,
+    }));
+
+    const result = await runPull({
+      ...harness,
+      collectClassificationsFn,
+      applyTranslationOnlyChangesFn,
+      applyStructuralChangesFn,
+    });
+
+    expect(result).toEqual({ ok: true, skipped: [] });
+    expect(collectClassificationsFn).toHaveBeenCalledTimes(1);
+    expect(applyTranslationOnlyChangesFn).toHaveBeenCalledTimes(1);
+    expect(applyStructuralChangesFn).toHaveBeenCalledTimes(1);
+  });
+
+  it('aborts before either apply step when collectClassifications reports failure, and reports it in `failures`', async () => {
+    const harness = buildRunPullHarness();
+    const collectClassificationsFn = vi.fn(async () => ({
+      ok: false as const,
+      failures: [
+        {
+          namespace: 'admin' as const,
+          language: 'ja_JP',
+          reason: 'read_failed' as const,
+          message: 'ENOENT',
+        },
+      ],
+    }));
+    const applyTranslationOnlyChangesFn = vi.fn();
+    const applyStructuralChangesFn = vi.fn();
+
+    const result = await runPull({
+      ...harness,
+      collectClassificationsFn,
+      applyTranslationOnlyChangesFn,
+      applyStructuralChangesFn,
+    });
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.failures).toEqual([
+        'collectClassifications: admin/ja_JP (read_failed)',
+      ]);
+    }
+    expect(applyTranslationOnlyChangesFn).not.toHaveBeenCalled();
+    expect(applyStructuralChangesFn).not.toHaveBeenCalled();
+  });
+
+  it('runs applyStructuralChanges even when applyTranslationOnlyChanges fails, and aggregates both messages when both fail', async () => {
+    const harness = buildRunPullHarness();
+    const collectClassificationsFn = vi.fn(async () => ({
+      ok: true as const,
+      translationOnly: [buildCombination()],
+      structural: [buildStructuralCombination()],
+      skipped: [],
+    }));
+    const applyTranslationOnlyChangesFn = vi.fn(async () => ({
+      ok: false as const,
+      reason: 'lint_gate_failed' as const,
+      pullRequest: { number: EXISTING_PR_NUMBER },
+      message: 'lint:i18n failed',
+    }));
+    // biome-ignore lint/suspicious/useAwait: must match applyStructuralChanges's Promise-returning signature.
+    const applyStructuralChangesFn = vi.fn(async () => {
+      throw new Error('structural publish exploded');
+    });
+
+    const result = await runPull({
+      ...harness,
+      collectClassificationsFn,
+      applyTranslationOnlyChangesFn,
+      applyStructuralChangesFn,
+    });
+
+    expect(applyTranslationOnlyChangesFn).toHaveBeenCalledTimes(1);
+    expect(applyStructuralChangesFn).toHaveBeenCalledTimes(1);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.failures).toEqual([
+        'applyTranslationOnlyChanges: lint_gate_failed - lint:i18n failed',
+        'applyStructuralChanges: structural publish exploded',
+      ]);
+    }
+    // The actual classification.structural array must reach
+    // applyStructuralChanges -- not an empty array or unrelated data. An
+    // aggregate test that only checks call counts/order would still pass if
+    // runPull dropped the real combinations on the floor.
+    expect(applyStructuralChangesFn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        combinations: [buildStructuralCombination()],
+      }),
+    );
+    expect(applyTranslationOnlyChangesFn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        combinations: [buildCombination()],
+      }),
+    );
+  });
+
+  it('calls applyTranslationOnlyChanges before applyStructuralChanges (gate must see the tree before structural writes land)', async () => {
+    const harness = buildRunPullHarness();
+    const callOrder: string[] = [];
+    const collectClassificationsFn = vi.fn(async () => ({
+      ok: true as const,
+      translationOnly: [buildCombination()],
+      structural: [buildStructuralCombination()],
+      skipped: [],
+    }));
+    // biome-ignore lint/suspicious/useAwait: must match applyTranslationOnlyChanges's Promise-returning signature.
+    const applyTranslationOnlyChangesFn = vi.fn(async () => {
+      callOrder.push('applyTranslationOnlyChanges');
+      return { ok: true as const, outcome: 'no_changes' as const };
+    });
+    // biome-ignore lint/suspicious/useAwait: must match applyStructuralChanges's Promise-returning signature.
+    const applyStructuralChangesFn = vi.fn(async () => {
+      callOrder.push('applyStructuralChanges');
+      return { ok: true as const, outcome: 'no_changes' as const };
+    });
+
+    await runPull({
+      ...harness,
+      collectClassificationsFn,
+      applyTranslationOnlyChangesFn,
+      applyStructuralChangesFn,
+    });
+
+    expect(callOrder).toEqual([
+      'applyTranslationOnlyChanges',
+      'applyStructuralChanges',
+    ]);
+  });
+});
+
+describe('main', () => {
+  const originalToken = process.env.POEDITOR_API_TOKEN;
+  let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    if (originalToken == null) {
+      delete process.env.POEDITOR_API_TOKEN;
+    } else {
+      process.env.POEDITOR_API_TOKEN = originalToken;
+    }
+    process.exitCode = undefined;
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('sets a non-zero exit code and does not run the pull sequence when POEDITOR_API_TOKEN is not set', async () => {
+    delete process.env.POEDITOR_API_TOKEN;
+    const collectClassificationsFn = vi.fn();
+
+    await main({ collectClassificationsFn });
+
+    expect(process.exitCode).toBe(1);
+    expect(collectClassificationsFn).not.toHaveBeenCalled();
+  });
+
+  it('leaves the exit code unset when every step succeeds (success path through main())', async () => {
+    process.env.POEDITOR_API_TOKEN = 'test-token';
+
+    await main({
+      collectClassificationsFn: vi.fn(async () => ({
+        ok: true as const,
+        translationOnly: [],
+        structural: [],
+        skipped: [],
+      })),
+      applyTranslationOnlyChangesFn: vi.fn(async () => ({
+        ok: true as const,
+        outcome: 'no_changes' as const,
+      })),
+      applyStructuralChangesFn: vi.fn(async () => ({
+        ok: true as const,
+        outcome: 'no_changes' as const,
+      })),
+    });
+
+    expect(process.exitCode).toBeUndefined();
+  });
+
+  it('sets a non-zero exit code when any step reports failure (task 3.3 observable completion state)', async () => {
+    process.env.POEDITOR_API_TOKEN = 'test-token';
+
+    await main({
+      collectClassificationsFn: vi.fn(async () => ({
+        ok: true as const,
+        translationOnly: [],
+        structural: [buildStructuralCombination()],
+        skipped: [],
+      })),
+      applyTranslationOnlyChangesFn: vi.fn(async () => ({
+        ok: true as const,
+        outcome: 'no_changes' as const,
+      })),
+      // biome-ignore lint/suspicious/useAwait: must match applyStructuralChanges's Promise-returning signature.
+      applyStructuralChangesFn: vi.fn(async () => {
+        throw new Error('GitHub API unreachable');
+      }),
+    });
+
+    expect(process.exitCode).toBe(1);
+  });
+
+  it('fails loudly instead of silently skipping work when there are real changes but no GitHub adapter has been wired yet (task 5.2 boundary)', async () => {
+    // No collaborator overrides at all -- main()'s real default collaborators
+    // are the not-implemented stubs, since task 5.2 (GitHub adapters) has not
+    // landed yet. With a non-empty structural group, applyStructuralChanges
+    // is forced to touch structuralPrPublisher.publishBranch, which throws.
+    // writeLocaleFile is stubbed so the assertion below isolates that throw
+    // from an unrelated real-filesystem ENOENT.
+    process.env.POEDITOR_API_TOKEN = 'test-token';
+
+    await main({
+      collectClassificationsFn: vi.fn(async () => ({
+        ok: true as const,
+        translationOnly: [],
+        structural: [buildStructuralCombination()],
+        skipped: [],
+      })),
+      writeLocaleFile: vi.fn(() => Promise.resolve()),
+    });
+
+    expect(process.exitCode).toBe(1);
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect.stringContaining(
+        'StructuralPrPublisher.publishBranch has no real implementation yet',
+      ),
+    );
+  });
+
+  it('warns about skipped (invalid_json) combinations on the success path, but leaves the exit code unset (design.md 「不正な形式のexportデータ」, Requirement 8.1)', async () => {
+    // A combination whose POEditor export failed to parse must never
+    // disappear silently even though the overall run still succeeds -- see
+    // this file's header comment and the `skipped` field's doc comment.
+    process.env.POEDITOR_API_TOKEN = 'test-token';
+
+    await main({
+      collectClassificationsFn: vi.fn(async () => ({
+        ok: true as const,
+        translationOnly: [],
+        structural: [],
+        skipped: [
+          {
+            namespace: 'admin' as const,
+            language: 'zh_CN',
+            reason: 'invalid_json' as const,
+            message: 'Unexpected token < in JSON at position 0',
+          },
+        ],
+      })),
+      applyTranslationOnlyChangesFn: vi.fn(async () => ({
+        ok: true as const,
+        outcome: 'no_changes' as const,
+      })),
+      applyStructuralChangesFn: vi.fn(async () => ({
+        ok: true as const,
+        outcome: 'no_changes' as const,
+      })),
+    });
+
+    expect(process.exitCode).toBeUndefined();
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect.stringContaining('admin/zh_CN'),
+    );
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Unexpected token < in JSON at position 0'),
+    );
   });
 });

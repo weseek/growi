@@ -67,7 +67,7 @@
   - _Depends: 3.1_
   - _Boundary: PullTranslationSync_
 
-- [ ] 3.3 構造変更を、人レビュー必須の変更提案として作成し、pull CLIのエントリポイントで束ねる
+- [x] 3.3 構造変更を、人レビュー必須の変更提案として作成し、pull CLIのエントリポイントで束ねる
   - 「構造変更」グループをまとめた1本の変更提案（PR）を、承認ボットを関与させずに作成する。既に同じ差分に対する未マージの変更提案が残っている場合は、新しく作らずその変更提案を更新する（重複した変更提案を作らない）
   - 訳文のみのグループが空でも構造変更のグループが存在する場合は、構造変更側の変更提案だけが作られることを検証する統合テストを書く
   - `pull-translations.ts` に `main()` エントリポイント（`push-source.ts` の `main()` を手本にする）を追加し、3.1の`collectClassifications`・3.2の`applyTranslationOnlyChanges`・本タスクの構造変更PR作成を順に呼び出し、いずれかが失敗した場合に非ゼロ終了コードで終了する形にまとめる（3.2のレビューで「8.1の失敗表面化がこの層で未完結」「main()の置き場所が3タスクとも空白」と指摘された分を回収する）
@@ -104,7 +104,8 @@
   - _Depends: 2, 4.2_
 
 - [ ] 5.2 pullワークフローを配線し、GitHub操作の実アダプタを実装する
-  - 3.2/3.3が注入インターフェースとしてのみ定義した `TranslationOnlyPrPublisher` / `ApprovalReviewer`（および3.3の構造変更PR用の同種インターフェース）の実装を、`gh` CLIまたはGitHub REST APIへの実呼び出しとして作成する（3.2のレビューで「アダプタの実装がどのタスクにも属していない」と指摘された分を回収する）
+  - 3.2/3.3が注入インターフェースとしてのみ定義した `TranslationOnlyPrPublisher` / `ApprovalReviewer` / `StructuralPrPublisher`（3.3の構造変更PR用インターフェース）の実装を、`gh` CLIまたはGitHub REST APIへの実呼び出しとして作成する（3.2のレビューで「アダプタの実装がどのタスクにも属していない」と指摘された分を回収する）
+  - `I18nLintGate` の実アダプタ（`pnpm run lint:i18n` を実行して合否を返す）も同様に作成する（3.2・3.3のレビューで2回続けて「このインターフェースを実装するタスクがどこにも無い」と指摘された分を回収する）
   - 定期実行と手動実行の両方をトリガーに、pullのCLIを実行するGitHub Actionsワークフローを追加する
   - 同一ブランチでの多重実行を防ぐ排他制御を設定する
   - POEditor APIトークンと、承認ボット専用のトークンをそれぞれ別のシークレットとして注入する
@@ -147,3 +148,5 @@
 - (3.2) `applyTranslationOnlyChanges` は `TranslationOnlyPrPublisher`（書き込み・PR作成/更新）と `ApprovalReviewer`（承認レビューのみ、内容を書けるメソッドを持たない）を別インターフェースとして注入する形で実装した。両方とも実装（GitHub操作の実アダプタ）はこのタスクの範囲外とし、5.2に回収した（5.2のタスク文を更新済み）。`TranslationOnlyCombination` に `absoluteFilePath`/`content` を追加したが `StructuralCombination` には追加していない（型で「構造変更がtranslationOnly経路に混入できない」壁を作るため、意図的な非対称）。3.3で構造変更PRを作る際、同じフィールドが必要なら独自に追加すること（`TranslationOnlyCombination` と混同しないよう別名にする）。
 - (3.2) `pull-translations.ts` にはまだ `main()` エントリポイントが無い（`push-source.ts` の `main()` が手本）。3.3で `collectClassifications` → `applyTranslationOnlyChanges` → 構造変更PR作成 → 非ゼロ終了コード、まで束ねること（3.3のタスク文を更新済み）。
 - (3.2) ゲート（`lint:i18n`）はCLI側（`I18nLintGate`注入）で実行する設計にした。design.mdのPull Flow図は「PR上でci-app-lintが走ってから承認」だが、tasks.mdの文言（「既存のlint:i18nを実行し」）に従った。`.github/mergify.yml`の`queue_conditions`/`merge_conditions`は両方とも`check-success ~= ci-app-lint`を要求するため、CLI側ゲート通過後にボットが承認しても、PR上のCIが落ちればキューに乗らずマージされない（要件3.4は守られる）。ただしCLI側ゲートが作業ツリーを読むため、同一実行内で3.3が構造変更ファイルを書き出した後にゲートを回すと、無関係な理由でtranslation-onlyのlintが落ちうる（安全側だが`main()`の実行順序を制約する — 3.3で対応時に留意）。
+- (3.3) `applyStructuralChanges` は承認ボット関連のパラメータを一切持たない（型として承認を渡す口が無い）。`StructuralCombination` には `filePath`/`exportedContent` を追加した（`TranslationOnlyCombination` の `absoluteFilePath`/`content` とはあえて別名にし、取り違えを型で防止）。`pull-translations.ts` に `main()` を実装し、`collectClassifications` → `applyTranslationOnlyChanges` → `applyStructuralChanges` の順で呼び、いずれかの失敗で非ゼロ終了コードにする。`collectClassifications` の `skipped`（invalid_json）は成功時も `console.error` で警告表示するようにした（終了コードは変えない）。`main()` は4種の協力者（`TranslationOnlyPrPublisher`/`ApprovalReviewer`/`StructuralPrPublisher`/`I18nLintGate`）のうち実装があるのは無し（すべて5.2で実装予定の「未実装」スタブ。呼ばれると分かりやすいエラーで落ちる）。変更が無い実行では一切呼ばれないため、"何もすることが無い" run は現状でも成功する。`I18nLintGate` の実アダプタもどのタスクにも属していなかったため、5.2のタスク文に追加した。
+- (3.3) `main()` の成功ログ「Pull sync completed: no failures.」は、`skipped` が非空でも変わらず出る（レビューでFYI指摘。ブロッカーではないが、5.2以降でCLIのログ文言を見直す際は「一部スキップあり」の場合に文言を分けることを検討するとよい）。

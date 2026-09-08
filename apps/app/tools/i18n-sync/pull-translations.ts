@@ -39,10 +39,14 @@
 
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { classify } from './diff-classifier.ts';
-import type { PoeditorApiError, PoeditorClient } from './poeditor-client.ts';
+import {
+  createPoeditorClient,
+  type PoeditorApiError,
+  type PoeditorClient,
+} from './poeditor-client.ts';
 import { type NamespaceSyncEntry, SYNC_TARGETS } from './sync-config.ts';
 
 /**
@@ -110,6 +114,29 @@ export interface StructuralCombination {
   readonly language: string;
   readonly addedKeys: readonly string[];
   readonly removedKeys: readonly string[];
+  /**
+   * The locale file this combination's `before` content was read from, and
+   * `applyStructuralChanges` writes back to.
+   *
+   * Deliberately named differently from `TranslationOnlyCombination`'s
+   * `absoluteFilePath` (task 3.2's Implementation Notes: keep the two
+   * combination types non-interchangeable in field naming, not just in
+   * their surrounding types). This is a naming-level safety margin on top
+   * of the existing structural one -- `StructuralCombination` and
+   * `TranslationOnlyCombination` are already distinct types, so nothing
+   * type-checks a swap between them, but matching field names would still
+   * let a careless refactor rename one type to the other without a compile
+   * error. Different names make that refactor fail loudly instead.
+   */
+  readonly filePath: string;
+  /**
+   * The exported POEditor content exactly as `DiffClassifier` saw it -- see
+   * `TranslationOnlyCombination.content`'s doc comment for why this must
+   * travel with the combination rather than being re-exported at apply
+   * time. Named `exportedContent` (not `content`) for the same reason as
+   * `filePath` above.
+   */
+  readonly exportedContent: Readonly<Record<string, unknown>>;
 }
 
 type CombinationFailure =
@@ -391,6 +418,8 @@ export const collectClassifications = async (
         language: input.language,
         addedKeys: result.addedKeys,
         removedKeys: result.removedKeys,
+        filePath: input.absoluteFilePath,
+        exportedContent: after,
       });
     }
     // 'no_change' combinations are intentionally excluded from both groups —
@@ -646,3 +675,452 @@ export const applyTranslationOnlyChanges = async (
 
   return { ok: true, outcome: 'approved', pullRequest, created };
 };
+
+/**
+ * The single branch every structural-review sync run converges onto,
+ * mirroring `TRANSLATION_ONLY_BRANCH`'s "no duplicate PRs" reasoning
+ * (design.md PullTranslationSync Batch Contract: 「既存の未マージPRがあれば
+ * 更新する（重複PRを作らない）」). Deliberately a different fixed branch than
+ * `TRANSLATION_ONLY_BRANCH` -- the two groups must never land on the same
+ * branch, or a structural change would ride along in the no-human-review
+ * translation-only PR (design.md's PR-granularity invariant).
+ */
+export const STRUCTURAL_BRANCH = 'i18n-sync/structural-review';
+
+/**
+ * Everything the structural-review path needs to turn locally-written
+ * locale files into a pull request awaiting **human** review.
+ *
+ * This is structurally identical in shape to `TranslationOnlyPrPublisher`
+ * today, but declared as its own type on purpose: `applyStructuralChanges`
+ * (below) has no `ApprovalReviewer` parameter at all, which is what makes
+ * it type-impossible for this path to submit a bot approval. Collapsing
+ * this to a shared alias with `TranslationOnlyPrPublisher` would still keep
+ * that guarantee (the missing `ApprovalReviewer` parameter is the actual
+ * barrier), but would blur the intent that these two publishers serve
+ * deliberately different review policies -- a future change to one (e.g.
+ * adding a structural-only field) should not silently apply to the other
+ * just because they happened to share a type.
+ */
+export interface StructuralPrPublisher {
+  /**
+   * Commits the locale files at `filePaths` onto `headBranch` and pushes it.
+   * Same "only these paths, never the whole working tree" contract as
+   * `TranslationOnlyPrPublisher.publishBranch` -- staging the translation-only
+   * group's files here would break the PR-granularity invariant the other
+   * way around.
+   */
+  publishBranch(input: {
+    readonly headBranch: string;
+    readonly commitMessage: string;
+    readonly filePaths: readonly string[];
+  }): Promise<void>;
+  /** The open, unmerged pull request for `headBranch`, or `null` if there is none. */
+  findExistingPr(input: {
+    readonly headBranch: string;
+  }): Promise<PullRequestRef | null>;
+  createPr(input: {
+    readonly headBranch: string;
+    readonly title: string;
+    readonly body: string;
+  }): Promise<PullRequestRef>;
+  updatePr(input: {
+    readonly pullRequest: PullRequestRef;
+    readonly body: string;
+  }): Promise<void>;
+}
+
+export interface ApplyStructuralChangesOptions {
+  /** The `structural` group produced by `collectClassifications`. */
+  readonly combinations: readonly StructuralCombination[];
+  readonly prPublisher: StructuralPrPublisher;
+  /** Injectable file writer. Defaults to writing the real filesystem. */
+  readonly writeLocaleFile?: WriteLocaleFile;
+}
+
+export type ApplyStructuralChangesResult =
+  | { readonly ok: true; readonly outcome: 'no_changes' }
+  | {
+      readonly ok: true;
+      readonly outcome: 'pr_ready';
+      readonly pullRequest: PullRequestRef;
+      /** `true` when this run opened the PR, `false` when it updated an already-open one. */
+      readonly created: boolean;
+    };
+
+const buildStructuralPrBody = (
+  combinations: readonly StructuralCombination[],
+): string => {
+  const lines = combinations.map((combination) => {
+    const added = combination.addedKeys.length;
+    const removed = combination.removedKeys.length;
+    return `- \`${combination.namespace}\` / \`${combination.language}\`: +${added} key(s), -${removed} key(s)`;
+  });
+  return [
+    'Translations pulled from POEditor. Every combination below adds or removes',
+    'at least one key, so this pull request awaits human review before it can',
+    'merge -- no approval is submitted automatically for structural changes.',
+    '',
+    ...lines,
+  ].join('\n');
+};
+
+const STRUCTURAL_PR_TITLE =
+  'chore(i18n): review structural updates from POEditor';
+
+/**
+ * Applies the `structural` group (task 3.3): writes each combination's
+ * exported content to its locale file and gathers them into a *single*
+ * pull request awaiting human review (Requirement 3.2). Unlike
+ * `applyTranslationOnlyChanges`, this function has no `ApprovalReviewer`
+ * parameter at all and never runs the i18n lint gate itself -- both are
+ * deliberately absent rather than merely unused, so no code path here can
+ * submit a bot approval even by mistake. The existing `ci-app-lint` check
+ * still runs on this PR the same way it runs on any other pull request;
+ * only the auto-approval step is skipped (design.md: 「構造変更PRは通常の
+ * レビュー必須PRとして作成するのみで、承認ボットは関与しない」).
+ *
+ * Mirrors `applyTranslationOnlyChanges`'s idempotency: a fixed branch name
+ * (`STRUCTURAL_BRANCH`) means a second run against the same diff updates
+ * the already-open PR instead of opening a second one.
+ */
+export const applyStructuralChanges = async (
+  options: ApplyStructuralChangesOptions,
+): Promise<ApplyStructuralChangesResult> => {
+  const { combinations, prPublisher } = options;
+  const writeLocaleFile = options.writeLocaleFile ?? defaultWriteLocaleFile;
+
+  if (combinations.length === 0) {
+    // Nothing to propose -- same reasoning as applyTranslationOnlyChanges's
+    // empty-group short circuit (design.md: 「no_change（変更なし）の組み合わ
+    // せのみだった場合は何もしない」).
+    return { ok: true, outcome: 'no_changes' };
+  }
+
+  const filePaths = combinations.map((combination) => combination.filePath);
+
+  await Promise.all(
+    combinations.map((combination) =>
+      writeLocaleFile(
+        combination.filePath,
+        serializeLocaleFile(combination.exportedContent),
+      ),
+    ),
+  );
+
+  await prPublisher.publishBranch({
+    headBranch: STRUCTURAL_BRANCH,
+    commitMessage: STRUCTURAL_PR_TITLE,
+    filePaths,
+  });
+
+  const body = buildStructuralPrBody(combinations);
+  const existingPr = await prPublisher.findExistingPr({
+    headBranch: STRUCTURAL_BRANCH,
+  });
+
+  let pullRequest: PullRequestRef;
+  let created: boolean;
+  if (existingPr != null) {
+    await prPublisher.updatePr({ pullRequest: existingPr, body });
+    pullRequest = existingPr;
+    created = false;
+  } else {
+    pullRequest = await prPublisher.createPr({
+      headBranch: STRUCTURAL_BRANCH,
+      title: STRUCTURAL_PR_TITLE,
+      body,
+    });
+    created = true;
+  }
+
+  return { ok: true, outcome: 'pr_ready', pullRequest, created };
+};
+
+/**
+ * Everything one full pull run needs, and the pure orchestration function
+ * that sequences task 3.1/3.2/3.3's three exported functions the way
+ * `main()` (below) is required to (task 3.3's tasks.md text). Kept as its
+ * own function -- separate from `main()` -- so the sequencing and failure
+ * aggregation are unit-testable with injected fakes, without touching
+ * `process.env` or a real process exit (mirrors `push-source.ts`'s
+ * `runPush`/`main` split).
+ *
+ * **Step order is load-bearing**: `applyTranslationOnlyChanges` runs before
+ * `applyStructuralChanges` on purpose. `applyTranslationOnlyChanges`'s
+ * `I18nLintGate` reads the working tree from disk (task 3.2's
+ * Implementation Notes), so if the structural group's files were written
+ * first, the gate could see structural (key-adding/removing) content and
+ * fail for the wrong reason. Running translation-only first, gate included,
+ * keeps that check's view of the tree limited to what it is actually
+ * judging.
+ *
+ * Both apply steps run even if one fails -- they write to different
+ * branches and open different pull requests, so a translation-only gate
+ * failure has no bearing on whether the structural review PR should still
+ * be opened (and vice versa). Every failure encountered is aggregated into
+ * `failures` rather than the run stopping at the first one, so a single
+ * `main()` invocation surfaces everything that went wrong in one report.
+ */
+export interface RunPullOptions {
+  readonly poeditorClient: PoeditorClient;
+  /** Forwarded to `collectClassifications`. Defaults to the real `SYNC_TARGETS`. */
+  readonly targets?: readonly NamespaceSyncEntry[];
+  /** Forwarded to `collectClassifications`. Defaults to the real `NON_SOURCE_LANGUAGES`. */
+  readonly languages?: readonly string[];
+  /** Forwarded to `collectClassifications`. Defaults to reading the real filesystem. */
+  readonly readNamespaceFile?: ReadNamespaceFile;
+  /** Forwarded to `collectClassifications`. Defaults to this file's own package root. */
+  readonly baseDir?: string;
+  /** Forwarded to both apply steps. Defaults to writing the real filesystem. */
+  readonly writeLocaleFile?: WriteLocaleFile;
+  readonly translationOnlyPrPublisher: TranslationOnlyPrPublisher;
+  readonly approvalReviewer: ApprovalReviewer;
+  readonly lintGate: I18nLintGate;
+  readonly structuralPrPublisher: StructuralPrPublisher;
+  /**
+   * Injectable overrides for the three sequenced functions themselves, so
+   * tests can exercise `runPull`'s sequencing/failure-aggregation logic
+   * without depending on `collectClassifications`/`applyTranslationOnlyChanges`/
+   * `applyStructuralChanges`'s own real behavior. Each defaults to the real
+   * exported function.
+   */
+  readonly collectClassificationsFn?: typeof collectClassifications;
+  readonly applyTranslationOnlyChangesFn?: typeof applyTranslationOnlyChanges;
+  readonly applyStructuralChangesFn?: typeof applyStructuralChanges;
+}
+
+export type RunPullResult =
+  | {
+      readonly ok: true;
+      /**
+       * (namespace, language) combinations `collectClassifications` excluded
+       * because their POEditor export was not valid JSON (design.md "Error
+       * Handling > Error Categories and Responses" > 「不正な形式の
+       * exportデータ」). The run still succeeds -- this is threaded through so
+       * `main()` can warn about them instead of the run completing silently
+       * with no trace of the skipped combination (Requirement 8.1: 「黙って
+       * 結果をスキップしない」).
+       */
+      readonly skipped: readonly InvalidJsonFailure[];
+    }
+  | { readonly ok: false; readonly failures: readonly string[] };
+
+const describeError = (error: unknown): string =>
+  error instanceof Error ? error.message : String(error);
+
+export const runPull = async (
+  options: RunPullOptions,
+): Promise<RunPullResult> => {
+  const collect = options.collectClassificationsFn ?? collectClassifications;
+  const applyTranslationOnly =
+    options.applyTranslationOnlyChangesFn ?? applyTranslationOnlyChanges;
+  const applyStructural =
+    options.applyStructuralChangesFn ?? applyStructuralChanges;
+
+  const classification = await collect({
+    poeditorClient: options.poeditorClient,
+    targets: options.targets,
+    languages: options.languages,
+    readNamespaceFile: options.readNamespaceFile,
+    baseDir: options.baseDir,
+  });
+
+  if (!classification.ok) {
+    return {
+      ok: false,
+      failures: classification.failures.map(
+        (failure) =>
+          `collectClassifications: ${failure.namespace}/${failure.language} (${failure.reason})`,
+      ),
+    };
+  }
+
+  const failures: string[] = [];
+
+  try {
+    const translationOnlyResult = await applyTranslationOnly({
+      combinations: classification.translationOnly,
+      prPublisher: options.translationOnlyPrPublisher,
+      approvalReviewer: options.approvalReviewer,
+      lintGate: options.lintGate,
+      writeLocaleFile: options.writeLocaleFile,
+    });
+    if (!translationOnlyResult.ok) {
+      failures.push(
+        `applyTranslationOnlyChanges: ${translationOnlyResult.reason} - ${translationOnlyResult.message}`,
+      );
+    }
+  } catch (error) {
+    failures.push(`applyTranslationOnlyChanges: ${describeError(error)}`);
+  }
+
+  try {
+    const structuralResult = await applyStructural({
+      combinations: classification.structural,
+      prPublisher: options.structuralPrPublisher,
+      writeLocaleFile: options.writeLocaleFile,
+    });
+    if (!structuralResult.ok) {
+      // applyStructuralChanges has no failing outcome today, but this is
+      // checked defensively in case its result type gains one later.
+      failures.push('applyStructuralChanges: failed');
+    }
+  } catch (error) {
+    failures.push(`applyStructuralChanges: ${describeError(error)}`);
+  }
+
+  if (failures.length > 0) {
+    return { ok: false, failures };
+  }
+  return { ok: true, skipped: classification.skipped };
+};
+
+const notImplementedCollaborator = <T extends object>(
+  typeName: string,
+  methodNames: readonly (keyof T)[],
+): T => {
+  const stub = {} as Record<keyof T, (...args: unknown[]) => never>;
+  for (const methodName of methodNames) {
+    stub[methodName] = () => {
+      throw new Error(
+        `${typeName}.${String(methodName)} has no real implementation yet -- ` +
+          'the GitHub adapter for this collaborator is deferred to task 5.2 ' +
+          "(design.md's PullTranslationSync Batch Contract; see task 3.2's " +
+          'Implementation Notes for the same boundary call on the translation-' +
+          'only path).',
+      );
+    };
+  }
+  return stub as unknown as T;
+};
+
+/**
+ * `main()`'s default collaborators. Every method throws instead of doing
+ * nothing, so a real run with pending changes fails loudly with a clear
+ * "not implemented yet, see task 5.2" message rather than silently skipping
+ * work. When there is nothing to change (`combinations` is empty for both
+ * groups), neither `applyTranslationOnlyChanges` nor `applyStructuralChanges`
+ * touches its publisher/reviewer/gate at all, so these stubs are never
+ * called and `main()` still completes successfully in that case.
+ */
+const createNotImplementedCollaborators = (): Pick<
+  RunPullOptions,
+  | 'translationOnlyPrPublisher'
+  | 'approvalReviewer'
+  | 'lintGate'
+  | 'structuralPrPublisher'
+> => ({
+  translationOnlyPrPublisher:
+    notImplementedCollaborator<TranslationOnlyPrPublisher>(
+      'TranslationOnlyPrPublisher',
+      ['publishBranch', 'findExistingPr', 'createPr', 'updatePr'],
+    ),
+  approvalReviewer: notImplementedCollaborator<ApprovalReviewer>(
+    'ApprovalReviewer',
+    ['submitApprovalReview'],
+  ),
+  lintGate: notImplementedCollaborator<I18nLintGate>('I18nLintGate', ['run']),
+  structuralPrPublisher: notImplementedCollaborator<StructuralPrPublisher>(
+    'StructuralPrPublisher',
+    ['publishBranch', 'findExistingPr', 'createPr', 'updatePr'],
+  ),
+});
+
+/**
+ * Process-entrypoint wrapper, mirroring `push-source.ts`'s `main()`: reads
+ * the POEditor API token from `process.env`, runs `runPull`, prints the
+ * outcome, and sets a non-zero exit code on failure (Requirement 8.1).
+ *
+ * Accepts an optional `overrides` argument -- unlike `push-source.ts`'s
+ * `main()`, which takes none -- specifically so tests can exercise this
+ * function's own failure-aggregation/exit-code behavior (task 3.3's
+ * observable completion criterion) with injected/mocked sub-functions,
+ * without needing a real `POEDITOR_API_TOKEN` or GitHub credentials. A real
+ * invocation (`main()`, no arguments) uses the real `PoeditorClient` and the
+ * not-yet-implemented collaborator stubs above.
+ */
+export const main = async (
+  overrides: Partial<
+    Pick<
+      RunPullOptions,
+      | 'translationOnlyPrPublisher'
+      | 'approvalReviewer'
+      | 'lintGate'
+      | 'structuralPrPublisher'
+      | 'collectClassificationsFn'
+      | 'applyTranslationOnlyChangesFn'
+      | 'applyStructuralChangesFn'
+      | 'writeLocaleFile'
+    >
+  > = {},
+): Promise<void> => {
+  const apiToken = process.env.POEDITOR_API_TOKEN;
+  if (apiToken == null || apiToken === '') {
+    // biome-ignore lint/suspicious/noConsole: this is a CI script, console output is expected.
+    console.error(
+      'Cannot pull from POEditor: POEDITOR_API_TOKEN is not set in the environment.',
+    );
+    process.exitCode = 1;
+    return;
+  }
+
+  const poeditorClient = createPoeditorClient({ apiToken });
+  const defaults = createNotImplementedCollaborators();
+
+  const result = await runPull({
+    poeditorClient,
+    translationOnlyPrPublisher:
+      overrides.translationOnlyPrPublisher ??
+      defaults.translationOnlyPrPublisher,
+    approvalReviewer: overrides.approvalReviewer ?? defaults.approvalReviewer,
+    lintGate: overrides.lintGate ?? defaults.lintGate,
+    structuralPrPublisher:
+      overrides.structuralPrPublisher ?? defaults.structuralPrPublisher,
+    collectClassificationsFn: overrides.collectClassificationsFn,
+    applyTranslationOnlyChangesFn: overrides.applyTranslationOnlyChangesFn,
+    applyStructuralChangesFn: overrides.applyStructuralChangesFn,
+    writeLocaleFile: overrides.writeLocaleFile,
+  });
+
+  if (result.ok) {
+    if (result.skipped.length > 0) {
+      // A skipped combination must never disappear silently (design.md
+      // "Error Handling > Error Categories and Responses" > 「不正な形式の
+      // exportデータ」; Requirement 8.1 「黙って結果をスキップしない」). The
+      // run still succeeds -- design.md requires the other combinations to
+      // keep going -- so this is a warning, not a failing exit code; the
+      // Monitoring section treats this GitHub Actions run log as the
+      // maintainer-visible channel for it.
+      // biome-ignore lint/suspicious/noConsole: this is a CI script, console output is expected.
+      console.error(
+        `Warning: skipped ${result.skipped.length} combination(s) with malformed POEditor export data:\n${result.skipped
+          .map(
+            (failure) =>
+              `  - ${failure.namespace}/${failure.language}: ${failure.message}`,
+          )
+          .join('\n')}`,
+      );
+    }
+    // biome-ignore lint/suspicious/noConsole: this is a CI script, console output is expected.
+    console.log('Pull sync completed: no failures.');
+    return;
+  }
+
+  // biome-ignore lint/suspicious/noConsole: this is a CI script, console output is expected.
+  console.error(
+    `Failed:\n${result.failures.map((failure) => `  - ${failure}`).join('\n')}`,
+  );
+  process.exitCode = 1;
+};
+
+// Only run when executed directly (`node tools/i18n-sync/pull-translations.ts`),
+// not when imported by tests -- otherwise importing this module would attempt
+// to read `process.env.POEDITOR_API_TOKEN` and run the real entrypoint as a
+// side effect of the import itself (mirrors push-source.ts's same guard).
+if (
+  process.argv[1] != null &&
+  import.meta.url === pathToFileURL(process.argv[1]).href
+) {
+  main();
+}
