@@ -35,7 +35,7 @@
 
 ## 2. Core: ソース言語のpush同期
 
-- [ ] 2. (P) en_US翻訳ファイルをnamespaceごとにPOEditorへpushするCLIを実装する
+- [x] 2. (P) en_US翻訳ファイルをnamespaceごとにPOEditorへpushするCLIを実装する
   - 宣言された3 namespace分のen_USファイルを読み込み、`sync_terms`を有効にした状態で順にPOEditorへアップロードする
   - いずれかのnamespaceファイルの読み込みに失敗した場合、他のnamespaceへのpushも行わずに処理全体を中止し、非ゼロ終了コードで終了する
   - 3件のアップロード呼び出しの間に必要な待機を入れる
@@ -138,3 +138,5 @@
 ## Implementation Notes
 
 - (1.3) `DiffClassifier` は葉の値を厳密等価（`!==`）で比較している。現在のロケールJSONは葉が全て文字列なので問題ないが、将来どこかの namespace に配列やオブジェクトを値に持つキーが増えた場合、参照比較になり毎回`translation_only`と誤判定する。3.1（export集計）でPOEditorから取得したJSONを渡す際、葉が文字列以外になり得ないか一応確認すること。
+- (2, レビューで発見) `poeditor-client.spec.ts`（タスク1.2、実時間ベースの20秒スロットルテスト）が、5回に1回程度 `expected 19999 to be greater than or equal to 20000` の1ミリ秒未満の誤差で間欠的に失敗する（flaky）。今回のタスクの差分が原因ではないが、別途 flaky test として起票し、実時間計測でなくフェイクタイマー等に置き換えることを検討すること。
+- (2) アップロード失敗時は読み込み失敗時と対称に「即座に中断し以降のnamespaceへは何もしない」形に統一した。読み込み失敗・アップロード失敗のどちらも部分反映を作らない。
