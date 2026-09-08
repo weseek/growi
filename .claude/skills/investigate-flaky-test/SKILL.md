@@ -130,6 +130,16 @@ of this step, right before Step 3. This is a single rerun, not the 2-3
 tally used in the "second tier" below — that tally is a different budget
 for a different purpose (root-cause confidence), spent later, in Step 4/6.
 
+**This is a hard gate, not an optional courtesy — Step 3 may not start
+until it is satisfied.** Immediately after firing the command above, write
+down (in your own working notes, and later in the issue comment or PR body)
+one of exactly three outcomes: `rerun passed`, `rerun failed again`, or
+`rerun could not be attempted` (see below). Reaching Step 3 without one of
+these three recorded is the failure mode this gate exists to catch — a
+plausible-looking root cause already visible in the issue's existing
+evidence (e.g. matrix divergence) is not a substitute for actually firing
+this command, no matter how convincing that existing evidence looks.
+
 When you check back: if the rerun **passed** with no code change, that is
 empirical proof of flakiness — escalate the label before continuing:
 
@@ -143,6 +153,17 @@ data point — do not silently treat this as confirmed. Carry it into Step 4
 as an explicit caveat (same handling as "reruns failed 100% of the time" in
 that step's confidence table) rather than assuming the mining hit was
 correct.
+
+If the rerun **could not even be attempted** — `gh run rerun` itself
+errors out (e.g. 403 "Resource not accessible by integration" because this
+session's token lacks `actions:write`), as opposed to completing and
+failing — do not treat this as equivalent to "no rerun was needed" or
+quietly fold it into Step 6's later repeat-CI tally. A missing tool is not
+evidence of flakiness. Record the exact error, note explicitly that the
+one-time confirmation rerun this gate requires was never actually
+performed, and carry that into Step 4 (see its confidence table) as its own
+distinct situation — not the "reruns failed 100% of the time" row, which
+requires a rerun to have actually run and failed.
 
 ### Primary tier — CI log analysis (always available, no live services needed)
 
@@ -263,22 +284,29 @@ an error surfaced from a service/model file (not the spec file itself) in
 the log's stack trace usually points at a product-code race worth reading
 carefully before dismissing as test flakiness.
 
-### Guardrail — a bare timeout increase is a last resort, not the default "Environment timing" fix
+### Guardrail — a bare timeout increase is a stopgap; find what's actually driving the cost first
 
 A numeric timeout bump (`}, 15_000)` → `}, 20_000)` and so on) is the
-cheapest possible edit, which is exactly why it is easy to reach for
-without checking whether it actually addresses the cause. Before proposing
-one, check whether the test's own wall time **scales with a parameter of
-the test** (a loop count, a data size, an iteration count) rather than
-being a fixed cost that merely got unlucky under load. A bump over a
-scaling cost does not fix anything — it raises the load level at which the
-test starts failing again, and the next CI-busy period trips it once more.
-Concretely: read the test body, not just the failing assertion. If it
-issues `N` real round-trips (network, DB, filesystem) where `N` is
-`maxRequests`, a loop bound, or similar, and the assertions of interest
-only concern the *boundary* (a limit being reached/exceeded, a count
-saturating, a last-element condition), that is a redesign opportunity, not
-an environment-timing dead end:
+cheapest possible edit, and that is exactly the problem: it is easy to
+reach for as *the* fix without ever asking what made the operation slow.
+Left unexamined, it tends to become the default "Environment timing" fix —
+and because it never touches the actual driver of the cost, it is usually
+a way of avoiding the root-cause work rather than doing it. It doesn't
+remove the underlying slowness; it just moves the load level at which the
+test starts failing again a bit higher, and the next CI-busy period trips
+it once more. Treat a bare bump as a **last resort**, not a first move —
+before proposing one, identify what is actually driving the observed
+duration. Two drivers show up repeatedly in this codebase; neither is
+fixed by a bigger number:
+
+**Driver 1 — the test's own wall time scales with a parameter of the
+test** (a loop count, a data size, an iteration count) rather than being a
+fixed cost that merely got unlucky under load. Read the test body, not
+just the failing assertion. If it issues `N` real round-trips (network,
+DB, filesystem) where `N` is `maxRequests`, a loop bound, or similar, and
+the assertions of interest only concern the *boundary* (a limit being
+reached/exceeded, a count saturating, a last-element condition), that is a
+redesign opportunity, not an environment-timing dead end:
 
 - Seed the precondition directly instead of looping to it — many
   libraries expose a lower-level primitive that reaches the same state in
@@ -295,20 +323,91 @@ an environment-timing dead end:
 - This turns an O(N) cost into an O(1) cost, which removes the test's
   sensitivity to CI load rather than buying temporary headroom against it.
 
+**Driver 2 — the cost scales with how much concurrent setup work is in
+flight, not a test-local parameter.** A `beforeAll`/`afterAll` in a
+`setupFiles` entry (migration replay, a singleton service cold-init, etc.)
+looks like it should run once per Vitest worker — the code usually
+memoizes a module-level singleton to make it look that way — but **verify
+that before trusting it**: Vitest's `forks` pool resets the module
+registry per test file under the default `isolate: true`, so a
+"per-worker singleton" comment can be describing intent, not actual
+behavior, and the cost can really be recurring on nearly every file all
+run long (confirm with a throwaway `console.log` inside the memoized
+branch and count how many times it fires across a few files — do not
+assume from the comment). Either way — once per worker or once per file —
+"this hook's own cost doesn't loop over anything, so there's nothing to
+redesign" sounds like it forces driver 1's dead end, but it doesn't: the
+cost still scales with **how many files/workers pay it at the same
+moment**, since anything else running on the same CI runner competes for
+the same CPU while each pays its own heavy setup cost (spawning a
+migration subprocess, initializing a singleton, etc.). A same-commit
+failure across several unrelated spec files that all timed out on the
+identical `beforeAll` line, with no code change near that line, is the
+signature of this shape (see `test/setup/crowi.ts`'s `getInstance()` /
+`test/setup/migrate-mongo.ts` in GROWI's own `apps/app` for a worked
+example — PR #11824 misclassified this as "nothing to redesign, so a bump
+is fine," and the fix that replaced it, PR #11826, initially misclassified
+it too, asserting the *same* per-worker premise without checking it before
+publishing — a `console.log` count across a few files falsified it and
+changed the story that shipped). Where this applies:
+
+- **Measure the unloaded baseline, and don't stop at the number — check
+  the model it's measuring.** Run the failing spec(s) alone (no sibling
+  workers contending) and read the hook's own duration off the reporter.
+  If it already sits close to the current limit, a larger timeout may be
+  warranted — state the measured number. If it sits well under the limit
+  (e.g. under a fifth of it), the limit was never the problem; contention
+  pushed a normally-fast hook past it. But a low unloaded number only says
+  the hook is fast *once* — it does not tell you whether it pays that cost
+  once per worker or once per file. Confirm which, per the paragraph
+  above, before describing the mechanism in a fix or a doc: "once per
+  worker" and "once per file, many times over" call for the same lever
+  (bound concurrency) but very different claims about how much it helps,
+  and an unverified "once per worker" claim is exactly the kind of
+  plausible-but-unchecked assertion this whole guardrail exists to catch.
+- **Check for a same-project precedent that a bump already failed.** If a
+  *different* hook sharing the same `setupFiles`/project already had its
+  timeout raised for the same "environment timing" reason and still
+  flaked afterward (grep prior flaky-test issues/PRs for the project
+  name), that is direct evidence the bottleneck is concurrency, not any
+  single hook's deadline — proposing another bump for a second hook in
+  the same project repeats a fix this repo's own history already falsified.
+- **Prefer bounding worker concurrency over widening the deadline.** When
+  the mechanism is "N workers/files doing cold-init at once fight for the
+  runner's cores," the fix that addresses the mechanism is capping
+  concurrent workers (Vitest `poolOptions.forks.maxForks` /
+  `poolOptions.threads.maxThreads`, sized off `availableParallelism()`
+  with headroom for sibling CI services like a DB/search container) for
+  that project — not a bigger number on the hook that happened to lose
+  the race this time.
+- **Never scope the change wider than the evidence.** `hookTimeout` (and
+  `testTimeout`) are configurable per-project in `vitest.workspace.mts`
+  *and* per-hook as a call's last argument. A fix aimed at one shared
+  setup hook must not raise the timeout for the whole project — that
+  silently triples (or more) the failure-detection window for every other
+  `beforeAll`/`afterAll` in every spec file the project covers, including
+  a future genuine hang unrelated to this flake.
+
+Both drivers reduce to the same discipline: **find what the time is
+actually being spent on, and address that** — a scaling parameter to
+redesign around, or contention to bound — rather than reaching for the
+timeout value because it's the line the stack trace happened to point at.
+
 Only accept a bare timeout bump when:
-- a redesign genuinely isn't possible without changing what the test
-  verifies (rare — most "N round-trips to reach a boundary" tests can be
-  reshaped as above), or
-- as a **modest safety margin layered on top of a redesign** that already
-  removed the scaling behavior — not as the fix itself. State explicitly
+- neither driver applies and no other driver can be identified after
+  actually reading the test/hook and its call path (rare — most cases
+  reduce to one of the two above), or
+- as a **modest safety margin layered on top of a fix that already
+  addressed the real driver** — not as the fix itself. State explicitly
   why the margin is still there (e.g. "no CI history yet for this
   reshaped test, and local/CI timing can differ") rather than leaving it
   unexplained.
 
-A proposed fix that is only a numeric timeout change, with no evidence the
-test's cost was checked for scaling with a parameter, is not HIGH
-confidence at Step 4 regardless of how clean the diff looks — see the
-confidence table there.
+A proposed fix that is only a numeric timeout change, with no evidence
+either driver was checked, is not HIGH confidence at Step 4 regardless of
+how clean the diff looks — see the confidence table there. Route it
+through the MEDIUM path and present the redesign or concurrency-capping
+alternative explicitly rather than defaulting to the bump.
 
 ---
 
@@ -322,6 +421,7 @@ confidence table there.
 | Root cause identified but fix touches product code with broader blast radius, or category is ambiguous between "shared state" and "product race" | MEDIUM |
 | Reruns failed 100% of the time (looks like a real regression, not a flake — see Step 2's note) | MEDIUM — flag this explicitly, do not silently treat it as a flaky-test fix |
 | Issue came in as `flaky/suspected` and its one confirmation rerun (Step 2) also failed | MEDIUM — the mining hit alone is not empirical proof; say explicitly that the confirmation rerun did not reproduce a pass, so this could be a real regression rather than a flake, and that only one rerun was budgeted (not the 100%-tally case above) |
+| Issue came in as `flaky/suspected` and its one confirmation rerun (Step 2) could not even be attempted (e.g. `actions:write` unavailable) | MEDIUM at best, never HIGH — a tooling gap is not proof of anything; say explicitly that the required confirmation rerun was never performed at all, distinct from "attempted and failed" above, and that existing static evidence (e.g. matrix divergence already in the issue) does not substitute for it |
 | Proposed fix is a bare timeout increase, with no check for whether the test's cost scales with a parameter (see the Step 3 guardrail) | MEDIUM at best — go back and check for a redesign before treating this as HIGH, even if the diff is small and clean |
 | CI evidence and reruns alone do not localize a cause | LOW |
 
@@ -453,6 +553,7 @@ what this skill's own execution environment supports.
 | All reruns green + lint passes + fix stayed in scope | HIGH |
 | All reruns green but fix touched product code beyond the originally suspected file | MEDIUM |
 | Any rerun still shows the original failure, or lint/type errors | LOW |
+| The repeat-rerun tally itself could not be attempted (e.g. `gh run rerun` 403s for lack of `actions:write`) | MEDIUM at best, never HIGH on this basis alone — a single initial green run plus a tooling gap is not the same evidence as a repeat-green tally; say so explicitly rather than treating the initial pass as sufficient |
 
 **Autonomous**: HIGH → mark the PR ready and update its body with the
 verification tally (see 6-D). MEDIUM/LOW → stop and ask, leaving the PR in
@@ -500,6 +601,19 @@ top of the repeat-CI tally above.)
   since Actions has no GraphQL API to begin with.
 - Issue is neither `flaky/confirmed` nor `flaky/suspected`: stop, do not
   investigate (see Precondition).
+- `gh run rerun` itself errors out (403 "Resource not accessible by
+  integration", or any other failure to even start the rerun — not the
+  rerun completing and failing) at Step 2 or Step 6-B: this is a **known
+  recurring constraint** in some execution environments (e.g. a
+  restricted-token cloud/bot session), not a rare edge case, and it is not
+  grounds to skip the gate or treat existing static evidence as a
+  substitute. Record the exact error, cap confidence at MEDIUM per the
+  Step 4 / Step 6-C tables above, and — in autonomous mode — stop and ask
+  rather than silently proceeding as if the rerun budget had been spent.
+  Do not defer mentioning this constraint until after a fix has already
+  been implemented and a PR opened; if the token cannot do this, that is
+  known from the very first rerun attempt, at Step 2, before any code is
+  written.
 - A human approves proceeding with a best-guess fix at a MEDIUM gate for an
   issue that came in as `flaky/suspected` and whose confirmation rerun
   failed (Step 2/Step 4): the label is still `flaky/suspected` at that
