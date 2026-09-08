@@ -5,7 +5,7 @@
 インラインコメント機能は、ページ本文の読み取り専用ビュー（`RevisionRenderer.tsx` がレンダリングした結果）に対して、閲覧者が選んだテキスト範囲を対象としたコメントを作成・閲覧できるようにする。位置情報はDOM XPathやmarkdownソースの文字オフセットではなく、レンダリング後のプレーンテキストに対する「選択文字列（exact quote）＋前後文脈（prefix/suffix）＋おおよそのオフセット」（W3C Web Annotation Data Model の TextQuoteSelector/TextPositionSelector 相当）として保存し、表示のたびにクライアント側で再検索してハイライトを復元する。
 
 **Users**: ページ閲覧者・編集者が、本文の特定範囲について議論するために利用する。
-**Impact**: 既存のページ末尾コメントスレッド（`apps/app/src/features/comment/`、`/_api/comments.*`）の**投稿・編集・削除・通知の挙動は変更しない**。データは既存の `comments` Prisma/Mongooseモデルに新しいフィールドを追加する形で共存させ、新しい種類の行（インラインコメント）を区別するための識別フィールドを1つ追加する。既存の一覧取得（`/_api/comments.get`）には、この新しい種類の行を結果から除外するフィルタを追加する（これは既存機能の挙動変更ではなく、新しいデータ種別が増えたことに伴う最小限の対応）。既存の `RevisionRenderer.tsx` に対する変更は「コンテナへのref転送」1点のみに限定する。既存の `PageView.tsx` に対する変更は、そのrefを本文コンテナまで橋渡しする配線と、この機能のクライアントコンポーネント3つ（`SelectionCapture`／`InlineCommentHighlight`／`InlineCommentBodyInteraction`。いずれも `next/dynamic(..., { ssr: false })` 経由）およびフック2つ（`useAnchorResolver`／`useSWRxInlineComments`）の組み込みで構成される（タスク5.2）。`InlineCommentForm` はこの一覧に含まれない——`SelectionCapture` の内部で描画される子コンポーネントであり、`PageView.tsx` が直接組み込むわけではない。また `PageView.tsx` には、この配線とは別にもう1点、既存の不具合修正が入っている——本文サブツリーが `useCallback` を要素の型として使っていたため、依存が変わるたびに（本機能が加えたアンカー再計算の依存を含め）サブツリー全体が再マウントされてしまう問題があり、`useMemo` で値をレンダーする形に直した（経緯は tasks.md の Implementation Notes と `PageView.tsx` 内のコメントを参照）。
+**Impact**: 既存のページ末尾コメントスレッド（`apps/app/src/features/comment/`、`/_api/comments.*`）の**投稿・編集・削除・通知の挙動は変更しない**。データは既存の `comments` Prisma/Mongooseモデルに新しいフィールドを追加する形で共存させ、新しい種類の行（インラインコメント）を区別するための識別フィールドを1つ追加する。既存の一覧取得（`/_api/comments.get`）には、この新しい種類の行を結果から除外するフィルタを追加する（これは既存機能の挙動変更ではなく、新しいデータ種別が増えたことに伴う最小限の対応）。既存の `RevisionRenderer.tsx` に対する変更は「コンテナへのref転送」1点のみに限定する。本文レンダリング用コンポーネントのうち `Header.tsx`／`TableWithEditButton.tsx`／`DrawioViewerWithEditButton.tsx` の3つには、条件付き表示の編集ボタンのアイコン要素へ `aria-hidden="true"` を付与する変更が入る（本文テキストの抽出範囲を安定させるための標準属性の付与であり、これらのコンポーネントの表示条件・振る舞い・見た目は変えない）。既存の `PageView.tsx` に対する変更は、そのrefを本文コンテナまで橋渡しする配線と、この機能のクライアントコンポーネント3つ（`SelectionCapture`／`InlineCommentHighlight`／`InlineCommentBodyInteraction`。いずれも `next/dynamic(..., { ssr: false })` 経由）およびフック2つ（`useAnchorResolver`／`useSWRxInlineComments`）の組み込みで構成される（タスク5.2）。`InlineCommentForm` はこの一覧に含まれない——`SelectionCapture` の内部で描画される子コンポーネントであり、`PageView.tsx` が直接組み込むわけではない。また `PageView.tsx` には、この配線とは別にもう1点、既存の不具合修正が入っている——本文サブツリーが `useCallback` を要素の型として使っていたため、依存が変わるたびに（本機能が加えたアンカー再計算の依存を含め）サブツリー全体が再マウントされてしまう問題があり、`useMemo` で値をレンダーする形に直した（経緯は tasks.md の Implementation Notes と `PageView.tsx` 内のコメントを参照）。
 
 ### Goals
 - 文字単位で選択したテキスト範囲にインラインコメントを作成・表示できる（1.1–2.6）
@@ -34,7 +34,7 @@
 - インラインコメント（起点・返信とも）の編集・削除
 - エディタ（Yjs共同編集セッション）内でのインラインコメント作成・表示、CodeMirror/Yjsのドキュメントモデルやawareness機構への変更
 - 共有リンク経由でのインラインコメント閲覧・作成
-- 本文レンダリングパイプライン（rehype/remarkプラグイン構成、`generateViewOptions`）自体の変更。`RevisionRenderer.tsx` へのref転送以外、レンダリングパイプラインには一切触れない
+- 本文レンダリングパイプライン（rehype/remarkプラグイン構成、`generateViewOptions`）自体の変更。`RevisionRenderer.tsx` へのref転送以外、レンダリングパイプラインには一切触れない。本文レンダリング用コンポーネントのうち、条件付きで表示される操作ボタンのアイコン要素に `aria-hidden="true"` を付与する3ファイル（`Header.tsx`／`TableWithEditButton.tsx`／`DrawioViewerWithEditButton.tsx`）のみ例外とする——これは標準属性の付与であり、表示条件・クリック時の振る舞い・見た目はいずれも変更しない（後述「本文テキストの抽出範囲」参照）
 - 解決済みオフセットの永続キャッシュ（設計の簡素化として意図的に見送り。詳細はArchitecture節参照）
 
 ### Allowed Dependencies
@@ -54,8 +54,10 @@
 - `SupportedAction` の値の削除・リネーム
 - `RevisionRenderer.tsx` のprops・DOM構造の変更（refの転送方法に影響する場合）
 - [share-link-comments](../share-link-comments/) の認可モデル変更（`certify-shared-page.js`／`req.isSharedPage` の意味が変わる場合）
-- `GROWI_IS_CONTENT_RENDERING_ATTR` プロトコルに参加するコンポーネントの追加・変更。現時点でも、添付ファイル埋め込み（Ref/Refs/RefImg/RefsImg/Gallery、RichAttachment）は [auto-scroll](../auto-scroll/) スペックの時点でこのプロトコルへの参加が「後続対応」として見送られており、これらを含むページでは静定が実際より早く発火し、埋め込み確定前のテキストに対してマッチングしてしまう可能性がある。auto-scroll側でこれらが参加した時点で自動的に解消されるが、それまでは残存するリスクとして扱う
-- KaTeX（数式）のDOM出力構造（`.katex` クラス）が変わる場合（除外対象の前提が崩れる）
+- `GROWI_IS_CONTENT_RENDERING_ATTR` プロトコルに参加するコンポーネントの追加・変更。添付ファイル埋め込み（Ref/Refs/RefImg/RefsImg/Gallery、RichAttachment）は [auto-scroll](../auto-scroll/) スペックの時点でこのプロトコルへの参加が見送られており、これらを含むページでは埋め込みの内容が確定する前のテキストに対してマッチングが走ることがある。埋め込みが確定する際のDOM変化そのものは静定シグナルを発火させるため（後述 `use-container-settle`）、その変化が監視期間（マウント時点から10秒）の内側で起きれば、誤ったマッチング結果はその発火による再計算で自己修復する。ただしこれらの埋め込みはレンダリング状態属性プロトコルに参加しておらず、確定までの時間はネットワーク次第であるため、監視期間の内側に収まる保証はない。監視期間を過ぎてから確定した場合はハイライトのズレがページを開き直すまで残るため、残存するリスクとして扱う
+- 静定シグナルの発火条件（`use-container-settle` が「描画が落ち着いた」と判定する条件）が変わる場合、`useAnchorResolver` の再計算タイミング全体に影響する
+- `renderedTextOf` の除外条件（`.katex` または `aria-hidden="true"`）が変わる場合、その変更以前に作成されたアンカーの再アンカー成否に影響しうる。KaTeX（数式）のDOM出力構造（`.katex` クラス）が変わる場合も同様に前提が崩れる
+- `.wiki` 配下に、条件付きで表示される操作用の画面要素（アイコン用の素のテキストノードを持つもの）が新たに追加された場合、同じ `aria-hidden="true"` の付与を横展開する必要がある
 
 ## Architecture
 
@@ -100,6 +102,19 @@
 - `PageContentRenderer` は `{ ssr: true }` でサーバーレンダリングされる（`PageView.tsx`）が、本文中の `lsx`（子ページ一覧）ブロックは `packages/remark-lsx/src/client/` 配下のSWRフックによって**クライアント側でのみ**解決される。サーバーが構築するAST由来のプレーンテキストは、閲覧者が実際に見るテキストと一致しない。
 - したがって、アンカーの計算・再検索は**クライアント側で、レンダリング（および非同期ウィジェットの解決）が完了した後のDOMに対して**行う。
 - GROWIには「非同期にレンダリングされる要素が今も描画中かどうか」を判定する既存の共通プロトコルが既にある：`GROWI_IS_CONTENT_RENDERING_ATTR`（`data-growi-is-content-rendering`、`@growi/core/dist/consts`）を描画中の要素に `"true"` として立て、完了時に `"false"` に落とすという規約で、`drawio`・`mermaid`・`plantUML`・`lsx` が既にこのプロトコルに参加している（[auto-scroll](../auto-scroll/) スペックで確立・整理済み）。本設計はこれを**そのまま**「静定検知」に再利用する（後述の `use-container-settle`）。これにより、非同期ウィジェットの内容を独自に「除外対象」として一覧管理する必要がなくなる——描画完了を待ってからテキスト抽出すれば、`lsx`/`drawio`/`mermaid` の出力も他の本文と同様にアンカーの対象に含めてよい。
+
+### 本文テキストの抽出範囲（除外条件と単一の情報源）
+
+「この本文コンテナに今どんな文字が存在するか」を定義する処理は `renderedTextOf`（`services/rendered-text.ts`）**1箇所だけ**であり、コメント作成時（`use-text-selection` の `captureSelection`）とハイライト解決時（`useAnchorResolver`）は同じ関数を通して同じ答えを得る。一本化の対象は本文テキスト（`fullText`）と位置（`startOffset`／`endOffset`／`approxOffset`）であり、`quote` は選択時の原文をそのまま保持する（要件1.4。この違いから生じる帰結はSystem Flowsの「フロー上の決定事項」を参照）。作成時に保存する `approxOffset` と、解決時に `quote-matcher` へ渡す本文テキストが同一の座標系に乗るのはこの一本化によるものであり、除外条件が将来変わっても両方の呼び出し元に自動的に反映される。この性質を満たすため、`renderedTextOf` は「テキストオフセット→DOM位置」（`resolveDomPosition`）と「DOM境界点→テキストオフセット」（`textOffsetOf`）の双方向の変換を提供する。
+
+除外するサブツリーは次の2条件のOR（`isExcludedRoot`）で判定する：
+
+- **`.katex` クラスを持つ要素**（数式）。KaTeXはアクセシビリティ用の `.katex-mathml` とビジュアル表示用の `.katex-html` を並べて出力する二重構造のため、そのまま数えると数式の文字が重複・破綻する
+- **`aria-hidden="true"` を持つ要素**。「装飾であって内容ではない」ことを表す標準の宣言的な印である。たとえば見出し・表・draw.io図に付く編集ボタンのアイコンは、DOM上は Material Symbols のリガチャ名（`edit_square` など）という素のテキストノードとして存在し、その有無は共同編集データの読み込み進捗といったインラインコメントとは無関係なクライアント側の状態で切り替わる。これを本文テキストに含めると、同じページでも読み込みの進み具合によって前後文脈・位置の数え方が変わってしまう
+
+除外すべき対象の知識は、除外する側（`renderedTextOf`）がセレクタを列挙するのではなく、**除外されるべき要素を持つ側**が `aria-hidden="true"` を付けることで表明する（`.claude/rules/coding-style.md` の「実行する側で個別分岐せず、宣言された集合を参照する」原則）。これにより、同じ形の要素が今後どの機能で増えても `renderedTextOf` は変更不要であり、付与する側も `inline-comment` フィーチャーへの依存を持たない。
+
+`lsx`/`drawio`/`mermaid` の出力は除外しない——上記のレンダリング状態属性プロトコルで静定を待ってから抽出するため、他の本文と同様にアンカーの対象に含めてよい。コードブロックも同期的・決定的にレンダリングされるため除外しない。
 
 ### 解決済みオフセットキャッシュを持たない判断
 
@@ -205,7 +220,7 @@ apps/app/src/features/inline-comment/
     ├── components/
     │   ├── SelectionCapture/
     │   │   ├── SelectionCapture.tsx      # 本文コンテナをラップし選択イベントを監視。idle/selecting/composingの3段階の状態機械を管理し、作成の起点・入力フォームの表示を切り替える
-    │   │   ├── use-text-selection.ts     # 純粋フック：Selection → quote/prefix/suffix/おおよそのオフセット
+    │   │   ├── use-text-selection.ts     # 純粋フック：Selection → quote/prefix/suffix/おおよそのオフセット（本文テキスト・位置はrenderedTextOf経由で求める）
     │   │   └── SelectionActionButton.tsx # 選択直後に現れる軽量な作成の起点（提示専用、onCommitのみを受け取る）
     │   ├── SelectionPopover/
     │   │   ├── SelectionPopover.tsx          # {range, children}を受け取り、document.body直下へのポータル経由で選択範囲近傍に配置する汎用コンポーネント
@@ -213,7 +228,7 @@ apps/app/src/features/inline-comment/
     │   │   └── selection-virtual-element.ts  # Range→Popper仮想要素への変換（純粋関数）
     │   ├── AnchorResolver/
     │   │   ├── use-anchor-resolver.ts    # (containerEl, anchors[]) → Map<id, ResolvedRange>。詳細契約は後述
-    │   │   └── use-container-settle.ts   # GROWI_IS_CONTENT_RENDERING_ATTRプロトコルを使った「静定」検知フック（auto-scrollの仕組みを再利用）
+    │   │   └── use-container-settle.ts   # GROWI_IS_CONTENT_RENDERING_ATTRプロトコルを使った「静定」検知フック（auto-scrollの仕組みを再利用）＋`hasRenderingElements`判定の公開
     │   ├── InlineCommentHighlight/
     │   │   └── InlineCommentHighlight.tsx # ResolvedRangeを受け取り保存済みハイライトを描画。RangeそのものはresolvedRangeユーティリティ（servicesの`resolved-range.ts`）経由で構築する
     │   ├── PendingSelectionHighlight/
@@ -246,6 +261,7 @@ apps/app/src/features/inline-comment/
 ### Modified Files
 - `apps/app/src/components/PageView/RevisionRenderer.tsx` — `ReactMarkdown` を包むコンテナ `div` に `ref` を転送するよう変更（新規rehype/remarkプラグインは追加しない）
 - `apps/app/src/components/PageView/PageView.tsx` — 転送されたrefを`AnchorResolver`/`SelectionCapture`に配線し、既存の `Comments` と並置する。共有リンク経由のページ表示（`!isSharedPageView`）では`SelectionCapture`/`InlineCommentHighlight`/`PendingSelectionHighlight`/`InlineCommentBodyInteraction`のいずれもレンダーしないガードもここに置く。`scrollToRange(commentId): boolean`（`rangesById()`で対象の`Range`を再構築できればスクロール＋一時的な強調ハイライト`growi-inline-comment-emphasis`の登録、できなければ既存の通知UIで知らせる）を実装し、`resolve`/`createReply`とあわせて`inlineCommentsForComments`バンドルとして`Comments`に渡す
+- `apps/app/src/client/components/ReactMarkdownComponents/Header.tsx` / `TableWithEditButton.tsx` / `DrawioViewerWithEditButton.tsx` — 条件付きで表示される編集ボタンのアイコン用 `<span>`（例: `<span className="material-symbols-outlined">edit_square</span>`）に `aria-hidden="true"` を追加する。表示条件・クリック時の振る舞い・見た目は変えない。この標準属性が、本文テキスト抽出の除外条件（Architecture節「本文テキストの抽出範囲」）から読み取られる
 - `apps/app/package.json` — `@popperjs/core`を`dependencies`に追加（選択範囲近傍への配置に使用）
 - `apps/app/src/server/routes/apiv3/index.js` — `inline-comment` フィーチャーモジュールのルートファクトリをimportし、`/inline-comments` にマウントする（`revisions` と同じマウントパターン）
 - `apps/app/src/features/comment/server/models/comment.ts` — Mongooseスキーマに `isInline`／アンカー4フィールド／`anchorOriginRevisionId`／`resolvedById`／`resolvedAt` を追加。`findCommentsByPageId`／`findCommentsByRevisionId`／`countCommentByPageId` の `where` 条件に `isInline: { not: true }` を追加（無条件フィルタ。呼び出し元からオーバーライド不可）。`@@index([pageId, isInline])` の宣言を追加
@@ -304,25 +320,42 @@ sequenceDiagram
 
 ```mermaid
 flowchart TD
-    Mount[ページ表示 コンテナref取得] --> Fetch[インラインコメント一覧取得 起点+ネスト返信]
-    Fetch --> Wait[use-container-settle: 描画状態属性が無くなるまで待機]
-    Wait --> Extract[renderedTextOf: katexサブツリーのみ飛ばしプレーンテキストを構築]
+    Extract[renderedTextOf: 除外条件に該当するサブツリーを飛ばしプレーンテキストを構築]
+
+    subgraph トリガー1[トリガー1 静定シグナル]
+        Mount[ページ表示 コンテナref取得] --> Settle[use-container-settle: コンテナ内のDOM変化を監視]
+        Settle --> HasRendering{描画中の目印付き要素が残っているか}
+        HasRendering -- はい --> Keep[発火しない 次のDOM変化を待つ]
+        Keep -.-> Settle
+        HasRendering -- いいえ --> Fire[静定シグナル発火 rAF単位で1回にまとめる]
+    end
+
+    subgraph トリガー2[トリガー2 anchors の内容変化]
+        Fetch[インラインコメント一覧取得 起点+ネスト返信] --> Guard{描画中の目印付き要素が残っているか}
+        Guard -- はい --> Defer[今回は再計算せず 次の静定シグナルに委ねる]
+    end
+
+    Fire --> Extract
+    Guard -- いいえ --> Extract
+
     Extract --> Loop[各起点アンカーについて quoteMatcher を実行]
     Loop --> Exact{原文に対する完全一致}
-    Exact -- あり --> Highlight[ハイライト描画]
+    Exact -- あり --> Highlight[新しい resolvedRanges Map を作りハイライト描画]
     Exact -- なし --> Fuzzy[NFC正規化後 approx-string-match]
     Fuzzy --> Found{一致あり}
     Found -- あり --> BackMap[正規化後オフセットを原文オフセットへ逆変換]
     BackMap --> Highlight
     Found -- なし --> NoHighlight[ハイライトなし。コメントは一覧に保持]
-    Wait -. 後続の変異を検知 .-> Wait
 ```
 
 **フロー上の決定事項**:
 - 再アンカーの対象は**起点コメントのみ**。返信はアンカーを持たないため、マッチング対象にはならず、一覧上は起点コメントにネストして表示されるだけである。
-- `AnchorResolver`（`useAnchorResolver`）は**2つのトリガーそれぞれで全アンカーの再計算を冪等に再実行する**。(1) `use-container-settle` が「静定」を検知したとき。(2) `anchors` 引数の内容が変化したとき（一覧取得の完了タイミングが静定と無関係なため — 詳細はAnchorResolverコンポーネントのResponsibilities & Constraintsを参照）。永続キャッシュを持たないため、どちらのトリガーで再計算しても常に安全であり、`lsx` 等の非同期ウィジェットが遅れて内容を更新した場合でも、次の静定検知で再計算が走り、ハイライトのズレは自己修復される。
-- 除外対象サブツリー（`renderedTextOf` が読み飛ばす範囲）は **`.katex`（数式、KaTeXの標準トップレベルクラス）のみ**。KaTeXはアクセシビリティ用の `.katex-mathml` とビジュアル表示用の `.katex-html` を並べて出力する二重構造のため、`textContent` をそのまま使うとテキストが重複・破綻する。`lsx`/`drawio`/`mermaid` は上記のレンダリング状態属性プロトコルで静定を待ってから抽出するため、除外する必要がない。コードブロックも同期的・決定的にレンダリングされるため除外しない。
-- 除外対象セレクタが将来変わった場合、その変更以前に作成されたアンカーが再アンカーできなくなることがある。これは要件2.4/5.3が定める「ハイライトなしでコメントを保持する」という正常系フォールバックとして扱い、データ移行やマイグレーションは行わない。
+- `AnchorResolver`（`useAnchorResolver`）は**2つのトリガーそれぞれで全アンカーの再計算を冪等に再実行する**。(1) `use-container-settle` が静定シグナルを出したとき。(2) `anchors` 引数の内容が変化したとき（一覧取得の完了タイミングが静定と無関係なため — 詳細はAnchorResolverコンポーネントのResponsibilities & Constraintsを参照）。トリガー(2)は、描画中の目印付き要素が残っている間は再計算を見送り、トリガー(1)に委ねる（描画途中のDOMに対してマッチングしないため）。永続キャッシュを持たないため、どちらのトリガーで再計算しても常に安全であり、`lsx` 等の非同期ウィジェットが遅れて内容を更新した場合でも、その更新が監視期間（マウント時点から10秒。詳細は `use-container-settle` の節）の内側であれば、次の静定シグナルで再計算が走り、ハイライトのズレは自己修復される。監視期間を過ぎるとシグナルは届かないため、自己修復はこの期間内に限られる。
+- 静定シグナルは「描画中の目印付き要素が0個であることを確認するたび」に発火する。目印を持たない普通のDOM変化——たとえば見出しの編集ボタンが後から現れる・消える——も本文テキストを変えるため、再計算のきっかけになる（詳細は `use-container-settle` の節）。
+- 再計算のたびに `resolvedRanges` は新しい `Map` として作り直される。`InlineCommentHighlight`／`InlineCommentBodyInteraction` はこの `Map` を入力として `Range` を組み立て直すため、本文が再描画されて古い `Range` が画面上の位置を失っても、次の再計算で見た目と当たり判定の両方が最新の `Range` に揃う。これは再描画に対して再計算のトリガーが届くこと——`useAnchorResolver` に静定シグナルが届く（＝監視期間の内側である）か、`anchors` の内容が変化する——を前提とする。
+- 除外対象サブツリー（`renderedTextOf` が読み飛ばす範囲）は **`.katex`（数式）または `aria-hidden="true"` を持つ要素**。それぞれの理由はArchitecture節「本文テキストの抽出範囲」を参照。`lsx`/`drawio`/`mermaid` は上記のレンダリング状態属性プロトコルで静定を待ってから抽出するため、除外する必要がない。コードブロックも同期的・決定的にレンダリングされるため除外しない。
+- `quote` は選択範囲の原文（`Range.toString()`）をそのまま保持する（要件1.4）。このため、選択範囲が除外対象のサブツリーの内側にある、またはそれを跨ぐ場合、`quote` には本文テキスト（`renderedTextOf` の `text`）に存在しない文字が混ざり、完全一致・あいまい一致のどちらも当たらず「ハイライトなし」に落ちる。装飾要素を跨いで選択したケースに限られるため、要件2.4/5.3のフォールバックの範囲内として扱う。
+- 除外条件が将来変わった場合、その変更以前に作成されたアンカーが再アンカーできなくなることがある。これは要件2.4/5.3が定める「ハイライトなしでコメントを保持する」という正常系フォールバックとして扱い、データ移行やマイグレーションは行わない。
 
 ### 本文ハイライトのhover/click/tapからポップオーバー表示まで
 
@@ -372,19 +405,19 @@ sequenceDiagram
 
 | Requirement | Summary | Components | Interfaces | Flows |
 |---|---|---|---|---|
-| 1.1–1.2 | 範囲選択とアンカー保存 | SelectionCapture, InlineCommentForm, InlineCommentService | `useTextSelection`, POST /inline-comments | 作成フロー |
+| 1.1–1.2 | 範囲選択とアンカー保存 | SelectionCapture, use-text-selection, rendered-text, InlineCommentForm, InlineCommentService | `useTextSelection`, `RenderedText.textOffsetOf`, POST /inline-comments | 作成フロー |
 | 1.3 | 文字単位で開始・終了を扱う | use-text-selection | `CapturedSelection` | 作成フロー |
 | 1.4 | クオートを正規化せず保存 | use-text-selection, InlineCommentService | `InlineCommentAnchor.quote` | 作成フロー |
 | 1.5–1.6 | 権限・ログイン要求 | apiv3 inline-comment routes | `loginRequired`, `accessTokenParser` | 作成フロー |
 | 1.7 | 空選択時は作成操作を無効化 | SelectionCapture | `useTextSelection` が `null` を返す | — |
 | 1.8 | 返信を許可する | InlineCommentService, InlineCommentReplies | POST /inline-comments/:id/replies | 作成フロー（返信） |
 | 1.9 | 返信はアンカーを持たない | InlineCommentService, Data Models | `replyToId` 行の全アンカーフィールドが `null` | 作成フロー（返信） |
-| 2.1–2.4 | 完全一致→あいまい一致→ハイライトなしの3段階 | AnchorResolver, rendered-text, quote-matcher | `useAnchorResolver`, `matchQuote` | 表示・再アンカーフロー |
+| 2.1–2.4 | 完全一致→あいまい一致→ハイライトなしの3段階 | AnchorResolver, use-container-settle, rendered-text, quote-matcher | `useAnchorResolver`, `hasRenderingElements`, `matchQuote` | 表示・再アンカーフロー |
 | 2.5–2.6 | 一覧表示・作成日時順 | InlineCommentItem, inline-comment store | GET /inline-comments | — |
 | 3.1–3.2 | メンションハイライト・通知の再利用 | InlineCommentForm・InlineCommentItem・InlineCommentReplies（いずれも既存remarkプラグインを利用）, InlineCommentService, CommentService | `prepareMentionNotifications` | 作成フロー |
 | 4.1–4.4 | 解決/未解決管理 | InlineCommentService, InlineCommentItem | PUT /inline-comments/:id/resolve | — |
 | 4.5 | 解決状態は起点のみが持つ | Data Models（`resolvedById`/`resolvedAt` は返信では常に`null`） | — | — |
-| 5.1–5.3 | ベストエフォート再アンカー | AnchorResolver, rendered-text, quote-matcher | `useAnchorResolver` | 表示・再アンカーフロー |
+| 5.1–5.3 | ベストエフォート再アンカー | AnchorResolver, use-container-settle, rendered-text, quote-matcher | `useAnchorResolver`, `hasRenderingElements` | 表示・再アンカーフロー |
 | 5.4–5.5 | アンカー起点リビジョンIDの不変記録 | InlineCommentService, Data Models | `InlineComment.anchorOriginRevisionId` | 作成フロー |
 | 6.1 | 共有リンク閲覧者へ行を返さない | apiv3 inline-comment routes（`certifySharedPage`を通さない） | — | — |
 | 6.2 | 共有リンク画面でUIを表示しない | SelectionCapture, InlineCommentItem（share-link文脈では未マウント） | — | — |
@@ -421,10 +454,11 @@ sequenceDiagram
 | Component | Domain/Layer | Intent | Req Coverage | Key Dependencies (P0/P1) | Contracts |
 |---|---|---|---|---|---|
 | InlineCommentService | Server | 作成・返信・一覧・解決トグルの永続化とActivity発行 | 1.1-1.6, 1.8-1.9, 3.2, 4.1-4.5, 5.4-5.5, 6.1, 6.3 | `prisma.comments`(P0), `CommentService`(P0) | Service, API |
-| rendered-text (`renderedTextOf`) | Client / ロジック | 除外対象を除いたプレーンテキストとDOM位置マッピングを構築 | 2.1-2.4, 5.1-5.3 | DOMコンテナ(P0) | State |
+| rendered-text (`renderedTextOf`) | Client / ロジック | 除外対象を除いたプレーンテキストと、テキストオフセット⇄DOM位置の双方向マッピングを構築（本文テキストの唯一の情報源） | 1.2-1.3, 2.1-2.4, 5.1-5.3 | DOMコンテナ(P0) | State |
 | quote-matcher (`matchQuote`) | Client / ロジック | 完全一致→NFCあいまい一致→逆変換 | 2.1-2.4, 5.1-5.3 | `approx-string-match`(P0), `Intl.Segmenter`(P0) | Service |
-| AnchorResolver (`useAnchorResolver`) | Client / ロジック | 静定イベントまたはanchors内容の変化のたびに全起点アンカーを再計算しResolvedRangeを供給 | 2.1-2.4, 5.1-5.3 | rendered-text(P0), quote-matcher(P0), use-container-settle(P0) | State |
-| use-text-selection | Client / ロジック | Selectionからアンカー候補（quote/prefix/suffix/offset）を構築 | 1.1-1.4, 1.7 | `Intl.Segmenter`(P1) | State |
+| AnchorResolver (`useAnchorResolver`) | Client / ロジック | 静定シグナル、またはanchors内容の変化（描画中でないことを確認したうえで）のたびに全起点アンカーを再計算しResolvedRangeを供給 | 2.1-2.4, 5.1-5.3 | rendered-text(P0), quote-matcher(P0), use-container-settle(P0) | State |
+| use-container-settle | Client / ロジック | レンダリング状態属性プロトコルでコンテナを監視し、描画中の要素が残っていないことを確認するたびに静定シグナルを出す。判定自体（`hasRenderingElements`）も公開する | 2.1-2.4, 5.1-5.3 | `GROWI_IS_CONTENT_RENDERING_ATTR`(P0) | State |
+| use-text-selection | Client / ロジック | Selectionからアンカー候補（quote/prefix/suffix/offset）を構築。本文テキストと位置は`renderedTextOf`を通して求める | 1.1-1.4, 1.7 | rendered-text(P0), `Intl.Segmenter`(P1) | State |
 | SelectionCapture | Client / State | 選択監視から入力フォームのクローズまでの状態機械（`idle`/`selecting`/`composing`の3段階）を管理する | 1.1-1.2, 1.7, 7.1-7.4, 8.1, 8.3-8.4, 10.2 | use-text-selection(P0), SelectionPopover(P0), SelectionActionButton(P0), InlineCommentForm(P0) | State |
 | SelectionActionButton | Client / UI | 選択直後に現れる軽量な作成の起点（提示専用、`onCommit`のみを受け取る） | 7.1, 8.1 | SelectionCapture(P0) | — |
 | SelectionPopover | Client / UI | 与えられた`Range`の近傍へ`children`を浮動配置する汎用コンポーネント。`@popperjs/core`の仮想要素パターンで位置計算し、ゼロ矩形時は直前の有効な位置を保持するフォールバックを持つ | 7.3, 10.1 | `@popperjs/core`(P0) | State |
@@ -503,18 +537,20 @@ interface InlineCommentService {
 
 | Field | Detail |
 |---|---|
-| Intent | 本文コンテナが静定するたびに全起点アンカーを再計算し、ハイライト用の位置情報を供給する |
+| Intent | 本文コンテナの静定シグナル、および `anchors` の内容変化のたびに全起点アンカーを再計算し、ハイライト用の位置情報を供給する |
 | Requirements | 2.1, 2.2, 2.3, 2.4, 5.1, 5.2, 5.3 |
 
 **Responsibilities & Constraints**
 - 永続キャッシュを持たない（Architecture節参照）。以下の2つのトリガーそれぞれで全件を冪等に再計算する
 - 対象は起点コメントのアンカーのみ。返信は対象外（アンカーを持たないため）
 - `renderedTextOf`／`quote-matcher` の合成のみを行い、DOM書き換え（ハイライト描画そのもの）は行わない。描画は `InlineCommentHighlight` の責務
-- **再計算トリガーは2つある。** (1) `use-container-settle` の静定イベント（非同期ウィジェットの解決を待つ経路）。(2) `anchors` 引数の**内容**が変化したとき（`useSWRxInlineComments` の一覧取得が非同期ウィジェットの静定と無関係なタイミングで完了するため）。静的な本文（`lsx`/`drawio`/`mermaid` を含まないページ）は初回マウント時に1回だけ静定し、以後は二度と静定イベントが発火しない。この場合、静定イベントだけに依存すると、静定発火時点でまだ空だった `anchors`（一覧取得が未完了）が実際のアンカーに置き換わっても再計算が走らず、ハイライトが永久に復元されない。トリガー(2)はこの隙間を埋める。`anchors` は再取得のたびに内容が同じでも新しい配列参照になりうるため、内容比較（深い等価性比較）で安定化した値を副作用の依存にし、内容が変わらない限り再計算しない
-- トリガー(2)は「静定済みであること」を検証しない。非同期ウィジェットが未解決のページで一覧取得がウィジェット解決前に完了した場合、トリガー(2)による再計算は描画途中のDOMに対して行われ、一時的に誤った結果（多くは `not_found`）になりうる。これは正常系のフォールバック（2.4/5.3）で吸収され、その後ウィジェット自身の静定イベント（トリガー(1)）が発火すれば再計算により自己修復する（後述「フロー上の決定事項」参照）。この相互作用のE2E検証はタスク6.4の責務とする
+- **再計算トリガーは2つある。** (1) `use-container-settle` の静定シグナル（描画中の要素が残っていないことが確認されるたびに届く）。(2) `anchors` 引数の**内容**が変化したとき（`useSWRxInlineComments` の一覧取得が非同期ウィジェットの静定と無関係なタイミングで完了するため）。静定シグナルはコンテナ内のDOM変化を契機に届くため、DOM変化が一切起きなければ次のシグナルも来ない。この場合、静定シグナルだけに依存すると、シグナル発火時点でまだ空だった `anchors`（一覧取得が未完了）が実際のアンカーに置き換わっても再計算が走らず、ハイライトが復元されない。トリガー(2)はこの隙間を埋める。`anchors` は再取得のたびに内容が同じでも新しい配列参照になりうるため、内容比較（深い等価性比較）で安定化した値を副作用の依存にし、内容が変わらない限り再計算しない
+- トリガー(2)は `resolveAll` を呼ぶ前に `hasRenderingElements(container)` を確認し、描画中の目印付き要素が残っている間は再計算を見送る。一覧取得が非同期ウィジェットの解決より先に完了しても、描画途中のDOMに対してマッチングして誤った結果（多くは `not_found`）を publish することがない。見送った分の再計算はトリガー(1)が引き受ける
+- ただし `use-container-settle` は `WATCH_TIMEOUT_MS`（10秒）を過ぎると監視を打ち切るため、それ以降に描画中の目印付き要素が残ったまま `anchors` が変化した場合、トリガー(2)は見送るがトリガー(1)も来ない——このコメントはページを開き直すまでハイライトされない。「描画中」を10秒以上出しっぱなしにする上流側の異常が前提であり、残存するリスクとして扱う
+- 再計算のたびに `Map` を新しく作り直して返す（永続キャッシュを持たない方針の帰結）。これにより `InlineCommentHighlight`／`InlineCommentBodyInteraction` は毎回この `Map` から `Range` を組み立て直すため、本文が再描画されても見た目と当たり判定が最新のDOMに揃う
 
 **Dependencies**
-- Inbound: `use-container-settle` — 静定イベント（P0）
+- Inbound: `use-container-settle` — 静定シグナル、および `hasRenderingElements` 判定（P0）
 - Inbound: `anchors` 引数自体の内容変化（P0）
 - Outbound: `rendered-text`, `quote-matcher`（P0）
 
@@ -531,38 +567,60 @@ function useAnchorResolver(
   anchors: ReadonlyArray<{ id: string; anchor: InlineCommentAnchor }>,
 ): ReadonlyMap<string, ResolvedRange>;
 ```
-- 状態モデル: `containerRef` が指すDOMの静定イベントを購読し、そのたびに `renderedTextOf(container)` → 各アンカーへの `matchQuote` を実行して `Map` を再構築する。加えて、`anchors` の内容が変化するたびに同じ再構築を独立して行う（上記Responsibilities参照）
-- 整合性: 再計算は純粋な読み取り専用処理であり、DOMを変更しない。並行呼び出し（複数の静定イベント、または静定イベントとanchors変化が短時間に連続した場合）は最後の完了分が状態を上書きする（React の状態更新の通常のセマンティクスに従う。追加のロック機構は設けない）
+- 状態モデル: `containerRef` が指すDOMの静定シグナルを購読し、そのたびに `renderedTextOf(container)` → 各アンカーへの `matchQuote` を実行して `Map` を再構築する。加えて、`anchors` の内容が変化するたびに、描画中の要素が残っていないことを確認したうえで同じ再構築を独立して行う（上記Responsibilities参照）
+- 整合性: 再計算は純粋な読み取り専用処理であり、DOMを変更しない。読み取り専用であるため、監視対象のDOM変化が自分自身の出力によって連鎖する構造にはならない。並行呼び出し（複数の静定シグナル、または静定シグナルとanchors変化が短時間に連続した場合）は最後の完了分が状態を上書きする（React の状態更新の通常のセマンティクスに従う。追加のロック機構は設けない）
 
 #### `use-container-settle`
 
 既存の [auto-scroll](../auto-scroll/) スペックが確立した「レンダリング状態属性プロトコル」をそのまま再利用する。新規のヒューリスティック（固定フレーム数など）は導入しない。
 
-- `GROWI_IS_CONTENT_RENDERING_SELECTOR`（`@growi/core/dist/consts`）でコンテナ内に描画中要素（`data-growi-is-content-rendering="true"`）が存在するかを判定する
-- `apps/app/src/client/util/watch-rendering-and-rescroll.ts` の `MutationObserver` 監視設定（`childList: true, subtree: true, attributes: true, attributeFilter: [GROWI_IS_CONTENT_RENDERING_ATTR]`）と同じ設定でコンテナを監視し、「描画中要素がゼロになった」時点を「静定」と判定してコールバックを発火する
-- 初回マウント時にも1回判定する（非同期ウィジェットが一切ないページでも再アンカーが動作するため）
+```typescript
+/** 現在、GROWI_IS_CONTENT_RENDERING_SELECTOR に一致する要素が container 内に存在するか。 */
+function hasRenderingElements(container: HTMLElement): boolean;
+```
+
+- `GROWI_IS_CONTENT_RENDERING_SELECTOR`（`@growi/core/dist/consts`）でコンテナ内に描画中要素（`data-growi-is-content-rendering="true"`）が存在するかを判定する。この判定は `hasRenderingElements` として公開し、静定シグナルの発火判断と `useAnchorResolver` のトリガー(2)のガードが同じ1つの関数を使う（「何を描画中とみなすか」の定義を複製しない）
+- `apps/app/src/client/util/watch-rendering-and-rescroll.ts` の `MutationObserver` 監視設定（`childList: true, subtree: true, attributes: true, attributeFilter: [GROWI_IS_CONTENT_RENDERING_ATTR]`）と同じ設定でコンテナを監視する
+- **静定シグナルは「描画中要素が0個であることを確認するたび」に発火する**（0個になった瞬間の1回だけではない）。ただし「たび」の範囲は監視期間（マウント時点から `WATCH_TIMEOUT_MS`＝10秒）の内側に限られ、無期限ではない（後述の打ち切り参照）。この監視設定では、目印を持たない普通のDOM変化——見出しの編集ボタンが共同編集データの読み込み完了にあわせて現れる、など——でも判定が走る。こうした変化も本文テキストを変えるため、購読側に再解決の機会を渡す必要がある（要件2.1/5.1の「現在レンダリングされている本文テキストに対して再検索する」を満たすため）。描画中要素が残っている間は発火しない
+- 発火の間引き: DOM変化を契機とする判定は `requestAnimationFrame` 単位でまとめ、1つの描画パスに属する多数の変化から高々1回の発火にする（`MermaidViewer.tsx` 等が使う「1フレーム待ってから完了を知らせる」やり方を踏襲）。すでにフレームが予約済みなら再予約しない
+- 初回マウント時にも1回判定する（非同期ウィジェットが一切ないページでも再アンカーが動作するため）。この初回判定だけは**同期的に**発火させ、間引きの対象にしない。`useAnchorResolver` はマウント時に静定シグナル経由と `anchors` 経由の2回解決するため、初回を1フレーム遅らせるとこの2つの順序が入れ替わる
 - `watchRenderingAndReScroll` 自体（スクロール専用）は呼び出さず、その内部で使われているのと同じ定数・監視設定のみを共有する。将来 `watchRenderingAndReScroll` 側が汎用化されればそちらへの統合を検討してよいが、本スペックの実装ではロジックを複製する
-- 元の `watchRenderingAndReScroll` と同じ `WATCH_TIMEOUT_MS`（10秒）の考え方を踏襲し、描画中要素が10秒経っても `"false"` にならない場合（drawioの取得失敗・lsxのリクエスト停滞等）は監視を打ち切り、その時点のDOMに対して1回だけ `renderedTextOf`／`matchQuote` を実行する。つまり「無限にハイライトが出ない」状態にはせず、タイムアウト後は多少のズレを許容してでも表示を試みる（要件2.4/5.3の「見つからなければハイライトなし」というフォールバックで最終的に吸収される）
+- 元の `watchRenderingAndReScroll` と同じ `WATCH_TIMEOUT_MS`（10秒）の考え方を踏襲し、監視はマウント時点から10秒間だけ行う。10秒が経った時点で、描画中要素が残っているかどうかにかかわらず監視を打ち切る（`MutationObserver` を切断し、予約済みのフレームも取り消す）ため、それ以降はこのコンテナに対して静定シグナルが二度と届かない。打ち切りの時点でまだ描画中要素が残っている場合（drawioの取得失敗・lsxのリクエスト停滞等）は、その時点のDOMに対して1回だけ `renderedTextOf`／`matchQuote` を実行する。つまり「無限にハイライトが出ない」状態にはせず、タイムアウト後は多少のズレを許容してでも表示を試みる（要件2.4/5.3の「見つからなければハイライトなし」というフォールバックで最終的に吸収される）。逆に、打ち切りの時点で描画中要素が残っていなければ最後の1回は走らず、以後の再解決の機会も残らない
 
 #### `rendered-text` (`renderedTextOf`)
 
 | Field | Detail |
 |---|---|
-| Intent | `.katex` サブツリーのみを読み飛ばしたプレーンテキストと、テキストオフセット→DOM位置の対応を構築する |
-| Requirements | 2.1, 2.2, 2.3, 5.1, 5.2 |
+| Intent | 除外対象のサブツリーを読み飛ばしたプレーンテキストと、テキストオフセット⇄DOM位置の双方向の対応を構築する。「このコンテナに今どんな文字が存在するか」の唯一の情報源 |
+| Requirements | 1.2, 1.3, 2.1, 2.2, 2.3, 5.1, 5.2 |
 
 **Contracts**: Service [ ] / API [ ] / Event [ ] / Batch [ ] / State [x]
 
 ```typescript
 interface RenderedText {
-  text: string; // .katex サブツリーを除いたプレーンテキスト。lsx/drawio/mermaidの出力は含む（静定後に呼ばれる前提のため）
+  /**
+   * `.katex` サブツリーと、`aria-hidden="true"` を持つ要素を根とするサブツリーを
+   * 除いたプレーンテキスト。lsx/drawio/mermaidの出力は含む（静定後に呼ばれる前提のため）
+   */
+  text: string;
+  /** text 上のオフセットをDOM位置へ。範囲外なら null。 */
   resolveDomPosition(textOffset: number): { node: Node; offset: number } | null;
+  /**
+   * text を構築したのと同じ除外条件・同じ走査順で、DOM上の境界点
+   * （`Range.setEnd(node, offset)` が指すのと同じ意味の境界）を text 上の
+   * オフセットへ変換する。境界が除外済みサブツリーの内側にある場合は、
+   * そのサブツリーの直前までの長さを返す。
+   */
+  textOffsetOf(node: Node, offset: number): number;
 }
 
 function renderedTextOf(container: HTMLElement): RenderedText;
 ```
-- 除外対象は `.katex`（KaTeXの標準トップレベルクラス）のみ。理由はSystem Flowsの「フロー上の決定事項」を参照
-- 呼び出し前提: `use-container-settle` が「静定」を発火した後にのみ呼ぶ。静定前に呼ぶと、描画途中のDOM（例: ローディングスピナーのテキスト）を対象にしてしまう。ただし `useAnchorResolver` の再計算トリガー(2)（anchors内容の変化）はこの前提を検証せずに呼び出す。非同期ウィジェットが未解決のまま一覧取得が先に完了した場合、その回だけは描画途中のDOMに対して呼ばれうる（詳細は AnchorResolver の Responsibilities & Constraints を参照）。結果が誤っても「見つからなければハイライトなし」のフォールバックで吸収され、後続の静定イベント（トリガー(1)）で自己修復される
+- 除外条件は `isExcludedRoot(node)` として1箇所にまとめる: `.katex` クラスを持つ要素、または `aria-hidden="true"` を持つ要素。それぞれの理由はArchitecture節「本文テキストの抽出範囲」を参照
+- **判定は要素そのものに対してのみ行い、祖先を遡らない。** `aria-hidden` は除外したい要素そのものに付ける前提である。この判定に祖先参照や算出スタイル参照（例: `getComputedStyle(el).display`）を足してはならない——`textOffsetOf` は後述の通りレイアウトを持たないクローンDOM上でこの同じ判定を評価するため、`text` 側の判定結果と静かに食い違う
+- `textOffsetOf` は、`container` の先頭から `(node, offset)` までを範囲とする `Range` を作り、その `cloneContents()` に対して `text` を構築したのと同一の走査関数（除外条件込み）を適用して文字数を数える。走査ロジックを2箇所に複製しないことで、2方向の変換が食い違わない。部分的に選択された除外対象の要素も属性ごとクローンされるため、`isExcludedRoot` が引き続きそれを弾き、除外済みサブツリー内部の境界は自然に「その直前までの長さ」になる
+- 呼び出し元は2つあり、どちらも同じインスタンス経由で本文テキストと位置を得る: コメント作成時の `use-text-selection`（`fullText`／`startOffset`／`endOffset`）と、ハイライト解決時の `useAnchorResolver`
+- 呼び出し前提: `use-container-settle` が静定シグナルを出した後、または `hasRenderingElements` が偽であることを確認した後にのみ呼ぶ（`useAnchorResolver` の2つのトリガーはいずれもこれを守る）。描画途中に呼ぶと、ローディングスピナーのテキストのような一時的な内容を対象にしてしまう
 
 #### `quote-matcher` (`matchQuote`)
 
@@ -719,9 +777,10 @@ model comments {
 
 - **Unit Tests**:
   - `quote-matcher`: 完全一致優先の分岐、`approxOffset` によるあいまい性解消（クオートがページ内に複数回出現するケース）、`maxErrors` の上限20キャップの境界、NFC正規化を要する結合文字ケース、正規化後オフセット→原文オフセットの逆変換（結合文字・互換分解を含むケース）
-  - `rendered-text`: `.katex` サブツリーの除外、コードブロック・`lsx`/`drawio` 出力は除外されないことの確認
-  - `use-container-settle`: `GROWI_IS_CONTENT_RENDERING_SELECTOR` に一致する要素がある間は発火しないこと、ゼロになった時点で発火すること（MutationObserverモックで検証）
-  - `use-text-selection`: 空選択で `null` を返すこと、書記素境界への内側スナップ
+  - `rendered-text`: `.katex` サブツリーおよび `aria-hidden="true"` サブツリーの除外、コードブロック・`lsx`/`drawio` 出力は除外されないことの確認、`textOffsetOf` と `resolveDomPosition` の往復（DOM位置→オフセット→DOM位置）が一致すること、除外済みサブツリー内部の境界が「その直前までの長さ」に丸められること
+  - `use-container-settle`: `hasRenderingElements` の単体動作、`GROWI_IS_CONTENT_RENDERING_SELECTOR` に一致する要素がある間は発火しないこと、そうした要素が存在しないまま目印を持たない要素の追加・削除が起きた場合にも発火すること、同一フレーム内の複数回の変化が1回の発火にまとまること（MutationObserverモックで検証）
+  - `use-text-selection`: 空選択で `null` を返すこと、書記素境界への内側スナップ、`fullText`／`startOffset`／`endOffset` が `renderedTextOf` 経由で求まること（数式の直後を選択した場合の `approxOffset` が解決時の座標系と一致すること）
+  - `use-anchor-resolver`: `anchors` の内容変化によるトリガーが、描画中の要素が残っている間は再計算せず、その後の静定シグナルで正しく再計算されること
 - **Integration Tests**:
   - `POST /inline-comments` → `prepareMentionNotifications` が呼ばれメンション通知が発火すること（3.2）
   - `POST /inline-comments` にログインなし・ページ権限なしでアクセスした場合に拒否されること（1.5, 1.6）
@@ -733,6 +792,10 @@ model comments {
   - インラインコメントへの返信を作成し、一覧上で起点コメントにネストして表示されること
   - 本文編集後にページを再読み込みし、対象範囲が完全に失われた場合にハイライトが表示されずコメントが一覧に残ること（2.4, 5.3）
   - `lsx` ブロックを含むページで、`lsx` の非同期解決（`GROWI_IS_CONTENT_RENDERING_ATTR` が `"false"` になるまで）を待ってからハイライトが正しい位置に付くこと（静定検知の実効性を検証する、このフィーチャー固有のリスクに対応するテスト）
+  - draw.io図を含むページで、図の描画完了を人為的に遅らせた場合も、完了後に図より後ろのコメントが正しい位置にハイライトされること（レンダリング状態属性プロトコルの参加範囲を固定する）
+  - 数式を含み、かつ同一文字列が複数回登場するページで、数式より後ろの重複文字列のうち、実際にコメントを付けた出現箇所にのみハイライトが表示されること（作成時と解決時の位置の数え方が一致していることの検証）
+  - 見出し直後にコメントを作成し、共同編集データの読み込みを人為的に遅らせた状態でページを表示しても、読み込み完了後に正しい位置にハイライトが復元されること
+  - ハイライト表示後、監視期間（マウント時点から10秒）の内側で、目印を持たない画面要素（見出しの編集ボタン等）が現れる・消える状況を作っても、ハイライトへのマウスオーバー・クリックで引き続きポップオーバーが開くこと（監視期間を過ぎてからの変化は静定シグナルが届かないため、このテストの対象外）
 
 ## Security Considerations
 
