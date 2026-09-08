@@ -1,9 +1,11 @@
 import { type RefObject, useEffect, useState } from 'react';
 
+import { renderedTextOf } from '../../services/rendered-text';
+
 /**
  * The result of capturing a text selection: the exact (unnormalized) quote,
  * grapheme-safe surrounding context windows, and a rough code-unit offset
- * into the container's whole text.
+ * into the container's extracted text (see `renderedTextOf`).
  *
  * Shape mirrors `InlineCommentAnchor` (quote/prefix/suffix/approxOffset) as
  * described in design.md's Data Models section. It is declared locally here
@@ -22,8 +24,12 @@ export interface CapturedSelection {
   prefix: string;
   suffix: string;
   /**
-   * A rough UTF-16 code-unit offset of the selection start within the
-   * container's whole text. Used only to disambiguate multiple occurrences
+   * A rough UTF-16 code-unit offset of the selection start within the text
+   * `renderedTextOf` extracts from the container — NOT within the container's
+   * raw `textContent`, which additionally counts the excluded subtrees
+   * (`.katex`, `aria-hidden="true"`). Counting it the same way anchor
+   * resolution does is what keeps this value comparable at match time
+   * (Requirement 1.1). Used only to disambiguate multiple occurrences
    * of the same quote when re-matching later (see quote-matcher's algorithm
    * contract in design.md) — not read for any other purpose.
    */
@@ -95,17 +101,16 @@ export function captureSelection(
     locale = 'en',
     targetWindowSize = DEFAULT_TARGET_CONTEXT_WINDOW_SIZE,
   } = options;
-  const fullText = containerEl.textContent ?? '';
-  const startOffset = textOffsetOf(
-    containerEl,
+  // Single source of truth for "what text does this container currently hold":
+  // counting here the same way anchor resolution counts later is what keeps a
+  // stored approxOffset comparable at match time (Requirement 1.1).
+  const rendered = renderedTextOf(containerEl);
+  const fullText = rendered.text;
+  const startOffset = rendered.textOffsetOf(
     range.startContainer,
     range.startOffset,
   );
-  const endOffset = textOffsetOf(
-    containerEl,
-    range.endContainer,
-    range.endOffset,
-  );
+  const endOffset = rendered.textOffsetOf(range.endContainer, range.endOffset);
 
   return {
     quote,
@@ -148,22 +153,6 @@ export function useTextSelection(
   }, [containerRef, locale, targetWindowSize]);
 
   return captured;
-}
-
-/**
- * The UTF-16 code-unit offset of (node, offset) within containerEl's text,
- * measured via Range.toString() rather than a manual TreeWalker — this
- * naturally handles both text-node and element-node range boundaries.
- */
-function textOffsetOf(
-  containerEl: HTMLElement,
-  node: Node,
-  offset: number,
-): number {
-  const measuringRange = document.createRange();
-  measuringRange.setStart(containerEl, 0);
-  measuringRange.setEnd(node, offset);
-  return measuringRange.toString().length;
 }
 
 function buildPrefixWindow(
