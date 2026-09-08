@@ -56,7 +56,7 @@
   - _Depends: 1.2, 1.3_
   - _Boundary: PullTranslationSync_
 
-- [ ] 3.2 訳文のみの変更を、既存のi18n CIゲート通過を条件に自動反映する
+- [x] 3.2 訳文のみの変更を、既存のi18n CIゲート通過を条件に自動反映する
   - 「訳文のみの変更」グループをまとめた1本の変更提案（PR）を作成する。既に同じ差分に対する未マージの変更提案が残っている場合は、新しく作らずその変更提案を更新する（重複した変更提案を作らない）
   - 既存の`lint:i18n`を実行し、通過した場合のみ、変更提案の作成者とは別の承認ボットIDで承認レビューを送る
   - `lint:i18n`が失敗した場合は承認を送らず、失敗をワークフローの失敗として表面化する
@@ -67,12 +67,13 @@
   - _Depends: 3.1_
   - _Boundary: PullTranslationSync_
 
-- [ ] 3.3 構造変更を、人レビュー必須の変更提案として作成する
+- [ ] 3.3 構造変更を、人レビュー必須の変更提案として作成し、pull CLIのエントリポイントで束ねる
   - 「構造変更」グループをまとめた1本の変更提案（PR）を、承認ボットを関与させずに作成する。既に同じ差分に対する未マージの変更提案が残っている場合は、新しく作らずその変更提案を更新する（重複した変更提案を作らない）
   - 訳文のみのグループが空でも構造変更のグループが存在する場合は、構造変更側の変更提案だけが作られることを検証する統合テストを書く
-  - 観測可能な完了状態: 構造変更のみを含む入力に対し、承認ボット呼び出しが一度も発生せず、レビュー必須の変更提案が1本作られることをテストが確認する
+  - `pull-translations.ts` に `main()` エントリポイント（`push-source.ts` の `main()` を手本にする）を追加し、3.1の`collectClassifications`・3.2の`applyTranslationOnlyChanges`・本タスクの構造変更PR作成を順に呼び出し、いずれかが失敗した場合に非ゼロ終了コードで終了する形にまとめる（3.2のレビューで「8.1の失敗表面化がこの層で未完結」「main()の置き場所が3タスクとも空白」と指摘された分を回収する）
+  - 観測可能な完了状態: 構造変更のみを含む入力に対し、承認ボット呼び出しが一度も発生せず、レビュー必須の変更提案が1本作られることをテストが確認する。`main()`経由の失敗が非ゼロ終了コードになることも確認する
   - _Requirements: 3.2, 8.1_
-  - _Depends: 3.1_
+  - _Depends: 3.1, 3.2_
   - _Boundary: PullTranslationSync_
 
 ## 4. 貢献者向けガイドと運用環境の準備
@@ -102,7 +103,8 @@
   - _Requirements: 2.1, 2.2, 2.3, 8.1_
   - _Depends: 2, 4.2_
 
-- [ ] 5.2 pullワークフローを配線する
+- [ ] 5.2 pullワークフローを配線し、GitHub操作の実アダプタを実装する
+  - 3.2/3.3が注入インターフェースとしてのみ定義した `TranslationOnlyPrPublisher` / `ApprovalReviewer`（および3.3の構造変更PR用の同種インターフェース）の実装を、`gh` CLIまたはGitHub REST APIへの実呼び出しとして作成する（3.2のレビューで「アダプタの実装がどのタスクにも属していない」と指摘された分を回収する）
   - 定期実行と手動実行の両方をトリガーに、pullのCLIを実行するGitHub Actionsワークフローを追加する
   - 同一ブランチでの多重実行を防ぐ排他制御を設定する
   - POEditor APIトークンと、承認ボット専用のトークンをそれぞれ別のシークレットとして注入する
@@ -131,7 +133,8 @@
 - [ ] 6.3 リポジトリ全体のlint・test・buildが green であることを確認する
   - 新規追加したツール・ワークフローが、既存の `turbo run lint` / `turbo run test` / `turbo run build`（`@growi/app`）に悪影響を与えていないことを確認する
   - 既存の i18n CI ゲート（`i18n-key-audit` で実装済み）が、本機能追加後も引き続き正しく合否判定を行うことを確認する
-  - 観測可能な完了状態: `turbo run lint --filter @growi/app` / `turbo run test --filter @growi/app` / `turbo run build --filter @growi/app` がすべて成功する
+  - `poeditor-client.spec.ts`（タスク1.2）の20秒スロットルテストが実時間ベースで間欠的に失敗する（3.2のレビューで6回中2回の失敗を確認済み）ため、フェイクタイマー化するか許容誤差を広げて安定させる
+  - 観測可能な完了状態: `turbo run lint --filter @growi/app` / `turbo run test --filter @growi/app` / `turbo run build --filter @growi/app` がすべて成功する（`--repeat` 等で複数回実行しても poeditor-client のスロットルテストが安定して通ることを含む）
   - _Requirements: 3.3, 3.4, 8.1_
   - _Depends: 5.1, 5.2_
 
@@ -141,3 +144,6 @@
 - (2, レビューで発見) `poeditor-client.spec.ts`（タスク1.2、実時間ベースの20秒スロットルテスト）が、5回に1回程度 `expected 19999 to be greater than or equal to 20000` の1ミリ秒未満の誤差で間欠的に失敗する（flaky）。今回のタスクの差分が原因ではないが、別途 flaky test として起票し、実時間計測でなくフェイクタイマー等に置き換えることを検討すること。
 - (2) アップロード失敗時は読み込み失敗時と対称に「即座に中断し以降のnamespaceへは何もしない」形に統一した。読み込み失敗・アップロード失敗のどちらも部分反映を作らない。
 - (3.1) `collectClassifications` の戻り値は `{ ok: true, translationOnly, structural, skipped }` の形。`read_failed`/`export_failed` は全体中断（`{ ok: false, failures }`）、`invalid_json`（POEditor側の不正なexport）だけは該当1組み合わせを`skipped`に入れて除外し、残りは通常通り処理する（design.mdのError Handlingの例外規定通り）。3.2/3.3でこの関数を呼ぶ側は`skipped`の存在を意識すること（無視してよいが、黙って握りつぶさず何らかの形でログ等に残すのが望ましい）。
+- (3.2) `applyTranslationOnlyChanges` は `TranslationOnlyPrPublisher`（書き込み・PR作成/更新）と `ApprovalReviewer`（承認レビューのみ、内容を書けるメソッドを持たない）を別インターフェースとして注入する形で実装した。両方とも実装（GitHub操作の実アダプタ）はこのタスクの範囲外とし、5.2に回収した（5.2のタスク文を更新済み）。`TranslationOnlyCombination` に `absoluteFilePath`/`content` を追加したが `StructuralCombination` には追加していない（型で「構造変更がtranslationOnly経路に混入できない」壁を作るため、意図的な非対称）。3.3で構造変更PRを作る際、同じフィールドが必要なら独自に追加すること（`TranslationOnlyCombination` と混同しないよう別名にする）。
+- (3.2) `pull-translations.ts` にはまだ `main()` エントリポイントが無い（`push-source.ts` の `main()` が手本）。3.3で `collectClassifications` → `applyTranslationOnlyChanges` → 構造変更PR作成 → 非ゼロ終了コード、まで束ねること（3.3のタスク文を更新済み）。
+- (3.2) ゲート（`lint:i18n`）はCLI側（`I18nLintGate`注入）で実行する設計にした。design.mdのPull Flow図は「PR上でci-app-lintが走ってから承認」だが、tasks.mdの文言（「既存のlint:i18nを実行し」）に従った。`.github/mergify.yml`の`queue_conditions`/`merge_conditions`は両方とも`check-success ~= ci-app-lint`を要求するため、CLI側ゲート通過後にボットが承認しても、PR上のCIが落ちればキューに乗らずマージされない（要件3.4は守られる）。ただしCLI側ゲートが作業ツリーを読むため、同一実行内で3.3が構造変更ファイルを書き出した後にゲートを回すと、無関係な理由でtranslation-onlyのlintが落ちうる（安全側だが`main()`の実行順序を制約する — 3.3で対応時に留意）。

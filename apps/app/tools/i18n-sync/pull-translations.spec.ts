@@ -1,7 +1,17 @@
 import { mock } from 'vitest-mock-extended';
 
 import type { PoeditorClient } from './poeditor-client.ts';
-import { collectClassifications } from './pull-translations.ts';
+import {
+  type ApprovalReviewer,
+  applyTranslationOnlyChanges,
+  collectClassifications,
+  type I18nLintGate,
+  type PullRequestRef,
+  TRANSLATION_ONLY_BRANCH,
+  type TranslationOnlyCombination,
+  type TranslationOnlyPrPublisher,
+  type WriteLocaleFile,
+} from './pull-translations.ts';
 import type { NamespaceSyncEntry } from './sync-config.ts';
 
 // A small 3-entry fixture mirroring the shape of the real SYNC_TARGETS
@@ -215,6 +225,12 @@ describe('collectClassifications', () => {
       namespace: 'admin',
       language: 'ja_JP',
       changedKeys: ['k1'],
+      // The exported content that was classified, plus the exact file it was
+      // classified against, travel with the combination so the apply step
+      // (`applyTranslationOnlyChanges`) writes precisely what
+      // `DiffClassifier` approved -- see that function's doc comment.
+      absoluteFilePath: '/base/locales/ja_JP/admin.json',
+      content: { k1: 'CHANGED', k2: 'v2' },
     });
   });
 
@@ -381,5 +397,253 @@ describe('collectClassifications', () => {
     });
     expect(translationOnlyKeys).not.toContain('translation/zh_CN');
     expect(structuralKeys).not.toContain('translation/zh_CN');
+  });
+});
+
+const buildCombination = (
+  overrides: Partial<TranslationOnlyCombination> = {},
+): TranslationOnlyCombination => ({
+  namespace: 'admin',
+  language: 'ja_JP',
+  absoluteFilePath: '/base/locales/ja_JP/admin.json',
+  changedKeys: ['k1'],
+  content: { k1: 'CHANGED', k2: 'v2' },
+  ...overrides,
+});
+
+interface ApplyHarness {
+  /**
+   * Every collaborator call, in the order it was made. Call *order* is what
+   * these tests assert on rather than call counts alone: the gate reads the
+   * locale files from disk, so a run that approved before writing them (or
+   * before opening the PR that carries the check) would still satisfy every
+   * "approval called once" count while validating stale content.
+   */
+  readonly calls: string[];
+  readonly writeLocaleFile: WriteLocaleFile;
+  readonly prPublisher: TranslationOnlyPrPublisher;
+  readonly approvalReviewer: ApprovalReviewer;
+  readonly lintGate: I18nLintGate;
+}
+
+const EXISTING_PR_NUMBER = 4242;
+
+const buildApplyHarness = (options: {
+  readonly lintGatePasses: boolean;
+}): ApplyHarness => {
+  const calls: string[] = [];
+
+  const writeLocaleFile = vi.fn((absolutePath: string, _content: string) => {
+    calls.push(`write:${absolutePath}`);
+    return Promise.resolve();
+  });
+
+  // Stateful on purpose: the fake starts with no open translation-only PR and
+  // remembers the one `createPr` opens, so running the same flow twice
+  // against this harness reproduces the real second-run situation (an
+  // unmerged PR is already open) rather than testing the two branches in
+  // isolation.
+  let openPullRequest: PullRequestRef | null = null;
+
+  const prPublisher = mock<TranslationOnlyPrPublisher>();
+  prPublisher.publishBranch.mockImplementation(() => {
+    calls.push('publishBranch');
+    return Promise.resolve();
+  });
+  prPublisher.findExistingPr.mockImplementation(() => {
+    calls.push('findExistingPr');
+    return Promise.resolve(openPullRequest);
+  });
+  prPublisher.createPr.mockImplementation(() => {
+    calls.push('createPr');
+    openPullRequest = { number: EXISTING_PR_NUMBER };
+    return Promise.resolve(openPullRequest);
+  });
+  prPublisher.updatePr.mockImplementation(() => {
+    calls.push('updatePr');
+    return Promise.resolve();
+  });
+
+  const approvalReviewer = mock<ApprovalReviewer>();
+  approvalReviewer.submitApprovalReview.mockImplementation(() => {
+    calls.push('submitApprovalReview');
+    return Promise.resolve();
+  });
+
+  const lintGate = mock<I18nLintGate>();
+  lintGate.run.mockImplementation(() => {
+    calls.push('lintGate');
+    return Promise.resolve(
+      options.lintGatePasses
+        ? { ok: true as const }
+        : {
+            ok: false as const,
+            message: 'lint:i18n failed: 3 missing keys in ko_KR/commons.json',
+          },
+    );
+  });
+
+  return { calls, writeLocaleFile, prPublisher, approvalReviewer, lintGate };
+};
+
+describe('applyTranslationOnlyChanges', () => {
+  it('does nothing at all when the translation-only group is empty', async () => {
+    const harness = buildApplyHarness({ lintGatePasses: true });
+
+    const result = await applyTranslationOnlyChanges({
+      combinations: [],
+      writeLocaleFile: harness.writeLocaleFile,
+      prPublisher: harness.prPublisher,
+      approvalReviewer: harness.approvalReviewer,
+      lintGate: harness.lintGate,
+    });
+
+    expect(result).toEqual({ ok: true, outcome: 'no_changes' });
+    // No empty auto-merge PR, and no gate run to pay for on an empty diff.
+    expect(harness.calls).toEqual([]);
+  });
+
+  it('writes the classified content, opens the PR, runs the gate, and only then submits exactly one approving review', async () => {
+    const harness = buildApplyHarness({ lintGatePasses: true });
+    const combinations = [
+      buildCombination(),
+      buildCombination({
+        namespace: 'commons',
+        language: 'ko_KR',
+        absoluteFilePath: '/base/locales/ko_KR/commons.json',
+        changedKeys: ['c2'],
+        content: { c1: 'a', c2: 'CHANGED' },
+      }),
+    ];
+
+    const result = await applyTranslationOnlyChanges({
+      combinations,
+      writeLocaleFile: harness.writeLocaleFile,
+      prPublisher: harness.prPublisher,
+      approvalReviewer: harness.approvalReviewer,
+      lintGate: harness.lintGate,
+    });
+
+    expect(result).toEqual({
+      ok: true,
+      outcome: 'approved',
+      pullRequest: { number: EXISTING_PR_NUMBER },
+      created: true,
+    });
+
+    // The whole point of the auto-merge path: the approving review is what
+    // satisfies mergify's `#approved-reviews-by >= 1`, so it must come after
+    // a passing gate run, which in turn must see the written files.
+    expect(harness.calls).toEqual([
+      'write:/base/locales/ja_JP/admin.json',
+      'write:/base/locales/ko_KR/commons.json',
+      'publishBranch',
+      'findExistingPr',
+      'createPr',
+      'lintGate',
+      'submitApprovalReview',
+    ]);
+    expect(harness.approvalReviewer.submitApprovalReview).toHaveBeenCalledTimes(
+      1,
+    );
+
+    // Each combination's own exported content is written to the exact file it
+    // was classified against, serialized the way the repository's locale
+    // files are formatted (2-space indent, trailing newline).
+    expect(harness.writeLocaleFile).toHaveBeenCalledWith(
+      '/base/locales/ja_JP/admin.json',
+      `${JSON.stringify({ k1: 'CHANGED', k2: 'v2' }, null, 2)}\n`,
+    );
+    expect(harness.writeLocaleFile).toHaveBeenCalledWith(
+      '/base/locales/ko_KR/commons.json',
+      `${JSON.stringify({ c1: 'a', c2: 'CHANGED' }, null, 2)}\n`,
+    );
+
+    // The approval goes to the PR that was just opened for this branch.
+    expect(harness.approvalReviewer.submitApprovalReview).toHaveBeenCalledWith({
+      pullRequest: { number: EXISTING_PR_NUMBER },
+    });
+    expect(harness.prPublisher.createPr).toHaveBeenCalledWith(
+      expect.objectContaining({ headBranch: TRANSLATION_ONLY_BRANCH }),
+    );
+
+    // The branch carries exactly this group's files and nothing else. The
+    // structural group is classified against the same checkout, so a
+    // publisher told to stage the whole working tree would sweep a structural
+    // change into this no-human-review pull request -- the one thing
+    // design.md's PR-granularity invariant forbids.
+    expect(harness.prPublisher.publishBranch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        headBranch: TRANSLATION_ONLY_BRANCH,
+        filePaths: [
+          '/base/locales/ja_JP/admin.json',
+          '/base/locales/ko_KR/commons.json',
+        ],
+      }),
+    );
+  });
+
+  it('submits no approving review at all and surfaces the failure when the i18n lint gate fails', async () => {
+    // Requirement 3.3 / 3.4: a failing i18n CI gate must stop the change from
+    // reaching the default branch. Since the only thing moving this PR into
+    // the merge queue is the bot's approving review, "not approving" is
+    // exactly what blocks it -- so this test fails loudly if the approval
+    // collaborator is touched even once on the failing path.
+    const harness = buildApplyHarness({ lintGatePasses: false });
+
+    const result = await applyTranslationOnlyChanges({
+      combinations: [buildCombination()],
+      writeLocaleFile: harness.writeLocaleFile,
+      prPublisher: harness.prPublisher,
+      approvalReviewer: harness.approvalReviewer,
+      lintGate: harness.lintGate,
+    });
+
+    expect(harness.approvalReviewer.submitApprovalReview).toHaveBeenCalledTimes(
+      0,
+    );
+    expect(harness.calls).not.toContain('submitApprovalReview');
+
+    expect(result).toEqual({
+      ok: false,
+      reason: 'lint_gate_failed',
+      pullRequest: { number: EXISTING_PR_NUMBER },
+      message: 'lint:i18n failed: 3 missing keys in ko_KR/commons.json',
+    });
+
+    // The PR is deliberately left open with its failing check on it
+    // (design.md Error Handling: 「自動反映経路であってもPRを自動マージせず、
+    // 失敗したチェックとして残す」), so the maintainer can see what failed.
+    expect(harness.prPublisher.createPr).toHaveBeenCalledTimes(1);
+  });
+
+  it('updates the already-open PR instead of opening a second one when run twice on the same diff', async () => {
+    const harness = buildApplyHarness({ lintGatePasses: true });
+    const combinations = [buildCombination()];
+    const runOnce = () =>
+      applyTranslationOnlyChanges({
+        combinations,
+        writeLocaleFile: harness.writeLocaleFile,
+        prPublisher: harness.prPublisher,
+        approvalReviewer: harness.approvalReviewer,
+        lintGate: harness.lintGate,
+      });
+
+    const firstResult = await runOnce();
+    const secondResult = await runOnce();
+
+    expect(firstResult).toMatchObject({ ok: true, created: true });
+    expect(secondResult).toMatchObject({ ok: true, created: false });
+
+    // Exactly one PR exists across both runs -- the second run pushed onto the
+    // same branch and updated the PR the first run opened.
+    expect(harness.prPublisher.createPr).toHaveBeenCalledTimes(1);
+    expect(harness.prPublisher.updatePr).toHaveBeenCalledTimes(1);
+    expect(harness.prPublisher.updatePr).toHaveBeenCalledWith(
+      expect.objectContaining({
+        pullRequest: { number: EXISTING_PR_NUMBER },
+      }),
+    );
+    expect(harness.prPublisher.publishBranch).toHaveBeenCalledTimes(2);
   });
 });
