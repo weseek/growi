@@ -77,6 +77,55 @@ describe('PageRedirect', () => {
     });
   });
 
+  describe('.createManyIgnoringDuplicates', () => {
+    test('creates every document when there is no collision', async () => {
+      // when:
+      await prisma.pageredirects.createManyIgnoringDuplicates([
+        { fromPath: '/org/path1', toPath: '/path1' },
+        { fromPath: '/org/path2', toPath: '/path2' },
+      ]);
+
+      // then:
+      expect(
+        await prisma.pageredirects.findFirst({
+          where: { fromPath: '/org/path1' },
+        }),
+      ).not.toBeNull();
+      expect(
+        await prisma.pageredirects.findFirst({
+          where: { fromPath: '/org/path2' },
+        }),
+      ).not.toBeNull();
+    });
+
+    test('keeps the existing document and inserts the rest when a fromPath collides', async () => {
+      // setup:
+      await prisma.pageredirects.createMany({
+        data: [{ fromPath: '/org/path1', toPath: '/original-target' }],
+      });
+
+      // when:
+      // '/org/path1' collides with the existing document above
+      await prisma.pageredirects.createManyIgnoringDuplicates([
+        { fromPath: '/org/path1', toPath: '/conflicting-target' },
+        { fromPath: '/org/path2', toPath: '/path2' },
+      ]);
+
+      // then:
+      // the pre-existing document is untouched, and the non-colliding one is created
+      expect(
+        await prisma.pageredirects.findFirst({
+          where: { fromPath: '/org/path1' },
+        }),
+      ).toMatchObject({ toPath: '/original-target' });
+      expect(
+        await prisma.pageredirects.findFirst({
+          where: { fromPath: '/org/path2' },
+        }),
+      ).not.toBeNull();
+    });
+  });
+
   describe('.retrievePageRedirectEndpoints', () => {
     test('shoud return null when data is not found', async () => {
       // setup:

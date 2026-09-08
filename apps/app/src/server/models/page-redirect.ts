@@ -58,6 +58,13 @@ function toDepthNumber(value: RawLong): number {
   return typeof value === 'number' ? value : Number(value.$numberLong);
 }
 
+// shape of the MongoDB `insert` command response
+// (https://www.mongodb.com/docs/manual/reference/command/insert/)
+type RawInsertCommandResult = {
+  writeErrors?: { index: number; code: number; errmsg: string }[];
+};
+const MONGO_DUPLICATE_KEY_ERROR_CODE = 11000;
+
 export const extension = Prisma.defineExtension((client) => {
   return client.$extends({
     result: {
@@ -171,36 +178,40 @@ export const extension = Prisma.defineExtension((client) => {
           await context.deleteMany({ where: { id: { in: idsToRemove } } });
         },
 
-        // Deliberately one `create` per document instead of a single
-        // `createMany`: callers insert page-redirect rows for a batch of
-        // renamed/deleted pages and must tolerate an individual
-        // fromPath-uniqueness collision without losing the rest of the batch
-        // (mirrors the pre-migration `bulkWrite` duplicate-tolerant intent
-        // for this collection). Prisma's MongoDB connector has no
-        // `skipDuplicates` on `createMany`, so `Promise.allSettled` + a
-        // P2002-only tolerance check is used instead (same pattern as
-        // `pagetagrelations`/`duplicateTags` in service/page/index.ts).
+        // Callers insert page-redirect rows for a batch of renamed/deleted
+        // pages (up to ~100 at a time) and must tolerate an individual
+        // fromPath-uniqueness collision without losing the rest of the
+        // batch (mirrors the pre-migration `bulkWrite` duplicate-tolerant
+        // intent for this collection). Prisma's MongoDB connector has no
+        // `skipDuplicates` on `createMany`, and issuing one `create()` per
+        // document via `Promise.allSettled` would fire the whole batch as
+        // concurrent individual writes (up to ~5,000 round trips for a
+        // 5,000-page subtree, vs. ~50 before the Prisma migration), risking
+        // connection-pool exhaustion. Instead, send the whole batch as a
+        // single raw MongoDB `insert` command with `ordered: false`, which
+        // keeps it to one round trip and lets MongoDB itself skip duplicate
+        // keys while inserting the rest (same pattern as the raw `bulkWrite`
+        // in migrations/20220131001218-*.js, and the `$runCommandRaw` usage
+        // in bookmark-folder.ts).
         async createManyIgnoringDuplicates(
           documents: IPageRedirect[],
         ): Promise<void> {
-          const context =
-            Prisma.getExtensionContext<typeof prisma.pageredirects>(this);
+          if (documents.length === 0) {
+            return;
+          }
 
-          const results = await Promise.allSettled(
-            documents.map((data) => context.create({ data })),
-          );
+          const result = (await client.$runCommandRaw({
+            insert: 'pageredirects',
+            documents: documents.map((data) => ({ ...data, __v: 0 })),
+            ordered: false,
+          })) as unknown as RawInsertCommandResult;
 
-          const unexpectedFailure = results.find(
-            (result): result is PromiseRejectedResult =>
-              result.status === 'rejected' &&
-              !(
-                result.reason instanceof Prisma.PrismaClientKnownRequestError &&
-                result.reason.code === 'P2002'
-              ),
+          const unexpectedFailure = result.writeErrors?.find(
+            (writeError) => writeError.code !== MONGO_DUPLICATE_KEY_ERROR_CODE,
           );
           if (unexpectedFailure != null) {
             throw new Error(
-              `Failed to create PageRedirect documents: ${unexpectedFailure.reason}`,
+              `Failed to create PageRedirect documents: ${unexpectedFailure.errmsg}`,
             );
           }
         },
