@@ -42,6 +42,7 @@ import './notification/models/chat-notification-outbox';
 import './settings/models/chat-channel-permission';
 
 import { createAccountLinkRouter } from './account-link/account-link-router';
+import { createManageAccountLinksRouter } from './account-link/manage-account-links-router';
 import { createPeerRouter } from './peer/peer-router';
 
 /**
@@ -62,5 +63,10 @@ export const createChatIntegrationRouter = (crowi: Crowi): express.Router => {
   // "同じ feature の中に管理画面が叩く口もあり、そちらは普通の JSON API
   // である").
   router.use('/account-link', createAccountLinkRouter(crowi));
+  // The personal-settings "my chat account links" tab (task 6.2, Requirement
+  // 7.7) -- its own prefix, separate from `/account-link` above, so its
+  // literal `/` and `/:id` routes never collide with that router's `/:token`
+  // param route.
+  router.use('/my-account-links', createManageAccountLinksRouter(crowi));
   return router;
 };
