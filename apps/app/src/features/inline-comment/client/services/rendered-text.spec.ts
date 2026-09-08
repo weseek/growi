@@ -17,6 +17,20 @@ const createSettledContainer = (): HTMLElement => {
   return container;
 };
 
+/**
+ * Mirrors a heading's conditionally-rendered edit button (Header.tsx's `EditLink`):
+ * an icon `<span>` whose text content is the icon's ligature name, wrapped in
+ * `aria-hidden="true"` so it does not leak into the read-aloud/body text.
+ */
+const createContainerWithHiddenIcon = (): HTMLElement => {
+  const container = document.createElement('div');
+  container.innerHTML = `
+    <h2>Section Title<span aria-hidden="true" class="material-symbols-outlined">edit_square</span></h2>
+    <p>With more content below.</p>
+  `;
+  return container;
+};
+
 describe('renderedTextOf', () => {
   it('excludes the text content of a .katex subtree, including its nested katex-mathml/katex-html children', () => {
     const container = createSettledContainer();
@@ -50,6 +64,16 @@ describe('renderedTextOf', () => {
 
     expect(text).toContain('Before math');
     expect(text).toContain('after math.');
+  });
+
+  it('excludes the text content of an aria-hidden="true" subtree, the same as a .katex subtree', () => {
+    const container = createContainerWithHiddenIcon();
+
+    const { text } = renderedTextOf(container);
+
+    expect(text).not.toContain('edit_square');
+    expect(text).toContain('Section Title');
+    expect(text).toContain('With more content below.');
   });
 
   describe('resolveDomPosition', () => {

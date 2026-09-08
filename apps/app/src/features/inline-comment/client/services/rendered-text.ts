@@ -4,9 +4,10 @@
  */
 export interface RenderedText {
   /**
-   * Plain text excluding `.katex` subtrees. lsx/drawio/mermaid output IS included:
-   * this is meant to be built after those widgets have settled, so their content is
-   * already resolved and part of the normal DOM text.
+   * Plain text excluding `.katex` subtrees and any subtree rooted at an element with
+   * `aria-hidden="true"`. lsx/drawio/mermaid output IS included: this is meant to be
+   * built after those widgets have settled, so their content is already resolved and
+   * part of the normal DOM text.
    */
   text: string;
   /** Maps an offset into `text` back to a DOM position, or `null` if out of bounds. */
@@ -23,15 +24,34 @@ interface TextNodeSpan {
 }
 
 /**
- * KaTeX renders both an accessibility-only `.katex-mathml` tree and a visual
- * `.katex-html` tree under `.katex`. Reading `textContent` naively would duplicate
- * (and garble) the formula text, so an entire `.katex` subtree is skipped. No other
- * element is excluded: code blocks render synchronously, and lsx/drawio/mermaid are
- * assumed already settled by the time this is called.
+ * An element is excluded from the extracted plain text when either:
+ * - it is a KaTeX root (`.katex`): KaTeX renders both an accessibility-only
+ *   `.katex-mathml` tree and a visual `.katex-html` tree underneath it, and reading
+ *   `textContent` naively would duplicate (and garble) the formula text; or
+ * - it carries `aria-hidden="true"`: a declarative marker meaning "decorative, not
+ *   part of the content" (e.g. a heading's edit-button icon span, which renders its
+ *   Material Symbols ligature name as literal text and whose visibility toggles with
+ *   unrelated client-side state such as collaborative-editing load progress).
+ *
+ * The exclusion knowledge intentionally lives here rather than being expressed as a
+ * hardcoded list of element/selector names: any component can opt an element out of
+ * the extracted text merely by adding the standard `aria-hidden="true"` attribute,
+ * with no dependency on this module. The check looks only at the element itself, not
+ * its ancestors — the marker is expected to be set directly on the element to exclude.
+ *
+ * No other element is excluded: code blocks render synchronously, and lsx/drawio/mermaid
+ * are assumed already settled by the time this is called.
  */
-const isKatexRoot = (node: Node): boolean =>
-  node.nodeType === Node.ELEMENT_NODE &&
-  (node as Element).classList.contains('katex');
+const isExcludedRoot = (node: Node): boolean => {
+  if (node.nodeType !== Node.ELEMENT_NODE) {
+    return false;
+  }
+  const element = node as Element;
+  return (
+    element.classList.contains('katex') ||
+    element.getAttribute('aria-hidden') === 'true'
+  );
+};
 
 /**
  * Walks the DOM manually (rather than via `TreeWalker`) so subtree skipping and text
@@ -41,7 +61,7 @@ const walkTextNodes = (
   node: Node,
   onTextNode: (textNode: Text) => void,
 ): void => {
-  if (isKatexRoot(node)) {
+  if (isExcludedRoot(node)) {
     return;
   }
   if (node.nodeType === Node.TEXT_NODE) {
