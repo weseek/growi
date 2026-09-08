@@ -438,9 +438,11 @@ export interface NotificationDispatcher {
    * 行単位なので、複数台が同時に走っても同じ通知を 2 回送らない。
    *
    * **奪った印には期限を付ける（`claimedAt`）。** 期限が無いと、送っている途中で
-   * プロセスが落ちた行が `sending` のまま**誰のものでもなくなり**、やり直しの対象にも
+   * プロセスが落ちた行が `claimed` のまま**誰のものでもなくなり**、やり直しの対象にも
    * `given-up` にもならない。要件 2.4 が最も働いてほしい場面で働かなくなる。
-   * 奪う条件は「`pending` の行」または「`sending` だが `claimedAt` が既定 5 分より古い行」。
+   * 奪う条件は「`pending` の行」または「`claimed` だが `claimedAt` が既定 5 分より古い行」。
+   * （`state` の実際の値は task 1.2 のスキーマが定める `'pending' | 'claimed' | 'sent' | 'given-up'`
+   * であり、`claimed` が「奪った」状態を表す。以前この文書で `sending` と書いていたのは誤り）
    */
   drain(now: Date): Promise<{ sent: number; failed: number; givenUp: number }>;
 }

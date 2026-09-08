@@ -39,9 +39,29 @@ export interface IChatNotificationOutbox {
    */
   containsRestrictedPage: boolean;
   state: ChatNotificationOutboxState;
+  /**
+   * Number of delivery attempts that count toward giving up. A round whose
+   * only failures were `inventory-not-ready` does NOT increment this
+   * (design.md "`inventory-not-ready` は諦めの回数に数えない" -- the proxy
+   * merely has not fetched its channel list yet, which fixes itself in about
+   * ten minutes; counting it would drop a just-paired relation's very first
+   * notifications into `given-up` after a handful of minutes).
+   */
   attempts: number;
   /** Set when `drain` claims this row for delivery; null while `pending`. */
   claimedAt: Date | null;
+  /**
+   * Earliest instant at which a `pending` row may be claimed again -- the
+   * "間隔を空けてやり直す" half of design.md's retry rule. Set to the row's
+   * creation time on `enqueue` (so a fresh row is claimable immediately) and
+   * pushed forward by the backoff after every failed round.
+   *
+   * A separate field rather than reusing `claimedAt`: `claimedAt` answers
+   * "when did somebody take this row" (what the 5-minute stale-claim
+   * recovery reads), and overloading it would make a backing-off row look
+   * like a crashed one.
+   */
+  nextAttemptAt: Date;
   /**
    * The proxy's `NotificationResult` written back after a delivery attempt.
    * Opaque at the schema level -- shape is owned by `@growi/chat`'s
@@ -103,6 +123,7 @@ const chatNotificationOutboxSchema = new Schema<
     },
     attempts: { type: Number, required: true, default: 0 },
     claimedAt: { type: Date, default: null },
+    nextAttemptAt: { type: Date, required: true, default: () => new Date() },
     result: { type: Schema.Types.Mixed, default: null },
     createdAt: { type: Date, required: true, default: () => new Date() },
   },
@@ -117,6 +138,13 @@ const chatNotificationOutboxSchema = new Schema<
 // write-back-by-request lookup below, so it is a separate index rather than
 // a single combined one (design.md is explicit that these are two indexes).
 chatNotificationOutboxSchema.index({ state: 1, claimedAt: 1 });
+
+// The other half of the same claim: `drain`'s filter is an `$or` of "a
+// `pending` row whose backoff has elapsed" and "a `claimed` row whose claim
+// went stale", and MongoDB picks an index per `$or` branch. The index above
+// serves the stale-claim branch; this one serves the pending branch, which is
+// the one every ordinary tick uses.
+chatNotificationOutboxSchema.index({ state: 1, nextAttemptAt: 1 });
 
 // The proxy's result write-back looks up the row by (relationId, requestId).
 chatNotificationOutboxSchema.index({ relationId: 1, requestId: 1 });
