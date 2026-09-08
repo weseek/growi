@@ -10,7 +10,7 @@
   - _Requirements: 2.1, 6.1_
   - _Boundary: SyncConfig_
 
-- [ ] 1.2 (P) POEditor API v2 の呼び出しを薄いクライアントとして実装する
+- [x] 1.2 (P) POEditor API v2 の呼び出しを薄いクライアントとして実装する
   - upload・export・languages/list の3操作を、成功時の戻り値とエラー種別（レート制限・not found・不正リクエスト・通信エラー）を区別する形で実装する
   - upload呼び出し1回ごとに20秒以上の間隔を空ける仕組みを組み込む
   - APIトークンは呼び出し元から注入された値を使い、環境変数を直接読まない
