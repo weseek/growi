@@ -4,13 +4,13 @@
 //
 // This router's own job stops at wiring: attach `signatureGuard(op)`
 // (task 3.2) in front of each of the 5 signed ops, and `pairingEndpoint`
-// (task 3.4) in front of the one unsigned op. Three of the five signed
-// handlers are still placeholders -- their business logic belongs to later
-// tasks (`key-register-to-growi`/`key-revoke-to-growi`: 7.2,
-// `account-link-start`: 6.1) -- see each handler's own comment for why its
-// particular placeholder shape was chosen. `command` (task 5.1) and
-// `settings-pull` (task 3.5's own text: "押し込みが届かなかったときに proxy
-// が取りに来る保険。版と設定を返す") both have real behavior. `command`
+// (task 3.4) in front of the one unsigned op. Two of the five signed
+// handlers are still placeholders -- their business logic belongs to a
+// later task (`key-register-to-growi`/`key-revoke-to-growi`: 7.2) -- see
+// each handler's own comment for why its particular placeholder shape was
+// chosen. `command` (task 5.1), `settings-pull` (task 3.5's own text:
+// "押し込みが届かなかったときに proxy が取りに来る保険。版と設定を返す"),
+// and `account-link-start` (task 6.1) all have real behavior. `command`
 // needs a `Crowi` instance (search, ACL, app title), so `createPeerRouter`
 // now takes one and threads it through -- every other handler here still
 // ignores it.
@@ -30,11 +30,18 @@ import {
   type RelationSettings,
   type SettingsPullResponse,
 } from '@growi/chat';
+import type { IUser } from '@growi/core';
 import type { RequestHandler, Router } from 'express';
 import express from 'express';
+import mongoose from 'mongoose';
 
 import type Crowi from '~/server/crowi';
 
+import {
+  buildAccountLinkUrl,
+  findOrCreatePendingAccountLinkOrder,
+} from '../account-link/create-link-order';
+import { ChatAccountLink } from '../account-link/models/chat-account-link';
 import { createCommandEndpoint } from '../command/command-endpoint';
 import { ChatRelation } from '../models/chat-relation';
 import { pairingEndpoint } from '../pairing/pairing-endpoint';
@@ -119,17 +126,47 @@ const keyOperationPlaceholderHandler: RequestHandler = (_req, res) => {
 };
 
 /**
- * Placeholder for `account-link-start` (real behavior: task 6.1).
- * `already-linked` with an empty `growiUserName` is chosen over
- * `link-issued` deliberately: a `link-issued` placeholder would have to
- * fabricate a `linkUrl`/`expiresAt` that looks like a real, followable link
- * before any linking flow exists, which is a more actively misleading
- * placeholder than an obviously-empty display name.
+ * `account-link-start` -- real behavior as of task 6.1. Reuses task 5.1's
+ * `findOrCreatePendingAccountLinkOrder`/`buildAccountLinkUrl`
+ * (`../account-link/create-link-order.ts`) rather than re-deriving the
+ * "reuse a still-pending order, don't multiply one-time links on retry"
+ * logic here (tasks.md Implementation Notes, task 5.1's entry: "task 6.1
+ * はこのファイルを再利用すること。同じロジックを書き直さない").
+ *
+ * The one piece of behavior this handler adds on top of that helper: if the
+ * chat account is ALREADY linked to a GROWI user for this relation, answer
+ * `already-linked` with that user's username instead of issuing a
+ * (pointless) new order -- `AccountLinkStartResponse`'s own vocabulary
+ * requires this distinction, and `findOrCreatePendingAccountLinkOrder` has
+ * no reason to know about `chat_account_links` at all (it only owns orders).
  */
-const accountLinkStartPlaceholderHandler: RequestHandler = (_req, res) => {
+const accountLinkStartHandler: RequestHandler = async (req, res) => {
+  const { chatPeer } = req as VerifiedPeerRequest<
+    typeof OP_NAMES.accountLinkStart
+  >;
+  const { relationId, actor } = chatPeer.body;
+
+  const existingLink = await ChatAccountLink.findOne({
+    relationId,
+    platform: actor.platform,
+    accountId: actor.accountId,
+  });
+  if (existingLink != null) {
+    const User = mongoose.model<IUser>('User');
+    const user = await User.findById(existingLink.userId);
+    const body: AccountLinkStartResponse = {
+      status: 'already-linked',
+      growiUserName: user?.username ?? '',
+    };
+    res.status(200).json(body);
+    return;
+  }
+
+  const order = await findOrCreatePendingAccountLinkOrder(relationId, actor);
   const body: AccountLinkStartResponse = {
-    status: 'already-linked',
-    growiUserName: '',
+    status: 'link-issued',
+    linkUrl: buildAccountLinkUrl(order.token),
+    expiresAt: order.expiredAt.toISOString(),
   };
   res.status(200).json(body);
 };
@@ -207,7 +244,7 @@ export const createPeerRouter = (crowi: Crowi): Router => {
   router.post(
     routerPathFor(OP_NAMES.accountLinkStart),
     signatureGuard(OP_NAMES.accountLinkStart),
-    accountLinkStartPlaceholderHandler,
+    accountLinkStartHandler,
   );
   // No signatureGuard: the one op design.md marks "署名: 不要" (op-names.ts's
   // own comment on why this path has no OP_ENDPOINTS row either).

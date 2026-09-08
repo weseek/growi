@@ -14,6 +14,7 @@ import express from 'express';
 import type { MongoMemoryServer } from 'mongodb-memory-server-core';
 import mongoose from 'mongoose';
 import request from 'supertest';
+import { vi } from 'vitest';
 import { mock } from 'vitest-mock-extended';
 
 import {
@@ -22,7 +23,11 @@ import {
 } from '^/test/setup/mongo/self-contained-connection';
 
 import type Crowi from '~/server/crowi';
+import userModelFactory from '~/server/models/user';
+import { growiInfoService } from '~/server/service/growi-info';
 
+import { ChatAccountLink } from '../account-link/models/chat-account-link';
+import { ChatAccountLinkOrder } from '../account-link/models/chat-account-link-order';
 import { CHAT_INTEGRATION_PEER_PREFIX } from '../consts';
 import { buildHelpContent } from '../content';
 import { createChatIntegrationRouter } from '../index';
@@ -177,6 +182,10 @@ describe('peer-router (task 3.5 -- the 6 entry points, wired for real)', () => {
       'growi_test_unit_peer_router',
     ));
     await ChatRequestNonce.init();
+    // The User model is normally registered at boot by crowi; the factory
+    // accepts a null crowi and only touches crowi from functions this spec
+    // never calls (see `resolve-actor.spec.ts`'s identical use).
+    userModelFactory(null);
   });
 
   beforeEach(async () => {
@@ -189,6 +198,17 @@ describe('peer-router (task 3.5 -- the 6 entry points, wired for real)', () => {
     await ChatPendingPairing.deleteMany({});
     await ChatChallengeAttempt.deleteMany({});
     await ChatProcessedRequest.deleteMany({});
+    await ChatAccountLink.deleteMany({});
+    await ChatAccountLinkOrder.deleteMany({});
+
+    // `accountLinkStart`'s real handler (task 6.1) calls
+    // `buildAccountLinkUrl` -> `growiInfoService.getSiteUrl()`, which reads
+    // `configManager` -- unloaded in this standalone test app (no full Crowi
+    // boot). Stubbed the same way `buildMockCrowi()` stubs the rest of
+    // `Crowi`'s services this file has no business asserting on.
+    vi.spyOn(growiInfoService, 'getSiteUrl').mockReturnValue(
+      'https://growi.example.test',
+    );
 
     await storePeerKey(
       { relationId: RELATION_ID, keyId: KEY_ID },
@@ -209,6 +229,7 @@ describe('peer-router (task 3.5 -- the 6 entry points, wired for real)', () => {
 
   afterEach(() => {
     process.env = { ...previousEnv };
+    vi.restoreAllMocks();
   });
 
   afterAll(async () => {
@@ -319,6 +340,64 @@ describe('peer-router (task 3.5 -- the 6 entry points, wired for real)', () => {
         kind: RESPONSE_KINDS.help,
         commands: buildHelpContent(),
       });
+    });
+  });
+
+  describe('account-link-start (task 6.1 -- real behavior, not a stub)', () => {
+    it('issues a one-time link, reusing task 5.1’s findOrCreatePendingAccountLinkOrder on a second call', async () => {
+      const first = await signedPost(
+        app,
+        pathFor('accountLinkStart'),
+        accountLinkStartBody,
+      );
+      expect(first.status).toBe(200);
+      expect(first.body.status).toBe('link-issued');
+      expect(typeof first.body.linkUrl).toBe('string');
+      expect(await ChatAccountLinkOrder.countDocuments({})).toBe(1);
+
+      // A second start for the same actor reuses the still-pending order --
+      // it must NOT multiply one-time links (design.md's dedup rule, and
+      // task 5.1's `findOrCreatePendingAccountLinkOrder`, reused unmodified).
+      const second = await signedPost(
+        app,
+        pathFor('accountLinkStart'),
+        accountLinkStartBody,
+      );
+      expect(second.status).toBe(200);
+      expect(second.body.linkUrl).toBe(first.body.linkUrl);
+      expect(await ChatAccountLinkOrder.countDocuments({})).toBe(1);
+    });
+
+    it('answers already-linked with the linked user’s username when the chat account is already linked', async () => {
+      const linkedUser = await mongoose.model('User').create({
+        name: 'Linked User',
+        username: 'linked-user',
+        email: 'linked-user@example.test',
+      });
+
+      await ChatAccountLink.create({
+        relationId: RELATION_ID,
+        userId: linkedUser._id,
+        platform: 'slack',
+        accountId: 'U0001',
+        linkedAt: new Date(),
+      });
+
+      const response = await signedPost(
+        app,
+        pathFor('accountLinkStart'),
+        accountLinkStartBody,
+      );
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
+        status: 'already-linked',
+        growiUserName: 'linked-user',
+      });
+      // No pending order should be created when already linked.
+      expect(await ChatAccountLinkOrder.countDocuments({})).toBe(0);
+
+      await mongoose.model('User').deleteOne({ _id: linkedUser._id });
     });
   });
 

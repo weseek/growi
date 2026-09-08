@@ -41,6 +41,7 @@ import './pairing/models/chat-challenge-attempt';
 import './notification/models/chat-notification-outbox';
 import './settings/models/chat-channel-permission';
 
+import { createAccountLinkRouter } from './account-link/account-link-router';
 import { createPeerRouter } from './peer/peer-router';
 
 /**
@@ -56,5 +57,10 @@ export const createChatIntegrationRouter = (crowi: Crowi): express.Router => {
   // feature's own mount point (`/chat-integration`, registered once in
   // `server/routes/apiv3/index.js`), so no extra prefix is added here.
   router.use(createPeerRouter(crowi));
+  // The browser-facing approval screen's API (task 6.1) -- ordinary
+  // logged-in JSON requests, mounted separately from `/peer/` (design.md:
+  // "同じ feature の中に管理画面が叩く口もあり、そちらは普通の JSON API
+  // である").
+  router.use('/account-link', createAccountLinkRouter(crowi));
   return router;
 };
