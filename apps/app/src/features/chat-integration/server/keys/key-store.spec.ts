@@ -9,7 +9,10 @@ import {
 import type { ChatKeyEncryptionEnv } from './key-encryption';
 import { encryptChatKeyForStorage } from './key-encryption';
 import {
+  registerPeerKey,
   resolvePeerKey,
+  revokeOwnKey,
+  revokePeerKey,
   signWithOwnKey,
   storeOwnKey,
   storePeerKey,
@@ -257,6 +260,263 @@ describe('key-store', () => {
           expiresInSec: 60,
         }),
       ).rejects.toThrow();
+    });
+  });
+
+  describe('own-key rotation (task 7.2, Requirement 10.5)', () => {
+    it('keeps the old own key valid after a new one is stored -- both are simultaneously usable', async () => {
+      const relationId = 'relation-rotate';
+      const oldKeyId = 'own-key-old';
+      const newKeyId = 'own-key-new';
+      const oldPair = generateKeyPairSync('ed25519');
+      const newPair = generateKeyPairSync('ed25519');
+
+      await storeOwnKey(
+        { relationId, keyId: oldKeyId },
+        oldPair.privateKey,
+        past,
+      );
+      // Rotation step 1: add the new key WITHOUT touching the old one.
+      await storeOwnKey(
+        { relationId, keyId: newKeyId },
+        newPair.privateKey,
+        past,
+      );
+
+      const rows = await ChatIntegrationKey.find({
+        relationId,
+        side: 'own',
+      }).lean();
+      expect(rows).toHaveLength(2);
+      // Both rows are currently valid: neither is revoked.
+      expect(rows.every((row) => row.revokedAt === null)).toBe(true);
+      expect(rows.map((row) => row.keyId).sort()).toEqual(
+        [oldKeyId, newKeyId].sort(),
+      );
+    });
+
+    it('revokeOwnKey closes only the targeted key, leaving a different key of the same relation valid', async () => {
+      const relationId = 'relation-rotate-2';
+      const oldKeyId = 'own-key-old-2';
+      const newKeyId = 'own-key-new-2';
+      const oldPair = generateKeyPairSync('ed25519');
+      const newPair = generateKeyPairSync('ed25519');
+
+      await storeOwnKey(
+        { relationId, keyId: oldKeyId },
+        oldPair.privateKey,
+        past,
+      );
+      await storeOwnKey(
+        { relationId, keyId: newKeyId },
+        newPair.privateKey,
+        past,
+      );
+
+      // Rotation step 2 (after the overlap period): revoke the OLD key only.
+      await revokeOwnKey({ relationId, keyId: oldKeyId });
+
+      const oldRow = await ChatIntegrationKey.findOne({
+        relationId,
+        side: 'own',
+        keyId: oldKeyId,
+      }).lean();
+      const newRow = await ChatIntegrationKey.findOne({
+        relationId,
+        side: 'own',
+        keyId: newKeyId,
+      }).lean();
+      expect(oldRow?.revokedAt).not.toBeNull();
+      expect(newRow?.revokedAt).toBeNull();
+
+      // Observable end-to-end proof: signing now only ever uses a
+      // currently-usable key, and the surviving key still verifies.
+      const result = await signWithOwnKey({
+        relationId,
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: new TextEncoder().encode('{}'),
+        expiresInSec: 60,
+      });
+      const { verify } = await import('@growi/chat/server');
+      const verifyResult = await verify({
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          ...result.headers,
+        },
+        body: new TextEncoder().encode('{}'),
+        resolvePublicKey: async () => newPair.publicKey,
+        consumeNonce: async () => true,
+      });
+      expect(verifyResult.ok).toBe(true);
+    });
+
+    it('revokeOwnKey is a no-op when called again for an already-revoked key (does not move revokedAt)', async () => {
+      const relationId = 'relation-rotate-3';
+      const keyId = 'own-key-3';
+      const { privateKey } = generateKeyPairSync('ed25519');
+      await storeOwnKey({ relationId, keyId }, privateKey, past);
+
+      const firstRevokeAt = new Date();
+      await revokeOwnKey({ relationId, keyId }, firstRevokeAt);
+      const afterFirst = await ChatIntegrationKey.findOne({
+        relationId,
+        side: 'own',
+        keyId,
+      }).lean();
+
+      const secondRevokeAt = new Date(firstRevokeAt.getTime() + 60_000);
+      await revokeOwnKey({ relationId, keyId }, secondRevokeAt);
+      const afterSecond = await ChatIntegrationKey.findOne({
+        relationId,
+        side: 'own',
+        keyId,
+      }).lean();
+
+      expect(afterSecond?.revokedAt?.getTime()).toBe(
+        afterFirst?.revokedAt?.getTime(),
+      );
+    });
+  });
+
+  describe('registerPeerKey (task 7.2, Requirement 10.5 -- `key-register-to-growi`)', () => {
+    it('stores a new peer key and reports success', async () => {
+      const relationId = 'relation-register-1';
+      const { publicKey } = generateKeyPairSync('ed25519');
+      const key = {
+        keyId: 'peer-key-new',
+        publicKeyJwk: publicKey.export({ format: 'jwk' }),
+        validFrom: past.toISOString(),
+      };
+
+      const result = await registerPeerKey(relationId, key);
+
+      expect(result).toEqual({ status: 'ok' });
+      const resolved = await resolvePeerKey({ relationId, keyId: key.keyId });
+      expect(resolved).not.toBeNull();
+    });
+
+    it('registering the SAME key a second time is a no-op success, not an error', async () => {
+      const relationId = 'relation-register-2';
+      const { publicKey } = generateKeyPairSync('ed25519');
+      const key = {
+        keyId: 'peer-key-dup',
+        publicKeyJwk: publicKey.export({ format: 'jwk' }),
+        validFrom: past.toISOString(),
+      };
+
+      const first = await registerPeerKey(relationId, key);
+      const second = await registerPeerKey(relationId, key);
+
+      expect(first).toEqual({ status: 'ok' });
+      expect(second).toEqual({ status: 'ok' });
+      const rows = await ChatIntegrationKey.find({
+        relationId,
+        side: 'peer',
+        keyId: key.keyId,
+      }).lean();
+      expect(rows).toHaveLength(1);
+    });
+  });
+
+  describe('revokePeerKey (task 7.2, Requirement 10.5, 10.6 -- `key-revoke-to-growi`)', () => {
+    it('revokes one of two valid peer keys and leaves the other valid', async () => {
+      const relationId = 'relation-revoke-1';
+      const keyA = generateKeyPairSync('ed25519');
+      const keyB = generateKeyPairSync('ed25519');
+      await storePeerKey(
+        { relationId, keyId: 'peer-a' },
+        keyA.publicKey.export({ format: 'jwk' }),
+        past,
+      );
+      await storePeerKey(
+        { relationId, keyId: 'peer-b' },
+        keyB.publicKey.export({ format: 'jwk' }),
+        past,
+      );
+
+      const result = await revokePeerKey(relationId, 'peer-a');
+
+      expect(result).toEqual({ status: 'ok' });
+      expect(await resolvePeerKey({ relationId, keyId: 'peer-a' })).toBeNull();
+      expect(
+        await resolvePeerKey({ relationId, keyId: 'peer-b' }),
+      ).not.toBeNull();
+    });
+
+    it('refuses to revoke the LAST valid peer key with would-leave-no-valid-key, and the key stays valid', async () => {
+      const relationId = 'relation-revoke-2';
+      const { publicKey } = generateKeyPairSync('ed25519');
+      await storePeerKey(
+        { relationId, keyId: 'peer-only' },
+        publicKey.export({ format: 'jwk' }),
+        past,
+      );
+
+      const result = await revokePeerKey(relationId, 'peer-only');
+
+      expect(result).toEqual({
+        status: 'rejected',
+        reason: 'would-leave-no-valid-key',
+      });
+      expect(
+        await resolvePeerKey({ relationId, keyId: 'peer-only' }),
+      ).not.toBeNull();
+    });
+
+    it('revoking an ALREADY-revoked key is a no-op success, not an error, and does not move revokedAt', async () => {
+      const relationId = 'relation-revoke-3';
+      const { publicKey } = generateKeyPairSync('ed25519');
+      // Two keys so revoking one never trips would-leave-no-valid-key.
+      await storePeerKey(
+        { relationId, keyId: 'peer-standby' },
+        publicKey.export({ format: 'jwk' }),
+        past,
+      );
+      const { publicKey: targetPublicKey } = generateKeyPairSync('ed25519');
+      await storePeerKey(
+        { relationId, keyId: 'peer-target' },
+        targetPublicKey.export({ format: 'jwk' }),
+        past,
+      );
+
+      const firstRevokeAt = new Date();
+      const first = await revokePeerKey(
+        relationId,
+        'peer-target',
+        firstRevokeAt,
+      );
+      expect(first).toEqual({ status: 'ok' });
+
+      const secondRevokeAt = new Date(firstRevokeAt.getTime() + 60_000);
+      const second = await revokePeerKey(
+        relationId,
+        'peer-target',
+        secondRevokeAt,
+      );
+      expect(second).toEqual({ status: 'ok' });
+
+      const row = await ChatIntegrationKey.findOne({
+        relationId,
+        side: 'peer',
+        keyId: 'peer-target',
+      }).lean();
+      expect(row?.revokedAt?.getTime()).toBe(firstRevokeAt.getTime());
+    });
+
+    it('rejects revoking an unknown keyId with unknown-key', async () => {
+      const relationId = 'relation-revoke-4';
+      const { publicKey } = generateKeyPairSync('ed25519');
+      await storePeerKey(
+        { relationId, keyId: 'peer-exists' },
+        publicKey.export({ format: 'jwk' }),
+        past,
+      );
+
+      const result = await revokePeerKey(relationId, 'peer-does-not-exist');
+
+      expect(result).toEqual({ status: 'rejected', reason: 'unknown-key' });
     });
   });
 });

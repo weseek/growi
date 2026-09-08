@@ -31,7 +31,7 @@ import { ChatAccountLinkOrder } from '../account-link/models/chat-account-link-o
 import { CHAT_INTEGRATION_PEER_PREFIX } from '../consts';
 import { buildHelpContent } from '../content';
 import { createChatIntegrationRouter } from '../index';
-import { storePeerKey } from '../keys';
+import { resolvePeerKey, storePeerKey } from '../keys';
 import type { ChatKeyEncryptionEnv } from '../keys/key-encryption';
 import { encryptChatKeyForStorage } from '../keys/key-encryption';
 import { ChatIntegrationKey } from '../keys/models/chat-integration-key';
@@ -398,6 +398,142 @@ describe('peer-router (task 3.5 -- the 6 entry points, wired for real)', () => {
       expect(await ChatAccountLinkOrder.countDocuments({})).toBe(0);
 
       await mongoose.model('User').deleteOne({ _id: linkedUser._id });
+    });
+  });
+
+  describe('key-register-to-growi / key-revoke-to-growi (task 7.2 -- real behavior, not a placeholder)', () => {
+    /** Signs as an explicit `(keyId, privateKey)` pair, unlike `signedPost`
+     * (which always signs as `KEY_ID`/`peerKeyPair`) -- these tests need to
+     * sign as a SECOND peer key once the first one has been revoked. */
+    const signedPostAs = (
+      path: string,
+      bodyText: string,
+      keyId: string,
+      privateKey: ReturnType<typeof generateKeyPairSync>['privateKey'],
+    ) => {
+      const bytes = Buffer.from(bodyText, 'utf8');
+      const result = sign({
+        method: 'POST',
+        headers: { 'content-type': JSON_CONTENT_TYPE },
+        body: bytes,
+        key: { relationId: RELATION_ID, keyId },
+        privateKey,
+        expiresInSec: DEFAULT_EXPIRES_IN_SEC,
+      });
+      const agent = request(app).post(path);
+      agent.set('content-type', JSON_CONTENT_TYPE);
+      for (const [name, value] of Object.entries(result.headers)) {
+        agent.set(name, value);
+      }
+      return agent.send(bodyText);
+    };
+
+    const buildKeyRegisterBody = (key: {
+      readonly keyId: string;
+      readonly publicKeyJwk: unknown;
+      readonly validFrom: string;
+    }) =>
+      JSON.stringify({
+        relationId: RELATION_ID,
+        op: OP_NAMES.keyRegisterToGrowi,
+        key,
+      });
+
+    const buildKeyRevokeBody = (keyId: string) =>
+      JSON.stringify({
+        relationId: RELATION_ID,
+        op: OP_NAMES.keyRevokeToGrowi,
+        keyId,
+      });
+
+    it('registers a new peer key; the SAME registration a second time is a no-op success, not an error', async () => {
+      const newPair = generateKeyPairSync('ed25519');
+      const body = buildKeyRegisterBody({
+        keyId: 'peer-key-added',
+        publicKeyJwk: newPair.publicKey.export({ format: 'jwk' }),
+        validFrom: new Date().toISOString(),
+      });
+
+      const first = await signedPost(app, pathFor('keyRegisterToGrowi'), body);
+      expect(first.status).toBe(200);
+      expect(first.body).toEqual({ status: 'ok' });
+      expect(
+        await resolvePeerKey({
+          relationId: RELATION_ID,
+          keyId: 'peer-key-added',
+        }),
+      ).not.toBeNull();
+
+      const second = await signedPost(app, pathFor('keyRegisterToGrowi'), body);
+      expect(second.status).toBe(200);
+      expect(second.body).toEqual({ status: 'ok' });
+      expect(
+        await ChatIntegrationKey.countDocuments({
+          relationId: RELATION_ID,
+          side: 'peer',
+          keyId: 'peer-key-added',
+        }),
+      ).toBe(1);
+    });
+
+    it('revoking the LAST valid peer key is refused with would-leave-no-valid-key, and the key stays valid', async () => {
+      // beforeEach registers only KEY_ID as a peer key -- revoking it would
+      // leave zero currently-valid peer keys for this relation.
+      const body = buildKeyRevokeBody(KEY_ID);
+
+      const response = await signedPost(app, pathFor('keyRevokeToGrowi'), body);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
+        status: 'rejected',
+        reason: 'would-leave-no-valid-key',
+      });
+      expect(
+        await resolvePeerKey({ relationId: RELATION_ID, keyId: KEY_ID }),
+      ).not.toBeNull();
+    });
+
+    it('revoking one of two valid peer keys succeeds; revoking the same (now-revoked) key again is a no-op success', async () => {
+      const secondPair = generateKeyPairSync('ed25519');
+      await storePeerKey(
+        { relationId: RELATION_ID, keyId: 'peer-key-second' },
+        secondPair.publicKey.export({ format: 'jwk' }),
+      );
+
+      const revokeBody = buildKeyRevokeBody(KEY_ID);
+      const first = await signedPostAs(
+        pathFor('keyRevokeToGrowi'),
+        revokeBody,
+        KEY_ID,
+        peerKeyPair.privateKey,
+      );
+      expect(first.status).toBe(200);
+      expect(first.body).toEqual({ status: 'ok' });
+      expect(
+        await resolvePeerKey({ relationId: RELATION_ID, keyId: KEY_ID }),
+      ).toBeNull();
+
+      // KEY_ID is now revoked, so the retry must sign as the SURVIVING key.
+      const second = await signedPostAs(
+        pathFor('keyRevokeToGrowi'),
+        revokeBody,
+        'peer-key-second',
+        secondPair.privateKey,
+      );
+      expect(second.status).toBe(200);
+      expect(second.body).toEqual({ status: 'ok' });
+    });
+
+    it('rejects revoking an unknown keyId with unknown-key', async () => {
+      const body = buildKeyRevokeBody('no-such-peer-key');
+
+      const response = await signedPost(app, pathFor('keyRevokeToGrowi'), body);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
+        status: 'rejected',
+        reason: 'unknown-key',
+      });
     });
   });
 

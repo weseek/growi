@@ -19,7 +19,10 @@ export {
 } from './key-encryption';
 export type { SignWithOwnKeyParams } from './key-store';
 export {
+  registerPeerKey,
   resolvePeerKey,
+  revokeOwnKey,
+  revokePeerKey,
   signWithOwnKey,
   storeOwnKey,
   storePeerKey,

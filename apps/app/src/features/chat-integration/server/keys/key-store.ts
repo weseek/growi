@@ -31,9 +31,12 @@ import {
   type JsonWebKey,
   type KeyObject,
 } from 'node:crypto';
+import type { KeyOperationResult, PublicKeyRegistration } from '@growi/chat';
 import {
   DEFAULT_EXPIRES_IN_SEC,
+  judgeKeyRevocation,
   type KeyRef,
+  type RevocableKeyEntry,
   type SignParams,
   type SignResult,
   sign,
@@ -132,6 +135,122 @@ export const storeOwnKey = async (
     validFrom,
     revokedAt: null,
   });
+};
+
+/**
+ * Revokes this GROWI's own key -- the second half of a rotation. Call
+ * {@link storeOwnKey} first with a new `keyId` (the old row is left
+ * untouched, so both are simultaneously valid), let the overlap period
+ * pass, then call this to close the old key's validity window (design.md
+ * "自分の鍵の入れ替えでは、新旧が両方有効な期間を置いてから古い鍵を失効させる").
+ *
+ * Unlike {@link revokePeerKey}, this does not consult `judgeKeyRevocation`:
+ * that judgement exists to stop a REMOTE caller from leaving a relation with
+ * no verifiable key. Revoking GROWI's own key is a decision GROWI itself
+ * makes, and the caller (whatever schedules the rotation) is responsible for
+ * having already registered the replacement before calling this.
+ *
+ * A no-op if no matching, still-valid row exists -- the update filter only
+ * matches a row whose `revokedAt` is still `null`, so calling this twice
+ * never overwrites an already-recorded revocation time.
+ */
+export const revokeOwnKey = async (
+  ref: KeyRef,
+  now: Date = new Date(),
+): Promise<void> => {
+  await ChatIntegrationKey.updateOne(
+    {
+      relationId: ref.relationId,
+      side: 'own',
+      keyId: ref.keyId,
+      revokedAt: null,
+    },
+    { $set: { revokedAt: now } },
+  );
+};
+
+const isDuplicateKeyError = (error: unknown): boolean =>
+  typeof error === 'object' &&
+  error !== null &&
+  'code' in error &&
+  (error as { readonly code?: unknown }).code === 11000;
+
+/**
+ * Registers a public key the PEER sent to add (design.md's
+ * `key-register-to-growi`, Requirement 10.5).
+ *
+ * Idempotent by construction rather than by a pre-check: `(relationId, side,
+ * keyId)` is unique, so a retried identical registration hits the duplicate-
+ * key error from the index itself, and this function reports that the same
+ * way as a first-time success (design.md's "二重に処理しないための手立て":
+ * "同じ鍵の2度目の登録は何も変えずに成功を返す").
+ */
+export const registerPeerKey = async (
+  relationId: string,
+  key: PublicKeyRegistration,
+): Promise<KeyOperationResult> => {
+  try {
+    await storePeerKey(
+      { relationId, keyId: key.keyId },
+      // `PublicKeyRegistration.publicKeyJwk` is `@growi/chat`'s (DOM-derived)
+      // `JsonWebKey`, which carries no index signature; `storePeerKey` takes
+      // `node:crypto`'s `JsonWebKey`, which requires one. Spreading into a
+      // fresh object literal satisfies that requirement without a type
+      // assertion -- the two shapes are otherwise identical JSON values.
+      { ...key.publicKeyJwk },
+      new Date(key.validFrom),
+    );
+  } catch (error) {
+    if (!isDuplicateKeyError(error)) {
+      throw error;
+    }
+    // Falls through to the same `{ status: 'ok' }` a first-time registration
+    // returns -- the row already holds this key, so nothing changed.
+  }
+  return { status: 'ok' };
+};
+
+/**
+ * Revokes one of the PEER's keys (design.md's `key-revoke-to-growi`,
+ * Requirement 10.5, 10.6), refusing a revocation that would leave the
+ * relation with zero currently-valid peer keys.
+ *
+ * The judgement itself is `@growi/chat`'s `judgeKeyRevocation` -- the one
+ * function both sides of the protocol call for this, rather than each side
+ * re-deriving "would this leave zero valid keys" and risking one side
+ * drifting looser than the other (see that function's own header comment).
+ *
+ * Idempotent: `judgeKeyRevocation` accepts revoking an already-revoked (or
+ * not-yet-active) key without treating it as reducing the valid count, and
+ * the update filter below (`revokedAt: null`) then makes the write itself a
+ * genuine no-op -- an already-set `revokedAt` is never overwritten with a
+ * new timestamp.
+ */
+export const revokePeerKey = async (
+  relationId: string,
+  keyIdToRevoke: string,
+  now: Date = new Date(),
+): Promise<KeyOperationResult> => {
+  const rows = await ChatIntegrationKey.find({
+    relationId,
+    side: 'peer',
+  }).lean();
+  const keys: RevocableKeyEntry[] = rows.map((row) => ({
+    keyId: row.keyId,
+    validFrom: row.validFrom.toISOString(),
+    revokedAt: row.revokedAt?.toISOString() ?? null,
+  }));
+
+  const judgement = judgeKeyRevocation(keys, keyIdToRevoke, now.toISOString());
+  if (!judgement.ok) {
+    return { status: 'rejected', reason: judgement.reason };
+  }
+
+  await ChatIntegrationKey.updateOne(
+    { relationId, side: 'peer', keyId: keyIdToRevoke, revokedAt: null },
+    { $set: { revokedAt: now } },
+  );
+  return { status: 'ok' };
 };
 
 /** What the caller of {@link signWithOwnKey} supplies -- everything `sign()` needs except the key material, which this module alone resolves and decrypts. */

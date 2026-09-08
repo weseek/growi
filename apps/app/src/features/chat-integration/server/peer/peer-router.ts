@@ -4,11 +4,11 @@
 //
 // This router's own job stops at wiring: attach `signatureGuard(op)`
 // (task 3.2) in front of each of the 5 signed ops, and `pairingEndpoint`
-// (task 3.4) in front of the one unsigned op. Two of the five signed
-// handlers are still placeholders -- their business logic belongs to a
-// later task (`key-register-to-growi`/`key-revoke-to-growi`: 7.2) -- see
-// each handler's own comment for why its particular placeholder shape was
-// chosen. `command` (task 5.1), `settings-pull` (task 3.5's own text:
+// (task 3.4) in front of the one unsigned op. Every handler below delegates
+// its actual business logic to another task's module rather than doing the
+// work here -- `key-register-to-growi`/`key-revoke-to-growi` (task 7.2) hand
+// off entirely to `KeyStore`'s `registerPeerKey`/`revokePeerKey`. `command`
+// (task 5.1), `settings-pull` (task 3.5's own text:
 // "押し込みが届かなかったときに proxy が取りに来る保険。版と設定を返す"),
 // and `account-link-start` (task 6.1) all have real behavior. `command`
 // needs a `Crowi` instance (search, ACL, app title), so `createPeerRouter`
@@ -43,6 +43,7 @@ import {
 } from '../account-link/create-link-order';
 import { ChatAccountLink } from '../account-link/models/chat-account-link';
 import { createCommandEndpoint } from '../command/command-endpoint';
+import { registerPeerKey, revokePeerKey } from '../keys';
 import { ChatRelation } from '../models/chat-relation';
 import { pairingEndpoint } from '../pairing/pairing-endpoint';
 import { ChatChannelPermission } from '../settings/models/chat-channel-permission';
@@ -114,14 +115,32 @@ const commandHandler = (crowi: Crowi): RequestHandler => {
 };
 
 /**
- * Placeholder for `key-register-to-growi` / `key-revoke-to-growi` (real
- * behavior: task 7.2). `{ status: 'ok' }` is the minimal valid
- * `KeyOperationResult` shape -- it proves the request reached a real
- * handler past `signatureGuard`, without claiming a specific rejection
- * reason that would not yet be backed by any actual key-store check.
+ * `key-register-to-growi` -- real behavior (task 7.2). All of the decision
+ * logic (idempotency on a retried identical registration) lives in
+ * `KeyStore.registerPeerKey`; this handler only unwraps the verified body
+ * and reports the result.
  */
-const keyOperationPlaceholderHandler: RequestHandler = (_req, res) => {
-  const body: KeyOperationResult = { status: 'ok' };
+const keyRegisterHandler: RequestHandler = async (req, res) => {
+  const { chatPeer } = req as VerifiedPeerRequest<
+    typeof OP_NAMES.keyRegisterToGrowi
+  >;
+  const { relationId, key } = chatPeer.body;
+  const body: KeyOperationResult = await registerPeerKey(relationId, key);
+  res.status(200).json(body);
+};
+
+/**
+ * `key-revoke-to-growi` -- real behavior (task 7.2). `KeyStore.revokePeerKey`
+ * owns the "would this leave zero valid keys" refusal (via `@growi/chat`'s
+ * `judgeKeyRevocation`) and the idempotent no-op on an already-revoked key;
+ * this handler only unwraps the verified body and reports the result.
+ */
+const keyRevokeHandler: RequestHandler = async (req, res) => {
+  const { chatPeer } = req as VerifiedPeerRequest<
+    typeof OP_NAMES.keyRevokeToGrowi
+  >;
+  const { relationId, keyId } = chatPeer.body;
+  const body: KeyOperationResult = await revokePeerKey(relationId, keyId);
   res.status(200).json(body);
 };
 
@@ -229,12 +248,12 @@ export const createPeerRouter = (crowi: Crowi): Router => {
   router.post(
     routerPathFor(OP_NAMES.keyRegisterToGrowi),
     signatureGuard(OP_NAMES.keyRegisterToGrowi),
-    keyOperationPlaceholderHandler,
+    keyRegisterHandler,
   );
   router.post(
     routerPathFor(OP_NAMES.keyRevokeToGrowi),
     signatureGuard(OP_NAMES.keyRevokeToGrowi),
-    keyOperationPlaceholderHandler,
+    keyRevokeHandler,
   );
   router.post(
     routerPathFor(OP_NAMES.settingsPull),
