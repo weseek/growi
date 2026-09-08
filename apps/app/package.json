@@ -54,6 +54,7 @@
     "lint:i18n": "node tools/i18n-audit/run-audit.ts",
     "lint": "run-p lint:**",
     "i18n:baseline:update": "node tools/i18n-audit/run-audit.ts --update-baseline",
+    "i18n:sync:push": "node tools/i18n-sync/push-source.ts",
     "prelint:typecheck": "next typegen",
     "prelint:openapi:apiv3": "pnpm run openapi:generate-spec:apiv3",
     "prelint:openapi:apiv1": "pnpm run openapi:generate-spec:apiv1",

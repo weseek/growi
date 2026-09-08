@@ -95,7 +95,7 @@
 
 ## 5. Integration: ワークフローの配線
 
-- [ ] 5.1 pushワークフローを配線する
+- [x] 5.1 pushワークフローを配線する
   - `apps/app/public/static/locales/en_US/**` の変更をトリガーに、pushのCLIを実行するGitHub Actionsワークフローを追加する
   - 同一ブランチでの多重実行を防ぐ排他制御を設定する
   - POEditor APIトークンをシークレット経由で注入する
