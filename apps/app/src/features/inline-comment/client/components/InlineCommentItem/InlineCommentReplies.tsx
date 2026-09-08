@@ -119,15 +119,11 @@ export const InlineCommentReplies: FC<InlineCommentRepliesProps> = (
           data-testid="inline-comment-reply"
           className="inline-comment-reply ms-4 ms-sm-5 mt-2"
         >
-          {/*
-           * `InlineCommentReply` carries only `creatorId` (design.md's reply
-           * aggregate holds no serialized creator relation), which is a
-           * plain string -- a valid, unpopulated `Ref<IUser>`. CommentCard
-           * already renders that the same way a normal comment's
-           * unpopulated creator ref renders (UserPicture/Username fall back
-           * to their own defaults), so this passes through as-is.
-           */}
-          <CommentCard creator={reply.creatorId} createdAt={reply.createdAt}>
+          <CommentCard
+            id={reply.id}
+            creator={reply.creatorId}
+            createdAt={reply.createdAt}
+          >
             {rendererOptions != null ? (
               <RevisionRenderer
                 rendererOptions={rendererOptions}
