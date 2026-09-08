@@ -49,6 +49,72 @@ const selectTextInPageBody = async (
   }, text);
 };
 
+/**
+ * The viewport-relative center point of the exact text run `text` --
+ * located via a `TreeWalker` + a throwaway `Range` around just that text
+ * (same technique `selectTextInPageBody` uses to build a selection Range,
+ * reused here to read `getBoundingClientRect()` instead).
+ *
+ * This is deliberately NOT "hover/click the wrapping element" (e.g.
+ * `locator.hover()` on the paragraph): a `.hover()`/`.click()` targets the
+ * center of the ELEMENT's own box, but a block-level `<p>` spans the full
+ * container width while its rendered text is left-aligned and narrower --
+ * so the element's center can sit well past the end of the actual glyphs,
+ * outside every rect `useHighlightHitTest`'s `getClientRects()`-based hit
+ * test compares against (see `use-highlight-hit-test.ts`). Moving the mouse
+ * to the middle of the TEXT's own bounding rect is what actually lands
+ * inside the saved highlight's hit-testable area.
+ *
+ * Hoisted to module scope (same reasoning as `selectTextInPageBody` above)
+ * so both the body-popover suite and the marker-less-DOM-change suite share
+ * one implementation.
+ */
+const centerOfText = (
+  targetPage: Page,
+  text: string,
+): Promise<{ x: number; y: number }> =>
+  targetPage.evaluate((needle) => {
+    const container = document.querySelector('.wiki');
+    if (container == null) {
+      throw new Error('page body container (.wiki) not found');
+    }
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+    let node = walker.nextNode();
+    while (node != null) {
+      const index = node.textContent?.indexOf(needle) ?? -1;
+      if (index !== -1) {
+        const range = document.createRange();
+        range.setStart(node, index);
+        range.setEnd(node, index + needle.length);
+        const rect = range.getBoundingClientRect();
+        return {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2,
+        };
+      }
+      node = walker.nextNode();
+    }
+    throw new Error(`text not found in page body: ${needle}`);
+  }, text);
+
+/**
+ * Moves the mouse to the middle of `text`'s own rendered rect -- the
+ * `pointermove` this dispatches bubbles to `document`, which is where
+ * `useHighlightHitTest`'s desktop-only hover listener is attached (the
+ * saved highlight has no DOM element of its own to target directly; see
+ * design.md 決定2).
+ */
+const hoverText = async (targetPage: Page, text: string): Promise<void> => {
+  const { x, y } = await centerOfText(targetPage, text);
+  await targetPage.mouse.move(x, y);
+};
+
+/** Same rationale as `hoverText`, for a real click/tap at that same point. */
+const clickText = async (targetPage: Page, text: string): Promise<void> => {
+  const { x, y } = await centerOfText(targetPage, text);
+  await targetPage.mouse.click(x, y);
+};
+
 test.describe('Inline comment', () => {
   // Serial: comment creation is a real, non-idempotent backend write and later
   // tests (reload / reply) depend on the comment created by an earlier test in
@@ -1831,68 +1897,6 @@ test.describe('Inline comment - hover/click/tap on a saved body highlight opens 
     }
   });
 
-  /**
-   * The viewport-relative center point of the exact text run `text` --
-   * located via a `TreeWalker` + a throwaway `Range` around just that text
-   * (same technique `selectTextInPageBody` uses to build a selection Range,
-   * reused here to read `getBoundingClientRect()` instead).
-   *
-   * This is deliberately NOT "hover/click the wrapping element" (e.g.
-   * `locator.hover()` on the paragraph): a `.hover()`/`.click()` targets the
-   * center of the ELEMENT's own box, but a block-level `<p>` spans the full
-   * container width while its rendered text is left-aligned and narrower --
-   * so the element's center can sit well past the end of the actual glyphs,
-   * outside every rect `useHighlightHitTest`'s `getClientRects()`-based hit
-   * test compares against (see `use-highlight-hit-test.ts`). Moving the mouse
-   * to the middle of the TEXT's own bounding rect is what actually lands
-   * inside the saved highlight's hit-testable area.
-   */
-  const centerOfText = (
-    targetPage: Page,
-    text: string,
-  ): Promise<{ x: number; y: number }> =>
-    targetPage.evaluate((needle) => {
-      const container = document.querySelector('.wiki');
-      if (container == null) {
-        throw new Error('page body container (.wiki) not found');
-      }
-      const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
-      let node = walker.nextNode();
-      while (node != null) {
-        const index = node.textContent?.indexOf(needle) ?? -1;
-        if (index !== -1) {
-          const range = document.createRange();
-          range.setStart(node, index);
-          range.setEnd(node, index + needle.length);
-          const rect = range.getBoundingClientRect();
-          return {
-            x: rect.left + rect.width / 2,
-            y: rect.top + rect.height / 2,
-          };
-        }
-        node = walker.nextNode();
-      }
-      throw new Error(`text not found in page body: ${needle}`);
-    }, text);
-
-  /**
-   * Moves the mouse to the middle of `text`'s own rendered rect -- the
-   * `pointermove` this dispatches bubbles to `document`, which is where
-   * `useHighlightHitTest`'s desktop-only hover listener is attached (the
-   * saved highlight has no DOM element of its own to target directly; see
-   * design.md 決定2).
-   */
-  const hoverText = async (targetPage: Page, text: string): Promise<void> => {
-    const { x, y } = await centerOfText(targetPage, text);
-    await targetPage.mouse.move(x, y);
-  };
-
-  /** Same rationale as `hoverText`, for a real click/tap at that same point. */
-  const clickText = async (targetPage: Page, text: string): Promise<void> => {
-    const { x, y } = await centerOfText(targetPage, text);
-    await targetPage.mouse.click(x, y);
-  };
-
   const commentText = 'a comment surfaced through the body popover';
 
   test('Create a page and save an inline comment on the target sentence', async ({
@@ -2577,5 +2581,213 @@ test.describe('Inline comment - the bottom-list reply UI is unified with the nor
     await expect(
       item.getByTestId('inline-comment-reply-toggle-button'),
     ).toBeVisible();
+  });
+});
+
+test.describe('Inline comment - the highlight keeps tracking a body change that carries no rendering marker, and stays hoverable/clickable (Req 3.4, 4.1-4.3)', () => {
+  // Serial: the second test reuses the one saved comment created by the
+  // first, the same reasoning the other suites in this file use.
+  test.describe.configure({ mode: 'serial' });
+
+  const markerlessPagePath = (retry: number) =>
+    `/inline-comment-e2e-markerless-change${retry}`;
+
+  const targetSentence =
+    'This sentence anchors the marker-less DOM change end-to-end test.';
+  const introText =
+    'Some intro text before the target, hovered to move the pointer away.';
+  const pageBody = [
+    '# Inline comment E2E - marker-less DOM change',
+    '',
+    introText,
+    '',
+    targetSentence,
+    '',
+    'Some trailing text after the target.',
+    '',
+  ].join('\n');
+
+  const commentText = 'a comment that must stay reachable after a DOM change';
+
+  let createdPage: CreatedPage | undefined;
+
+  test.afterAll(async ({ request }) => {
+    if (createdPage != null) {
+      await deletePagesCompletely(request, [createdPage]);
+    }
+  });
+
+  /**
+   * How many client rects the saved highlight's registered `Range` currently
+   * reports -- the "見た目" half of Requirement 4.1, read directly.
+   * `CSS.highlights.get(...)?.size` alone stays `1` even for a `Range` whose
+   * text node no longer sits in the document (the Highlight set still holds
+   * the object), and such a `Range` paints nothing and -- being the very
+   * object `useHighlightHitTest` hit-tests -- is unhittable too. A rect count
+   * above zero is what distinguishes "this highlight covers real, laid-out
+   * text right now" from "a leftover Range is still registered".
+   */
+  const highlightRectCount = (targetPage: Page): Promise<number> =>
+    targetPage.evaluate(() => {
+      const set = CSS.highlights.get('growi-inline-comment');
+      const range = set != null ? [...set][0] : undefined;
+      return range?.getClientRects().length ?? 0;
+    });
+
+  test('Create a page and save an inline comment on the target sentence', async ({
+    page,
+    request,
+  }, testInfo) => {
+    createdPage = await createPage(request, {
+      path: markerlessPagePath(testInfo.retry),
+      body: pageBody,
+    });
+
+    await page.goto(createdPage.path);
+    await expect(page.locator('.wiki').first()).toContainText(targetSentence);
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    await selectTextInPageBody(page, targetSentence);
+    await page.getByTestId('selection-action-button').click();
+    const form = page.getByTestId('inline-comment-form');
+    await expect(form).toBeVisible();
+
+    await form.locator('.cm-content').fill(commentText);
+    await form.getByTestId('inline-comment-submit-button').click();
+    await expect(form).not.toBeVisible();
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+    await expect(item).toContainText(commentText);
+
+    await expect.poll(() => highlightRectCount(page)).toBeGreaterThan(0);
+  });
+
+  test('Req 3.4, 4.1-4.3: when the heading edit button appears late, the highlight is re-resolved against the changed body and hover/click keep opening the popover', async ({
+    page,
+  }, testInfo) => {
+    // The heading's edit button (`Header.tsx`'s `EditLink`) is gated on
+    // `isLoadingCurrentPageYjsData`, driven by exactly one client-side fetch
+    // (`current-page-yjs-data.ts` -> `/page/{id}/yjs-data`). Delaying that
+    // response reproduces requirements.md's own background story -- an
+    // operational element inside the body appearing well after the first
+    // render, with no `data-growi-is-content-rendering` marker anywhere in
+    // the change -- and pins WHEN it appears instead of hoping the fetch
+    // happens to still be in flight.
+    //
+    // The delay has to stay comfortably inside `use-container-settle`'s
+    // WATCH_TIMEOUT_MS (10s from mount): past that point the observer is
+    // disconnected for good and nothing can fire again, so a longer delay
+    // would be testing the timeout fallback rather than this requirement.
+    const YJS_DATA_DELAY_MS = 3000;
+    await page.route('**/_api/v3/page/*/yjs-data**', async (route) => {
+      await new Promise((resolve) => {
+        setTimeout(resolve, YJS_DATA_DELAY_MS);
+      });
+      await route.continue();
+    });
+
+    await page.goto(markerlessPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    const editButton = page.locator('.wiki .revision-head-edit-button');
+    const popover = page.getByTestId('inline-comment-preview-popover');
+
+    // "Before": while the delayed fetch keeps the edit button off the page,
+    // the highlight is painted and both interactions open the popover.
+    //
+    // The heading itself is asserted present first: `toHaveCount(0)` alone
+    // would also be satisfied by a body that has not rendered its heading
+    // yet, which would make this half of the test pass without ever
+    // observing the delayed-loading state it is about.
+    await expect(page.locator('.wiki h1')).toBeVisible();
+    await expect(editButton).toHaveCount(0);
+    await expect.poll(() => highlightRectCount(page)).toBeGreaterThan(0);
+
+    await hoverText(page, targetSentence);
+    await expect(popover).toBeVisible();
+    await expect(popover).toContainText(commentText);
+
+    await hoverText(page, introText);
+    await expect(popover).not.toBeVisible();
+
+    await clickText(page, targetSentence);
+    await expect(popover).toBeVisible();
+    await expect(popover).toContainText(commentText);
+
+    // A click pins the popover open (proven by the body-popover suite
+    // above), so unpin it before the "after" half -- otherwise that half
+    // would be asserting against a popover that simply never closed.
+    //
+    // The order here matters and is not interchangeable: move the pointer
+    // off the highlight FIRST, then close. `InlineCommentBodyInteraction`
+    // remembers, by value, whichever hit was showing when the popover was
+    // closed, and ignores that same hit afterwards -- so closing while the
+    // pointer still sits on the highlight would make the identical hover in
+    // the "after" half be ignored. That suppression is existing
+    // click/close behavior (Req 2.4), unrelated to what this test is about.
+    await hoverText(page, introText);
+    await expect(popover).toBeVisible();
+    await popover.getByRole('button', { name: 'Close' }).click();
+    await expect(popover).not.toBeVisible();
+
+    // Remember the exact Highlight object registered against the pre-change
+    // body. Every `InlineCommentHighlight` pass registers a NEW Highlight
+    // (it deletes and re-sets the entry), so "the registry now holds a
+    // different object" is the observable evidence that the anchor was
+    // re-resolved against the changed body rather than the old result being
+    // carried over -- Requirement 4.1's "位置情報を再構築し" and the reason
+    // Requirement 3.4 asks for a re-resolution opportunity at all. Captured
+    // as late as possible, immediately before the change under test.
+    await page.evaluate(() => {
+      Reflect.set(
+        window,
+        '__inlineCommentHighlightBeforeChange',
+        CSS.highlights.get('growi-inline-comment'),
+      );
+    });
+
+    // The marker-less change itself: the button appears once the delayed
+    // response lands.
+    await expect(editButton.first()).toBeVisible({
+      timeout: YJS_DATA_DELAY_MS + 5_000,
+    });
+    // ...and it really is marker-less -- nothing in the body ever announced
+    // itself through the rendering-status protocol this feature's settle
+    // detection was originally built around
+    // (`GROWI_IS_CONTENT_RENDERING_ATTR`), so this is exactly the kind of
+    // change Requirement 3.4 is about.
+    await expect(
+      page.locator('.wiki [data-growi-is-content-rendering]'),
+    ).toHaveCount(0);
+
+    // Requirement 3.4 / 4.1: the change was taken as an opportunity to
+    // re-resolve, and the highlight painted afterwards is the rebuilt one.
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () =>
+            CSS.highlights.get('growi-inline-comment') !==
+            Reflect.get(window, '__inlineCommentHighlightBeforeChange'),
+        ),
+      )
+      .toBe(true);
+
+    // "After": Requirement 4.1/4.2 (見た目) -- the rebuilt highlight covers
+    // real laid-out text, not a leftover Range...
+    await expect.poll(() => highlightRectCount(page)).toBeGreaterThan(0);
+
+    // ...and Requirement 4.3 (操作可能範囲) -- the same rebuilt range is what
+    // the hit test sees, so hover and click both still open the popover.
+    await hoverText(page, targetSentence);
+    await expect(popover).toBeVisible();
+    await expect(popover).toContainText(commentText);
+
+    await hoverText(page, introText);
+    await expect(popover).not.toBeVisible();
+
+    await clickText(page, targetSentence);
+    await expect(popover).toBeVisible();
+    await expect(popover).toContainText(commentText);
   });
 });
