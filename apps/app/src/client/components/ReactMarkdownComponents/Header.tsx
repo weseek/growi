@@ -46,7 +46,7 @@ type EditLinkProps = {
 /**
  * Inner FC to display edit link icon
  */
-const EditLink = (props: EditLinkProps): JSX.Element => {
+export const EditLink = (props: EditLinkProps): JSX.Element => {
   const isDisabled = props.line == null;
   const startEditing = useStartEditing();
   const currentPagePath = useCurrentPagePath();
@@ -64,7 +64,10 @@ const EditLink = (props: EditLinkProps): JSX.Element => {
         disabled={isDisabled}
         onClick={onClickHandler}
       >
-        <span className="material-symbols-outlined">edit_square</span>
+        {/* aria-hidden: decorative icon only, the button's accessible name should not include its glyph text */}
+        <span className="material-symbols-outlined" aria-hidden="true">
+          edit_square
+        </span>
       </button>
     </span>
   );
