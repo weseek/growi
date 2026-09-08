@@ -47,6 +47,14 @@ import { submitPairingRequest } from '../pairing/pairing-service';
 import { fetchCapabilities, fetchConnectionStatus } from '../proxy-client';
 import { readRelationSettings } from '../settings/relation-settings-store';
 import { listRelationsForAdmin } from './admin-service';
+import {
+  type Gen1NotificationSettingSource,
+  readGen1SlackChannelNames,
+} from './gen1-slack-channel-names';
+import {
+  buildNotificationDestinationsView,
+  saveNotificationDestination,
+} from './notification-destinations';
 import { saveRelationSettings } from './save-relation-settings';
 
 const logger = loggerFactory(
@@ -253,6 +261,93 @@ const saveSettingsHandler = async (
   res.apiv3(outcome);
 };
 
+/**
+ * Gen 1's notification settings, as a read-only source of channel NAMES for
+ * Requirement 12.4's overlap check (task 9.3).
+ *
+ * `crowi.models` is typed as a bag of `Model<any>`, which declares none of
+ * Gen 1's statics, so the one narrowing cast this feature makes against Gen
+ * 1 lives here -- at the boundary, in one place, to the smallest shape that
+ * is actually used (`findAll`, see `gen1-slack-channel-names.ts`). Nothing
+ * is written through it.
+ */
+const gen1NotificationSettings = (
+  crowi: Crowi,
+): Gen1NotificationSettingSource | undefined =>
+  crowi.models.GlobalNotificationSetting as unknown as
+    | Gen1NotificationSettingSource
+    | undefined;
+
+/**
+ * `GET /relations/:relationId/notification-destinations` -- the destination
+ * editor's whole state in one call: the channel list to pick from, the
+ * destinations configured now, and Requirement 12.4's overlap warnings.
+ *
+ * The channel list is fetched here rather than from its own endpoint so the
+ * overlap warnings are computed AFTER the stored names have been refreshed
+ * from that same fetch (see `notification-destinations.ts`). A proxy that
+ * cannot be reached is NOT an error status: what is configured is still
+ * shown, with `channelsUnavailable` explaining the missing picker.
+ */
+const listNotificationDestinationsHandler =
+  (crowi: Crowi): ChatAdminHandler =>
+  async (req, res): Promise<void> => {
+    const { relationId } = req.params;
+    const gen1ChannelNames = await readGen1SlackChannelNames(
+      gen1NotificationSettings(crowi),
+    );
+    res.apiv3(
+      await buildNotificationDestinationsView(relationId, gen1ChannelNames),
+    );
+  };
+
+/**
+ * `POST /relations/:relationId/notification-destinations` -- saves one
+ * destination, identified by the channel's IDENTIFIER (Requirement 2.2).
+ *
+ * `400` for a malformed body and for a channel id that is not in the list
+ * the chat service reports (both are "fix the request"); `404` for a
+ * relation that is not paired; `502` when the channel list could not be
+ * fetched at all, since nothing about the request is wrong in that case and
+ * retrying is the remedy.
+ */
+const saveNotificationDestinationHandler: ChatAdminHandler = async (
+  req,
+  res,
+) => {
+  const { relationId } = req.params;
+  const outcome = await saveNotificationDestination(relationId, req.body);
+
+  if (
+    outcome.status === 'invalid-destination' ||
+    outcome.status === 'unknown-channel'
+  ) {
+    res.apiv3Err(new ErrorV3(outcome.detail, outcome.status), 400);
+    return;
+  }
+  if (outcome.status === 'relation-not-found') {
+    res.apiv3Err(
+      new ErrorV3(
+        `Relation '${relationId}' is not found, or is no longer paired`,
+        'relation-not-found',
+      ),
+      404,
+    );
+    return;
+  }
+  if (outcome.status === 'channels-unavailable') {
+    res.apiv3Err(
+      new ErrorV3(
+        `Could not fetch the channel list from the proxy: ${outcome.reason}`,
+        'channels-unavailable',
+      ),
+      502,
+    );
+    return;
+  }
+  res.apiv3(outcome);
+};
+
 interface PairingRequestBody {
   readonly registrationCode?: unknown;
   readonly proxyUri?: unknown;
@@ -334,6 +429,14 @@ export const createAdminRouter = (crowi: Crowi): Router => {
   router.post(
     '/relations/:relationId/settings',
     asHandler(saveSettingsHandler),
+  );
+  router.get(
+    '/relations/:relationId/notification-destinations',
+    asHandler(listNotificationDestinationsHandler(crowi)),
+  );
+  router.post(
+    '/relations/:relationId/notification-destinations',
+    asHandler(saveNotificationDestinationHandler),
   );
   router.post('/pairing', asHandler(submitPairingHandler));
 

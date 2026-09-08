@@ -45,6 +45,7 @@ import './oauth-install-state/models/chat-oauth-install-state';
 import { createAccountLinkRouter } from './account-link/account-link-router';
 import { createManageAccountLinksRouter } from './account-link/manage-account-links-router';
 import { createAdminRouter } from './admin/admin-router';
+import { createSaveTimeChannelsRouter } from './notification/save-time-channels-router';
 import { createOAuthInstallRouter } from './oauth-install-state/oauth-install-router';
 import { createPeerRouter } from './peer/peer-router';
 
@@ -75,6 +76,9 @@ export const createChatIntegrationRouter = (crowi: Crowi): express.Router => {
   // screen's own prefix, separate from `/account-link` and
   // `/my-account-links` above.
   router.use('/oauth-install', createOAuthInstallRouter(crowi));
+  // The page editor's save-time destination picker (task 9.3, Requirement
+  // 2.2) -- readable by any logged-in editor, unlike `/admin` below.
+  router.use('/notification-channels', createSaveTimeChannelsRouter(crowi));
   // The admin screen's own API (task 9.1) -- relation list, capability/
   // connection-status relay, encryption-key status, and pairing submission.
   // Its own prefix, separate from every router above.

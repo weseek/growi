@@ -99,15 +99,65 @@ const SETTINGS = {
   version: 4,
 };
 
+interface DestinationsView {
+  destinations: Array<{
+    platform: string;
+    channelId: string;
+    channelName: string;
+    pathPattern: string;
+    triggerEvents: string[];
+  }>;
+  channels: Array<{
+    platform: string;
+    channelId: string;
+    channelName: string;
+    isPrivate: boolean;
+  }>;
+  channelsUnavailable: string | null;
+  overlaps: Array<{ channelId: string; channelName: string }>;
+  overlapsMayBeStale: boolean;
+}
+
+const DESTINATIONS: DestinationsView = {
+  destinations: [
+    {
+      platform: 'slack',
+      channelId: 'C0001',
+      channelName: 'general',
+      pathPattern: '/*',
+      triggerEvents: ['pageCreate'],
+    },
+  ],
+  channels: [
+    {
+      platform: 'slack',
+      channelId: 'C0001',
+      channelName: 'general',
+      isPrivate: false,
+    },
+    {
+      platform: 'slack',
+      channelId: 'C0002',
+      channelName: 'random',
+      isPrivate: false,
+    },
+  ],
+  channelsUnavailable: null,
+  overlaps: [],
+  overlapsMayBeStale: false,
+};
+
 // Route apiv3Get by URL, matching the exact endpoints AdminChatIntegration
 // calls -- this is the observable contract (which endpoints get hit), not
 // an implementation spy on internal function names.
 const stubApi = ({
   encryptionConfigured = true,
   relations = [ACTIVE_RELATION],
+  destinations = DESTINATIONS,
 }: {
   encryptionConfigured?: boolean;
   relations?: AdminRelationListItem[];
+  destinations?: DestinationsView;
 } = {}) => {
   mocks.apiv3Get.mockImplementation((url: string) => {
     if (url === '/chat-integration/admin/encryption-status') {
@@ -128,6 +178,9 @@ const stubApi = ({
     }
     if (url.endsWith('/settings')) {
       return Promise.resolve({ data: SETTINGS });
+    }
+    if (url.endsWith('/notification-destinations')) {
+      return Promise.resolve({ data: destinations });
     }
     return Promise.reject(new Error(`unexpected URL: ${url}`));
   });
@@ -320,6 +373,140 @@ describe('AdminChatIntegration', () => {
       expect(await screen.findByText('Old label')).toBeInTheDocument();
       expect(
         screen.queryByTestId('grw-chat-integration-permissions-form'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('notification destinations (task 9.3)', () => {
+    it('warns the administrator when a channel is a destination on both generations', async () => {
+      stubApi({
+        destinations: {
+          ...DESTINATIONS,
+          overlaps: [{ channelId: 'C0001', channelName: 'general' }],
+        },
+      });
+
+      renderScreen();
+
+      const warning = await screen.findByTestId(
+        'grw-chat-integration-destination-overlap-warning',
+      );
+      // The channel has to be named: "some channel overlaps" leaves the
+      // administrator with nothing to act on.
+      expect(warning).toHaveTextContent('general');
+    });
+
+    it('shows no overlap warning when no channel is configured twice', async () => {
+      stubApi();
+
+      renderScreen();
+
+      expect(
+        await screen.findByTestId('grw-chat-integration-destination-form'),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId(
+          'grw-chat-integration-destination-overlap-warning',
+        ),
+      ).not.toBeInTheDocument();
+    });
+
+    it('offers the fetched channels to pick from and saves the picked channel by IDENTIFIER', async () => {
+      stubApi();
+      mocks.apiv3Post.mockResolvedValue({
+        data: { status: 'saved', destination: {} },
+      });
+      const user = userEvent.setup();
+
+      renderScreen();
+
+      await screen.findByTestId('grw-chat-integration-destination-form');
+      // The administrator reads names but the option's value is the id --
+      // picking by name is not offered anywhere on this form.
+      await user.selectOptions(
+        screen.getByLabelText('Channel', { selector: 'select' }),
+        screen.getByRole('option', { name: /random/ }),
+      );
+      await user.clear(screen.getByLabelText('Page path'));
+      await user.type(screen.getByLabelText('Page path'), '/docs/*');
+      await user.click(screen.getByLabelText('pageEdit'));
+      await user.click(
+        screen.getByRole('button', { name: /add destination/i }),
+      );
+
+      await waitFor(() => {
+        expect(mocks.apiv3Post).toHaveBeenCalledWith(
+          `/chat-integration/admin/relations/${ACTIVE_RELATION.relationId}/notification-destinations`,
+          {
+            channelId: 'C0002',
+            pathPattern: '/docs/*',
+            triggerEvents: ['pageEdit'],
+          },
+        );
+      });
+      // No channel name may be sent: the name is the server's to resolve
+      // from the channel list, and an administrator never types one.
+      const [, body] = mocks.apiv3Post.mock.calls.at(-1) as [
+        string,
+        Record<string, unknown>,
+      ];
+      expect(body).not.toHaveProperty('channelName');
+    });
+
+    it('tells the administrator the overlap check may be stale when the channel list could not be fetched', async () => {
+      // The dangerous reading of this state is "no warning shown, so
+      // nothing overlaps". Nothing was actually checked against current
+      // names, and the screen has to say so.
+      stubApi({
+        destinations: {
+          ...DESTINATIONS,
+          channels: [],
+          channelsUnavailable: 'unreachable',
+          overlaps: [],
+          overlapsMayBeStale: true,
+        },
+      });
+
+      renderScreen();
+
+      const caution = await screen.findByTestId(
+        'grw-chat-integration-destination-overlap-stale',
+      );
+      expect(caution).toHaveTextContent(/may be stale/i);
+    });
+
+    it('says nothing about staleness when the channel list was fetched', async () => {
+      stubApi();
+
+      renderScreen();
+
+      expect(
+        await screen.findByTestId('grw-chat-integration-destination-form'),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('grw-chat-integration-destination-overlap-stale'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('cannot add a destination when the channel list could not be fetched', async () => {
+      stubApi({
+        destinations: {
+          ...DESTINATIONS,
+          channels: [],
+          channelsUnavailable: 'unreachable',
+          overlapsMayBeStale: true,
+        },
+      });
+
+      renderScreen();
+
+      // What is already configured still shows...
+      expect(
+        await screen.findByTestId('grw-chat-integration-destination-row'),
+      ).toHaveTextContent('general');
+      // ...but there is no way to pick a channel that was never confirmed.
+      expect(
+        screen.queryByTestId('grw-chat-integration-destination-form'),
       ).not.toBeInTheDocument();
     });
   });

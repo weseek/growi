@@ -38,6 +38,8 @@ import useSWR from 'swr';
 import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 
+import { NotificationDestinationsSection } from './NotificationDestinationsSection';
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -259,10 +261,13 @@ const describeSaveOutcome = (outcome: SaveSettingsOutcome): string =>
 /**
  * Editor for one relation's channel permissions.
  *
- * Channels are entered as ids on purpose. Picking them from the proxy's
- * channel inventory (and warning about a channel that is also a Gen 1
- * notification target) is task 9.3; it replaces this text field with a
- * picker, still keyed by id.
+ * Channels are entered as ids on purpose -- a name can be changed by
+ * anyone in the chat service, so a permission written against one would
+ * silently stop applying. Task 9.3 built the pick-from-the-channel-list
+ * form for NOTIFICATION DESTINATIONS
+ * (`NotificationDestinationsSection.tsx`); this permission editor still
+ * takes ids as text, which is a usability gap rather than a correctness
+ * one (what is stored and matched is an id either way).
  */
 const ChannelPermissionsForm = ({
   relationId,
@@ -487,6 +492,10 @@ const RelationRow = ({
 
       {isActive && (
         <ChannelPermissionsSection relationId={relation.relationId} />
+      )}
+
+      {isActive && (
+        <NotificationDestinationsSection relationId={relation.relationId} />
       )}
     </div>
   );

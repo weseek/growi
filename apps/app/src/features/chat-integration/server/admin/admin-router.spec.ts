@@ -16,13 +16,22 @@
 //   - `POST /pairing` forwards to `submitPairingRequest` and relays whatever
 //     outcome it returns, without a second encryption check duplicating
 //     `pairing-service.ts`'s own
+//
+// and task 9.3's:
+//   - `GET`/`POST /relations/:id/notification-destinations` offer the
+//     channel list the proxy reports and save a destination BY IDENTIFIER,
+//     refusing an id that list does not contain and ignoring any channel
+//     name that arrives in the request
+//   - the same channel configured on BOTH generations is reported as an
+//     overlap (Requirement 12.4), decided by the name the chat service
+//     reports at fetch time rather than the one stored earlier
 
 import type { CapabilityReport, ConnectionStatusView } from '@growi/chat';
 import type { IUserHasId } from '@growi/core/dist/interfaces';
 import type { Express, NextFunction, Request, Response } from 'express';
 import express from 'express';
 import type { MongoMemoryServer } from 'mongodb-memory-server-core';
-import { Types } from 'mongoose';
+import mongoose, { type Model, Types } from 'mongoose';
 import request from 'supertest';
 import {
   afterAll,
@@ -42,8 +51,10 @@ import {
 } from '^/test/setup/mongo/self-contained-connection';
 
 import type Crowi from '~/server/crowi';
+import gen1SlackSettingFactory from '~/server/models/GlobalNotificationSetting/GlobalNotificationSlackSetting';
 import addCustomFunctionToResponse from '~/server/routes/apiv3/response';
 
+import { ChatNotificationDestination } from '../models/chat-notification-destination';
 import { ChatRelation } from '../models/chat-relation';
 import type { PairingOutcome } from '../pairing/pairing-service';
 import * as pairingService from '../pairing/pairing-service';
@@ -72,6 +83,7 @@ vi.mock('../proxy-client', async (importOriginal) => {
     ...actual,
     fetchCapabilities: vi.fn(),
     fetchConnectionStatus: vi.fn(),
+    fetchChannels: vi.fn(),
     pushSettings: vi.fn(),
   };
 });
@@ -93,7 +105,39 @@ const nonAdminUser: IUserHasId = {
   admin: false,
 } as IUserHasId;
 
-const buildMockCrowi = (): Crowi => mock<Crowi>();
+/**
+ * Registers Gen 1's Slack notification model (base schema + `slack`
+ * discriminator) the way `setup-models.ts` does at boot, so the overlap
+ * tests below read Gen 1's REAL storage rather than a stand-in: a row's
+ * `slackChannels` only survives hydration once the discriminator exists,
+ * which is exactly the condition production runs under.
+ */
+const registerGen1SlackModel = (crowi: Crowi): Model<unknown> => {
+  const existing = mongoose.models.GlobalNotificationSetting;
+  if (existing?.discriminators?.slack == null) {
+    gen1SlackSettingFactory(crowi);
+  }
+  return mongoose.models.GlobalNotificationSetting as Model<unknown>;
+};
+
+const gen1SlackModel = (): Model<{
+  isEnabled: boolean;
+  triggerPath: string;
+  triggerEvents: string[];
+  slackChannels: string;
+}> =>
+  mongoose.models.GlobalNotificationSetting.discriminators?.slack as Model<{
+    isEnabled: boolean;
+    triggerPath: string;
+    triggerEvents: string[];
+    slackChannels: string;
+  }>;
+
+const buildMockCrowi = (): Crowi => {
+  const crowi = mock<Crowi>();
+  crowi.models = { GlobalNotificationSetting: registerGen1SlackModel(crowi) };
+  return crowi;
+};
 
 const buildApp = (injectUser?: IUserHasId): Express => {
   const responseHelpers: { response: Record<string, unknown> } = {
@@ -138,6 +182,7 @@ describe('admin-router', () => {
       'growi_test_unit_admin_router',
     ));
     await ChatChannelPermission.init();
+    registerGen1SlackModel(mock<Crowi>());
   });
 
   afterAll(async () => {
@@ -147,6 +192,8 @@ describe('admin-router', () => {
   beforeEach(async () => {
     await ChatRelation.deleteMany({});
     await ChatChannelPermission.deleteMany({});
+    await ChatNotificationDestination.deleteMany({});
+    await gen1SlackModel().deleteMany({});
     vi.clearAllMocks();
     vi.mocked(proxyClient.pushSettings).mockResolvedValue({
       ok: true,
@@ -473,6 +520,328 @@ describe('admin-router', () => {
       expect(saveResponse.status).toBe(404);
       expect(readResponse.status).toBe(404);
       expect(proxyClient.pushSettings).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('notification destinations (task 9.3)', () => {
+    const DESTINATIONS_PATH = `${MOUNT_PATH}/relations/${RELATION_ID}/notification-destinations`;
+
+    const stubChannels = (
+      channels: ReadonlyArray<{ channelId: string; channelName: string }>,
+    ) => {
+      vi.mocked(proxyClient.fetchChannels).mockResolvedValue({
+        ok: true,
+        response: {
+          channels: channels.map((channel) => ({
+            platform: 'slack',
+            isPrivate: false,
+            ...channel,
+          })),
+        },
+      });
+    };
+
+    const seedGen1SlackSetting = (slackChannels: string, isEnabled = true) =>
+      gen1SlackModel().create({
+        isEnabled,
+        triggerPath: '/*',
+        triggerEvents: ['pageCreate'],
+        slackChannels,
+      });
+
+    const seedGen2Destination = (
+      overrides: Partial<{ channelId: string; channelName: string }> = {},
+    ) =>
+      ChatNotificationDestination.create({
+        relationId: RELATION_ID,
+        platform: 'slack',
+        channelId: 'C0001',
+        channelName: 'general',
+        pathPattern: '/*',
+        triggerEvents: ['pageCreate'],
+        ...overrides,
+      });
+
+    it('offers the channels the chat service reports, so a destination is chosen by identifier', async () => {
+      await seedRelation();
+      stubChannels([
+        { channelId: 'C0001', channelName: 'general' },
+        { channelId: 'C0002', channelName: 'random' },
+      ]);
+      const app = buildApp(adminUser);
+
+      const response = await request(app).get(DESTINATIONS_PATH);
+
+      expect(response.status).toBe(200);
+      expect(response.body.channels).toEqual([
+        {
+          platform: 'slack',
+          channelId: 'C0001',
+          channelName: 'general',
+          isPrivate: false,
+        },
+        {
+          platform: 'slack',
+          channelId: 'C0002',
+          channelName: 'random',
+          isPrivate: false,
+        },
+      ]);
+      expect(response.body.channelsUnavailable).toBeNull();
+    });
+
+    it('warns about a channel that is a destination for BOTH Gen 1 and Gen 2', async () => {
+      // This is task 9.3's own completion condition: the same channel is
+      // configured on both generations, so one page event would be posted
+      // to it twice.
+      await seedRelation();
+      await seedGen1SlackSetting('general, random');
+      await seedGen2Destination({ channelId: 'C0001', channelName: 'general' });
+      stubChannels([{ channelId: 'C0001', channelName: 'general' }]);
+      const app = buildApp(adminUser);
+
+      const response = await request(app).get(DESTINATIONS_PATH);
+
+      expect(response.status).toBe(200);
+      expect(response.body.overlaps).toEqual([
+        { channelId: 'C0001', channelName: 'general' },
+      ]);
+    });
+
+    it('does not warn when Gen 1 posts to different channels', async () => {
+      await seedRelation();
+      await seedGen1SlackSetting('announcements');
+      await seedGen2Destination({ channelId: 'C0001', channelName: 'general' });
+      stubChannels([{ channelId: 'C0001', channelName: 'general' }]);
+      const app = buildApp(adminUser);
+
+      const response = await request(app).get(DESTINATIONS_PATH);
+
+      expect(response.status).toBe(200);
+      expect(response.body.overlaps).toEqual([]);
+    });
+
+    it('decides the warning by the name the chat service reports NOW, not the stored one', async () => {
+      // The channel was saved as `general` and has since been renamed to
+      // `announcements`, which is where Gen 1 posts. Without the refresh
+      // that the channel-list fetch performs, the comparison would run on
+      // the abandoned name and stay silent.
+      await seedRelation();
+      await seedGen1SlackSetting('announcements');
+      await seedGen2Destination({ channelId: 'C0001', channelName: 'general' });
+      stubChannels([{ channelId: 'C0001', channelName: 'announcements' }]);
+      const app = buildApp(adminUser);
+
+      const response = await request(app).get(DESTINATIONS_PATH);
+
+      expect(response.status).toBe(200);
+      expect(response.body.overlaps).toEqual([
+        { channelId: 'C0001', channelName: 'announcements' },
+      ]);
+      expect(response.body.destinations[0].channelName).toBe('announcements');
+    });
+
+    it('still shows the configured destinations when the channel list cannot be fetched', async () => {
+      await seedRelation();
+      await seedGen2Destination();
+      vi.mocked(proxyClient.fetchChannels).mockResolvedValue({
+        ok: false,
+        reason: 'unreachable',
+      });
+      const app = buildApp(adminUser);
+
+      const response = await request(app).get(DESTINATIONS_PATH);
+
+      expect(response.status).toBe(200);
+      expect(response.body.destinations).toHaveLength(1);
+      expect(response.body.channels).toEqual([]);
+      expect(response.body.channelsUnavailable).toBe('unreachable');
+    });
+
+    it('says the overlap check could not be run on current names when the channel list is unavailable', async () => {
+      // The names were not refreshed, so "no overlap" here means "no
+      // overlap according to names that may already be abandoned". The
+      // screen has to be able to tell the operator that much -- otherwise
+      // silence reads as confirmation.
+      await seedRelation();
+      await seedGen2Destination();
+      vi.mocked(proxyClient.fetchChannels).mockResolvedValue({
+        ok: false,
+        reason: 'unreachable',
+      });
+      const app = buildApp(adminUser);
+
+      const response = await request(app).get(DESTINATIONS_PATH);
+
+      expect(response.body.overlapsMayBeStale).toBe(true);
+    });
+
+    it('says the overlap check ran on current names when the channel list was fetched', async () => {
+      await seedRelation();
+      await seedGen2Destination();
+      stubChannels([{ channelId: 'C0001', channelName: 'general' }]);
+      const app = buildApp(adminUser);
+
+      const response = await request(app).get(DESTINATIONS_PATH);
+
+      expect(response.body.overlapsMayBeStale).toBe(false);
+    });
+
+    it('saves a destination by channel identifier, taking the name from the fetched list', async () => {
+      await seedRelation();
+      stubChannels([{ channelId: 'C0001', channelName: 'general' }]);
+      const app = buildApp(adminUser);
+
+      const response = await request(app)
+        .post(DESTINATIONS_PATH)
+        .send({
+          channelId: 'C0001',
+          pathPattern: '/docs/*',
+          triggerEvents: ['pageCreate', 'pageEdit'],
+        });
+
+      expect(response.status).toBe(200);
+      const stored = await ChatNotificationDestination.find({
+        relationId: RELATION_ID,
+      });
+      expect(stored).toHaveLength(1);
+      expect(stored[0].channelId).toBe('C0001');
+      expect(stored[0].channelName).toBe('general');
+      expect(stored[0].pathPattern).toBe('/docs/*');
+      expect(stored[0].triggerEvents).toEqual(['pageCreate', 'pageEdit']);
+    });
+
+    it('ignores a channel name sent in the request, keeping the one the chat service reports', async () => {
+      // Requirement 2.2: the identifier is what an administrator picks. A
+      // name arriving in the payload must not become what GROWI stores,
+      // otherwise the overlap warning could be steered by the request.
+      await seedRelation();
+      stubChannels([{ channelId: 'C0001', channelName: 'general' }]);
+      const app = buildApp(adminUser);
+
+      const response = await request(app)
+        .post(DESTINATIONS_PATH)
+        .send({
+          channelId: 'C0001',
+          channelName: 'something-else',
+          pathPattern: '/*',
+          triggerEvents: ['pageCreate'],
+        });
+
+      expect(response.status).toBe(200);
+      const stored = await ChatNotificationDestination.findOne({
+        relationId: RELATION_ID,
+      });
+      expect(stored?.channelName).toBe('general');
+    });
+
+    it('replaces the events of a destination saved again for the same channel and path', async () => {
+      await seedRelation();
+      await seedGen2Destination({ channelId: 'C0001', channelName: 'general' });
+      stubChannels([{ channelId: 'C0001', channelName: 'general' }]);
+      const app = buildApp(adminUser);
+
+      await request(app)
+        .post(DESTINATIONS_PATH)
+        .send({
+          channelId: 'C0001',
+          pathPattern: '/*',
+          triggerEvents: ['pageDelete'],
+        });
+
+      const stored = await ChatNotificationDestination.find({
+        relationId: RELATION_ID,
+      });
+      expect(stored).toHaveLength(1);
+      expect(stored[0].triggerEvents).toEqual(['pageDelete']);
+    });
+
+    it('refuses a channel id the chat service does not report', async () => {
+      await seedRelation();
+      stubChannels([{ channelId: 'C0001', channelName: 'general' }]);
+      const app = buildApp(adminUser);
+
+      const response = await request(app)
+        .post(DESTINATIONS_PATH)
+        .send({
+          channelId: 'C-not-a-real-channel',
+          pathPattern: '/*',
+          triggerEvents: ['pageCreate'],
+        });
+
+      expect(response.status).toBe(400);
+      expect(await ChatNotificationDestination.countDocuments({})).toBe(0);
+    });
+
+    it('refuses an unknown trigger event rather than storing a destination that never fires', async () => {
+      await seedRelation();
+      stubChannels([{ channelId: 'C0001', channelName: 'general' }]);
+      const app = buildApp(adminUser);
+
+      const response = await request(app)
+        .post(DESTINATIONS_PATH)
+        .send({
+          channelId: 'C0001',
+          pathPattern: '/*',
+          triggerEvents: ['pageExploded'],
+        });
+
+      expect(response.status).toBe(400);
+      expect(await ChatNotificationDestination.countDocuments({})).toBe(0);
+    });
+
+    it('answers 404 for a relation that is not paired, without asking the proxy', async () => {
+      const app = buildApp(adminUser);
+
+      const response = await request(app)
+        .post(
+          `${MOUNT_PATH}/relations/no-such-relation/notification-destinations`,
+        )
+        .send({
+          channelId: 'C0001',
+          pathPattern: '/*',
+          triggerEvents: ['pageCreate'],
+        });
+
+      expect(response.status).toBe(404);
+      expect(proxyClient.fetchChannels).not.toHaveBeenCalled();
+    });
+
+    it('answers 502 when the channel list cannot be fetched, so no id can be confirmed', async () => {
+      await seedRelation();
+      vi.mocked(proxyClient.fetchChannels).mockResolvedValue({
+        ok: false,
+        reason: 'unreachable',
+      });
+      const app = buildApp(adminUser);
+
+      const response = await request(app)
+        .post(DESTINATIONS_PATH)
+        .send({
+          channelId: 'C0001',
+          pathPattern: '/*',
+          triggerEvents: ['pageCreate'],
+        });
+
+      expect(response.status).toBe(502);
+      expect(await ChatNotificationDestination.countDocuments({})).toBe(0);
+    });
+
+    it('refuses both endpoints for a logged-in NON-admin user', async () => {
+      const app = buildApp(nonAdminUser);
+
+      const readResponse = await request(app).get(DESTINATIONS_PATH);
+      const saveResponse = await request(app)
+        .post(DESTINATIONS_PATH)
+        .send({
+          channelId: 'C0001',
+          pathPattern: '/*',
+          triggerEvents: ['pageCreate'],
+        });
+
+      expect(readResponse.status).not.toBe(200);
+      expect(saveResponse.status).not.toBe(200);
+      expect(await ChatNotificationDestination.countDocuments({})).toBe(0);
     });
   });
 
