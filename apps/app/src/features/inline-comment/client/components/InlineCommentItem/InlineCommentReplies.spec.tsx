@@ -127,11 +127,34 @@ describe('InlineCommentReplies', () => {
 
     const renderedReplies = screen.getAllByTestId('inline-comment-reply');
     expect(renderedReplies).toHaveLength(2);
-    expect(renderedReplies[0]).toHaveTextContent('first reply');
-    expect(renderedReplies[1]).toHaveTextContent('second reply');
     // Nesting follows ReplyComments.tsx's established indentation classes.
     expect(renderedReplies[0]).toHaveClass('ms-4');
     expect(renderedReplies[0]).toHaveClass('ms-sm-5');
+  });
+
+  it("renders replies oldest-first even though the `replies` prop arrives newest-first (matches a normal comment thread's display order)", () => {
+    // `replies` arrives in the server's `createdAt: 'desc'` fetch order
+    // (newest first) -- InlineCommentService.listByPageId() never
+    // reorders for display, display order is this component's own
+    // concern. Mirrors PageComment.tsx's `commentsFromOldest` reversal.
+    renderReplies({
+      replies: [
+        reply({
+          id: 'reply-newer',
+          comment: 'the newer reply',
+          createdAt: new Date('2026-01-02T00:00:00.000Z'),
+        }),
+        reply({
+          id: 'reply-older',
+          comment: 'the older reply',
+          createdAt: new Date('2026-01-01T00:00:00.000Z'),
+        }),
+      ],
+    });
+
+    const renderedReplies = screen.getAllByTestId('inline-comment-reply');
+    expect(renderedReplies[0]).toHaveTextContent('the older reply');
+    expect(renderedReplies[1]).toHaveTextContent('the newer reply');
   });
 
   it('wraps each reply in the same shared comment box a normal comment uses (Req 13.3 / 13.4)', () => {

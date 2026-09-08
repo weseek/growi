@@ -49,9 +49,17 @@
  * pattern `PageComment.tsx` uses for its own reply editors — but since a
  * single origin comment has exactly one reply thread (1:1, not a set of
  * many), a plain `boolean` is enough here.
+ *
+ * `replies` arrives in `InlineCommentService.listByPageId()`'s raw
+ * `createdAt: 'desc'` fetch order (newest first) — that API is a plain
+ * creation-order fetch and does not decide display order, the same as the
+ * page-footer comment API. This component reverses it to oldest-first
+ * before rendering, mirroring `PageComment.tsx`'s own `commentsFromOldest`
+ * reversal, so a reply thread always reads oldest-to-newest regardless of
+ * whether the origin comment is inline or normal.
  */
 
-import { type FC, type JSX, useState } from 'react';
+import { type FC, type JSX, useMemo, useState } from 'react';
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'react-i18next';
 
@@ -98,12 +106,14 @@ export const InlineCommentReplies: FC<InlineCommentRepliesProps> = (
 
   const [isReplyOpen, setIsReplyOpen] = useState(false);
 
+  const repliesFromOldest = useMemo(() => [...replies].reverse(), [replies]);
+
   return (
     <div
       data-testid="inline-comment-replies"
       className="inline-comment-replies"
     >
-      {replies.map((reply) => (
+      {repliesFromOldest.map((reply) => (
         <div
           key={reply.id}
           data-testid="inline-comment-reply"

@@ -549,19 +549,16 @@ export class InlineCommentService {
    *   `replyToId: null`), then one `findMany()` for every reply to any of
    *   those origins (`replyToId: { in: [...] }`) in a single round trip
    *   rather than one query per origin.
-   * - Origin comments order by `createdAt: 'desc'` (newest first), matching
-   *   the direction the existing `findCommentsByPageId`/
-   *   `findCommentsByRevisionId` extension methods already use for the
-   *   page-footer comment thread (see
-   *   `apps/app/src/features/comment/server/models/comment.ts`). Replies
-   *   order by `createdAt: 'asc'` (oldest first) instead — copying `'desc'`
-   *   here would only match that other query's raw fetch direction, not
-   *   what actually renders: `PageComment.tsx` reverses its `'desc'` fetch
-   *   to oldest-first (`commentsFromOldest`) before grouping replies under
-   *   their origin, so a normal comment's reply thread always reads
-   *   oldest-to-newest. Matching that requires asking Prisma for `'asc'`
-   *   directly here, since there is no separate client-side reversal step
-   *   for inline-comment replies.
+   * - Both queries order by `createdAt: 'desc'`, matching the direction the
+   *   existing `findCommentsByPageId`/`findCommentsByRevisionId` extension
+   *   methods already use for the page-footer comment thread (see
+   *   `apps/app/src/features/comment/server/models/comment.ts`). Display
+   *   order (oldest-first reply threads, matching a normal comment's own
+   *   thread) is a client-side concern, not this API's — see
+   *   `InlineCommentReplies.tsx`, which reverses `replies` before
+   *   rendering, the same way `PageComment.tsx` reverses its own `'desc'`
+   *   fetch (`commentsFromOldest`) before grouping replies under their
+   *   origin. This method stays a plain creation-order fetch either way.
    * - A reply is matched to its origin by `replyToId`; an origin with no
    *   matching rows gets an empty `replies` array (never `undefined`).
    */
@@ -582,7 +579,7 @@ export class InlineCommentService {
         replyToId: { in: originRows.map((row) => row.id) },
       },
       include: { creator: true },
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: 'desc' },
     });
 
     const repliesByOriginId = replyRows.reduce((map, row) => {

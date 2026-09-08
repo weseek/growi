@@ -612,7 +612,7 @@ describe('InlineCommentService.createReply', () => {
 });
 
 describe('InlineCommentService.listByPageId', () => {
-  it('起点コメントは作成日時の新しい順、各起点にネストする返信は古い順（通常コメントの返信表示と揃える）で返す', async () => {
+  it('起点コメントに、対応する返信をネストした配列として、双方とも作成日時順に並べて返す', async () => {
     const pageId = makeId();
     const now = Date.now();
 
@@ -629,24 +629,23 @@ describe('InlineCommentService.listByPageId', () => {
       createdAt: new Date(now - 10_000),
     });
 
-    // Two replies to originOlder, oldest first — the order listByPageId
-    // must preserve within that origin's nested `replies` array, matching
-    // how PageComment.tsx displays a normal comment's replies (it reverses
-    // the server's `createdAt: 'desc'` fetch to oldest-first before
-    // grouping — see this service's own doc comment above `listByPageId`).
-    // A reply to originNewer confirms replies are matched to the correct
-    // parent, not just concatenated.
-    const replyToOlderOlder = makeReplyRow({
-      pageId,
-      comment: 'reply to older, older',
-      replyToId: originOlder.id,
-      createdAt: new Date(now - 5_000),
-    });
+    // Two replies to originOlder, newest first — the order listByPageId
+    // must preserve within that origin's nested `replies` array. Display
+    // order (oldest-first) is a client concern (InlineCommentReplies.tsx),
+    // not this method's — see its own doc comment above. A reply to
+    // originNewer confirms replies are matched to the correct parent, not
+    // just concatenated.
     const replyToOlderNewer = makeReplyRow({
       pageId,
       comment: 'reply to older, newer',
       replyToId: originOlder.id,
       createdAt: new Date(now - 1_000),
+    });
+    const replyToOlderOlder = makeReplyRow({
+      pageId,
+      comment: 'reply to older, older',
+      replyToId: originOlder.id,
+      createdAt: new Date(now - 5_000),
     });
     const replyToNewer = makeReplyRow({
       pageId,
@@ -657,7 +656,7 @@ describe('InlineCommentService.listByPageId', () => {
 
     const deps = makeListDeps(
       [originNewer, originOlder],
-      [replyToOlderOlder, replyToOlderNewer, replyToNewer],
+      [replyToOlderNewer, replyToOlderOlder, replyToNewer],
     );
     const service = new InlineCommentService(deps);
 
@@ -676,14 +675,14 @@ describe('InlineCommentService.listByPageId', () => {
       result
         .find((c) => c.id === originOlder.id)
         ?.replies.map((r) => r.comment),
-    ).toEqual(['reply to older, older', 'reply to older, newer']);
+    ).toEqual(['reply to older, newer', 'reply to older, older']);
 
     // The nested-order assertions above only prove the assembly step
     // preserves whatever order `findMany` happens to return — they say
     // nothing about whether the service actually asked Prisma to sort by
-    // `createdAt`, and in which direction. Assert on the query arguments
-    // directly (requirement 2.6), the same way create()'s tests inspect
-    // `.mock.calls[0][0].data` for requirement 1.4.
+    // `createdAt`. Assert on the query arguments directly (requirement
+    // 2.6), the same way create()'s tests inspect `.mock.calls[0][0].data`
+    // for requirement 1.4.
     const findManyCalls = vi.mocked(deps.prisma.comments.findMany).mock.calls;
     const originCall = findManyCalls.find(
       (call) => call[0]?.where?.replyToId === null,
@@ -693,7 +692,7 @@ describe('InlineCommentService.listByPageId', () => {
       return replyToId != null && typeof replyToId === 'object';
     });
     expect(originCall?.[0]?.orderBy).toEqual({ createdAt: 'desc' });
-    expect(replyCall?.[0]?.orderBy).toEqual({ createdAt: 'asc' });
+    expect(replyCall?.[0]?.orderBy).toEqual({ createdAt: 'desc' });
   });
 
   it('返信を持たない起点コメントは空の replies 配列を返す（undefined/null にはしない）', async () => {
