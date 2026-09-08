@@ -2,7 +2,7 @@
 
 > **LLMテストダブルの共通方針**: 本specの全テストは実LLMを呼ばない。Agentをモック化し、tool-call / tool-result を偽の `data` で埋める方式を採る（design.md「Testing Strategy → LLM Test Double Strategy」を参照）。前例は `apps/app/src/features/ai-tools/suggest-path/server/integration-tests/suggest-path-agentic-integration.spec.ts`。各タスクの記述では、この方針に従うことを前提に固有の注意点のみを記す。
 
-- [ ] 1. SummarizeAgent: 全文カバレッジ方針で単一ページを要約するAgentができる
+- [x] 1. SummarizeAgent: 全文カバレッジ方針で単一ページを要約するAgentができる
 - [x] 1.1 LimitedGetPageContentTool: 読み取り行数バジェットが強制される
   - `RequestContext` の `pageReadBudget: { used: number; limit: number }` を読み、未設定時は `getPageContentTool` に委譲せず `context_error` を返す
   - `used >= limit` の場合は委譲せず `limit_exceeded` を返す（このとき `used`/`limit` は変更しない）
@@ -27,7 +27,7 @@
   - instructions文字列に上記4方針（段階的読み取り手順・打ち切り時の明示・出力形式・応答言語）の指示が含まれることをユニットテストで確認できる
   - _Requirements: 2.1, 3.1_
 
-- [ ] 1.3 SummarizeAgentがMastraから取得できる
+- [x] 1.3 SummarizeAgentがMastraから取得できる
   - `limitedGetPageContentTool`（タスク1.1）のみをツールとして持ち、`memory`（既存のMongoDBStore、growiAgentと共有）に接続したAgent定義を作成する
   - ツールの登録**キー**を `getPageContentTool` にする（`tools: { getPageContentTool: limitedGetPageContentTool }`）。LLMに送られるツール名は `tools` レコードのキーであり、クロスAgentスレッド再生時に `growiAgent` の登録名と一致させるために必須
   - モデル解決は `post-message.ts` と同じ `resolveEffectiveModelKey` の丸め込みを経由し、リクエストの `modelKey` 省略時はデフォルトモデルへフォールバックする
