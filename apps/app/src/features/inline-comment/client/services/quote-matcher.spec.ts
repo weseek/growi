@@ -1,3 +1,6 @@
+// @vitest-environment happy-dom
+
+import { captureSelection } from '../components/SelectionCapture/use-text-selection';
 import { createNormalizedOffsetMapper } from './normalized-offset-mapping';
 import {
   FUZZY_MATCH_ERROR_RATE,
@@ -5,6 +8,7 @@ import {
   type InlineCommentAnchor,
   matchQuote,
 } from './quote-matcher';
+import { renderedTextOf } from './rendered-text';
 
 const anchorOf = (
   quote: string,
@@ -209,6 +213,135 @@ describe('matchQuote', () => {
       // Naively converting the end offset would drop the character entirely and
       // report 'foo ' instead.
       expect(matchedTextOf(text, result)).toBe('foo क़');
+    });
+  });
+});
+
+/** A string the fixture below holds twice, both times after the formula. */
+const DUPLICATE_QUOTE = 'needle';
+
+/**
+ * The formula text KaTeX keeps under its `.katex` root — once as an
+ * accessibility-only MathML tree, once as the visual tree, so those characters
+ * exist twice in the DOM.
+ */
+const FORMULA_TEXT = 'x2+y2=z2+w2';
+
+const PROSE_BEFORE_FORMULA = 'Before the formula: ';
+
+const TAIL_TEXT = `See ${DUPLICATE_QUOTE} here and ${DUPLICATE_QUOTE} again.`;
+
+/**
+ * Mirrors a page body of: prose, a KaTeX-rendered formula, then a tail holding
+ * the same string twice.
+ *
+ * A naive character count (the container's raw `textContent`, or
+ * `Range.toString()`) counts the formula's characters twice, while highlight
+ * resolution skips the whole `.katex` subtree — so every position after the
+ * formula is counted differently by the two sides unless both go through one
+ * counting rule.
+ *
+ * Fixture invariant, asserted in the test: that per-side difference must be
+ * LARGER than the gap between the two occurrences of `DUPLICATE_QUOTE`. Only
+ * then does a naively counted offset for the first occurrence land past the
+ * second one, making a disagreement observable as *the wrong occurrence being
+ * chosen* rather than as a shifted offset that still happens to be nearest the
+ * right one. Keep the formula text long enough (and the two occurrences close
+ * enough together) that this holds.
+ */
+const mountPageWithFormulaBeforeDuplicateQuote = (): {
+  container: HTMLDivElement;
+  tailNode: Text;
+} => {
+  const container = document.createElement('div');
+
+  const katexRoot = document.createElement('span');
+  katexRoot.className = 'katex';
+  const mathml = document.createElement('span');
+  mathml.className = 'katex-mathml';
+  mathml.textContent = FORMULA_TEXT;
+  const katexHtml = document.createElement('span');
+  katexHtml.className = 'katex-html';
+  katexHtml.setAttribute('aria-hidden', 'true');
+  katexHtml.textContent = FORMULA_TEXT;
+  katexRoot.append(mathml, katexHtml);
+
+  const tailNode = document.createTextNode(TAIL_TEXT);
+  container.append(
+    document.createTextNode(PROSE_BEFORE_FORMULA),
+    katexRoot,
+    tailNode,
+  );
+  document.body.appendChild(container);
+
+  return { container, tailNode };
+};
+
+/** Selects [start, end) of `textNode` as the live window selection. */
+const selectIn = (textNode: Text, start: number, end: number): Selection => {
+  const range = document.createRange();
+  range.setStart(textNode, start);
+  range.setEnd(textNode, end);
+
+  const selection = window.getSelection();
+  if (selection == null) {
+    throw new Error('window.getSelection() returned null');
+  }
+  selection.removeAllRanges();
+  selection.addRange(range);
+  return selection;
+};
+
+describe('matchQuote with an anchor captured from a live DOM', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+    window.getSelection()?.removeAllRanges();
+  });
+
+  it('resolves a quote selected right after a formula to that occurrence, not to a later duplicate', () => {
+    const { container, tailNode } = mountPageWithFormulaBeforeDuplicateQuote();
+    const { text } = renderedTextOf(container);
+
+    const selectedOccurrence = text.indexOf(DUPLICATE_QUOTE);
+    const laterOccurrence = text.lastIndexOf(DUPLICATE_QUOTE);
+    const naiveOccurrence = (container.textContent ?? '').indexOf(
+      DUPLICATE_QUOTE,
+    );
+
+    // Guard the fixture: it must still pose the problem this test is about —
+    // exactly two occurrences, and a per-side counting difference wider than
+    // the gap between them (see the fixture's invariant above).
+    expect(text.split(DUPLICATE_QUOTE)).toHaveLength(3);
+    expect(laterOccurrence).toBeGreaterThan(selectedOccurrence);
+    expect(naiveOccurrence - selectedOccurrence).toBeGreaterThan(
+      laterOccurrence - selectedOccurrence,
+    );
+
+    // Select the earlier of the two occurrences — the one right after the formula.
+    const selectionStart = TAIL_TEXT.indexOf(DUPLICATE_QUOTE);
+    const captured = captureSelection(
+      selectIn(
+        tailNode,
+        selectionStart,
+        selectionStart + DUPLICATE_QUOTE.length,
+      ),
+      container,
+    );
+    if (captured == null) {
+      throw new Error(
+        'captureSelection returned null for a non-empty selection',
+      );
+    }
+    expect(captured.quote).toBe(DUPLICATE_QUOTE);
+
+    // The anchor as recorded at comment-creation time, resolved against the very
+    // same body it was captured from, must land back on the same words.
+    const result = matchQuote(text, captured);
+
+    expect(result).toEqual({
+      status: 'exact',
+      startOffset: selectedOccurrence,
+      endOffset: selectedOccurrence + DUPLICATE_QUOTE.length,
     });
   });
 });
