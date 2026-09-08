@@ -4,6 +4,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import type { InlineCommentAnchor } from '../../../interfaces';
+import { matchQuote } from '../../services/quote-matcher';
 import type { AnchorResolverInput } from './use-anchor-resolver';
 import { useAnchorResolver } from './use-anchor-resolver';
 
@@ -195,6 +196,109 @@ describe('useAnchorResolver', () => {
         status: 'exact',
         startOffset: start,
         endOffset: start + 'quick brown fox'.length,
+      }),
+    );
+  });
+
+  it('waits for a draw.io diagram to finish before highlighting text that follows it', async () => {
+    // Regression guard for the draw.io path (Requirements 3.2, 3.3). draw.io's
+    // viewer already participated correctly in the rendering-status protocol
+    // before this amend — `DrawioViewer` renders its wrapper with
+    // GROWI_IS_CONTENT_RENDERING_ATTR set to 'true', GraphViewer injects the
+    // diagram into the inner `.mxgraph` element, and the viewer's own
+    // MutationObserver flips the attribute to 'false' afterwards. This pins
+    // that the changed settle detection still resolves such a page correctly,
+    // and only after the diagram is done.
+    //
+    // The diagram matters because its rendered labels are part of the
+    // container's text: they shift every offset after the diagram. The page is
+    // built so that shift is what decides which of two identical quote
+    // occurrences gets highlighted. The distance between the two occurrences
+    // is deliberately kept strictly between zero and twice
+    // DIAGRAM_LABELS.length, so while the diagram is still empty the *wrong*
+    // (second) occurrence is the one closer to the stored approxOffset — yet
+    // the two occurrences never coincide with the expected settled offset, so
+    // the final assertion below pins one specific occurrence.
+    const INTRO = 'Architecture overview. ';
+    const DIAGRAM_LABELS = 'Client → API Gateway → Worker';
+    const MID = ' shows ';
+    const QUOTE = 'the retry path';
+    const GAP = ' and then ';
+    const TAIL = ' again.';
+    const body = MID + QUOTE + GAP + QUOTE + TAIL;
+
+    const settledText = INTRO + DIAGRAM_LABELS + body;
+    const midRenderText = INTRO + body;
+
+    const targetStart = settledText.indexOf(QUOTE);
+    const midRenderTargetStart = midRenderText.indexOf(QUOTE);
+    const midRenderDecoyStart = midRenderText.indexOf(
+      QUOTE,
+      midRenderTargetStart + 1,
+    );
+
+    // The anchor was captured from the fully rendered page, so its
+    // approxOffset is the target occurrence's offset *with* the diagram
+    // present.
+    const anchor = anchorOf('c1', QUOTE, targetStart);
+
+    // Premise of this scenario, asserted rather than assumed: resolving
+    // against the mid-render text really would highlight the wrong
+    // occurrence. Without this the test could pass with a page where
+    // resolving early happens to be harmless, and would prove nothing.
+    expect(matchQuote(midRenderText, anchor.anchor)).toEqual({
+      status: 'exact',
+      startOffset: midRenderDecoyStart,
+      endOffset: midRenderDecoyStart + QUOTE.length,
+    });
+    expect(midRenderDecoyStart).not.toBe(midRenderTargetStart);
+    // ...and the mid-render mistake is a different offset from the correct
+    // settled one, so the assertion at the end of this test cannot be
+    // satisfied by an early resolution that happened to guess right.
+    expect(midRenderDecoyStart).not.toBe(targetStart);
+
+    // draw.io's wrapper as `DrawioViewer` renders it: marked as rendering,
+    // with an empty `.mxgraph` element waiting for GraphViewer.
+    const drawioWrapper = document.createElement('div');
+    drawioWrapper.className = 'drawio-viewer';
+    drawioWrapper.setAttribute(GROWI_IS_CONTENT_RENDERING_ATTR, 'true');
+    const mxgraph = document.createElement('div');
+    mxgraph.className = 'mxgraph';
+    drawioWrapper.appendChild(mxgraph);
+
+    container.replaceChildren(
+      document.createTextNode(INTRO),
+      drawioWrapper,
+      document.createTextNode(body),
+    );
+
+    const { result } = renderHook(() =>
+      useAnchorResolver(containerRef, [anchor]),
+    );
+
+    // Nothing is highlighted while the diagram is still rendering: the
+    // mount-time settle check finds the marker and stays quiet, and the
+    // anchors trigger defers rather than matching against the half-built DOM.
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(result.current.get('c1')).toBeUndefined();
+
+    // GraphViewer injects the diagram, whose labels join the container's text.
+    // The marker is still 'true' at this point — the real viewer clears it
+    // only from its own MutationObserver callback, i.e. in a later batch — so
+    // this mutation alone must not make the resolver publish anything.
+    mxgraph.textContent = DIAGRAM_LABELS;
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(result.current.get('c1')).toBeUndefined();
+
+    // The viewer reports completion. Only now may the anchor be highlighted —
+    // and at the occurrence that follows the diagram, not the later decoy.
+    drawioWrapper.setAttribute(GROWI_IS_CONTENT_RENDERING_ATTR, 'false');
+
+    await waitFor(() =>
+      expect(result.current.get('c1')).toEqual({
+        status: 'exact',
+        startOffset: targetStart,
+        endOffset: targetStart + QUOTE.length,
       }),
     );
   });
