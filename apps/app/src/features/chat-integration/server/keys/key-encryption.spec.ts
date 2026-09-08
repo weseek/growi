@@ -4,6 +4,7 @@ import type { ChatKeyEncryptionEnv } from './key-encryption';
 import {
   ChatKeyEncryptionConfigurationError,
   chatKeyGenerationOf,
+  describeChatKeyEncryptionConfiguration,
   encryptChatKeyForStorage,
   isChatKeyEncryptionConfigured,
   isEncryptedChatKeyEnvelope,
@@ -193,6 +194,41 @@ describe('isChatKeyEncryptionConfigured', () => {
         ),
       }),
     ).toBe(false);
+  });
+});
+
+describe('describeChatKeyEncryptionConfiguration', () => {
+  it('reports "configured: true" when the key and generation are both usable', () => {
+    expect(describeChatKeyEncryptionConfiguration(envWithKey())).toEqual({
+      configured: true,
+    });
+  });
+
+  it('distinguishes "unset" (variable never provided) from "invalid-key" (wrong length)', () => {
+    expect(describeChatKeyEncryptionConfiguration({})).toEqual({
+      configured: false,
+      reason: 'unset',
+    });
+    expect(
+      describeChatKeyEncryptionConfiguration({
+        CHAT_INTEGRATION_KEY_ENCRYPTION_KEY: '',
+      }),
+    ).toEqual({ configured: false, reason: 'unset' });
+    expect(
+      describeChatKeyEncryptionConfiguration({
+        CHAT_INTEGRATION_KEY_ENCRYPTION_KEY: Buffer.alloc(16, 3).toString(
+          'base64',
+        ),
+      }),
+    ).toEqual({ configured: false, reason: 'invalid-key' });
+  });
+
+  it('reports "invalid-generation" separately when the key is fine but the generation is not', () => {
+    expect(
+      describeChatKeyEncryptionConfiguration(
+        envWithKey({ CHAT_INTEGRATION_KEY_ENCRYPTION_KEY_GENERATION: '0' }),
+      ),
+    ).toEqual({ configured: false, reason: 'invalid-generation' });
   });
 });
 

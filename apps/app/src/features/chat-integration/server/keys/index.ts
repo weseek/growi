@@ -10,9 +10,13 @@
 // importing `./key-encryption` directly. Enforcing it mechanically, if ever
 // needed, would require adding such a restriction.
 
-export type { EncryptedChatKeyEnvelope } from './key-encryption';
+export type {
+  ChatKeyEncryptionConfigurationStatus,
+  EncryptedChatKeyEnvelope,
+} from './key-encryption';
 export {
   ChatKeyEncryptionConfigurationError,
+  describeChatKeyEncryptionConfiguration,
   encryptChatKeyForStorage,
   isChatKeyEncryptionConfigured,
   isEncryptedChatKeyEnvelope,

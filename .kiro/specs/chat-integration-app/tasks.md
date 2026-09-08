@@ -352,7 +352,7 @@
   - _Depends: なし_
   - _Boundary: AdminChatIntegration_
 
-- [ ] 9.1 管理画面の受け皿を置き、連携の状態を出す
+- [x] 9.1 管理画面の受け皿を置き、連携の状態を出す
   - 管理画面の受け皿を置き、**既存の案内の一覧に 3 か所追記する**（分岐・一覧・スマートフォン用の一覧）
   - ペアリングの操作、**サービスごとに何が使えるか**、**連携の状態**を出す
   - **「サービスごとに何が使えるか」は proxy の `capabilities` の応答（`CapabilityReport`）を
@@ -556,3 +556,14 @@
     設計すること。** `issueOAuthInstallState`/`verifyOAuthInstallState`（本タスクの成果）は
     そのまま使えるが、proxy 側の認可URL組み立てエンドポイントと、proxy→GROWI の照合呼び出しは
     chat-integration-proxy / chat-integration-protocol 側に別途タスクを立てる必要がある。
+- **task 9.1 のレビューで見つかった、CapabilityReport の決め打ち禁止を確かめる試験の抜け**:
+  - 既存の試験は「知らない capability の名前も消えずに出る」ことしか確かめておらず、
+    「知っている capability（`slashCommand`）の `level`/`substitute` の値そのものが応答のまま出る」
+    ことは確かめていなかった。レビュアーが実際に `slashCommand` の表示レベルを `'full'` に
+    決め打ちする変更を入れて試したところ、既存の試験は全部通ってしまった。
+  - `AdminChatIntegration.spec.tsx` に、`slashCommand` の行を `data-testid`
+    （`grw-chat-integration-capability-row`。表示側にも同じ `data-testid` を追加）で取り出し、
+    そのモック値（`level: 'none'`, `substitute: 'mention'`）がそのまま出ることを確かめる試験を足した。
+    同じ決め打ちを再現させて RED になることも確認済み。
+  - **今後、応答をそのまま出す（決め打ち禁止）ことが要求されている画面の試験を書くときは、
+    「未知の値が消えない」だけでなく「既知の値がそのモック値のまま出る」ことも必ず両方確かめること。**

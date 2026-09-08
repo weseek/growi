@@ -184,6 +184,59 @@ export const isChatKeyEncryptionConfigured = (
 };
 
 /**
+ * Why {@link isChatKeyEncryptionConfigured} would return `false` -- that
+ * function collapses every misconfiguration to a single boolean, but the
+ * admin screen (task 9.1) has to show an operator two DIFFERENT problems
+ * differently: "the variable was never set" versus "it is set, but
+ * malformed" (a bad key length, or an invalid
+ * `CHAT_INTEGRATION_KEY_ENCRYPTION_KEY_GENERATION`). Without this
+ * distinction an operator who set the variable but mistyped it sees the
+ * same message as one who never touched it at all, and cannot tell what to
+ * fix (tasks.md Implementation Notes on task 1.3).
+ */
+export type ChatKeyEncryptionConfigurationStatus =
+  | { readonly configured: true }
+  | {
+      readonly configured: false;
+      readonly reason: 'unset' | 'invalid-key' | 'invalid-generation';
+    };
+
+/**
+ * The detailed counterpart of {@link isChatKeyEncryptionConfigured}, for the
+ * admin screen only -- everywhere else (pairing, encryption itself) keeps
+ * using the plain boolean, since a signing/pairing path only ever needs to
+ * know "can I proceed", not "which of three ways is this broken".
+ */
+export const describeChatKeyEncryptionConfiguration = (
+  env: ChatKeyEncryptionEnv = process.env,
+): ChatKeyEncryptionConfigurationStatus => {
+  const configuredKey = env[KEY_ENV_NAME];
+  if (configuredKey == null || configuredKey.length === 0) {
+    return { configured: false, reason: 'unset' };
+  }
+
+  try {
+    readEncryptionKey(env);
+  } catch (err) {
+    if (err instanceof ChatKeyEncryptionConfigurationError) {
+      return { configured: false, reason: 'invalid-key' };
+    }
+    throw err;
+  }
+
+  try {
+    readGeneration(env);
+  } catch (err) {
+    if (err instanceof ChatKeyEncryptionConfigurationError) {
+      return { configured: false, reason: 'invalid-generation' };
+    }
+    throw err;
+  }
+
+  return { configured: true };
+};
+
+/**
  * Encrypt an own-side private key for storage.
  *
  * AES-256-GCM rather than an unauthenticated mode: the stored key is read
