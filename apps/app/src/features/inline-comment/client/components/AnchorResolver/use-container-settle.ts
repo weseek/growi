@@ -20,16 +20,27 @@ export const hasRenderingElements = (container: HTMLElement): boolean => {
 };
 
 /**
- * Watches `container` for elements carrying the GROWI "content rendering"
- * status protocol (`data-growi-is-content-rendering`), and calls `onSettle`
- * whenever the number of such elements transitions to zero.
+ * Watches `container` for DOM changes and calls `onSettle` every time the
+ * container is confirmed to hold no element carrying the GROWI "content
+ * rendering" status protocol (`data-growi-is-content-rendering`).
  *
- * Checks once immediately so a container with no async widgets settles
- * right away. While rendering elements remain present, a later transition
- * back to zero would fire again — this backs the self-healing re-anchoring
+ * Firing is not limited to the moment the number of such elements reaches
+ * zero: a change that carries no rendering marker at all — a heading's edit
+ * button appearing once collaborative-editing state loads, for instance —
+ * also changes the container's text and must give the caller a chance to
+ * re-resolve (Requirement 3.4). This backs the self-healing re-anchoring
  * described in design.md's System Flows ("次の静定検知で再計算が走り、
- * ハイライトのズレは自己修復される") — but that only applies within the
- * WATCH_TIMEOUT_MS window; see below.
+ * ハイライトのズレは自己修復される"), but only within the WATCH_TIMEOUT_MS
+ * window; see below.
+ *
+ * Checks triggered by an observed DOM change are coalesced per animation
+ * frame, so many changes belonging to one rendering pass produce at most one
+ * `onSettle` (the "wait one frame before announcing completion" idiom). The
+ * mount-time check is deliberately **not** coalesced: it fires synchronously,
+ * so the initial settle notification is not reordered against the caller's
+ * own mount-time work (`useAnchorResolver` resolves once for the settle
+ * signal and once for its `anchors` input, and delaying the former by a frame
+ * flips their order).
  *
  * If rendering elements are still present after WATCH_TIMEOUT_MS, observation
  * stops (mirroring `watchRenderingAndReScroll`'s own timeout behavior:
@@ -46,33 +57,53 @@ export const observeContainerSettle = (
 ): (() => void) => {
   let stopped = false;
   let isSettled = false;
+  let pendingFrame: number | undefined;
 
   const cleanup = () => {
     stopped = true;
     observer.disconnect();
     window.clearTimeout(watchTimeoutId);
+    if (pendingFrame != null) {
+      window.cancelAnimationFrame(pendingFrame);
+      pendingFrame = undefined;
+    }
   };
 
-  const fireSettle = () => {
-    isSettled = true;
-    onSettle();
-  };
-
-  const check = () => {
+  /**
+   * The single "evaluate the container, fire if settled" step. Called
+   * synchronously for the mount-time check and from inside a frame for
+   * checks triggered by an observed DOM change — the predicate and the
+   * firing live here only, so both paths cannot drift apart.
+   */
+  const fireIfSettled = () => {
     if (stopped) return;
 
-    const hasRendering = hasRenderingElements(container);
-
-    if (hasRendering) {
-      // Re-arm: a later transition back to zero must fire again.
+    if (hasRenderingElements(container)) {
+      // Re-arm: the WATCH_TIMEOUT_MS fallback below fires only for a
+      // container that never settled.
       isSettled = false;
       return;
     }
 
-    if (!isSettled) fireSettle();
+    isSettled = true;
+    onSettle();
   };
 
-  const observer = new MutationObserver(check);
+  const scheduleSettle = () => {
+    // A frame is already pending: let it fire — don't reschedule, so all
+    // changes observed within one frame collapse into a single call.
+    if (pendingFrame != null) return;
+
+    pendingFrame = window.requestAnimationFrame(() => {
+      pendingFrame = undefined;
+      // fireIfSettled re-evaluates the container here: another widget may
+      // have started rendering between scheduling and this frame, in which
+      // case the container is no longer settled.
+      fireIfSettled();
+    });
+  };
+
+  const observer = new MutationObserver(scheduleSettle);
 
   observer.observe(container, {
     childList: true,
@@ -80,9 +111,6 @@ export const observeContainerSettle = (
     attributes: true,
     attributeFilter: [GROWI_IS_CONTENT_RENDERING_ATTR],
   });
-
-  // Initial check so a container with no rendering elements settles immediately.
-  check();
 
   const watchTimeoutId = window.setTimeout(() => {
     if (stopped) return;
@@ -93,6 +121,11 @@ export const observeContainerSettle = (
     cleanup();
     if (shouldFire) onSettle();
   }, WATCH_TIMEOUT_MS);
+
+  // Initial check, fired synchronously (see the note on ordering above) so a
+  // container with no rendering elements settles without waiting for a DOM
+  // change. Armed after watchTimeoutId, which `cleanup` closes over.
+  fireIfSettled();
 
   return cleanup;
 };
