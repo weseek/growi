@@ -47,7 +47,7 @@
 
 ## 3. Core: 翻訳の取り込みと分岐
 
-- [ ] 3.1 (P) POEditorから翻訳をexportし、変更の種類ごとに集計する
+- [x] 3.1 (P) POEditorから翻訳をexportし、変更の種類ごとに集計する
   - 3 namespace × 4非ソース言語（最大12通り）それぞれについてexportし、変更判定処理にかけて結果を集める
   - 判定結果を「訳文のみの変更をまとめたグループ」と「構造変更をまとめたグループ」の最大2グループに分類する
   - 同一グループの中に異なる判定結果（訳文のみと構造変更）を混在させないことを検証する単体テストを書く
@@ -140,3 +140,4 @@
 - (1.3) `DiffClassifier` は葉の値を厳密等価（`!==`）で比較している。現在のロケールJSONは葉が全て文字列なので問題ないが、将来どこかの namespace に配列やオブジェクトを値に持つキーが増えた場合、参照比較になり毎回`translation_only`と誤判定する。3.1（export集計）でPOEditorから取得したJSONを渡す際、葉が文字列以外になり得ないか一応確認すること。
 - (2, レビューで発見) `poeditor-client.spec.ts`（タスク1.2、実時間ベースの20秒スロットルテスト）が、5回に1回程度 `expected 19999 to be greater than or equal to 20000` の1ミリ秒未満の誤差で間欠的に失敗する（flaky）。今回のタスクの差分が原因ではないが、別途 flaky test として起票し、実時間計測でなくフェイクタイマー等に置き換えることを検討すること。
 - (2) アップロード失敗時は読み込み失敗時と対称に「即座に中断し以降のnamespaceへは何もしない」形に統一した。読み込み失敗・アップロード失敗のどちらも部分反映を作らない。
+- (3.1) `collectClassifications` の戻り値は `{ ok: true, translationOnly, structural, skipped }` の形。`read_failed`/`export_failed` は全体中断（`{ ok: false, failures }`）、`invalid_json`（POEditor側の不正なexport）だけは該当1組み合わせを`skipped`に入れて除外し、残りは通常通り処理する（design.mdのError Handlingの例外規定通り）。3.2/3.3でこの関数を呼ぶ側は`skipped`の存在を意識すること（無視してよいが、黙って握りつぶさず何らかの形でログ等に残すのが望ましい）。
