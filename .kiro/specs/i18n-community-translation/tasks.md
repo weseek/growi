@@ -27,7 +27,7 @@
   - _Requirements: 3.1, 3.2_
   - _Boundary: DiffClassifier_
 
-- [ ] 1.4 (P) 実行時にPOEditorへ依存しないことを保証する継続的なテストを追加する
+- [x] 1.4 (P) 実行時にPOEditorへ依存しないことを保証する継続的なテストを追加する
   - `apps/app/src/` 配下のソースコードにPOEditorのドメイン文字列やAPIエンドポイントへの参照が存在しないことを検証するテストを書く
   - 観測可能な完了状態: このテストが現在のリポジトリ状態に対して通過し、将来 `apps/app/src/` にPOEditor呼び出しが追加された場合は失敗するようになる
   - _Requirements: 4.1, 4.2_
