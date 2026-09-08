@@ -90,6 +90,7 @@ const reply = (
   id: 'reply1',
   pageId: 'page1',
   creatorId: 'user2',
+  creator: null,
   comment: 'a reply',
   replyToId: 'comment1',
   createdAt: new Date('2026-01-02T00:00:00.000Z'),

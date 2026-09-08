@@ -545,6 +545,7 @@ describe('InlineCommentService.createReply', () => {
       id: replyRow.id,
       pageId,
       creatorId,
+      creator: null,
       comment: replyRow.comment,
       replyToId: parentId,
       createdAt: replyRow.createdAt,
@@ -765,6 +766,38 @@ describe('InlineCommentService.listByPageId', () => {
 
     expect(result).toHaveLength(1);
     expect(result[0].creator).toBeNull();
+  });
+
+  it('返信も投稿者が populate されていれば creator を返す（起点コメントと同じ扱い）', async () => {
+    const pageId = makeId();
+    const originRow = makeOriginRow({ pageId, comment: 'origin' });
+    const creatorRow = {
+      id: makeId(),
+      username: 'bob',
+      name: 'Bob',
+      password: 'super-secret-hash',
+      apiToken: 'secret-api-token',
+      email: 'bob@example.com',
+      isEmailPublished: false,
+    };
+    const replyRow = {
+      ...makeReplyRow({
+        pageId,
+        comment: 'a reply',
+        replyToId: originRow.id,
+      }),
+      creator: creatorRow,
+    } as CommentsRow & { creator: typeof creatorRow };
+    const deps = makeListDeps([originRow], [replyRow]);
+    const service = new InlineCommentService(deps);
+
+    const result = await service.listByPageId(pageId);
+
+    const reply = result.find((c) => c.id === originRow.id)?.replies[0];
+    expect(reply?.creator).not.toBeNull();
+    expect(reply?.creator?.username).toBe('bob');
+    expect(reply?.creator).not.toHaveProperty('password');
+    expect(reply?.creator).not.toHaveProperty('apiToken');
   });
 
   it('アンカー必須フィールドが欠けた不正な行はスキップし、残りの正常な行だけを返す（1件の不正行で一覧全体を失敗させない）', async () => {

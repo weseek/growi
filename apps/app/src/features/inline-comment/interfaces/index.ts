@@ -77,6 +77,13 @@ export interface InlineCommentReply {
   id: string;
   pageId: string;
   creatorId: string;
+  /**
+   * Populated only by `listByPageId()`, mirroring `IInlineComment.creator`
+   * above. `null` when the user could not be resolved, or when this
+   * `InlineCommentReply` was produced by `createReply()` (which does not
+   * fetch the creator relation).
+   */
+  creator: IUserSerializedSecurely<IUserHasId> | null;
   comment: string;
   /** The origin inline comment this reply belongs to. */
   replyToId: string;

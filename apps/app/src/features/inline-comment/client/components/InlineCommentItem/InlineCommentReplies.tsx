@@ -121,7 +121,7 @@ export const InlineCommentReplies: FC<InlineCommentRepliesProps> = (
         >
           <CommentCard
             id={reply.id}
-            creator={reply.creatorId}
+            creator={reply.creator}
             createdAt={reply.createdAt}
           >
             {rendererOptions != null ? (

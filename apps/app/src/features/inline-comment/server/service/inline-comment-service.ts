@@ -210,6 +210,9 @@ function toInlineCommentReply(
     id: row.id,
     pageId: row.pageId,
     creatorId: row.creatorId,
+    // createReply() does not fetch the creator relation (no include on its
+    // insert-and-read-back), same as toIInlineComment() above.
+    creator: null,
     comment: row.comment,
     replyToId: row.replyToId,
     createdAt: row.createdAt,
@@ -287,6 +290,9 @@ function toIInlineCommentFromListRow(
  * Returns `null` (rather than throwing) for the same reason as
  * `toIInlineCommentFromListRow`: a malformed reply row must not fail the
  * whole page's comment list.
+ *
+ * `creator` is set from the row's populated `creator` relation, the same way
+ * `toIInlineCommentFromListRow` populates the origin comment's `creator`.
  */
 function toInlineCommentReplyFromListRow(
   row: InlineCommentListRow,
@@ -302,6 +308,10 @@ function toInlineCommentReplyFromListRow(
     id: row.id,
     pageId: row.pageId,
     creatorId: row.creatorId,
+    creator:
+      row.creator != null
+        ? serializeUserSecurely(row.creator as IUserHasId)
+        : null,
     comment: row.comment,
     replyToId: row.replyToId,
     createdAt: row.createdAt,
