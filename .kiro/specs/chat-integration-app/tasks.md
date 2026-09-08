@@ -335,7 +335,7 @@
   - _Boundary: NotificationDispatcher_
 
 - [ ] 9. 管理画面と個人設定を作る
-- [ ] 9.0 OAuth 導入 URL の発行元（この spec に決定済み）として `state` の発行・照合を実装する
+- [x] 9.0 OAuth 導入 URL の発行元（この spec に決定済み）として `state` の発行・照合を実装する
   - **決定済み（2026-09-07、ユーザー確認済み）: 発行元はこの spec（chat-integration-app / 管理画面）。**
     `chat-integration-proxy` 側にタスクを切り出す必要はない。再度この判断をやり直さないこと
   - **design.md「proxy 実装で見つかった未解決の論点」を先に読むこと。** Slack/Discord の
@@ -543,3 +543,16 @@
   - 定期実行の間隔（`'* * * * *'`）が直書きで、`page-bulk-export`/`audit-log-bulk-export`の
     先例のように `configManager` からの設定値になっていない。design.md は「既定1分間隔」としか
     求めていないため今回は問題にしていないが、先例に完全に揃えるなら設定鍵を1つ用意する形になる。
+- **task 9.0 の実装で判明した、proxy 側との配線の空白（別 spec の境界のため未接続）**:
+  - GROWI 側の `state` 発行・照合（`oauth-install-state/`）は完結して実装済みだが、
+    **proxy 側との実際の配線は未接続**。理由は2つ、どちらもこの spec の境界外:
+    (a) Slack/Discord の認可URL（"Add to Slack" 相当）を組み立てるには `clientId` が要るが、
+    それは `chat-integration-proxy` 側が持つ。GROWI が発行した `state` をこのURLに載せるには
+    proxy 側に新しいエンドポイントが要る。
+    (b) proxy の OAuth 折り返し（`routes/install-routes.ts`）が受け取った `state` を
+    GROWI に照合させる経路が今は無い。proxy→GROWI の呼び出し（または再送）が要り、
+    `@growi/chat` に新しい契約型を足す必要があるため、**chat-integration-protocol の境界**。
+  - **task 9.1（管理画面）の実装者は、この空白を踏まえて「新しいworkspaceを接続する」操作を
+    設計すること。** `issueOAuthInstallState`/`verifyOAuthInstallState`（本タスクの成果）は
+    そのまま使えるが、proxy 側の認可URL組み立てエンドポイントと、proxy→GROWI の照合呼び出しは
+    chat-integration-proxy / chat-integration-protocol 側に別途タスクを立てる必要がある。

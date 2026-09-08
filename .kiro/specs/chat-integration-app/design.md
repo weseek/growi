@@ -56,28 +56,37 @@ GROWI 内のイベントを通知として送り、チャットの利用者を G
 
 - `@growi/chat` の契約が変わったとき
 - GROWI 本体の検索・権限判定の呼び出し契約が変わったとき（要件 3.6 / 3.7 が影響を受ける）
-- `chat-integration-proxy` の能力表・通知契約が変わったとき（下記「proxy 実装で見つかった未解決の論点」を参照）
+- `chat-integration-proxy` の能力表・通知契約が変わったとき（下記「OAuth install `state` の発行・照合（task 9.0 で決着）」を参照）
 
-### proxy 実装で見つかった未解決の論点（要対応）
+### OAuth install `state` の発行・照合（task 9.0 で決着）
 
-`chat-integration-proxy` の実装（task 8.4/8.5）で、**Slack/Discord の OAuth 折り返しに CSRF 対策の
-`state` パラメータを発行・検証する処理が、chat-integration・chat-integration-protocol・
-chat-integration-proxy・chat-integration-app のどの spec にも存在しない**ことが判明した。
+`chat-integration-proxy` の実装（task 8.4/8.5）で見つかった隙間——Slack/Discord の OAuth 折り
+返し（`routes/install-routes.ts`）が `code` だけで受け付けており、Gen 1 の `GET /oauth_redirect`
+が持っていた CSRF 対策の `state` 検査に相当するものが無かった——について、**発行元はこの spec
+（chat-integration-app / 管理画面）と決定した**（2026-09-07）。
 
-- proxy 側（`routes/install-routes.ts`）は `code` だけで折り返しを受けており、Gen 1 の
-  `GET /oauth_redirect` が持っていた「`state` が空なら 400 で断る」検査に相当するものが無い
-- `state` を照合するには**発行する側**（"Add to Slack" のような導入 URL を組み立て、`state` を
-  発行する処理）が要るが、proxy 側の設計（design.md「呼ぶ入り口は 2 つ」の表）は折り返しを
-  受ける側の実装しか持たず、導入 URL を組み立てる側は範囲外としている
-- 影響は限定的（この隙間を突かれても、攻撃者自身の workspace が proxy に誤って登録される
-  だけで、紐付けは別途 GROWI 側の所有確認（要件 9.2）を通るため、資格情報の窃取やテナントを
-  跨いだ読み取りには直結しない）が、Gen 1 にあった検査が今は無い状態である
+**実装済みの範囲（この spec が持てる、自己完結した半分）**: `server/oauth-install-state/` に、
+`state` の発行（`issueOAuthInstallState`）・保持（`chat_oauth_install_states`, TTL 5 分——account-link
+オーダーの 10 分より短い。OAuth の同意画面往復は数十秒〜数分で終わるため）・一度きりの照合
+（`verifyOAuthInstallState`）を持つ。管理画面向けの発行口（`POST /oauth-install/state`, admin
+必須）と、照合口（`POST /oauth-install/verify`, セッション不要——トークン自体が資格情報）を
+`createOAuthInstallRouter` として公開済み。空・未発行・失効・二重使用のいずれも 400 で断られる
+ことは `oauth-install-router.spec.ts` / `oauth-install-state-service.spec.ts` が示す。
 
-**この spec が発行元の最有力候補である**（管理画面が「新しい workspace を接続する」操作の
-起点になりうるため）が、実際に発行URL を組み立てる主体を GROWI（この spec）にするか proxy
-自身にするかは未決定——**9.1 の実装に着手する前に決めること**。決まったら、そちらの spec の
-`tasks.md` に「導入 URL の発行と `state` の発行・照合を対で追加するタスク」を立て、この段落は
-削除して両方の spec の design.md にある「呼ぶ入り口は 2 つ」相当の記述に反映すること。
+**未接続のまま残る半分（chat-integration-proxy 側の変更が要る）**: Slack/Discord の認可画面の
+リダイレクト先は `chat-integration-proxy` に固定されている（OAuth クライアントとして proxy 自身
+が登録されているため）。したがって、
+1. **導入 URL を誰が組み立てるか**——GROWI はどのサービスの `client_id` も持たないため、この
+   spec 単独では認可 URL を作れない。proxy 側に「`state` を埋め込んだ導入 URL を返す」新しい口が
+   要る。
+2. **`routes/install-routes.ts` が受け取った `state` をどう GROWI の `verify` に渡すか**——proxy
+   からのサーバー間呼び出しにせよ、ブラウザを GROWI へ再リダイレクトするにせよ、`@growi/chat` に
+   新しい契約（chat-integration-protocol の管轄）を追加する判断が要る。
+
+この 2 点は `chat-integration-proxy` の実装に手を入れる別タスクであり、この spec の境界
+（`AdminChatIntegration`）の外にあるため、ここでは実装しない。着手する側は、上の「実装済みの
+範囲」にある `issueOAuthInstallState` / `verifyOAuthInstallState` をそのまま呼び出せばよく、
+GROWI 側の状態管理を作り直す必要はない。
 
 ---
 
@@ -114,6 +123,10 @@ apps/app/src/features/chat-integration/
 │   ├── pairing/
 │   │   ├── pairing-endpoint.ts        # 保留中の登録コードと突き合わせて確認に答える
 │   │   └── models/pending-pairing.ts
+│   ├── oauth-install-state/           # OAuth 導入 URL の state 発行・照合（task 9.0）
+│   │   ├── oauth-install-state-service.ts
+│   │   ├── oauth-install-router.ts
+│   │   └── models/chat-oauth-install-state.ts
 │   └── models/
 │       ├── chat-relation.ts
 │       ├── chat-notification-destination.ts
@@ -566,6 +579,7 @@ GROWI には同じ形のものが既に 3 つある（`models/password-reset-ord
 | `chat_account_link_orders` | `token`, `relationId`, `platform`, `accountId`, `isRevoked`, `createdAt`, `expiredAt` | `token` 一意。**`expiredAt` に TTL 索引**（既定 10 分）。要件 7.3 の一度きりのリンク。**`models/password-reset-order.ts` に倣う**（下記） |
 | `chat_channel_permissions` | `relationId`, `commandName`, `allowedChannels` | **`(relationId, commandName)` 一意。** **行ごとの `updatedAt` は持たない** — protocol の `SettingsPushRequest.version` は関係ごとに 1 つの値なので、行ごとに持つと比べる基準が決まらない。版は `chat_relations.settingsVersion` に 1 つ持ち、**保存のたびに 1 増やす**。proxy が取りに来たときはそこから返す（要件 11.4） |
 | `chat_notification_destinations` | `platform`, `channelId`, **`channelName`**, `pathPattern`, `triggerEvents`, `relationId` | `channelName` は表示と要件 12.4 の突き合わせ用。**`ChannelInventory` を引いたときに合わせて更新する**（名前は変わりうるので、古いままだと注意喚起が出たり出なかったりする）。管理者が設定する。Gen 1 の設定とは**別に保存する**（要件 12.2） |
+| `chat_oauth_install_states` | `state`, `platform`, `createdBy`, `consumedAt`, `createdAt`, `expiresAt` | `state` 一意。**`expiresAt` に TTL 索引**（既定 5 分——account-link オーダーの 10 分より短い）。task 9.0 の CSRF 対策 `state`。**`consumedAt` で一度きりの使用を強制する**（`isRevoked` ではなく——人が明示的に取り消す概念ではないため） |
 
 #### ペアリングの途中に、自分の鍵を置く場所が要る（順序の矛盾）
 

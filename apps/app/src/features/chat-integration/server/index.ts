@@ -23,7 +23,7 @@ import type Crowi from '~/server/crowi';
  * `features/growi-vault/server/index.ts`.
  */
 
-// All 11 collections this spec owns (design.md "Data Models"). Side-effect
+// All 12 collections this spec owns (design.md "Data Models"). Side-effect
 // imports only: each module's `getOrCreateModel(...)` call registers the
 // model (and its indexes) with Mongoose at import time. Do NOT move these
 // into `setup-models.ts`'s `setupIndependentModels()` -- that path is only
@@ -40,9 +40,11 @@ import './pairing/models/pending-pairing';
 import './pairing/models/chat-challenge-attempt';
 import './notification/models/chat-notification-outbox';
 import './settings/models/chat-channel-permission';
+import './oauth-install-state/models/chat-oauth-install-state';
 
 import { createAccountLinkRouter } from './account-link/account-link-router';
 import { createManageAccountLinksRouter } from './account-link/manage-account-links-router';
+import { createOAuthInstallRouter } from './oauth-install-state/oauth-install-router';
 import { createPeerRouter } from './peer/peer-router';
 
 /**
@@ -68,5 +70,9 @@ export const createChatIntegrationRouter = (crowi: Crowi): express.Router => {
   // literal `/` and `/:id` routes never collide with that router's `/:token`
   // param route.
   router.use('/my-account-links', createManageAccountLinksRouter(crowi));
+  // "Connect a new workspace" state issue/verify (task 9.0) -- the admin
+  // screen's own prefix, separate from `/account-link` and
+  // `/my-account-links` above.
+  router.use('/oauth-install', createOAuthInstallRouter(crowi));
   return router;
 };
