@@ -117,10 +117,11 @@
   - 観測できる完了条件: inline-comment スペックのメタデータの更新日時が本amendの完了日になっている
   - _Depends: 4.1, 4.2_
 
-- [ ] 4.4 このスペックへの参照が他にないことを確認する
+- [x] 4.4 このスペックへの参照が他にないことを確認する
   - ロードマップ等にこのamend specへの参照が無いかを確認する（現時点では参照は見つかっていない）
   - 観測できる完了条件: 参照が見つからないこと、または見つかった参照をすべて解消したことを確認できる
   - _Depends: 4.1_
+  - 確認結果: `.kiro/steering/roadmap.md` および `.kiro/steering/` 配下に参照なし。`inline-comment/research.md` の見出し1箇所（「amend spec `inline-comment-highlight-fix` より統合」）は出典を示すラベルであり、同ファイル内の他の退役済み amend spec（`inline-comment-selection-ux`／`inline-comment-interaction-ux`）と同じ形式の前例に倣ったもの。ディレクトリ削除後もラベルとして問題なく残る（生きたパス参照ではない）。
 
 - [ ] 4.5 このスペックのディレクトリを削除する
   - 4.1〜4.4がすべて完了したことを確認したうえで、このamend specのディレクトリを削除する
