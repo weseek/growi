@@ -28,10 +28,10 @@ export const hasRenderingElements = (container: HTMLElement): boolean => {
  * zero: a change that carries no rendering marker at all — a heading's edit
  * button appearing once collaborative-editing state loads, for instance —
  * also changes the container's text and must give the caller a chance to
- * re-resolve (Requirement 3.4). This backs the self-healing re-anchoring
- * described in design.md's System Flows ("次の静定検知で再計算が走り、
- * ハイライトのズレは自己修復される"), but only within the WATCH_TIMEOUT_MS
- * window; see below.
+ * re-resolve. This backs the self-healing re-anchoring described in
+ * design.md's System Flows ("次の静定シグナルで再計算が走り、ハイライトの
+ * ズレは自己修復される"), but only within the WATCH_TIMEOUT_MS window; see
+ * below.
  *
  * Checks triggered by an observed DOM change are coalesced per animation
  * frame, so many changes belonging to one rendering pass produce at most one

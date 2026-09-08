@@ -88,7 +88,7 @@ const useStableByContent = <T extends object>(value: T): T => {
  * only its reference (see `useStableByContent` above). That second trigger
  * resolves only while nothing is mid-render (`hasRenderingElements`); when the
  * list arrives first it defers to the settle signal instead of matching
- * against a half-built DOM (Requirement 3.1).
+ * against a half-built DOM.
  *
  * Recomputation itself is the same idempotent full-`Map` rebuild either way:
  * `renderedTextOf` is called once and `matchQuote` is run for each anchor,
