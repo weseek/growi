@@ -567,3 +567,27 @@
     同じ決め打ちを再現させて RED になることも確認済み。
   - **今後、応答をそのまま出す（決め打ち禁止）ことが要求されている画面の試験を書くときは、
     「未知の値が消えない」だけでなく「既知の値がそのモック値のまま出る」ことも必ず両方確かめること。**
+- **task 9.2 の実装で判明した、`chat_channel_permissions` の読み書きと試験の前提**:
+  - `chat_channel_permissions` に **`channelScope`（`all`/`none`/`listed`）を足した**。
+    protocol の `allowedChannels` は「`'all'` / `'none'` / チャンネル id の並び」の 3 択で、
+    Mongoose の 1 つの欄で持つには `Mixed` にするしかなく、それでは enum の検査と変更の検出を
+    両方失う。**design.md の Data Models の行に反映済み**（理由もそこに書いた）。
+  - task 3.5 の `settingsPullHandler` に書かれていた「`row.allowedChannels` はそのまま
+    protocol の型を満たすので読み替え不要」というコメントは **誤りだった**。
+    その形では `'all'` / `'none'` を表せない。
+    **今は読み手が 2 つ（`settingsPullHandler` と `checkChannelPermission`）あり、
+    どちらも `settings/allowed-channels.ts` を通している。
+    今後 `chat_channel_permissions` を読む処理を足すときも必ずここを通すこと** —
+    行を直接読むと `'all'`（全チャンネルで可）が空の並び、つまり「どこでも不可」に反転する。
+  - コミットメッセージに書いた「実際に出荷済みだった不具合」という表現は **言い過ぎだった**。
+    このコミットより前は `chat_channel_permissions` に書き込む本番の処理が 1 つも無く
+    （`.create()` を呼んでいたのは試験ファイルだけ）、利用者の設定が読み間違われたことは
+    一度も無い。コードの直し自体は正しく、必要でもあった。
+  - **この feature の試験を回すにはレプリカセットの `MONGO_URI` を渡す必要がある**
+    （例: `MONGO_URI=mongodb://mongo:27017/growi_test?replicaSet=rs0`）。
+    渡さないと `MongoMemoryServer` の単独構成に落ちてトランザクションを開始できず、
+    `MongoServerError: Transaction numbers are only allowed on a replica set member or mongos`
+    で落ちる（`src/features/chat-integration` 全体を渡さずに回した実測値は 5 ファイル・26 件）。
+    CI はレプリカセットの `MONGO_URI` を既に渡しており、
+    `account-link-service.spec` も同じ前提なので **新しい制約ではない**が、
+    このコミットで該当ファイルが倍に増えたので書き残す。

@@ -40,6 +40,7 @@ import type Crowi from '~/server/crowi';
 import adminRequiredFactory from '~/server/middlewares/admin-required';
 import loginRequiredFactory from '~/server/middlewares/login-required';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
+import loggerFactory from '~/utils/logger';
 
 import { describeChatKeyEncryptionConfiguration } from '../keys';
 import { submitPairingRequest } from '../pairing/pairing-service';
@@ -48,9 +49,60 @@ import { readRelationSettings } from '../settings/relation-settings-store';
 import { listRelationsForAdmin } from './admin-service';
 import { saveRelationSettings } from './save-relation-settings';
 
+const logger = loggerFactory(
+  'growi:features:chat-integration:admin:admin-router',
+);
+
 interface AuthenticatedAdminRequest extends Request {
   readonly user: IUserHasId;
 }
+
+type ChatAdminHandler = (
+  req: AuthenticatedAdminRequest,
+  res: ApiV3Response,
+) => Promise<void> | void;
+
+/**
+ * Turns one of this file's handlers into an Express handler that ALWAYS
+ * answers.
+ *
+ * Express 4 does not look at what an `async` handler's promise does: a
+ * rejection is neither passed to the error-handling middleware nor turned
+ * into a response, so an unexpected throw anywhere inside a handler leaves
+ * the request with no answer at all -- the browser waits until it gives up.
+ * That is not hypothetical here: a settings save runs a MongoDB
+ * transaction, and a transaction can be refused (see
+ * `save-relation-settings.ts`'s `save-conflict`); a database that is
+ * momentarily unavailable does the same to every other handler.
+ *
+ * So every route below is wrapped, once, here -- rather than each handler
+ * growing its own `try`/`catch`, which is the arrangement one handler
+ * eventually gets wrong. `500` because a throw reaching this point is by
+ * definition not an outcome any handler recognised: the expected ones are
+ * all returned as values and mapped to their own status codes.
+ */
+const asHandler =
+  (handler: ChatAdminHandler): RequestHandler =>
+  (req, res) => {
+    const typedRes = res as unknown as ApiV3Response;
+    void (async () => {
+      try {
+        await handler(req as AuthenticatedAdminRequest, typedRes);
+      } catch (err) {
+        logger.error(
+          `Unexpected failure while handling ${req.originalUrl}:`,
+          err,
+        );
+        typedRes.apiv3Err(
+          new ErrorV3(
+            'This request failed unexpectedly. Try again.',
+            'unexpected-error',
+          ),
+          500,
+        );
+      }
+    })();
+  };
 
 /** `GET /encryption-status` -- whether pairing may proceed at all (task 1.3). */
 const encryptionStatusHandler = (_req: Request, res: ApiV3Response): void => {
@@ -156,6 +208,12 @@ const getSettingsHandler = async (
  * yet -- it will fetch it". Answering an error status would tell the
  * administrator nothing was saved, which is false (see
  * `save-relation-settings.ts`).
+ *
+ * A refused write IS an error, and a distinct one: `409` for
+ * `save-conflict`, because in that case nothing was committed and saving
+ * again is all that is needed. Anything that throws instead of answering is
+ * caught by `asHandler` above and becomes a `500` -- never a request left
+ * without a response.
  */
 const saveSettingsHandler = async (
   req: Request,
@@ -175,10 +233,20 @@ const saveSettingsHandler = async (
   if (outcome.status === 'relation-not-found') {
     res.apiv3Err(
       new ErrorV3(
-        `Relation '${relationId}' is not found`,
+        `Relation '${relationId}' is not found, or is no longer paired`,
         'relation-not-found',
       ),
       404,
+    );
+    return;
+  }
+  if (outcome.status === 'save-conflict') {
+    res.apiv3Err(
+      new ErrorV3(
+        'Someone else saved these settings at the same time, so nothing was saved. Reload the screen and try again.',
+        'save-conflict',
+      ),
+      409,
     );
     return;
   }
@@ -252,28 +320,22 @@ export const createAdminRouter = (crowi: Crowi): Router => {
 
   router.use(loginRequiredStrictly, adminRequired);
 
-  router.get(
-    '/encryption-status',
-    encryptionStatusHandler as unknown as RequestHandler,
-  );
-  router.get('/relations', listRelationsHandler as unknown as RequestHandler);
+  router.get('/encryption-status', asHandler(encryptionStatusHandler));
+  router.get('/relations', asHandler(listRelationsHandler));
   router.get(
     '/relations/:relationId/capabilities',
-    capabilitiesHandler as unknown as RequestHandler,
+    asHandler(capabilitiesHandler),
   );
   router.get(
     '/relations/:relationId/connection-status',
-    connectionStatusHandler as unknown as RequestHandler,
+    asHandler(connectionStatusHandler),
   );
-  router.get(
-    '/relations/:relationId/settings',
-    getSettingsHandler as unknown as RequestHandler,
-  );
+  router.get('/relations/:relationId/settings', asHandler(getSettingsHandler));
   router.post(
     '/relations/:relationId/settings',
-    saveSettingsHandler as unknown as RequestHandler,
+    asHandler(saveSettingsHandler),
   );
-  router.post('/pairing', submitPairingHandler as unknown as RequestHandler);
+  router.post('/pairing', asHandler(submitPairingHandler));
 
   return router;
 };

@@ -10,11 +10,15 @@
 //     would throw away a change that is already durable
 //   - a malformed payload is refused BEFORE anything is written, naming
 //     what was wrong
+//   - a setting saved through this path is what the COMMAND ENDPOINT then
+//     judges the next command by -- this task's own completion condition
+//     (see the describe block below for why neither half proves it alone)
 //
 // `pushSettings` is mocked because it is the network boundary; everything
 // on this side of it (the transaction, the version, the stored rows) runs
 // against a real MongoDB replica set.
 
+import type { CommandRequest } from '@growi/chat';
 import type { MongoMemoryServer } from 'mongodb-memory-server-core';
 import {
   afterAll,
@@ -25,12 +29,17 @@ import {
   it,
   vi,
 } from 'vitest';
+import { mock } from 'vitest-mock-extended';
 
 import {
   connectSelfContainedMongo,
   disconnectSelfContainedMongo,
 } from '^/test/setup/mongo/self-contained-connection';
 
+import type Crowi from '~/server/crowi';
+
+import { createCommandEndpoint } from '../command/command-endpoint';
+import { ChatProcessedRequest } from '../models/chat-processed-request';
 import { ChatRelation } from '../models/chat-relation';
 import * as proxyClient from '../proxy-client';
 import { ChatChannelPermission } from '../settings/models/chat-channel-permission';
@@ -162,6 +171,89 @@ describe('saveRelationSettings', () => {
 
     expect(outcome).toEqual({ status: 'relation-not-found' });
     expect(proxyClient.pushSettings).not.toHaveBeenCalled();
+  });
+
+  // Task 9.2's own completion condition: 設定を変えると次の実行から反映される
+  // ことが試験で示される. Neither half proves this alone -- a store round trip
+  // shows the save reads back, and the command endpoint's own tests drive
+  // hand-written rows. Only running BOTH real halves catches the writer
+  // (`toStoredAllowedChannels`) and the reader (`checkChannelPermission` via
+  // `toWireAllowedChannels`) drifting apart, which is precisely the bug this
+  // task's shared encoding module exists to prevent.
+  //
+  // `help` is the command used because it needs nothing from Crowi beyond
+  // the permission judgment, and the permission judgment is what is under
+  // test; a fresh `requestId` per execution keeps the endpoint's own
+  // idempotent replay (Requirement 10.4) from answering the second run with
+  // the first run's response.
+  describe("a changed setting takes effect on the command endpoint's next execution", () => {
+    const CHANNEL = {
+      platform: 'slack',
+      channelId: 'C0GENERAL',
+      channelName: 'general',
+      isPrivate: false,
+    } as const;
+
+    const helpRequest = (
+      requestId: string,
+      channelId: string = CHANNEL.channelId,
+    ): CommandRequest => ({
+      relationId: RELATION_ID,
+      op: 'command',
+      requestId,
+      actor: {
+        platform: 'slack',
+        accountId: 'U0ACCOUNT',
+        displayName: 'Chatty Person',
+      },
+      channel: { ...CHANNEL, channelId },
+      kind: 'help',
+    });
+
+    const runHelp = (requestId: string, channelId?: string) =>
+      createCommandEndpoint(mock<Crowi>()).handle(
+        helpRequest(requestId, channelId),
+      );
+
+    beforeEach(async () => {
+      await ChatProcessedRequest.deleteMany({});
+    });
+
+    it("refuses the command after 'none' is saved, and allows it after the channel is listed", async () => {
+      await saveRelationSettings(RELATION_ID, [
+        { commandName: 'help', allowedChannels: 'none' },
+      ]);
+
+      expect(await runHelp('req-after-none')).toEqual({
+        kind: 'error',
+        code: 'not-permitted-in-channel',
+        message: expect.any(String),
+      });
+
+      await saveRelationSettings(RELATION_ID, [
+        { commandName: 'help', allowedChannels: [CHANNEL.channelId] },
+      ]);
+
+      expect((await runHelp('req-after-listed')).kind).toBe('help');
+    });
+
+    it("allows the command from a channel nobody listed after 'all' is saved", async () => {
+      await saveRelationSettings(RELATION_ID, [
+        { commandName: 'help', allowedChannels: [CHANNEL.channelId] },
+      ]);
+
+      expect((await runHelp('req-other-channel', 'C0NEVER-LISTED')).kind).toBe(
+        'error',
+      );
+
+      await saveRelationSettings(RELATION_ID, [
+        { commandName: 'help', allowedChannels: 'all' },
+      ]);
+
+      expect(
+        (await runHelp('req-other-channel-all', 'C0NEVER-LISTED')).kind,
+      ).toBe('help');
+    });
   });
 
   describe('refuses a malformed payload without writing or pushing', () => {

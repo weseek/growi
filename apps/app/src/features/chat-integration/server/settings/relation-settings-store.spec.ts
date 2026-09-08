@@ -12,6 +12,8 @@
 //   - if any part of the write fails, NEITHER half is committed. This is
 //     the failure design.md singles out: "版だけ進むと proxy は古い設定を
 //     新しいものとして受け取る"
+//   - a relation that is no longer paired is refused, so a save cannot put
+//     back the permission rows `unpairRelation` deleted
 //   - what is read back is what was saved, for all three `allowedChannels`
 //     forms ('all' / 'none' / a list) -- `settingsPullHandler` hands this
 //     straight to the proxy
@@ -194,6 +196,32 @@ describe('relation-settings-store', () => {
 
     it('reads as null rather than as empty settings', async () => {
       expect(await readRelationSettings('no-such-relation')).toBeNull();
+    });
+  });
+
+  describe('a relation that is no longer paired', () => {
+    // `unpairRelation` deletes the relation's permission rows on purpose.
+    // The save endpoint takes a raw POST for any relation id, so without a
+    // `state` filter a save would put those rows back and bump the dead
+    // relation's version -- refused here exactly like an unknown relation,
+    // since neither is a relation an administrator can configure.
+    beforeEach(async () => {
+      await ChatRelation.updateOne(
+        { relationId: RELATION_ID },
+        { $set: { state: 'unpaired', unpairedAt: new Date() } },
+      );
+    });
+
+    it('refuses the save, writing no rows and leaving the version alone', async () => {
+      const result = await writeRelationSettings(RELATION_ID, [
+        { commandName: 'search', allowedChannels: 'all' },
+      ]);
+
+      expect(result).toEqual({ status: 'relation-not-found' });
+      expect(
+        await ChatChannelPermission.countDocuments({ relationId: RELATION_ID }),
+      ).toBe(0);
+      expect(await currentVersion()).toBe(INITIAL_VERSION);
     });
   });
 });

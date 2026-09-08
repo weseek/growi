@@ -13,6 +13,13 @@ import {
 } from './allowed-channels';
 import { ChatChannelPermission } from './models/chat-channel-permission';
 
+/**
+ * `relation-not-found` covers BOTH "no such relation" and "the relation is
+ * no longer active": a caller cannot do anything different about them, and
+ * `unpairRelation` deliberately deletes an unpaired relation's permission
+ * rows, so re-creating them here is exactly what must not happen (see
+ * `writeRelationSettings`).
+ */
 export type WriteRelationSettingsResult =
   | { readonly status: 'saved'; readonly version: number }
   | { readonly status: 'relation-not-found' };
@@ -80,8 +87,15 @@ export const writeRelationSettings = async (
 
     // Bumped with `$inc` rather than read-then-write so two concurrent
     // saves cannot both compute the same next version.
+    //
+    // Filtered on `state: 'active'`, not on `relationId` alone: this
+    // endpoint accepts a raw POST for any relation id an administrator
+    // cares to name, and `unpairRelation` DELETES an unpaired relation's
+    // permission rows on purpose. Without this term a save would re-create
+    // rows for a relation that is no longer paired and bump its version,
+    // undoing that cleanup.
     const relation = await ChatRelation.findOneAndUpdate(
-      { relationId },
+      { relationId, state: 'active' },
       { $inc: { settingsVersion: 1 } },
       { new: true, session },
     );

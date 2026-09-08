@@ -32,7 +32,10 @@ import {
 import loggerFactory from '~/utils/logger';
 
 import { pushSettings } from '../proxy-client';
-import { writeRelationSettings } from '../settings/relation-settings-store';
+import {
+  type WriteRelationSettingsResult,
+  writeRelationSettings,
+} from '../settings/relation-settings-store';
 
 const logger = loggerFactory(
   'growi:features:chat-integration:admin:save-relation-settings',
@@ -51,9 +54,44 @@ export type SaveRelationSettingsOutcome =
         | { readonly ok: false; readonly reason: string };
     }
   | { readonly status: 'relation-not-found' }
-  | { readonly status: 'invalid-settings'; readonly detail: string };
+  | { readonly status: 'invalid-settings'; readonly detail: string }
+  /**
+   * The write was refused for a reason that goes away on its own -- two
+   * administrators saving the same relation at the same moment. Nothing was
+   * committed; saving again is the whole remedy.
+   */
+  | { readonly status: 'save-conflict' };
 
 const COMMAND_NAME_VALUES: ReadonlyArray<string> = Object.values(COMMAND_NAMES);
+
+/**
+ * Whether a failed write is the kind that succeeds if simply retried.
+ *
+ * MongoDB reports a transaction that lost a race for the same document as
+ * `WriteConflict` -- error code 112, also carrying the
+ * `TransientTransactionError` label, which is the label the driver's own
+ * retry helpers key off. Both are checked because the code identifies this
+ * one situation precisely while the label covers the same class of
+ * "nothing was written, try again" failures (a stepped-down primary, for
+ * instance).
+ */
+const WRITE_CONFLICT_ERROR_CODE = 112;
+const TRANSIENT_TRANSACTION_ERROR_LABEL = 'TransientTransactionError';
+
+const isTransientWriteConflict = (error: unknown): boolean => {
+  if (typeof error !== 'object' || error == null) {
+    return false;
+  }
+  const { code, errorLabels } = error as {
+    readonly code?: unknown;
+    readonly errorLabels?: unknown;
+  };
+  return (
+    code === WRITE_CONFLICT_ERROR_CODE ||
+    (Array.isArray(errorLabels) &&
+      errorLabels.includes(TRANSIENT_TRANSACTION_ERROR_LABEL))
+  );
+};
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value != null && !Array.isArray(value);
@@ -140,7 +178,25 @@ export const saveRelationSettings = async (
   }
   const { channelPermissions } = parsed;
 
-  const written = await writeRelationSettings(relationId, channelPermissions);
+  let written: WriteRelationSettingsResult;
+  try {
+    written = await writeRelationSettings(relationId, channelPermissions);
+  } catch (err) {
+    // Two saves for the same relation in flight at once really do collide:
+    // both transactions bump the same `chat_relations` document, and
+    // MongoDB refuses one of them instead of serializing the pair. Nothing
+    // of the refused one was committed, so this is reported as its own
+    // outcome the administrator can act on ("save again"), rather than
+    // being left to escape as a rejected promise.
+    if (isTransientWriteConflict(err)) {
+      logger.warn(
+        `A concurrent save refused the settings write for relation '${relationId}'; nothing was committed.`,
+        err,
+      );
+      return { status: 'save-conflict' };
+    }
+    throw err;
+  }
   if (written.status === 'relation-not-found') {
     return { status: 'relation-not-found' };
   }

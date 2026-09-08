@@ -10,6 +10,9 @@
 //   - `GET`/`POST /relations/:id/settings` (task 9.2) round trip a saved
 //     channel permission, including the 'all'/'none' values, and refuse a
 //     malformed payload with 400 without touching the stored settings
+//   - a save is refused for a relation that is no longer paired, and a write
+//     that FAILS still answers with a real status code (409 for a concurrent
+//     save, 500 otherwise) rather than leaving the request unanswered
 //   - `POST /pairing` forwards to `submitPairingRequest` and relays whatever
 //     outcome it returns, without a second encryption check duplicating
 //     `pairing-service.ts`'s own
@@ -46,11 +49,22 @@ import type { PairingOutcome } from '../pairing/pairing-service';
 import * as pairingService from '../pairing/pairing-service';
 import * as proxyClient from '../proxy-client';
 import { ChatChannelPermission } from '../settings/models/chat-channel-permission';
+import * as settingsStore from '../settings/relation-settings-store';
 import { createAdminRouter } from './admin-router';
 
 vi.mock('../pairing/pairing-service', async (importOriginal) => {
   const actual = await importOriginal<typeof pairingService>();
   return { ...actual, submitPairingRequest: vi.fn() };
+});
+// Kept as the real implementation (every other test here writes through a
+// real transaction); spied so a single test can make the write FAIL, which
+// is otherwise only reproducible by racing two saves.
+vi.mock('../settings/relation-settings-store', async (importOriginal) => {
+  const actual = await importOriginal<typeof settingsStore>();
+  return {
+    ...actual,
+    writeRelationSettings: vi.fn(actual.writeRelationSettings),
+  };
 });
 vi.mock('../proxy-client', async (importOriginal) => {
   const actual = await importOriginal<typeof proxyClient>();
@@ -367,6 +381,79 @@ describe('admin-router', () => {
       const read = await request(app).get(settingsPath);
       expect(read.body.version).toBe(0);
       expect(read.body.settings.channelPermissions).toEqual([]);
+    });
+
+    it('answers 404 for a relation that is no longer paired', async () => {
+      await seedRelation();
+      await ChatRelation.updateOne(
+        { relationId: RELATION_ID },
+        { $set: { state: 'unpaired', unpairedAt: new Date() } },
+      );
+      const app = buildApp(adminUser);
+
+      const response = await request(app)
+        .post(settingsPath)
+        .send({
+          channelPermissions: [
+            { commandName: 'search', allowedChannels: 'all' },
+          ],
+        });
+
+      expect(response.status).toBe(404);
+      // `unpairRelation` deleted this relation's rows deliberately; the
+      // save must not put them back.
+      expect(await ChatChannelPermission.countDocuments({})).toBe(0);
+      expect(proxyClient.pushSettings).not.toHaveBeenCalled();
+    });
+
+    // A rejected promise inside an `async` Express 4 handler produces NO
+    // response at all -- the request hangs until the client gives up. Both
+    // tests below assert a real status code arrives, which is what a hang
+    // cannot produce.
+    describe('a write that fails instead of answering', () => {
+      it('answers 409 when a concurrent save refused the transaction', async () => {
+        await seedRelation();
+        // What MongoDB actually raises when two transactions bump the same
+        // `chat_relations` document at once.
+        const writeConflict = Object.assign(new Error('WriteConflict'), {
+          code: 112,
+          errorLabels: ['TransientTransactionError'],
+        });
+        vi.mocked(settingsStore.writeRelationSettings).mockRejectedValueOnce(
+          writeConflict,
+        );
+        const app = buildApp(adminUser);
+
+        const response = await request(app)
+          .post(settingsPath)
+          .send({
+            channelPermissions: [
+              { commandName: 'search', allowedChannels: 'all' },
+            ],
+          });
+
+        expect(response.status).toBe(409);
+        expect(proxyClient.pushSettings).not.toHaveBeenCalled();
+      });
+
+      it('answers 500 when the write fails for any other reason', async () => {
+        await seedRelation();
+        vi.mocked(settingsStore.writeRelationSettings).mockRejectedValueOnce(
+          new Error('the database went away'),
+        );
+        const app = buildApp(adminUser);
+
+        const response = await request(app)
+          .post(settingsPath)
+          .send({
+            channelPermissions: [
+              { commandName: 'search', allowedChannels: 'all' },
+            ],
+          });
+
+        expect(response.status).toBe(500);
+        expect(proxyClient.pushSettings).not.toHaveBeenCalled();
+      });
     });
 
     it('answers 404 for a relation that does not exist', async () => {
