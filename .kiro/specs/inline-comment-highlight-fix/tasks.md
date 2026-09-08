@@ -112,7 +112,7 @@
   - _Requirements: 1.1, 2.1, 3.4_
   - _Depends: 4.1_
 
-- [ ] 4.3 inline-comment スペックのメタデータを更新する
+- [x] 4.3 inline-comment スペックのメタデータを更新する
   - inline-comment スペックの更新日時を今回の変更に合わせて更新する（フェーズ・承認状態はそのまま変更しない）
   - 観測できる完了条件: inline-comment スペックのメタデータの更新日時が本amendの完了日になっている
   - _Depends: 4.1, 4.2_
