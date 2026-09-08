@@ -124,6 +124,7 @@
   - 観測可能な完了状態: POEditorのテストプロジェクトを確認し、実行前後でキー構成と文言が意図通り変化している
   - _Requirements: 2.1, 2.2, 2.3_
   - _Depends: 5.1_
+  - _Blocked: 4.2の実プロビジョニング（POEditorテストプロジェクト・`POEDITOR_API_TOKEN`シークレット）が人手待ちのため実行不可。`docs/i18n-community-translation-setup.md` の手順完了後、この手順を実行すること。_
 
 - [ ] 6.2 pull経路を実際のPOEditorテストプロジェクトに対して確認する
   - テストプロジェクト側で訳文のみを変更したケースと、キー構成を変更したケースをそれぞれ用意し、pull経路を実行する
@@ -131,6 +132,7 @@
   - 観測可能な完了状態: 2種類のテストケースそれぞれについて、意図した種類の変更提案が実際のリポジトリ上に作られている
   - _Requirements: 3.1, 3.2, 3.3, 3.4_
   - _Depends: 5.2_
+  - _Blocked: 4.2の実プロビジョニングに加え、`I18N_SYNC_PUBLISH_TOKEN`（5.2で新設、`docs/i18n-community-translation-setup.md`未記載）と`I18N_SYNC_APPROVAL_TOKEN`（承認ボット、別IDである必要あり）の実登録が人手待ちのため実行不可。_
 
 - [ ] 6.3 リポジトリ全体のlint・test・buildが green であることを確認する
   - 新規追加したツール・ワークフローが、既存の `turbo run lint` / `turbo run test` / `turbo run build`（`@growi/app`）に悪影響を与えていないことを確認する
