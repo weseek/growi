@@ -1239,6 +1239,186 @@ test.describe('Inline comment - highlight correctness on a page with an async ls
   });
 });
 
+test.describe('Inline comment - highlight lands on the selected occurrence on a page with a formula and a duplicated quote (Req 1.2, 1.3)', () => {
+  // Serial for the same reason as the suites above: the second test depends on
+  // the comment the first one really wrote to the backend.
+  test.describe.configure({ mode: 'serial' });
+
+  const mathPagePath = (retry: number) => `/inline-comment-e2e-math${retry}`;
+
+  // The quote appears TWICE, and a KaTeX formula sits BEFORE both occurrences.
+  // That arrangement is what makes this test decisive; the reasoning has two
+  // legs.
+  //
+  // (1) The arithmetic. `matchExactly` (quote-matcher.ts) enumerates every
+  //     exact occurrence and keeps the one whose start is closest to the stored
+  //     `approxOffset`. Resolution counts offsets with `renderedTextOf`, which
+  //     excludes `.katex` subtrees (KaTeX renders both an accessibility-only
+  //     `.katex-mathml` tree and a visual `.katex-html` tree, so a naive
+  //     `textContent` read counts the formula's characters two to three times
+  //     over). Before this feature's fix, capture time read the container's raw
+  //     `textContent` instead, so the stored offset was inflated by K — the
+  //     total length of the `.katex` text preceding the selection. Writing o1
+  //     and o2 for the two occurrences' offsets in the excluded-text
+  //     coordinates and d = o2 - o1:
+  //       - fixed code   stores o1        → nearest occurrence is o1 (distance 0)
+  //       - broken code  stores o1 + K    → distance to o1 is K, to o2 is |d - K|
+  //     so the broken value picks the WRONG (second) occurrence exactly when
+  //     d < 2K. The `expect(2 * katexTextLength).toBeGreaterThan(d)` precondition
+  //     below asserts that inequality against the page as the browser really
+  //     rendered it, so the fixture can never go quietly vacuous (if the math
+  //     failed to render, K would be 0 and both code paths would agree).
+  //     Note the direction matters: the inflation only ever moves the stored
+  //     offset FORWARD, so the target has to be the EARLIER occurrence with the
+  //     formula in front of it. Commenting on the later occurrence would be
+  //     unfalsifiable — no shift could ever pull the match backwards.
+  //
+  // (2) Nothing else could rescue the right answer. `matchExactly` disambiguates
+  //     on `approxOffset` alone, and `matchApproximately`'s own doc comment
+  //     records that it deliberately ignores `prefix`/`suffix`. The two
+  //     occurrences' differing surrounding sentences therefore give the resolver
+  //     no signal whatsoever — the stored offset is the only thing that can tell
+  //     the two apart. This mirrors the lsx suite above, where the quote simply
+  //     does not exist pre-settle: a pass cannot be reached by accident.
+  const duplicatedQuote = 'the very same phrase appears twice';
+  const pageBody = [
+    '# Inline comment E2E - duplicate quote after a formula',
+    '',
+    '$$',
+    '\\int_{0}^{\\infty} \\frac{\\sin x}{x}\\,dx = \\frac{\\pi}{2}',
+    '$$',
+    '',
+    `First occurrence marker: ${duplicatedQuote}.`,
+    '',
+    `Second occurrence marker: ${duplicatedQuote}.`,
+    '',
+  ].join('\n');
+
+  let createdPage: CreatedPage | undefined;
+
+  test.afterAll(async ({ request }) => {
+    if (createdPage != null) {
+      await deletePagesCompletely(request, [createdPage]);
+    }
+  });
+
+  test('Create the page, then comment on the FIRST of the two identical phrases that follow the formula', async ({
+    page,
+    request,
+  }, testInfo) => {
+    createdPage = await createPage(request, {
+      path: mathPagePath(testInfo.retry),
+      body: pageBody,
+    });
+
+    await page.goto(createdPage.path);
+
+    // The formula must actually be rendered by KaTeX. `rehype-katex` runs in
+    // the view renderer's synchronous plugin chain (client/services/renderer),
+    // so this is not a timing wait — it is a guard so a silent math-render
+    // failure fails loudly here instead of turning the whole test vacuous.
+    await expect(page.locator('.wiki .katex').first()).toBeVisible();
+    await expect(page.locator('.wiki').first()).toContainText(
+      `Second occurrence marker: ${duplicatedQuote}`,
+    );
+
+    // Fixture validity, measured on the real DOM rather than assumed — see
+    // leg (1) of the reasoning above. `d` is read off the naive `textContent`
+    // deliberately: no excluded subtree sits BETWEEN the two occurrences, so
+    // the gap is identical in both counting schemes. `katexTextLength` is a
+    // lower bound on the capture/resolution delta the old code produced (any
+    // `aria-hidden` decorative text before the quote would only add to it),
+    // and the `d < 2K` condition is monotone in that delta, so using the bound
+    // keeps the precondition conservative.
+    const { katexTextLength, d } = await page.evaluate((quote) => {
+      const container = document.querySelector('.wiki');
+      if (container == null) {
+        throw new Error('page body container (.wiki) not found');
+      }
+      const text = container.textContent ?? '';
+      const first = text.indexOf(quote);
+      const second = text.indexOf(quote, first + 1);
+      const katexTextLength = [...container.querySelectorAll('.katex')].reduce(
+        (total, el) => total + (el.textContent?.length ?? 0),
+        0,
+      );
+      return { katexTextLength, d: second - first };
+    }, duplicatedQuote);
+
+    expect(katexTextLength).toBeGreaterThan(0);
+    expect(d).toBeGreaterThan(0);
+    expect(2 * katexTextLength).toBeGreaterThan(d);
+
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    // `selectTextInPageBody` walks the body's text nodes in document order and
+    // selects the first match, i.e. the occurrence in the "First occurrence
+    // marker" paragraph — the earlier of the two, which is the one the
+    // arithmetic above makes discriminating.
+    await selectTextInPageBody(page, duplicatedQuote);
+
+    await page.getByTestId('selection-action-button').click();
+    const form = page.getByTestId('inline-comment-form');
+    await expect(form).toBeVisible();
+    await expect(form.locator('.inline-comment-form-quote')).toHaveText(
+      duplicatedQuote,
+    );
+
+    await form
+      .locator('.cm-content')
+      .fill('a comment anchored on the first of two identical phrases');
+    await form.getByTestId('inline-comment-submit-button').click();
+    await expect(form).not.toBeVisible();
+
+    await expect(page.getByTestId('inline-comment-item').first()).toBeVisible();
+  });
+
+  test('After reloading, the restored highlight sits on the first occurrence, not the second (Req 1.2, 1.3)', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(mathPagePath(testInfo.retry));
+
+    await expect(page.locator('.wiki .katex').first()).toBeVisible();
+    await expect(page.getByTestId('inline-comment-item').first()).toBeVisible();
+
+    await expect
+      .poll(async () =>
+        page.evaluate(
+          () => CSS.highlights.get('growi-inline-comment')?.size ?? 0,
+        ),
+      )
+      .toBeGreaterThan(0);
+
+    const highlighted = await page.evaluate(() => {
+      const set = CSS.highlights.get('growi-inline-comment');
+      const range = set != null ? [...set][0] : undefined;
+      if (range == null) {
+        return null;
+      }
+      const { startContainer } = range;
+      const startElement =
+        startContainer.nodeType === Node.TEXT_NODE
+          ? startContainer.parentElement
+          : (startContainer as Element);
+      return {
+        text: range.toString(),
+        paragraphText: startElement?.closest('p')?.textContent ?? null,
+      };
+    });
+
+    // The exact quote (not a fuzzy near-miss): proves the exact-match path,
+    // whose only occurrence tie-breaker is the stored offset.
+    expect(highlighted?.text).toBe(duplicatedQuote);
+    // The decisive assertion: the highlight is anchored inside the paragraph
+    // holding the FIRST occurrence — the one that was actually selected — and
+    // not inside the paragraph holding the identical second occurrence.
+    expect(highlighted?.paragraphText).toContain('First occurrence marker');
+    expect(highlighted?.paragraphText).not.toContain(
+      'Second occurrence marker',
+    );
+  });
+});
+
 test.describe('Inline comment - shares one list and one box style with normal comments (Req 13.1-13.4, 13.9)', () => {
   // Serial: each test below posts one more comment on top of what the
   // previous test posted, and the final test reads the accumulated state --
