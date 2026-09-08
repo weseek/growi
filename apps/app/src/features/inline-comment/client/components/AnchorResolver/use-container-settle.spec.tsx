@@ -3,7 +3,38 @@ import { GROWI_IS_CONTENT_RENDERING_ATTR } from '@growi/core/dist/consts';
 import { renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { useContainerSettle, WATCH_TIMEOUT_MS } from './use-container-settle';
+import {
+  hasRenderingElements,
+  useContainerSettle,
+  WATCH_TIMEOUT_MS,
+} from './use-container-settle';
+
+describe('hasRenderingElements', () => {
+  let container: HTMLDivElement;
+
+  beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  it('returns true when a descendant carries the rendering attribute', () => {
+    const renderingEl = document.createElement('div');
+    renderingEl.setAttribute(GROWI_IS_CONTENT_RENDERING_ATTR, 'true');
+    container.appendChild(renderingEl);
+
+    expect(hasRenderingElements(container)).toBe(true);
+  });
+
+  it('returns false when no descendant carries the rendering attribute', () => {
+    container.appendChild(document.createElement('span'));
+
+    expect(hasRenderingElements(container)).toBe(false);
+  });
+});
 
 describe('useContainerSettle', () => {
   let container: HTMLDivElement;

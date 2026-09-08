@@ -12,6 +12,14 @@ import { WATCH_TIMEOUT_MS } from '~/client/util/watch-rendering-and-rescroll';
 export { WATCH_TIMEOUT_MS };
 
 /**
+ * Whether an element matching GROWI_IS_CONTENT_RENDERING_SELECTOR currently
+ * exists inside the container.
+ */
+export const hasRenderingElements = (container: HTMLElement): boolean => {
+  return container.querySelector(GROWI_IS_CONTENT_RENDERING_SELECTOR) != null;
+};
+
+/**
  * Watches `container` for elements carrying the GROWI "content rendering"
  * status protocol (`data-growi-is-content-rendering`), and calls `onSettle`
  * whenever the number of such elements transitions to zero.
@@ -53,8 +61,7 @@ export const observeContainerSettle = (
   const check = () => {
     if (stopped) return;
 
-    const hasRendering =
-      container.querySelector(GROWI_IS_CONTENT_RENDERING_SELECTOR) != null;
+    const hasRendering = hasRenderingElements(container);
 
     if (hasRendering) {
       // Re-arm: a later transition back to zero must fire again.
