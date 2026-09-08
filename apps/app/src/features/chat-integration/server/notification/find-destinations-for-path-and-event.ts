@@ -22,6 +22,7 @@ export const findGen2DestinationsForPathAndEvent = async (
   });
 
   return destinations.map((destination) => ({
+    relationId: destination.relationId,
     platform: destination.platform,
     channelId: destination.channelId,
   }));

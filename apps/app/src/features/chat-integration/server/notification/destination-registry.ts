@@ -7,6 +7,15 @@
  * narrow to `PlatformName` at their own boundary.
  */
 export interface Gen2Destination {
+  /**
+   * Which relation this destination's channel belongs to. Required (not
+   * task 2.3's original scope) because task 8.1's real dispatch writes a
+   * `chat_notification_outbox` row scoped to one relation
+   * (`NotificationOutbox.enqueue` -- design.md "通知を2段に分ける") --
+   * without it, a destination could not be routed to the right relation's
+   * outbox row.
+   */
+  readonly relationId: string;
   readonly platform: string;
   readonly channelId: string;
 }

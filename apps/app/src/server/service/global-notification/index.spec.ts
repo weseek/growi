@@ -9,13 +9,13 @@ const {
   mailFire,
   slackFire,
   findGen2DestinationsForPathAndEvent,
-  dispatchGen2Destination,
+  createGen2NotificationDispatcher,
   dispatchAll,
 } = vi.hoisted(() => ({
   mailFire: vi.fn().mockResolvedValue(undefined),
   slackFire: vi.fn().mockResolvedValue(undefined),
   findGen2DestinationsForPathAndEvent: vi.fn().mockResolvedValue([]),
-  dispatchGen2Destination: vi.fn().mockResolvedValue(undefined),
+  createGen2NotificationDispatcher: vi.fn().mockReturnValue(vi.fn()),
   dispatchAll: vi.fn().mockResolvedValue([]),
 }));
 
@@ -36,15 +36,19 @@ vi.mock('~/features/chat-integration/server/notification', () => ({
     dispatchAll: (dispatch: (d: unknown) => Promise<void>) =>
       dispatchAll(destinations, dispatch),
   })),
-  dispatchGen2Destination,
+  createGen2NotificationDispatcher,
   findGen2DestinationsForPathAndEvent: (...args: unknown[]) =>
     findGen2DestinationsForPathAndEvent(...args),
+}));
+
+vi.mock('../growi-info', () => ({
+  growiInfoService: { getSiteUrl: () => 'https://growi.example.com' },
 }));
 
 import { GlobalNotificationService } from '.';
 
 describe('GlobalNotificationService.fire', () => {
-  const triggeredBy = mock<IUser>();
+  const triggeredBy = mock<IUser>({ username: 'someone' });
   const page = mock<PageDocument>({
     path: '/a/b/c',
     grant: PageGrant.GRANT_PUBLIC,
@@ -55,6 +59,7 @@ describe('GlobalNotificationService.fire', () => {
     vi.clearAllMocks();
     findGen2DestinationsForPathAndEvent.mockResolvedValue([]);
     dispatchAll.mockResolvedValue([]);
+    createGen2NotificationDispatcher.mockReturnValue(vi.fn());
   });
 
   it("calls Gen 1's mail and slack sends exactly as before (unchanged call shape)", async () => {
@@ -74,7 +79,9 @@ describe('GlobalNotificationService.fire', () => {
   });
 
   it('additionally resolves and dispatches Gen 2 destinations for the same path + event', async () => {
-    const gen2Destinations = [{ platform: 'slack', channelId: 'C1' }];
+    const gen2Destinations = [
+      { relationId: 'rel-1', platform: 'slack', channelId: 'C1' },
+    ];
     findGen2DestinationsForPathAndEvent.mockResolvedValue(gen2Destinations);
 
     const crowi = mock<Crowi>();
@@ -86,13 +93,20 @@ describe('GlobalNotificationService.fire', () => {
       '/a/b/c',
       'pageCreate',
     );
+    // The content (markdown/containsRestrictedPage) is built once and
+    // threaded into the dispatcher factory before dispatch -- proves
+    // enqueue receives NotificationContent's output, not a placeholder.
+    expect(createGen2NotificationDispatcher).toHaveBeenCalledWith(
+      expect.stringContaining('someone created'),
+      false,
+    );
     expect(dispatchAll).toHaveBeenCalledWith(
       gen2Destinations,
-      dispatchGen2Destination,
+      expect.any(Function),
     );
   });
 
-  it('still calls Gen 1 sends and Gen 2 dispatch even when there are no Gen 2 destinations configured', async () => {
+  it('does NOT resolve Gen 2 destinations at all when there are none configured (no content built, no dispatch)', async () => {
     findGen2DestinationsForPathAndEvent.mockResolvedValue([]);
 
     const crowi = mock<Crowi>();
@@ -102,7 +116,8 @@ describe('GlobalNotificationService.fire', () => {
 
     expect(mailFire).toHaveBeenCalled();
     expect(slackFire).toHaveBeenCalled();
-    expect(dispatchAll).toHaveBeenCalledWith([], dispatchGen2Destination);
+    expect(createGen2NotificationDispatcher).not.toHaveBeenCalled();
+    expect(dispatchAll).not.toHaveBeenCalled();
   });
 
   it('does not let a Gen 2 dispatch failure reject fire() after Gen 1 already sent', async () => {

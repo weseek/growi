@@ -1,28 +1,51 @@
-import loggerFactory from '~/utils/logger';
+import type { PlatformName } from '@growi/chat';
 
 import type { DestinationDispatcher } from './destination-registry';
-
-const logger = loggerFactory(
-  'growi:features:chat-integration:notification:destination-dispatcher',
-);
+import type { NotificationOutbox } from './notification-outbox';
+import { notificationOutbox } from './notification-outbox';
 
 /**
- * Placeholder receiver for Gen 2 destinations (task 2.3's explicit scope:
- * "受け側は仮のものでよい" -- design.md task 2.3). The real implementation --
- * writing into `NotificationOutbox` and draining it to the proxy -- is task
- * 8.1/8.2's `NotificationOutbox`/`NotificationDispatcher` boundary. Building
- * that here would preempt that task's scope.
+ * The real Gen 2 destination dispatcher -- replaces task 2.3's placeholder
+ * ("受け側は仮のものでよい" -- design.md task 2.3, deferred to task 8.1's
+ * `NotificationOutbox` boundary).
  *
- * This still genuinely runs (it is not a no-op that silently discards): it
- * logs the dispatch so `DestinationRegistry`'s iteration is independently
- * observable without relying on a future task's code, and it can safely be
- * swapped for the real writer later without changing any call site.
+ * Writes ONE `chat_notification_outbox` row per destination it is called
+ * with (scoped to that destination's own `relationId`), rather than
+ * batching every destination that shares a relation into a single row.
+ * `DestinationRegistry.dispatchAll` is what makes "repeat this call for
+ * every relevant destination, never stop after one" hold (design.md
+ * "呼ぶ側が関係ごとに繰り返す") -- this factory itself only knows how to
+ * enqueue a single destination; see this module's CONCERNS note in the
+ * task 8.1 status report for why per-destination rows (not per-relation
+ * batching) were chosen here.
+ *
+ * `markdown`/`containsRestrictedPage` are closed over per notification
+ * event, since `DestinationDispatcher`'s signature carries only the
+ * destination itself -- `NotificationContent` (task 4.5) has already
+ * finished dropping a restricted page's body into `markdown` by the time
+ * this runs (design.md "文面は NotificationContent が作る").
  */
-export const dispatchGen2Destination: DestinationDispatcher = async (
-  destination,
-) => {
-  logger.debug(
-    { destination },
-    'Gen 2 destination dispatched (placeholder receiver)',
-  );
+export const createGen2NotificationDispatcher = (
+  markdown: string,
+  containsRestrictedPage: boolean,
+  outbox: NotificationOutbox = notificationOutbox,
+): DestinationDispatcher => {
+  return async (destination) => {
+    await outbox.enqueue({
+      relationId: destination.relationId,
+      // `Gen2Destination.platform` is deliberately typed as a bare `string`
+      // (destination-registry.ts) so this module stays agnostic of the
+      // closed platform set; the outbox schema itself is what constrains
+      // `platform` to `PlatformName`, so the cast happens here, at the one
+      // boundary that actually needs the narrower type.
+      targets: [
+        {
+          platform: destination.platform as PlatformName,
+          channelId: destination.channelId,
+        },
+      ],
+      markdown,
+      containsRestrictedPage,
+    });
+  };
 };

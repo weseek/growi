@@ -12,9 +12,10 @@ describe('DestinationRegistry', () => {
     // registry could not have special-cased in advance is what actually
     // proves genericity.
     const destinations: Gen2Destination[] = [
-      { platform: 'slack', channelId: 'C1' },
-      { platform: 'discord', channelId: 'D2' },
+      { relationId: 'rel-1', platform: 'slack', channelId: 'C1' },
+      { relationId: 'rel-1', platform: 'discord', channelId: 'D2' },
       {
+        relationId: 'rel-2',
         platform: 'some-future-platform-nobody-wrote-a-branch-for',
         channelId: 'X3',
       },
@@ -37,9 +38,9 @@ describe('DestinationRegistry', () => {
 
   it('reports each destination result independently -- one failing dispatch does not stop or hide the others', async () => {
     const destinations: Gen2Destination[] = [
-      { platform: 'slack', channelId: 'ok-1' },
-      { platform: 'slack', channelId: 'will-fail' },
-      { platform: 'slack', channelId: 'ok-2' },
+      { relationId: 'rel-1', platform: 'slack', channelId: 'ok-1' },
+      { relationId: 'rel-1', platform: 'slack', channelId: 'will-fail' },
+      { relationId: 'rel-1', platform: 'slack', channelId: 'ok-2' },
     ];
     const registry = new DestinationRegistry(destinations);
 
@@ -58,8 +59,8 @@ describe('DestinationRegistry', () => {
 
   it('exposes the number of destinations it holds', () => {
     const registry = new DestinationRegistry([
-      { platform: 'slack', channelId: 'C1' },
-      { platform: 'teams', channelId: 'T1' },
+      { relationId: 'rel-1', platform: 'slack', channelId: 'C1' },
+      { relationId: 'rel-1', platform: 'teams', channelId: 'T1' },
     ]);
 
     expect(registry.size).toBe(2);

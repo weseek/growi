@@ -11,6 +11,7 @@ describe('ChatNotificationOutbox schema', () => {
     'relationId',
     'targets',
     'markdown',
+    'containsRestrictedPage',
     'state',
     'attempts',
     'claimedAt',

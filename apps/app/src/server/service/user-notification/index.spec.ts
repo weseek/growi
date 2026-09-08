@@ -1,7 +1,8 @@
 import { mock } from 'vitest-mock-extended';
 
-const { dispatchAll } = vi.hoisted(() => ({
+const { dispatchAll, createGen2NotificationDispatcher } = vi.hoisted(() => ({
   dispatchAll: vi.fn().mockResolvedValue([]),
+  createGen2NotificationDispatcher: vi.fn().mockReturnValue(vi.fn()),
 }));
 
 vi.mock('~/features/chat-integration/server/notification', () => ({
@@ -10,7 +11,7 @@ vi.mock('~/features/chat-integration/server/notification', () => ({
     dispatchAll: (dispatch: (d: unknown) => Promise<void>) =>
       dispatchAll(destinations, dispatch),
   })),
-  dispatchGen2Destination: vi.fn(),
+  createGen2NotificationDispatcher,
 }));
 
 vi.mock('../growi-info', () => ({
@@ -32,6 +33,7 @@ describe('UserNotificationService.fire', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     dispatchAll.mockResolvedValue([]);
+    createGen2NotificationDispatcher.mockReturnValue(vi.fn());
   });
 
   it('dispatches Gen 2 destinations even when Slack is not configured and Gen 1 was not requested', async () => {
@@ -40,8 +42,14 @@ describe('UserNotificationService.fire', () => {
       slackIntegrationService: { isSlackConfigured: false },
     });
     const service = new UserNotificationService(crowi);
-    const page = { path: '/a', updateSlackChannels: vi.fn() };
-    const gen2Destinations = [{ platform: 'slack', channelId: 'C1' }];
+    const page = {
+      path: '/a',
+      grant: 1,
+      updateSlackChannels: vi.fn(),
+    };
+    const gen2Destinations = [
+      { relationId: 'rel-1', platform: 'slack', channelId: 'C1' },
+    ];
 
     const results = await service.fire(
       page,
@@ -58,10 +66,33 @@ describe('UserNotificationService.fire', () => {
       gen2Destinations,
       expect.any(Function),
     );
+    // Content is built before the dispatcher factory is invoked -- proves
+    // real markdown reaches enqueue, not a placeholder.
+    expect(createGen2NotificationDispatcher).toHaveBeenCalledWith(
+      expect.stringContaining('someone created'),
+      false,
+    );
     expect(results).toEqual([]);
     // Gen 1 was not requested, so the page's stored slackChannels field
     // must be left untouched, not cleared.
     expect(page.updateSlackChannels).not.toHaveBeenCalled();
+  });
+
+  it('does NOT build content or dispatch when there are no Gen 2 destinations for this save', async () => {
+    const crowi = mock<Crowi>({
+      appService: { getAppTitle: () => 'GROWI' },
+      slackIntegrationService: {
+        isSlackConfigured: true,
+        postMessage: vi.fn(),
+      },
+    });
+    const service = new UserNotificationService(crowi);
+    const page = { path: '/a', grant: 1, updateSlackChannels: vi.fn() };
+
+    await service.fire(page, user, '', 'create', undefined, {}, [], true);
+
+    expect(createGen2NotificationDispatcher).not.toHaveBeenCalled();
+    expect(dispatchAll).not.toHaveBeenCalled();
   });
 
   it('still runs Gen 1 (including page.updateSlackChannels) when isSlackEnabled is true even with an empty channel string', async () => {
@@ -80,7 +111,7 @@ describe('UserNotificationService.fire', () => {
       },
     });
     const service = new UserNotificationService(crowi);
-    const page = { path: '/a', updateSlackChannels: vi.fn() };
+    const page = { path: '/a', grant: 1, updateSlackChannels: vi.fn() };
 
     const results = await service.fire(
       page,
@@ -104,14 +135,15 @@ describe('UserNotificationService.fire', () => {
       slackIntegrationService: { isSlackConfigured: false },
     });
     const service = new UserNotificationService(crowi);
-    const page = { path: '/a', updateSlackChannels: vi.fn() };
+    const page = { path: '/a', grant: 1, updateSlackChannels: vi.fn() };
 
     await expect(service.fire(page, user, 'general', 'create')).rejects.toThrow(
       'slackIntegrationService has not been set up',
     );
 
-    // Gen 2 still ran (with an empty set here) before the Gen 1 throw.
-    expect(dispatchAll).toHaveBeenCalledWith([], expect.any(Function));
+    // Gen 2 had nothing to dispatch (no destinations passed) -- unaffected
+    // by the Gen 1 throw either way.
+    expect(dispatchAll).not.toHaveBeenCalled();
   });
 
   it('sends to Gen 1 Slack channels as before when Slack is configured', async () => {
@@ -124,12 +156,45 @@ describe('UserNotificationService.fire', () => {
       },
     });
     const service = new UserNotificationService(crowi);
-    const page = { path: '/a', updateSlackChannels: vi.fn() };
+    const page = { path: '/a', grant: 1, updateSlackChannels: vi.fn() };
 
     const results = await service.fire(page, user, 'general,dev', 'create');
 
     expect(page.updateSlackChannels).toHaveBeenCalledWith('general,dev');
     expect(postMessage).toHaveBeenCalledTimes(2);
     expect(results).toHaveLength(2);
+  });
+
+  it('a Gen 2 dispatch failure does not prevent Gen 1 from still sending (independence)', async () => {
+    createGen2NotificationDispatcher.mockImplementation(() => {
+      throw new Error('outbox unavailable');
+    });
+    const postMessage = vi.fn().mockResolvedValue(undefined);
+    const crowi = mock<Crowi>({
+      appService: { getAppTitle: () => 'GROWI' },
+      slackIntegrationService: {
+        isSlackConfigured: true,
+        postMessage,
+      },
+    });
+    const service = new UserNotificationService(crowi);
+    const page = { path: '/a', grant: 1, updateSlackChannels: vi.fn() };
+    const gen2Destinations = [
+      { relationId: 'rel-1', platform: 'slack', channelId: 'C1' },
+    ];
+
+    const results = await service.fire(
+      page,
+      user,
+      'general',
+      'create',
+      undefined,
+      {},
+      gen2Destinations,
+      true,
+    );
+
+    expect(postMessage).toHaveBeenCalledTimes(1);
+    expect(results).toHaveLength(1);
   });
 });

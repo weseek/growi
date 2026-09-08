@@ -1,4 +1,4 @@
-export { dispatchGen2Destination } from './destination-dispatcher';
+export { createGen2NotificationDispatcher } from './destination-dispatcher';
 export {
   type DestinationDispatcher,
   type DestinationDispatchOutcome,
@@ -7,3 +7,8 @@ export {
   type Gen2Destination,
 } from './destination-registry';
 export { findGen2DestinationsForPathAndEvent } from './find-destinations-for-path-and-event';
+export type {
+  NotificationOutbox,
+  NotificationOutboxEntry,
+} from './notification-outbox';
+export { notificationOutbox } from './notification-outbox';

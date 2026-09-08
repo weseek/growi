@@ -21,9 +21,10 @@ describe('findGen2DestinationsForPathAndEvent', () => {
     });
   });
 
-  it('maps matched documents down to bare {platform, channelId} destinations', async () => {
+  it('maps matched documents down to {relationId, platform, channelId} destinations', async () => {
     vi.mocked(ChatNotificationDestination.find).mockResolvedValue([
       {
+        relationId: 'rel-1',
         platform: 'slack',
         channelId: 'C1',
         channelName: 'general',
@@ -31,6 +32,7 @@ describe('findGen2DestinationsForPathAndEvent', () => {
         triggerEvents: ['pageCreate'],
       },
       {
+        relationId: 'rel-2',
         platform: 'discord',
         channelId: 'D2',
         channelName: 'random',
@@ -42,6 +44,7 @@ describe('findGen2DestinationsForPathAndEvent', () => {
       // on platform (Requirement 12.2/12.3), matching DestinationRegistry's
       // own genericity requirement.
       {
+        relationId: 'rel-1',
         platform: 'some-future-platform',
         channelId: 'X3',
         channelName: 'other',
@@ -57,9 +60,13 @@ describe('findGen2DestinationsForPathAndEvent', () => {
     );
 
     expect(result).toEqual([
-      { platform: 'slack', channelId: 'C1' },
-      { platform: 'discord', channelId: 'D2' },
-      { platform: 'some-future-platform', channelId: 'X3' },
+      { relationId: 'rel-1', platform: 'slack', channelId: 'C1' },
+      { relationId: 'rel-2', platform: 'discord', channelId: 'D2' },
+      {
+        relationId: 'rel-1',
+        platform: 'some-future-platform',
+        channelId: 'X3',
+      },
     ]);
   });
 });
