@@ -1152,7 +1152,7 @@ describe('main', () => {
     );
   });
 
-  it('accepts the workflow-provided GITHUB_TOKEN as the publishing identity when no dedicated publish token is configured', async () => {
+  it('accepts the workflow-provided GITHUB_TOKEN as the publishing identity when no dedicated publish token is configured, and warns about it', async () => {
     // GitHub Actions exports an unregistered secret as an empty string, not
     // as an unset variable -- `delete` does not model what Actions actually
     // produces here.
@@ -1164,6 +1164,9 @@ describe('main', () => {
       structural: [],
       skipped: [],
     }));
+    const consoleErrorSpy = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
 
     await main({
       collectClassificationsFn,
@@ -1179,6 +1182,9 @@ describe('main', () => {
 
     expect(process.exitCode).toBeUndefined();
     expect(collectClassificationsFn).toHaveBeenCalled();
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect.stringContaining('I18N_SYNC_PUBLISH_TOKEN is not set'),
+    );
   });
 
   it('leaves the exit code unset when every step succeeds (success path through main())', async () => {

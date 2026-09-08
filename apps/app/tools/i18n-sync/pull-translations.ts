@@ -1038,13 +1038,31 @@ const readGitHubRunConfig = (
   // `||`, not `??`: GitHub Actions exports an unregistered secret as an
   // empty string, not as unset, so `??` (which only falls back on
   // null/undefined) would keep the empty value and never reach GITHUB_TOKEN.
-  const publishToken = env.I18N_SYNC_PUBLISH_TOKEN || env.GITHUB_TOKEN;
+  const dedicatedPublishToken = env.I18N_SYNC_PUBLISH_TOKEN;
+  const publishToken =
+    dedicatedPublishToken && dedicatedPublishToken !== ''
+      ? dedicatedPublishToken
+      : env.GITHUB_TOKEN;
   if (publishToken == null || publishToken === '') {
     return {
       ok: false,
       message:
         'Cannot pull translations: neither I18N_SYNC_PUBLISH_TOKEN nor GITHUB_TOKEN is set in the environment.',
     };
+  }
+  if (dedicatedPublishToken == null || dedicatedPublishToken === '') {
+    // Not a fatal misconfiguration (a fork dry run has no reason to hold a
+    // dedicated publish token), but a run that reaches production this way
+    // will open a PR that never gets `ci-app-lint` and sits in the merge
+    // queue forever -- see the comment above. Warn loudly rather than let
+    // that failure stay silent until someone notices a stuck PR.
+    // biome-ignore lint/suspicious/noConsole: this is a CI script, console output is expected.
+    console.error(
+      'Warning: I18N_SYNC_PUBLISH_TOKEN is not set; falling back to GITHUB_TOKEN. ' +
+        'A pull request authored by GITHUB_TOKEN will not trigger ci-app-lint and will ' +
+        'never satisfy the Mergify queue condition -- register I18N_SYNC_PUBLISH_TOKEN ' +
+        'per docs/i18n-community-translation-setup.md before relying on this in production.',
+    );
   }
 
   const approvalToken = env.I18N_SYNC_APPROVAL_TOKEN;
