@@ -14,6 +14,14 @@ export interface RenderedText {
   resolveDomPosition: (
     textOffset: number,
   ) => { node: Node; offset: number } | null;
+  /**
+   * Converts a DOM boundary point — the same kind of boundary that
+   * `Range.setEnd(node, offset)` refers to — into an offset into `text`, using the
+   * same exclusion condition and the same traversal order that built `text`. When the
+   * boundary point sits inside an excluded subtree, the length up to just before that
+   * subtree is returned.
+   */
+  textOffsetOf: (node: Node, offset: number) => number;
 }
 
 /** One text node's contribution to the constructed plain text, as a [start, end) span. */
@@ -116,6 +124,33 @@ const resolveDomPositionFrom = (
     : { node: span.node, offset: textOffset - span.start };
 };
 
+/**
+ * Counts the characters `text` would have contained for everything preceding the given
+ * boundary point, by cloning the container's prefix up to that point and running it
+ * through `walkTextNodes` — the very same traversal (and therefore the very same
+ * exclusion condition) that built `text`, so the two directions cannot drift apart.
+ *
+ * A partially selected excluded element is cloned along with its attributes, so
+ * `isExcludedRoot` still rejects it and a boundary inside such a subtree naturally
+ * yields the length up to just before it.
+ */
+const textOffsetOfBoundary = (
+  container: HTMLElement,
+  node: Node,
+  offset: number,
+): number => {
+  const prefixRange = container.ownerDocument.createRange();
+  prefixRange.setStart(container, 0);
+  prefixRange.setEnd(node, offset);
+
+  let length = 0;
+  walkTextNodes(prefixRange.cloneContents(), (textNode) => {
+    length += (textNode.nodeValue ?? '').length;
+  });
+
+  return length;
+};
+
 export const renderedTextOf = (container: HTMLElement): RenderedText => {
   const { spans, text } = collectTextNodeSpans(container);
 
@@ -123,5 +158,7 @@ export const renderedTextOf = (container: HTMLElement): RenderedText => {
     text,
     resolveDomPosition: (textOffset) =>
       resolveDomPositionFrom(spans, text, textOffset),
+    textOffsetOf: (node, offset) =>
+      textOffsetOfBoundary(container, node, offset),
   };
 };
