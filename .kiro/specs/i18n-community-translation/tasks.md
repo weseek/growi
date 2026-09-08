@@ -85,12 +85,13 @@
   - _Requirements: 1.3, 5.1, 5.2_
 
 - [ ] 4.2 (P) メンテナー向け運用手順書を作成し、その手順を実行して実運用環境を準備する
-  - POEditor OSSプランの申請手順、namespaceごとに専用プロジェクトを作成する手順、各プロジェクトでpublic join pageを有効化する手順を記載する
-  - PR作成者とは別に承認レビューを送るための承認ボットアカウント（GitHub Appのインストール、または専用ボットアカウントの発行）を用意し、変更提案への承認レビューのみに限定した権限のトークンを発行する手順を記載する
-  - OSSプランが承認されるまで本番運用（実際の同期起動）を進めないという条件を明記する
-  - 手順書に沿って、3プロジェクト（またはテスト用のPOEditorプロジェクト）と承認ボットアカウントを実際に用意する。これは後続タスク（5.1・5.2・6.1・6.2）が使うシークレット・テスト環境の元になる
+  - [x] POEditor OSSプランの申請手順、namespaceごとに専用プロジェクトを作成する手順、各プロジェクトでpublic join pageを有効化する手順を記載する（`docs/i18n-community-translation-setup.md` として作成・レビュー承認済み）
+  - [x] PR作成者とは別に承認レビューを送るための承認ボットアカウント（GitHub Appのインストール、または専用ボットアカウントの発行）を用意し、変更提案への承認レビューのみに限定した権限のトークンを発行する手順を記載する（同上ドキュメントに記載済み）
+  - [x] OSSプランが承認されるまで本番運用（実際の同期起動）を進めないという条件を明記する（同上ドキュメント冒頭に明記済み）
+  - [ ] 手順書に沿って、3プロジェクト（またはテスト用のPOEditorプロジェクト）と承認ボットアカウントを実際に用意する。これは後続タスク（5.1・5.2・6.1・6.2）が使うシークレット・テスト環境の元になる
   - 観測可能な完了状態: 手順書に記載された順序通りに作業すれば、プロジェクトと承認ボットアカウントが用意され、貢献者が参加可能な状態に至る
   - _Requirements: 1.1, 1.2, 7.1, 7.2_
+  - _Blocked: 実際のPOEditor OSSプラン申請・3プロジェクト作成・承認ボットアカウント発行・GitHub Actionsシークレット登録は、GROWI組織のPOEditorアカウント・GitHub組織権限を持つ人間のメンテナーによる実行が必要（エージェントが代行・捏造できる範囲外）。`docs/i18n-community-translation-setup.md` の手順1〜5に沿って実行し、完了後に `apps/app/tools/i18n-sync/sync-config.ts` のプレースホルダーと `docs/i18n-community-translation.md` の参加リンクを更新すること。_
 
 ## 5. Integration: ワークフローの配線
 
@@ -150,3 +151,4 @@
 - (3.2) ゲート（`lint:i18n`）はCLI側（`I18nLintGate`注入）で実行する設計にした。design.mdのPull Flow図は「PR上でci-app-lintが走ってから承認」だが、tasks.mdの文言（「既存のlint:i18nを実行し」）に従った。`.github/mergify.yml`の`queue_conditions`/`merge_conditions`は両方とも`check-success ~= ci-app-lint`を要求するため、CLI側ゲート通過後にボットが承認しても、PR上のCIが落ちればキューに乗らずマージされない（要件3.4は守られる）。ただしCLI側ゲートが作業ツリーを読むため、同一実行内で3.3が構造変更ファイルを書き出した後にゲートを回すと、無関係な理由でtranslation-onlyのlintが落ちうる（安全側だが`main()`の実行順序を制約する — 3.3で対応時に留意）。
 - (3.3) `applyStructuralChanges` は承認ボット関連のパラメータを一切持たない（型として承認を渡す口が無い）。`StructuralCombination` には `filePath`/`exportedContent` を追加した（`TranslationOnlyCombination` の `absoluteFilePath`/`content` とはあえて別名にし、取り違えを型で防止）。`pull-translations.ts` に `main()` を実装し、`collectClassifications` → `applyTranslationOnlyChanges` → `applyStructuralChanges` の順で呼び、いずれかの失敗で非ゼロ終了コードにする。`collectClassifications` の `skipped`（invalid_json）は成功時も `console.error` で警告表示するようにした（終了コードは変えない）。`main()` は4種の協力者（`TranslationOnlyPrPublisher`/`ApprovalReviewer`/`StructuralPrPublisher`/`I18nLintGate`）のうち実装があるのは無し（すべて5.2で実装予定の「未実装」スタブ。呼ばれると分かりやすいエラーで落ちる）。変更が無い実行では一切呼ばれないため、"何もすることが無い" run は現状でも成功する。`I18nLintGate` の実アダプタもどのタスクにも属していなかったため、5.2のタスク文に追加した。
 - (3.3) `main()` の成功ログ「Pull sync completed: no failures.」は、`skipped` が非空でも変わらず出る（レビューでFYI指摘。ブロッカーではないが、5.2以降でCLIのログ文言を見直す際は「一部スキップあり」の場合に文言を分けることを検討するとよい）。
+- (4.2) `docs/i18n-community-translation-setup.md` を作成（レビュー承認済み）。文書作成の3項目は完了、「実際に用意する」の1項目のみ人手待ちで`_Blocked:_`にした。あわせて design.md 44行目（Boundary Commitments > Allowed Dependencies）の `.github/mergify.yml`「Automatic queue to merge」ルールの引用が `#review-requested = 0` の条件を省略していることがレビューで判明（実ファイルには存在する条件）。手順書側はdesign.mdの記述をそのまま踏襲しているだけで手順書固有の誤りではないが、5.2で実アダプタを実装する際はdesign.mdでなく`.github/mergify.yml`の実物を見て条件を漏らさないこと。
