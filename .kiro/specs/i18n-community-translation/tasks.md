@@ -104,7 +104,7 @@
   - _Requirements: 2.1, 2.2, 2.3, 8.1_
   - _Depends: 2, 4.2_
 
-- [ ] 5.2 pullワークフローを配線し、GitHub操作の実アダプタを実装する
+- [x] 5.2 pullワークフローを配線し、GitHub操作の実アダプタを実装する
   - 3.2/3.3が注入インターフェースとしてのみ定義した `TranslationOnlyPrPublisher` / `ApprovalReviewer` / `StructuralPrPublisher`（3.3の構造変更PR用インターフェース）の実装を、`gh` CLIまたはGitHub REST APIへの実呼び出しとして作成する（3.2のレビューで「アダプタの実装がどのタスクにも属していない」と指摘された分を回収する）
   - `I18nLintGate` の実アダプタ（`pnpm run lint:i18n` を実行して合否を返す）も同様に作成する（3.2・3.3のレビューで2回続けて「このインターフェースを実装するタスクがどこにも無い」と指摘された分を回収する）
   - 定期実行と手動実行の両方をトリガーに、pullのCLIを実行するGitHub Actionsワークフローを追加する
@@ -152,3 +152,6 @@
 - (3.3) `applyStructuralChanges` は承認ボット関連のパラメータを一切持たない（型として承認を渡す口が無い）。`StructuralCombination` には `filePath`/`exportedContent` を追加した（`TranslationOnlyCombination` の `absoluteFilePath`/`content` とはあえて別名にし、取り違えを型で防止）。`pull-translations.ts` に `main()` を実装し、`collectClassifications` → `applyTranslationOnlyChanges` → `applyStructuralChanges` の順で呼び、いずれかの失敗で非ゼロ終了コードにする。`collectClassifications` の `skipped`（invalid_json）は成功時も `console.error` で警告表示するようにした（終了コードは変えない）。`main()` は4種の協力者（`TranslationOnlyPrPublisher`/`ApprovalReviewer`/`StructuralPrPublisher`/`I18nLintGate`）のうち実装があるのは無し（すべて5.2で実装予定の「未実装」スタブ。呼ばれると分かりやすいエラーで落ちる）。変更が無い実行では一切呼ばれないため、"何もすることが無い" run は現状でも成功する。`I18nLintGate` の実アダプタもどのタスクにも属していなかったため、5.2のタスク文に追加した。
 - (3.3) `main()` の成功ログ「Pull sync completed: no failures.」は、`skipped` が非空でも変わらず出る（レビューでFYI指摘。ブロッカーではないが、5.2以降でCLIのログ文言を見直す際は「一部スキップあり」の場合に文言を分けることを検討するとよい）。
 - (4.2) `docs/i18n-community-translation-setup.md` を作成（レビュー承認済み）。文書作成の3項目は完了、「実際に用意する」の1項目のみ人手待ちで`_Blocked:_`にした。あわせて design.md 44行目（Boundary Commitments > Allowed Dependencies）の `.github/mergify.yml`「Automatic queue to merge」ルールの引用が `#review-requested = 0` の条件を省略していることがレビューで判明（実ファイルには存在する条件）。手順書側はdesign.mdの記述をそのまま踏襲しているだけで手順書固有の誤りではないが、5.2で実アダプタを実装する際はdesign.mdでなく`.github/mergify.yml`の実物を見て条件を漏らさないこと。
+- (5.2) `readGitHubRunConfig`（`pull-translations.ts`）が使う秘密情報は `I18N_SYNC_PUBLISH_TOKEN` / `GITHUB_TOKEN` / `I18N_SYNC_APPROVAL_TOKEN` の3つで、うち `I18N_SYNC_PUBLISH_TOKEN` は design.md の Security Considerations にも `docs/i18n-community-translation-setup.md`（4.2で作成した手順書）にも載っていない3つ目のシークレットである（手順書は POEDITOR_API_TOKEN と I18N_SYNC_APPROVAL_TOKEN の2つしか登録手順を示していない）。実際に本番用シークレットを登録する6.2のタスクでは、この `I18N_SYNC_PUBLISH_TOKEN` も忘れず登録すること。design.md 側への反映は `kiro-spec-cleanup` 実行時に吸収する。なお、GitHub Actions は登録されていないシークレットを `env:` へ渡すと空文字列としてエクスポートする（未設定にはならない）ため、`I18N_SYNC_PUBLISH_TOKEN ?? GITHUB_TOKEN` のような `??` によるフォールバックは効かず、実運用のワークフロー（`I18N_SYNC_PUBLISH_TOKEN` 未登録・`GITHUB_TOKEN` のみ利用可能なケース）で毎回失敗する不具合がレビューで見つかった。`||` によるフォールバックに修正済み（本人による自己承認を防ぐ等値チェックは変更していない）。
+
+なおこのフォールバックにより、`I18N_SYNC_PUBLISH_TOKEN` を登録せず `GITHUB_TOKEN` のみで運用した場合、ワークフローは失敗せず実行できてしまうが、既定の `GITHUB_TOKEN` が作成したPRイベントは他のワークフロー実行を起動しないため `ci-app-lint` が付かず、承認されてもマージキューに永遠に留まる（早期の分かりやすい失敗が、後段の分かりにくい失敗に置き換わる）。6.2で実際にシークレットを揃える際、`I18N_SYNC_PUBLISH_TOKEN` の登録漏れがないか特に確認すること。

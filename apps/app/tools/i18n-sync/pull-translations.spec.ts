@@ -1019,18 +1019,38 @@ describe('runPull', () => {
 });
 
 describe('main', () => {
-  const originalToken = process.env.POEDITOR_API_TOKEN;
+  // Every environment variable main() reads, saved and restored as a set so
+  // one test's deletion cannot leak into the next.
+  const ENV_KEYS = [
+    'POEDITOR_API_TOKEN',
+    'GITHUB_REPOSITORY',
+    'GITHUB_TOKEN',
+    'I18N_SYNC_PUBLISH_TOKEN',
+    'I18N_SYNC_APPROVAL_TOKEN',
+  ] as const;
+  const originalEnv = new Map<string, string | undefined>(
+    ENV_KEYS.map((key) => [key, process.env[key]]),
+  );
   let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
     consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    // A complete, valid configuration by default; each test below narrows it
+    // to the one thing it is about.
+    process.env.POEDITOR_API_TOKEN = 'test-token';
+    process.env.GITHUB_REPOSITORY = 'growilabs/growi';
+    process.env.I18N_SYNC_PUBLISH_TOKEN = 'publish-token';
+    process.env.I18N_SYNC_APPROVAL_TOKEN = 'approval-token';
+    delete process.env.GITHUB_TOKEN;
   });
 
   afterEach(() => {
-    if (originalToken == null) {
-      delete process.env.POEDITOR_API_TOKEN;
-    } else {
-      process.env.POEDITOR_API_TOKEN = originalToken;
+    for (const [key, value] of originalEnv) {
+      if (value == null) {
+        delete process.env[key];
+      } else {
+        process.env[key] = value;
+      }
     }
     process.exitCode = undefined;
     consoleErrorSpy.mockRestore();
@@ -1046,9 +1066,122 @@ describe('main', () => {
     expect(collectClassificationsFn).not.toHaveBeenCalled();
   });
 
-  it('leaves the exit code unset when every step succeeds (success path through main())', async () => {
-    process.env.POEDITOR_API_TOKEN = 'test-token';
+  it('refuses to run when the approval bot token is missing', async () => {
+    delete process.env.I18N_SYNC_APPROVAL_TOKEN;
+    const collectClassificationsFn = vi.fn();
 
+    await main({ collectClassificationsFn });
+
+    expect(process.exitCode).toBe(1);
+    expect(collectClassificationsFn).not.toHaveBeenCalled();
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect.stringContaining('I18N_SYNC_APPROVAL_TOKEN'),
+    );
+  });
+
+  it('refuses to run when the approval bot token and the publishing token are the same value', async () => {
+    // The separation between the pull-request author and the approving
+    // identity is the whole reason `ApprovalReviewer` exists as its own
+    // interface (design.md Security Considerations). One value wired to both
+    // roles would silently defeat it -- and GitHub refuses a self-approval
+    // anyway, so such a run could never merge.
+    process.env.I18N_SYNC_PUBLISH_TOKEN = 'same-token';
+    process.env.I18N_SYNC_APPROVAL_TOKEN = 'same-token';
+    const collectClassificationsFn = vi.fn();
+
+    await main({ collectClassificationsFn });
+
+    expect(process.exitCode).toBe(1);
+    expect(collectClassificationsFn).not.toHaveBeenCalled();
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect.stringContaining('must be a different identity'),
+    );
+  });
+
+  it('refuses to run when the repository is not identified', async () => {
+    delete process.env.GITHUB_REPOSITORY;
+    const collectClassificationsFn = vi.fn();
+
+    await main({ collectClassificationsFn });
+
+    expect(process.exitCode).toBe(1);
+    expect(collectClassificationsFn).not.toHaveBeenCalled();
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect.stringContaining('GITHUB_REPOSITORY'),
+    );
+  });
+
+  it('wires the real GitHub adapters, giving the approving identity no way to write content', async () => {
+    let capturedApprovalReviewer: ApprovalReviewer | undefined;
+    let capturedStructuralPublisher: StructuralPrPublisher | undefined;
+
+    await main({
+      collectClassificationsFn: vi.fn(async () => ({
+        ok: true as const,
+        translationOnly: [],
+        structural: [],
+        skipped: [],
+      })),
+      // biome-ignore lint/suspicious/useAwait: must match applyTranslationOnlyChanges's Promise-returning signature.
+      applyTranslationOnlyChangesFn: vi.fn(async (options) => {
+        capturedApprovalReviewer = options.approvalReviewer;
+        return { ok: true as const, outcome: 'no_changes' as const };
+      }),
+      // biome-ignore lint/suspicious/useAwait: must match applyStructuralChanges's Promise-returning signature.
+      applyStructuralChangesFn: vi.fn(async (options) => {
+        capturedStructuralPublisher = options.prPublisher;
+        return { ok: true as const, outcome: 'no_changes' as const };
+      }),
+    });
+
+    // The approving identity's adapter carries exactly one capability; there
+    // is no method on it that could commit, push, or edit a pull request.
+    expect(Object.keys(capturedApprovalReviewer ?? {})).toEqual([
+      'submitApprovalReview',
+    ]);
+    // ...while the structural publisher is a real publisher, with no
+    // approval capability of its own.
+    expect(Object.keys(capturedStructuralPublisher ?? {}).sort()).toEqual([
+      'createPr',
+      'findExistingPr',
+      'publishBranch',
+      'updatePr',
+    ]);
+    expect(capturedStructuralPublisher).not.toHaveProperty(
+      'submitApprovalReview',
+    );
+  });
+
+  it('accepts the workflow-provided GITHUB_TOKEN as the publishing identity when no dedicated publish token is configured', async () => {
+    // GitHub Actions exports an unregistered secret as an empty string, not
+    // as an unset variable -- `delete` does not model what Actions actually
+    // produces here.
+    process.env.I18N_SYNC_PUBLISH_TOKEN = '';
+    process.env.GITHUB_TOKEN = 'workflow-token';
+    const collectClassificationsFn = vi.fn(async () => ({
+      ok: true as const,
+      translationOnly: [],
+      structural: [],
+      skipped: [],
+    }));
+
+    await main({
+      collectClassificationsFn,
+      applyTranslationOnlyChangesFn: vi.fn(async () => ({
+        ok: true as const,
+        outcome: 'no_changes' as const,
+      })),
+      applyStructuralChangesFn: vi.fn(async () => ({
+        ok: true as const,
+        outcome: 'no_changes' as const,
+      })),
+    });
+
+    expect(process.exitCode).toBeUndefined();
+    expect(collectClassificationsFn).toHaveBeenCalled();
+  });
+
+  it('leaves the exit code unset when every step succeeds (success path through main())', async () => {
     await main({
       collectClassificationsFn: vi.fn(async () => ({
         ok: true as const,
@@ -1070,8 +1203,6 @@ describe('main', () => {
   });
 
   it('sets a non-zero exit code when any step reports failure (task 3.3 observable completion state)', async () => {
-    process.env.POEDITOR_API_TOKEN = 'test-token';
-
     await main({
       collectClassificationsFn: vi.fn(async () => ({
         ok: true as const,
@@ -1092,39 +1223,10 @@ describe('main', () => {
     expect(process.exitCode).toBe(1);
   });
 
-  it('fails loudly instead of silently skipping work when there are real changes but no GitHub adapter has been wired yet (task 5.2 boundary)', async () => {
-    // No collaborator overrides at all -- main()'s real default collaborators
-    // are the not-implemented stubs, since task 5.2 (GitHub adapters) has not
-    // landed yet. With a non-empty structural group, applyStructuralChanges
-    // is forced to touch structuralPrPublisher.publishBranch, which throws.
-    // writeLocaleFile is stubbed so the assertion below isolates that throw
-    // from an unrelated real-filesystem ENOENT.
-    process.env.POEDITOR_API_TOKEN = 'test-token';
-
-    await main({
-      collectClassificationsFn: vi.fn(async () => ({
-        ok: true as const,
-        translationOnly: [],
-        structural: [buildStructuralCombination()],
-        skipped: [],
-      })),
-      writeLocaleFile: vi.fn(() => Promise.resolve()),
-    });
-
-    expect(process.exitCode).toBe(1);
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      expect.stringContaining(
-        'StructuralPrPublisher.publishBranch has no real implementation yet',
-      ),
-    );
-  });
-
   it('warns about skipped (invalid_json) combinations on the success path, but leaves the exit code unset (design.md 「不正な形式のexportデータ」, Requirement 8.1)', async () => {
     // A combination whose POEditor export failed to parse must never
     // disappear silently even though the overall run still succeeds -- see
     // this file's header comment and the `skipped` field's doc comment.
-    process.env.POEDITOR_API_TOKEN = 'test-token';
-
     await main({
       collectClassificationsFn: vi.fn(async () => ({
         ok: true as const,

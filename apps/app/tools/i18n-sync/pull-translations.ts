@@ -43,6 +43,13 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { classify } from './diff-classifier.ts';
 import {
+  createApprovalReviewer,
+  createBaseRefResolver,
+  createI18nLintGate,
+  createStructuralPrPublisher,
+  createTranslationOnlyPrPublisher,
+} from './github-adapters.ts';
+import {
   createPoeditorClient,
   type PoeditorApiError,
   type PoeditorClient,
@@ -976,56 +983,132 @@ export const runPull = async (
   return { ok: true, skipped: classification.skipped };
 };
 
-const notImplementedCollaborator = <T extends object>(
-  typeName: string,
-  methodNames: readonly (keyof T)[],
-): T => {
-  const stub = {} as Record<keyof T, (...args: unknown[]) => never>;
-  for (const methodName of methodNames) {
-    stub[methodName] = () => {
-      throw new Error(
-        `${typeName}.${String(methodName)} has no real implementation yet -- ` +
-          'the GitHub adapter for this collaborator is deferred to task 5.2 ' +
-          "(design.md's PullTranslationSync Batch Contract; see task 3.2's " +
-          'Implementation Notes for the same boundary call on the translation-' +
-          'only path).',
-      );
-    };
-  }
-  return stub as unknown as T;
-};
-
-/**
- * `main()`'s default collaborators. Every method throws instead of doing
- * nothing, so a real run with pending changes fails loudly with a clear
- * "not implemented yet, see task 5.2" message rather than silently skipping
- * work. When there is nothing to change (`combinations` is empty for both
- * groups), neither `applyTranslationOnlyChanges` nor `applyStructuralChanges`
- * touches its publisher/reviewer/gate at all, so these stubs are never
- * called and `main()` still completes successfully in that case.
- */
-const createNotImplementedCollaborators = (): Pick<
+type GitHubCollaborators = Pick<
   RunPullOptions,
   | 'translationOnlyPrPublisher'
   | 'approvalReviewer'
   | 'lintGate'
   | 'structuralPrPublisher'
-> => ({
-  translationOnlyPrPublisher:
-    notImplementedCollaborator<TranslationOnlyPrPublisher>(
-      'TranslationOnlyPrPublisher',
-      ['publishBranch', 'findExistingPr', 'createPr', 'updatePr'],
-    ),
-  approvalReviewer: notImplementedCollaborator<ApprovalReviewer>(
-    'ApprovalReviewer',
-    ['submitApprovalReview'],
-  ),
-  lintGate: notImplementedCollaborator<I18nLintGate>('I18nLintGate', ['run']),
-  structuralPrPublisher: notImplementedCollaborator<StructuralPrPublisher>(
-    'StructuralPrPublisher',
-    ['publishBranch', 'findExistingPr', 'createPr', 'updatePr'],
-  ),
-});
+>;
+
+interface GitHubRunConfig {
+  readonly repository: string;
+  /** Identity that authors and pushes the sync pull requests. */
+  readonly publishToken: string;
+  /** Identity that submits the approving review. Never the publishing one. */
+  readonly approvalToken: string;
+  readonly apiBaseUrl: string;
+}
+
+/**
+ * Reads and validates the GitHub-side configuration before anything runs.
+ *
+ * Validating up front (rather than letting a missing value surface when the
+ * first pull request is published) matters because the failure it guards
+ * against is a *configuration* mistake in the workflow, and a run that gets
+ * as far as force-pushing a branch and only then discovers it has no
+ * approval identity leaves an unapproved pull request behind.
+ *
+ * The equality check is the runtime backstop for design.md's Security
+ * Considerations: `ApprovalReviewer` being its own interface makes it
+ * impossible for the approving adapter to write content, but nothing at the
+ * type level stops an operator from putting the *same secret* into both
+ * workflow inputs. GitHub refuses a self-approval, so such a run could never
+ * satisfy `.github/mergify.yml`'s `#approved-reviews-by >= 1` anyway — it
+ * would just fail late and confusingly instead of early and clearly.
+ */
+const readGitHubRunConfig = (
+  env: NodeJS.ProcessEnv,
+): { ok: true; config: GitHubRunConfig } | { ok: false; message: string } => {
+  const repository = env.GITHUB_REPOSITORY;
+  if (repository == null || repository === '') {
+    return {
+      ok: false,
+      message:
+        'Cannot pull translations: GITHUB_REPOSITORY (owner/repo) is not set in the environment.',
+    };
+  }
+
+  // A dedicated publishing identity is preferred over the workflow's own
+  // GITHUB_TOKEN: events created by GITHUB_TOKEN do not start further
+  // workflow runs, so a pull request opened with it would never get the
+  // `ci-app-lint` check that `.github/mergify.yml`'s queue conditions
+  // require, and would sit in the queue forever. The fallback is kept so a
+  // dry run in a fork still works, where nothing needs to merge.
+  // `||`, not `??`: GitHub Actions exports an unregistered secret as an
+  // empty string, not as unset, so `??` (which only falls back on
+  // null/undefined) would keep the empty value and never reach GITHUB_TOKEN.
+  const publishToken = env.I18N_SYNC_PUBLISH_TOKEN || env.GITHUB_TOKEN;
+  if (publishToken == null || publishToken === '') {
+    return {
+      ok: false,
+      message:
+        'Cannot pull translations: neither I18N_SYNC_PUBLISH_TOKEN nor GITHUB_TOKEN is set in the environment.',
+    };
+  }
+
+  const approvalToken = env.I18N_SYNC_APPROVAL_TOKEN;
+  if (approvalToken == null || approvalToken === '') {
+    return {
+      ok: false,
+      message:
+        'Cannot pull translations: I18N_SYNC_APPROVAL_TOKEN (the approval bot identity) is not set in the environment.',
+    };
+  }
+
+  if (approvalToken === publishToken) {
+    return {
+      ok: false,
+      message:
+        'Cannot pull translations: the approval bot must be a different identity from the one that publishes the pull request, but I18N_SYNC_APPROVAL_TOKEN and the publishing token hold the same value.',
+    };
+  }
+
+  return {
+    ok: true,
+    config: {
+      repository,
+      publishToken,
+      approvalToken,
+      apiBaseUrl: env.GITHUB_API_URL ?? 'https://api.github.com',
+    },
+  };
+};
+
+/**
+ * `main()`'s real collaborators (task 5.2). The two publishers share one
+ * base-ref resolver on purpose — see `createBaseRefResolver`'s doc comment:
+ * both sync branches must be cut from the checkout's original commit, or the
+ * structural pull request would inherit the translation-only commit made
+ * moments earlier and design.md's PR-granularity invariant would break.
+ *
+ * The approving identity is constructed from `approvalToken` alone and is
+ * never handed `publishToken`; conversely the publishers are never handed
+ * `approvalToken`.
+ */
+const createGitHubCollaborators = (
+  config: GitHubRunConfig,
+): GitHubCollaborators => {
+  const resolveBaseRef = createBaseRefResolver();
+  const publisherOptions = {
+    publishToken: config.publishToken,
+    repository: config.repository,
+    apiBaseUrl: config.apiBaseUrl,
+    resolveBaseRef,
+  };
+
+  return {
+    translationOnlyPrPublisher:
+      createTranslationOnlyPrPublisher(publisherOptions),
+    structuralPrPublisher: createStructuralPrPublisher(publisherOptions),
+    approvalReviewer: createApprovalReviewer({
+      approvalToken: config.approvalToken,
+      repository: config.repository,
+      apiBaseUrl: config.apiBaseUrl,
+    }),
+    lintGate: createI18nLintGate(),
+  };
+};
 
 /**
  * Process-entrypoint wrapper, mirroring `push-source.ts`'s `main()`: reads
@@ -1038,7 +1121,7 @@ const createNotImplementedCollaborators = (): Pick<
  * observable completion criterion) with injected/mocked sub-functions,
  * without needing a real `POEDITOR_API_TOKEN` or GitHub credentials. A real
  * invocation (`main()`, no arguments) uses the real `PoeditorClient` and the
- * not-yet-implemented collaborator stubs above.
+ * real GitHub adapters built by `createGitHubCollaborators`.
  */
 export const main = async (
   overrides: Partial<
@@ -1065,8 +1148,16 @@ export const main = async (
     return;
   }
 
+  const gitHubConfig = readGitHubRunConfig(process.env);
+  if (!gitHubConfig.ok) {
+    // biome-ignore lint/suspicious/noConsole: this is a CI script, console output is expected.
+    console.error(gitHubConfig.message);
+    process.exitCode = 1;
+    return;
+  }
+
   const poeditorClient = createPoeditorClient({ apiToken });
-  const defaults = createNotImplementedCollaborators();
+  const defaults = createGitHubCollaborators(gitHubConfig.config);
 
   const result = await runPull({
     poeditorClient,
