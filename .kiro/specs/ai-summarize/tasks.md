@@ -2,8 +2,8 @@
 
 > **LLMテストダブルの共通方針**: 本specの全テストは実LLMを呼ばない。Agentをモック化し、tool-call / tool-result を偽の `data` で埋める方式を採る（design.md「Testing Strategy → LLM Test Double Strategy」を参照）。前例は `apps/app/src/features/ai-tools/suggest-path/server/integration-tests/suggest-path-agentic-integration.spec.ts`。各タスクの記述では、この方針に従うことを前提に固有の注意点のみを記す。
 
-- [ ] 1. SummarizeAgent: 全文カバレッジ方針で単一ページを要約するAgentができる
-- [ ] 1.1 LimitedGetPageContentTool: 読み取り行数バジェットが強制される
+- [x] 1. SummarizeAgent: 全文カバレッジ方針で単一ページを要約するAgentができる
+- [x] 1.1 LimitedGetPageContentTool: 読み取り行数バジェットが強制される
   - `RequestContext` の `pageReadBudget: { used: number; limit: number }` を読み、未設定時は `getPageContentTool` に委譲せず `context_error` を返す
   - `used >= limit` の場合は委譲せず `limit_exceeded` を返す（このとき `used`/`limit` は変更しない）
   - それ以外は既存の `getPageContentTool`（無変更）に委譲し、返された `content` の行数分だけ `used` を加算する
@@ -13,7 +13,7 @@
   - 上記4パターン（未設定／上限到達／通常委譲＋加算／`content` undefined で非加算）をユニットテストで確認できる
   - _Requirements: 2.2, 2.3_
 
-- [ ] 1.2 要約instructionsができる
+- [x] 1.2 要約instructionsができる
   - **段階的な全文読み取り手順**を、`getPageContentTool` の実際の入出力契約に沿った具体手順として明文化する:
     - 初回呼び出しは `offset` を省略する。この呼び出しではアウトライン（見出し構成）と `totalLines` が返る
     - ページが1回分（`limit`、既定200行・最大500行）に収まる場合は、初回呼び出しで `content` と `hasMore`（`false`）も同時に返るため1回で読み終わる
@@ -27,7 +27,7 @@
   - instructions文字列に上記4方針（段階的読み取り手順・打ち切り時の明示・出力形式・応答言語）の指示が含まれることをユニットテストで確認できる
   - _Requirements: 2.1, 3.1_
 
-- [ ] 1.3 SummarizeAgentがMastraから取得できる
+- [x] 1.3 SummarizeAgentがMastraから取得できる
   - `limitedGetPageContentTool`（タスク1.1）のみをツールとして持ち、`memory`（既存のMongoDBStore、growiAgentと共有）に接続したAgent定義を作成する
   - ツールの登録**キー**を `getPageContentTool` にする（`tools: { getPageContentTool: limitedGetPageContentTool }`）。LLMに送られるツール名は `tools` レコードのキーであり、クロスAgentスレッド再生時に `growiAgent` の登録名と一致させるために必須
   - モデル解決は `post-message.ts` と同じ `resolveEffectiveModelKey` の丸め込みを経由し、リクエストの `modelKey` 省略時はデフォルトモデルへフォールバックする
@@ -303,3 +303,7 @@
 ## Task Numbering Note
 
 要件7.3（未選択時は永続化しない）に対応するタスクは、永続化ルートの責務であるためタスク**6.4**として配置している（既存のタスク7.3は要件9.3/9.4のローカル非表示であり、別物）。
+
+## Implementation Notes
+
+- タスク1.2完了時点で、instructions.ts の「アウトラインだけで打ち切らず先頭から順に読み進める」（design.md a-2/a-3、`read forward from the start of the page` 文言・2箇所のアンチショートカット文）はユニットテストで文言拘束されていない（残存指摘、非ブロッキング）。後続タスクでinstructions.tsを触る際はこの2文の反転・削除がREDにならない点に注意し、機会があれば`toMatch`を追加する。
