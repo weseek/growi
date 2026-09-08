@@ -2791,3 +2791,337 @@ test.describe('Inline comment - the highlight keeps tracking a body change that 
     await expect(popover).toContainText(commentText);
   });
 });
+
+test.describe('Inline comment - a heading-adjacent comment restores onto the same occurrence whether the collaborative-editing data loads before or after the first anchor resolution (Req 2.2, 3.1)', () => {
+  // Serial: the timing variants below both read back the single comment the
+  // first test really wrote to the backend, the same reasoning the other
+  // suites in this file use.
+  test.describe.configure({ mode: 'serial' });
+
+  const headingAdjacentPagePath = (retry: number) =>
+    `/inline-comment-e2e-heading-adjacent${retry}`;
+
+  // The fixture that makes this suite decisive, and why it has this exact
+  // shape.
+  //
+  // requirements.md's background report for 不具合2(a) found real stored
+  // anchors whose context ran straight through a heading's edit button --
+  // `"...For Beginnersedit_square\nWith GR..."`. That button
+  // (`Header.tsx`'s `EditLink`) is gated on `isLoadingCurrentPageYjsData`, so
+  // whether its icon's literal `edit_square` ligature text is part of the
+  // body text at any given moment depends on nothing but how far the
+  // collaborative-editing fetch has progressed. A comment created while the
+  // button is up is therefore captured against a body text that is K
+  // characters longer (K = the icon's text length) than the same body a
+  // reload shows before that fetch lands.
+  //
+  // K only ever shifts an offset FORWARD, so the discriminating target is the
+  // EARLIER of two identical phrases placed close together right after the
+  // heading. `matchExactly` (quote-matcher.ts) keeps whichever exact
+  // occurrence starts closest to the stored `approxOffset`; with the two
+  // occurrences' offsets o1 and o2 and d = o2 - o1:
+  //   - the offset counted WITHOUT the icon text stores o1  → distance 0 to o1
+  //   - the offset counted WITH it stores o1 + K            → distance K to o1,
+  //                                                            |d - K| to o2
+  // so a body counted one way and searched the other picks the WRONG (second)
+  // occurrence exactly when d < 2K. `expect(2 * iconTextLength)
+  // .toBeGreaterThan(d)` below asserts that inequality against the page as
+  // the browser really rendered it, so the fixture cannot go quietly vacuous
+  // (a heading that rendered no edit button would make K = 0 and both
+  // counting schemes agree).
+  //
+  // Nothing else in the resolver could rescue the right answer:
+  // `matchExactly` disambiguates on `approxOffset` alone, and
+  // `matchApproximately`'s own doc comment records that it deliberately
+  // ignores `prefix`/`suffix`. The stored offset is the only thing that can
+  // tell two identical phrases apart.
+  //
+  // Both occurrences sit inside ONE paragraph, hence one text node: no
+  // excluded (`aria-hidden` / `.katex`) subtree can slip between them, so d
+  // is the same number in both counting schemes, and the highlight's
+  // `startOffset` inside that node names the chosen occurrence exactly.
+  const duplicatedQuote = 'twin phrase';
+  const targetParagraph = `Alpha ${duplicatedQuote}, beta ${duplicatedQuote}.`;
+  const pageBody = [
+    '# Inline comment E2E - heading-adjacent anchor',
+    '',
+    targetParagraph,
+    '',
+    'Some trailing text after the target paragraph.',
+    '',
+  ].join('\n');
+
+  const commentText = 'a comment anchored right after a heading';
+
+  let createdPage: CreatedPage | undefined;
+
+  test.afterAll(async ({ request }) => {
+    if (createdPage != null) {
+      await deletePagesCompletely(request, [createdPage]);
+    }
+  });
+
+  /**
+   * Where the saved highlight actually sits, expressed so that "which of the
+   * two identical phrases" is answerable: the matched text, the offset of the
+   * match inside its own text node, and the offsets of the first and last
+   * occurrence in that same node. Presence alone would not distinguish a
+   * correct restore from a restore onto the wrong occurrence, which is the
+   * whole question here (the same discipline the formula/duplicate-quote
+   * suite above applies).
+   */
+  const highlightedOccurrence = (
+    targetPage: Page,
+    quote: string,
+  ): Promise<{
+    text: string;
+    startOffset: number;
+    firstIndex: number;
+    lastIndex: number;
+    nodeText: string;
+  } | null> =>
+    targetPage.evaluate((needle) => {
+      const set = CSS.highlights.get('growi-inline-comment');
+      const range = set != null ? [...set][0] : undefined;
+      if (range == null) {
+        return null;
+      }
+      const nodeText = range.startContainer.textContent ?? '';
+      return {
+        text: range.toString(),
+        startOffset: range.startOffset,
+        firstIndex: nodeText.indexOf(needle),
+        lastIndex: nodeText.lastIndexOf(needle),
+        nodeText,
+      };
+    }, quote);
+
+  /**
+   * Intercepts every request matching `urlPattern` and holds it -- unanswered,
+   * still pending in the browser -- until the returned function is called.
+   *
+   * Both timing variants below need one fetch to land strictly after (or
+   * strictly before) something else the test observes. A fixed delay, the
+   * technique the marker-less-DOM-change suite above uses, expresses that as
+   * "long enough in practice": it was tried here first and flaked in a
+   * whole-file parallel run, where a loaded dev server pushed the *other*
+   * fetch past the delay and inverted the very ordering the variant is about.
+   * A gate states the ordering instead of timing it, so it cannot invert
+   * under load.
+   *
+   * Holding a request open does not hold up `page.goto`: both gated fetches
+   * are issued by client code after hydration, so the load event `goto` waits
+   * for has already fired by the time either one is in flight.
+   */
+  const gateRoute = async (
+    targetPage: Page,
+    urlPattern: string,
+  ): Promise<() => void> => {
+    let release: () => void = () => {};
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    await targetPage.route(urlPattern, async (route) => {
+      await gate;
+      await route.continue();
+    });
+    return release;
+  };
+
+  /** The total text length of the excluded, decorative parts of the heading. */
+  const headingIconTextLength = (targetPage: Page): Promise<number> =>
+    targetPage.evaluate(() =>
+      [...document.querySelectorAll('.wiki h1 [aria-hidden="true"]')].reduce(
+        (total, el) => total + (el.textContent?.length ?? 0),
+        0,
+      ),
+    );
+
+  /** The gap d between the two identical phrases, read off the real DOM. */
+  const occurrenceGap = (targetPage: Page, quote: string): Promise<number> =>
+    targetPage.evaluate((needle) => {
+      const container = document.querySelector('.wiki');
+      if (container == null) {
+        throw new Error('page body container (.wiki) not found');
+      }
+      const text = container.textContent ?? '';
+      const first = text.indexOf(needle);
+      return text.indexOf(needle, first + 1) - first;
+    }, quote);
+
+  test('Create the page, then -- with the heading edit button already up -- comment on the FIRST of the two identical phrases', async ({
+    page,
+    request,
+  }, testInfo) => {
+    createdPage = await createPage(request, {
+      path: headingAdjacentPagePath(testInfo.retry),
+      body: pageBody,
+    });
+
+    await page.goto(createdPage.path);
+    await expect(page.locator('.wiki').first()).toContainText(targetParagraph);
+
+    // Capture has to happen with the edit button PRESENT: that is the state
+    // requirements.md observed in real stored data, and the only state whose
+    // body text carries the icon's `edit_square` text at all. Capturing
+    // without it would leave nothing for the reload variants to disagree
+    // about.
+    const editButton = page.locator('.wiki .revision-head-edit-button');
+    await expect(editButton.first()).toBeVisible();
+
+    // Fixture validity, measured rather than assumed -- see the reasoning
+    // above. Both numbers are read while the button is up, which is the state
+    // the stored offset is captured against.
+    const iconTextLength = await headingIconTextLength(page);
+    const d = await occurrenceGap(page, duplicatedQuote);
+    expect(iconTextLength).toBeGreaterThan(0);
+    expect(d).toBeGreaterThan(0);
+    expect(2 * iconTextLength).toBeGreaterThan(d);
+
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    // Walks the body's text nodes in document order and selects the first
+    // match, i.e. the "Alpha" occurrence -- the earlier one, which is the one
+    // the arithmetic above makes discriminating.
+    await selectTextInPageBody(page, duplicatedQuote);
+
+    await page.getByTestId('selection-action-button').click();
+    const form = page.getByTestId('inline-comment-form');
+    await expect(form).toBeVisible();
+    await expect(form.locator('.inline-comment-form-quote')).toHaveText(
+      duplicatedQuote,
+    );
+
+    await form.locator('.cm-content').fill(commentText);
+    await form.getByTestId('inline-comment-submit-button').click();
+    await expect(form).not.toBeVisible();
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+    await expect(item).toContainText(commentText);
+  });
+
+  test('Req 2.2, 3.1: with the collaborative-editing fetch held back, the first resolution -- taken while the edit button is still absent -- already lands on the first occurrence, and stays there once the button appears', async ({
+    page,
+  }, testInfo) => {
+    // Variant A: the collaborative-editing data lands AFTER the page's first
+    // anchor resolution. Holding back the one client-side fetch the edit
+    // button is gated on (`current-page-yjs-data.ts` ->
+    // `/page/{id}/yjs-data`) pins that ordering instead of hoping the fetch
+    // is still in flight, and keeps the button off the page until this test
+    // says otherwise. The hold is released a few assertions later, well
+    // inside `use-container-settle`'s WATCH_TIMEOUT_MS (10s from mount) --
+    // past that point its observer is disconnected for good, and the second
+    // half of this test would be observing the timeout fallback instead of a
+    // real re-resolution opportunity.
+    const releaseYjsData = await gateRoute(
+      page,
+      '**/_api/v3/page/*/yjs-data**',
+    );
+
+    await page.goto(headingAdjacentPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    const editButton = page.locator('.wiki .revision-head-edit-button');
+
+    // The heading itself is asserted present first: `toHaveCount(0)` alone
+    // would also be satisfied by a body that has not rendered its heading
+    // yet, which would let this half pass without ever observing the
+    // still-loading state it is about.
+    await expect(page.locator('.wiki h1')).toBeVisible();
+    await expect(editButton).toHaveCount(0);
+
+    // Requirement 2.2: resolved while the button is absent, the highlight
+    // must still be the one the author selected -- the "Alpha" occurrence.
+    await expect
+      .poll(() => highlightedOccurrence(page, duplicatedQuote))
+      .not.toBeNull();
+    const whileLoading = await highlightedOccurrence(page, duplicatedQuote);
+    expect(whileLoading?.text).toBe(duplicatedQuote);
+    expect(whileLoading?.firstIndex).toBeGreaterThanOrEqual(0);
+    expect(whileLoading?.lastIndex).toBeGreaterThan(
+      whileLoading?.firstIndex ?? 0,
+    );
+    expect(whileLoading?.startOffset).toBe(whileLoading?.firstIndex);
+    expect(whileLoading?.nodeText.slice(0, whileLoading?.startOffset)).toBe(
+      'Alpha ',
+    );
+
+    // Now let the gated fetch through, and the button appears...
+    releaseYjsData();
+    await expect(editButton.first()).toBeVisible();
+    // ...and it really is a marker-less change: nothing in the body announced
+    // itself through the rendering-status protocol the settle detection was
+    // originally built around, so re-resolution here rests on Requirement
+    // 3.4's broadened detection.
+    await expect(
+      page.locator('.wiki [data-growi-is-content-rendering]'),
+    ).toHaveCount(0);
+
+    // Requirement 2.2's other half: the state change must not move the
+    // highlight either. Polled rather than read once because the appearing
+    // button may trigger a re-resolution whose result lands asynchronously;
+    // either way the answer must not move. That a re-resolution genuinely
+    // runs on such a change is the marker-less-DOM-change suite's job (it
+    // compares the registered Highlight object's identity across the
+    // change) -- this poll would be satisfied by an answer that simply
+    // stayed correct, which is exactly what Requirement 2.2 asks for.
+    await expect
+      .poll(async () => {
+        const current = await highlightedOccurrence(page, duplicatedQuote);
+        return {
+          text: current?.text,
+          onFirstOccurrence: current?.startOffset === current?.firstIndex,
+        };
+      })
+      .toEqual({ text: duplicatedQuote, onFirstOccurrence: true });
+  });
+
+  test('Req 2.2: with the comment list held back until after the edit button is up, the restored highlight lands on the same first occurrence', async ({
+    page,
+  }, testInfo) => {
+    // Variant B: the collaborative-editing data lands BEFORE the page's first
+    // anchor resolution. Simply not delaying anything would leave that
+    // ordering to a race (the yjs fetch and the comment-list fetch are
+    // independent), so the ordering is pinned from the other side instead:
+    // the anchors themselves are held back until the edit button is
+    // observably on the page, which forces the resolution that matters to run
+    // against a body that already contains the icon's text.
+    //
+    // This arm is the reference result, not a regression test on its own: it
+    // passes both before and after the fix (the stored offset and the body it
+    // is searched in were counted in the same state), and it is what variant
+    // A has to agree with. Requirement 2.2 is the PAIR -- "same result either
+    // way" -- so neither test alone states the contract.
+    const releaseCommentList = await gateRoute(
+      page,
+      '**/_api/v3/inline-comments**',
+    );
+
+    await page.goto(headingAdjacentPagePath(testInfo.retry));
+
+    const editButton = page.locator('.wiki .revision-head-edit-button');
+    await expect(page.locator('.wiki h1')).toBeVisible();
+    // The ordering this variant is about, asserted rather than assumed: the
+    // button is up before any anchor can have been resolved, because the
+    // anchors have not been delivered yet.
+    await expect(editButton.first()).toBeVisible();
+    expect(await highlightedOccurrence(page, duplicatedQuote)).toBeNull();
+
+    releaseCommentList();
+    await expect(page.getByTestId('inline-comment-item').first()).toBeVisible();
+
+    await expect
+      .poll(async () => {
+        const current = await highlightedOccurrence(page, duplicatedQuote);
+        return {
+          text: current?.text,
+          onFirstOccurrence: current?.startOffset === current?.firstIndex,
+        };
+      })
+      .toEqual({ text: duplicatedQuote, onFirstOccurrence: true });
+
+    const afterLoad = await highlightedOccurrence(page, duplicatedQuote);
+    expect(afterLoad?.nodeText.slice(0, afterLoad?.startOffset)).toBe('Alpha ');
+  });
+});
