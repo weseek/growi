@@ -103,6 +103,13 @@ export const extension = Prisma.defineExtension((client) => {
          * Low-level primitive: writes unconditionally. The trashed-vs-gone decision is
          * the reconcile service's — a merely-trashed page needs no write at all, since
          * its derived state already reads `trashed`. Do NOT call this from event handlers.
+         *
+         * Precondition: `pageIds` is an already-batched set. Both writes send the whole
+         * array in a single command, so an unbounded one approaches MongoDB's 16MB
+         * command cap and is then rejected whole (the write throws; rows stay stale
+         * until the next save or a backfill). Every recursive delete path in PageService
+         * funnels through `createBatchStream(BULK_REINDEX_SIZE)`, so today's callers
+         * cannot exceed 100 — a caller that assembles ids some other way must chunk.
          */
         async removeLinksForPages(pageIds: Types.ObjectId[]): Promise<void> {
           // Only saves two no-op round trips; the filters below narrow by id either way.

@@ -465,6 +465,20 @@ interface IPageLink {
   - Not a transaction: the index is a derived cache, the two halves are independently idempotent, and
     staying single-command-per-write keeps the collection standalone-MongoDB compatible (the same
     trade `replaceOutboundLinks` documents).
+- **Batching is the caller's job, not the primitives'.** Every write primitive here sends its whole
+  work-set in a single command — `removeLinksForPages` puts all of `pageIds` in one `$in`,
+  `replaceOutboundLinks` emits one update statement per extracted row plus a `$nin` over every path.
+  A large enough work-set therefore approaches MongoDB's 16MB command cap (and, for
+  `replaceOutboundLinks`, the 100,000-statement batch cap), and the command is rejected whole: the
+  write throws and the rows stay stale until the next save or a backfill — loud, and self-healing,
+  but a real gap in the meantime. None of the primitives chunk internally, deliberately: every
+  recursive delete path in `PageService` already funnels through
+  `createBatchStream(BULK_REINDEX_SIZE)` (100), so the delete-family handlers (B5.3) can only ever
+  hand over a batch of that size, and a chunk loop would be an untestable branch guarding a caller
+  that does not exist. **The precondition, not the loop, is the contract** — it is stated on
+  `removeLinksForPages`' JSDoc for the next caller to find. If a future caller assembles page ids
+  outside a batch stream (a backfill, a migration, a group-deletion sweep), chunk **both** primitives
+  at that point, with a threshold that caller's measured size justifies. (Raised in review of B5.1.)
 
 #### extractInternalLinkPaths
 

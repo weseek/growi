@@ -661,9 +661,17 @@ the restored page's status. Independent of B3/B4.
     owned when it was trashed are still there, so this op is what actually settles them. The upsert
     path uses `upsert: true`, so a stale upsert for a since-gone page would re-create rows for a
     non-existent source — orphan rows a reader could surface as phantom backlinks.
+  - **Raised in review of B5.1 — pass the batch through, do not accumulate it.** `removeLinksForPages`
+    sends all of `pageIds` in one command, so an unbounded array would approach MongoDB's 16MB command
+    cap and be rejected whole. This op must hand it the ids of the event payload it was called with and
+    nothing more; it must not collect ids across events/batches into one call. That is safe because
+    every recursive delete path funnels through `createBatchStream(BULK_REINDEX_SIZE)` (100) before the
+    delete-family events fire. The primitives stay unchunked on purpose — see design.md § *Batching is
+    the caller's job* for the posture and for what would flip it
   - Done when unit tests show reconcile no-ops a trashed page and nulls inbound `toPage` for a
-    permanently-gone page, and a delete landing while an upsert is pending ends in the reconciled
-    state rather than a re-created row
+    permanently-gone page, a delete landing while an upsert is pending ends in the reconciled
+    state rather than a re-created row, and the op issues one `removeLinksForPages` call per event
+    payload rather than an accumulated id list
   - _Requirements: 3.3, 3.5, 6.1, 6.2_
   - _Boundary: page-link-sync_
   - _Depends: B5.1_
