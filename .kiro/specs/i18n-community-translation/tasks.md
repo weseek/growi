@@ -2,7 +2,7 @@
 
 ## 1. Foundation: 同期の共有部品
 
-- [ ] 1.1 (P) namespaceとPOEditorプロジェクトIDの対応関係を宣言する
+- [x] 1.1 (P) namespaceとPOEditorプロジェクトIDの対応関係を宣言する
   - `admin` / `translation` / `commons` の3 namespaceそれぞれに対応するPOEditorプロジェクトIDと、対応するロケールファイルパスを解決する仕組みを宣言データとして用意する
   - 宣言された3 namespaceが、実際に存在する3つのロケールファイル名（`admin.json`/`translation.json`/`commons.json`）と一致することを検証するテストを書く
   - 宣言に `translation` namespaceが含まれることを確認し、`packages/editor`が依存する`toolbar.*`キーが同じ同期範囲に含まれることを明示する
