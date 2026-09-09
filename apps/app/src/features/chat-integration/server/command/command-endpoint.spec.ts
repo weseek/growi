@@ -5,7 +5,7 @@
 // the stored response instead of recomputing it.
 
 import type { ChannelRef, ChatAccountRef, CommandRequest } from '@growi/chat';
-import { PageGrant } from '@growi/core';
+import { GroupType, PageGrant } from '@growi/core';
 import type { MongoMemoryServer } from 'mongodb-memory-server-core';
 import mongoose from 'mongoose';
 import { mock } from 'vitest-mock-extended';
@@ -86,6 +86,8 @@ const createPageWithRevision = async (attrs: {
   body?: string;
   commentCount?: number;
   updatedAt?: Date;
+  grantedUsers?: mongoose.Types.ObjectId[];
+  grantedGroups?: { type: string; item: mongoose.Types.ObjectId }[];
 }) => {
   const revision = await getRevisionModel().create({
     pageId: new mongoose.Types.ObjectId(),
@@ -98,6 +100,8 @@ const createPageWithRevision = async (attrs: {
     revision: revision._id,
     commentCount: attrs.commentCount ?? 0,
     updatedAt: attrs.updatedAt ?? new Date('2026-01-01T00:00:00.000Z'),
+    grantedUsers: attrs.grantedUsers ?? [],
+    grantedGroups: attrs.grantedGroups ?? [],
   });
 };
 
@@ -396,6 +400,120 @@ describe('createCommandEndpoint (task 5.1)', () => {
         });
         expect(response.appliedAs).toBe('linked-user');
       }
+    });
+  });
+
+  // Task 10.1: confirms Requirement 3.6/3.7's whole path end to end for a
+  // chat account that never linked -- `resolveActor` returning `user: null`,
+  // `handleSearch`'s `null` (not `[]`) group list for `searchKeyword`, and
+  // `filterPagesForViewer`'s real Mongo grant query -- reaching a genuine
+  // command-endpoint response, not a direct call into the already-unit-tested
+  // filter (`viewer-page-filter.spec.ts` covers that in isolation). The
+  // search step itself is stood in for with real page documents, exactly
+  // like the "search (Requirement 3.6, 3.9)" block above: this feature's
+  // contract is what happens to a hit AFTER the search engine finds it, not
+  // whether Elasticsearch's own relevance matching works (that is GROWI's
+  // existing, separately-tested search engine).
+  describe('unlinked actor -- permission filtering across grant types (Requirement 3.6, 3.7, task 10.1)', () => {
+    const seedAllGrants = async () => {
+      const otherUser = await createUser();
+      const groupId = new mongoose.Types.ObjectId();
+
+      const publicPage = await createPageWithRevision({
+        path: '/public',
+        grant: PageGrant.GRANT_PUBLIC,
+      });
+      const restrictedPage = await createPageWithRevision({
+        path: '/link-only',
+        grant: PageGrant.GRANT_RESTRICTED,
+      });
+      const specifiedPage = await createPageWithRevision({
+        path: '/specified-users-only',
+        grant: PageGrant.GRANT_SPECIFIED,
+        grantedUsers: [otherUser._id],
+      });
+      const ownerPage = await createPageWithRevision({
+        path: '/owner-only',
+        grant: PageGrant.GRANT_OWNER,
+        grantedUsers: [otherUser._id],
+      });
+      const groupPage = await createPageWithRevision({
+        path: '/group-only',
+        grant: PageGrant.GRANT_USER_GROUP,
+        grantedGroups: [{ type: GroupType.userGroup, item: groupId }],
+      });
+
+      const allPages = [
+        publicPage,
+        restrictedPage,
+        specifiedPage,
+        ownerPage,
+        groupPage,
+      ];
+
+      return { publicPage, allPages };
+    };
+
+    const mockSearchHits = (
+      crowi: Crowi,
+      // biome-ignore lint/suspicious/noExplicitAny: real Mongoose documents from the shared test helper above, same shape used by the existing "search" describe block.
+      pages: any[],
+    ): void => {
+      vi.mocked(crowi.searchService.searchKeyword).mockResolvedValue([
+        {
+          data: pages.map((page) => ({ _id: page._id })),
+          meta: { total: pages.length, hitsCount: pages.length },
+        },
+        null,
+      ]);
+      vi.mocked(crowi.searchService.formatSearchResult).mockResolvedValue({
+        data: pages.map((page) => ({
+          data: { ...page.toObject(), _id: page._id },
+        })),
+        meta: { total: pages.length, hitsCount: pages.length },
+      });
+    };
+
+    it('returns only the publicly-readable page on an open GROWI, dropping the user-, owner-, group- and link-restricted ones', async () => {
+      const { publicPage, allPages } = await seedAllGrants();
+      const crowi = buildCrowi({ isGuestAllowedToRead: true });
+      mockSearchHits(crowi, allPages);
+
+      const endpoint = createCommandEndpoint(crowi);
+      const response = await endpoint.handle(
+        searchRequest({ limit: 10, keyword: 'anything' }),
+      );
+
+      expect(response.kind).toBe('search');
+      if (response.kind === 'search') {
+        expect(response.items).toHaveLength(1);
+        expect(response.items[0]).toMatchObject({ path: publicPage.path });
+        expect(response.appliedAs).toBe('anonymous');
+      }
+      // Gen 1's flaw (task 3.3's hand-off note), re-checked here with a
+      // non-empty result set: an unresolved searcher must reach
+      // `searchKeyword` as `userGroups: null`, never `[]`.
+      expect(crowi.searchService.searchKeyword).toHaveBeenCalledWith(
+        'anything',
+        null,
+        null,
+        null,
+        expect.anything(),
+      );
+    });
+
+    it('returns nothing at all -- not even the public page -- when this GROWI shows nothing to a logged-out visitor', async () => {
+      const { allPages } = await seedAllGrants();
+      const crowi = buildCrowi({ isGuestAllowedToRead: false });
+      mockSearchHits(crowi, allPages);
+
+      const endpoint = createCommandEndpoint(crowi);
+      const response = await endpoint.handle(
+        searchRequest({ limit: 10, keyword: 'anything' }),
+      );
+
+      expect(response.kind).toBe('account-link-required');
+      expect(crowi.searchService.searchKeyword).not.toHaveBeenCalled();
     });
   });
 
