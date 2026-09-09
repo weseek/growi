@@ -1,6 +1,0 @@
-.inline-comment-form-quote {
-  // Read the marker colour from the same custom property the saved-comment
-  // highlight reads, so changing the theme never leaves the quote rule and the
-  // highlight showing different colours.
-  border-left: 3px solid var(--grw-inline-comment-marker-bg);
-}

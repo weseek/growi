@@ -1,17 +1,20 @@
 /**
- * Shared mention-aware comment input, extracted from `InlineCommentForm.tsx`
- * (design.md 決定5: "インラインコメント返信のUIを、通常コメントの「Reply...」⇄
- * 入力欄トグルと同じ形にする"). Owns the CodeMirror editor assembly (the same
- * `CodeMirrorEditorComment` + `useCodeMirrorEditorIsolated` + mention
- * completion/decoration extensions `InlineCommentForm.tsx` already used,
- * itself following `CommentEditor.tsx`'s mention-aware textarea pattern),
+ * Mention-aware comment input used by `InlineCommentForm.tsx`. Owns the
+ * CodeMirror editor assembly (`CodeMirrorEditorComment` +
+ * `useCodeMirrorEditorIsolated` + mention completion/decoration extensions,
+ * following `CommentEditor.tsx`'s mention-aware textarea pattern),
  * submission, and error display.
  *
- * The actual persistence call (creating an origin comment vs. posting a
- * reply) is intentionally NOT owned here: callers inject it via `onSubmit`,
- * so both `InlineCommentForm` (task 5.1, `create()`) and the future
- * `InlineCommentReplies` reply input (task 5.2, `createReply()`) can reuse
- * this component without this module depending on either store hook.
+ * The editor sits in one row alongside the mention-picker and submit
+ * buttons (buttons pinned to the top-right via `align-items-start`, so a
+ * multi-line comment grows the editor without moving them). There is no
+ * Cancel button here -- `InlineCommentForm` handles cancellation itself
+ * (Escape key / outside click), matching the reference mockup, which shows
+ * no Cancel affordance at all.
+ *
+ * The actual persistence call (creating an origin comment) is intentionally
+ * NOT owned here: the caller injects it via `onSubmit`, so this component
+ * has no dependency on the inline-comment store.
  */
 
 import type { JSX } from 'react';
@@ -46,8 +49,6 @@ type MentionAwareCommentInputProps = {
   onSubmit: (commentText: string) => Promise<unknown>;
   /** Called after a successful submit (e.g. to close the form / clear the selection). */
   onSubmitted?: () => void;
-  /** Called when the user cancels without submitting. */
-  onCancel?: () => void;
   /**
    * An additional, caller-owned guard ANDed with this component's own
    * "has non-empty text" check (e.g. `InlineCommentForm`'s Requirement 1.7
@@ -60,7 +61,7 @@ type MentionAwareCommentInputProps = {
 export const MentionAwareCommentInput = (
   props: MentionAwareCommentInputProps,
 ): JSX.Element => {
-  const { editorKey, onSubmit, onSubmitted, onCancel, disabled } = props;
+  const { editorKey, onSubmit, onSubmitted, disabled } = props;
 
   const { t } = useTranslation();
 
@@ -132,32 +133,44 @@ export const MentionAwareCommentInput = (
 
   return (
     <>
-      <CodeMirrorEditorComment
-        editorKey={editorKey}
-        cmProps={cmProps}
-        hideToolbar
-        onSave={submitHandler}
-      />
-      {error != null && <span className="text-danger small">{error}</span>}
-      <div className="d-flex align-items-center gap-2 mt-2">
-        <MentionPickerButton onInsert={insertMention} />
-        <button
-          type="button"
-          className="btn btn-sm btn-outline-secondary ms-auto"
-          onClick={onCancel}
-        >
-          {t('Cancel')}
-        </button>
-        <button
-          type="button"
-          className="btn btn-sm btn-primary"
-          data-testid="inline-comment-submit-button"
-          disabled={!canSubmit}
-          onClick={submitHandler}
-        >
-          {t('page_comment.comment')}
-        </button>
+      <div className="d-flex align-items-start gap-2">
+        {/* `flex: 1 1 0%` (not the `.flex-grow-1` utility, which leaves
+            `flex-basis: auto`): the editor's own root sets `width: 100%`
+            internally, so an `auto` basis makes this item's width depend on
+            its content's width, which depends on the item's own width --
+            a circular reference the browser resolves by collapsing it to
+            near zero. Pinning the basis to 0% breaks that circularity, and
+            `min-width: 0` overrides the flex-item default of `auto`, which
+            would otherwise refuse to shrink below the (still-circular)
+            content width and push the button column out of the row. */}
+        <div style={{ flex: '1 1 0%', minWidth: 0 }}>
+          <CodeMirrorEditorComment
+            editorKey={editorKey}
+            cmProps={cmProps}
+            hideToolbar
+            onSave={submitHandler}
+          />
+        </div>
+        <div className="d-flex align-items-center gap-1">
+          <MentionPickerButton onInsert={insertMention} />
+          <button
+            type="button"
+            className="btn btn-primary btn-sm rounded-circle p-0 d-inline-flex align-items-center justify-content-center"
+            style={{ width: '2rem', height: '2rem' }}
+            data-testid="inline-comment-submit-button"
+            disabled={!canSubmit}
+            onClick={submitHandler}
+            aria-label={t('page_comment.comment')}
+          >
+            <span className="material-symbols-outlined fs-6" aria-hidden="true">
+              send
+            </span>
+          </button>
+        </div>
       </div>
+      {error != null && (
+        <span className="text-danger small d-block mt-1">{error}</span>
+      )}
     </>
   );
 };

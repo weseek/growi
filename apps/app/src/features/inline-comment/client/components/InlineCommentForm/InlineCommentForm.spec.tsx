@@ -218,35 +218,32 @@ describe('InlineCommentForm', () => {
         />,
       );
 
-    it('renders the submit button as a Bootstrap 5 primary button labelled by the existing page_comment.comment key', () => {
+    it('renders the submit button as a Bootstrap 5 primary icon button labelled via aria-label', () => {
       renderForm();
 
       const submitButton = screen.getByTestId('inline-comment-submit-button');
       expect(submitButton).toHaveClass('btn', 'btn-sm', 'btn-primary');
-      expect(submitButton).toHaveTextContent('page_comment.comment');
-    });
-
-    it('renders the cancel button as a Bootstrap 5 outline-secondary button labelled by the existing Cancel key', () => {
-      renderForm();
-
-      const cancelButton = screen.getByRole('button', { name: 'Cancel' });
-      expect(cancelButton).toHaveClass(
-        'btn',
-        'btn-sm',
-        'btn-outline-secondary',
+      expect(submitButton).toHaveAttribute(
+        'aria-label',
+        'page_comment.comment',
       );
     });
 
-    it('renders the quote with the theme-following utility classes and keeps the quoted text', () => {
+    it('does not render a visible Cancel button', () => {
+      renderForm();
+
+      expect(
+        screen.queryByRole('button', { name: 'Cancel' }),
+      ).not.toBeInTheDocument();
+    });
+
+    it('keeps the quote in the DOM for screen readers and Playwright, but visually hidden', () => {
       renderForm();
 
       const quote = screen.getByText(validAnchor.quote);
       expect(quote.tagName).toBe('BLOCKQUOTE');
       expect(quote).toHaveClass(
-        'small',
-        'text-body-secondary',
-        'mb-2',
-        'ps-2',
+        'visually-hidden',
         // Kept as a plain (non-hashed) class: the inline-comment Playwright
         // suite locates the quote by `.inline-comment-form-quote`.
         'inline-comment-form-quote',
@@ -260,6 +257,61 @@ describe('InlineCommentForm', () => {
       expect(editorProps.current?.cmProps).toMatchObject({
         basicSetup: { lineNumbers: false, foldGutter: false },
       });
+    });
+  });
+
+  describe('cancellation without a visible Cancel button', () => {
+    it('calls onCanceled when Escape is pressed', () => {
+      const onCanceled = vi.fn();
+      render(
+        <InlineCommentForm
+          pageId="page-1"
+          anchorOriginRevisionId="rev-1"
+          anchor={validAnchor}
+          onCanceled={onCanceled}
+        />,
+      );
+
+      fireEvent.keyDown(document, { key: 'Escape' });
+
+      expect(onCanceled).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls onCanceled on a mousedown outside the form', () => {
+      const onCanceled = vi.fn();
+      render(
+        <div>
+          <InlineCommentForm
+            pageId="page-1"
+            anchorOriginRevisionId="rev-1"
+            anchor={validAnchor}
+            onCanceled={onCanceled}
+          />
+          <button type="button" data-testid="outside-element">
+            outside
+          </button>
+        </div>,
+      );
+
+      fireEvent.mouseDown(screen.getByTestId('outside-element'));
+
+      expect(onCanceled).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not call onCanceled on a mousedown inside the form (e.g. placing the caret in the textarea)', () => {
+      const onCanceled = vi.fn();
+      render(
+        <InlineCommentForm
+          pageId="page-1"
+          anchorOriginRevisionId="rev-1"
+          anchor={validAnchor}
+          onCanceled={onCanceled}
+        />,
+      );
+
+      fireEvent.mouseDown(screen.getByTestId('inline-comment-textarea'));
+
+      expect(onCanceled).not.toHaveBeenCalled();
     });
   });
 });

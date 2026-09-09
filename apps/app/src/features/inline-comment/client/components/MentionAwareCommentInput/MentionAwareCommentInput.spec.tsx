@@ -194,19 +194,21 @@ describe('MentionAwareCommentInput', () => {
     ).not.toBeDisabled();
   });
 
-  it('calls onCancel when the Cancel button is clicked', () => {
-    const onCancel = vi.fn();
-    render(
-      <MentionAwareCommentInput
-        editorKey="key-1"
-        onSubmit={vi.fn()}
-        onCancel={onCancel}
-      />,
+  it("does not render a Cancel button (cancellation is the caller's responsibility)", () => {
+    render(<MentionAwareCommentInput editorKey="key-1" onSubmit={vi.fn()} />);
+
+    expect(
+      screen.queryByRole('button', { name: 'Cancel' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('labels the submit button via aria-label, since it renders as an icon-only button', () => {
+    render(<MentionAwareCommentInput editorKey="key-1" onSubmit={vi.fn()} />);
+
+    expect(screen.getByTestId('inline-comment-submit-button')).toHaveAttribute(
+      'aria-label',
+      'page_comment.comment',
     );
-
-    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
-
-    expect(onCancel).toHaveBeenCalledTimes(1);
   });
 
   it('renders MentionPickerButton and inserts "@<username> " at the cursor on selection', () => {

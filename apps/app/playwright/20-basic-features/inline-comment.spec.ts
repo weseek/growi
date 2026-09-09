@@ -883,6 +883,72 @@ test.describe('Inline comment - visual consistency of the creation UI', () => {
     // gutter extension is active.
     await expect(form.locator('.cm-gutters')).toHaveCount(0);
   });
+
+  test('The comment editor takes up most of the row width, not a sliver (regression: a flex-basis: auto item collapses because the editor sets width: 100% on itself)', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(visualConsistencyPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    await selectTextInPageBody(page, targetSentence);
+    await page.getByTestId('selection-action-button').click();
+    const form = page.getByTestId('inline-comment-form');
+    await expect(form).toBeVisible();
+
+    const formBox = await form.boundingBox();
+    const editorBox = await form.locator('.cm-content').boundingBox();
+    if (formBox == null || editorBox == null) {
+      throw new Error('form or editor bounding box unavailable');
+    }
+    // A comfortable majority of the row, not just enough to render a cursor --
+    // the mention/submit button column and padding account for the rest.
+    expect(editorBox.width).toBeGreaterThan(formBox.width * 0.5);
+  });
+
+  test('The form width stays within a narrow viewport instead of overflowing it', async ({
+    page,
+  }, testInfo) => {
+    await page.setViewportSize({ width: 375, height: 700 });
+    await page.goto(visualConsistencyPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    await selectTextInPageBody(page, targetSentence);
+    await page.getByTestId('selection-action-button').click();
+    const form = page.getByTestId('inline-comment-form');
+    await expect(form).toBeVisible();
+
+    const formBox = await form.boundingBox();
+    if (formBox == null) {
+      throw new Error('form bounding box unavailable');
+    }
+    expect(formBox.x).toBeGreaterThanOrEqual(0);
+    expect(formBox.x + formBox.width).toBeLessThanOrEqual(375);
+  });
+
+  test('Escape closes only the mention picker dropdown when it is open, and closes the form on a second press', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(visualConsistencyPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    await selectTextInPageBody(page, targetSentence);
+    await page.getByTestId('selection-action-button').click();
+    const form = page.getByTestId('inline-comment-form');
+    await expect(form).toBeVisible();
+
+    await form.getByTestId('mention-picker-button').click();
+    const menu = form.getByRole('menu');
+    await expect(menu).toBeVisible();
+
+    await page.keyboard.press('Escape');
+    await expect(menu).not.toBeVisible();
+    // The form itself must survive this first Escape -- the dropdown alone
+    // consumed it.
+    await expect(form).toBeVisible();
+
+    await page.keyboard.press('Escape');
+    await expect(form).not.toBeVisible();
+  });
 });
 
 test.describe('Inline comment - highlight color stays consistent across the pending (selecting/composing) states, and switches to a distinct color once saved (Req 1.1, 1.2, 1.5, 12.4-12.7)', () => {
