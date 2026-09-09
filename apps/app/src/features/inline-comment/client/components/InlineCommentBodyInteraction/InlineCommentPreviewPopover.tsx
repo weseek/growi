@@ -145,7 +145,11 @@ export const InlineCommentPreviewPopover: FC<
           onClick={onClose}
         />
 
-        <CommentCard creator={comment.creator} createdAt={comment.createdAt}>
+        <CommentCard
+          id={comment.id}
+          creator={comment.creator}
+          createdAt={comment.createdAt}
+        >
           {rendererOptions != null ? (
             <RevisionRenderer
               rendererOptions={rendererOptions}
@@ -165,6 +169,7 @@ export const InlineCommentPreviewPopover: FC<
                 className="ms-4 ms-sm-5 mt-2"
               >
                 <CommentCard
+                  id={reply.id}
                   creator={reply.creatorId}
                   createdAt={reply.createdAt}
                 >
