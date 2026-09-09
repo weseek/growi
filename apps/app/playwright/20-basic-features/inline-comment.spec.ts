@@ -2124,7 +2124,7 @@ test.describe('Inline comment - hover/click/tap on a saved body highlight opens 
   });
 });
 
-test.describe('Inline comment - hover-to-popover transit and popover-lock timing (Req 1.1-1.7); resolve from the popover and click-path regression (Req 2.3, 2.4, 2.6)', () => {
+test.describe('Inline comment - hover-to-popover transit and popover-lock timing (Req 15.7-15.9); resolve from the popover and click-path regression (Req 15.10, 4.6)', () => {
   // Serial: every test in this suite reuses the one saved comment created by
   // the first test (same reasoning the other suites in this file use). The
   // resolve test is placed last because it's the only one that mutates the
@@ -2198,7 +2198,7 @@ test.describe('Inline comment - hover-to-popover transit and popover-lock timing
       .toBeGreaterThan(0);
   });
 
-  test('Req 1.1-1.5: moving the pointer from the highlight, through the gap, and onto the popover keeps it visible throughout, and once landed it stays open even after the pointer leaves entirely', async ({
+  test('Req 15.7-15.9: moving the pointer from the highlight, through the gap, and onto the popover keeps it visible throughout, and once landed it stays open even after the pointer leaves entirely', async ({
     page,
   }, testInfo) => {
     await page.goto(popoverRefinementPagePath(testInfo.retry));
@@ -2210,7 +2210,7 @@ test.describe('Inline comment - hover-to-popover transit and popover-lock timing
     const highlightPoint = await centerOfText(page, targetSentence);
     await page.mouse.move(highlightPoint.x, highlightPoint.y);
 
-    // Req 1.1: appears after the show delay -- the default expect timeout
+    // Req 15.7: appears after the show delay -- the default expect timeout
     // comfortably covers the 150ms delay, so no fixed wait is needed here.
     await expect(popover).toBeVisible();
 
@@ -2227,20 +2227,20 @@ test.describe('Inline comment - hover-to-popover transit and popover-lock timing
       y: (highlightPoint.y + popoverCenter.y) / 2,
     };
 
-    // Req 1.2/1.3: a real multi-step transit (not an instant jump / a plain
+    // Req 15.8/15.9: a real multi-step transit (not an instant jump / a plain
     // `.hover()`) through the gap between the highlight and the popover --
     // this is the exact regression this spec fixes. A single instant jump
     // would never actually pass through the gap, where the hit test used to
     // report "no hit" and close the popover before the pointer arrived.
     await page.mouse.move(midpoint.x, midpoint.y, { steps: 10 });
     // Still visible mid-transit, before reaching the popover -- proven by
-    // the hide-delay grace period (Req 1.2/1.3), not by luck.
+    // the hide-delay grace period (Req 15.8/15.9), not by luck.
     await expect(popover).toBeVisible();
 
     await page.mouse.move(popoverCenter.x, popoverCenter.y, { steps: 10 });
     await expect(popover).toBeVisible();
 
-    // Req 1.4/1.5: the pointer has now entered the popover's own DOM, which
+    // Req 15.9: the pointer has now entered the popover's own DOM, which
     // promotes it to the same "pinned" state a click uses. Moving away
     // entirely (off both the highlight and the popover) must not close it.
     await hoverText(page, introText);
@@ -2254,12 +2254,12 @@ test.describe('Inline comment - hover-to-popover transit and popover-lock timing
     await expect(popover).toBeVisible();
 
     // Sanity check: the popover can still be closed at all, via an explicit
-    // outside click (Req 1.5's "until an explicit close").
+    // outside click (Req 15.9's "until an explicit close").
     await clickText(page, introText);
     await expect(popover).not.toBeVisible();
   });
 
-  test('Req 1.6, 1.7: clicking the highlight still opens the popover immediately, with no visible delay, and it stays open with no further interaction', async ({
+  test('Req 15.1, 15.4: clicking the highlight still opens the popover immediately, with no visible delay, and it stays open with no further interaction', async ({
     page,
   }, testInfo) => {
     await page.goto(popoverRefinementPagePath(testInfo.retry));
@@ -2282,7 +2282,7 @@ test.describe('Inline comment - hover-to-popover transit and popover-lock timing
     await expect(popover).toBeVisible();
   });
 
-  test('Req 2.3, 2.4, 2.6: resolving the comment from the popover updates the badge shown in the bottom-of-page list for the same comment', async ({
+  test('Req 15.10, 4.6: resolving the comment from the popover updates the badge shown in the bottom-of-page list for the same comment', async ({
     page,
   }, testInfo) => {
     await page.goto(popoverRefinementPagePath(testInfo.retry));

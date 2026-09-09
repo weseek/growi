@@ -298,7 +298,7 @@ describe('InlineCommentPreviewPopover', () => {
     expect(onClose).not.toHaveBeenCalled();
   });
 
-  it('renders an unresolved badge and a Resolve control, and toggles to resolved on click (Req 2.1, 2.2, 2.3)', async () => {
+  it('renders an unresolved badge and a Resolve control, and toggles to resolved on click (Req 15.10, 4.6)', async () => {
     const resolve = vi.fn().mockResolvedValue(undefined);
     renderPopover({ id: 'comment42', resolvedAt: null }, { resolve });
 
@@ -314,7 +314,7 @@ describe('InlineCommentPreviewPopover', () => {
     expect(resolve).toHaveBeenCalledWith('comment42', true);
   });
 
-  it('renders a resolved badge and a Reopen control, and toggles to unresolved on click (Req 2.1, 2.2, 2.4)', async () => {
+  it('renders a resolved badge and a Reopen control, and toggles to unresolved on click (Req 15.10, 4.6)', async () => {
     const resolve = vi.fn().mockResolvedValue(undefined);
     renderPopover(
       { id: 'comment42', resolvedAt: new Date('2026-01-03T00:00:00.000Z') },
@@ -333,7 +333,7 @@ describe('InlineCommentPreviewPopover', () => {
     expect(resolve).toHaveBeenCalledWith('comment42', false);
   });
 
-  it('displays an error when the resolve toggle rejects, without closing the popover (Req 2.5)', async () => {
+  it('displays an error when the resolve toggle rejects, without closing the popover (Req 4.6)', async () => {
     const resolve = vi.fn().mockRejectedValue(new Error('permission denied'));
     const onClose = vi.fn();
     renderPopover({ resolvedAt: null }, { resolve, onClose });
@@ -350,7 +350,7 @@ describe('InlineCommentPreviewPopover', () => {
     expect(onClose).not.toHaveBeenCalled();
   });
 
-  it('updates the displayed resolved state after a successful toggle (Req 2.6)', async () => {
+  it('updates the displayed resolved state after a successful toggle (Req 4.6)', async () => {
     const resolve = vi.fn().mockResolvedValue(undefined);
     renderPopover({ resolvedAt: null }, { resolve });
 
@@ -365,7 +365,7 @@ describe('InlineCommentPreviewPopover', () => {
     });
   });
 
-  it('calls onPointerEnter when the pointer enters the popover root (Req 1.3, 1.4)', () => {
+  it('calls onPointerEnter when the pointer enters the popover root (Req 15.9)', () => {
     const onPointerEnter = vi.fn();
     renderPopover({}, { onPointerEnter });
 
@@ -375,7 +375,7 @@ describe('InlineCommentPreviewPopover', () => {
     expect(onPointerEnter).toHaveBeenCalledTimes(1);
   });
 
-  it('renders the anchored quote in a strip visually distinct from the comment body (Req 3.3)', () => {
+  it('renders the anchored quote in a strip visually distinct from the comment body (Req 15.11)', () => {
     renderPopover({
       comment: 'the comment body',
       anchor: {
@@ -398,7 +398,7 @@ describe('InlineCommentPreviewPopover', () => {
     expect(quoteStrip).not.toHaveTextContent('the comment body');
   });
 
-  it('renders the reply composer as an avatar + input row with an icon send button (Req 3.5)', () => {
+  it('renders the reply composer as an avatar + input row with an icon send button (Req 15.3)', () => {
     renderPopover();
 
     // Scoped to the composer row itself, not the whole popover -- the origin
@@ -423,7 +423,7 @@ describe('InlineCommentPreviewPopover', () => {
     expect(composer).toContainElement(sendButton);
   });
 
-  it('still calls createReply when submitting via the restyled composer (Req 3.5, 3.6)', async () => {
+  it('still calls createReply when submitting via the restyled composer (Req 15.3)', async () => {
     const createReply = vi.fn().mockResolvedValue(undefined);
     const onClose = vi.fn();
     renderPopover({ id: 'comment42' }, { createReply, onClose });
@@ -437,7 +437,7 @@ describe('InlineCommentPreviewPopover', () => {
     );
 
     expect(createReply).toHaveBeenCalledWith('comment42', 'a restyled reply');
-    // Req 3.6: the popover stays open after a successful reply submission.
+    // Req 15.3: the popover stays open after a successful reply submission.
     expect(onClose).not.toHaveBeenCalled();
   });
 });

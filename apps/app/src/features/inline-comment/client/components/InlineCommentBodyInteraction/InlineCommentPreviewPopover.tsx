@@ -14,7 +14,7 @@
  * "本文中ポップオーバーの返信UIを...同じにすること") -- only its surrounding
  * layout (avatar + row + icon send button) borrows InlineCommentForm.tsx's/
  * MentionAwareCommentInput.tsx's established composer visual language
- * (requirements.md Requirement 3.5). It has no editing UI for the origin
+ * (requirements.md Requirement 15.3). It has no editing UI for the origin
  * comment's own body at all (Req 2.5).
  */
 import { type FC, type JSX, useEffect, useMemo, useRef, useState } from 'react';
@@ -219,7 +219,7 @@ export const InlineCommentPreviewPopover: FC<
             </span>
           }
           beforeBody={
-            // Requirement 3.3: the saved anchor quote, visually distinguished
+            // Requirement 15.11: the saved anchor quote, visually distinguished
             // from the comment body via a left-accent border and a muted
             // background (same left-accent idiom as InlineCommentItem.tsx's
             // own quote, but this one is not a click target -- the popover
@@ -291,7 +291,7 @@ export const InlineCommentPreviewPopover: FC<
           </>
         )}
 
-        {/* Requirement 3.5/3.6: avatar + input row + icon send button,
+        {/* Requirement 15.3: avatar + input row + icon send button,
             matching InlineCommentForm.tsx's/MentionAwareCommentInput.tsx's
             established composer visual language. The underlying
             handleSubmit/createReply call above is unchanged -- only this

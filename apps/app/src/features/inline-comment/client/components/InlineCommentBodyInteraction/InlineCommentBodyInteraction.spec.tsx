@@ -5,10 +5,8 @@
  * preview popover (3.2) and wiring their open/close policy (design.md 決定2,
  * requirements.md Requirement 2, ACs 2.1-2.6).
  *
- * Also covers task 1 of the inline-comment-popover-refinement amend spec:
- * the hover show/hide delay and pointer-enter-into-popover lock (that spec's
- * requirements.md Requirement 1, ACs 1.1-1.7; design.md's "Hover
- * show/hide/lock sequence").
+ * Also covers the hover show/hide delay and pointer-enter-into-popover lock
+ * (requirements.md Requirement 15, ACs 15.7-15.9).
  *
  * `useHighlightHitTest` and `rangesById` are both mocked -- their own
  * behavior is covered by their own specs (3.1, resolved-range.spec.ts). This
@@ -22,9 +20,8 @@
  * reply-submission behavior is task 3.2's concern, not this one's. It also
  * exposes an "enter popover" button and a "resolve" button that invoke the
  * `onPointerEnter` and `resolve` props respectively, so the hover-lock
- * promotion (this component's own concern) and the resolve-threading wiring
- * (task 4 of the inline-comment-popover-refinement amend spec) can both be
- * exercised here.
+ * promotion and the resolve-threading wiring (this component's own concerns)
+ * can both be exercised here.
  */
 
 import type { RefObject } from 'react';
@@ -190,7 +187,7 @@ describe('InlineCommentBodyInteraction', () => {
     expect(screen.queryByTestId('preview-popover')).not.toBeInTheDocument();
   });
 
-  it('opens the popover for a hover hit on a desktop-width highlight, after the show delay (Req 1.1, Req 2.1)', () => {
+  it('opens the popover for a hover hit on a desktop-width highlight, after the show delay (Req 15.7)', () => {
     mockedUseHighlightHitTest.mockReturnValue({
       commentId: 'comment1',
       source: 'hover',
@@ -210,7 +207,7 @@ describe('InlineCommentBodyInteraction', () => {
     );
   });
 
-  it('never shows the popover when a hover hit clears before the show delay elapses (Req 1.1)', () => {
+  it('never shows the popover when a hover hit clears before the show delay elapses (Req 15.7)', () => {
     mockedUseHighlightHitTest.mockReturnValue({
       commentId: 'comment1',
       source: 'hover',
@@ -285,7 +282,7 @@ describe('InlineCommentBodyInteraction', () => {
     );
   });
 
-  it('keeps the popover shown for the hide grace period after a hover hit clears, then closes it (Req 1.2)', () => {
+  it('keeps the popover shown for the hide grace period after a hover hit clears, then closes it (Req 15.8)', () => {
     mockedUseHighlightHitTest.mockReturnValue({
       commentId: 'comment1',
       source: 'hover',
@@ -465,7 +462,7 @@ describe('InlineCommentBodyInteraction', () => {
     expect(resolve).toHaveBeenCalledWith('comment1', true);
   });
 
-  describe('pointer entering the popover (Req 1.3, 1.4, 1.5)', () => {
+  describe('pointer entering the popover (Req 15.9)', () => {
     it('reaching the popover before the hide grace period elapses keeps it open indefinitely, with no further hover hit at all', () => {
       mockedUseHighlightHitTest.mockReturnValue({
         commentId: 'comment1',
@@ -506,7 +503,7 @@ describe('InlineCommentBodyInteraction', () => {
       ).toHaveTextContent('comment1');
     });
 
-    it('closing after the pointer entered the popover goes through the ordinary close mechanism (Req 1.7)', () => {
+    it('closing after the pointer entered the popover goes through the ordinary close mechanism (Req 15.4)', () => {
       mockedUseHighlightHitTest.mockReturnValue({
         commentId: 'comment1',
         source: 'hover',
@@ -564,7 +561,7 @@ describe('InlineCommentBodyInteraction', () => {
     }).not.toThrow();
   });
 
-  it('the click path still shows the popover immediately with no delay (Req 1.6 regression)', () => {
+  it('the click path still shows the popover immediately with no delay (Req 15.1 regression)', () => {
     mockedUseHighlightHitTest.mockReturnValue({
       commentId: 'comment1',
       source: 'click',

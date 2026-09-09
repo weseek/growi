@@ -3,9 +3,8 @@
  * content-preview popover (task 3.2, `InlineCommentPreviewPopover.tsx`) and
  * decides, on every render, which comment id (if any) should have its
  * popover open (design.md 決定2, requirements.md Requirement 2), plus the
- * hover show/hide delay and pointer-enter-lock timing this spec
- * (inline-comment-popover-refinement) adds on top (design.md's "Hover
- * show/hide/lock sequence", requirements.md Requirement 1).
+ * hover show/hide delay and pointer-enter-lock timing (requirements.md
+ * Requirement 15.7-15.9).
  *
  * `useHighlightHitTest` reports only the *current* hit and does not latch a
  * click-selected id itself (see tasks.md's Implementation Notes for task
@@ -151,10 +150,10 @@ export const InlineCommentBodyInteraction: FC<
     suppressedHit.source === hit.source;
   const effectiveHit = isHitSuppressed ? null : hit;
 
-  // Debounced show/hide for hover-sourced hits (Requirement 1.1, 1.2). A click
-  // hit is handled entirely by the effect above -- while a popover is pinned,
-  // hover hits are ignored outright (existing invariant, Requirement 1.6/the
-  // file doc comment's "a hover elsewhere does nothing" precedence).
+  // Debounced show/hide for hover-sourced hits (Requirement 15.7, 15.8). A
+  // click hit is handled entirely by the effect above -- while a popover is
+  // pinned, hover hits are ignored outright (existing invariant, Requirement
+  // 15.1/the file doc comment's "a hover elsewhere does nothing" precedence).
   //
   // The cleanup function clears both timers whenever this effect is about to
   // re-run (a genuinely new `effectiveHit`/`pinnedId`/`hoverPreviewId`) and on
@@ -166,7 +165,7 @@ export const InlineCommentBodyInteraction: FC<
 
     if (effectiveHit?.source === 'hover') {
       // Reaching the highlight again (same or different id) always cancels
-      // a pending hide -- Requirement 1.3's "reached before the grace period
+      // a pending hide -- Requirement 15.9's "reached before the grace period
       // elapses" case, generalized to "a new hover hit arrived at all".
       if (hideTimerRef.current != null) {
         clearTimeout(hideTimerRef.current);
@@ -186,7 +185,7 @@ export const InlineCommentBodyInteraction: FC<
       // The hit cleared (or is a suppressed/click hit handled elsewhere): a
       // hover hit that had not yet survived its show delay must not appear
       // at all, so cancel any pending show. If something is already shown
-      // via hover, keep it for the hide grace period (Requirement 1.2)
+      // via hover, keep it for the hide grace period (Requirement 15.8)
       // before clearing it.
       if (showTimerRef.current != null) {
         clearTimeout(showTimerRef.current);
@@ -214,12 +213,12 @@ export const InlineCommentBodyInteraction: FC<
   }, [effectiveHit, pinnedId, hoverPreviewId]);
 
   // Called once the popover itself reports the pointer has entered its own
-  // DOM (Requirement 1.3, 1.4). Cancels the pending hide (there is nothing
-  // left to hide-timeout since the pointer has arrived) and promotes the
+  // DOM (Requirement 15.9). Cancels the pending hide (there is nothing left
+  // to hide-timeout since the pointer has arrived) and promotes the
   // hover-shown id into `pinnedId`, reusing the existing pin mechanism
   // (research.md's "Reuse pinnedId, don't add a second locked state"
   // decision) -- a no-op if a click has already pinned a popover in the
-  // meantime (Requirement 1.4's "no auto-close" is then already satisfied by
+  // meantime (Requirement 15.9's "no auto-close" is then already satisfied by
   // the pin itself).
   const handlePointerEnterPopover = useCallback((): void => {
     if (hideTimerRef.current != null) {
