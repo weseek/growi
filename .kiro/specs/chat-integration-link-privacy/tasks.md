@@ -37,7 +37,7 @@
   - _Boundary: handleLinkPreview_
 
 - [ ] 3. 変更を chat-integration と chat-integration-app へ畳み込み、本 spec を削除する
-- [ ] 3.1 (P) chat-integration の requirements.md に受け入れ条件6.6〜6.8を追記する
+- [x] 3.1 (P) chat-integration の requirements.md に受け入れ条件6.6〜6.8を追記する
   - 既存の6.1〜6.5は番号を振り直さず、末尾に追記する
   - `chat-integration/requirements.md` の要件6に6.6〜6.8が本 spec と同じ文言で並び、6.1〜6.5の番号と本文が無変更であることが差分で確認できる
   - _Requirements: 6.6, 6.7, 6.8_

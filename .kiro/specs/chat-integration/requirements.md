@@ -217,6 +217,9 @@ Slack 専用の中継サーバを、**複数のチャットサービスに対応
 3. While 対象のページが誰でも閲覧できるわけではないページである, the chat-integration proxy shall 要約にパス以外の内容を含めない
 4. If 対象の URL が、そのチャンネルに紐づくどの GROWI のものでもない, then the chat-integration proxy shall 何も添えない
 5. Where あるチャットサービスが、投稿されたリンクを bot に通知する仕組みを持たない, the chat-integration proxy shall そのサービスではこの機能を使えないことを運用者に示す
+6. While 利用者が投稿した URL が対象のページをパス以外の識別子で指す固定リンクであり、かつそのページが誰でも閲覧できるページでない, the GROWI application shall 要約にパスを含めない
+7. While 利用者が投稿した URL がパスで対象のページを指している（固定リンクではない）, the GROWI application shall そのページが誰でも閲覧できるページでない場合であっても、要約にパスを含める
+8. If 利用者が投稿した URL が、対象のページをパス以外の識別子で指す固定リンクであり、その識別子に一致するページがこの GROWI に存在しない, then the GROWI application shall 対象のページは存在するが誰でも閲覧できるページではない場合と、区別できない形の応答を返す
 
 ### Requirement 7: チャットの利用者と GROWI ユーザーの紐付け
 
