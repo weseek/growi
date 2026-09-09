@@ -237,9 +237,9 @@ apps/app/src/features/inline-comment/
     │   ├── PendingSelectionHighlight/
     │   │   └── PendingSelectionHighlight.tsx # 作成中（選択中・入力中）の範囲専用のハイライト。`::selection`と`::highlight(growi-inline-comment-pending)`の両方に、保存済みとは別のテーマ対応トークンを半透明で適用する。SelectionCaptureに組み込まれる
     │   ├── InlineCommentBodyInteraction/
-    │   │   ├── InlineCommentBodyInteraction.tsx # 保存済みハイライトへのhover/click/tapに応じてInlineCommentPreviewPopoverの開閉・対象コメントを決める。クリックで開いた後は、外側クリック等の明示的な閉じる操作までポップオーバーを維持する「ピン留め」状態もここが持つ
+    │   │   ├── InlineCommentBodyInteraction.tsx # 保存済みハイライトへのhover/click/tapに応じてInlineCommentPreviewPopoverの開閉・対象コメントを決める。クリックで開いた後は、外側クリック等の明示的な閉じる操作までポップオーバーを維持する「ピン留め」状態（`pinnedId`）もここが持つ。hoverの場合は出現・消失の双方に短い遅延（150ms/250ms）を設け、ポインタがポップオーバー自体に到達した時点で`pinnedId`へ昇格させる（以後はクリックで開いた場合と同じ挙動になる）
     │   │   ├── use-highlight-hit-test.ts        # 純粋関数hitTestRanges()＋フックuseHighlightHitTest()。document上のpointermove/clickをコンテナ内判定でフィルタし、解決済みRangeのgetClientRects()との座標比較でコメントidを返す
-    │   │   └── InlineCommentPreviewPopover.tsx  # 内容確認＋簡易返信ポップオーバー本体
+    │   │   └── InlineCommentPreviewPopover.tsx  # 内容確認＋簡易返信ポップオーバー本体。起点コメントの解決状態バッジ・切り替えボタン（一覧側の`InlineCommentItem`と同じ判定・見た目）、引用の帯、`InlineCommentForm`と同じ視覚言語の返信欄を持つ
     │   ├── InlineCommentForm/
     │   │   ├── InlineCommentForm.tsx     # コメント作成フォーム。エディタ組み立て・送信・エラー表示はMentionAwareCommentInputに委譲する
     │   │   └── MentionPickerButton.tsx   # メンション相手をボタン操作で選び、選ばれたユーザー名をonInsertで通知する
@@ -458,6 +458,9 @@ sequenceDiagram
 | 15.4 | 外側クリックで閉じる | InlineCommentPreviewPopover | `mousedown`監視 | 同上 |
 | 15.5 | 編集は提供しない | InlineCommentPreviewPopover | — | 同上 |
 | 15.6 | 再アンカー失敗時はトリガーを提供しない | resolved-range (`rangesById`が対象を絞り込む) | — | 同上 |
+| 15.7, 15.8 | hover表示の遅延出現・遅延消失 | InlineCommentBodyInteraction | `hoverPreviewId`, `showTimerRef`/`hideTimerRef` | 同上 |
+| 15.9 | ポインタ到達後のロック | InlineCommentBodyInteraction, InlineCommentPreviewPopover | `handlePointerEnterPopover`（`pinnedId`へ昇格）, `onPointerEnter` | 同上 |
+| 15.10, 4.6 | ポップオーバーからの解決操作 | InlineCommentPreviewPopover | `resolve`（`headerEnd`スロット、`InlineCommentItem`と同じ判定・見た目） | 同上 |
 | 16.1 | 一覧からのスクロール | InlineCommentItem, PageView (`scrollToRange`) | `scrollToRange` | 一覧クリックからスクロールまでのフロー |
 | 16.2 | 再アンカー失敗時の通知 | PageView (`scrollToRange`) | 既存の通知UI | 同上 |
 | 16.3 | 一時的な強調表示 | PageView (`scrollToRange`) | `CSS.highlights`（`growi-inline-comment-emphasis`） | 同上 |
@@ -483,7 +486,7 @@ sequenceDiagram
 | resolved-range (`rangeForResolved`, `rangesById`) | Client / ロジック | 解決済みオフセット（`ResolvedRange`）からDOM `Range`を再構築する共有ユーティリティ。`InlineCommentHighlight`・`InlineCommentBodyInteraction`・`PageView.scrollToRange`の3箇所から使われる | 14.2, 15.1-15.2, 15.6, 16.1 | rendered-text(P0) | State |
 | PendingSelectionHighlight | Client / UI | 作成中（選択中・入力中）の範囲を、保存済みとは別のテーマ対応トークン（半透明）で描画する | 14.1, 14.2, 14.3, 14.4 | `--grw-inline-comment-marker-bg-pending`(P0) | — |
 | use-highlight-hit-test (`useHighlightHitTest`) | Client / ロジック | document上のpointermove/clickの座標を、`resolved-range`が返す各`Range`の`getClientRects()`と比較し、当たったコメントidと発生源（hover/click）を返す | 15.1, 15.2, 15.6 | resolved-range(P0), `useDeviceLargerThanMd`(P0) | State |
-| InlineCommentBodyInteraction / InlineCommentPreviewPopover | Client / UI | 当たり判定結果に応じてポップオーバーの開閉・対象コメントを決定し（クリックで開いた後は明示的な閉じる操作までピン留め）、内容確認＋簡易返信欄を表示する | 15.1-15.5 | use-highlight-hit-test(P0), resolved-range(P0), CommentCard(P0), createReply(P0) | Service |
+| InlineCommentBodyInteraction / InlineCommentPreviewPopover | Client / UI | 当たり判定結果に応じてポップオーバーの開閉・対象コメントを決定する。クリックは即座にピン留めし、hoverは出現(150ms)・消失(250ms)双方に遅延を設けたうえで、ポインタがポップオーバー自体に到達した時点で同じピン留め状態へ昇格させる（以後は明示的な閉じる操作まで維持）。内容確認＋簡易返信欄に加え、起点コメントの解決状態バッジ・切り替えボタン（`CommentCard`の`headerEnd`スロット、一覧側`InlineCommentItem`と同一の判定・見た目を個別に実装——解決トグルのUIは一覧とポップオーバーで共有コンポーネント化していない）、引用の帯を表示する | 15.1-15.10, 4.6 | use-highlight-hit-test(P0), resolved-range(P0), CommentCard(P0), createReply(P0), resolve(P0) | Service |
 | MentionAwareCommentInput | Client / UI | メンション対応コメント入力の共有部品（CodeMirrorエディタ組み立て・メンション補完・送信・エラー表示）。永続化は持たず`onSubmit`で注入される。`InlineCommentForm`と`InlineCommentReplies`の両方から使われる | 17.2, 17.5 | `CodeMirrorEditorComment`(P0), `createMentionCompletionExtension`(P0), fetchMentionUsers(P0) | Service |
 | CommentCard | Client / UI | コメント1件の箱（投稿者アイコン・名前・投稿日時・本文の入れ物）だけを持つ共有コンポーネント。自分のCSSモジュールを持たず、使う側のモジュールが`_comment-inheritance.scss`の`%bg-comment`／`%comment-section`／`%user-picture`を`@extend`する。通常コメント（`Comment.tsx`）とインラインコメント（`InlineCommentItem.tsx`）の両方から使われ、見出し行の右側（`headerEnd`）・本文前（`beforeBody`）・本文後（`footer`）を差し込みで受け取る | 13.3, 13.4, 13.9 | `UserPicture`(P0), `Username`(P0), `FormattedDistanceDate`(P0) | — |
 
