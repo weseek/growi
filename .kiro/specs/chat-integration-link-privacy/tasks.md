@@ -57,7 +57,7 @@
   - _Requirements: 6.6, 6.7, 6.8_
   - _Depends: 2_
 
-- [ ] 3.4 畳み込み先2つの spec.json の updated_at を更新する
+- [x] 3.4 畳み込み先2つの spec.json の updated_at を更新する
   - `chat-integration/spec.json`（requirements.md を変更したため）と `chat-integration-app/spec.json`（design.md を変更したため）の両方を更新する。`phase` と `approvals` は変更しない
   - 2ファイルの `updated_at` が畳み込み日に変わっており、`phase`/`approvals` は差分に出ないことが確認できる
   - _Requirements: 6.6, 6.7, 6.8_
