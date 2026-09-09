@@ -27,7 +27,7 @@
   - _Depends: 1.1_
   - _Boundary: buildLinkPreview_
 
-- [ ] 2. handleLinkPreview を新しい buildLinkPreview の呼び方に合わせる
+- [x] 2. handleLinkPreview を新しい buildLinkPreview の呼び方に合わせる
   - `resolvePageFromUrl` の返り値（`ResolvedUrlTarget`）をそのまま `buildLinkPreview` へ渡す形にする。`buildLinkPreview` が `null` を返したときだけ `errorResponse('invalid')` にする
   - 固定リンクで存在しないIDを渡した場合と、固定リンクで存在するが非公開のページを渡した場合の応答が、コマンド処理を通しても完全に同じ形になることが試験で示される（要件6.8の核心）
   - 固定リンクで公開ページを渡した場合、実在パスを含む全文サマリが返ることが試験で示される

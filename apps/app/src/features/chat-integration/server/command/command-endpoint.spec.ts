@@ -582,6 +582,63 @@ describe('createCommandEndpoint (task 5.1)', () => {
 
       expect(response.kind).toBe('error');
     });
+
+    it('answers a permalink to an existing but private page and a permalink to no page at all with the exact same response shape (Requirement 6.8)', async () => {
+      const privatePage = await createPageWithRevision({
+        path: '/private-permalink-target',
+        grant: PageGrant.GRANT_RESTRICTED,
+      });
+      const user = await createUser();
+      await linkActorTo(user._id);
+      const crowi = buildCrowi({ isGuestAllowedToRead: true });
+      const endpoint = createCommandEndpoint(crowi);
+
+      const notFoundResponse = await endpoint.handle(
+        linkPreviewRequest({
+          requestId: 'req-link-permalink-not-found',
+          pageUrl: `https://growi.example.test/${new mongoose.Types.ObjectId().toString()}`,
+        }),
+      );
+      const foundButPrivateResponse = await endpoint.handle(
+        linkPreviewRequest({
+          requestId: 'req-link-permalink-private',
+          pageUrl: `https://growi.example.test/${privatePage._id.toString()}`,
+        }),
+      );
+
+      expect(notFoundResponse).toEqual(foundButPrivateResponse);
+      expect(notFoundResponse).toMatchObject({
+        kind: 'link-preview',
+        restricted: true,
+      });
+    });
+
+    it('returns the real path and a full summary for a permalink to a publicly-readable page (Requirement 6.6, 6.7)', async () => {
+      const publicPage = await createPageWithRevision({
+        path: '/public-permalink-target',
+        grant: PageGrant.GRANT_PUBLIC,
+        body: 'y'.repeat(50),
+        commentCount: 3,
+        updatedAt: new Date('2026-04-01T00:00:00.000Z'),
+      });
+      const user = await createUser();
+      await linkActorTo(user._id);
+      const crowi = buildCrowi({ isGuestAllowedToRead: true });
+      const endpoint = createCommandEndpoint(crowi);
+
+      const response = await endpoint.handle(
+        linkPreviewRequest({
+          pageUrl: `https://growi.example.test/${publicPage._id.toString()}`,
+        }),
+      );
+
+      expect(response).toMatchObject({
+        kind: 'link-preview',
+        path: '/public-permalink-target',
+        restricted: false,
+        commentCount: 3,
+      });
+    });
   });
 
   describe('resolvePageFromUrl -- permalink detection (Requirement 6.6, 6.8)', () => {
