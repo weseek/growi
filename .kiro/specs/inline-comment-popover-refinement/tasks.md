@@ -18,7 +18,7 @@
   - _Requirements: 1.3, 1.4, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6_
   - _Boundary: InlineCommentPreviewPopover_
 
-- [ ] 3. ポップオーバーのレイアウトを構造化レイアウトに刷新する（InlineCommentPreviewPopover）
+- [x] 3. ポップオーバーのレイアウトを構造化レイアウトに刷新する（InlineCommentPreviewPopover）
   - `comment.anchor.quote` を、コメント本文と視覚的に区別できる新しい引用帯として表示する（現状表示されていない情報の追加）
   - 既存の `<textarea>`+ボタンの返信入力欄を、`UserPicture`（`useCurrentUser` で取得した現在の利用者）＋横並びの入力欄＋アイコンの送信ボタンに置き換える（`InlineCommentForm.tsx` の返信入力欄と同じ視覚言語）
   - 本文・返信・返信入力の各セクションの間に区切り線を追加する

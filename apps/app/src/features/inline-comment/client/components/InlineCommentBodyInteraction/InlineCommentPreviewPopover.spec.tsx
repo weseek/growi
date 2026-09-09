@@ -54,6 +54,10 @@ vi.mock('~/client/components/FormattedDistanceDate', () => ({
   default: () => <span data-testid="formatted-distance-date" />,
 }));
 
+vi.mock('~/states/global', () => ({
+  useCurrentUser: () => undefined,
+}));
+
 import { InlineCommentPreviewPopover } from './InlineCommentPreviewPopover';
 
 // ---------------------------------------------------------------------------
@@ -146,12 +150,18 @@ describe('InlineCommentPreviewPopover', () => {
     renderPopover({ comment: 'the comment body' });
 
     const popover = screen.getByTestId('inline-comment-preview-popover');
+    // Scoped to the origin comment's own header row (not the whole popover):
+    // the reply composer added in task 3 also renders a UserPicture, so an
+    // unscoped query here would still pass even if the origin comment's own
+    // avatar were missing (same scoping InlineCommentItem.spec.tsx uses).
+    const header = popover.querySelector('.d-flex.align-items-center');
+    expect(header).not.toBeNull();
     expect(
-      popover.querySelector('[data-testid="user-picture"]'),
+      header?.querySelector('[data-testid="user-picture"]'),
     ).not.toBeNull();
-    expect(popover.querySelector('[data-testid="username"]')).not.toBeNull();
+    expect(header?.querySelector('[data-testid="username"]')).not.toBeNull();
     expect(
-      popover.querySelector('[data-testid="formatted-distance-date"]'),
+      header?.querySelector('[data-testid="formatted-distance-date"]'),
     ).not.toBeNull();
     expect(popover).toHaveTextContent('the comment body');
   });
@@ -363,5 +373,71 @@ describe('InlineCommentPreviewPopover', () => {
     fireEvent.mouseEnter(popover);
 
     expect(onPointerEnter).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders the anchored quote in a strip visually distinct from the comment body (Req 3.3)', () => {
+    renderPopover({
+      comment: 'the comment body',
+      anchor: {
+        quote: 'the quoted range',
+        prefix: '',
+        suffix: '',
+        approxOffset: 0,
+      },
+    });
+
+    const popover = screen.getByTestId('inline-comment-preview-popover');
+    const quoteStrip = screen.getByTestId(
+      'inline-comment-preview-popover-quote',
+    );
+
+    expect(popover).toContainElement(quoteStrip);
+    expect(quoteStrip).toHaveTextContent('the quoted range');
+    // Distinct from the comment body: the quote text never appears inside
+    // the body's own rendered markdown.
+    expect(quoteStrip).not.toHaveTextContent('the comment body');
+  });
+
+  it('renders the reply composer as an avatar + input row with an icon send button (Req 3.5)', () => {
+    renderPopover();
+
+    // Scoped to the composer row itself, not the whole popover -- the origin
+    // comment's own CommentCard header already renders a (mocked)
+    // user-picture, so asserting against the full popover would pass even
+    // without the composer's own avatar.
+    const composer = document.querySelector(
+      '.inline-comment-preview-popover-reply-form',
+    );
+    const textarea = screen.getByPlaceholderText(
+      'inline_comment.reply_placeholder',
+    );
+    const sendButton = screen.getByRole('button', {
+      name: 'page_comment.comment',
+    });
+
+    expect(composer).not.toBeNull();
+    expect(
+      composer?.querySelector('[data-testid="user-picture"]'),
+    ).not.toBeNull();
+    expect(composer).toContainElement(textarea);
+    expect(composer).toContainElement(sendButton);
+  });
+
+  it('still calls createReply when submitting via the restyled composer (Req 3.5, 3.6)', async () => {
+    const createReply = vi.fn().mockResolvedValue(undefined);
+    const onClose = vi.fn();
+    renderPopover({ id: 'comment42' }, { createReply, onClose });
+
+    await userEvent.type(
+      screen.getByPlaceholderText('inline_comment.reply_placeholder'),
+      'a restyled reply',
+    );
+    await userEvent.click(
+      screen.getByRole('button', { name: 'page_comment.comment' }),
+    );
+
+    expect(createReply).toHaveBeenCalledWith('comment42', 'a restyled reply');
+    // Req 3.6: the popover stays open after a successful reply submission.
+    expect(onClose).not.toHaveBeenCalled();
   });
 });

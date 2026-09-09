@@ -9,12 +9,16 @@
  * `SelectionPopover` itself is not reused as a wrapper here because it has no
  * outside-click-to-close behavior, which this popover requires (Req 2.4).
  *
- * The reply input is deliberately a plain `<textarea>` + submit button, not
- * the mention-aware editor the bottom-of-page comment list uses (design.md
- * Non-Goals: "本文中ポップオーバーの返信UIを...同じにすること"). It has no
- * editing UI for the origin comment's own body at all (Req 2.5).
+ * The reply input is deliberately a plain `<textarea>`, not the mention-aware
+ * editor the bottom-of-page comment list uses (design.md Non-Goals:
+ * "本文中ポップオーバーの返信UIを...同じにすること") -- only its surrounding
+ * layout (avatar + row + icon send button) borrows InlineCommentForm.tsx's/
+ * MentionAwareCommentInput.tsx's established composer visual language
+ * (requirements.md Requirement 3.5). It has no editing UI for the origin
+ * comment's own body at all (Req 2.5).
  */
 import { type FC, type JSX, useEffect, useMemo, useRef, useState } from 'react';
+import { UserPicture } from '@growi/ui/dist/components';
 import type { VirtualElement } from '@popperjs/core';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
@@ -22,6 +26,7 @@ import { useTranslation } from 'react-i18next';
 import { CommentCard } from '~/client/components/PageComment/CommentCard';
 import RevisionRenderer from '~/components/PageView/RevisionRenderer';
 import type { RendererOptions } from '~/interfaces/renderer-options';
+import { useCurrentUser } from '~/states/global';
 
 import type { InlineCommentWithReplies } from '../../../interfaces';
 import { rangeToVirtualElement } from '../SelectionPopover/selection-virtual-element';
@@ -75,6 +80,7 @@ export const InlineCommentPreviewPopover: FC<
     onPointerEnter,
   } = props;
   const { t } = useTranslation();
+  const currentUser = useCurrentUser();
 
   // A state-backed callback ref (not useRef): `usePopperPosition` takes the
   // popper element as an effect dependency, and the same node also serves as
@@ -212,6 +218,25 @@ export const InlineCommentPreviewPopover: FC<
               </button>
             </span>
           }
+          beforeBody={
+            // Requirement 3.3: the saved anchor quote, visually distinguished
+            // from the comment body via a left-accent border and a muted
+            // background (same left-accent idiom as InlineCommentItem.tsx's
+            // own quote, but this one is not a click target -- the popover
+            // has no page-body scroll-to-range affordance).
+            <blockquote
+              data-testid="inline-comment-preview-popover-quote"
+              className="inline-comment-preview-popover-quote small text-body-secondary bg-body-tertiary border-start border-3 rounded-1 ps-2 py-1 mb-2"
+              style={{
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+              }}
+            >
+              {comment.anchor.quote}
+            </blockquote>
+          }
           footer={
             resolveError != null ? (
               <span
@@ -233,57 +258,79 @@ export const InlineCommentPreviewPopover: FC<
           )}
         </CommentCard>
 
+        <hr className="my-2" />
+
         {comment.replies.length > 0 && (
-          <div data-testid="inline-comment-preview-popover-replies">
-            {comment.replies.map((reply) => (
-              <div
-                key={reply.id}
-                data-testid="inline-comment-preview-popover-reply"
-                className="ms-4 ms-sm-5 mt-2"
-              >
-                <CommentCard
-                  id={reply.id}
-                  creator={reply.creatorId}
-                  createdAt={reply.createdAt}
+          <>
+            <div data-testid="inline-comment-preview-popover-replies">
+              {comment.replies.map((reply) => (
+                <div
+                  key={reply.id}
+                  data-testid="inline-comment-preview-popover-reply"
+                  className="ms-4 ms-sm-5 mt-2"
                 >
-                  {rendererOptions != null ? (
-                    <RevisionRenderer
-                      rendererOptions={rendererOptions}
-                      markdown={reply.comment}
-                    />
-                  ) : (
-                    <span>{reply.comment}</span>
-                  )}
-                </CommentCard>
-              </div>
-            ))}
-          </div>
+                  <CommentCard
+                    id={reply.id}
+                    creator={reply.creatorId}
+                    createdAt={reply.createdAt}
+                  >
+                    {rendererOptions != null ? (
+                      <RevisionRenderer
+                        rendererOptions={rendererOptions}
+                        markdown={reply.comment}
+                      />
+                    ) : (
+                      <span>{reply.comment}</span>
+                    )}
+                  </CommentCard>
+                </div>
+              ))}
+            </div>
+
+            <hr className="my-2" />
+          </>
         )}
 
-        <div className="inline-comment-preview-popover-reply-form mt-2">
-          <textarea
-            className="form-control"
-            placeholder={t('inline_comment.reply_placeholder')}
-            aria-label={t('inline_comment.reply_placeholder')}
-            value={draftComment}
-            disabled={isSubmitting}
-            onChange={(e) => setDraftComment(e.target.value)}
-          />
-          {submitError != null && (
-            <span
-              className="text-danger d-block"
-              data-testid="inline-comment-preview-popover-reply-error"
-            >
-              {submitError}
-            </span>
-          )}
+        {/* Requirement 3.5/3.6: avatar + input row + icon send button,
+            matching InlineCommentForm.tsx's/MentionAwareCommentInput.tsx's
+            established composer visual language. The underlying
+            handleSubmit/createReply call above is unchanged -- only this
+            surrounding layout is new. */}
+        <div className="inline-comment-preview-popover-reply-form d-flex align-items-start gap-2">
+          <UserPicture user={currentUser} noLink noTooltip />
+          {/* `flex: 1 1 0%` + `minWidth: 0`, not `flex-grow-1`/`w-100`: see
+              InlineCommentForm.tsx's own comment on this same pattern -- an
+              `auto` flex-basis here would collapse the input under the
+              avatar and send button instead of sharing the row with them. */}
+          <div style={{ flex: '1 1 0%', minWidth: 0 }}>
+            <textarea
+              className="form-control"
+              placeholder={t('inline_comment.reply_placeholder')}
+              aria-label={t('inline_comment.reply_placeholder')}
+              value={draftComment}
+              disabled={isSubmitting}
+              onChange={(e) => setDraftComment(e.target.value)}
+            />
+            {submitError != null && (
+              <span
+                className="text-danger d-block"
+                data-testid="inline-comment-preview-popover-reply-error"
+              >
+                {submitError}
+              </span>
+            )}
+          </div>
           <button
             type="button"
-            className="btn btn-sm btn-primary mt-1"
+            className="btn btn-primary btn-sm p-0 d-inline-flex align-items-center justify-content-center"
+            style={{ width: '2rem', height: '2rem' }}
             disabled={draftComment.trim().length === 0 || isSubmitting}
             onClick={handleSubmit}
+            aria-label={t('page_comment.comment')}
           >
-            {t('page_comment.comment')}
+            <span className="material-symbols-outlined fs-6" aria-hidden="true">
+              send
+            </span>
           </button>
         </div>
       </div>
