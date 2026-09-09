@@ -371,10 +371,12 @@ const handleLinkPreview = async (
   request: Extract<CommandRequest, { kind: typeof COMMAND_NAMES.linkPreview }>,
   crowi: Crowi,
 ): Promise<CommandResponse> => {
-  // TODO(task 1.2/2): `buildLinkPreview` still only accepts a resolved page,
-  // not the full `ResolvedUrlTarget` -- this minimal `.page` extraction keeps
-  // the file compiling for task 1.1's boundary (resolvePageFromUrl only) and
-  // will be replaced once buildLinkPreview grows a permalink-aware branch.
+  // TODO(task 2): still gates on `target.page == null` alone, so a permalink
+  // that matched no page falls into the same `errorResponse('invalid')` path
+  // as an invalid URL -- task 2 replaces this with "call buildLinkPreview
+  // with the full target and errorResponse only when it returns null".
+  // Minimal compile-fix for task 1.2's signature change only; no branching
+  // logic here changes as part of this task.
   const target = await resolvePageFromUrl(request.pageUrl);
   if (target?.page == null) {
     return errorResponse(
@@ -383,10 +385,22 @@ const handleLinkPreview = async (
     );
   }
 
+  // `target` is passed through unchanged (design.md precondition for
+  // buildLinkPreview). The `preview == null` branch below is unreachable
+  // today -- the guard above already returns when `target.page` is null, so
+  // buildLinkPreview's own null case never fires here -- but the type
+  // checker still sees `LinkPreviewResult | null` and needs the narrowing.
+  // Task 2 removes the guard above and makes this the live check.
   const preview = buildLinkPreview(
-    target.page,
+    target,
     crowi.aclService.isGuestAllowedToRead(),
   );
+  if (preview == null) {
+    return errorResponse(
+      'invalid',
+      'This URL does not match any page on this GROWI.',
+    );
+  }
   return { kind: RESPONSE_KINDS.linkPreview, ...preview };
 };
 

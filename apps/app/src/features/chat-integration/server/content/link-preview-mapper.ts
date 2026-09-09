@@ -31,6 +31,15 @@
 // convention is reused here by analogy. Task 4.5 confirmed `slack.js` as the
 // authoritative source and both mappers now share the constant
 // (`./excerpt-length.ts`) so they cannot drift apart independently.
+//
+// Requirements 6.6-6.8 add a permalink-specific exception on top of the
+// above: for a URL that names a page by its 24-hex id rather than its path,
+// both "no page has that id" and "a page has that id but is not publicly
+// readable" must produce the exact same response (`PERMALINK_UNAVAILABLE_MESSAGE`),
+// so that probing permalink ids cannot be used to learn which private page
+// ids exist. A path-form URL's behavior is unchanged: not-found still
+// returns `null` (the caller reports "no such page"), because a path is
+// already visible in the pasted URL itself and carries no such probing risk.
 
 import { EXCERPT_LENGTH } from './excerpt-length';
 import {
@@ -57,21 +66,67 @@ export interface LinkPreviewResult {
 }
 
 /**
- * Builds the link-preview summary for `page`.
+ * `resolvePageFromUrl`'s result (design.md's `ResolvedUrlTarget`), as seen by
+ * this mapper. Declared here rather than imported from
+ * `command/command-endpoint.ts` so this module stays free of a dependency on
+ * the command layer that calls it; `ResolvedLinkPreviewPage` there is
+ * structurally identical to `LinkPreviewPageSource` (both are "the fields
+ * this mapper reads off a resolved page"), so a `ResolvedUrlTarget` produced
+ * by `resolvePageFromUrl` is assignable here without any conversion.
+ */
+export interface LinkPreviewUrlTarget {
+  /** Whether the trailing URL segment was a 24-hex-char permalink identifier, rather than a path. */
+  readonly isPermalink: boolean;
+  /** The resolved page, or null if no page matched. */
+  readonly page: LinkPreviewPageSource | null;
+}
+
+/**
+ * Fixed response text for a permalink that cannot be shown -- either no page
+ * matched the id, or one did but is not publicly readable. Requirement 6.8
+ * requires these two cases to be indistinguishable to the requester; using
+ * one shared constant for both call sites is what keeps them byte-identical
+ * as this file changes, rather than relying on two separately-written
+ * strings that could drift apart.
+ */
+export const PERMALINK_UNAVAILABLE_MESSAGE =
+  'This page does not exist, or is not visible to everyone.';
+
+/**
+ * Builds the link-preview summary for `target`.
  *
  * `isGuestAllowedToRead` is caller-supplied (`crowi.aclService.isGuestAllowedToRead()`),
  * same pattern as `resolveActor`'s `resolveReadDenial` -- keeping the lookup
  * out of this module leaves it pure and testable.
+ *
+ * Returns `null` only when `target.page` is `null` and `target.isPermalink`
+ * is `false` -- a path-form URL that matched no page, which the caller turns
+ * into `errorResponse('invalid')`. Every other case (including "permalink,
+ * not found") returns a `LinkPreviewResult`, per Requirement 6.8: a
+ * not-found permalink must not be distinguishable from a found-but-private
+ * one.
  */
 export const buildLinkPreview = (
-  page: LinkPreviewPageSource,
+  target: LinkPreviewUrlTarget,
   isGuestAllowedToRead: boolean,
-): LinkPreviewResult => {
+): LinkPreviewResult | null => {
+  const { page, isPermalink } = target;
+
+  if (page == null) {
+    if (!isPermalink) {
+      return null;
+    }
+    return { path: PERMALINK_UNAVAILABLE_MESSAGE, restricted: true };
+  }
+
   const isFullSummaryAllowed =
     isPubliclyReadablePage(page) && isGuestAllowedToRead;
 
   if (!isFullSummaryAllowed) {
-    return { path: page.path, restricted: true };
+    return {
+      path: isPermalink ? PERMALINK_UNAVAILABLE_MESSAGE : page.path,
+      restricted: true,
+    };
   }
 
   return {

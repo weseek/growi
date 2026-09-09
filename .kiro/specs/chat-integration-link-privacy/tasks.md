@@ -17,7 +17,7 @@
   - _Requirements: 6.6, 6.8_
   - _Boundary: resolvePageFromUrl_
 
-- [ ] 1.2 buildLinkPreview が固定リンクの非公開・見つからない場合に固定文言を返す
+- [x] 1.2 buildLinkPreview が固定リンクの非公開・見つからない場合に固定文言を返す
   - `PERMALINK_UNAVAILABLE_MESSAGE`（`'This page does not exist, or is not visible to everyone.'`）定数を追加する
   - 固定リンクで非公開、または固定リンクで見つからない場合は、どちらもこの定数を `path` に入れて返す（`excerpt`/`updatedAt`/`commentCount` は含めない）
   - パス形式URLで見つからない場合は今までどおり `null` を返す（変更しない）
