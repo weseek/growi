@@ -45,7 +45,8 @@ Gen 1 には手を入れず、GROWI 本体で両方を同時に有効にでき�
 |---|---|---|---|
 | [chat-integration-protocol](../chat-integration-protocol/) | `packages/chat`（`@growi/chat`） | GROWI ⇄ proxy の通信契約、RFC 9421 署名、チャンネル権限の判定（両側が使う純粋関数） | 実装完了（`/kiro-validate-impl` GO） |
 | [chat-integration-proxy](../chat-integration-proxy/) | `apps/chat-integration-proxy` | 4 サービスとのやり取り、関係管理、コマンドの解釈、検索の統合、常時接続 | 実装完了（`/kiro-validate-impl` GO。残タスク12.4「スラッシュコマンドを実際に動かす」のみ意図して未着手・追跡中） |
-| [chat-integration-app](../chat-integration-app/) | `apps/app/src/features/chat-integration/` | 通知の送出、コマンドの処理、利用者の紐付け、鍵の保持、管理画面 | tasks 承認済み・実装着手可能 |
+| [chat-integration-app](../chat-integration-app/) | `apps/app/src/features/chat-integration/` | 通知の送出、コマンドの処理、利用者の紐付け、鍵の保持、管理画面 | 実装完了（`/kiro-validate-impl` GO。1回目 NO-GO の是正4件を含む） |
+| [chat-integration-link-privacy](../chat-integration-link-privacy/) | umbrella 要件6（6.1・6.3）の amend | `chat-integration-app` の feature-level validation で判明: 固定リンク（ObjectId形式URL）を貼ると、投稿者がまだ知らない非公開ページの実際のパスが開示される。要件6.1/6.3自体が「URLを貼った人は既にパスを知っている」という前提を置いており、固定リンクではその前提が崩れることに起因 | 起票済み（要件フェーズ未着手） |
 
 **依存の向き**: `protocol` ← `proxy` / `app`。protocol は他の 2 つを知らない。
 proxy と app は互いを知らず、protocol の契約だけで話す。

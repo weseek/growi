@@ -685,9 +685,8 @@
   - **`ProxyClient` の呼び出し全般に打ち切り時間が無い**（元からある性質）。
     task 9.3 で保存時の宛先選択が「編集画面を開くたびに」呼ぶようになったため、
     影響範囲が広がった。
-  - **umbrella spec 側の記録が必要**: 初回検証で見つかった「固定リンク展開が
-    非公開ページの実際のパスを認可されていないチャンネルへ出しうる」という所見
-    （要件6.2/6.3に対する amend spec が必要、という判断込み）が、
-    umbrella `chat-integration` の requirements/design/brief/research/roadmap の
-    どこにも記録されていない。**この spec の範囲外の書き込みなので、
-    ユーザーに別途確認すること。**
+  - **「固定リンク展開が非公開ページの実際のパスを認可されていないチャンネルへ
+    出しうる」という所見（要件6.2/6.3のギャップ）は、amend spec
+    [chat-integration-link-privacy](../chat-integration-link-privacy/) として
+    起票済み（2026-09-09、requirements フェーズ未着手）。**
+    umbrella `chat-integration` の `roadmap.md` にも sub-spec として追記済み。
