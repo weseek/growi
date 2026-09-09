@@ -5,6 +5,11 @@
  * preview popover (3.2) and wiring their open/close policy (design.md 決定2,
  * requirements.md Requirement 2, ACs 2.1-2.6).
  *
+ * Also covers task 1 of the inline-comment-popover-refinement amend spec:
+ * the hover show/hide delay and pointer-enter-into-popover lock (that spec's
+ * requirements.md Requirement 1, ACs 1.1-1.7; design.md's "Hover
+ * show/hide/lock sequence").
+ *
  * `useHighlightHitTest` and `rangesById` are both mocked -- their own
  * behavior is covered by their own specs (3.1, resolved-range.spec.ts). This
  * file only verifies the policy this component itself owns: which comment id
@@ -14,12 +19,24 @@
  *
  * `InlineCommentPreviewPopover` is mocked to a minimal stand-in exposing the
  * props it was given plus a close button -- its own rendering/positioning/
- * reply-submission behavior is task 3.2's concern, not this one's.
+ * reply-submission behavior is task 3.2's concern, not this one's. It also
+ * exposes an "enter popover" button that invokes the (not-yet-real, see
+ * `InlineCommentBodyInteraction.tsx`'s `@ts-expect-error` comment)
+ * `onPointerEnter` prop, so the hover-lock promotion can be exercised here
+ * even before `InlineCommentPreviewPopover.tsx` itself declares that prop.
  */
 
 import type { RefObject } from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+// Matches InlineCommentBodyInteraction.tsx's HOVER_SHOW_DELAY_MS/
+// HOVER_HIDE_DELAY_MS local constants (research.md's "Debounce timing
+// constants" decision). Kept as separate literals here (not imported) so a
+// test asserting the actual delay would fail if the component's constants
+// ever drifted from these values unnoticed.
+const HOVER_SHOW_DELAY_MS = 150;
+const HOVER_HIDE_DELAY_MS = 250;
 
 import type { RendererOptions } from '~/interfaces/renderer-options';
 
@@ -58,6 +75,10 @@ type PreviewPopoverProps = {
   rendererOptions: RendererOptions | undefined;
   createReply: (parentId: string, comment: string) => Promise<unknown>;
   onClose: () => void;
+  // Not yet a real prop of `InlineCommentPreviewPopover.tsx` (a later task in
+  // this spec adds it) -- declared here on the mock only, so this file can
+  // exercise `handlePointerEnterPopover`'s promotion logic ahead of that.
+  onPointerEnter?: () => void;
 };
 const previewPopoverSpy = vi.fn<(props: PreviewPopoverProps) => void>();
 vi.mock('./InlineCommentPreviewPopover', () => ({
@@ -68,6 +89,9 @@ vi.mock('./InlineCommentPreviewPopover', () => ({
         <span data-testid="preview-popover-comment-id">{props.comment.id}</span>
         <button type="button" onClick={props.onClose}>
           close
+        </button>
+        <button type="button" onClick={props.onPointerEnter}>
+          enter popover
         </button>
       </div>
     );
@@ -138,6 +162,7 @@ const renderInteraction = (
 
 describe('InlineCommentBodyInteraction', () => {
   beforeEach(() => {
+    vi.useFakeTimers();
     mockedUseHighlightHitTest.mockReturnValue(null);
     previewPopoverSpy.mockClear();
     mockedRangesById.mockReturnValue(
@@ -148,13 +173,17 @@ describe('InlineCommentBodyInteraction', () => {
     );
   });
 
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('renders no popover when there is no hit', () => {
     renderInteraction();
 
     expect(screen.queryByTestId('preview-popover')).not.toBeInTheDocument();
   });
 
-  it('opens the popover for a hover hit on a desktop-width highlight (Req 2.1)', () => {
+  it('opens the popover for a hover hit on a desktop-width highlight, after the show delay (Req 1.1, Req 2.1)', () => {
     mockedUseHighlightHitTest.mockReturnValue({
       commentId: 'comment1',
       source: 'hover',
@@ -162,9 +191,46 @@ describe('InlineCommentBodyInteraction', () => {
 
     renderInteraction();
 
+    // Not shown yet -- the hover has not survived the show delay.
+    expect(screen.queryByTestId('preview-popover')).not.toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(HOVER_SHOW_DELAY_MS);
+    });
+
     expect(screen.getByTestId('preview-popover-comment-id')).toHaveTextContent(
       'comment1',
     );
+  });
+
+  it('never shows the popover when a hover hit clears before the show delay elapses (Req 1.1)', () => {
+    mockedUseHighlightHitTest.mockReturnValue({
+      commentId: 'comment1',
+      source: 'hover',
+    });
+    const { rerender } = renderInteraction();
+
+    act(() => {
+      vi.advanceTimersByTime(HOVER_SHOW_DELAY_MS - 1);
+    });
+    expect(screen.queryByTestId('preview-popover')).not.toBeInTheDocument();
+
+    // The pointer left the highlight before the show delay finished.
+    mockedUseHighlightHitTest.mockReturnValue(null);
+    rerender(
+      <InlineCommentBodyInteraction
+        containerRef={{ current: document.body }}
+        resolvedRanges={new Map()}
+        inlineComments={[buildComment()]}
+        createReply={vi.fn().mockResolvedValue(undefined)}
+        rendererOptions={rendererOptions}
+      />,
+    );
+
+    act(() => {
+      vi.advanceTimersByTime(HOVER_SHOW_DELAY_MS + HOVER_HIDE_DELAY_MS);
+    });
+    expect(screen.queryByTestId('preview-popover')).not.toBeInTheDocument();
   });
 
   it('updates the shown popover as the hover hit moves to a different highlight', () => {
@@ -177,6 +243,9 @@ describe('InlineCommentBodyInteraction', () => {
         buildComment({ id: 'comment1' }),
         buildComment({ id: 'comment2' }),
       ],
+    });
+    act(() => {
+      vi.advanceTimersByTime(HOVER_SHOW_DELAY_MS);
     });
     expect(screen.getByTestId('preview-popover-comment-id')).toHaveTextContent(
       'comment1',
@@ -198,18 +267,24 @@ describe('InlineCommentBodyInteraction', () => {
         rendererOptions={rendererOptions}
       />,
     );
+    act(() => {
+      vi.advanceTimersByTime(HOVER_SHOW_DELAY_MS);
+    });
 
     expect(screen.getByTestId('preview-popover-comment-id')).toHaveTextContent(
       'comment2',
     );
   });
 
-  it('closes the popover once the hover hit clears (no pinning for hover)', () => {
+  it('keeps the popover shown for the hide grace period after a hover hit clears, then closes it (Req 1.2)', () => {
     mockedUseHighlightHitTest.mockReturnValue({
       commentId: 'comment1',
       source: 'hover',
     });
     const { rerender } = renderInteraction();
+    act(() => {
+      vi.advanceTimersByTime(HOVER_SHOW_DELAY_MS);
+    });
     expect(screen.getByTestId('preview-popover')).toBeInTheDocument();
 
     mockedUseHighlightHitTest.mockReturnValue(null);
@@ -222,6 +297,16 @@ describe('InlineCommentBodyInteraction', () => {
         rendererOptions={rendererOptions}
       />,
     );
+
+    // Still shown -- the hide grace period has not elapsed yet.
+    act(() => {
+      vi.advanceTimersByTime(HOVER_HIDE_DELAY_MS - 1);
+    });
+    expect(screen.getByTestId('preview-popover')).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
 
     expect(screen.queryByTestId('preview-popover')).not.toBeInTheDocument();
   });
@@ -351,6 +436,118 @@ describe('InlineCommentBodyInteraction', () => {
 
     expect(previewPopoverSpy).toHaveBeenCalledWith(
       expect.objectContaining({ createReply, rendererOptions }),
+    );
+  });
+
+  describe('pointer entering the popover (Req 1.3, 1.4, 1.5)', () => {
+    it('reaching the popover before the hide grace period elapses keeps it open indefinitely, with no further hover hit at all', () => {
+      mockedUseHighlightHitTest.mockReturnValue({
+        commentId: 'comment1',
+        source: 'hover',
+      });
+      const { rerender } = renderInteraction();
+      act(() => {
+        vi.advanceTimersByTime(HOVER_SHOW_DELAY_MS);
+      });
+      expect(screen.getByTestId('preview-popover')).toBeInTheDocument();
+
+      // Pointer leaves the highlight, travelling toward the popover.
+      mockedUseHighlightHitTest.mockReturnValue(null);
+      rerender(
+        <InlineCommentBodyInteraction
+          containerRef={{ current: document.body }}
+          resolvedRanges={new Map()}
+          inlineComments={[buildComment()]}
+          createReply={vi.fn().mockResolvedValue(undefined)}
+          rendererOptions={rendererOptions}
+        />,
+      );
+
+      // Reaches the popover before the hide grace period elapses.
+      act(() => {
+        vi.advanceTimersByTime(HOVER_HIDE_DELAY_MS - 1);
+      });
+      fireEvent.click(screen.getByRole('button', { name: 'enter popover' }));
+
+      // Advancing well past both delays with no further hover hit at all --
+      // the popover behaves exactly like a click-pinned one from here on.
+      act(() => {
+        vi.advanceTimersByTime(HOVER_SHOW_DELAY_MS + HOVER_HIDE_DELAY_MS * 5);
+      });
+      expect(
+        screen.getByTestId('preview-popover-comment-id'),
+      ).toHaveTextContent('comment1');
+    });
+
+    it('closing after the pointer entered the popover goes through the ordinary close mechanism (Req 1.7)', () => {
+      mockedUseHighlightHitTest.mockReturnValue({
+        commentId: 'comment1',
+        source: 'hover',
+      });
+      renderInteraction();
+      act(() => {
+        vi.advanceTimersByTime(HOVER_SHOW_DELAY_MS);
+      });
+
+      fireEvent.click(screen.getByRole('button', { name: 'enter popover' }));
+      expect(screen.getByTestId('preview-popover')).toBeInTheDocument();
+
+      fireEvent.click(screen.getByRole('button', { name: 'close' }));
+
+      expect(screen.queryByTestId('preview-popover')).not.toBeInTheDocument();
+    });
+
+    it('is a no-op when a popover is already pinned by a click', () => {
+      mockedUseHighlightHitTest.mockReturnValue({
+        commentId: 'comment1',
+        source: 'click',
+      });
+      renderInteraction();
+      expect(
+        screen.getByTestId('preview-popover-comment-id'),
+      ).toHaveTextContent('comment1');
+
+      // Calling the pointer-enter promotion while already pinned must not
+      // throw or change what is displayed.
+      fireEvent.click(screen.getByRole('button', { name: 'enter popover' }));
+
+      expect(
+        screen.getByTestId('preview-popover-comment-id'),
+      ).toHaveTextContent('comment1');
+    });
+  });
+
+  it('clears pending timers on unmount (no state update after unmount)', () => {
+    mockedUseHighlightHitTest.mockReturnValue({
+      commentId: 'comment1',
+      source: 'hover',
+    });
+    const { unmount } = renderInteraction();
+
+    unmount();
+
+    // If the pending show-timer were not cleared, it would fire here and
+    // attempt a setState on the unmounted component -- React would log a
+    // warning/throw in dev. Simply advancing past both delays without error
+    // is the assertion.
+    expect(() => {
+      act(() => {
+        vi.advanceTimersByTime(HOVER_SHOW_DELAY_MS + HOVER_HIDE_DELAY_MS);
+      });
+    }).not.toThrow();
+  });
+
+  it('the click path still shows the popover immediately with no delay (Req 1.6 regression)', () => {
+    mockedUseHighlightHitTest.mockReturnValue({
+      commentId: 'comment1',
+      source: 'click',
+    });
+
+    renderInteraction();
+
+    // No timer advance at all -- click must never be debounced.
+    expect(screen.getByTestId('preview-popover-comment-id')).toHaveTextContent(
+      'comment1',
     );
   });
 });
