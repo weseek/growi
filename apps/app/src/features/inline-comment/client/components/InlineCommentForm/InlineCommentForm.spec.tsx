@@ -70,6 +70,18 @@ vi.mock('~/stores-universal/use-next-themes', () => ({
   useNextThemes: () => ({ resolvedTheme: 'light' }),
 }));
 
+// The composing user's avatar (UserPicture) is the header row's own
+// well-tested concern (see CommentCard.spec.tsx / InlineCommentReplies.spec.tsx
+// for the same mocking boundary) -- this file only proves InlineCommentForm
+// renders one, not UserPicture's own fallback/link/tooltip behavior.
+vi.mock('@growi/ui/dist/components', () => ({
+  UserPicture: () => <span data-testid="user-picture" />,
+}));
+
+vi.mock('~/states/global', () => ({
+  useCurrentUser: () => undefined,
+}));
+
 vi.mock('~/client/util/apiv3-client', () => ({
   apiv3Get: vi.fn(),
 }));
@@ -257,6 +269,12 @@ describe('InlineCommentForm', () => {
       expect(editorProps.current?.cmProps).toMatchObject({
         basicSetup: { lineNumbers: false, foldGutter: false },
       });
+    });
+
+    it("renders the composing user's avatar next to the input, matching the reference mockup", () => {
+      renderForm();
+
+      expect(screen.getByTestId('user-picture')).toBeInTheDocument();
     });
   });
 

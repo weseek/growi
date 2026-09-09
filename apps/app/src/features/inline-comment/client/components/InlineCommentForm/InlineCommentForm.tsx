@@ -12,13 +12,17 @@
  * suite locates it to verify the right occurrence was captured, and it is
  * left in the accessible-name tree rather than removed from it entirely, so
  * a screen-reader user reaches it as passive context when tabbing through
- * the form), cancellation (Escape key or an outside click/mousedown -- there
- * is no visible Cancel button, matching the reference mockup), and the
- * `create()` call.
+ * the form), the composing user's avatar (matching the reference mockup),
+ * cancellation (Escape key or an outside click/mousedown -- there is no
+ * visible Cancel button, matching the reference mockup), and the `create()`
+ * call.
  */
 
 import type { JSX } from 'react';
 import { useEffect, useMemo, useRef } from 'react';
+import { UserPicture } from '@growi/ui/dist/components';
+
+import { useCurrentUser } from '~/states/global';
 
 import { useSWRxInlineComments } from '../../stores/inline-comment';
 import { MentionAwareCommentInput } from '../MentionAwareCommentInput/MentionAwareCommentInput';
@@ -43,6 +47,7 @@ export const InlineCommentForm = (
     props;
 
   const { create } = useSWRxInlineComments(pageId);
+  const currentUser = useCurrentUser();
 
   // One create-form editor instance per page, mirroring CommentEditor's
   // GlobalCodeMirrorEditorKey.COMMENT_NEW reuse for all new top-level comments.
@@ -128,14 +133,23 @@ export const InlineCommentForm = (
       <blockquote className="inline-comment-form-quote visually-hidden">
         {anchor.quote}
       </blockquote>
-      <MentionAwareCommentInput
-        editorKey={editorKey}
-        disabled={!hasValidAnchor}
-        onSubmit={(comment) =>
-          create({ pageId, anchorOriginRevisionId, comment, anchor })
-        }
-        onSubmitted={onSubmitted}
-      />
+      <div className="d-flex align-items-start gap-2">
+        <UserPicture user={currentUser} noLink noTooltip />
+        {/* `min-width: 0` for the same reason as the editor's own wrapper
+            inside MentionAwareCommentInput: without it, this flex item
+            refuses to shrink below its (still layout-in-progress) content
+            width and pushes the avatar out of the row. */}
+        <div style={{ flex: '1 1 0%', minWidth: 0 }}>
+          <MentionAwareCommentInput
+            editorKey={editorKey}
+            disabled={!hasValidAnchor}
+            onSubmit={(comment) =>
+              create({ pageId, anchorOriginRevisionId, comment, anchor })
+            }
+            onSubmitted={onSubmitted}
+          />
+        </div>
+      </div>
     </div>
   );
 };

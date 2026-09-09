@@ -45,6 +45,14 @@ vi.mock('@growi/editor/dist/client/services', () => ({
   mentionDecorationSettings: {},
 }));
 
+const tooltipsMock = vi.hoisted(() =>
+  vi.fn(() => 'tooltips-extension-sentinel'),
+);
+vi.mock('@codemirror/view', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@codemirror/view')>()),
+  tooltips: tooltipsMock,
+}));
+
 vi.mock('@growi/editor/dist/client/stores/codemirror-editor', () => ({
   useCodeMirrorEditorIsolated: () => ({ data: codeMirrorEditorMock }),
 }));
@@ -224,6 +232,15 @@ describe('MentionAwareCommentInput', () => {
 
     expect(createMentionCompletionExtension).toHaveBeenCalledWith(
       fetchMentionUsersMock,
+    );
+  });
+
+  it("appends a tooltips(parent: document.body) extension, so the mention-completion popup floats above the form instead of being clipped by .cm-editor's own overflow:hidden", () => {
+    render(<MentionAwareCommentInput editorKey="key-1" onSubmit={vi.fn()} />);
+
+    expect(tooltipsMock).toHaveBeenCalledWith({ parent: document.body });
+    expect(codeMirrorEditorMock.appendExtensions).toHaveBeenCalledWith(
+      'tooltips-extension-sentinel',
     );
   });
 });

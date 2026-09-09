@@ -19,6 +19,7 @@
 
 import type { JSX } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { tooltips } from '@codemirror/view';
 import { useSetResolvedTheme } from '@growi/editor';
 import { CodeMirrorEditorComment } from '@growi/editor/dist/client/components/CodeMirrorEditorComment';
 import {
@@ -88,6 +89,18 @@ export const MentionAwareCommentInput = (
   useEffect(() => {
     return codeMirrorEditor?.appendExtensions?.(mentionExtension);
   }, [codeMirrorEditor, mentionExtension]);
+
+  // Without an explicit `parent`, CodeMirror's tooltip plugin appends the
+  // mention-completion popup as a child of the editor's own DOM
+  // (`view.dom`, `.cm-editor`) instead of `document.body`. `.cm-editor` has
+  // `overflow: hidden` in its base theme, and this form is a small, fixed-
+  // height box -- so without this, the popup renders clipped and scrolling
+  // inside the form instead of floating above it.
+  useEffect(() => {
+    return codeMirrorEditor?.appendExtensions?.(
+      tooltips({ parent: document.body }),
+    );
+  }, [codeMirrorEditor]);
 
   const cmProps = useMemo(
     () => ({
