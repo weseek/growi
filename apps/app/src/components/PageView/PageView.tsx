@@ -418,6 +418,7 @@ const PageViewComponent = (props: Props): JSX.Element => {
                 resolvedRanges={resolvedInlineCommentRanges}
                 inlineComments={inlineComments ?? []}
                 createReply={createInlineCommentReplyText}
+                resolve={resolveInlineComment}
                 rendererOptions={viewOptions}
               />
 
@@ -449,6 +450,7 @@ const PageViewComponent = (props: Props): JSX.Element => {
     inlineCommentsForComments,
     inlineComments,
     createInlineCommentReplyText,
+    resolveInlineComment,
   ]);
 
   return (

@@ -20,10 +20,11 @@
  * `InlineCommentPreviewPopover` is mocked to a minimal stand-in exposing the
  * props it was given plus a close button -- its own rendering/positioning/
  * reply-submission behavior is task 3.2's concern, not this one's. It also
- * exposes an "enter popover" button that invokes the (not-yet-real, see
- * `InlineCommentBodyInteraction.tsx`'s `@ts-expect-error` comment)
- * `onPointerEnter` prop, so the hover-lock promotion can be exercised here
- * even before `InlineCommentPreviewPopover.tsx` itself declares that prop.
+ * exposes an "enter popover" button and a "resolve" button that invoke the
+ * `onPointerEnter` and `resolve` props respectively, so the hover-lock
+ * promotion (this component's own concern) and the resolve-threading wiring
+ * (task 4 of the inline-comment-popover-refinement amend spec) can both be
+ * exercised here.
  */
 
 import type { RefObject } from 'react';
@@ -74,11 +75,9 @@ type PreviewPopoverProps = {
   range: unknown;
   rendererOptions: RendererOptions | undefined;
   createReply: (parentId: string, comment: string) => Promise<unknown>;
+  resolve: (id: string, resolved: boolean) => Promise<unknown>;
   onClose: () => void;
-  // Not yet a real prop of `InlineCommentPreviewPopover.tsx` (a later task in
-  // this spec adds it) -- declared here on the mock only, so this file can
-  // exercise `handlePointerEnterPopover`'s promotion logic ahead of that.
-  onPointerEnter?: () => void;
+  onPointerEnter: () => void;
 };
 const previewPopoverSpy = vi.fn<(props: PreviewPopoverProps) => void>();
 vi.mock('./InlineCommentPreviewPopover', () => ({
@@ -92,6 +91,12 @@ vi.mock('./InlineCommentPreviewPopover', () => ({
         </button>
         <button type="button" onClick={props.onPointerEnter}>
           enter popover
+        </button>
+        <button
+          type="button"
+          onClick={() => props.resolve(props.comment.id, true)}
+        >
+          resolve
         </button>
       </div>
     );
@@ -141,6 +146,7 @@ const renderInteraction = (
     inlineComments: InlineCommentWithReplies[];
     resolvedRanges: ReadonlyMap<string, ResolvedRange>;
     createReply: (parentId: string, comment: string) => Promise<unknown>;
+    resolve: (id: string, resolved: boolean) => Promise<unknown>;
   }> = {},
 ) => {
   const container = document.createElement('div');
@@ -155,6 +161,7 @@ const renderInteraction = (
       createReply={
         overrides.createReply ?? vi.fn().mockResolvedValue(undefined)
       }
+      resolve={overrides.resolve ?? vi.fn().mockResolvedValue(undefined)}
       rendererOptions={rendererOptions}
     />,
   );
@@ -223,6 +230,7 @@ describe('InlineCommentBodyInteraction', () => {
         resolvedRanges={new Map()}
         inlineComments={[buildComment()]}
         createReply={vi.fn().mockResolvedValue(undefined)}
+        resolve={vi.fn().mockResolvedValue(undefined)}
         rendererOptions={rendererOptions}
       />,
     );
@@ -264,6 +272,7 @@ describe('InlineCommentBodyInteraction', () => {
           buildComment({ id: 'comment2' }),
         ]}
         createReply={vi.fn().mockResolvedValue(undefined)}
+        resolve={vi.fn().mockResolvedValue(undefined)}
         rendererOptions={rendererOptions}
       />,
     );
@@ -294,6 +303,7 @@ describe('InlineCommentBodyInteraction', () => {
         resolvedRanges={new Map()}
         inlineComments={[buildComment()]}
         createReply={vi.fn().mockResolvedValue(undefined)}
+        resolve={vi.fn().mockResolvedValue(undefined)}
         rendererOptions={rendererOptions}
       />,
     );
@@ -342,6 +352,7 @@ describe('InlineCommentBodyInteraction', () => {
         resolvedRanges={new Map()}
         inlineComments={[buildComment()]}
         createReply={vi.fn().mockResolvedValue(undefined)}
+        resolve={vi.fn().mockResolvedValue(undefined)}
         rendererOptions={rendererOptions}
       />,
     );
@@ -379,6 +390,7 @@ describe('InlineCommentBodyInteraction', () => {
           buildComment({ id: 'comment2' }),
         ]}
         createReply={vi.fn().mockResolvedValue(undefined)}
+        resolve={vi.fn().mockResolvedValue(undefined)}
         rendererOptions={rendererOptions}
       />,
     );
@@ -439,6 +451,20 @@ describe('InlineCommentBodyInteraction', () => {
     );
   });
 
+  it('threads the resolve prop through to the popover so it can be invoked from there', () => {
+    const resolve = vi.fn().mockResolvedValue(undefined);
+    mockedUseHighlightHitTest.mockReturnValue({
+      commentId: 'comment1',
+      source: 'click',
+    });
+
+    renderInteraction({ resolve });
+
+    fireEvent.click(screen.getByRole('button', { name: 'resolve' }));
+
+    expect(resolve).toHaveBeenCalledWith('comment1', true);
+  });
+
   describe('pointer entering the popover (Req 1.3, 1.4, 1.5)', () => {
     it('reaching the popover before the hide grace period elapses keeps it open indefinitely, with no further hover hit at all', () => {
       mockedUseHighlightHitTest.mockReturnValue({
@@ -459,6 +485,7 @@ describe('InlineCommentBodyInteraction', () => {
           resolvedRanges={new Map()}
           inlineComments={[buildComment()]}
           createReply={vi.fn().mockResolvedValue(undefined)}
+          resolve={vi.fn().mockResolvedValue(undefined)}
           rendererOptions={rendererOptions}
         />,
       );

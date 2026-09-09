@@ -62,6 +62,12 @@ type InlineCommentBodyInteractionProps = {
   inlineComments: InlineCommentWithReplies[];
   createReply: (parentId: string, comment: string) => Promise<unknown>;
   /**
+   * Toggles a comment's resolved state -- forwarded as-is to
+   * `InlineCommentPreviewPopover`, which uses it exactly as
+   * `InlineCommentItem.tsx` uses its own `resolve` prop.
+   */
+  resolve: (id: string, resolved: boolean) => Promise<unknown>;
+  /**
    * Undefined while the caller's renderer options are still loading --
    * forwarded as-is to `InlineCommentPreviewPopover`, which falls back to
    * plain text rendering in that case.
@@ -85,6 +91,7 @@ export const InlineCommentBodyInteraction: FC<
     resolvedRanges,
     inlineComments,
     createReply,
+    resolve,
     rendererOptions,
   } = props;
 
@@ -261,13 +268,8 @@ export const InlineCommentBodyInteraction: FC<
       range={range}
       rendererOptions={rendererOptions}
       createReply={createReply}
+      resolve={resolve}
       onClose={handleClose}
-      // @ts-expect-error: `onPointerEnter` is added to
-      // `InlineCommentPreviewPopoverProps` by a later task in this same spec
-      // (design.md's "Modified Files" entry for InlineCommentPreviewPopover.tsx)
-      // -- out of this task's boundary. Wired here already so
-      // `handlePointerEnterPopover`'s promotion logic is exercised end-to-end
-      // the moment that prop lands; remove this directive once it does.
       onPointerEnter={handlePointerEnterPopover}
     />
   );

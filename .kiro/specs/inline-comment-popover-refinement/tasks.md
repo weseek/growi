@@ -28,7 +28,7 @@
   - _Boundary: InlineCommentPreviewPopover_
   - _Depends: 2_
 
-- [ ] 4. InlineCommentBodyInteraction と InlineCommentPreviewPopover を新しい props で接続し、PageView から resolve を配線する
+- [x] 4. InlineCommentBodyInteraction と InlineCommentPreviewPopover を新しい props で接続し、PageView から resolve を配線する
   - `InlineCommentBodyInteraction` から `InlineCommentPreviewPopover` へ、`onPointerEnter={handlePointerEnterPopover}` と `resolve` prop を渡す
   - `InlineCommentBodyInteraction` 自身が新しい `resolve` prop を受け取れるようにする
   - `PageView.tsx` の `<InlineCommentBodyInteraction>` 呼び出しに、既存の `resolveInlineComment` を `resolve` prop として渡す一行を追加する
