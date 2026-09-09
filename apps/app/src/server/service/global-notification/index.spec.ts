@@ -136,6 +136,7 @@ describe('GlobalNotificationService.fire', () => {
       path: '/a/b/c',
       grant: PageGrant.GRANT_RESTRICTED,
       id: 'page-id',
+      revision: mock<PageDocument['revision']>({ body: 'SECRET PAGE BODY' }),
     });
     const gen2Destinations = [
       { relationId: 'rel-1', platform: 'slack', channelId: 'C1' },
@@ -147,10 +148,12 @@ describe('GlobalNotificationService.fire', () => {
 
     await service.fire('pageCreate', restrictedPage, triggeredBy);
 
-    // Gen 2 fires, and the restriction flag reaches the dispatcher so the
-    // outbox entry records that the body was withheld (Requirement 2.4).
+    // Gen 2 fires, the restriction flag reaches the dispatcher (Requirement
+    // 2.4), and the restricted page's actual body never reaches it -- proves
+    // the withholding is real, not just an untested claim (a mock with no
+    // `revision.body` would pass this assertion even if withholding broke).
     expect(createGen2NotificationDispatcher).toHaveBeenCalledWith(
-      expect.any(String),
+      expect.not.stringContaining('SECRET PAGE BODY'),
       true,
     );
     expect(dispatchAll).toHaveBeenCalledWith(

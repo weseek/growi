@@ -666,3 +666,28 @@
      — Express の実際の一致規則に合わせるため）で4か所すべてを揃えた。
      `/peering` のような隣接パスが引き続き除外されないことも drift 試験で確認済み。
   - 4件とも `/kiro-validate-impl` の再実行で確認すること。
+- **`/kiro-validate-impl` の再実行（4件のブロッカー修正後）は GO。** 残りは非ブロッキングの
+  指摘のみで、うち本文を伏せる試験の弱さ（要件2.3の見張りが効いていなかった）はその場で
+  直した（`global-notification/index.spec.ts` の該当試験に実際の本文を持たせ、それが
+  届いていないことを確かめる形に強化）。残りは次に触るときのための記録:
+  - **task 9.0 は `[x]` だが、「管理画面に『新しい workspace を接続する』操作を置く」
+    という自身の文言は未実装。** サーバ側（`state` の発行・照合）は実装・マウント済みで、
+    管理画面側が空白なのは意図どおり（design.md の「proxy 側に認可URL組み立ての口が
+    要る」という境界外の理由による）。tasks.md の文言が「proxy 側の口が出来るまで
+    到達しない」ことを書いていないので、次に触るときに補うとよい。
+  - **design.md の未反映が3件残っている**: `ResolvedActor.user` の型
+    （design.md は `IUser | null`、実装は `HydratedDocument<IUser> | null`）、
+    `HistoryMessage`→`KeepMessage`（design.md はまだ旧名）、
+    環境変数 `CHAT_INTEGRATION_KEY_ENCRYPTION_KEY_GENERATION` が決定表に無い。
+  - **`isDuplicateKeyError` 相当の判定が5か所に同じ形で重複している**
+    （要件7.4の「同時に同じ鍵を登録しようとしても壊れない」を実現する判定）。
+    1ファイルに集約する価値がある。
+  - **`ProxyClient` の呼び出し全般に打ち切り時間が無い**（元からある性質）。
+    task 9.3 で保存時の宛先選択が「編集画面を開くたびに」呼ぶようになったため、
+    影響範囲が広がった。
+  - **umbrella spec 側の記録が必要**: 初回検証で見つかった「固定リンク展開が
+    非公開ページの実際のパスを認可されていないチャンネルへ出しうる」という所見
+    （要件6.2/6.3に対する amend spec が必要、という判断込み）が、
+    umbrella `chat-integration` の requirements/design/brief/research/roadmap の
+    どこにも記録されていない。**この spec の範囲外の書き込みなので、
+    ユーザーに別途確認すること。**
