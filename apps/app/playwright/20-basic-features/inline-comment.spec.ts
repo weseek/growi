@@ -2124,6 +2124,191 @@ test.describe('Inline comment - hover/click/tap on a saved body highlight opens 
   });
 });
 
+test.describe('Inline comment - hover-to-popover transit and popover-lock timing (Req 1.1-1.7); resolve from the popover and click-path regression (Req 2.3, 2.4, 2.6)', () => {
+  // Serial: every test in this suite reuses the one saved comment created by
+  // the first test (same reasoning the other suites in this file use). The
+  // resolve test is placed last because it's the only one that mutates the
+  // comment's resolved state, so it can't run before the others without
+  // affecting their expectations.
+  test.describe.configure({ mode: 'serial' });
+
+  const popoverRefinementPagePath = (retry: number) =>
+    `/inline-comment-e2e-popover-refinement${retry}`;
+
+  const targetSentence =
+    'This sentence anchors the popover-refinement end-to-end test.';
+  const introText =
+    'Some intro text before the target, used as a neutral point.';
+  const pageBody = [
+    '# Inline comment E2E - popover refinement',
+    '',
+    introText,
+    '',
+    targetSentence,
+    '',
+    'Some trailing text after the target.',
+    '',
+  ].join('\n');
+
+  let createdPage: CreatedPage | undefined;
+
+  test.afterAll(async ({ request }) => {
+    if (createdPage != null) {
+      await deletePagesCompletely(request, [createdPage]);
+    }
+  });
+
+  const commentText = 'a comment surfaced through the refined body popover';
+
+  test('Create a page and save an inline comment on the target sentence', async ({
+    page,
+    request,
+  }, testInfo) => {
+    createdPage = await createPage(request, {
+      path: popoverRefinementPagePath(testInfo.retry),
+      body: pageBody,
+    });
+
+    await page.goto(createdPage.path);
+    await expect(page.locator('.wiki').first()).toContainText(targetSentence);
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    await selectTextInPageBody(page, targetSentence);
+    await page.getByTestId('selection-action-button').click();
+    const form = page.getByTestId('inline-comment-form');
+    await expect(form).toBeVisible();
+
+    await form.locator('.cm-content').fill(commentText);
+    await form.getByTestId('inline-comment-submit-button').click();
+    await expect(form).not.toBeVisible();
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+    await expect(item).toContainText(commentText);
+
+    // The saved highlight (and therefore its hit-testable Range) is only
+    // registered once AnchorResolver resolves the just-created anchor -- same
+    // poll pattern used throughout this file.
+    await expect
+      .poll(async () =>
+        page.evaluate(
+          () => CSS.highlights.get('growi-inline-comment')?.size ?? 0,
+        ),
+      )
+      .toBeGreaterThan(0);
+  });
+
+  test('Req 1.1-1.5: moving the pointer from the highlight, through the gap, and onto the popover keeps it visible throughout, and once landed it stays open even after the pointer leaves entirely', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(popoverRefinementPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    const popover = page.getByTestId('inline-comment-preview-popover');
+    await expect(popover).not.toBeVisible();
+
+    const highlightPoint = await centerOfText(page, targetSentence);
+    await page.mouse.move(highlightPoint.x, highlightPoint.y);
+
+    // Req 1.1: appears after the show delay -- the default expect timeout
+    // comfortably covers the 150ms delay, so no fixed wait is needed here.
+    await expect(popover).toBeVisible();
+
+    const popoverBox = await popover.boundingBox();
+    if (popoverBox == null) {
+      throw new Error('popover has no bounding box');
+    }
+    const popoverCenter = {
+      x: popoverBox.x + popoverBox.width / 2,
+      y: popoverBox.y + popoverBox.height / 2,
+    };
+    const midpoint = {
+      x: (highlightPoint.x + popoverCenter.x) / 2,
+      y: (highlightPoint.y + popoverCenter.y) / 2,
+    };
+
+    // Req 1.2/1.3: a real multi-step transit (not an instant jump / a plain
+    // `.hover()`) through the gap between the highlight and the popover --
+    // this is the exact regression this spec fixes. A single instant jump
+    // would never actually pass through the gap, where the hit test used to
+    // report "no hit" and close the popover before the pointer arrived.
+    await page.mouse.move(midpoint.x, midpoint.y, { steps: 10 });
+    // Still visible mid-transit, before reaching the popover -- proven by
+    // the hide-delay grace period (Req 1.2/1.3), not by luck.
+    await expect(popover).toBeVisible();
+
+    await page.mouse.move(popoverCenter.x, popoverCenter.y, { steps: 10 });
+    await expect(popover).toBeVisible();
+
+    // Req 1.4/1.5: the pointer has now entered the popover's own DOM, which
+    // promotes it to the same "pinned" state a click uses. Moving away
+    // entirely (off both the highlight and the popover) must not close it.
+    await hoverText(page, introText);
+
+    // Deliberate real-time wait: proving nothing auto-closes the popover
+    // requires observing that it stays visible across a window longer than
+    // both the show delay (150ms) and the hide delay (250ms) combined --
+    // there is no assertion-based substitute for "this stays true for at
+    // least N ms".
+    await page.waitForTimeout(500);
+    await expect(popover).toBeVisible();
+
+    // Sanity check: the popover can still be closed at all, via an explicit
+    // outside click (Req 1.5's "until an explicit close").
+    await clickText(page, introText);
+    await expect(popover).not.toBeVisible();
+  });
+
+  test('Req 1.6, 1.7: clicking the highlight still opens the popover immediately, with no visible delay, and it stays open with no further interaction', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(popoverRefinementPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    const popover = page.getByTestId('inline-comment-preview-popover');
+    await expect(popover).not.toBeVisible();
+
+    await clickText(page, targetSentence);
+
+    // A short explicit timeout, well under the 150ms hover show-delay, proves
+    // the click path genuinely bypasses that debounce rather than merely
+    // happening to resolve within the default 5s expect timeout.
+    await expect(popover).toBeVisible({ timeout: 100 });
+    await expect(popover).toContainText(commentText);
+
+    // No further interaction (no hover, no pointer move) -- confirms no
+    // accidental auto-hide behavior leaked into the click path.
+    await page.waitForTimeout(500);
+    await expect(popover).toBeVisible();
+  });
+
+  test('Req 2.3, 2.4, 2.6: resolving the comment from the popover updates the badge shown in the bottom-of-page list for the same comment', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(popoverRefinementPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    const popover = page.getByTestId('inline-comment-preview-popover');
+    await clickText(page, targetSentence);
+    await expect(popover).toBeVisible();
+
+    const popoverStatus = popover.getByTestId('inline-comment-status');
+    await expect(popoverStatus).toHaveText('Unresolved');
+
+    await popover.getByRole('button', { name: 'Resolve' }).click();
+    await expect(popoverStatus).toHaveText('Resolved');
+
+    // Cross-surface consistency: the same comment's badge in the
+    // bottom-of-page list (`InlineCommentItem.tsx`, a structurally different
+    // component from the popover) must reflect the same resolved state --
+    // proving the resolve reaches the shared SWR source of truth, not just
+    // the popover's own local state.
+    const item = page.getByTestId('inline-comment-item').first();
+    const itemStatus = item.getByTestId('inline-comment-status');
+    await expect(itemStatus).toHaveText('Resolved');
+  });
+});
+
 test.describe('Inline comment - a re-anchor-failed comment never surfaces a body popover (Req 2.6)', () => {
   // Serial: the second test depends on the comment created by the first, and
   // deliberately breaks that same comment's anchor -- the same reasoning the
