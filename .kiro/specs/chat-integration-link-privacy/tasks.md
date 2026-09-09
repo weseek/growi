@@ -10,7 +10,7 @@
 ---
 
 - [ ] 1. 固定リンクの応答を、契約を変えずに閉じる
-- [ ] 1.1 resolvePageFromUrl が固定リンクかどうかを判定結果に含めて返す
+- [x] 1.1 resolvePageFromUrl が固定リンクかどうかを判定結果に含めて返す
   - 既存の24桁16進判定（`PAGE_ID_PATTERN`）をそのまま使い、返り値に `isPermalink` を追加する
   - 見つからない場合も `isPermalink` を含んだ結果を返す（トップレベルの `null` は不正なURL、つまり pathname を取り出せなかったときだけ）
   - 固定リンクの解決結果に `isPermalink: true` が含まれ、パス形式の解決結果には `isPermalink: false` が含まれることが試験で示される

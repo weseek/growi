@@ -28,7 +28,7 @@ import { ChatAccountLinkOrder } from '../account-link/models/chat-account-link-o
 import { buildHelpContent } from '../content';
 import { ChatProcessedRequest } from '../models/chat-processed-request';
 import { ChatChannelPermission } from '../settings/models/chat-channel-permission';
-import { createCommandEndpoint } from './command-endpoint';
+import { createCommandEndpoint, resolvePageFromUrl } from './command-endpoint';
 import * as resolveActorModule from './resolve-actor';
 
 vi.mock('./resolve-actor', async (importOriginal) => {
@@ -581,6 +581,64 @@ describe('createCommandEndpoint (task 5.1)', () => {
       );
 
       expect(response.kind).toBe('error');
+    });
+  });
+
+  describe('resolvePageFromUrl -- permalink detection (Requirement 6.6, 6.8)', () => {
+    it('marks a 24-hex-char permalink URL as isPermalink: true when the page is found', async () => {
+      const page = await createPageWithRevision({
+        path: '/permalink-target',
+        grant: PageGrant.GRANT_PUBLIC,
+      });
+
+      const target = await resolvePageFromUrl(
+        `https://growi.example.test/${page._id.toString()}`,
+      );
+
+      expect(target).not.toBeNull();
+      expect(target?.isPermalink).toBe(true);
+      expect(target?.page).not.toBeNull();
+    });
+
+    it('marks a 24-hex-char permalink URL as isPermalink: true even when no page matches it', async () => {
+      const target = await resolvePageFromUrl(
+        'https://growi.example.test/60f1a2b3c4d5e6f7a8b9c0d1',
+      );
+
+      expect(target).not.toBeNull();
+      expect(target?.isPermalink).toBe(true);
+      expect(target?.page).toBeNull();
+    });
+
+    it('marks a path-form URL as isPermalink: false when the page is found', async () => {
+      await createPageWithRevision({
+        path: '/path-target',
+        grant: PageGrant.GRANT_PUBLIC,
+      });
+
+      const target = await resolvePageFromUrl(
+        'https://growi.example.test/path-target',
+      );
+
+      expect(target).not.toBeNull();
+      expect(target?.isPermalink).toBe(false);
+      expect(target?.page).not.toBeNull();
+    });
+
+    it('marks a path-form URL as isPermalink: false when no page matches it', async () => {
+      const target = await resolvePageFromUrl(
+        'https://growi.example.test/does-not-exist',
+      );
+
+      expect(target).not.toBeNull();
+      expect(target?.isPermalink).toBe(false);
+      expect(target?.page).toBeNull();
+    });
+
+    it('returns top-level null only when the pathname cannot be extracted (invalid URL)', async () => {
+      const target = await resolvePageFromUrl('not a url');
+
+      expect(target).toBeNull();
     });
   });
 

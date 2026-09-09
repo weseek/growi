@@ -309,9 +309,33 @@ interface ResolvedLinkPreviewPage {
   readonly commentCount: number;
 }
 
-const resolvePageFromUrl = async (
+/**
+ * `resolvePageFromUrl`'s result once a pathname could be extracted from the
+ * pasted URL (design.md's `ResolvedUrlTarget`). `isPermalink` travels
+ * alongside `page` -- rather than being re-derived later from `page` alone
+ * -- so that a "not found" result still carries whether the URL was a
+ * permalink (Requirement 6.8: an unresolvable permalink must be
+ * indistinguishable from a resolved-but-private one).
+ */
+export interface ResolvedUrlTarget {
+  /** Whether the trailing URL segment was a 24-hex-char permalink identifier, rather than a path. */
+  readonly isPermalink: boolean;
+  /** The resolved page, or null if no page matched. */
+  readonly page: ResolvedLinkPreviewPage | null;
+}
+
+/**
+ * Resolves a pasted GROWI URL to a page, keeping no view-permission filter
+ * (design.md: authorization is decided later, by `buildLinkPreview`).
+ *
+ * Returns a top-level `null` ONLY when `pageUrl`'s pathname cannot be
+ * extracted (an invalid URL) -- that path is unchanged from before this
+ * function grew `isPermalink`. Once a pathname is extracted, this always
+ * returns a `ResolvedUrlTarget`, even when no page matches (`page: null`).
+ */
+export const resolvePageFromUrl = async (
   pageUrl: string,
-): Promise<ResolvedLinkPreviewPage | null> => {
+): Promise<ResolvedUrlTarget | null> => {
   let pathname: string;
   try {
     pathname = decodeURIComponent(new URL(pageUrl).pathname);
@@ -320,24 +344,26 @@ const resolvePageFromUrl = async (
   }
 
   const maybeId = pathname.startsWith('/') ? pathname.slice(1) : pathname;
-  const query = PAGE_ID_PATTERN.test(maybeId)
-    ? { _id: maybeId }
-    : { path: pathname };
+  const isPermalink = PAGE_ID_PATTERN.test(maybeId);
+  const query = isPermalink ? { _id: maybeId } : { path: pathname };
 
   const Page = mongoose.model<PageDocument>('Page');
   const page = await Page.findOne(query).populate('revision').lean();
   if (page == null) {
-    return null;
+    return { isPermalink, page: null };
   }
 
   const revision = page.revision as { body?: string } | null | undefined;
 
   return {
-    path: page.path,
-    grant: page.grant,
-    body: revision?.body ?? '',
-    updatedAt: page.updatedAt,
-    commentCount: page.commentCount,
+    isPermalink,
+    page: {
+      path: page.path,
+      grant: page.grant,
+      body: revision?.body ?? '',
+      updatedAt: page.updatedAt,
+      commentCount: page.commentCount,
+    },
   };
 };
 
@@ -345,8 +371,12 @@ const handleLinkPreview = async (
   request: Extract<CommandRequest, { kind: typeof COMMAND_NAMES.linkPreview }>,
   crowi: Crowi,
 ): Promise<CommandResponse> => {
-  const page = await resolvePageFromUrl(request.pageUrl);
-  if (page == null) {
+  // TODO(task 1.2/2): `buildLinkPreview` still only accepts a resolved page,
+  // not the full `ResolvedUrlTarget` -- this minimal `.page` extraction keeps
+  // the file compiling for task 1.1's boundary (resolvePageFromUrl only) and
+  // will be replaced once buildLinkPreview grows a permalink-aware branch.
+  const target = await resolvePageFromUrl(request.pageUrl);
+  if (target?.page == null) {
     return errorResponse(
       'invalid',
       'This URL does not match any page on this GROWI.',
@@ -354,7 +384,7 @@ const handleLinkPreview = async (
   }
 
   const preview = buildLinkPreview(
-    page,
+    target.page,
     crowi.aclService.isGuestAllowedToRead(),
   );
   return { kind: RESPONSE_KINDS.linkPreview, ...preview };
