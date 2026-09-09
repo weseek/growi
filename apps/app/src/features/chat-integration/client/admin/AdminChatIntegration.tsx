@@ -11,6 +11,11 @@
 // that fails is reported as a SAVE THAT SUCCEEDED, because it is one -- the
 // proxy fetches the settings itself through `settings-pull`.
 //
+// An active relation also offers the disconnect (Requirement 9.7) -- see
+// `UnpairButton`; it is the only place in the product from which a relation
+// can be marked `unpaired`, which the 90-day sweep and a re-pairing's
+// account-link inheritance both depend on.
+//
 // Follows this feature's own client convention (see `MyChatAccountLinks.tsx`
 // and `AccountLinkApproval.tsx`): plain hooks + `~/client/util/apiv3-client`
 // directly, no `~/stores/*` entry, English-first UI text (translation is a
@@ -422,11 +427,98 @@ const ChannelPermissionsSection = ({
   );
 };
 
+// ============================================================================
+// Disconnecting a workspace (Requirement 9.7)
+// ============================================================================
+
+/**
+ * The "disconnect this workspace" control -- the only way an administrator
+ * can reach `unpairRelation`, which deletes this relation's keys, channel
+ * permissions and notification destinations and marks the relation
+ * `unpaired`.
+ *
+ * The confirmation is a second click on this same row rather than
+ * `window.confirm`: it is the one destructive action on this screen, and an
+ * accidental click on it cannot be undone from here (re-pairing needs a
+ * fresh registration code from the proxy).
+ */
+const UnpairButton = ({
+  relationId,
+  onUnpaired,
+}: {
+  relationId: string;
+  onUnpaired: () => void;
+}): JSX.Element => {
+  const [isConfirming, setIsConfirming] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleAsk = useCallback(() => setIsConfirming(true), []);
+  const handleCancel = useCallback(() => setIsConfirming(false), []);
+
+  const handleConfirm = useCallback(async () => {
+    setIsSubmitting(true);
+    try {
+      await apiv3Post(
+        `/chat-integration/admin/relations/${relationId}/unpair`,
+        {},
+      );
+      toastSuccess(
+        'Disconnected. This workspace’s keys, channel permissions and notification destinations have been removed.',
+      );
+      setIsConfirming(false);
+      onUnpaired();
+    } catch (err) {
+      toastError(err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [onUnpaired, relationId]);
+
+  if (!isConfirming) {
+    return (
+      <button
+        type="button"
+        className="btn btn-outline-danger btn-sm"
+        onClick={handleAsk}
+      >
+        Disconnect
+      </button>
+    );
+  }
+
+  return (
+    <div data-testid="grw-chat-integration-unpair-confirm">
+      <p className="text-danger mb-2">
+        Disconnecting removes this workspace’s keys, channel permissions and
+        notification destinations. Reconnecting needs a new registration code.
+      </p>
+      <button
+        type="button"
+        className="btn btn-danger btn-sm me-2"
+        onClick={handleConfirm}
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? 'Disconnecting…' : 'Yes, disconnect'}
+      </button>
+      <button
+        type="button"
+        className="btn btn-outline-secondary btn-sm"
+        onClick={handleCancel}
+        disabled={isSubmitting}
+      >
+        Cancel
+      </button>
+    </div>
+  );
+};
+
 /** One relation's row: static info plus, for an active relation, live capabilities + connection status. */
 const RelationRow = ({
   relation,
+  onUnpaired,
 }: {
   relation: AdminRelationListItem;
+  onUnpaired: () => void;
 }): JSX.Element => {
   const isActive = relation.state === 'active';
 
@@ -496,6 +588,15 @@ const RelationRow = ({
 
       {isActive && (
         <NotificationDestinationsSection relationId={relation.relationId} />
+      )}
+
+      {isActive && (
+        <div className="mt-3 pt-3 border-top">
+          <UnpairButton
+            relationId={relation.relationId}
+            onUnpaired={onUnpaired}
+          />
+        </div>
       )}
     </div>
   );
@@ -688,7 +789,9 @@ export const AdminChatIntegration = (): JSX.Element => {
     fetchRelations,
   );
 
-  const handlePaired = useCallback(() => {
+  // A pairing and an unpairing both change what the relation list says, so
+  // both re-read it rather than patching the cached list locally.
+  const handleRelationsChanged = useCallback(() => {
     mutateRelations();
   }, [mutateRelations]);
 
@@ -696,7 +799,7 @@ export const AdminChatIntegration = (): JSX.Element => {
     <div data-testid="grw-chat-integration-admin">
       <PairingSection
         encryptionConfigured={encryptionStatus?.configured ?? false}
-        onPaired={handlePaired}
+        onPaired={handleRelationsChanged}
       />
 
       <div>
@@ -706,7 +809,11 @@ export const AdminChatIntegration = (): JSX.Element => {
           <p>No workspace has been paired yet.</p>
         )}
         {relations?.map((relation) => (
-          <RelationRow key={relation.relationId} relation={relation} />
+          <RelationRow
+            key={relation.relationId}
+            relation={relation}
+            onUnpaired={handleRelationsChanged}
+          />
         ))}
       </div>
     </div>

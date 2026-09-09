@@ -1,8 +1,19 @@
 import { mock } from 'vitest-mock-extended';
 
-const { dispatchAll, createGen2NotificationDispatcher } = vi.hoisted(() => ({
-  dispatchAll: vi.fn().mockResolvedValue([]),
-  createGen2NotificationDispatcher: vi.fn().mockReturnValue(vi.fn()),
+const { dispatchAll, createGen2NotificationDispatcher, loggerError } =
+  vi.hoisted(() => ({
+    dispatchAll: vi.fn().mockResolvedValue([]),
+    createGen2NotificationDispatcher: vi.fn().mockReturnValue(vi.fn()),
+    loggerError: vi.fn(),
+  }));
+
+vi.mock('~/utils/logger', () => ({
+  default: () => ({
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: loggerError,
+  }),
 }));
 
 vi.mock('~/features/chat-integration/server/notification', () => ({
@@ -163,6 +174,53 @@ describe('UserNotificationService.fire', () => {
     expect(page.updateSlackChannels).toHaveBeenCalledWith('general,dev');
     expect(postMessage).toHaveBeenCalledTimes(2);
     expect(results).toHaveLength(2);
+  });
+
+  it('logs a failed Gen 2 destination outcome with identifying detail, and does NOT log the destination that dispatched fine (dispatchAll result is not silently discarded)', async () => {
+    const okDestination = {
+      relationId: 'rel-ok',
+      platform: 'slack',
+      channelId: 'C-OK',
+    };
+    const failedDestination = {
+      relationId: 'rel-1',
+      platform: 'slack',
+      channelId: 'C1',
+    };
+    const gen2Destinations = [okDestination, failedDestination];
+    dispatchAll.mockResolvedValue([
+      { destination: okDestination, outcome: 'dispatched' },
+      { destination: failedDestination, outcome: 'failed' },
+    ]);
+    const crowi = mock<Crowi>({
+      appService: { getAppTitle: () => 'GROWI' },
+      slackIntegrationService: { isSlackConfigured: false },
+    });
+    const service = new UserNotificationService(crowi);
+    const page = { path: '/a', grant: 1, updateSlackChannels: vi.fn() };
+
+    await service.fire(
+      page,
+      user,
+      '',
+      'create',
+      undefined,
+      {},
+      gen2Destinations,
+      false,
+    );
+
+    // Exactly one log call -- proves the guard actually discriminates
+    // outcome, rather than logging every dispatched destination.
+    expect(loggerError).toHaveBeenCalledTimes(1);
+    expect(loggerError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        relationId: 'rel-1',
+        platform: 'slack',
+        channelId: 'C1',
+      }),
+      expect.stringContaining('failed'),
+    );
   });
 
   it('a Gen 2 dispatch failure does not prevent Gen 1 from still sending (independence)', async () => {

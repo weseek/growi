@@ -11,12 +11,23 @@ const {
   findGen2DestinationsForPathAndEvent,
   createGen2NotificationDispatcher,
   dispatchAll,
+  loggerError,
 } = vi.hoisted(() => ({
   mailFire: vi.fn().mockResolvedValue(undefined),
   slackFire: vi.fn().mockResolvedValue(undefined),
   findGen2DestinationsForPathAndEvent: vi.fn().mockResolvedValue([]),
   createGen2NotificationDispatcher: vi.fn().mockReturnValue(vi.fn()),
   dispatchAll: vi.fn().mockResolvedValue([]),
+  loggerError: vi.fn(),
+}));
+
+vi.mock('~/utils/logger', () => ({
+  default: () => ({
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: loggerError,
+  }),
 }));
 
 vi.mock('./global-notification-mail', () => ({
@@ -118,6 +129,94 @@ describe('GlobalNotificationService.fire', () => {
     expect(slackFire).toHaveBeenCalled();
     expect(createGen2NotificationDispatcher).not.toHaveBeenCalled();
     expect(dispatchAll).not.toHaveBeenCalled();
+  });
+
+  it('still fires Gen 2 for a non-public page -- with the body withheld -- while Gen 1 stays silent (Requirement 2.3)', async () => {
+    const restrictedPage = mock<PageDocument>({
+      path: '/a/b/c',
+      grant: PageGrant.GRANT_RESTRICTED,
+      id: 'page-id',
+    });
+    const gen2Destinations = [
+      { relationId: 'rel-1', platform: 'slack', channelId: 'C1' },
+    ];
+    findGen2DestinationsForPathAndEvent.mockResolvedValue(gen2Destinations);
+
+    const crowi = mock<Crowi>();
+    const service = new GlobalNotificationService(crowi);
+
+    await service.fire('pageCreate', restrictedPage, triggeredBy);
+
+    // Gen 2 fires, and the restriction flag reaches the dispatcher so the
+    // outbox entry records that the body was withheld (Requirement 2.4).
+    expect(createGen2NotificationDispatcher).toHaveBeenCalledWith(
+      expect.any(String),
+      true,
+    );
+    expect(dispatchAll).toHaveBeenCalledWith(
+      gen2Destinations,
+      expect.any(Function),
+    );
+    // Gen 1's own early return for a non-public page is unchanged.
+    expect(mailFire).not.toHaveBeenCalled();
+    expect(slackFire).not.toHaveBeenCalled();
+  });
+
+  it("still fires Gen 2 when Gen 1's mail send throws (Requirement 12.3)", async () => {
+    findGen2DestinationsForPathAndEvent.mockResolvedValue([
+      { relationId: 'rel-1', platform: 'slack', channelId: 'C1' },
+    ]);
+    // Once: `vi.clearAllMocks()` does not restore an implementation, so a
+    // persistent rejection here would leak into the following tests.
+    mailFire.mockRejectedValueOnce(new Error('smtp down'));
+
+    const crowi = mock<Crowi>();
+    const service = new GlobalNotificationService(crowi);
+
+    // Gen 1's own failure propagation is intentionally left as it was.
+    await expect(service.fire('pageCreate', page, triggeredBy)).rejects.toThrow(
+      'smtp down',
+    );
+
+    expect(dispatchAll).toHaveBeenCalled();
+  });
+
+  it('logs a failed Gen 2 destination outcome with identifying detail, and does NOT log the destination that dispatched fine (dispatchAll result is not silently discarded)', async () => {
+    const okDestination = {
+      relationId: 'rel-ok',
+      platform: 'slack',
+      channelId: 'C-OK',
+    };
+    const failedDestination = {
+      relationId: 'rel-1',
+      platform: 'slack',
+      channelId: 'C1',
+    };
+    findGen2DestinationsForPathAndEvent.mockResolvedValue([
+      okDestination,
+      failedDestination,
+    ]);
+    dispatchAll.mockResolvedValue([
+      { destination: okDestination, outcome: 'dispatched' },
+      { destination: failedDestination, outcome: 'failed' },
+    ]);
+
+    const crowi = mock<Crowi>();
+    const service = new GlobalNotificationService(crowi);
+
+    await service.fire('pageCreate', page, triggeredBy);
+
+    // Exactly one log call -- proves the guard actually discriminates
+    // outcome, rather than logging every dispatched destination.
+    expect(loggerError).toHaveBeenCalledTimes(1);
+    expect(loggerError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        relationId: 'rel-1',
+        platform: 'slack',
+        channelId: 'C1',
+      }),
+      expect.stringContaining('failed'),
+    );
   });
 
   it('does not let a Gen 2 dispatch failure reject fire() after Gen 1 already sent', async () => {

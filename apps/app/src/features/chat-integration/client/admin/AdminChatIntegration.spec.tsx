@@ -8,6 +8,8 @@
 //   - the encryption-key-unconfigured state disables pairing and shows why
 //   - submitting the pairing form calls the pairing endpoint with the
 //     entered fields
+//   - an active relation offers a disconnect (Requirement 9.7) that asks for
+//     confirmation, calls the unpair endpoint, and re-reads the relation list
 
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -507,6 +509,88 @@ describe('AdminChatIntegration', () => {
       // ...but there is no way to pick a channel that was never confirmed.
       expect(
         screen.queryByTestId('grw-chat-integration-destination-form'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('disconnecting a workspace (Requirement 9.7)', () => {
+    it('asks for confirmation first, and posts nothing until it is given', async () => {
+      // Disconnecting deletes this relation's keys, channel permissions and
+      // notification destinations, so a single stray click must not do it.
+      stubApi({ relations: [ACTIVE_RELATION] });
+      const user = userEvent.setup();
+
+      renderScreen();
+
+      await user.click(
+        await screen.findByRole('button', { name: /disconnect/i }),
+      );
+      expect(mocks.apiv3Post).not.toHaveBeenCalled();
+
+      await user.click(screen.getByRole('button', { name: /cancel/i }));
+
+      expect(mocks.apiv3Post).not.toHaveBeenCalled();
+    });
+
+    it('unpairs the relation through the admin endpoint once confirmed, then reloads the list', async () => {
+      stubApi({ relations: [ACTIVE_RELATION] });
+      mocks.apiv3Post.mockResolvedValue({ data: { status: 'unpaired' } });
+      const user = userEvent.setup();
+
+      renderScreen();
+
+      await user.click(
+        await screen.findByRole('button', { name: /disconnect/i }),
+      );
+      await user.click(
+        screen.getByRole('button', { name: /yes, disconnect/i }),
+      );
+
+      await waitFor(() => {
+        expect(mocks.apiv3Post).toHaveBeenCalledWith(
+          `/chat-integration/admin/relations/${ACTIVE_RELATION.relationId}/unpair`,
+          {},
+        );
+      });
+      expect(mocks.toastSuccess).toHaveBeenCalled();
+      // The list has to be re-read: the row's state is what the screen shows
+      // the operator, and it has just changed on the server.
+      await waitFor(() => {
+        const listCalls = mocks.apiv3Get.mock.calls.filter(
+          ([url]) => url === '/chat-integration/admin/relations',
+        );
+        expect(listCalls.length).toBeGreaterThan(1);
+      });
+    });
+
+    it('reports a failed disconnect as an error rather than a success', async () => {
+      stubApi({ relations: [ACTIVE_RELATION] });
+      mocks.apiv3Post.mockRejectedValue(new Error('relation not found'));
+      const user = userEvent.setup();
+
+      renderScreen();
+
+      await user.click(
+        await screen.findByRole('button', { name: /disconnect/i }),
+      );
+      await user.click(
+        screen.getByRole('button', { name: /yes, disconnect/i }),
+      );
+
+      await waitFor(() => {
+        expect(mocks.toastError).toHaveBeenCalled();
+      });
+      expect(mocks.toastSuccess).not.toHaveBeenCalled();
+    });
+
+    it('does not offer a disconnect for a relation that is already unpaired', async () => {
+      stubApi({ relations: [UNPAIRED_RELATION] });
+
+      renderScreen();
+
+      expect(await screen.findByText('Old label')).toBeInTheDocument();
+      expect(
+        screen.queryByRole('button', { name: /disconnect/i }),
       ).not.toBeInTheDocument();
     });
   });

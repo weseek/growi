@@ -86,9 +86,26 @@ export class UserNotificationService {
         });
 
         const registry = new DestinationRegistry(gen2Destinations);
-        await registry.dispatchAll(
+        const gen2Results = await registry.dispatchAll(
           createGen2NotificationDispatcher(markdown, containsRestrictedPage),
         );
+        // `dispatchAll` swallows each destination's own exception (so one bad
+        // destination cannot stop the others) and reports it as a 'failed'
+        // outcome instead of rethrowing -- without this loop, a failure here
+        // (e.g. the outbox write itself failing) would leave no outbox row AND
+        // no log line, making the notification vanish with no trace anywhere.
+        for (const gen2Result of gen2Results) {
+          if (gen2Result.outcome === 'failed') {
+            logger.error(
+              {
+                relationId: gen2Result.destination.relationId,
+                platform: gen2Result.destination.platform,
+                channelId: gen2Result.destination.channelId,
+              },
+              'Gen 2 destination dispatch failed',
+            );
+          }
+        }
       } catch (err) {
         logger.error('Gen 2 user notification dispatch failed', err);
       }

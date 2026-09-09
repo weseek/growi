@@ -15,6 +15,7 @@ import qs from 'qs';
 import { resolveFromRoot } from '~/server/util/project-dir-utils';
 
 import { CHAT_INTEGRATION_PEER_PREFIX } from '../../features/chat-integration/server/consts';
+import { isChatIntegrationPeerPath } from '../../features/chat-integration/server/is-peer-path';
 import {
   PLUGIN_EXPRESS_STATIC_DIR,
   PLUGIN_STORING_PATH,
@@ -39,14 +40,6 @@ export const setup = (crowi, app) => {
   const autoReconnectToS2sMsgServer = setupAutoReconnectToS2sMsgServer(crowi);
 
   const env = crowi.node_env;
-
-  // Segment-aware on purpose, matching both `app.use(CHAT_INTEGRATION_PEER_PREFIX, ...)`
-  // below and the entry in `routes/avoid-session-routes.js`: the bare prefix
-  // and anything below it are proxy-facing, a similar-looking sibling such as
-  // `/peering` is not.
-  const isChatIntegrationPeerRequest = (req) =>
-    req.path === CHAT_INTEGRATION_PEER_PREFIX ||
-    req.path.startsWith(`${CHAT_INTEGRATION_PEER_PREFIX}/`);
 
   // see: https://qiita.com/nazomikan/items/9458d591a4831480098d
   // Cannot set a custom query parser after app.use() has been called: https://github.com/expressjs/express/issues/3454
@@ -143,8 +136,8 @@ export const setup = (crowi, app) => {
   const sessionMiddleware = expressSession(crowi.sessionConfig);
   app.use((req, res, next) => {
     // test whether the route is listed in avoidSessionRoutes
-    for (const regex of avoidSessionRoutes) {
-      if (regex.test(req.path)) {
+    for (const matchesAvoidSessionRoute of avoidSessionRoutes) {
+      if (matchesAvoidSessionRoute(req.path)) {
         return next();
       }
     }
@@ -163,7 +156,9 @@ export const setup = (crowi, app) => {
     cookie: false,
   });
   app.use((req, res, next) =>
-    isChatIntegrationPeerRequest(req) ? next() : csrfProtection(req, res, next),
+    isChatIntegrationPeerPath(req.path)
+      ? next()
+      : csrfProtection(req, res, next),
   );
 
   app.use('/_api', CertifyOrigin);
@@ -177,7 +172,7 @@ export const setup = (crowi, app) => {
   // the signature-verified payload.
   const passportSession = passport.session();
   app.use((req, res, next) =>
-    isChatIntegrationPeerRequest(req)
+    isChatIntegrationPeerPath(req.path)
       ? next()
       : passportSession(req, res, next),
   );
@@ -193,7 +188,7 @@ export const setup = (crowi, app) => {
   // way to exempt a path is to wrap it.
   const sanitizer = mongoSanitize();
   app.use((req, res, next) =>
-    isChatIntegrationPeerRequest(req) ? next() : sanitizer(req, res, next),
+    isChatIntegrationPeerPath(req.path) ? next() : sanitizer(req, res, next),
   );
 
   app.use(registerSafeRedirect);

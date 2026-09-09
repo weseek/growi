@@ -93,6 +93,7 @@ const buildApp = (): Harness => {
   //    (`/peering`), which must NOT be treated as proxy-facing.
   app.post(CHAT_INTEGRATION_PEER_PREFIX, record);
   app.post(`${CHAT_INTEGRATION_PEER_PREFIX}/notification`, record);
+  app.post(`${CHAT_INTEGRATION_PEER_PREFIX}/command`, record);
   app.post('/_api/v3/chat-integration/settings', record);
   app.post(`${CHAT_INTEGRATION_PEER_PREFIX}ing/oops`, record);
 
@@ -136,6 +137,21 @@ describe('express-init setup()', () => {
       await request(app)
         .post(`${CHAT_INTEGRATION_PEER_PREFIX}/notification`)
         .set('content-type', 'application/json; charset=utf-8')
+        .send(sentText)
+        .expect(204);
+
+      expect(Buffer.isBuffer(received.body)).toBe(true);
+      expect((received.body as Buffer).equals(sentBytes)).toBe(true);
+    });
+
+    it('delivers the exact bytes when the path is spelled in another case, which the router accepts too', async () => {
+      const sentText = buildMultibyteJsonText();
+      const sentBytes = Buffer.from(sentText, 'utf8');
+      const { app, received } = buildApp();
+
+      await request(app)
+        .post('/_API/V3/CHAT-INTEGRATION/PEER/COMMAND')
+        .set('content-type', 'application/json')
         .send(sentText)
         .expect(204);
 
@@ -194,6 +210,24 @@ describe('express-init setup()', () => {
         'a path below the prefix',
         `${CHAT_INTEGRATION_PEER_PREFIX}/notification`,
       ],
+      // Express routes without `case sensitive routing`, so these reach the
+      // very same proxy-facing endpoints. The exclusions have to agree with
+      // the router, or an anonymous caller can pick a casing that skips them
+      // and still be served: the sanitize walk then runs over the raw body it
+      // was built to stay away from, and `saveUninitialized` writes a session
+      // document per request to an endpoint that needs no login at all.
+      [
+        'the bare prefix, upper-cased',
+        CHAT_INTEGRATION_PEER_PREFIX.toUpperCase(),
+      ],
+      [
+        'a path below the prefix, upper-cased',
+        '/_API/V3/CHAT-INTEGRATION/PEER/COMMAND',
+      ],
+      [
+        'a path below the prefix, mixed-cased',
+        '/_api/V3/Chat-Integration/Peer/Command',
+      ],
     ])('%s (%s)', (_label, path) => {
       it('leaves the request untouched by mongo-sanitize', async () => {
         const { app, received } = buildApp();
@@ -230,6 +264,11 @@ describe('express-init setup()', () => {
       [
         'a sibling path that merely starts with the same characters',
         `${CHAT_INTEGRATION_PEER_PREFIX}ing/oops`,
+      ],
+      // Case-insensitivity must not widen the match past a segment boundary.
+      [
+        'that same sibling path, mixed-cased',
+        '/_API/v3/Chat-Integration/PEERing/oops',
       ],
     ])('%s (%s)', (_label, path) => {
       it('is still sanitized', async () => {

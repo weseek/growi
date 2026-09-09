@@ -13,6 +13,11 @@
 //   - a save is refused for a relation that is no longer paired, and a write
 //     that FAILS still answers with a real status code (409 for a concurrent
 //     save, 500 otherwise) rather than leaving the request unanswered
+//   - `POST /relations/:id/unpair` (Requirement 9.7) actually disconnects a
+//     relation THROUGH THE HTTP ROUTE -- the state change and the deletion of
+//     its keys/permissions/destinations are asserted against the database, so
+//     the route being reachable is part of what is proven (calling
+//     `unpairRelation` as a function is not)
 //   - `POST /pairing` forwards to `submitPairingRequest` and relays whatever
 //     outcome it returns, without a second encryption check duplicating
 //     `pairing-service.ts`'s own
@@ -54,6 +59,7 @@ import type Crowi from '~/server/crowi';
 import gen1SlackSettingFactory from '~/server/models/GlobalNotificationSetting/GlobalNotificationSlackSetting';
 import addCustomFunctionToResponse from '~/server/routes/apiv3/response';
 
+import { ChatIntegrationKey } from '../keys/models/chat-integration-key';
 import { ChatNotificationDestination } from '../models/chat-notification-destination';
 import { ChatRelation } from '../models/chat-relation';
 import type { PairingOutcome } from '../pairing/pairing-service';
@@ -193,6 +199,7 @@ describe('admin-router', () => {
     await ChatRelation.deleteMany({});
     await ChatChannelPermission.deleteMany({});
     await ChatNotificationDestination.deleteMany({});
+    await ChatIntegrationKey.deleteMany({});
     await gen1SlackModel().deleteMany({});
     vi.clearAllMocks();
     vi.mocked(proxyClient.pushSettings).mockResolvedValue({
@@ -842,6 +849,153 @@ describe('admin-router', () => {
       expect(readResponse.status).not.toBe(200);
       expect(saveResponse.status).not.toBe(200);
       expect(await ChatNotificationDestination.countDocuments({})).toBe(0);
+    });
+  });
+
+  // Every assertion below goes through the HTTP route, on purpose: this
+  // feature's end-to-end test called `unpairRelation()` as a function, which
+  // is why the missing route went unnoticed -- a green function-level test
+  // says nothing about whether an administrator can reach the operation.
+  describe('POST /relations/:relationId/unpair (Requirement 9.7)', () => {
+    const unpairPath = `${MOUNT_PATH}/relations/${RELATION_ID}/unpair`;
+
+    /**
+     * A `side: 'peer'` key (the proxy's PUBLIC key) rather than an own-side
+     * one: `unpairRelation` deletes by `relationId` regardless of side, and
+     * the own-side schema validator would refuse anything that is not a real
+     * `encryptChatKeyForStorage` envelope -- which needs an encryption key
+     * the test environment deliberately does not configure.
+     */
+    const seedRelationWithEverything = async () => {
+      await seedRelation();
+      await ChatIntegrationKey.create({
+        relationId: RELATION_ID,
+        side: 'peer',
+        keyId: 'peer-key-1',
+        key: '{"kty":"OKP","crv":"Ed25519","x":"not-a-secret"}',
+        validFrom: new Date(),
+        revokedAt: null,
+      });
+      await ChatChannelPermission.create({
+        relationId: RELATION_ID,
+        commandName: 'search',
+        allowedChannels: 'all',
+      });
+      await ChatNotificationDestination.create({
+        relationId: RELATION_ID,
+        platform: 'slack',
+        channelId: 'C0001',
+        channelName: 'general',
+        pathPattern: '/*',
+        triggerEvents: ['pageCreate'],
+      });
+    };
+
+    it('marks the relation unpaired and removes its keys, permissions and destinations', async () => {
+      await seedRelationWithEverything();
+      const app = buildApp(adminUser);
+
+      const response = await request(app).post(unpairPath);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ status: 'unpaired' });
+
+      const relation = await ChatRelation.findOne({
+        relationId: RELATION_ID,
+      }).lean();
+      // The row itself must SURVIVE: `platform`/`workspaceId` are the only
+      // things a later re-pairing recognises the same workspace by, and
+      // `unpairedAt` is what the 90-day sweep and the account-link
+      // inheritance both read.
+      expect(relation?.state).toBe('unpaired');
+      expect(relation?.unpairedAt).toBeInstanceOf(Date);
+      expect(relation?.workspaceId).toBe('workspace-0001');
+
+      expect(
+        await ChatIntegrationKey.countDocuments({ relationId: RELATION_ID }),
+      ).toBe(0);
+      expect(
+        await ChatChannelPermission.countDocuments({
+          relationId: RELATION_ID,
+        }),
+      ).toBe(0);
+      expect(
+        await ChatNotificationDestination.countDocuments({
+          relationId: RELATION_ID,
+        }),
+      ).toBe(0);
+    });
+
+    it('refuses the unpair for a logged-in NON-admin user, leaving the relation active', async () => {
+      await seedRelationWithEverything();
+      const app = buildApp(nonAdminUser);
+
+      const response = await request(app).post(unpairPath);
+
+      // `adminRequired` redirects a logged-in non-admin rather than
+      // answering 403 (matches this router's other admin-only routes).
+      expect(response.status).toBe(302);
+      const relation = await ChatRelation.findOne({
+        relationId: RELATION_ID,
+      }).lean();
+      expect(relation?.state).toBe('active');
+      expect(
+        await ChatIntegrationKey.countDocuments({ relationId: RELATION_ID }),
+      ).toBe(1);
+    });
+
+    it('refuses the unpair without a logged-in session', async () => {
+      await seedRelation();
+      const app = buildApp();
+
+      const response = await request(app).post(unpairPath);
+
+      expect(response.status).toBe(403);
+      const relation = await ChatRelation.findOne({
+        relationId: RELATION_ID,
+      }).lean();
+      expect(relation?.state).toBe('active');
+    });
+
+    it('answers 200 for a relation that is already unpaired, without moving unpairedAt', async () => {
+      // Idempotent rather than an error: the row's state is decided by
+      // `unpairRelation` alone (it filters its own write on `state:
+      // 'active'`), and a second check here would be a second place that
+      // could drift from it. `unpairedAt` must not be pushed forward either
+      // -- the 90-day sweep counts from the FIRST disconnection.
+      await seedRelationWithEverything();
+      const app = buildApp(adminUser);
+
+      const first = await request(app).post(unpairPath);
+      // Backdated on purpose: two POSTs in the same millisecond would write
+      // indistinguishable timestamps, so an unchanged value would prove
+      // nothing. A far-past date is only preserved if the second unpair
+      // really did skip the write.
+      const firstUnpairedAt = new Date('2020-01-01T00:00:00.000Z');
+      await ChatRelation.updateOne(
+        { relationId: RELATION_ID },
+        { $set: { unpairedAt: firstUnpairedAt } },
+      );
+
+      const second = await request(app).post(unpairPath);
+
+      expect(first.status).toBe(200);
+      expect(second.status).toBe(200);
+      const relation = await ChatRelation.findOne({
+        relationId: RELATION_ID,
+      }).lean();
+      expect(relation?.state).toBe('unpaired');
+      expect(relation?.unpairedAt?.getTime()).toBe(firstUnpairedAt.getTime());
+    });
+
+    it('answers 404 for a relation that does not exist', async () => {
+      const app = buildApp(adminUser);
+
+      const response = await request(app).post(
+        `${MOUNT_PATH}/relations/no-such-relation/unpair`,
+      );
+
+      expect(response.status).toBe(404);
     });
   });
 

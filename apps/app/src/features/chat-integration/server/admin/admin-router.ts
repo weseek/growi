@@ -1,9 +1,11 @@
 // Task 9.1's admin screen backend: the receiving end for the 3 things the
 // admin screen has to show (design.md "管理画面と個人設定" -- Requirements
 // 1.3, 1.4, 12.5) plus the write operations it exposes: Requirement 9.1's
-// pairing submission (`submitPairingRequest`, task 7.3) and task 9.2's
+// pairing submission (`submitPairingRequest`, task 7.3), task 9.2's
 // channel-permission settings save (`saveRelationSettings`, Requirements
-// 11.1/11.2/11.4).
+// 11.1/11.2/11.4), and Requirement 9.7's disconnect (`unpairRelation`) --
+// this router is that function's only production caller, see
+// `unpairRelationHandler` below.
 //
 // Every endpoint here requires a real, logged-in GROWI ADMIN
 // (`loginRequiredFactory` + `adminRequiredFactory`) -- same convention as
@@ -43,7 +45,10 @@ import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-respo
 import loggerFactory from '~/utils/logger';
 
 import { describeChatKeyEncryptionConfiguration } from '../keys';
-import { submitPairingRequest } from '../pairing/pairing-service';
+import {
+  submitPairingRequest,
+  unpairRelation,
+} from '../pairing/pairing-service';
 import { fetchCapabilities, fetchConnectionStatus } from '../proxy-client';
 import { readRelationSettings } from '../settings/relation-settings-store';
 import { listRelationsForAdmin } from './admin-service';
@@ -408,6 +413,50 @@ const submitPairingHandler = async (
   res.apiv3(outcome);
 };
 
+/**
+ * `POST /relations/:relationId/unpair` -- disconnects a chat workspace
+ * (Requirement 9.7). This is the ONLY production caller of
+ * `unpairRelation`, and it has to exist for two other pieces of this feature
+ * to have anything to work on at all: the 90-day sweep
+ * (`sweep-unpaired-relations.ts`) looks for `state: 'unpaired'` rows, and a
+ * re-pairing inherits the previous relation's account links from the most
+ * recent `unpaired` row for the same workspace
+ * (`inherit-account-links.ts`). `state: 'unpaired'` is written nowhere else,
+ * so without this route both of them would sit idle forever and an
+ * unpair-then-re-pair would silently lose every user's chat account link.
+ *
+ * `POST .../unpair` rather than `DELETE /relations/:relationId`: the
+ * `chat_relations` row deliberately SURVIVES (design.md: `platform` and
+ * `workspaceId` are the only thing a later re-pairing recognises the same
+ * workspace by), so a method that reads as "remove this relation" would
+ * describe the wrong thing. Deleting the row is the sweep's job.
+ *
+ * `404` only for a relation this GROWI has no row for. A relation that is
+ * ALREADY unpaired answers `200`, unchanged: `unpairRelation` filters its
+ * own state transition on `state: 'active'` and is the single source of
+ * truth for it, so a second state check here would be a second place that
+ * could drift from it (the same reasoning as `submitPairingHandler` above).
+ */
+const unpairRelationHandler = async (
+  req: Request,
+  res: ApiV3Response,
+): Promise<void> => {
+  const { relationId } = req.params;
+  const result = await unpairRelation(relationId);
+
+  if (result === 'not-found') {
+    res.apiv3Err(
+      new ErrorV3(
+        `Relation '${relationId}' is not found`,
+        'relation-not-found',
+      ),
+      404,
+    );
+    return;
+  }
+  res.apiv3({ status: result });
+};
+
 export const createAdminRouter = (crowi: Crowi): Router => {
   const router = express.Router();
   const loginRequiredStrictly = loginRequiredFactory(crowi);
@@ -439,6 +488,10 @@ export const createAdminRouter = (crowi: Crowi): Router => {
     asHandler(saveNotificationDestinationHandler),
   );
   router.post('/pairing', asHandler(submitPairingHandler));
+  router.post(
+    '/relations/:relationId/unpair',
+    asHandler(unpairRelationHandler),
+  );
 
   return router;
 };

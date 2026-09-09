@@ -631,3 +631,38 @@
     3 ファイル・30 件が安定して通ることを複数回確認済み。**コードの不具合ではない**が、
     `pairing-to-notification-flow.spec.ts` は単体での連続実行（`--repeat=10` 等）による
     確認がまだ無いので、CI に載せる前に一度確認しておくとよい。
+- **`/kiro-validate-impl` の初回実行（全 33 タスク完了後）が NO-GO を返し、4 件のブロッカーを
+  修正した**（feature 全体の検証は task ではないため tasks.md のチェックボックスは無いが、
+  ここに記録する）:
+  1. **`unpairRelation`（task 7.3）を呼ぶ本番の経路が 1 つも無かった。** 管理画面に
+     解除の口が無かったため、実運用では紐付け解除が一度も成立せず、90日掃除も
+     繋ぎ直し時の紐付け引き継ぎも対象を見つけられない状態だった
+     （task 7.3 自身が名指ししていた失敗そのもの）。task 10.2 の通し試験が
+     `unpairRelation()` を関数として直接呼んでいたため、この空白が隠れていた。
+     `POST /relations/:relationId/unpair`（管理者限定）を追加し、管理画面にも
+     解除ボタン（二段階確認つき）を追加。試験は実際の口を叩く形に直した。
+  2. **管理者が設定するパス条件の通知（`global-notification/index.ts`）で、
+     Gen 2 の宛先への配布が Gen 1 の 2 つの関門より後ろにあった。**
+     (a) 公開範囲の関門（`isSendNotification`）が先に `return` するため、
+     非公開ページでは Gen 2 の通知が要件 2.3 の想定（本文を伏せて出す）に反して
+     一度も出なかった。(b) Gen 1 の送信（`Promise.all`、catch 無し）が失敗すると
+     例外が Gen 2 の実行より前に伝播し、要件 12.3（両世代は独立に動く）に反していた。
+     `fireGen2Destinations` の呼び出しを両方の関門より前へ動かして解消。
+     Gen 1 自身の送信内容・早期リターン・失敗時の伝播はどれも変えていない。
+  3. **`DestinationRegistry.dispatchAll` が宛先ごとに返す成否を、呼び出し側 2 か所
+     （`global-notification/index.ts`・`user-notification/index.ts`）のどちらも
+     読んでいなかった。** 控え（outbox）への書き込みが宛先単位で失敗しても、
+     ログの1行も残らず消えていた。戻り値を受けて `outcome === 'failed'` の宛先を
+     ログに残すよう2か所とも直した（配送・再送の仕組みは変更なし）。
+  4. **`/peer` を全体の仕組み（消毒・session・csurf・passport.session）から除外する
+     判定が、独立した4か所にばらばらに実装されており、大文字小文字の扱いが
+     食い違っていた。** `express-init.js`・`avoid-session-routes.js` の判定は
+     大文字小文字を区別するが、実際に `/peer` の口へ requestを届ける Express 自身の
+     経路一致は区別しない。そのため大文字小文字を変えたパス
+     （例: `/_API/V3/CHAT-INTEGRATION/PEER/command`）は口には届くのに
+     除外は効かず、認証なしで消毒処理のコスト（最大10MBで約1秒）と
+     MongoDB への session 書き込みを強制できた。`features/chat-integration/server/is-peer-path.ts`
+     に判定を1つへ統合し、大文字小文字を区別しない正規表現（`i` フラグ、`u` は付けない
+     — Express の実際の一致規則に合わせるため）で4か所すべてを揃えた。
+     `/peering` のような隣接パスが引き続き除外されないことも drift 試験で確認済み。
+  - 4件とも `/kiro-validate-impl` の再実行で確認すること。

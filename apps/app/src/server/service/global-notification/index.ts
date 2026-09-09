@@ -87,6 +87,23 @@ class GlobalNotificationService {
       );
     }
 
+    // Gen 2's destinations are dispatched as a separate, additional step --
+    // never merged into Gen 1's fan-out below (Requirement 12.2, 12.3;
+    // design.md "既存の Promise.all の外に足す"). It runs FIRST, ahead of both
+    // Gen 1 gates, so that neither of them can silence it:
+    //   - `isSendNotification` (just below) returns early for a page that is
+    //     not publicly viewable. Gen 2 must still notify for such a page,
+    //     just without the page body -- that withholding is done by
+    //     `buildNotificationContent` (Requirement 2.3), not by skipping the
+    //     notification.
+    //   - the Gen 1 `Promise.all` rejects when a mail/Slack send fails, and
+    //     that rejection propagates out of this method unchanged. Each
+    //     generation must fire independently of the other's failure
+    //     (Requirement 12.3).
+    // Gen 2's own failures are contained inside `fireGen2Destinations`, so
+    // this call never affects Gen 1 either.
+    await this.fireGen2Destinations(event, page, triggeredBy, vars);
+
     if (!this.isSendNotification(page.grant)) {
       logger.info('this page does not send notifications');
       return;
@@ -104,12 +121,6 @@ class GlobalNotificationService {
         vars,
       ),
     ]);
-
-    // Gen 2's destinations are dispatched as a separate, additional step
-    // OUTSIDE the Promise.all above -- never merged into Gen 1's fan-out
-    // (Requirement 12.2, 12.3; design.md "既存の Promise.all の外に足す").
-    // A failure here must not affect the Gen 1 sends that already completed.
-    await this.fireGen2Destinations(event, page, triggeredBy, vars);
   }
 
   /**
@@ -160,9 +171,26 @@ class GlobalNotificationService {
       });
 
       const registry = new DestinationRegistry(destinations);
-      await registry.dispatchAll(
+      const results = await registry.dispatchAll(
         createGen2NotificationDispatcher(markdown, containsRestrictedPage),
       );
+      // `dispatchAll` swallows each destination's own exception (so one bad
+      // destination cannot stop the others) and reports it as a 'failed'
+      // outcome instead of rethrowing -- without this loop, a failure here
+      // (e.g. the outbox write itself failing) would leave no outbox row AND
+      // no log line, making the notification vanish with no trace anywhere.
+      for (const result of results) {
+        if (result.outcome === 'failed') {
+          logger.error(
+            {
+              relationId: result.destination.relationId,
+              platform: result.destination.platform,
+              channelId: result.destination.channelId,
+            },
+            'Gen 2 destination dispatch failed',
+          );
+        }
+      }
     } catch (err) {
       logger.error('Gen 2 global notification dispatch failed', err);
     }
