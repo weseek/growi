@@ -686,7 +686,7 @@
     task 9.3 で保存時の宛先選択が「編集画面を開くたびに」呼ぶようになったため、
     影響範囲が広がった。
   - **「固定リンク展開が非公開ページの実際のパスを認可されていないチャンネルへ
-    出しうる」という所見（要件6.2/6.3のギャップ）は、amend spec
-    [chat-integration-link-privacy](../chat-integration-link-privacy/) として
-    起票済み（2026-09-09、requirements フェーズ未着手）。**
-    umbrella `chat-integration` の `roadmap.md` にも sub-spec として追記済み。
+    出しうる」という所見（要件6.2/6.3のギャップ）は、umbrella `chat-integration`
+    の要件6に受け入れ条件6.6〜6.8として追記し、この spec の
+    `resolvePageFromUrl`/`buildLinkPreview`/`handleLinkPreview` で対応済み
+    （2026-09-09）。**

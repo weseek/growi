@@ -63,7 +63,7 @@
   - _Requirements: 6.6, 6.7, 6.8_
   - _Depends: 3.1, 3.3_
 
-- [ ] 3.5 (P) この spec を名前で参照している箇所をすべて始末する
+- [x] 3.5 (P) この spec を名前で参照している箇所をすべて始末する
   - `chat-integration/roadmap.md` の Sub-specs 表からこの spec の行を削除する
   - 同ファイル Backlog（対話的な確認フローの項）にある本 spec 名への言及2箇所を、畳み込み先（`chat-integration` 要件6.6〜6.8）を指す書き方に直す
   - `chat-integration-app/tasks.md`（Implementation Notes 内、`../chat-integration-link-privacy/` へのリンク）を、畳み込み先を指す記述に差し替える
