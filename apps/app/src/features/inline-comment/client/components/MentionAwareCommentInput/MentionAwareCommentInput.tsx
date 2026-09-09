@@ -155,7 +155,7 @@ export const MentionAwareCommentInput = (
           <MentionPickerButton onInsert={insertMention} />
           <button
             type="button"
-            className="btn btn-primary btn-sm rounded-circle p-0 d-inline-flex align-items-center justify-content-center"
+            className="btn btn-primary btn-sm p-0 d-inline-flex align-items-center justify-content-center"
             style={{ width: '2rem', height: '2rem' }}
             data-testid="inline-comment-submit-button"
             disabled={!canSubmit}

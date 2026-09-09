@@ -64,7 +64,7 @@ export const MentionPickerButton = (
       <DropdownToggle
         type="button"
         color="link"
-        className="btn-sm text-body-secondary"
+        className="btn-sm btn-outline-neutral-secondary"
         data-testid="mention-picker-button"
         caret
       >
