@@ -48,10 +48,21 @@ vi.mock('@growi/editor/dist/client/services', () => ({
 const tooltipsMock = vi.hoisted(() =>
   vi.fn(() => 'tooltips-extension-sentinel'),
 );
-vi.mock('@codemirror/view', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@codemirror/view')>()),
-  tooltips: tooltipsMock,
-}));
+// EditorView.theme() itself returns an ARRAY of two extensions, not a single
+// one (see MentionAwareCommentInput.tsx's own comment on this) -- the mock
+// mirrors that shape so the wrapping test below exercises the real hazard,
+// not a simplified stand-in.
+const themeMock = vi.hoisted(() =>
+  vi.fn(() => ['theme-part-1-sentinel', 'theme-part-2-sentinel']),
+);
+vi.mock('@codemirror/view', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@codemirror/view')>();
+  return {
+    ...actual,
+    tooltips: tooltipsMock,
+    EditorView: { ...actual.EditorView, theme: themeMock },
+  };
+});
 
 vi.mock('@growi/editor/dist/client/stores/codemirror-editor', () => ({
   useCodeMirrorEditorIsolated: () => ({ data: codeMirrorEditorMock }),
@@ -242,5 +253,22 @@ describe('MentionAwareCommentInput', () => {
     expect(codeMirrorEditorMock.appendExtensions).toHaveBeenCalledWith(
       'tooltips-extension-sentinel',
     );
+  });
+
+  it("raises the mention-completion popup above InlineCommentForm's own z-index, wrapped so the two-part theme extension does not get split across appendExtensions calls", () => {
+    render(<MentionAwareCommentInput editorKey="key-1" onSubmit={vi.fn()} />);
+
+    expect(themeMock).toHaveBeenCalledWith({
+      '.cm-tooltip.cm-tooltip-autocomplete': { zIndex: '1080' },
+    });
+    // EditorView.theme() returns an array of two extensions (mocked above to
+    // mirror that). appendExtensions must receive it wrapped in ANOTHER
+    // array -- passed bare, appendExtensions would unpack its two elements
+    // and give each its own slot in one shared Compartment, which throws
+    // "Duplicate use of compartment in extensions" (reproduced empirically
+    // against the real dev server before this wrapping was added).
+    expect(codeMirrorEditorMock.appendExtensions).toHaveBeenCalledWith([
+      ['theme-part-1-sentinel', 'theme-part-2-sentinel'],
+    ]);
   });
 });

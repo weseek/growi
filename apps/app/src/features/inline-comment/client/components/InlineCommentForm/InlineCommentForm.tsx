@@ -86,12 +86,21 @@ export const InlineCommentForm = (
       onCanceled();
     };
     const handlePointerDown = (event: MouseEvent): void => {
-      const target = event.target as Node | null;
+      const target = event.target as Element | null;
       if (
         formRef.current != null &&
         target != null &&
         formRef.current.contains(target)
       ) {
+        return;
+      }
+      // The mention-completion popup (@codemirror/autocomplete, opened by
+      // typing "@") is deliberately appended to `document.body`, not nested
+      // inside this form's own DOM (see MentionAwareCommentInput's own
+      // tooltips({parent}) comment) -- so without this check, clicking a
+      // suggestion in it reads as an outside click and cancels the whole
+      // form instead of letting the selection go through.
+      if (target?.closest('.cm-tooltip-autocomplete') != null) {
         return;
       }
       onCanceled();

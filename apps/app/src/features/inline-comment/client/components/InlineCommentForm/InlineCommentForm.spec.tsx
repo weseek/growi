@@ -331,5 +331,29 @@ describe('InlineCommentForm', () => {
 
       expect(onCanceled).not.toHaveBeenCalled();
     });
+
+    it('does not call onCanceled on a mousedown inside the mention-completion popup, which is appended to document.body outside the form', () => {
+      const onCanceled = vi.fn();
+      render(
+        <div>
+          <InlineCommentForm
+            pageId="page-1"
+            anchorOriginRevisionId="rev-1"
+            anchor={validAnchor}
+            onCanceled={onCanceled}
+          />
+          {/* Simulates @codemirror/autocomplete's popup DOM: rendered as a
+              sibling of the form (via tooltips({ parent: document.body }) in
+              MentionAwareCommentInput), not nested inside it. */}
+          <div className="cm-tooltip-autocomplete">
+            <li data-testid="mention-suggestion">@alice</li>
+          </div>
+        </div>,
+      );
+
+      fireEvent.mouseDown(screen.getByTestId('mention-suggestion'));
+
+      expect(onCanceled).not.toHaveBeenCalled();
+    });
   });
 });

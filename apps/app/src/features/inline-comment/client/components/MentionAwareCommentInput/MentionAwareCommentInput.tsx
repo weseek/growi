@@ -19,7 +19,7 @@
 
 import type { JSX } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { tooltips } from '@codemirror/view';
+import { EditorView, tooltips } from '@codemirror/view';
 import { useSetResolvedTheme } from '@growi/editor';
 import { CodeMirrorEditorComment } from '@growi/editor/dist/client/components/CodeMirrorEditorComment';
 import {
@@ -96,11 +96,41 @@ export const MentionAwareCommentInput = (
   // `overflow: hidden` in its base theme, and this form is a small, fixed-
   // height box -- so without this, the popup renders clipped and scrolling
   // inside the form instead of floating above it.
+  //
+  // Once appended to `document.body`, the popup is a sibling of
+  // SelectionPopover's own portal (InlineCommentForm's ancestor), which sets
+  // an explicit `z-index: 1070` (Bootstrap's `$zindex-popover`). The popup
+  // itself gets no z-index from CodeMirror's base theme, so as a plain
+  // `z-index: auto` sibling it paints BELOW that positioned ancestor
+  // regardless of DOM order -- behind the form, unreachable by the mouse.
+  // `1080` mirrors Bootstrap's own `$zindex-tooltip` tier, one step above
+  // `$zindex-popover` (see SelectionPopover.tsx's own z-index comment for
+  // why this codebase hardcodes Bootstrap's scale rather than importing it).
   useEffect(() => {
     return codeMirrorEditor?.appendExtensions?.(
       tooltips({ parent: document.body }),
     );
   }, [codeMirrorEditor]);
+
+  const tooltipZIndexTheme = useMemo(
+    () =>
+      EditorView.theme({
+        '.cm-tooltip.cm-tooltip-autocomplete': { zIndex: '1080' },
+      }),
+    [],
+  );
+
+  useEffect(() => {
+    // Wrapped in an array on purpose: `EditorView.theme()` itself returns an
+    // array of two extensions (`[theme.of(...), styleModule.of(...)]`), not a
+    // single one. `useAppendExtensions` (packages/editor) unpacks whatever it
+    // is given at the top level and gives EACH element its own slot in one
+    // shared Compartment -- passed bare, that unpacks theme()'s two internal
+    // elements and throws "Duplicate use of compartment in extensions" on the
+    // very first flatten. Wrapping in `[tooltipZIndexTheme]` makes the whole
+    // theme extension (both its parts) a single top-level element instead.
+    return codeMirrorEditor?.appendExtensions?.([tooltipZIndexTheme]);
+  }, [codeMirrorEditor, tooltipZIndexTheme]);
 
   const cmProps = useMemo(
     () => ({
