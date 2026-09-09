@@ -19,6 +19,12 @@ GROWI 内のイベントを通知として送り、チャットの利用者を G
 - GROWI の検索の索引・クエリ・スコアリングの変更
 - 既存のページ作成の処理そのものの変更
 
+### 固定リンクが見つからない場合の表示（要件 6.8 のために受け入れる変化）
+
+固定リンク（ページをパス以外の識別子で指す URL）を貼ったとき、対象が見つからない場合と、見つかったが非公開だった場合を応答の違いから見分けられないようにする（要件 6.8）ため、**固定リンクで対象が見つからない場合もチャンネルへ表示が付くようになる**（今までは何も投稿されなかった）。
+
+表示される内容は「ページが存在しないか、非公開のページです」という、ページの状態に関わらず常に同じ固定文言で、実在パスや個別の識別子は一切含まない。詳細な設計判断とインターフェイスは下記「LinkPreviewMapper（固定リンクの応答）」を参照。
+
 > **「呼ぶだけ」では済まない。** 検索結果を**返す前の絞り込み**と、ページ作成の**権限判定と重複の事前確認**は
 > **この feature が持つ**（下記「既存の機能を呼ぶだけでは要件を満たせない」）。
 
@@ -57,6 +63,18 @@ GROWI 内のイベントを通知として送り、チャットの利用者を G
 - `@growi/chat` の契約が変わったとき
 - GROWI 本体の検索・権限判定の呼び出し契約が変わったとき（要件 3.6 / 3.7 が影響を受ける）
 - `chat-integration-proxy` の能力表・通知契約が変わったとき（下記「OAuth install `state` の発行・照合（task 9.0 で決着）」を参照）
+- `@growi/chat` の `CommandResponse`（`link-preview` kind）に「見つからない」を独立に表現するフィールド（例: `notFound: boolean`）が将来追加された場合、`buildLinkPreview` が固定文言を `path` に入れて表現している今のやり方は不要になるため見直すこと（下記「LinkPreviewMapper」参照）
+- `resolvePageFromUrl` の固定リンク判定（`PAGE_ID_PATTERN`。末尾セグメントが24桁16進文字列かどうかで判定している）の意味が変わった場合（例: 別の識別子形式を追加する）、`LinkPreviewMapper` 側のロジックも合わせて確認すること
+
+### proxy にまたがる制約 — 「黙って何も投稿しない」判定を復活させない
+
+**この制約は `chat-integration-proxy`（別の sub-spec）の実装に対するものであり、この spec 自身の実装を変える話ではない。** proxy 側の変更を検討する人は、着手する前にここを読むこと。
+
+`chat-integration-proxy` は今、GROWI からの応答が `link-preview` 以外（`kind: 'error'`）だったとき、チャンネルには何も投稿しない（`command-flow.ts` のコメント: 「リンクが貼られるたびに毎回文句を言うより、黙って何もしない方がよい」という判断）。
+
+本 spec の実装により、固定リンクで対象が見つからない場合も `kind: 'link-preview', restricted: true` を返すようになったため（要件 6.8、下記「LinkPreviewMapper」参照）、**GROWI のドメインの URL で、末尾が固定リンクの形（24桁16進文字列）でありさえすれば、実在しないページでも表示が付くようになった。** これは要件 6.8（対象の有無を応答の違いから見分けられないようにする）を守るために避けられない結果であり、意図した変化である。
+
+**この「表示が付くようになった」ことを理由に、`chat-integration-proxy` 側で「黙って何も投稿しない」判定を固定リンクにも復活させる変更が提案されたら、要件 6.8 を壊すため差し戻すこと。** 見分けられない応答を proxy 側で再び選別してしまうと、パス形式 URL とは違う経路で「対象が存在するかどうか」が推測できる状態に逆戻りする。
 
 ### OAuth install `state` の発行・照合（task 9.0 で決着）
 
@@ -162,13 +180,13 @@ apps/app/src/features/chat-integration/
 |---|---|---|---|
 | `NotificationContent` | `server/content/notification-content.ts` | 6 イベントぶんの通知の文面 | 2.1, 2.2, 2.3 |
 | `SearchResultMapper` | `server/content/search-result-mapper.ts` | 検索結果を構造化データへ（日時は RFC 3339 の UTC 表記） | **3.9** |
-| `LinkPreviewMapper` | `server/content/link-preview-mapper.ts` | ページを要約へ | 6.2, 6.3 |
+| `LinkPreviewMapper` | `server/content/link-preview-mapper.ts` | ページを要約へ。固定リンクで対象が見つからない／非公開の場合は見分けられない固定文言を返す | 6.2, 6.3, 6.6–6.8 |
 | `DestinationRegistry` | `server/notification/destination-registry.ts` | 宛先の集合。**種類で分岐しない** | 12.2, 12.3 |
 | `HelpContent` | `server/content/help-content.ts` | このバージョンが提供するコマンド | 14.2 |
 | `ConversationPage` | `server/content/conversation-page.ts` | 発言列をページ本文へ組み立てる | 5.2, 5.3 |
 | `ViewerPageFilter` | `server/content/viewer-page-filter.ts` | **相手による判定** — この利用者が見てよいページだけを残す | 3.6, 3.7 |
 | `PublicPageFilter` | `server/content/public-page-filter.ts` | **相手によらない判定** — 誰でも見られるページか | 2.3, 6.3 |
-| `CommandEndpoint` | `server/command/command-endpoint.ts` | proxy からのコマンドを処理 | 3.6, 3.7, 4.2–4.6, 5.2, 5.3, 6.2, 6.3, 14.2 |
+| `CommandEndpoint` | `server/command/command-endpoint.ts` | proxy からのコマンドを処理 | 3.6, 3.7, 4.2–4.6, 5.2, 5.3, 6.2, 6.3, 6.6–6.8, 14.2 |
 | `ResolveActor` | `server/command/resolve-actor.ts` | actor → GROWI ユーザー | 3.6, 3.7, 4.3, 4.4, 7.6 |
 | `NotificationOutbox` | `server/notification/notification-outbox.ts` | 送るべき通知を書き留める | 2.1–2.3, 2.5, 2.6 |
 | `NotificationDispatcher` | `server/notification/notification-dispatcher.ts` | 送って結果を書き戻す | 2.4, 10.4, 10.7 |
@@ -401,6 +419,81 @@ proxy は届かなかった要求をやり直すので**失敗は繰り返し届
 
 **再送への応答**: 処理済みの `(relationId, requestId)` には**1 回目の `CommandResponse` をそのまま返す**。
 これをしないと 2 回目が `path-conflict` になり、利用者がページのリンク（要件 4.2）を受け取れない。
+
+---
+
+### LinkPreviewMapper（固定リンクの応答）
+
+`link-preview` コマンドの URL 展開は 2 段に分かれている。
+
+1. `resolvePageFromUrl`（`command-endpoint.ts`）— URL からページを解決する。末尾セグメントが24桁16進文字列（Mongo の ObjectId 形式。ページをパス以外の識別子で指す「固定リンク」の形）なら `_id` で、そうでなければ `path` で `Page.findOne` する
+2. `buildLinkPreview`（`content/link-preview-mapper.ts`）— 解決結果（ページの有無・固定リンクかどうか）を受け取り、公開範囲に応じて応答を組み立てる純粋関数
+
+**固定リンクで対象が見つからない場合と、見つかったが非公開だった場合は、どちらも同じ固定文言の応答に合流させる。** 中身は完全に同じ文字列で、識別子もページの状態も一切反映しない。これにより、対象が存在するかどうかを応答の違いから探れないようにする（要件 6.8）。パス形式 URL（既存の要件 6.1〜6.5）の挙動は変えない（要件 6.7）。「固定リンクが見つからない場合もチャンネルへ表示が付くようになる」という受け入れる変化については、上記 Overview「固定リンクが見つからない場合の表示」と、下記「proxy にまたがる制約」を参照。
+
+#### System Flow
+
+```mermaid
+flowchart TD
+    Start[URLを受け取る] --> Parse{pathnameを取り出せる}
+    Parse -->|できない| ErrInvalid[error invalid]
+    Parse -->|できる| IsPermalink{末尾が24桁16進か}
+    IsPermalink -->|はい 固定リンク| FindById[_idで検索]
+    IsPermalink -->|いいえ パス| FindByPath[pathで検索]
+    FindById --> FoundById{見つかった}
+    FindByPath --> FoundByPath{見つかった}
+    FoundByPath -->|いいえ| ErrInvalid
+    FoundByPath -->|はい| Grant{誰でも閲覧できるか}
+    FoundById -->|いいえ| Unavailable[restricted true 固定文言]
+    FoundById -->|はい| Grant2{誰でも閲覧できるか}
+    Grant -->|はい| Full1[restricted false 実在パスと要約]
+    Grant -->|いいえ| RestrictedReal[restricted true path は実在パス]
+    Grant2 -->|はい| Full2[restricted false 実在パスと要約]
+    Grant2 -->|いいえ| Unavailable
+```
+
+**鍵となる分岐**: 「見つからない」（固定リンクの場合）と「見つかったが非公開」（固定リンクの場合）は、どちらも同じ固定文言の応答（図の `Unavailable`）に合流する。パス形式 URL で見つからない場合だけが `error` に分かれたままで、URL の参照先がそのチャンネルに紐づく GROWI かどうかの判定（要件 3.6/3.7 系統）はこの図の外、より手前の段階で決まる。
+
+#### Service Interface
+
+```typescript
+interface ResolvedUrlTarget {
+  /** 末尾セグメントが24桁16進文字列（ページをパス以外の識別子で指す形）だったか。 */
+  readonly isPermalink: boolean;
+  /** 見つかったページ。見つからなければ null。 */
+  readonly page: ResolvedLinkPreviewPage | null;
+}
+
+function resolvePageFromUrl(pageUrl: string): Promise<ResolvedUrlTarget | null>;
+```
+- Preconditions: `pageUrl` は文字列として渡される（空でも可）
+- Postconditions: `pageUrl` の pathname を取り出せない場合のみ `null` を返す。取り出せた場合は必ず `ResolvedUrlTarget` を返す（`page` が `null` になることはあるが、トップレベルの `null` にはならない）
+- Invariants: 同じ `pageUrl` に対して `isPermalink` の値は常に同じ
+
+```typescript
+const PERMALINK_UNAVAILABLE_MESSAGE =
+  'This page does not exist, or is not visible to everyone.';
+
+function buildLinkPreview(
+  target: ResolvedUrlTarget,
+  isGuestAllowedToRead: boolean,
+): LinkPreviewResult | null;
+```
+- Preconditions: `target` は `resolvePageFromUrl` の返り値をそのまま渡す（「`isPermalink` と `page` は同じ解決結果から来ている」という前提を、引数を分けて渡すことで壊さないため）
+- Postconditions: `target.page === null && !target.isPermalink`（パス形式 URL で見つからない場合）のときのみ `null` を返す。呼び出し元がこれを受けて `errorResponse('invalid')` にする——ここは変更しない。それ以外は必ず `LinkPreviewResult` を返す
+- Invariants: 返り値の `restricted === true` のとき、`excerpt`/`updatedAt`/`commentCount` は含まれない（既存のまま）。`target.isPermalink === true` かつ `restricted === true` のとき、`path` は常に `PERMALINK_UNAVAILABLE_MESSAGE`（ページが見つからない場合・見つかったが非公開な場合のどちらでも同じ）
+
+**固定文言**: `PERMALINK_UNAVAILABLE_MESSAGE` は、`errorResponse('invalid', 'This URL does not match any page on this GROWI.')` と同じ英語表記の慣習に合わせた定数。ページの状態にもリクエストにも依存しない定数であることが重要——「見つからない」と「見つかったが非公開」で呼び出しコードが変わっても、同じ定数を参照する限り文字列は必ず一致する。
+
+ページが見つかり、公開範囲の判定（`isPubliclyReadablePage(page) && isGuestAllowedToRead`）が真なら、実在パスを使った全文サマリを返す（変更なし）。ページが見つかり、この判定が偽（非公開）なら `restricted: true` を返すが、**このとき `path` に入れる値は、固定リンクなら固定文言、パス形式 URL なら実在パス**（後者は変更しない、6.3/6.7）。
+
+#### Requirements Traceability
+
+| Requirement | Summary | Interfaces | Flow |
+|---|---|---|---|
+| 6.6 | 固定リンク・非公開ならパスを含めない | `ResolvedUrlTarget`, `LinkPreviewResult` | `Grant2` → `Unavailable` |
+| 6.7 | パス形式 URL の既存挙動は無変更 | `LinkPreviewResult` | `Grant` → `Full1` / `RestrictedReal` |
+| 6.8 | 固定リンクの「見つからない」と「見つかったが非公開」を区別できない応答にする | `ResolvedUrlTarget`, `LinkPreviewResult` | `FoundById` いいえ → `Unavailable`、`Grant2` いいえ → `Unavailable` |
 
 ---
 

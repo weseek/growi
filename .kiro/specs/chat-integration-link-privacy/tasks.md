@@ -49,7 +49,7 @@
   - _Requirements: 6.6, 6.7, 6.8_
   - _Boundary: chat-integration-app/research.md_
 
-- [ ] 3.3 chat-integration-app の design.md へ、本 spec の設計判断・インターフェイス・図を反映する
+- [x] 3.3 chat-integration-app の design.md へ、本 spec の設計判断・インターフェイス・図を反映する
   - 固定リンク分岐の設計判断・`ResolvedUrlTarget`/`buildLinkPreview` の契約・System Flow の図を統合する
   - 本 spec の Revalidation Triggers 3件のうち、1件目（`CommandResponse` に `notFound` 相当のフィールドが追加された場合）と2件目（`PAGE_ID_PATTERN` の意味が変わった場合）は chat-integration-app の design.md の Revalidation Triggers へ移す
   - 3件目（固定リンクが見つからない場合も表示が付くことを理由に、proxy 側で「黙って何も投稿しない」判定を復活させる提案が来たら差し戻すこと）は、chat-integration-app の design.md に「proxy にまたがる制約」と明記して残す
