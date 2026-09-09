@@ -152,6 +152,47 @@ jsdomにはレイアウト・ペイントエンジインが無いため、ユニ
 
 見た目の作り込みはモックアップ画像との目視比較で担保するが、これは自動合否判定（pixel diff等）ではなく、(a) 実装時にPlaywrightでスクリーンショットを撮り実装エージェント自身が見比べて明らかな差異があれば修正する自己修正ループ、(b) 最終的な見た目の合否は人間のレビュー（PRに添付したスクリーンショット）に委ねる、という2つの役割に限定した。`kiro-validate-impl`のGO/NO-GO判定の機械的チェックにも含めない——見た目の良し悪しは人間が最終判断する領域であり、自動ゲートで機能の完成をブロックしないという判断による。
 
+## Bootstrap 5 テーマへの追随と通常コメントとの見た目統一（amend spec `inline-comment-visual-consistency` より統合）
+
+実装済みの画面をモックアップと突き合わせたところ、(1) 作成の起点・入力フォームのボタン類にCSSクラスが1つも付いておらずブラウザ標準の見た目のままだった、(2) 本文中のハイライト色がテーマを切り替えても変わらない固定色で、かつ選択中・入力中・保存後の3状態でばらばらの見え方をしていた、(3) インラインコメントの一覧が通常コメントとは別の場所に別の見た目で並んでいた、という3つの差が見つかり、これを埋める作り直しを行った。以下は、この作り直しの過程で確定した決定事項と、実装時に見つかった限界。
+
+### ハイライト色トークンを1段の間接参照にした理由
+
+`--grw-inline-comment-marker-bg`を検索マーカー色`--grw-marker-bg`に直接束縛せず、`var(--grw-marker-bg, var(--grw-marker-bg-yellow))`という1段の間接参照にした。テーマは検索マーカーの色を目的に`--grw-marker-bg`を上書きしていることがあり（16テーマ中12テーマがcyan/red/blue/greenに変更）、インラインコメントのハイライトを直接そこに縛ると「検索マーカーは変えたいが、インラインコメントは既定の黄色のままにしたい」という指定ができなくなる。1段挟むことで、既定では要望どおり検索マーカーと同じ色になり、必要なテーマだけ個別に上書きできる。
+
+作成中用の`--grw-inline-comment-marker-bg-pending`も同じ理由で1段挟み、既定値は保存済み側と別系統の色（`--grw-marker-bg-blue`）にして、テーマがどちらも上書きしていない場合でも両者が見分けられるようにした（この2トークン化と半透明化の詳細な経緯は、後発の「操作性の改善」節（次節）を参照。あちらはこちらで確定した2トークンの土台をさらに、選択中・入力中・保存後の3状態を1つの仕組みで一貫させる形に発展させたもの）。
+
+検索マーカーの「ペンで塗った」ような`linear-gradient`の見た目は、`::highlight()`が`background-image`を指定できない（`color`/`background-color`/文字装飾/影に限られる）ため引き継げず、平らな塗りにした。共通化したのは色の値だけである。
+
+### `CommentCard`は自分のCSSモジュールを持たない
+
+通常コメントの箱の見た目はすでに`_comment-inheritance.scss`の`%bg-comment`／`%comment-section`／`%user-picture`というプレースホルダに1か所で置かれており、`Comment.module.scss`と`CommentEditor.module.scss`の2つのCSSモジュールが`@use`して`@extend`していた（プレースホルダ自身はCSSを出力しないため、3つ目のモジュールが加わっても規則は重複しない）。この既存の形をそのまま踏襲し、箱と見出し行だけを持つ`CommentCard`を切り出して`InlineCommentItem`用の3つ目のモジュールから同じプレースホルダを`@extend`する形にした。
+
+`CommentCard`が自分のモジュールクラスを最も外側に持つ案は採らなかった。`Comment.module.scss`の規則はすべて`.comment-styles { :global(.page-comment) { … } }`という入れ子で書かれており、`CommentCard`が独自の外枠を持つとその入れ子が崩れ、`page-comment-newer`の不透明度・`page-comment-revision`の色・`page-comment-meta`の色・`page-comment-body .wiki`の段落余白のどれも一致しなくなる。`CommentCard`は`.page-comment`から下のDOMだけを描き、外側のモジュールの入れ物（と、そこから`_comment-inheritance.scss`のプレースホルダを`@extend`する責務）は使う側がそれぞれ持つ。
+
+`Comment.tsx`自体を共有部品として使わず、枠だけを切り出したのは、`Comment.tsx`が本文の編集・削除・リビジョンへのリンク・返信の扱いを一緒に抱えているため。インラインコメントは`revision: Ref<IRevision>`を持たず（持つのは`anchorOriginRevisionId: string`）、v1では編集・削除の対象外なので、`Comment.tsx`をそのまま使うと使わない分岐を通すことになる。一方でクラス名だけを写し取る並行実装にすると、`_comment-inheritance.scss`を直したときに片方だけ変わる状態が起きても、型でもテストでも結びついていないため気付けない。差が出るのは見出し行の右端と本文の前後の中身だけで、箱そのものは同一なので、差し込み口付きの共有コンポーネントを1つ持つ形が最小だった。
+
+設計レビューで見つかった2点の訂正（実装は最初からレビュー後の形で行われている）:
+- `creator`が`null`／未populateでも`UserPicture`／`Username`を無条件に描く。既存の`Comment.tsx`は「投稿者情報が無い場合に何も表示しない」のではなく、`UserPicture`は既定アイコン、`Username`は"(anyone)"という代替表示をする作りに既になっている。`CommentCard`側で`creator != null`条件を追加して丸ごと隠すと、投稿者が未populateの既存コメントの見た目が変わり、Requirement 13.9（通常コメントの見た目を変えない）に違反する。
+- `headerEnd`（見出し行の右側の差し込み）に共通の余白（`ms-auto`等）を`CommentCard`側で固定しない。通常コメントの右端（リビジョンリンク）とインラインコメントの右端（解決トグル）とで必要な余白が異なる（前者は投稿日時のすぐ右に`ms-2`、後者は行の右端に寄せる`ms-auto`）ため、余白は各呼び出し側が`headerEnd`に渡すReactNode自身に付ける。
+
+実際に実装された`CommentCardProps.creator`の型は、当初案（`IUserHasId | Ref<IUser> | null | undefined`）よりも広く、`IUserSerializedSecurely<IUserHasId>`を含む。インラインコメント側の`listByPageId()`応答はサーバー側で既に`serializeUserSecurely`を通しており、その形をそのまま`CommentCard`まで運ぶとこの型が必要になったため（タスク境界を超える変更だが、コンパイルを通すために必須だった）。
+
+### インラインコメントは`PageComment`自身で取得せず、`PageView`からpropsで渡す
+
+`Comments`（`apps/app/src/client/components/Comments.tsx`）は`ShareLinkPageView.tsx`からも読み込まれている。`PageComment`の中で`useSWRxInlineComments(pageId)`を呼ぶと、共有リンク画面でもその取得が走ってしまう。APIは`certifySharedPage`を通していないので実データは返らないが、「共有リンク画面にインラインコメントのUIを一切出さない」ことを構造として保証できなくなる。
+
+そこで取得は`PageView.tsx`側の1箇所（既存の`useSWRxInlineComments(isSharedPageView ? null : page._id)`）に閉じ、値として`Comments`／`PageComment`に渡す形にした。`ShareLinkPageView.tsx`は渡さない。
+
+実際に渡す形は、当初案（`InlineCommentWithReplies[]`の素の配列）とは異なり、`{ comments, resolve, createReply }`という束になっている。一覧のスクロールナビゲーション（`scrollToRange`）・解決トグル・返信作成のいずれも`PageView.tsx`側の状態・関数に依存するため、配列だけを渡すとこれらを別途伝える経路が必要になり、`PageComment`が`PageView`の関数を「知らずに」使えるという構造上の利点（Requirement 13.8の共有リンク非公開保証の土台）が薄れる。束にして1本のpropsで渡すことで、`ShareLinkPageView.tsx`はこのprops自体を渡さない（空配列を渡すのではなく、prop省略時のフォールバックに委ねる）だけで済む。
+
+### 既知の限界（実装時に軽微・許容と判断し先送り）
+
+- **`InlineCommentItem.module.scss`の`.inline-comment-quote`は`:global`宣言の中にある。** `styles['inline-comment-quote']`のようにCSSモジュール経由で参照すると`undefined`になる（クラス名は素の文字列`inline-comment-quote`のまま使う必要がある）。この規則を将来リファクタリングする際に踏みやすい罠なので明記しておく。
+- **`playwright.config.ts`の`devices[\`Desktop ${browser}\`]`は`browser`が小文字（`'firefox'`/`'webkit'`）のため、実際のPlaywright `devices`辞書のキー（`'Desktop Firefox'`/`'Desktop Webkit'`）と一致しない既存バグがある。** firefox/webkitプロジェクトは実質Chromiumにフォールバックしており、このスペックのE2Eによるテーマ切り替え・ハイライト色の検証はすべてChromiumでのみ実証されている（本amendの実装時に発見。修正は本amendの対象外）。
+- `Comments.tsx`と`PageComment.tsx`の両方が`id="page-comments-list"`を持つ（本amend以前からの既存の重複。将来のE2Eも同じ罠を踏みうるため、直すなら別issueで）。
+- 未解決・解決済みの札の配色（`bg-warning text-dark`）はテーマごとに再生成されない`--bs-warning-*`をそのまま使っており、Requirement 11の「テーマに追随する」の対象外として意図的に据え置いた（この配色を変える受け入れ基準を立てていないため）。
+
 ## 操作性の改善（amend spec `inline-comment-interaction-ux` より統合）
 
 ユーザーから寄せられた4件のUX指摘（作成中と保存済みのハイライト色が同じで区別できない、本文中のハイライトから内容を確認する手段がない、一覧からハイライトへ移動する手段がない、一覧内の返信UIが通常コメントと不揃い）を受けて、表示・操作の一部を作り直した。以下は、この見直しの過程で確定した決定事項と、実装時に見つかった限界。

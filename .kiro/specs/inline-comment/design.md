@@ -58,6 +58,9 @@
 - 静定シグナルの発火条件（`use-container-settle` が「描画が落ち着いた」と判定する条件）が変わる場合、`useAnchorResolver` の再計算タイミング全体に影響する
 - `renderedTextOf` の除外条件（`.katex` または `aria-hidden="true"`）が変わる場合、その変更以前に作成されたアンカーの再アンカー成否に影響しうる。KaTeX（数式）のDOM出力構造（`.katex` クラス）が変わる場合も同様に前提が崩れる
 - `.wiki` 配下に、条件付きで表示される操作用の画面要素（アイコン用の素のテキストノードを持つもの）が新たに追加された場合、同じ `aria-hidden="true"` の付与を横展開する必要がある
+- `_comment-inheritance.scss` の `%bg-comment`／`%comment-section`／`%user-picture` の中身が変わったとき（通常コメントの箱とインラインコメントの箱の両方が同時に変わる、共有の抽象のため）
+- `packages/core-styles/scss/bootstrap/theming/_root.scss` のprimary/secondary限定の絞り込みが外れたとき（`--bs-warning-*` 等がテーマ対応になれば、専用のカスタムプロパティを持つ理由が薄れる）
+- `Comments`／`PageComment` の呼び出し元が増えたとき（共有リンク画面（`ShareLinkPageView.tsx`）に `inlineComments` が渡らないことを再確認する。取得は `PageView.tsx` 側の1箇所に閉じており、`Comments`／`PageComment` 自身はインラインコメントを取得しない）
 
 ## Architecture
 
@@ -436,6 +439,17 @@ sequenceDiagram
 | 9.4 | 既存の`@`タイプ補完を維持 | InlineCommentForm | `createMentionCompletionExtension` | — |
 | 10.1 | 起点・フォームを選択範囲近くに表示 | SelectionPopover | `usePopperPosition`, `selection-virtual-element` | 全フロー |
 | 10.2 | 共有リンク画面では表示しない | SelectionCapture（`PageView.tsx`側の`!isSharedPageView`ガードにより未マウント） | — | — |
+| 11.1–11.5 | 作成UIのBootstrap5クラス・テーマ追随 | SelectionActionButton, InlineCommentForm | Bootstrap 5クラス（色の直値を使わない） | — |
+| 11.6 | 表示文言の翻訳キー化 | SelectionActionButton, InlineCommentForm, InlineCommentItem | `translation.json` | — |
+| 12.1–12.3 | ハイライト色を単一のCSSカスタムプロパティから読む・既定は検索マーカー色 | InlineCommentHighlight, `_marker.scss` | `--grw-inline-comment-marker-bg`（既定 `--grw-marker-bg-yellow` 経由） | — |
+| 12.4–12.7 | 選択中・入力中・保存後の3状態でのハイライト表示 | PendingSelectionHighlight, InlineCommentHighlight | `::selection`, `::highlight()` | — |
+| 12.8, 12.9 | 作成中・保存済みの色分離と重なり時の視認性 | PendingSelectionHighlight, `_marker.scss` | `--grw-inline-comment-marker-bg-pending` | 詳細はRequirement 14として引き継がれている（上記12.8注記参照） |
+| 13.1, 13.2 | 通常コメントと同じ一覧・投稿日時順 | PageView (`inlineComments` props), PageComment | `scrollToRange`とあわせて渡す`inlineComments`バンドル | — |
+| 13.3, 13.4, 13.9 | 見た目の統一（箱・投稿者表示）・通常コメントの見た目維持 | CommentCard | `CommentCardProps` | — |
+| 13.5 | 一覧取得応答に投稿者情報を含める | InlineCommentService (`listByPageId`) | `serializeUserSecurely` | — |
+| 13.6, 13.10 | 引用文・種別見出し行 | InlineCommentItem | `beforeBody`, `headerEnd` | — |
+| 13.7 | 解決トグルを共通の箱の中に置く | InlineCommentItem, CommentCard | `headerEnd` | — |
+| 13.8 | 共有リンクでは一覧に含めない | PageView (`isSharedPageView`ガード), ShareLinkPageView | `inlineComments`を渡さない | — |
 | 14.1, 14.3, 14.4 | ハイライト色の分離・独立したテーマ上書き | `_marker.scss`, PendingSelectionHighlight | `--grw-inline-comment-marker-bg-pending` | — |
 | 14.2 | 重なったときの視認性 | PendingSelectionHighlight | `color-mix()`による半透明適用 | — |
 | 14.5 | 3時点を通じた一貫表示 | PendingSelectionHighlight, InlineCommentHighlight | 単一のカスタムプロパティを両者が参照 | — |
@@ -471,6 +485,7 @@ sequenceDiagram
 | use-highlight-hit-test (`useHighlightHitTest`) | Client / ロジック | document上のpointermove/clickの座標を、`resolved-range`が返す各`Range`の`getClientRects()`と比較し、当たったコメントidと発生源（hover/click）を返す | 15.1, 15.2, 15.6 | resolved-range(P0), `useDeviceLargerThanMd`(P0) | State |
 | InlineCommentBodyInteraction / InlineCommentPreviewPopover | Client / UI | 当たり判定結果に応じてポップオーバーの開閉・対象コメントを決定し（クリックで開いた後は明示的な閉じる操作までピン留め）、内容確認＋簡易返信欄を表示する | 15.1-15.5 | use-highlight-hit-test(P0), resolved-range(P0), CommentCard(P0), createReply(P0) | Service |
 | MentionAwareCommentInput | Client / UI | メンション対応コメント入力の共有部品（CodeMirrorエディタ組み立て・メンション補完・送信・エラー表示）。永続化は持たず`onSubmit`で注入される。`InlineCommentForm`と`InlineCommentReplies`の両方から使われる | 17.2, 17.5 | `CodeMirrorEditorComment`(P0), `createMentionCompletionExtension`(P0), fetchMentionUsers(P0) | Service |
+| CommentCard | Client / UI | コメント1件の箱（投稿者アイコン・名前・投稿日時・本文の入れ物）だけを持つ共有コンポーネント。自分のCSSモジュールを持たず、使う側のモジュールが`_comment-inheritance.scss`の`%bg-comment`／`%comment-section`／`%user-picture`を`@extend`する。通常コメント（`Comment.tsx`）とインラインコメント（`InlineCommentItem.tsx`）の両方から使われ、見出し行の右側（`headerEnd`）・本文前（`beforeBody`）・本文後（`footer`）を差し込みで受け取る | 13.3, 13.4, 13.9 | `UserPicture`(P0), `Username`(P0), `FormattedDistanceDate`(P0) | — |
 
 ### Server
 
@@ -511,7 +526,7 @@ interface CreateInlineCommentReplyInput {
 interface InlineCommentService {
   create(input: CreateInlineCommentInput, creatorId: string): Promise<InlineComment>;
   createReply(input: CreateInlineCommentReplyInput, creatorId: string): Promise<InlineCommentReply>;
-  listByPageId(pageId: string): Promise<InlineComment[]>; // 各要素が返信のネスト配列を含む
+  listByPageId(pageId: string): Promise<InlineComment[]>; // 各要素が返信のネスト配列を含み、投稿者情報（serializeUserSecurely済み）も含む
   setResolved(id: string, resolved: boolean, actorId: string): Promise<InlineComment>;
 }
 ```
@@ -761,6 +776,7 @@ model comments {
 ### Data Contracts & Integration
 
 - **API Data Transfer**: リクエスト/レスポンスは上記 Service Interface の型をそのままJSONへシリアライズする。`quote`/`prefix`/`suffix` は正規化前の原文のままシリアライズし、クライアント側での再選択・再表示に使う
+- **一覧応答への投稿者情報の付与**: `listByPageId` は `prisma.comments.findMany` に `include: { creator: true }` を付けて起点・返信の投稿者を取得し、通常コメントの一覧取得と同じ `serializeUserSecurely()` を通してからレスポンスに含める（13.5）。これは秘匿処理を経ない生のユーザー情報を返さないための必須の変換であり、`InlineCommentService` の型シグネチャだけからは読み取れない
 - **既存レスポンスからの除外**: `/_api/comments.get` が使う `findCommentsByPageId`／`findCommentsByRevisionId` は、`isSharedPage` の値によらず常に `isInline: { not: true }` を条件に含める。この2メソッドが `/_api/comments.get` に影響する読み取り経路であるため、この条件がインラインコメント非公開の実体になる（`comments` テーブルには他にもid指定の読み取り経路があるが、`/_api/comments.get` には影響しない——詳細はSecurity Considerations節参照）
 
 ## Error Handling
