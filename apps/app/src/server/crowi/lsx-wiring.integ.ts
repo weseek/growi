@@ -241,4 +241,216 @@ describe('crowi.setupRoutesForPlugins() -> $lsx tag wiring (integration)', () =>
     expect(res.body.pages).toEqual([]);
     expect(res.body.total).toBe(0);
   });
+
+  /**
+   * Task 6.1 -- dedicated Requirement 3.1/3.2 depth.
+   *
+   * The test above (task 5.3) already proves the tag condition and the
+   * viewer-permission filter compose, using ONE restricted page under
+   * GRANT_OWNER. This block adds coverage that test does not provide:
+   *
+   * - THREE pages under one tag, where only SOME are visible to the
+   *   requesting viewer, asserting the exact resulting set (not just
+   *   "the one visible page is present / the one hidden page is absent").
+   * - An explicit assertion on `total` (the response's count field), since
+   *   Requirement 3.2 explicitly requires exclusion from BOTH "一覧"
+   *   (the list) AND "件数" (the count).
+   * - A DIFFERENT grant/restriction mechanism (GRANT_USER_GROUP, gated by
+   *   `security:list-policy:hideRestrictedByGroup`) rather than another
+   *   GRANT_OWNER variant, so this test exercises a genuinely different
+   *   path through `addConditionToFilteringByViewerForList` than task
+   *   5.3's test does. Fixture shape follows the group-restricted-page
+   *   pattern already used by `apps/app/src/server/routes/apiv3/bookmarks.integ.ts`.
+   */
+  describe('multiple pages under one tag, some group-restricted (Req 3.1, 3.2)', () => {
+    const GROUP_BASE_PATH = `${BASE_PATH}/group-scenario`;
+    const GROUP_TAG_NAME = `${TAG_PREFIX}group-scenario`;
+
+    let UserGroup: Model<{ name: string }>;
+    let UserGroupRelation: Model<{
+      relatedGroup: mongoose.Types.ObjectId;
+      relatedUser: mongoose.Types.ObjectId;
+    }>;
+
+    let memberUser: HydratedDocument<IUser>;
+    let group: HydratedDocument<{ name: string }>;
+
+    let visiblePageId1: string;
+    let visiblePageId2: string;
+    let hiddenGroupPageId: string;
+    const groupScenarioPageIds: string[] = [];
+
+    beforeAll(async () => {
+      UserGroup = mongoose.model<{ name: string }>('UserGroup');
+      UserGroupRelation = mongoose.model<{
+        relatedGroup: mongoose.Types.ObjectId;
+        relatedUser: mongoose.Types.ObjectId;
+      }>('UserGroupRelation');
+
+      const memberUserName = `lsx-wiring-group-member-${WORKER_ID}`;
+      await User.deleteMany({ username: memberUserName });
+      memberUser = await User.create({
+        name: memberUserName,
+        username: memberUserName,
+        email: `${memberUserName}@example.com`,
+      });
+
+      await UserGroup.deleteMany({ name: `lsx-wiring-group-${WORKER_ID}` });
+      [group] = await UserGroup.insertMany([
+        { name: `lsx-wiring-group-${WORKER_ID}` },
+      ]);
+      await UserGroupRelation.insertMany([
+        { relatedGroup: group._id, relatedUser: memberUser._id },
+      ]);
+
+      await Page.deleteMany({ path: { $regex: `^${GROUP_BASE_PATH}` } });
+      const visiblePage1 = await Page.create({
+        path: `${GROUP_BASE_PATH}/visible-1`,
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser._id,
+        lastUpdateUser: testUser._id,
+        isEmpty: false,
+        descendantCount: 0,
+      });
+      const visiblePage2 = await Page.create({
+        path: `${GROUP_BASE_PATH}/visible-2`,
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser._id,
+        lastUpdateUser: testUser._id,
+        isEmpty: false,
+        descendantCount: 0,
+      });
+      const hiddenGroupPage = await Page.create({
+        path: `${GROUP_BASE_PATH}/hidden-group`,
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroups: [{ item: group._id, type: 'UserGroup' }],
+        creator: memberUser._id,
+        lastUpdateUser: memberUser._id,
+        isEmpty: false,
+        descendantCount: 0,
+      });
+      visiblePageId1 = visiblePage1._id.toString();
+      visiblePageId2 = visiblePage2._id.toString();
+      hiddenGroupPageId = hiddenGroupPage._id.toString();
+      groupScenarioPageIds.push(
+        visiblePageId1,
+        visiblePageId2,
+        hiddenGroupPageId,
+      );
+
+      await prisma.pagetagrelations.deleteMany({
+        where: { relatedPageId: { in: groupScenarioPageIds } },
+      });
+      await prisma.tags.deleteMany({ where: { name: GROUP_TAG_NAME } });
+      await prisma.tags.create({ data: { name: GROUP_TAG_NAME } });
+      const groupTag = await prisma.tags.findFirst({
+        where: { name: GROUP_TAG_NAME },
+      });
+      if (groupTag == null) {
+        throw new Error('failed to seed the group-scenario fixture tag');
+      }
+      await prisma.pagetagrelations.createMany({
+        data: groupScenarioPageIds.map((relatedPageId) => ({
+          relatedPageId,
+          relatedTagId: groupTag.id,
+        })),
+      });
+
+      // By default GROWI's list views show the EXISTENCE of a
+      // GRANT_USER_GROUP page to any viewer (only its content stays
+      // hidden) -- same rationale as `hideRestrictedByOwner` above, but
+      // the group-scope counterpart config key (see bookmarks.integ.ts).
+      // (Default is `false`, mirrored by the `afterAll` restore below --
+      // same convention as the outer describe's `hideRestrictedByOwner`.)
+      await configManager.updateConfig(
+        'security:list-policy:hideRestrictedByGroup',
+        true,
+        { skipPubsub: true },
+      );
+    }, 60_000);
+
+    afterAll(async () => {
+      try {
+        await Page.deleteMany({ _id: { $in: groupScenarioPageIds } });
+      } catch {
+        // ignore
+      }
+      try {
+        await prisma.pagetagrelations.deleteMany({
+          where: { relatedPageId: { in: groupScenarioPageIds } },
+        });
+        await prisma.tags.deleteMany({ where: { name: GROUP_TAG_NAME } });
+      } catch {
+        // ignore
+      }
+      try {
+        await UserGroupRelation.deleteMany({ relatedGroup: group._id });
+        await UserGroup.deleteMany({ _id: group._id });
+      } catch {
+        // ignore
+      }
+      try {
+        await User.deleteMany({ _id: memberUser?._id });
+      } catch {
+        // ignore
+      }
+      try {
+        await configManager.updateConfig(
+          'security:list-policy:hideRestrictedByGroup',
+          false,
+          { skipPubsub: true },
+        );
+      } catch {
+        // ignore
+      }
+    }, 30_000);
+
+    it('excludes the group-restricted page from BOTH the returned list AND the total count for a non-member, while including it for a member (Req 3.1, 3.2)', async () => {
+      currentUser = testUser; // not a member of `group`
+
+      const res = await request(app)
+        .get('/_api/lsx')
+        .query({
+          pagePath: GROUP_BASE_PATH,
+          options: JSON.stringify({ tag: GROUP_TAG_NAME }),
+        });
+
+      expect(res.status).toBe(200);
+      const paths = res.body.pages
+        .map((p: { path: string }) => p.path)
+        .toSorted();
+      // Assert the EXACT resulting set, not just "one page is present" --
+      // this is the multi-page breadth 5.3's single-restricted-page test
+      // does not cover.
+      expect(paths).toEqual([
+        `${GROUP_BASE_PATH}/visible-1`,
+        `${GROUP_BASE_PATH}/visible-2`,
+      ]);
+      // Requirement 3.2 requires exclusion from both the list AND the
+      // count -- assert `total` explicitly, not only the `pages` array.
+      expect(res.body.total).toBe(2);
+
+      // Positive control: the SAME group-restricted page, under the SAME
+      // tag condition, appears for a member of the granted group -- this
+      // isolates the exclusion above to the group-permission filter.
+      currentUser = memberUser;
+      const resAsMember = await request(app)
+        .get('/_api/lsx')
+        .query({
+          pagePath: GROUP_BASE_PATH,
+          options: JSON.stringify({ tag: GROUP_TAG_NAME }),
+        });
+
+      expect(resAsMember.status).toBe(200);
+      const pathsAsMember = resAsMember.body.pages
+        .map((p: { path: string }) => p.path)
+        .toSorted();
+      expect(pathsAsMember).toEqual([
+        `${GROUP_BASE_PATH}/hidden-group`,
+        `${GROUP_BASE_PATH}/visible-1`,
+        `${GROUP_BASE_PATH}/visible-2`,
+      ]);
+      expect(resAsMember.body.total).toBe(3);
+    });
+  });
 });
