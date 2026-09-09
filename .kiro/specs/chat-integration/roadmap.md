@@ -46,10 +46,19 @@ Gen 1 には手を入れず、GROWI 本体で両方を同時に有効にでき�
 | [chat-integration-protocol](../chat-integration-protocol/) | `packages/chat`（`@growi/chat`） | GROWI ⇄ proxy の通信契約、RFC 9421 署名、チャンネル権限の判定（両側が使う純粋関数） | 実装完了（`/kiro-validate-impl` GO） |
 | [chat-integration-proxy](../chat-integration-proxy/) | `apps/chat-integration-proxy` | 4 サービスとのやり取り、関係管理、コマンドの解釈、検索の統合、常時接続 | 実装完了（`/kiro-validate-impl` GO。残タスク12.4「スラッシュコマンドを実際に動かす」のみ意図して未着手・追跡中） |
 | [chat-integration-app](../chat-integration-app/) | `apps/app/src/features/chat-integration/` | 通知の送出、コマンドの処理、利用者の紐付け、鍵の保持、管理画面 | 実装完了（`/kiro-validate-impl` GO。1回目 NO-GO の是正4件を含む） |
-| [chat-integration-link-privacy](../chat-integration-link-privacy/) | umbrella 要件6（6.1・6.3）の amend | `chat-integration-app` の feature-level validation で判明: 固定リンク（ObjectId形式URL）を貼ると、投稿者がまだ知らない非公開ページの実際のパスが開示される。要件6.1/6.3自体が「URLを貼った人は既にパスを知っている」という前提を置いており、固定リンクではその前提が崩れることに起因 | 起票済み（要件フェーズ未着手） |
+| [chat-integration-link-privacy](../chat-integration-link-privacy/) | umbrella 要件6の amend（受け入れ条件6.6〜6.8を追加） | `chat-integration-app` の feature-level validation で判明: 固定リンク（ObjectId形式URL）を貼ると、投稿者がまだ知らない非公開ページの実際のパスが開示される。要件6.1/6.3自体が「URLを貼った人は既にパスを知っている」という前提を置いており、固定リンクではその前提が崩れることに起因 | 要件・設計 承認済み（`/kiro-validate-design` 条件つきGO→対応済み）。tasks フェーズ未着手 |
 
 **依存の向き**: `protocol` ← `proxy` / `app`。protocol は他の 2 つを知らない。
 proxy と app は互いを知らず、protocol の契約だけで話す。
+
+## Backlog（将来の拡張候補・未着手）
+
+まだ spec 化していない、次に検討したい拡張のアイデア。discovery から着手する際は、このリストの該当行を消して spec ディレクトリへのリンクに差し替えること。
+
+- **要件6（URL展開）の対話的な確認フロー**: 今の展開は「ページの公開範囲だけを見て、事前に何を出すか自動で決める」設計（`chat-integration-link-privacy` もこの枠組みの上で直している）。これに対し、「投稿者にだけ見える確認メッセージ（例: Slack の ephemeral message）で『これは○○グループのみアクセスできるページです → Dismiss / 内容を共有する』のような選択肢を出し、『共有する』を選んだ人だけに中身を展開する」という対話的な確認フローが提案された（2026-09-09）。
+  - **今の設計との違い**: 「ページの状態」だけでなく「今それを見ている人が誰か」をその場で判定する必要があり、しかもチャット側のボタン操作を GROWI 側へ伝え返す往復が要る。今の `link-preview` は一往復で完結する設計だが、これは成り立たない
+  - **想定される影響範囲**: `chat-integration-proxy`（各プラットフォームの ephemeral message・ボタン操作の扱いはサービスごとに異なる）、`chat-integration-protocol`（ボタン操作を GROWI へ伝え返す新しいやり取りが要る可能性）、`chat-integration-app`（その場での権限再判定）——3 sub-spec すべてにまたがる可能性が高く、`chat-integration-link-privacy` のような amend では収まらない
+  - **次にやること**: `/kiro-discovery` から着手し、新規 spec として brief を起こす
 
 ## Scope
 
