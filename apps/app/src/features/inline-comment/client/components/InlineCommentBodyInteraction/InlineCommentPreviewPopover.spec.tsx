@@ -13,7 +13,7 @@
  * complete, not merely present.
  */
 
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { mock } from 'vitest-mock-extended';
 
@@ -111,6 +111,8 @@ const renderPopover = (
   handlers: {
     createReply?: (parentId: string, comment: string) => Promise<unknown>;
     onClose?: () => void;
+    resolve?: (id: string, resolved: boolean) => Promise<unknown>;
+    onPointerEnter?: () => void;
   } = {},
   range: Range = buildRange(),
 ) =>
@@ -121,6 +123,8 @@ const renderPopover = (
       rendererOptions={rendererOptions}
       createReply={handlers.createReply ?? vi.fn().mockResolvedValue(undefined)}
       onClose={handlers.onClose ?? vi.fn()}
+      resolve={handlers.resolve ?? vi.fn().mockResolvedValue(undefined)}
+      onPointerEnter={handlers.onPointerEnter ?? vi.fn()}
     />,
   );
 
@@ -282,5 +286,82 @@ describe('InlineCommentPreviewPopover', () => {
     );
 
     expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it('renders an unresolved badge and a Resolve control, and toggles to resolved on click (Req 2.1, 2.2, 2.3)', async () => {
+    const resolve = vi.fn().mockResolvedValue(undefined);
+    renderPopover({ id: 'comment42', resolvedAt: null }, { resolve });
+
+    const popover = screen.getByTestId('inline-comment-preview-popover');
+    expect(
+      popover.querySelector('[data-testid="inline-comment-status"]'),
+    ).toHaveTextContent('inline_comment.unresolved');
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'inline_comment.resolve' }),
+    );
+
+    expect(resolve).toHaveBeenCalledWith('comment42', true);
+  });
+
+  it('renders a resolved badge and a Reopen control, and toggles to unresolved on click (Req 2.1, 2.2, 2.4)', async () => {
+    const resolve = vi.fn().mockResolvedValue(undefined);
+    renderPopover(
+      { id: 'comment42', resolvedAt: new Date('2026-01-03T00:00:00.000Z') },
+      { resolve },
+    );
+
+    const popover = screen.getByTestId('inline-comment-preview-popover');
+    expect(
+      popover.querySelector('[data-testid="inline-comment-status"]'),
+    ).toHaveTextContent('inline_comment.resolved');
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'inline_comment.reopen' }),
+    );
+
+    expect(resolve).toHaveBeenCalledWith('comment42', false);
+  });
+
+  it('displays an error when the resolve toggle rejects, without closing the popover (Req 2.5)', async () => {
+    const resolve = vi.fn().mockRejectedValue(new Error('permission denied'));
+    const onClose = vi.fn();
+    renderPopover({ resolvedAt: null }, { resolve, onClose });
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'inline_comment.resolve' }),
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('inline-comment-resolve-error'),
+      ).toHaveTextContent('permission denied');
+    });
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it('updates the displayed resolved state after a successful toggle (Req 2.6)', async () => {
+    const resolve = vi.fn().mockResolvedValue(undefined);
+    renderPopover({ resolvedAt: null }, { resolve });
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'inline_comment.resolve' }),
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId('inline-comment-resolve-error'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it('calls onPointerEnter when the pointer enters the popover root (Req 1.3, 1.4)', () => {
+    const onPointerEnter = vi.fn();
+    renderPopover({}, { onPointerEnter });
+
+    const popover = screen.getByTestId('inline-comment-preview-popover');
+    fireEvent.mouseEnter(popover);
+
+    expect(onPointerEnter).toHaveBeenCalledTimes(1);
   });
 });

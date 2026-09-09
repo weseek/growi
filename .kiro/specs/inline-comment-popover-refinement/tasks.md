@@ -10,7 +10,7 @@
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7_
   - _Boundary: InlineCommentBodyInteraction_
 
-- [ ] 2. (P) ポップオーバーへの解決操作とホバーロック通知を追加する（InlineCommentPreviewPopover）
+- [x] 2. (P) ポップオーバーへの解決操作とホバーロック通知を追加する（InlineCommentPreviewPopover）
   - `resolve: (id: string, resolved: boolean) => Promise<unknown>` prop を追加し、`comment.resolvedAt != null` で解決済み/未解決を判定するバッジと、判定を反転させて `resolve(comment.id, !isResolved)` を呼ぶトグルボタンを、`CommentCard` の `headerEnd` スロットに追加する（`InlineCommentItem.tsx` と同じクラス名・同じ判定を用いる）
   - トグル操作が失敗した場合に表示するローカルなエラー表示（`resolveError`）を追加する
   - `onPointerEnter: () => void` prop を追加し、ポップオーバーのルート要素の `onMouseEnter` で呼び出す

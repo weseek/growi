@@ -43,13 +43,37 @@ type InlineCommentPreviewPopoverProps = {
    */
   rendererOptions: RendererOptions | undefined;
   createReply: (parentId: string, comment: string) => Promise<unknown>;
+  /**
+   * Toggles the origin comment's resolved state. Used exactly as
+   * `InlineCommentItem.tsx` uses its own `resolve` prop (design.md's
+   * `InlineCommentPreviewPopover` block; research.md's "Duplicate the
+   * resolve badge/button markup" decision -- not extracted into a shared
+   * component with that file).
+   */
+  resolve: (id: string, resolved: boolean) => Promise<unknown>;
   onClose: () => void;
+  /**
+   * Fired from the root portaled div's native `onMouseEnter` once the
+   * pointer has actually arrived on the popover -- the only real caller
+   * (`InlineCommentBodyInteraction`) promotes a hover-shown popover into its
+   * pinned state on this signal (design.md's "Hover show/hide/lock
+   * sequence", requirements.md 1.3/1.4).
+   */
+  onPointerEnter: () => void;
 };
 
 export const InlineCommentPreviewPopover: FC<
   InlineCommentPreviewPopoverProps
 > = (props): JSX.Element | null => {
-  const { comment, range, rendererOptions, createReply, onClose } = props;
+  const {
+    comment,
+    range,
+    rendererOptions,
+    createReply,
+    resolve,
+    onClose,
+    onPointerEnter,
+  } = props;
   const { t } = useTranslation();
 
   // A state-backed callback ref (not useRef): `usePopperPosition` takes the
@@ -102,6 +126,22 @@ export const InlineCommentPreviewPopover: FC<
     return () => document.removeEventListener('mousedown', handlePointerDown);
   }, [popperElement, onClose]);
 
+  const [resolveError, setResolveError] = useState<string>();
+  const isResolved = comment.resolvedAt != null;
+
+  const handleResolveToggle = async (): Promise<void> => {
+    try {
+      await resolve(comment.id, !isResolved);
+      setResolveError(undefined);
+    } catch (err) {
+      setResolveError(
+        err instanceof Error
+          ? err.message
+          : 'An unknown error occurred when updating the resolved status',
+      );
+    }
+  };
+
   const [draftComment, setDraftComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string>();
@@ -131,11 +171,13 @@ export const InlineCommentPreviewPopover: FC<
   return createPortal(
     // zIndex 1070 mirrors SelectionPopover's own portal (Bootstrap's
     // `$zindex-popover`) for the same stacking-context escape reason.
+    // biome-ignore lint/a11y/noStaticElementInteractions: not an interactive element -- onMouseEnter only reports "pointer arrived" to the caller so it can lock the popover open (design.md's hover show/hide/lock sequence)
     <div
       ref={setPopperElement}
       data-testid="inline-comment-preview-popover"
       style={{ zIndex: 1070 }}
       className="card shadow-sm"
+      onMouseEnter={onPointerEnter}
     >
       <div className="card-body position-relative">
         <button
@@ -149,6 +191,37 @@ export const InlineCommentPreviewPopover: FC<
           id={comment.id}
           creator={comment.creator}
           createdAt={comment.createdAt}
+          headerEnd={
+            <span className="ms-auto d-flex align-items-center gap-2">
+              <span
+                data-testid="inline-comment-status"
+                className={`badge ${isResolved ? 'bg-secondary' : 'bg-warning text-dark'}`}
+              >
+                {isResolved
+                  ? t('inline_comment.resolved')
+                  : t('inline_comment.unresolved')}
+              </span>
+              <button
+                type="button"
+                className="btn btn-sm btn-outline-secondary"
+                onClick={handleResolveToggle}
+              >
+                {isResolved
+                  ? t('inline_comment.reopen')
+                  : t('inline_comment.resolve')}
+              </button>
+            </span>
+          }
+          footer={
+            resolveError != null ? (
+              <span
+                className="text-danger d-block"
+                data-testid="inline-comment-resolve-error"
+              >
+                {resolveError}
+              </span>
+            ) : undefined
+          }
         >
           {rendererOptions != null ? (
             <RevisionRenderer
