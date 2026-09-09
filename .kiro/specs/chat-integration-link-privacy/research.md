@@ -37,13 +37,23 @@
 
 ## Design Decisions
 
-### Decision: 固定リンクの `restricted: true` 応答は「実在パス」ではなく「URL から読み取った pathname」を `path` に入れる
+### Decision: 固定リンクの `restricted: true` 応答は、実在パスではなく固定文言を `path` に入れる
 - **Context**: 要件6.6（固定リンク・非公開ならパスを含めない）と要件6.8（固定リンクが見つからない場合と区別できない応答にする）を、契約変更なしで満たす必要がある
-- **Alternatives Considered**: 上表オプション B・C
-- **Selected Approach**: `resolvePageFromUrl` が返す情報に「URL から読み取った pathname（固定リンクの ID を含む）」と「固定リンクかどうか」を追加する。`buildLinkPreview` は、非公開（または見つからない）と判定したとき、実在パスの代わりにこの pathname を使う
-- **Rationale**: 投稿者は URL という形でこの pathname を既に知っている（固定リンクの ID そのものが URL の一部として貼られている）ため、これをそのまま返しても新しい情報の開示にはならない。パス形式 URL では `pathname === page.path` なので、既存の6.3の挙動は文字どおり無変更のまま保たれる
-- **Trade-offs**: `path` フィールドの意味が「実在パス」から「表示してよい範囲の位置情報」へわずかに広がる。ただし外部から見た応答の形は変わらないため、`chat-integration-protocol`・`chat-integration-proxy` の再検証は不要
-- **Follow-up**: 実装時、`link-preview-mapper.ts` の該当コメントで「`path` は実在パスとは限らない」ことを明記すること
+- **Alternatives Considered**:
+  1. 上表オプション B・C
+  2. `path` に「URL から読み取った pathname（固定リンクの ID を含む文字列）」を流用する案。投稿者はこの文字列を既に知っているため新しい情報の開示にはならないが、`/kiro-validate-design` のレビューで「テストで2つの応答を比べるとき、渡す ID が違えば `path` の値も違ってしまい、比較が成り立たない」という指摘を受けた。ユーザー確認の結果、そもそも「ページの状態を一切反映しない固定文言」にする方が単純で確実と判断し、この案は不採用
+- **Selected Approach**: `resolvePageFromUrl` が返す情報に「固定リンクかどうか」を追加する（元の pathname 自体は応答に使わないため運ばない）。`buildLinkPreview` は、固定リンクで非公開（または見つからない）と判定したとき、`path` に固定文言 `PERMALINK_UNAVAILABLE_MESSAGE`（`'This page does not exist, or is not visible to everyone.'`）を入れる。この定数はどの呼び出しからも同じ値なので、「見つからない」と「見つかったが非公開」の応答は必ず完全に一致する
+- **Rationale**: 固定文言はページの状態にもリクエストの中身にも依存しないため、要件6.8の「区別できない」を、テスト側の工夫（同じ ID を使う等）なしに構造的に満たせる。パス形式 URL では従来どおり実在パスを返すので、既存の6.3の挙動は文字どおり無変更のまま保たれる（6.7）
+- **Trade-offs**: 固定リンクで非公開ページを開いたとき、これまでの「本文は隠すがパスは見せる」という体験が失われ、代わりに常に同じ文言が出るだけになる。ただし要件6.6が求めているのはまさにこれ（パスを含めない）であり、副作用ではなく目的そのもの
+- **Follow-up**: なし
+
+### Decision: 固定リンクが見つからない場合もチャンネルへの表示が新しく出るようになることを受け入れる
+- **Context**: `chat-integration-proxy` は今、`kind: 'error'` の応答（今の「固定リンクが見つからない」の扱い）に対しては何も投稿しない。本 amend で固定リンクが見つからない場合も `kind: 'link-preview'` を返すようになると、実在しないページでも表示が付くようになる。`/kiro-validate-design` のレビューでこの変化が design.md のどこにも書かれていないと指摘された
+- **Alternatives Considered**: 要件6.8の「区別できない」を、応答の中身ではなく「チャンネルへ投稿するかどうか」で定義し直す案（両方とも何も投稿しない、に倒す）
+- **Selected Approach**: 応答の中身で区別できないようにする現行の設計を維持する。チャンネルへの表示が新しく出るようになる点は、design.md の Overview に明記し、受け入れる
+- **Rationale**: ユーザーに確認し、この変化（実在しないページでも同じ固定文言が表示されるようになること）を受け入れる方針で合意した。「投稿するかどうか」で区別しない設計にすると、`chat-integration-proxy` 側の変更が必要になり、本 amend の範囲（`chat-integration-app` のみ）を超える
+- **Trade-offs**: 固定リンクを含むメッセージには、実在するかどうかに関わらず必ず何らかの表示が付くようになる。ユーザー体験としては「毎回何か言われる」側に倒すが、要件6.8の防御という目的には合っている
+- **Follow-up**: なし
 
 ### Decision: 「見つからない」と「見つかったが非公開」の応答は、固定リンクのときだけ統合する。パス形式 URL では現状のまま
 - **Context**: existence-oracle を塞ぐ範囲をどこまで広げるか
