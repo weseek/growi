@@ -43,7 +43,7 @@
   - _Requirements: 6.6, 6.7, 6.8_
   - _Boundary: chat-integration/requirements.md_
 
-- [ ] 3.2 (P) research.md の Design Decisions 2件を chat-integration-app の research.md へ移す
+- [x] 3.2 (P) research.md の Design Decisions 2件を chat-integration-app の research.md へ移す
   - chat-integration-app には現在 research.md が存在しないため、新規作成になる
   - `chat-integration-app/research.md` に Design Decisions 2件（固定文言の採用、既存の「黙って何も投稿しない」を変える判断）が入っていることが確認できる
   - _Requirements: 6.6, 6.7, 6.8_
