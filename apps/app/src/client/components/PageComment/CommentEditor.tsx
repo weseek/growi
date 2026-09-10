@@ -360,7 +360,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
         </TabContent>
       </div>
 
-      <div className="comment-submit px-4 pb-3 mb-2">
+      <div className="comment-submit px-4 pb-3">
         <div className="d-flex">
           <span className="flex-grow-1" />
           <span className="d-none d-sm-inline">
