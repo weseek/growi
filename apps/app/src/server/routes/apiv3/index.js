@@ -14,6 +14,7 @@ import { createInlineCommentReplyRouteHandlersFactory } from '~/features/inline-
 import { listInlineCommentsRouteHandlersFactory } from '~/features/inline-comment/server/routes/list';
 import { resolveInlineCommentRouteHandlersFactory } from '~/features/inline-comment/server/routes/resolve';
 import { updateInlineCommentRouteHandlersFactory } from '~/features/inline-comment/server/routes/update';
+import { updateInlineCommentReplyRouteHandlersFactory } from '~/features/inline-comment/server/routes/update-reply';
 import { factory as mastraRouteFactory } from '~/features/mastra/server/routes';
 import { factory as adminAiSettingsRouteFactory } from '~/features/mastra/server/routes/admin-ai-settings';
 import newsRoute from '~/features/news/server/routes/news';
@@ -231,6 +232,10 @@ export const setup = (crowi, app) => {
     inlineCommentsRouter.put(
       '/:id',
       updateInlineCommentRouteHandlersFactory(crowi),
+    );
+    inlineCommentsRouter.put(
+      '/replies/:id',
+      updateInlineCommentReplyRouteHandlersFactory(crowi),
     );
     router.use('/inline-comments', inlineCommentsRouter);
   }

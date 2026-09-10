@@ -22,7 +22,7 @@
   - _Boundary: update.ts_
   - _Depends: 1_
 
-- [ ] 2.2 (P) 返信更新ルートを追加する
+- [x] 2.2 (P) 返信更新ルートを追加する
   - `PUT /_api/v3/inline-comments/replies/:id` を実装する（`update-reply.ts`）。ミドルウェア順序・エラー方針は2.1と同一
   - `findUnique` でページ権限チェック・返信であることの400判定を行い、`InlineCommentService.updateReply` に委譲する
   - `UpdateInlineCommentReplyRequestBody`/`UpdateInlineCommentReplyResponseBody` DTO（`update-inline-comment-reply.ts`）を追加し、barrelに再エクスポートする

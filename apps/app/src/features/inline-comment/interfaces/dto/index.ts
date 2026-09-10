@@ -3,3 +3,4 @@ export * from './create-inline-comment-reply';
 export * from './list-inline-comments';
 export * from './resolve-inline-comment';
 export * from './update-inline-comment';
+export * from './update-inline-comment-reply';
