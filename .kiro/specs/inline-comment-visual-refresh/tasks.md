@@ -27,7 +27,7 @@
   - _Depends: 1.1_
 
 - [ ] 2. 返信アイテムの編集・削除操作を一覧アイテムと同じ見た目に揃える
-- [ ] 2.1 返信の編集・削除アイコンボタンをヘッダー行内ホバー表示に変更する
+- [x] 2.1 返信の編集・削除アイコンボタンをヘッダー行内ホバー表示に変更する
   - `InlineCommentReplies.tsx`の返信アイテム（`InlineCommentReplyItem`）で、現在の常時表示フッターテキストリンクを撤去し、タスク1.2で`InlineCommentItem.module.scss`に定義したホバー表示アイコンボタンの規則をそのまま再利用する（返信独自の新しいSCSS規則は追加しない。`InlineCommentReplies.tsx`は`InlineCommentItem.module.scss`を新たにimportする必要はない——`InlineCommentReplyItem`は既存の構造上、常に`InlineCommentItem.tsx`の`.inline-comment-item-styles`クラスが付いたルートdivの子要素としてレンダリングされるため、CSS Modulesの`:global()`セレクタが祖先のクラスを介してそのまま効く。この祖先子関係が崩れていないことをタスク実行前に確認する）
   - 返信には状態バッジ・解決トグルボタンが無いため、アイコンボタンは`CommentCard`の`headerEnd`スロット内に新規に配置する
   - 完了したことが分かる状態: `InlineCommentReplies.spec.tsx`で、投稿者本人にのみ編集・削除アイコンボタンが存在すること、リードオンリー制限下では無効化されること、削除確認前に`removeReply`が呼ばれないことを検証するテストがgreenになる
@@ -92,3 +92,4 @@
 ## Implementation Notes
 
 - Task 1.2: design.md contains two descriptions of the delete icon's glyph that disagree — the general restatement near the top (line 59/151, "same as CommentControl.tsx", which uses `close`) versus the authoritative `InlineCommentItem` Responsibilities & Constraints bullet (line 174, which explicitly specifies the `delete` glyph + `text-danger`). The implementation followed the line-174 bullet, since it is the section this task's boundary points at. Flag this for the port-back step (task N in `.claude/rules/spec-lifecycle.md`'s procedure, when this amend spec folds back into `.kiro/specs/inline-comment`) so the two passages get reconciled into one consistent statement.
+- Task 2.1: tasks.md's own wording for task 2.1 claimed `InlineCommentItem.module.scss`'s `.icon-button-container` hover rule was a `:global()` selector reachable from `InlineCommentReplies.tsx` without a new import. Verified false (twice — implementer and independent reviewer both inspected the compiled SCSS): the rule is nested under `.inline-comment-item-styles` with no `:global()` wrapper, so it compiles to a CSS-Modules-scoped hashed class. `InlineCommentReplies.tsx` now imports `./InlineCommentItem.module.scss` (read-only import; the SCSS file itself was not edited) and references `styles['icon-button-container']`. Flag this alongside the task-1.2 glyph note for the port-back step, so design.md no longer describes a `:global()` mechanism that doesn't exist in the actual SCSS.

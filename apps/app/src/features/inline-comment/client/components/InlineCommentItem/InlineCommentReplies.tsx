@@ -8,6 +8,16 @@
  *
  * `reply.creatorId` (not the populated `creator`) is compared against
  * `currentUser._id` to decide reply ownership, matching `InlineCommentItem`.
+ *
+ * Edit/delete icon buttons reuse `InlineCommentItem.module.scss`'s
+ * `.icon-button-container` hover-visibility rule (imported here, not
+ * duplicated): that rule is `.inline-comment-item-styles .icon-button-container`
+ * with no `:global()` wrapper, so it is a CSS-Modules-scoped selector, not a
+ * plain global class name — matching it requires reading the class through
+ * `styles[...]` from this exact module specifier so the compiled hash lines
+ * up with `InlineCommentItem.tsx`'s. `InlineCommentReplyItem` always renders
+ * as a descendant of that ancestor's root div (see `InlineCommentItem.tsx`),
+ * so the `:hover` rule still reaches it.
  */
 
 import { type FC, type JSX, useMemo, useState } from 'react';
@@ -23,6 +33,8 @@ import { useCurrentUser } from '~/states/global';
 
 import type { InlineCommentReply } from '../../../interfaces';
 import { MentionAwareCommentInput } from '../MentionAwareCommentInput/MentionAwareCommentInput';
+
+import styles from './InlineCommentItem.module.scss';
 
 type InlineCommentRepliesProps = {
   parentId: string;
@@ -100,6 +112,36 @@ const InlineCommentReplyItem: FC<InlineCommentReplyItemProps> = (
         id={reply.id}
         creator={reply.creator}
         createdAt={reply.createdAt}
+        headerEnd={
+          isOwnReply &&
+          !isEditing &&
+          !isDeleteConfirmOpen && (
+            <span className="ms-auto d-flex align-items-center gap-2">
+              <NotAvailableIfReadOnlyUserNotAllowedToComment>
+                <span
+                  className={`d-flex align-items-center gap-1 ${styles['icon-button-container']}`}
+                >
+                  <button
+                    type="button"
+                    data-testid="inline-comment-reply-edit-button"
+                    className="btn btn-link p-2 opacity-50"
+                    onClick={() => setIsEditing(true)}
+                  >
+                    <span className="material-symbols-outlined">edit</span>
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="inline-comment-reply-delete-button"
+                    className="btn btn-link p-2 opacity-50 text-danger"
+                    onClick={() => setIsDeleteConfirmOpen(true)}
+                  >
+                    <span className="material-symbols-outlined">delete</span>
+                  </button>
+                </span>
+              </NotAvailableIfReadOnlyUserNotAllowedToComment>
+            </span>
+          )
+        }
         footer={
           <>
             {editError != null && (
@@ -117,28 +159,6 @@ const InlineCommentReplyItem: FC<InlineCommentReplyItemProps> = (
               >
                 {deleteError}
               </span>
-            )}
-            {isOwnReply && !isEditing && !isDeleteConfirmOpen && (
-              <NotAvailableIfReadOnlyUserNotAllowedToComment>
-                <div className="inline-comment-controls d-flex gap-2 mt-1">
-                  <button
-                    type="button"
-                    data-testid="inline-comment-reply-edit-button"
-                    className="btn btn-sm btn-link p-0"
-                    onClick={() => setIsEditing(true)}
-                  >
-                    {t('Edit')}
-                  </button>
-                  <button
-                    type="button"
-                    data-testid="inline-comment-reply-delete-button"
-                    className="btn btn-sm btn-link p-0 text-danger"
-                    onClick={() => setIsDeleteConfirmOpen(true)}
-                  >
-                    {t('Delete')}
-                  </button>
-                </div>
-              </NotAvailableIfReadOnlyUserNotAllowedToComment>
             )}
             {isDeleteConfirmOpen && (
               <div

@@ -37,6 +37,19 @@ import { InlineCommentReplies } from './InlineCommentReplies';
 // successful submit both close it back to the toggle button".
 // ---------------------------------------------------------------------------
 
+// `InlineCommentReplyItem` reuses `InlineCommentItem.module.scss`'s
+// `.icon-button-container` hover-visibility rule via import, not by
+// duplicating a new rule -- see InlineCommentReplies.tsx's top-of-file
+// comment. `.icon-button-container` is nested (no `:global()`) in that
+// module, so it is a CSS-Modules-scoped local class; this identity mock
+// mirrors InlineCommentItem.spec.tsx's own mock so assertions can match on
+// the plain string.
+vi.mock('./InlineCommentItem.module.scss', () => ({
+  default: {
+    'icon-button-container': 'icon-button-container',
+  },
+}));
+
 const commentEditorProps = vi.hoisted(
   () => ({ current: undefined }) as { current?: Record<string, unknown> },
 );
@@ -400,6 +413,61 @@ describe('InlineCommentReplies', () => {
       expect(
         screen.getByTestId('inline-comment-reply-delete-button'),
       ).toBeInTheDocument();
+    });
+
+    it("renders the edit/delete buttons as icon buttons (material-symbols glyphs, no text-link wording) matching InlineCommentItem's pattern (Requirement 3.5)", () => {
+      currentUserRef.current = { _id: 'user1' };
+      renderReplies({ replies: [ownReply] });
+
+      const editButton = screen.getByTestId('inline-comment-reply-edit-button');
+      const deleteButton = screen.getByTestId(
+        'inline-comment-reply-delete-button',
+      );
+
+      expect(editButton).toHaveClass('btn', 'btn-link', 'p-2', 'opacity-50');
+      expect(deleteButton).toHaveClass(
+        'btn',
+        'btn-link',
+        'p-2',
+        'opacity-50',
+        'text-danger',
+      );
+      expect(
+        editButton.querySelector('.material-symbols-outlined'),
+      ).toHaveTextContent('edit');
+      expect(
+        deleteButton.querySelector('.material-symbols-outlined'),
+      ).toHaveTextContent('delete');
+      // No more always-visible text-link wording left behind (previous
+      // footer implementation rendered the raw "Edit"/"Delete" i18n keys).
+      expect(editButton).not.toHaveTextContent('Edit');
+      expect(deleteButton).not.toHaveTextContent('Delete');
+    });
+
+    it('places the edit/delete icon buttons in the header row (headerEnd), not the footer (DOM structure)', () => {
+      currentUserRef.current = { _id: 'user1' };
+      renderReplies({ replies: [ownReply] });
+
+      const replyContainer = screen.getByTestId('inline-comment-reply');
+      const header = replyContainer.querySelector('.d-flex.align-items-center');
+      const editButton = screen.getByTestId('inline-comment-reply-edit-button');
+      const deleteButton = screen.getByTestId(
+        'inline-comment-reply-delete-button',
+      );
+
+      expect(header).not.toBeNull();
+      expect(header?.contains(editButton)).toBe(true);
+      expect(header?.contains(deleteButton)).toBe(true);
+    });
+
+    it('gives the icon-button container the same hover-visibility CSS Modules class InlineCommentItem uses (reused, not duplicated)', () => {
+      currentUserRef.current = { _id: 'user1' };
+      renderReplies({ replies: [ownReply] });
+
+      const editButton = screen.getByTestId('inline-comment-reply-edit-button');
+      const iconButtonContainer = editButton.closest('.icon-button-container');
+
+      expect(iconButtonContainer).not.toBeNull();
     });
 
     it("hides the edit and delete buttons when the current user is not the reply's own creator", () => {
