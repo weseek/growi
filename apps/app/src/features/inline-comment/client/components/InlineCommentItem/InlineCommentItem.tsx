@@ -27,15 +27,32 @@
  *
  * The replies subtree stays outside the box, below it, as a nested thread —
  * each reply gets its own box of its own.
+ *
+ * Edit/delete (requirements.md Requirement 1, 2): shown only to the comment's
+ * own creator (`comment.creatorId === currentUser?._id` -- `creator` is not
+ * used for this check, see design.md's `InlineCommentItem` /
+ * `InlineCommentReplies` section: `creator` is only ever populated by
+ * `listByPageId()`, and checking `creatorId` keeps this component consistent
+ * with the popover, which cannot rely on a populated `creator`), and gated by
+ * the same `NotAvailableIfReadOnlyUserNotAllowedToComment` restriction
+ * `CommentControl.tsx` applies to a normal comment. Editing swaps the body
+ * slot for `MentionAwareCommentInput` (task 4's `initialValue`); canceling
+ * reverts to the read-only body without calling `update`. Deleting opens a
+ * small inline confirmation (not `DeleteCommentModal` -- design.md explains
+ * why that component is not reused here) and only calls `remove` once
+ * confirmed.
  */
 import { type FC, type JSX, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { NotAvailableIfReadOnlyUserNotAllowedToComment } from '~/client/components/NotAvailableForReadOnlyUser';
 import { CommentCard } from '~/client/components/PageComment/CommentCard';
 import RevisionRenderer from '~/components/PageView/RevisionRenderer';
 import type { RendererOptions } from '~/interfaces/renderer-options';
+import { useCurrentUser } from '~/states/global';
 
 import type { InlineCommentWithReplies } from '../../../interfaces';
+import { MentionAwareCommentInput } from '../MentionAwareCommentInput/MentionAwareCommentInput';
 import { InlineCommentReplies } from './InlineCommentReplies';
 
 import styles from './InlineCommentItem.module.scss';
@@ -50,6 +67,14 @@ type InlineCommentItemProps = {
   rendererOptions: RendererOptions | undefined;
   resolve: (id: string, resolved: boolean) => Promise<unknown>;
   createReply: (parentId: string, comment: string) => Promise<unknown>;
+  /** Persists an edited origin-comment body (Requirement 1). */
+  update: (id: string, comment: string) => Promise<unknown>;
+  /** Deletes the origin comment, along with its replies (Requirement 2.4). */
+  remove: (id: string) => Promise<unknown>;
+  /** Persists an edited reply body (Requirement 1), forwarded to `InlineCommentReplies`. */
+  updateReply: (id: string, comment: string) => Promise<unknown>;
+  /** Deletes a single reply (Requirement 2), forwarded to `InlineCommentReplies`. */
+  removeReply: (id: string) => Promise<unknown>;
   /**
    * Scrolls the page body to the highlighted range this comment anchors to
    * (design.md 決定4 / requirement 3.1). Wired to the anchored quote below —
@@ -64,12 +89,27 @@ type InlineCommentItemProps = {
 export const InlineCommentItem: FC<InlineCommentItemProps> = (
   props,
 ): JSX.Element => {
-  const { comment, rendererOptions, resolve, createReply, scrollToRange } =
-    props;
+  const {
+    comment,
+    rendererOptions,
+    resolve,
+    createReply,
+    update,
+    remove,
+    updateReply,
+    removeReply,
+    scrollToRange,
+  } = props;
   const { t } = useTranslation();
+  const currentUser = useCurrentUser();
 
   const [resolveError, setResolveError] = useState<string>();
+  const [isEditing, setIsEditing] = useState(false);
+  const [editError, setEditError] = useState<string>();
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [deleteError, setDeleteError] = useState<string>();
   const isResolved = comment.resolvedAt != null;
+  const isOwnComment = currentUser?._id === comment.creatorId;
 
   const handleResolveToggle = async (): Promise<void> => {
     try {
@@ -86,6 +126,44 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
 
   const handleQuoteClick = (): void => {
     scrollToRange(comment.id);
+  };
+
+  const handleEditSubmit = async (text: string): Promise<void> => {
+    try {
+      await update(comment.id, text);
+      setEditError(undefined);
+      setIsEditing(false);
+    } catch (err) {
+      setEditError(
+        err instanceof Error
+          ? err.message
+          : 'An unknown error occurred when updating the comment',
+      );
+      // Rethrown so MentionAwareCommentInput's own submit handler treats
+      // this as a failure too (keeps the edited text on screen instead of
+      // clearing it as if the submit had succeeded).
+      throw err;
+    }
+  };
+
+  const handleEditCancel = (): void => {
+    setIsEditing(false);
+    setEditError(undefined);
+  };
+
+  const handleDeleteConfirm = async (): Promise<void> => {
+    try {
+      await remove(comment.id);
+      setDeleteError(undefined);
+    } catch (err) {
+      setDeleteError(
+        err instanceof Error
+          ? err.message
+          : 'An unknown error occurred when deleting the comment',
+      );
+    } finally {
+      setIsDeleteConfirmOpen(false);
+    }
   };
 
   return (
@@ -150,17 +228,97 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
           </>
         }
         footer={
-          resolveError != null ? (
-            <span
-              className="text-danger d-block"
-              data-testid="inline-comment-resolve-error"
-            >
-              {resolveError}
-            </span>
-          ) : undefined
+          <>
+            {resolveError != null && (
+              <span
+                className="text-danger d-block"
+                data-testid="inline-comment-resolve-error"
+              >
+                {resolveError}
+              </span>
+            )}
+            {editError != null && (
+              <span
+                className="text-danger d-block"
+                data-testid="inline-comment-edit-error"
+              >
+                {editError}
+              </span>
+            )}
+            {deleteError != null && (
+              <span
+                className="text-danger d-block"
+                data-testid="inline-comment-delete-error"
+              >
+                {deleteError}
+              </span>
+            )}
+            {isOwnComment && !isEditing && !isDeleteConfirmOpen && (
+              <NotAvailableIfReadOnlyUserNotAllowedToComment>
+                <div className="inline-comment-controls d-flex gap-2 mt-1">
+                  <button
+                    type="button"
+                    data-testid="inline-comment-edit-button"
+                    className="btn btn-sm btn-link p-0"
+                    onClick={() => setIsEditing(true)}
+                  >
+                    {t('Edit')}
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="inline-comment-delete-button"
+                    className="btn btn-sm btn-link p-0 text-danger"
+                    onClick={() => setIsDeleteConfirmOpen(true)}
+                  >
+                    {t('Delete')}
+                  </button>
+                </div>
+              </NotAvailableIfReadOnlyUserNotAllowedToComment>
+            )}
+            {isDeleteConfirmOpen && (
+              <div
+                data-testid="inline-comment-delete-confirm"
+                className="d-flex align-items-center gap-2 mt-1"
+              >
+                <span>{t('page_comment.delete_comment')}</span>
+                <button
+                  type="button"
+                  data-testid="inline-comment-delete-confirm-button"
+                  className="btn btn-sm btn-danger"
+                  onClick={handleDeleteConfirm}
+                >
+                  {t('Delete')}
+                </button>
+                <button
+                  type="button"
+                  data-testid="inline-comment-delete-cancel-button"
+                  className="btn btn-sm btn-outline-secondary"
+                  onClick={() => setIsDeleteConfirmOpen(false)}
+                >
+                  {t('Cancel')}
+                </button>
+              </div>
+            )}
+          </>
         }
       >
-        {rendererOptions != null ? (
+        {isEditing ? (
+          <div className="inline-comment-edit-form">
+            <MentionAwareCommentInput
+              editorKey={`inline_comment_edit_${comment.id}`}
+              initialValue={comment.comment}
+              onSubmit={handleEditSubmit}
+            />
+            <button
+              type="button"
+              data-testid="inline-comment-edit-cancel-button"
+              className="btn btn-sm btn-outline-secondary mt-1"
+              onClick={handleEditCancel}
+            >
+              {t('Cancel')}
+            </button>
+          </div>
+        ) : rendererOptions != null ? (
           <RevisionRenderer
             rendererOptions={rendererOptions}
             markdown={comment.comment}
@@ -178,6 +336,8 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
         replies={comment.replies}
         rendererOptions={rendererOptions}
         onSubmitReply={createReply}
+        updateReply={updateReply}
+        removeReply={removeReply}
       />
     </div>
   );

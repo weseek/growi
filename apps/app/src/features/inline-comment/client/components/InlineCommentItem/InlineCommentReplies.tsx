@@ -8,8 +8,9 @@
  * uses. `ReplyComments.tsx` itself is not reused here — it is wired to the
  * legacy page-end comment feature's own state (delete modal, inline edit
  * mode, `ICommentHasId` shape), none of which fits an inline-comment reply
- * (no edit/delete per this spec's Non-Goals) — so this component follows
- * its established visual pattern instead of importing it.
+ * — so this component follows its established visual pattern instead of
+ * importing it. (Edit/delete for a reply is provided below, but through this
+ * component's own state and `MentionAwareCommentInput`, not `ReplyComments.tsx`'s.)
  *
  * Reply bodies render through `RevisionRenderer` with the caller-supplied
  * `rendererOptions` — the SAME `RendererOptions` the rest of the comment
@@ -57,12 +58,22 @@
  * before rendering, mirroring `PageComment.tsx`'s own `commentsFromOldest`
  * reversal, so a reply thread always reads oldest-to-newest regardless of
  * whether the origin comment is inline or normal.
+ *
+ * Edit/delete (requirements.md Requirement 1, 2): each already-posted reply
+ * gets its own edit/delete controls, shown only to that reply's own creator
+ * (`reply.creatorId === currentUser?._id`, not the populated `creator` --
+ * same rationale as `InlineCommentItem`) and gated by
+ * `NotAvailableIfReadOnlyUserNotAllowedToComment`. `InlineCommentReplyItem`
+ * below holds this per-reply local state (`isEditing`/`isDeleteConfirmOpen`/
+ * `editError`/`deleteError`) so editing one reply does not affect its
+ * siblings.
  */
 
 import { type FC, type JSX, useMemo, useState } from 'react';
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'react-i18next';
 
+import { NotAvailableIfReadOnlyUserNotAllowedToComment } from '~/client/components/NotAvailableForReadOnlyUser';
 import { CommentCard } from '~/client/components/PageComment/CommentCard';
 import { CommentEditor } from '~/client/components/PageComment/CommentEditor';
 import RevisionRenderer from '~/components/PageView/RevisionRenderer';
@@ -70,6 +81,7 @@ import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useCurrentUser } from '~/states/global';
 
 import type { InlineCommentReply } from '../../../interfaces';
+import { MentionAwareCommentInput } from '../MentionAwareCommentInput/MentionAwareCommentInput';
 
 type InlineCommentRepliesProps = {
   parentId: string;
@@ -88,6 +100,172 @@ type InlineCommentRepliesProps = {
    */
   rendererOptions: RendererOptions | undefined;
   onSubmitReply: (parentId: string, comment: string) => Promise<unknown>;
+  /** Persists an edited reply body (Requirement 1). */
+  updateReply: (id: string, comment: string) => Promise<unknown>;
+  /** Deletes a single reply (Requirement 2). */
+  removeReply: (id: string) => Promise<unknown>;
+};
+
+type InlineCommentReplyItemProps = {
+  reply: InlineCommentReply;
+  rendererOptions: RendererOptions | undefined;
+  updateReply: (id: string, comment: string) => Promise<unknown>;
+  removeReply: (id: string) => Promise<unknown>;
+  isOwnReply: boolean;
+};
+
+const InlineCommentReplyItem: FC<InlineCommentReplyItemProps> = (
+  props,
+): JSX.Element => {
+  const { reply, rendererOptions, updateReply, removeReply, isOwnReply } =
+    props;
+  const { t } = useTranslation();
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [editError, setEditError] = useState<string>();
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [deleteError, setDeleteError] = useState<string>();
+
+  const handleEditSubmit = async (text: string): Promise<void> => {
+    try {
+      await updateReply(reply.id, text);
+      setEditError(undefined);
+      setIsEditing(false);
+    } catch (err) {
+      setEditError(
+        err instanceof Error
+          ? err.message
+          : 'An unknown error occurred when updating the reply',
+      );
+      // Rethrown so MentionAwareCommentInput keeps the edited text on screen
+      // instead of clearing it as if the submit had succeeded.
+      throw err;
+    }
+  };
+
+  const handleEditCancel = (): void => {
+    setIsEditing(false);
+    setEditError(undefined);
+  };
+
+  const handleDeleteConfirm = async (): Promise<void> => {
+    try {
+      await removeReply(reply.id);
+      setDeleteError(undefined);
+    } catch (err) {
+      setDeleteError(
+        err instanceof Error
+          ? err.message
+          : 'An unknown error occurred when deleting the reply',
+      );
+    } finally {
+      setIsDeleteConfirmOpen(false);
+    }
+  };
+
+  return (
+    <div
+      data-testid="inline-comment-reply"
+      className="inline-comment-reply ms-4 ms-sm-5 mt-2"
+    >
+      <CommentCard
+        id={reply.id}
+        creator={reply.creator}
+        createdAt={reply.createdAt}
+        footer={
+          <>
+            {editError != null && (
+              <span
+                className="text-danger d-block"
+                data-testid="inline-comment-reply-edit-error"
+              >
+                {editError}
+              </span>
+            )}
+            {deleteError != null && (
+              <span
+                className="text-danger d-block"
+                data-testid="inline-comment-reply-delete-error"
+              >
+                {deleteError}
+              </span>
+            )}
+            {isOwnReply && !isEditing && !isDeleteConfirmOpen && (
+              <NotAvailableIfReadOnlyUserNotAllowedToComment>
+                <div className="inline-comment-controls d-flex gap-2 mt-1">
+                  <button
+                    type="button"
+                    data-testid="inline-comment-reply-edit-button"
+                    className="btn btn-sm btn-link p-0"
+                    onClick={() => setIsEditing(true)}
+                  >
+                    {t('Edit')}
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="inline-comment-reply-delete-button"
+                    className="btn btn-sm btn-link p-0 text-danger"
+                    onClick={() => setIsDeleteConfirmOpen(true)}
+                  >
+                    {t('Delete')}
+                  </button>
+                </div>
+              </NotAvailableIfReadOnlyUserNotAllowedToComment>
+            )}
+            {isDeleteConfirmOpen && (
+              <div
+                data-testid="inline-comment-reply-delete-confirm"
+                className="d-flex align-items-center gap-2 mt-1"
+              >
+                <span>{t('page_comment.delete_comment')}</span>
+                <button
+                  type="button"
+                  data-testid="inline-comment-reply-delete-confirm-button"
+                  className="btn btn-sm btn-danger"
+                  onClick={handleDeleteConfirm}
+                >
+                  {t('Delete')}
+                </button>
+                <button
+                  type="button"
+                  data-testid="inline-comment-reply-delete-cancel-button"
+                  className="btn btn-sm btn-outline-secondary"
+                  onClick={() => setIsDeleteConfirmOpen(false)}
+                >
+                  {t('Cancel')}
+                </button>
+              </div>
+            )}
+          </>
+        }
+      >
+        {isEditing ? (
+          <div className="inline-comment-edit-form">
+            <MentionAwareCommentInput
+              editorKey={`inline_comment_edit_${reply.id}`}
+              initialValue={reply.comment}
+              onSubmit={handleEditSubmit}
+            />
+            <button
+              type="button"
+              data-testid="inline-comment-reply-edit-cancel-button"
+              className="btn btn-sm btn-outline-secondary mt-1"
+              onClick={handleEditCancel}
+            >
+              {t('Cancel')}
+            </button>
+          </div>
+        ) : rendererOptions != null ? (
+          <RevisionRenderer
+            rendererOptions={rendererOptions}
+            markdown={reply.comment}
+          />
+        ) : (
+          <span>{reply.comment}</span>
+        )}
+      </CommentCard>
+    </div>
+  );
 };
 
 export const InlineCommentReplies: FC<InlineCommentRepliesProps> = (
@@ -100,6 +278,8 @@ export const InlineCommentReplies: FC<InlineCommentRepliesProps> = (
     replies,
     rendererOptions,
     onSubmitReply,
+    updateReply,
+    removeReply,
   } = props;
   const { t } = useTranslation();
   const currentUser = useCurrentUser();
@@ -114,26 +294,14 @@ export const InlineCommentReplies: FC<InlineCommentRepliesProps> = (
       className="inline-comment-replies"
     >
       {repliesFromOldest.map((reply) => (
-        <div
+        <InlineCommentReplyItem
           key={reply.id}
-          data-testid="inline-comment-reply"
-          className="inline-comment-reply ms-4 ms-sm-5 mt-2"
-        >
-          <CommentCard
-            id={reply.id}
-            creator={reply.creator}
-            createdAt={reply.createdAt}
-          >
-            {rendererOptions != null ? (
-              <RevisionRenderer
-                rendererOptions={rendererOptions}
-                markdown={reply.comment}
-              />
-            ) : (
-              <span>{reply.comment}</span>
-            )}
-          </CommentCard>
-        </div>
+          reply={reply}
+          rendererOptions={rendererOptions}
+          updateReply={updateReply}
+          removeReply={removeReply}
+          isOwnReply={currentUser?._id === reply.creatorId}
+        />
       ))}
 
       <div className="inline-comment-reply-form ms-4 ms-sm-5 mt-2">

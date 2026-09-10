@@ -14,7 +14,7 @@
  * this task must rule out.
  */
 
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type { RendererOptions } from '~/interfaces/renderer-options';
@@ -58,6 +58,50 @@ vi.mock('~/client/components/FormattedDistanceDate', () => ({
 
 vi.mock('./InlineCommentReplies', () => ({
   InlineCommentReplies: () => <div data-testid="inline-comment-replies" />,
+}));
+
+// The current user drives the author-only check for edit/delete (design.md:
+// `comment.creatorId === currentUser?._id`, never the populated `creator`).
+// Mutable via `currentUserRef` so individual tests can simulate "viewing as
+// the comment's own author" vs. "viewing as someone else".
+const currentUserRef = vi.hoisted(
+  () => ({ current: undefined }) as { current?: { _id: string } },
+);
+vi.mock('~/states/global', () => ({
+  useCurrentUser: () => currentUserRef.current,
+}));
+
+// The read-only restriction is `NotAvailableIfReadOnlyUserNotAllowedToComment`'s
+// own concern (it already has its own tests) — this file mocks it directly at
+// the component boundary, toggled per test via `isDisabledRef`, so a test can
+// assert "the edit/delete controls are disabled under the read-only
+// restriction" without re-deriving `NotAvailable`'s own DOM rendering.
+const isDisabledRef = vi.hoisted(() => ({ current: false }));
+vi.mock('~/client/components/NotAvailableForReadOnlyUser', () => ({
+  NotAvailableIfReadOnlyUserNotAllowedToComment: ({
+    children,
+  }: {
+    children: JSX.Element;
+  }) => {
+    if (!isDisabledRef.current) {
+      return children;
+    }
+    return (
+      <fieldset disabled data-testid="not-available-for-read-only-user">
+        {children}
+      </fieldset>
+    );
+  },
+}));
+
+const mentionAwareCommentInputProps = vi.hoisted(
+  () => ({ current: undefined }) as { current?: Record<string, unknown> },
+);
+vi.mock('../MentionAwareCommentInput/MentionAwareCommentInput', () => ({
+  MentionAwareCommentInput: (props: Record<string, unknown>) => {
+    mentionAwareCommentInputProps.current = props;
+    return <div data-testid="mention-aware-comment-input-mock" />;
+  },
 }));
 
 import { InlineCommentItem } from './InlineCommentItem';
@@ -106,6 +150,10 @@ const renderItem = (
   handlers: {
     resolve?: (id: string, resolved: boolean) => Promise<unknown>;
     createReply?: (parentId: string, comment: string) => Promise<unknown>;
+    update?: (id: string, comment: string) => Promise<unknown>;
+    remove?: (id: string) => Promise<unknown>;
+    updateReply?: (id: string, comment: string) => Promise<unknown>;
+    removeReply?: (id: string) => Promise<unknown>;
     scrollToRange?: (commentId: string) => boolean;
   } = {},
 ) =>
@@ -115,6 +163,10 @@ const renderItem = (
       rendererOptions={rendererOptions}
       resolve={handlers.resolve ?? vi.fn().mockResolvedValue(undefined)}
       createReply={handlers.createReply ?? vi.fn().mockResolvedValue(undefined)}
+      update={handlers.update ?? vi.fn().mockResolvedValue(undefined)}
+      remove={handlers.remove ?? vi.fn().mockResolvedValue(undefined)}
+      updateReply={handlers.updateReply ?? vi.fn().mockResolvedValue(undefined)}
+      removeReply={handlers.removeReply ?? vi.fn().mockResolvedValue(undefined)}
       scrollToRange={handlers.scrollToRange ?? vi.fn(() => true)}
     />,
   );
@@ -129,6 +181,12 @@ const getMain = (container: HTMLElement) =>
 // ---------------------------------------------------------------------------
 
 describe('InlineCommentItem', () => {
+  beforeEach(() => {
+    currentUserRef.current = undefined;
+    isDisabledRef.current = false;
+    mentionAwareCommentInputProps.current = undefined;
+  });
+
   describe('the shared comment box (Req 13.3 / 13.4)', () => {
     it('nests the module container > .page-comment > .page-comment-main.bg-comment.rounded', () => {
       const { container } = renderItem();
@@ -380,6 +438,10 @@ describe('InlineCommentItem', () => {
           rendererOptions={undefined}
           resolve={vi.fn()}
           createReply={vi.fn()}
+          update={vi.fn()}
+          remove={vi.fn()}
+          updateReply={vi.fn()}
+          removeReply={vi.fn()}
           scrollToRange={vi.fn(() => true)}
         />,
       );
@@ -400,6 +462,167 @@ describe('InlineCommentItem', () => {
       );
       expect(replies).not.toBeNull();
       expect(replies?.closest('.page-comment')).toBeNull();
+    });
+  });
+
+  describe('edit/delete (Requirement 1, 2)', () => {
+    it("shows the edit and delete buttons when the current user is the comment's own creator", () => {
+      currentUserRef.current = { _id: 'user1' };
+      renderItem({ creatorId: 'user1' });
+
+      expect(
+        screen.getByTestId('inline-comment-edit-button'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('inline-comment-delete-button'),
+      ).toBeInTheDocument();
+    });
+
+    it("hides the edit and delete buttons when the current user is not the comment's own creator", () => {
+      currentUserRef.current = { _id: 'someone-else' };
+      renderItem({ creatorId: 'user1' });
+
+      expect(
+        screen.queryByTestId('inline-comment-edit-button'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('inline-comment-delete-button'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('hides the edit and delete buttons when there is no current user', () => {
+      currentUserRef.current = undefined;
+      renderItem({ creatorId: 'user1' });
+
+      expect(
+        screen.queryByTestId('inline-comment-edit-button'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('inline-comment-delete-button'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('disables the edit/delete controls under the read-only restriction', () => {
+      currentUserRef.current = { _id: 'user1' };
+      isDisabledRef.current = true;
+      renderItem({ creatorId: 'user1' });
+
+      expect(
+        screen.getByTestId('not-available-for-read-only-user'),
+      ).toBeInTheDocument();
+      expect(screen.getByTestId('inline-comment-edit-button')).toBeDisabled();
+      expect(screen.getByTestId('inline-comment-delete-button')).toBeDisabled();
+    });
+
+    it('switches to MentionAwareCommentInput with the current text as initialValue and a comment-specific editorKey when the edit button is clicked', async () => {
+      currentUserRef.current = { _id: 'user1' };
+      renderItem({
+        id: 'comment42',
+        creatorId: 'user1',
+        comment: 'the original text',
+      });
+
+      await userEvent.click(screen.getByTestId('inline-comment-edit-button'));
+
+      expect(
+        screen.getByTestId('mention-aware-comment-input-mock'),
+      ).toBeInTheDocument();
+      expect(mentionAwareCommentInputProps.current?.initialValue).toBe(
+        'the original text',
+      );
+      expect(mentionAwareCommentInputProps.current?.editorKey).toBe(
+        'inline_comment_edit_comment42',
+      );
+    });
+
+    it('calls update(id, text) when the edit form is submitted, and leaves edit mode', async () => {
+      const update = vi.fn().mockResolvedValue(undefined);
+      currentUserRef.current = { _id: 'user1' };
+      renderItem({ id: 'comment42', creatorId: 'user1' }, { update });
+
+      await userEvent.click(screen.getByTestId('inline-comment-edit-button'));
+      await act(async () => {
+        await (
+          mentionAwareCommentInputProps.current?.onSubmit as (
+            text: string,
+          ) => Promise<unknown>
+        )('the edited text');
+      });
+
+      expect(update).toHaveBeenCalledWith('comment42', 'the edited text');
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId('mention-aware-comment-input-mock'),
+        ).not.toBeInTheDocument();
+      });
+    });
+
+    it('does NOT call update when the edit is canceled, and reverts to the read-only display', async () => {
+      const update = vi.fn().mockResolvedValue(undefined);
+      currentUserRef.current = { _id: 'user1' };
+      renderItem(
+        { id: 'comment42', creatorId: 'user1', comment: 'unchanged text' },
+        { update },
+      );
+
+      await userEvent.click(screen.getByTestId('inline-comment-edit-button'));
+      expect(
+        screen.getByTestId('mention-aware-comment-input-mock'),
+      ).toBeInTheDocument();
+
+      await userEvent.click(
+        screen.getByTestId('inline-comment-edit-cancel-button'),
+      );
+
+      expect(update).not.toHaveBeenCalled();
+      expect(
+        screen.queryByTestId('mention-aware-comment-input-mock'),
+      ).not.toBeInTheDocument();
+      expect(screen.getByTestId('inline-comment-item')).toHaveTextContent(
+        'unchanged text',
+      );
+    });
+
+    it('does NOT call remove when the delete button is clicked (only opens a confirmation)', async () => {
+      const remove = vi.fn().mockResolvedValue(undefined);
+      currentUserRef.current = { _id: 'user1' };
+      renderItem({ id: 'comment42', creatorId: 'user1' }, { remove });
+
+      await userEvent.click(screen.getByTestId('inline-comment-delete-button'));
+
+      expect(remove).not.toHaveBeenCalled();
+      expect(
+        screen.getByTestId('inline-comment-delete-confirm'),
+      ).toBeInTheDocument();
+    });
+
+    it('calls remove(id) only after the delete confirmation is confirmed', async () => {
+      const remove = vi.fn().mockResolvedValue(undefined);
+      currentUserRef.current = { _id: 'user1' };
+      renderItem({ id: 'comment42', creatorId: 'user1' }, { remove });
+
+      await userEvent.click(screen.getByTestId('inline-comment-delete-button'));
+      await userEvent.click(
+        screen.getByTestId('inline-comment-delete-confirm-button'),
+      );
+
+      expect(remove).toHaveBeenCalledWith('comment42');
+    });
+
+    it('does NOT call remove when the delete confirmation is canceled', async () => {
+      const remove = vi.fn().mockResolvedValue(undefined);
+      currentUserRef.current = { _id: 'user1' };
+      renderItem({ id: 'comment42', creatorId: 'user1' }, { remove });
+
+      await userEvent.click(screen.getByTestId('inline-comment-delete-button'));
+      await userEvent.click(
+        screen.getByTestId('inline-comment-delete-cancel-button'),
+      );
+
+      expect(remove).not.toHaveBeenCalled();
+      expect(
+        screen.queryByTestId('inline-comment-delete-confirm'),
+      ).not.toBeInTheDocument();
     });
   });
 });

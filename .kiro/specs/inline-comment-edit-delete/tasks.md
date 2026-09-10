@@ -61,7 +61,7 @@
   - _Requirements: 1.2_
   - _Boundary: MentionAwareCommentInput_
 
-- [ ] 5. (P) 一覧（InlineCommentItem・InlineCommentReplies）に編集・削除操作を追加する
+- [x] 5. (P) 一覧（InlineCommentItem・InlineCommentReplies）に編集・削除操作を追加する
   - `comment.creatorId === currentUser?._id`（`useCurrentUser()`）による投稿者本人チェックを追加し、`NotAvailableIfReadOnlyUserNotAllowedToComment` でラップした編集・削除ボタンを表示する
   - 編集ボタンで `MentionAwareCommentInput`（`initialValue={comment.comment}`、コメントごとに区別した`editorKey`）へ切り替え、送信で `update`／`updateReply` を呼ぶ。キャンセルで本文を変えずに読み取り表示へ戻す
   - 削除ボタンで軽量な確認手段（インラインコメント専用。`DeleteCommentModal`は再利用しない）を開き、確認で `remove`／`removeReply` を呼ぶ
@@ -126,3 +126,4 @@
 
 ## Implementation Notes
 - Task 2.1 (and by extension 2.2–2.4): tasks.md's route tasks did not explicitly call out registering the new routes in `apps/app/src/server/routes/apiv3/index.js` (the existing 4 inline-comment routes are wired there under `inlineCommentsRouter`). Added the wiring as part of landing each route so the route is actually reachable in production, not just covered by its own `.integ.ts`. Flagged by task 2.1's reviewer.
+- Task 5: `PageComment.tsx`'s existing `<InlineCommentItem>` call site does not yet compile with the new required props (`update`/`remove`/`updateReply`/`removeReply`) — expected, resolved by task 8. Also noted (non-blocking reviewer suggestions): an edit failure may surface in two places (the editor's own error state plus the item-level `editError`), since `MentionAwareCommentInput` re-displays a re-thrown submit error internally too; and `InlineCommentReplies`' per-reply state isolation (via a per-reply subcomponent) has no direct multi-reply test asserting one reply's edit doesn't affect a sibling's — structurally sound but worth a follow-up test.

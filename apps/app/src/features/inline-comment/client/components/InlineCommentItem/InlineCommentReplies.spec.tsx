@@ -67,6 +67,51 @@ vi.mock('~/components/User/Username', () => ({
   Username: () => <span data-testid="username" />,
 }));
 
+// The current user drives the per-reply author-only check for edit/delete
+// (design.md: `reply.creatorId === currentUser?._id`, never the populated
+// `creator`). Mutable via `currentUserRef` so individual tests can simulate
+// "viewing as a reply's own author" vs. "viewing as someone else".
+const currentUserRef = vi.hoisted(
+  () => ({ current: undefined }) as { current?: { _id: string } },
+);
+vi.mock('~/states/global', () => ({
+  useCurrentUser: () => currentUserRef.current,
+}));
+
+// The read-only restriction is `NotAvailableIfReadOnlyUserNotAllowedToComment`'s
+// own concern (it already has its own tests) -- mocked here at the component
+// boundary, toggled per test via `isDisabledRef`.
+const isDisabledRef = vi.hoisted(() => ({ current: false }));
+vi.mock('~/client/components/NotAvailableForReadOnlyUser', () => ({
+  NotAvailableIfReadOnlyUserNotAllowedToComment: ({
+    children,
+  }: {
+    children: JSX.Element;
+  }) => {
+    if (!isDisabledRef.current) {
+      return children;
+    }
+    return (
+      <fieldset disabled data-testid="not-available-for-read-only-user">
+        {children}
+      </fieldset>
+    );
+  },
+}));
+
+// `MentionAwareCommentInput` has its own dedicated spec (initialValue
+// application, submit/error handling) -- mocked at the boundary here, same
+// rationale as mocking `CommentEditor` above.
+const mentionAwareCommentInputProps = vi.hoisted(
+  () => ({ current: undefined }) as { current?: Record<string, unknown> },
+);
+vi.mock('../MentionAwareCommentInput/MentionAwareCommentInput', () => ({
+  MentionAwareCommentInput: (props: Record<string, unknown>) => {
+    mentionAwareCommentInputProps.current = props;
+    return <div data-testid="mention-aware-comment-input-mock" />;
+  },
+}));
+
 vi.mock('~/client/components/FormattedDistanceDate', () => ({
   default: () => <span data-testid="formatted-distance-date" />,
 }));
@@ -109,6 +154,8 @@ const renderReplies = (
       replies={[]}
       rendererOptions={buildMentionAwareRendererOptions()}
       onSubmitReply={vi.fn().mockResolvedValue(undefined)}
+      updateReply={vi.fn().mockResolvedValue(undefined)}
+      removeReply={vi.fn().mockResolvedValue(undefined)}
       {...overrides}
     />,
   );
@@ -116,6 +163,9 @@ const renderReplies = (
 describe('InlineCommentReplies', () => {
   beforeEach(() => {
     commentEditorProps.current = undefined;
+    currentUserRef.current = undefined;
+    isDisabledRef.current = false;
+    mentionAwareCommentInputProps.current = undefined;
   });
 
   it('renders each reply nested under the origin comment (indented container)', () => {
@@ -329,6 +379,160 @@ describe('InlineCommentReplies', () => {
       ).toBeInTheDocument();
       expect(
         screen.queryByTestId('inline-comment-reply-editor-mock'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('edit/delete on an already-posted reply (Requirement 1, 2)', () => {
+    const ownReply = reply({
+      id: 'reply1',
+      creatorId: 'user1',
+      comment: 'original reply text',
+    });
+
+    it("shows the edit and delete buttons when the current user is the reply's own creator", () => {
+      currentUserRef.current = { _id: 'user1' };
+      renderReplies({ replies: [ownReply] });
+
+      expect(
+        screen.getByTestId('inline-comment-reply-edit-button'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('inline-comment-reply-delete-button'),
+      ).toBeInTheDocument();
+    });
+
+    it("hides the edit and delete buttons when the current user is not the reply's own creator", () => {
+      currentUserRef.current = { _id: 'someone-else' };
+      renderReplies({ replies: [ownReply] });
+
+      expect(
+        screen.queryByTestId('inline-comment-reply-edit-button'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('inline-comment-reply-delete-button'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('disables the edit/delete controls under the read-only restriction', () => {
+      currentUserRef.current = { _id: 'user1' };
+      isDisabledRef.current = true;
+      renderReplies({ replies: [ownReply] });
+
+      expect(
+        screen.getByTestId('not-available-for-read-only-user'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('inline-comment-reply-edit-button'),
+      ).toBeDisabled();
+      expect(
+        screen.getByTestId('inline-comment-reply-delete-button'),
+      ).toBeDisabled();
+    });
+
+    it('switches to MentionAwareCommentInput with the current text as initialValue and a reply-specific editorKey when the edit button is clicked', () => {
+      currentUserRef.current = { _id: 'user1' };
+      renderReplies({ replies: [ownReply] });
+
+      fireEvent.click(screen.getByTestId('inline-comment-reply-edit-button'));
+
+      expect(
+        screen.getByTestId('mention-aware-comment-input-mock'),
+      ).toBeInTheDocument();
+      expect(mentionAwareCommentInputProps.current?.initialValue).toBe(
+        'original reply text',
+      );
+      expect(mentionAwareCommentInputProps.current?.editorKey).toBe(
+        'inline_comment_edit_reply1',
+      );
+    });
+
+    it('calls updateReply(id, text) when the edit form is submitted, and leaves edit mode', async () => {
+      const updateReply = vi.fn().mockResolvedValue(undefined);
+      currentUserRef.current = { _id: 'user1' };
+      renderReplies({ replies: [ownReply], updateReply });
+
+      fireEvent.click(screen.getByTestId('inline-comment-reply-edit-button'));
+      await act(async () => {
+        await (
+          mentionAwareCommentInputProps.current?.onSubmit as (
+            text: string,
+          ) => Promise<unknown>
+        )('the edited reply');
+      });
+
+      expect(updateReply).toHaveBeenCalledWith('reply1', 'the edited reply');
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId('mention-aware-comment-input-mock'),
+        ).not.toBeInTheDocument();
+      });
+    });
+
+    it('does NOT call updateReply when the edit is canceled, and reverts to the read-only display', () => {
+      const updateReply = vi.fn().mockResolvedValue(undefined);
+      currentUserRef.current = { _id: 'user1' };
+      renderReplies({ replies: [ownReply], updateReply });
+
+      fireEvent.click(screen.getByTestId('inline-comment-reply-edit-button'));
+      expect(
+        screen.getByTestId('mention-aware-comment-input-mock'),
+      ).toBeInTheDocument();
+
+      fireEvent.click(
+        screen.getByTestId('inline-comment-reply-edit-cancel-button'),
+      );
+
+      expect(updateReply).not.toHaveBeenCalled();
+      expect(
+        screen.queryByTestId('mention-aware-comment-input-mock'),
+      ).not.toBeInTheDocument();
+      expect(screen.getByTestId('inline-comment-reply')).toHaveTextContent(
+        'original reply text',
+      );
+    });
+
+    it('does NOT call removeReply when the delete button is clicked (only opens a confirmation)', () => {
+      const removeReply = vi.fn().mockResolvedValue(undefined);
+      currentUserRef.current = { _id: 'user1' };
+      renderReplies({ replies: [ownReply], removeReply });
+
+      fireEvent.click(screen.getByTestId('inline-comment-reply-delete-button'));
+
+      expect(removeReply).not.toHaveBeenCalled();
+      expect(
+        screen.getByTestId('inline-comment-reply-delete-confirm'),
+      ).toBeInTheDocument();
+    });
+
+    it('calls removeReply(id) only after the delete confirmation is confirmed', async () => {
+      const removeReply = vi.fn().mockResolvedValue(undefined);
+      currentUserRef.current = { _id: 'user1' };
+      renderReplies({ replies: [ownReply], removeReply });
+
+      fireEvent.click(screen.getByTestId('inline-comment-reply-delete-button'));
+      fireEvent.click(
+        screen.getByTestId('inline-comment-reply-delete-confirm-button'),
+      );
+
+      await waitFor(() => {
+        expect(removeReply).toHaveBeenCalledWith('reply1');
+      });
+    });
+
+    it('does NOT call removeReply when the delete confirmation is canceled', () => {
+      const removeReply = vi.fn().mockResolvedValue(undefined);
+      currentUserRef.current = { _id: 'user1' };
+      renderReplies({ replies: [ownReply], removeReply });
+
+      fireEvent.click(screen.getByTestId('inline-comment-reply-delete-button'));
+      fireEvent.click(
+        screen.getByTestId('inline-comment-reply-delete-cancel-button'),
+      );
+
+      expect(removeReply).not.toHaveBeenCalled();
+      expect(
+        screen.queryByTestId('inline-comment-reply-delete-confirm'),
       ).not.toBeInTheDocument();
     });
   });
