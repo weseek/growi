@@ -217,7 +217,7 @@ export const InlineCommentPreviewPopover: FC<
                   <button
                     type="button"
                     data-testid="inline-comment-preview-popover-edit-button"
-                    className="btn btn-link p-2 opacity-50"
+                    className={`btn btn-link opacity-50 rounded-circle ${styles['inline-comment-preview-popover-icon-button']}`}
                     aria-label={t('Edit')}
                     onClick={() => setIsEditing(true)}
                   >

@@ -471,18 +471,18 @@
     },
     "iconButtonContainer": {
       "rect": {
-        "x": 975,
+        "x": 1007,
         "y": 743.15625,
-        "width": 88,
-        "height": 42,
+        "width": 56,
+        "height": 26,
         "right": 1063,
-        "bottom": 785.15625
+        "bottom": 769.15625
       },
       "overflow": {
-        "scrollWidth": 88,
-        "clientWidth": 88,
-        "scrollHeight": 42,
-        "clientHeight": 42
+        "scrollWidth": 56,
+        "clientWidth": 56,
+        "scrollHeight": 26,
+        "clientHeight": 26
       },
       "styles": {
         "display": "flex",
@@ -518,8 +518,8 @@
         "lineHeight": "24px",
         "textAlign": "start",
         "whiteSpace": "normal",
-        "width": "88px",
-        "height": "42px"
+        "width": "56px",
+        "height": "26px"
       },
       "before": {
         "content": "none",
@@ -876,11 +876,11 @@
     "replyFormAvatar": {
       "rect": {
         "x": 548,
-        "y": 1013.515625,
+        "y": 981.515625,
         "width": 19.1875,
         "height": 19.1875,
         "right": 567.1875,
-        "bottom": 1032.703125
+        "bottom": 1000.703125
       },
       "overflow": {
         "scrollWidth": 19,

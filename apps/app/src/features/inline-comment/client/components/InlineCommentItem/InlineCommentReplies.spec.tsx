@@ -38,15 +38,16 @@ import { InlineCommentReplies } from './InlineCommentReplies';
 // ---------------------------------------------------------------------------
 
 // `InlineCommentReplyItem` reuses `InlineCommentItem.module.scss`'s
-// `.icon-button-container` hover-visibility rule via import, not by
-// duplicating a new rule -- see InlineCommentReplies.tsx's top-of-file
-// comment. `.icon-button-container` is nested (no `:global()`) in that
-// module, so it is a CSS-Modules-scoped local class; this identity mock
-// mirrors InlineCommentItem.spec.tsx's own mock so assertions can match on
-// the plain string.
+// `.icon-button-container` hover-visibility rule and `.icon-button` sizing
+// rule via import, not by duplicating new rules -- see
+// InlineCommentReplies.tsx's top-of-file comment. Both are CSS-Modules-scoped
+// local classes (no `:global()`); this identity mock mirrors
+// InlineCommentItem.spec.tsx's own mock so assertions can match on the plain
+// string.
 vi.mock('./InlineCommentItem.module.scss', () => ({
   default: {
     'icon-button-container': 'icon-button-container',
+    'icon-button': 'icon-button',
   },
 }));
 
@@ -424,13 +425,20 @@ describe('InlineCommentReplies', () => {
         'inline-comment-reply-delete-button',
       );
 
-      expect(editButton).toHaveClass('btn', 'btn-link', 'p-2', 'opacity-50');
+      expect(editButton).toHaveClass(
+        'btn',
+        'btn-link',
+        'opacity-50',
+        'rounded-circle',
+        'icon-button',
+      );
       expect(deleteButton).toHaveClass(
         'btn',
         'btn-link',
-        'p-2',
         'opacity-50',
         'text-danger',
+        'rounded-circle',
+        'icon-button',
       );
       expect(
         editButton.querySelector('.material-symbols-outlined'),

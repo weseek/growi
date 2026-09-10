@@ -53,6 +53,29 @@
   }
 }
 
+// Edit/delete icon button size (checklist item 4: mockup shows a ~26px
+// circle; `btn btn-link p-2` alone rendered a 42px square). `p-2` is
+// dropped in favor of an explicit width/height here because no Bootstrap
+// padding utility lands on 26px, and `rounded-circle` needs an explicit
+// equal width/height to have any effect (it only rounds whatever box the
+// button already has). Kept as a CSS Modules rule rather than inline style
+// per Requirement 3.3. The glyph itself is also scaled down (the shared
+// `.material-symbols-outlined` rule sets `font-size: 1.5em`, which at the
+// button's default 1rem font-size renders at 24px -- too large to fit
+// inside a 26px circle with any padding).
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+
+  :global(.material-symbols-outlined) {
+    font-size: 1rem;
+  }
+}
+
 // Status-dot decoration for the resolved/unresolved badge (design.md: 状態バッジ).
 // Implemented as a ::before pseudo-element rather than an inline style so the
 // dot's color follows the badge's own text color (bg-warning-subtle /

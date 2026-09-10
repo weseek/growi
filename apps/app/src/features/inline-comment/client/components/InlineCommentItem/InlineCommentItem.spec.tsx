@@ -39,6 +39,7 @@ vi.mock('./InlineCommentItem.module.scss', () => ({
     'inline-comment-item-styles': 'inline-comment-item-styles',
     'inline-comment-status-badge': 'inline-comment-status-badge',
     'icon-button-container': 'icon-button-container',
+    'icon-button': 'icon-button',
     'delete-confirm-alert': 'delete-confirm-alert',
   },
 }));

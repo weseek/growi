@@ -64,6 +64,25 @@
   height: 2rem;
 }
 
+// Same oversized-button fix as InlineCommentItem.module.scss's
+// `.icon-button` (checklist item 4): `btn btn-link p-2` alone renders a
+// 42px square, not the mockup's ~26px circle. Duplicated rather than
+// imported across the module boundary -- see the top of this file for why
+// this popover accepts a little duplication against InlineCommentItem's
+// module instead of sharing one.
+.inline-comment-preview-popover-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+
+  :global(.material-symbols-outlined) {
+    font-size: 1rem;
+  }
+}
+
 .inline-comment-preview-popover-status-badge {
   // Matches InlineCommentItem.module.scss: the mockup draws the status pill
   // and the resolve toggle at nearly the same height, and Bootstrap's
