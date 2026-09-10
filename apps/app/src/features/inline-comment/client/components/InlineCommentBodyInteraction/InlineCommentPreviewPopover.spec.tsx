@@ -241,6 +241,14 @@ describe('InlineCommentPreviewPopover', () => {
 
     const popover = screen.getByTestId('inline-comment-preview-popover');
     expect(popover).toHaveTextContent('an existing reply');
+
+    // The replies container gets a left border to visually group the
+    // thread's replies together (design.md: border-start ps-3 utility
+    // classes, no new SCSS rule).
+    const repliesContainer = screen.getByTestId(
+      'inline-comment-preview-popover-replies',
+    );
+    expect(repliesContainer).toHaveClass('border-start', 'ps-3');
   });
 
   it('submits the typed text through createReply with the comment id (Req 2.3)', async () => {
@@ -602,6 +610,10 @@ describe('InlineCommentPreviewPopover', () => {
     ).not.toBeNull();
     expect(composer).toContainElement(textarea);
     expect(composer).toContainElement(sendButton);
+    // The reply input is rounded (rounded-pill), suited to a single-line
+    // input, per design.md -- the send button stays the existing circular
+    // button and is not touched here.
+    expect(textarea).toHaveClass('form-control', 'rounded-pill');
   });
 
   it('still calls createReply when submitting via the restyled composer (Req 15.3)', async () => {

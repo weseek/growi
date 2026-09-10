@@ -44,7 +44,7 @@
   - _Requirements: 1.7, 2.1, 2.3, 3.1, 3.2, 3.4_
   - _Boundary: InlineCommentPreviewPopover, InlineCommentPreviewPopover.module.scss_
 
-- [ ] 3.2 返信スレッドと返信フォームの見た目を刷新する
+- [x] 3.2 返信スレッドと返信フォームの見た目を刷新する
   - 返信一覧に、返信同士をまとめる左側の縦線（Bootstrapのボーダーユーティリティ）を追加する
   - 返信フォームの入力欄を角丸（一行入力を想定した丸み）にする
   - 完了したことが分かる状態: `InlineCommentPreviewPopover.spec.tsx`で、返信一覧・返信フォームの新しいクラス構成を検証する既存テストが（クラス名の更新を経て）green のままであることを確認する

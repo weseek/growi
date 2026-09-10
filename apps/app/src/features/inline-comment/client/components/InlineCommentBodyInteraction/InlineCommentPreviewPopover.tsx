@@ -308,12 +308,15 @@ export const InlineCommentPreviewPopover: FC<
 
         {comment.replies.length > 0 && (
           <>
-            <div data-testid="inline-comment-preview-popover-replies">
+            <div
+              data-testid="inline-comment-preview-popover-replies"
+              className="border-start ps-3"
+            >
               {comment.replies.map((reply) => (
                 <div
                   key={reply.id}
                   data-testid="inline-comment-preview-popover-reply"
-                  className="ms-4 ms-sm-5 mt-2"
+                  className="mt-2"
                 >
                   <CommentCard
                     id={reply.id}
@@ -342,7 +345,7 @@ export const InlineCommentPreviewPopover: FC<
           {/* flex-basis 0% avoids collapsing under the avatar/send button -- see InlineCommentForm.tsx. */}
           <div style={{ flex: '1 1 0%', minWidth: 0 }}>
             <textarea
-              className="form-control"
+              className="form-control rounded-pill"
               placeholder={t('inline_comment.reply_placeholder')}
               aria-label={t('inline_comment.reply_placeholder')}
               value={draftComment}
