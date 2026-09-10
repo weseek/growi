@@ -546,9 +546,9 @@ sequenceDiagram
 | 16.2 | 再アンカー失敗時の通知 | PageView (`scrollToRange`) | 既存の通知UI | 同上 |
 | 16.3 | 一時的な強調表示 | PageView (`scrollToRange`) | `CSS.highlights`（`growi-inline-comment-emphasis`） | 同上 |
 | 17.1–17.5 | 返信UIの統一 | InlineCommentReplies, MentionAwareCommentInput | `createReply` | — |
-| 18.1–18.4 | 一覧からの編集（投稿者本人限定・拒否・リードオンリー制限） | InlineCommentItem, InlineCommentReplies, InlineCommentService | `update`/`updateReply`, `NotAvailableIfReadOnlyUserNotAllowedToComment` | 更新シーケンス |
-| 18.5–18.8 | 一覧からの削除（確認・道連れ削除・拒否・リードオンリー制限） | InlineCommentItem, InlineCommentReplies, InlineCommentService | `remove`/`removeReply`, `removeWithReplies` | 削除シーケンス |
-| 18.9 | 編集・削除の権限判定は通常コメントと同じ・最終判定はサーバー側 | update/delete系ルート群, InlineCommentService | `creatorId`比較 | 更新シーケンス／削除シーケンス |
+| 18.1–18.4 | 一覧からの編集（投稿者本人限定・拒否・リードオンリー制限） | InlineCommentItem, InlineCommentReplies, InlineCommentService | `update`/`updateReply`, `NotAvailableIfReadOnlyUserNotAllowedToComment`, `excludeReadOnlyUserIfCommentNotAllowed` | 更新シーケンス |
+| 18.5–18.8 | 一覧からの削除（確認・道連れ削除・拒否・リードオンリー制限） | InlineCommentItem, InlineCommentReplies, InlineCommentService | `remove`/`removeReply`, `removeWithReplies`, `excludeReadOnlyUserIfCommentNotAllowed` | 削除シーケンス |
+| 18.9 | 編集・削除の権限判定は通常コメントと同じ・最終判定はサーバー側 | update/delete系ルート群, InlineCommentService | `creatorId`比較, `excludeReadOnlyUserIfCommentNotAllowed` | 更新シーケンス／削除シーケンス |
 
 ## Components and Interfaces
 
@@ -635,14 +635,14 @@ interface InlineCommentService {
 | POST | `/_api/v3/inline-comments/:id/replies` | `CreateInlineCommentReplyInput` | `InlineCommentReply` | 400（`:id`が起点コメントでない）, 403, 404, 500 |
 | GET | `/_api/v3/inline-comments?pageId=...` | `{ pageId: string }` | `InlineComment[]`（作成日時順、各要素に返信のネスト配列を含む） | 400, 403, 500 |
 | PUT | `/_api/v3/inline-comments/:id/resolve` | `{ resolved: boolean }` | `InlineComment` | 400（`:id`が返信）, 403, 404, 500 |
-| PUT | `/_api/v3/inline-comments/:id` | `{ comment: string }` | `{ inlineComment: InlineComment }` | 400（`:id`が起点コメントでない）, 403（投稿者でない）, 404, 500 |
-| PUT | `/_api/v3/inline-comments/replies/:id` | `{ comment: string }` | `{ inlineCommentReply: InlineCommentReply }` | 400（`:id`が返信でない）, 403（投稿者でない）, 404, 500 |
-| DELETE | `/_api/v3/inline-comments/:id` | — | `{}` | 403（投稿者でない）, 404, 500 |
-| DELETE | `/_api/v3/inline-comments/replies/:id` | — | `{}` | 403（投稿者でない）, 404, 500 |
+| PUT | `/_api/v3/inline-comments/:id` | `{ comment: string }` | `{ inlineComment: InlineComment }` | 400（`:id`が起点コメントでない、または読み取り専用利用者にコメントが許可されていない）, 403（投稿者でない）, 404, 500 |
+| PUT | `/_api/v3/inline-comments/replies/:id` | `{ comment: string }` | `{ inlineCommentReply: InlineCommentReply }` | 400（`:id`が返信でない、または読み取り専用利用者にコメントが許可されていない）, 403（投稿者でない）, 404, 500 |
+| DELETE | `/_api/v3/inline-comments/:id` | — | `{}` | 400（読み取り専用利用者にコメントが許可されていない）, 403（投稿者でない）, 404, 500 |
+| DELETE | `/_api/v3/inline-comments/replies/:id` | — | `{}` | 400（読み取り専用利用者にコメントが許可されていない）, 403（投稿者でない）, 404, 500 |
 
 未ログインのアクセスは、この実装が使う `loginRequiredFactory` がapiv3リクエストに対して常に403を返すため（401ではない）、表中の403に含まれる。当初の設計では401を想定していたが、実際の挙動と異なっていたため訂正した（タスク3.5／6.2のE2Eテストで実際の挙動として確認済み）。
 
-すべてのエンドポイントは `accessTokenParser` → `loginRequired` → express-validator → `apiV3FormValidator` のチェーンを通す。**`certifySharedPage` ミドルウェアはこれらのルートに一切適用しない**（要件6.1/6.2）。編集・削除ルートの投稿者本人チェックはルート側（`findUnique` で `creatorId` を取得するのと同じタイミング）とサービス側内部（多層防御としての再検証）の2回行う。
+すべてのエンドポイントは `accessTokenParser` → `loginRequired` → express-validator → `apiV3FormValidator` のチェーンを通す。**`certifySharedPage` ミドルウェアはこれらのルートに一切適用しない**（要件6.1/6.2）。編集・削除の4ルート（`update.ts`／`update-reply.ts`／`delete.ts`／`delete-reply.ts`）のみ、`loginRequired` の直後・express-validatorより前に `excludeReadOnlyUserIfCommentNotAllowed` を通す（apiv1の `/comments.update`／`/comments.remove` と同じ位置）。読み取り専用利用者にコメントが許可されていない場合、この時点で400を返す（要件18.4／18.8／18.9）。作成・解決トグルの既存3ルート（`create.ts`／`create-reply.ts`／`resolve.ts`）にはこの制限が無いが、これは本スペックの対象外——同じ制限の欠落が編集・削除の追加以前から存在しており、その是正は元の `inline-comment` 機能自体の課題として別途扱う（research.md参照）。編集・削除ルートの投稿者本人チェックはルート側（`findUnique` で `creatorId` を取得するのと同じタイミング）とサービス側内部（多層防御としての再検証）の2回行う。
 
 ## Client / ロジック層
 
@@ -928,7 +928,7 @@ model comments {
 
 ## Security Considerations
 
-- 認可はすべて既存の `apiv3` ミドルウェアチェーン（`accessTokenParser` → `loginRequired`）を再利用し、独自の認可ロジックを新設しない
+- 認可はすべて既存の `apiv3` ミドルウェアチェーン（`accessTokenParser` → `loginRequired`）を再利用し、独自の認可ロジックを新設しない。編集・削除の4ルートはこれに加えて `excludeReadOnlyUserIfCommentNotAllowed` も既存ミドルウェアとして再利用し、読み取り専用利用者の制限をサーバー側で最終判定する（要件18.9）。作成・解決トグルの既存3ルートにこの制限が無い点は本スペックの対象外（research.md参照）
 - 共有リンク閲覧者への非公開は、`findCommentsByPageId`／`findCommentsByRevisionId` に追加する無条件フィルタによって担保される。新規の `inline-comment` ルートは `certifySharedPage` を一切経由しないため、共有リンク経由でこれらのルートに到達する経路自体も存在しない（Architecture節参照。この保証の性質——コレクション分離ほど強くはない——は同節で明記している）。
   - **`comments` テーブルには、このフィルタが効かない読み取り経路が他にも存在する**： `apps/app/src/server/routes/comment.js`（コメントの更新前・削除前の `findUnique`、495行目付近と605行目付近）、`apps/app/src/server/service/comment.ts`（`getMentionedUsers` の `findUnique`、73行目付近）の3箇所である。これらはいずれも**特定の既知の `commentId` を1件だけ指定して取得する経路**であり、ページ単位の一覧取得（`findCommentsByPageId`等）とは性質が異なる。共有リンク閲覧者は自分がまだ知らないインラインコメントの `commentId` を持ち得ないため、これらの経路から共有リンク文脈で到達されることはなく、`isInline` フィルタを追加する必要はない（`getMentionedUsers` はむしろインラインコメントの行に対しても正しく動作する必要があるため、ここにフィルタを入れてはいけない——Architecture節参照）。
   - **上記3経路とは別に、`findCreatorsByPage`（`apps/app/src/features/comment/server/models/comment.ts`）も `isInline` フィルタが効かない、ページ単位（`where: { pageId }`）の読み取り経路である。** これは id 指定ではなくページ丸ごとの一覧取得であるため、上記3経路と同じ「共有リンク閲覧者は commentId を知らない」という理由付けは適用できない。ただし現時点でこのメソッドを呼び出しているコードはリポジトリ全体に存在せず（未使用）、実際の漏えい経路にはなっていない。将来「このページにコメントした人一覧」のような機能でこのメソッドが使われる場合は、`isInline: { not: true }` を追加するか、追加しない理由を明示すること。

@@ -4,7 +4,7 @@
  *
  * Same passthrough-auth pattern as delete.integ.ts — see that file's header.
  *
- * Requirements: 2.3, 2.6, 3.2
+ * Requirements: 18.5, 18.7, 18.8, 18.9
  */
 
 import { type IUserHasId, PageGrant } from '@growi/core';

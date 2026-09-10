@@ -59,7 +59,7 @@
  * reversal, so a reply thread always reads oldest-to-newest regardless of
  * whether the origin comment is inline or normal.
  *
- * Edit/delete (requirements.md Requirement 1, 2): each already-posted reply
+ * Edit/delete (requirements.md Requirement 18.1, 18.2, 18.5): each already-posted reply
  * gets its own edit/delete controls, shown only to that reply's own creator
  * (`reply.creatorId === currentUser?._id`, not the populated `creator` --
  * same rationale as `InlineCommentItem`) and gated by
@@ -100,9 +100,9 @@ type InlineCommentRepliesProps = {
    */
   rendererOptions: RendererOptions | undefined;
   onSubmitReply: (parentId: string, comment: string) => Promise<unknown>;
-  /** Persists an edited reply body (Requirement 1). */
+  /** Persists an edited reply body (Requirement 18.1, 18.2). */
   updateReply: (id: string, comment: string) => Promise<unknown>;
-  /** Deletes a single reply (Requirement 2). */
+  /** Deletes a single reply (Requirement 18.5). */
   removeReply: (id: string) => Promise<unknown>;
 };
 

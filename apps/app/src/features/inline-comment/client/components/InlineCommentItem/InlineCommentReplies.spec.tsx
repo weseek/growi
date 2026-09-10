@@ -383,7 +383,7 @@ describe('InlineCommentReplies', () => {
     });
   });
 
-  describe('edit/delete on an already-posted reply (Requirement 1, 2)', () => {
+  describe('edit/delete on an already-posted reply (Requirement 18.1, 18.2, 18.5)', () => {
     const ownReply = reply({
       id: 'reply1',
       creatorId: 'user1',

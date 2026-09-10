@@ -69,7 +69,7 @@ type InlineCommentBodyInteractionProps = {
   /**
    * Persists an edited origin-comment body -- forwarded as-is to
    * `InlineCommentPreviewPopover`, which uses it exactly as
-   * `InlineCommentItem.tsx` uses its own `update` prop (Requirement 1).
+   * `InlineCommentItem.tsx` uses its own `update` prop (Requirement 15.5).
    */
   update: (id: string, comment: string) => Promise<unknown>;
   /**

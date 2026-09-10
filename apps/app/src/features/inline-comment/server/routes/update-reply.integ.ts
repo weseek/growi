@@ -3,7 +3,7 @@
  *
  * Same passthrough-auth pattern as update.integ.ts — see that file's header.
  *
- * Requirements: 1.3, 1.5, 3.x
+ * Requirements: 18.1, 18.2, 18.3, 18.4, 18.9
  */
 
 import { type IUserHasId, PageGrant } from '@growi/core';

@@ -465,7 +465,7 @@ describe('InlineCommentItem', () => {
     });
   });
 
-  describe('edit/delete (Requirement 1, 2)', () => {
+  describe('edit/delete (Requirement 18.1-18.8)', () => {
     it("shows the edit and delete buttons when the current user is the comment's own creator", () => {
       currentUserRef.current = { _id: 'user1' };
       renderItem({ creatorId: 'user1' });

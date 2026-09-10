@@ -28,7 +28,7 @@
  * The replies subtree stays outside the box, below it, as a nested thread —
  * each reply gets its own box of its own.
  *
- * Edit/delete (requirements.md Requirement 1, 2): shown only to the comment's
+ * Edit/delete (requirements.md Requirement 18): shown only to the comment's
  * own creator (`comment.creatorId === currentUser?._id` -- `creator` is not
  * used for this check, see design.md's `InlineCommentItem` /
  * `InlineCommentReplies` section: `creator` is only ever populated by
@@ -67,13 +67,13 @@ type InlineCommentItemProps = {
   rendererOptions: RendererOptions | undefined;
   resolve: (id: string, resolved: boolean) => Promise<unknown>;
   createReply: (parentId: string, comment: string) => Promise<unknown>;
-  /** Persists an edited origin-comment body (Requirement 1). */
+  /** Persists an edited origin-comment body (Requirement 18.1, 18.2). */
   update: (id: string, comment: string) => Promise<unknown>;
-  /** Deletes the origin comment, along with its replies (Requirement 2.4). */
+  /** Deletes the origin comment, along with its replies (Requirement 18.5, 18.6). */
   remove: (id: string) => Promise<unknown>;
-  /** Persists an edited reply body (Requirement 1), forwarded to `InlineCommentReplies`. */
+  /** Persists an edited reply body (Requirement 18.1, 18.2), forwarded to `InlineCommentReplies`. */
   updateReply: (id: string, comment: string) => Promise<unknown>;
-  /** Deletes a single reply (Requirement 2), forwarded to `InlineCommentReplies`. */
+  /** Deletes a single reply (Requirement 18.5), forwarded to `InlineCommentReplies`. */
   removeReply: (id: string) => Promise<unknown>;
   /**
    * Scrolls the page body to the highlighted range this comment anchors to

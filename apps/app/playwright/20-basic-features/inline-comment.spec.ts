@@ -3380,7 +3380,7 @@ test.describe('Inline comment - a heading-adjacent comment restores onto the sam
   });
 });
 
-test.describe('Inline comment - editing an origin comment (from the list and from the popover) and editing a reply from the list all persist across a reload (Req 1.1-1.3, 1.7)', () => {
+test.describe('Inline comment - editing an origin comment (from the list and from the popover) and editing a reply from the list all persist across a reload (Req 18.1, 18.2, 15.5)', () => {
   // Serial: each test edits state left behind by the previous one (the
   // origin's text, then the reply's text), same reasoning the other suites
   // in this file use for a single shared fixture.
@@ -3445,7 +3445,7 @@ test.describe('Inline comment - editing an origin comment (from the list and fro
       .toBeGreaterThan(0);
   });
 
-  test('Req 1.1-1.3: editing the origin comment from the bottom list persists the new text after a reload', async ({
+  test('Req 18.1, 18.2: editing the origin comment from the bottom list persists the new text after a reload', async ({
     page,
   }, testInfo) => {
     await page.goto(editFlowPagePath(testInfo.retry));
@@ -3514,7 +3514,7 @@ test.describe('Inline comment - editing an origin comment (from the list and fro
     );
   });
 
-  test('Req 1.3: editing a reply from the bottom list persists the new text after a reload', async ({
+  test('Req 18.1, 18.2: editing a reply from the bottom list persists the new text after a reload', async ({
     page,
   }, testInfo) => {
     await page.goto(editFlowPagePath(testInfo.retry));
@@ -3538,7 +3538,7 @@ test.describe('Inline comment - editing an origin comment (from the list and fro
   });
 });
 
-test.describe('Inline comment - deleting a reply removes only that reply; deleting the origin comment removes it, all its replies, and the body highlight/popover (Req 2.1-2.5)', () => {
+test.describe('Inline comment - deleting a reply removes only that reply; deleting the origin comment removes it, all its replies, and the body highlight/popover (Req 18.5, 18.6, 2.8)', () => {
   // Serial: the second test deletes one of the two replies created by the
   // first, and the third deletes the origin comment the first two depend on
   // -- same reasoning the other suites in this file use for a single shared
@@ -3612,7 +3612,7 @@ test.describe('Inline comment - deleting a reply removes only that reply; deleti
       .toBeGreaterThan(0);
   });
 
-  test('Req 2.1-2.3: deleting a reply removes only that reply -- the origin comment and the other reply remain', async ({
+  test('Req 18.5: deleting a reply removes only that reply -- the origin comment and the other reply remain', async ({
     page,
   }, testInfo) => {
     await page.goto(deleteFlowPagePath(testInfo.retry));
@@ -3647,7 +3647,7 @@ test.describe('Inline comment - deleting a reply removes only that reply; deleti
     ).toContainText('the second reply');
   });
 
-  test('Req 2.3-2.5: deleting the origin comment removes it, its remaining reply, and the body highlight/popover', async ({
+  test('Req 18.5, 18.6, 2.8: deleting the origin comment removes it, its remaining reply, and the body highlight/popover', async ({
     page,
   }, testInfo) => {
     await page.goto(deleteFlowPagePath(testInfo.retry));
@@ -3662,7 +3662,7 @@ test.describe('Inline comment - deleting a reply removes only that reply; deleti
 
     await expect(page.getByTestId('inline-comment-item')).toHaveCount(0);
 
-    // Requirement 2.5: the highlight disappears without needing a reload.
+    // Requirement 2.8: the highlight disappears without needing a reload.
     await expect
       .poll(async () =>
         page.evaluate(
@@ -3686,7 +3686,7 @@ test.describe('Inline comment - deleting a reply removes only that reply; deleti
   });
 });
 
-test.describe("Inline comment - a non-owner browser session sees no edit/delete controls for someone else's comment, in the list and the popover (Req 1.5, 2.6)", () => {
+test.describe("Inline comment - a non-owner browser session sees no edit/delete controls for someone else's comment, in the list and the popover (Req 18.1, 18.5, 15.5)", () => {
   // Serial: the second and third tests both read the fixture the first test
   // creates as the admin user, and check what a DIFFERENT logged-in user
   // (FILTER_TEST_USER_A, provisioned by playwright/users.setup.ts and
@@ -3754,7 +3754,7 @@ test.describe("Inline comment - a non-owner browser session sees no edit/delete 
       .toBeGreaterThan(0);
   });
 
-  test('Req 1.5, 2.6: a different, non-owner user sees no edit/delete controls in the list, for either the origin comment or the reply', async ({
+  test('Req 18.1, 18.5: a different, non-owner user sees no edit/delete controls in the list, for either the origin comment or the reply', async ({
     browser,
   }, testInfo) => {
     const context = await browser.newContext({
@@ -3788,7 +3788,7 @@ test.describe("Inline comment - a non-owner browser session sees no edit/delete 
     }
   });
 
-  test('Req 1.5: the same non-owner user sees no edit control in the body popover for the origin comment', async ({
+  test('Req 15.5: the same non-owner user sees no edit control in the body popover for the origin comment', async ({
     browser,
   }, testInfo) => {
     const context = await browser.newContext({
@@ -3812,7 +3812,7 @@ test.describe("Inline comment - a non-owner browser session sees no edit/delete 
   });
 });
 
-test.describe('Inline comment - a resolved comment hides its body highlight/popover but stays listed; resolving from an open popover closes it (Req 4.1-4.3, 5.1)', () => {
+test.describe('Inline comment - a resolved comment hides its body highlight/popover but stays listed; resolving from an open popover closes it (Req 2.7, 15.12)', () => {
   // Serial: the second test resolves the one comment created by the first,
   // and the third reloads to check the resolved state persists across a
   // fresh load -- same reasoning the other suites in this file use.
@@ -3890,20 +3890,20 @@ test.describe('Inline comment - a resolved comment hides its body highlight/popo
     );
   });
 
-  test('Req 4.1, 4.2, 2.7: a resolved comment shows no highlight and no popover in the body after reloading, but still appears in the list', async ({
+  test('Req 2.7, 4.4: a resolved comment shows no highlight and no popover in the body after reloading, but still appears in the list', async ({
     page,
   }, testInfo) => {
     await page.goto(resolvedPagePath(testInfo.retry));
     await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
 
-    // Requirement 4.2: still listed at the bottom of the page.
+    // Requirement 4.4: still listed at the bottom of the page.
     const item = page.getByTestId('inline-comment-item').first();
     await expect(item).toBeVisible();
     await expect(item.getByTestId('inline-comment-status')).toHaveText(
       'Resolved',
     );
 
-    // Requirement 4.1: no highlight registered in the body.
+    // Requirement 2.7: no highlight registered in the body.
     expect(
       await page.evaluate(
         () => CSS.highlights.get('growi-inline-comment')?.size ?? 0,

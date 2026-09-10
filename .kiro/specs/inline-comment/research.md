@@ -337,3 +337,9 @@ Requirement 18.9・15.5 が、編集・削除を通常コメント（`comments.u
 - Risk: クライアント側の `creatorId === currentUser._id` チェックはそれ自体では認可の境界にならない（クライアント側のstateは古い可能性・偽装される可能性がある）。— Mitigation: `comments.update`／`comments.remove` とまったく同じく、サーバー側のルート・サービスが変更前に投稿者本人であることを独立に再検証する。クライアント側のチェックはどのボタンを表示するかだけを決める。
 - Risk: 返信を持つ起点コメントを削除したときに、返信行が孤立して残ってしまう。— Mitigation: すでにトランザクション化され、通常コメントの削除で実績のある `removeWithReplies` をそのまま再利用する。
 - Risk: `MentionAwareCommentInput` に新しい `initialValue` prop を足すことが、既存の「新規コメント」呼び出し元に対して純粋な追加にならず退行を生む可能性。— Mitigation: 既定値を `undefined`／空にし、既存の呼び出し元（`InlineCommentForm`、`InlineCommentReplies` の返信入力欄）に影響が出ないようにする。「`initialValue` を渡さない場合は現状と変わらない」ことを確認する退行テストでカバーする。
+
+### 読み取り専用利用者の制限は編集・削除の4ルートにのみサーバー側で適用し、作成・解決トグルの既存3ルートには適用しない理由
+
+編集・削除の4ルート（`update.ts`／`update-reply.ts`／`delete.ts`／`delete-reply.ts`）には、`comments.update`／`comments.remove`（apiv1）と同じ `excludeReadOnlyUserIfCommentNotAllowed` ミドルウェアを追加し、読み取り専用利用者の制限をサーバー側で最終判定する（要件18.9）。
+
+一方、作成・解決トグルの既存3ルート（`create.ts`／`create-reply.ts`／`resolve.ts`）にはこのミドルウェアが無く、読み取り専用利用者の制限はクライアント側の表示制御にしか存在しない。これは編集・削除の追加によって新しく生まれた穴ではなく、`inline-comment` 機能自体が最初から持っていた既存の欠落である。この欠落を今回まとめて塞ぐことは意図的に見送った——対象範囲が編集・削除の受け入れ基準（要件18.9）を超えて、作成・解決という別の受け入れ基準（要件1・4）にまで及ぶためである。是正するとしても、それは `inline-comment` 機能自体の課題として別途起票・対応するのが筋であり、本amend specの対象には含めない。
