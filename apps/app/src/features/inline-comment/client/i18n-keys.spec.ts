@@ -5,9 +5,13 @@ import * as path from 'node:path';
  * Task 1.3 of inline-comment-visual-consistency (Requirement 11.6) adds the
  * translation keys the visual-consistency rework's JSX will call via
  * `t('inline_comment.*')` (start-comment button, resolved/unresolved badge,
- * resolve/reopen toggle, and the type-label row shown in the shared comment
- * card). This repo is English-first (see project memory): only `en_US` is
- * required for now, other locales are deferred.
+ * resolve/reopen toggle). This repo is English-first (see project memory):
+ * only `en_US` is required for now, other locales are deferred.
+ *
+ * `label` (the "Inline Comment" type-label row) was removed by
+ * inline-comment-visual-refresh task 4.1, which dropped the row from the
+ * markup because the approved mockup doesn't have it (see
+ * .kiro/specs/inline-comment-visual-refresh/tasks.md Implementation Notes).
  *
  * Task 1.3 of inline-comment-interaction-ux (Requirements 2.3, 3.2) adds two
  * more keys ahead of the components that will consume them (tasks 3.2, 4.1):
@@ -28,7 +32,6 @@ const INLINE_COMMENT_KEYS = [
   'unresolved',
   'resolve',
   'reopen',
-  'label',
   'reply_placeholder',
   'range_not_found',
 ] as const;
@@ -53,12 +56,5 @@ describe('en_US translation.json has the inline_comment.* keys', () => {
 
     expect(typeof value).toBe('string');
     expect((value as string).trim().length).toBeGreaterThan(0);
-  });
-
-  it('inline_comment.label is exactly "Inline Comment" (design.md 決定6)', () => {
-    const namespace = translation.inline_comment as
-      | Record<string, unknown>
-      | undefined;
-    expect(namespace?.label).toBe('Inline Comment');
   });
 });

@@ -28,7 +28,9 @@ import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useCurrentUser } from '~/states/global';
 
 import type { InlineCommentWithReplies } from '../../../interfaces';
+import { MentionPickerButton } from '../InlineCommentForm/MentionPickerButton';
 import { MentionAwareCommentInput } from '../MentionAwareCommentInput/MentionAwareCommentInput';
+import { useCommentInputControls } from '../MentionAwareCommentInput/use-comment-input-controls';
 import { rangeToVirtualElement } from '../SelectionPopover/selection-virtual-element';
 import { usePopperPosition } from '../SelectionPopover/use-popper-position';
 
@@ -141,6 +143,9 @@ export const InlineCommentPreviewPopover: FC<
 
   const [isEditing, setIsEditing] = useState(false);
   const [editError, setEditError] = useState<string>();
+
+  const { canSubmit, submit, insertMention, onControlsChange } =
+    useCommentInputControls();
 
   const handleEditSubmit = async (text: string): Promise<void> => {
     try {
@@ -303,11 +308,19 @@ export const InlineCommentPreviewPopover: FC<
                 editorKey={`inline_comment_preview_popover_edit_${comment.id}`}
                 initialValue={comment.comment}
                 onSubmit={handleEditSubmit}
+                onControlsChange={onControlsChange}
               />
-              {/* Save is MentionAwareCommentInput's own built-in submit
-                  control; Cancel is placed below, right-aligned, to sit
-                  alongside it (Requirement 2.2). */}
-              <div className="d-flex justify-content-end mt-1">
+              {/* Cancel and Save below the input, right-aligned, in the
+                  order the delete confirmation elsewhere already uses
+                  (Requirement 2.2). Save is rendered here, not by
+                  MentionAwareCommentInput: that component reports its
+                  submit control outward so each caller places it, which is
+                  what lets it sit beside Cancel. Same composition as the
+                  list item's edit mode. */}
+              <div className="d-flex align-items-center justify-content-end gap-2 mt-1">
+                <span className="me-auto">
+                  <MentionPickerButton onInsert={insertMention} />
+                </span>
                 <button
                   type="button"
                   data-testid="inline-comment-preview-popover-edit-cancel-button"
@@ -315,6 +328,15 @@ export const InlineCommentPreviewPopover: FC<
                   onClick={handleEditCancel}
                 >
                   {t('Cancel')}
+                </button>
+                <button
+                  type="button"
+                  data-testid="inline-comment-preview-popover-edit-save-button"
+                  className="btn btn-sm btn-primary"
+                  disabled={!canSubmit}
+                  onClick={submit}
+                >
+                  {t('Update')}
                 </button>
               </div>
             </div>

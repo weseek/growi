@@ -2821,8 +2821,8 @@ test.describe('Inline comment - the bottom-list reply UI is unified with the nor
     const replyText = 'a reply submitted through the unified reply UI';
     await replyEditor.fill(replyText);
     // CommentEditor's submit button, not the old inline-only
-    // `inline-comment-submit-button` (MentionAwareCommentInput's own
-    // testid) -- `.first()` for the same desktop/mobile duplication reason
+    // `inline-comment-submit-button` (the create form's / reply edit mode's
+    // own testid) -- `.first()` for the same desktop/mobile duplication reason
     // as the Cancel button above.
     await item.getByTestId('comment-submit-button').first().click();
 
@@ -3466,7 +3466,10 @@ test.describe('Inline comment - editing an origin comment (from the list and fro
     await editForm
       .locator('.cm-content')
       .fill('an origin comment edited from the list');
-    await editForm.getByTestId('inline-comment-submit-button').click();
+    // The list item's edit mode renders its own Save button beside Cancel
+    // below the input, so it has its own test id -- the editor component no
+    // longer renders the inline `inline-comment-submit-button`.
+    await editForm.getByTestId('inline-comment-edit-save-button').click();
 
     await expect(editForm).not.toBeVisible();
     await expect(item).toContainText('an origin comment edited from the list');
@@ -3505,7 +3508,9 @@ test.describe('Inline comment - editing an origin comment (from the list and fro
     await editForm
       .locator('.cm-content')
       .fill('an origin comment edited from the popover');
-    await editForm.getByTestId('inline-comment-submit-button').click();
+    await editForm
+      .getByTestId('inline-comment-preview-popover-edit-save-button')
+      .click();
     await expect(editForm).not.toBeVisible();
     await expect(popover).toContainText(
       'an origin comment edited from the popover',
@@ -4228,7 +4233,7 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
     replyFormAvatar: '.inline-comment-reply-form .user-picture',
     editForm: '.inline-comment-edit-form',
     editCancelButton: '[data-testid="inline-comment-edit-cancel-button"]',
-    editSubmitButton: '[data-testid="inline-comment-submit-button"]',
+    editSubmitButton: '[data-testid="inline-comment-edit-save-button"]',
     deleteConfirm: '[data-testid="inline-comment-delete-confirm"]',
     deleteConfirmIcon:
       '[data-testid="inline-comment-delete-confirm"] .material-symbols-outlined',
@@ -4276,7 +4281,8 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
     editForm: '[data-testid="inline-comment-preview-popover-edit-form"]',
     editCancelButton:
       '[data-testid="inline-comment-preview-popover-edit-cancel-button"]',
-    editSubmitButton: '[data-testid="inline-comment-submit-button"]',
+    editSubmitButton:
+      '[data-testid="inline-comment-preview-popover-edit-save-button"]',
   };
 
   /** Every divider in the popover, measured together for items 21 and 26. */

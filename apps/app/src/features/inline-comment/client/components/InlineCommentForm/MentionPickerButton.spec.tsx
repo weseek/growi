@@ -72,7 +72,7 @@ describe('MentionPickerButton', () => {
 
     const toggle = screen.getByTestId('mention-picker-button');
     expect(toggle).toHaveClass('btn', 'btn-link', 'btn-sm');
-    expect(toggle).toHaveClass('text-body-secondary');
+    expect(toggle).toHaveClass('btn-outline-neutral-secondary');
     // btn-secondary resolves to a fixed dark grey that does not follow the
     // active theme, which is exactly what this component must stop using.
     expect(toggle).not.toHaveClass('btn-secondary');

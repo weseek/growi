@@ -13,6 +13,7 @@
  * complete, not merely present.
  */
 
+import { useEffect } from 'react';
 import {
   act,
   fireEvent,
@@ -103,11 +104,48 @@ vi.mock('~/client/components/NotAvailableForReadOnlyUser', () => ({
 const mentionAwareCommentInputProps = vi.hoisted(
   () => ({ current: undefined }) as { current?: Record<string, unknown> },
 );
+/**
+ * The input hands `{ canSubmit, submit, insertMention }` outward through
+ * `onControlsChange` and the caller renders the Save button, so the mock has
+ * to reproduce that handshake (from an effect, never during render — calling
+ * the parent's setter mid-render is what would loop). `canSubmit` is
+ * settable per test.
+ */
+const commentInputControls = vi.hoisted(() => ({
+  canSubmit: true,
+  submit: vi.fn(),
+  insertMention: vi.fn(),
+}));
 vi.mock('../MentionAwareCommentInput/MentionAwareCommentInput', () => ({
   MentionAwareCommentInput: (props: Record<string, unknown>) => {
     mentionAwareCommentInputProps.current = props;
+    const onControlsChange = props.onControlsChange as
+      | ((controls: unknown) => void)
+      | undefined;
+    useEffect(() => {
+      onControlsChange?.({
+        canSubmit: commentInputControls.canSubmit,
+        submit: commentInputControls.submit,
+        insertMention: commentInputControls.insertMention,
+      });
+    }, [onControlsChange]);
     return <div data-testid="mention-aware-comment-input-mock" />;
   },
+}));
+
+// MentionPickerButton has its own spec; mocked at the boundary so this file
+// only proves where the popover places it and that selecting a candidate
+// reaches the input's insertMention control.
+vi.mock('../InlineCommentForm/MentionPickerButton', () => ({
+  MentionPickerButton: (props: { onInsert: (username: string) => void }) => (
+    <button
+      type="button"
+      data-testid="mention-picker-button-mock"
+      onClick={() => props.onInsert('alice')}
+    >
+      @
+    </button>
+  ),
 }));
 
 import { InlineCommentPreviewPopover } from './InlineCommentPreviewPopover';
@@ -192,6 +230,9 @@ describe('InlineCommentPreviewPopover', () => {
     currentUserRef.current = undefined;
     mentionAwareCommentInputProps.current = undefined;
     isDisabledRef.current = false;
+    commentInputControls.canSubmit = true;
+    commentInputControls.submit.mockReset();
+    commentInputControls.insertMention.mockReset();
   });
 
   it('renders its content through a portal into document.body, positioned via the popper mechanism', () => {
@@ -409,6 +450,90 @@ describe('InlineCommentPreviewPopover', () => {
     );
     const actionsRow = cancelButton.parentElement;
     expect(actionsRow).toHaveClass('d-flex', 'justify-content-end');
+  });
+
+  // Checklist item 30 (the list item's item 11 counterpart): Save joins
+  // Cancel in that same row, in the same order, so the two edit modes read
+  // alike (checklist item 33).
+  it('places Cancel and Save together in that row, Cancel first (checklist item 30)', async () => {
+    currentUserRef.current = { _id: 'user1' };
+    renderPopover({ id: 'comment42', creatorId: 'user1' });
+
+    await userEvent.click(
+      screen.getByTestId('inline-comment-preview-popover-edit-button'),
+    );
+
+    const cancelButton = screen.getByTestId(
+      'inline-comment-preview-popover-edit-cancel-button',
+    );
+    const saveButton = screen.getByTestId(
+      'inline-comment-preview-popover-edit-save-button',
+    );
+    const actionsRow = cancelButton.parentElement;
+
+    expect(saveButton.parentElement).toBe(actionsRow);
+    expect(actionsRow).toHaveClass('d-flex', 'justify-content-end', 'gap-2');
+    expect(
+      cancelButton.compareDocumentPosition(saveButton) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    const input = screen.getByTestId('mention-aware-comment-input-mock');
+    expect(
+      input.compareDocumentPosition(actionsRow as Node) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(saveButton).toHaveClass('btn', 'btn-sm', 'btn-primary');
+  });
+
+  it('puts the mention picker in that same row, left of Cancel and Save', async () => {
+    currentUserRef.current = { _id: 'user1' };
+    renderPopover({ id: 'comment42', creatorId: 'user1' });
+
+    await userEvent.click(
+      screen.getByTestId('inline-comment-preview-popover-edit-button'),
+    );
+
+    const picker = screen.getByTestId('mention-picker-button-mock');
+    const cancelButton = screen.getByTestId(
+      'inline-comment-preview-popover-edit-cancel-button',
+    );
+    const actionsRow = cancelButton.parentElement as HTMLElement;
+    expect(actionsRow.contains(picker)).toBe(true);
+    expect(
+      picker.compareDocumentPosition(cancelButton) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+
+    await userEvent.click(picker);
+    expect(commentInputControls.insertMention).toHaveBeenCalledWith('alice');
+  });
+
+  it("invokes the input's submit control when Save is clicked", async () => {
+    currentUserRef.current = { _id: 'user1' };
+    renderPopover({ id: 'comment42', creatorId: 'user1' });
+
+    await userEvent.click(
+      screen.getByTestId('inline-comment-preview-popover-edit-button'),
+    );
+    await userEvent.click(
+      screen.getByTestId('inline-comment-preview-popover-edit-save-button'),
+    );
+
+    expect(commentInputControls.submit).toHaveBeenCalledTimes(1);
+  });
+
+  it('disables Save while the input reports it cannot submit (empty text)', async () => {
+    commentInputControls.canSubmit = false;
+    currentUserRef.current = { _id: 'user1' };
+    renderPopover({ id: 'comment42', creatorId: 'user1' });
+
+    await userEvent.click(
+      screen.getByTestId('inline-comment-preview-popover-edit-button'),
+    );
+
+    expect(
+      screen.getByTestId('inline-comment-preview-popover-edit-save-button'),
+    ).toBeDisabled();
   });
 
   it('replaces the reply thread and the reply form while editing, restoring both on cancel (Req 2.2)', async () => {

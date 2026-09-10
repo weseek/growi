@@ -14,6 +14,7 @@
  * this task must rule out.
  */
 
+import { useEffect } from 'react';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -101,11 +102,50 @@ vi.mock('~/client/components/NotAvailableForReadOnlyUser', () => ({
 const mentionAwareCommentInputProps = vi.hoisted(
   () => ({ current: undefined }) as { current?: Record<string, unknown> },
 );
+/**
+ * The input no longer renders a submit control itself — it hands
+ * `{ canSubmit, submit, insertMention }` outward through `onControlsChange`
+ * and the caller renders the Save button. The mock reproduces that handshake
+ * so the item's own Save button can be exercised; `canSubmit` is settable
+ * per test.
+ */
+const commentInputControls = vi.hoisted(() => ({
+  canSubmit: true,
+  submit: vi.fn(),
+  insertMention: vi.fn(),
+}));
 vi.mock('../MentionAwareCommentInput/MentionAwareCommentInput', () => ({
   MentionAwareCommentInput: (props: Record<string, unknown>) => {
     mentionAwareCommentInputProps.current = props;
+    const onControlsChange = props.onControlsChange as
+      | ((controls: unknown) => void)
+      | undefined;
+    // From an effect, not during render: calling the parent's state setter
+    // while the child renders is what would make this contract loop.
+    useEffect(() => {
+      onControlsChange?.({
+        canSubmit: commentInputControls.canSubmit,
+        submit: commentInputControls.submit,
+        insertMention: commentInputControls.insertMention,
+      });
+    }, [onControlsChange]);
     return <div data-testid="mention-aware-comment-input-mock" />;
   },
+}));
+
+// MentionPickerButton has its own spec (dropdown + candidate fetch); mocked
+// at the boundary here so this file only proves where the item places it and
+// that selecting a candidate reaches the input's insertMention control.
+vi.mock('../InlineCommentForm/MentionPickerButton', () => ({
+  MentionPickerButton: (props: { onInsert: (username: string) => void }) => (
+    <button
+      type="button"
+      data-testid="mention-picker-button-mock"
+      onClick={() => props.onInsert('alice')}
+    >
+      @
+    </button>
+  ),
 }));
 
 import { InlineCommentItem } from './InlineCommentItem';
@@ -189,6 +229,9 @@ describe('InlineCommentItem', () => {
     currentUserRef.current = undefined;
     isDisabledRef.current = false;
     mentionAwareCommentInputProps.current = undefined;
+    commentInputControls.canSubmit = true;
+    commentInputControls.submit.mockReset();
+    commentInputControls.insertMention.mockReset();
   });
 
   describe('the shared comment box (Req 13.3 / 13.4)', () => {
@@ -585,6 +628,83 @@ describe('InlineCommentItem', () => {
           screen.queryByTestId('mention-aware-comment-input-mock'),
         ).not.toBeInTheDocument();
       });
+    });
+
+    // Checklist item 11 (Requirement 1.4 / 2.2's edit-mode artboard): Cancel
+    // and Save sit together in one right-aligned row below the input. Save
+    // used to be the input component's own inline icon button, which no
+    // caller could reposition.
+    it('places Cancel and Save together in one right-aligned row below the input, Cancel first (checklist item 11)', async () => {
+      currentUserRef.current = { _id: 'user1' };
+      renderItem({ id: 'comment42', creatorId: 'user1' });
+
+      await userEvent.click(screen.getByTestId('inline-comment-edit-button'));
+
+      const cancelButton = screen.getByTestId(
+        'inline-comment-edit-cancel-button',
+      );
+      const saveButton = screen.getByTestId('inline-comment-edit-save-button');
+      const actionsRow = cancelButton.parentElement;
+
+      expect(saveButton.parentElement).toBe(actionsRow);
+      expect(actionsRow).toHaveClass('d-flex', 'justify-content-end', 'gap-2');
+      // Cancel precedes Save in document order.
+      expect(
+        cancelButton.compareDocumentPosition(saveButton) &
+          Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
+      // The row is a sibling *below* the input, not next to it.
+      const input = screen.getByTestId('mention-aware-comment-input-mock');
+      expect(
+        input.compareDocumentPosition(actionsRow as Node) &
+          Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
+      expect(saveButton).toHaveClass('btn', 'btn-sm', 'btn-primary');
+    });
+
+    it('puts the mention picker in that same row, to the left of Cancel and Save', async () => {
+      currentUserRef.current = { _id: 'user1' };
+      renderItem({ id: 'comment42', creatorId: 'user1' });
+
+      await userEvent.click(screen.getByTestId('inline-comment-edit-button'));
+
+      const picker = screen.getByTestId('mention-picker-button-mock');
+      const cancelButton = screen.getByTestId(
+        'inline-comment-edit-cancel-button',
+      );
+      const actionsRow = cancelButton.parentElement as HTMLElement;
+      expect(actionsRow.contains(picker)).toBe(true);
+      expect(
+        picker.compareDocumentPosition(cancelButton) &
+          Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
+
+      await userEvent.click(picker);
+      expect(commentInputControls.insertMention).toHaveBeenCalledWith('alice');
+    });
+
+    it("invokes the input's submit control when Save is clicked", async () => {
+      currentUserRef.current = { _id: 'user1' };
+      renderItem({ id: 'comment42', creatorId: 'user1' });
+
+      await userEvent.click(screen.getByTestId('inline-comment-edit-button'));
+      await userEvent.click(
+        screen.getByTestId('inline-comment-edit-save-button'),
+      );
+
+      expect(commentInputControls.submit).toHaveBeenCalledTimes(1);
+    });
+
+    it('disables Save while the input reports it cannot submit (empty text)', async () => {
+      commentInputControls.canSubmit = false;
+      currentUserRef.current = { _id: 'user1' };
+      renderItem({ id: 'comment42', creatorId: 'user1' });
+
+      await userEvent.click(screen.getByTestId('inline-comment-edit-button'));
+
+      expect(
+        screen.getByTestId('inline-comment-edit-save-button'),
+      ).toBeDisabled();
     });
 
     it('does NOT call update when the edit is canceled, and reverts to the read-only display', async () => {

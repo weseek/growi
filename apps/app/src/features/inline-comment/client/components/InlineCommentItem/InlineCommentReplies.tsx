@@ -35,7 +35,9 @@ import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useCurrentUser } from '~/states/global';
 
 import type { InlineCommentReply } from '../../../interfaces';
+import { MentionPickerButton } from '../InlineCommentForm/MentionPickerButton';
 import { MentionAwareCommentInput } from '../MentionAwareCommentInput/MentionAwareCommentInput';
+import { useCommentInputControls } from '../MentionAwareCommentInput/use-comment-input-controls';
 
 import styles from './InlineCommentItem.module.scss';
 
@@ -69,6 +71,9 @@ const InlineCommentReplyItem: FC<InlineCommentReplyItemProps> = (
   const [editError, setEditError] = useState<string>();
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [deleteError, setDeleteError] = useState<string>();
+
+  const { canSubmit, submit, insertMention, onControlsChange } =
+    useCommentInputControls();
 
   const handleEditSubmit = async (text: string): Promise<void> => {
     try {
@@ -192,11 +197,37 @@ const InlineCommentReplyItem: FC<InlineCommentReplyItemProps> = (
       >
         {isEditing ? (
           <div className="inline-comment-edit-form">
-            <MentionAwareCommentInput
-              editorKey={`inline_comment_edit_${reply.id}`}
-              initialValue={reply.comment}
-              onSubmit={handleEditSubmit}
-            />
+            {/* The reply edit mode's layout is unchanged: the submit button
+                stays inline to the right of the editor. The input component
+                no longer renders it, so the flex row that used to live
+                inside it is reproduced here. */}
+            <div className="d-flex align-items-start gap-2">
+              <MentionAwareCommentInput
+                editorKey={`inline_comment_edit_${reply.id}`}
+                initialValue={reply.comment}
+                onSubmit={handleEditSubmit}
+                onControlsChange={onControlsChange}
+              />
+              <div className="d-flex align-items-center gap-1">
+                <MentionPickerButton onInsert={insertMention} />
+                <button
+                  type="button"
+                  className="btn btn-primary btn-sm p-0 d-inline-flex align-items-center justify-content-center"
+                  style={{ width: '2rem', height: '2rem' }}
+                  data-testid="inline-comment-submit-button"
+                  disabled={!canSubmit}
+                  onClick={submit}
+                  aria-label={t('page_comment.comment')}
+                >
+                  <span
+                    className="material-symbols-outlined fs-6"
+                    aria-hidden="true"
+                  >
+                    send
+                  </span>
+                </button>
+              </div>
+            </div>
             <button
               type="button"
               data-testid="inline-comment-reply-edit-cancel-button"

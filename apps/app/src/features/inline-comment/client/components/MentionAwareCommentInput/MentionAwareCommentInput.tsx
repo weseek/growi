@@ -1,13 +1,27 @@
 /**
- * Mention-aware comment input used by `InlineCommentForm.tsx`. Owns the
- * CodeMirror editor assembly, submission, and error display. No Cancel
- * button here — `InlineCommentForm` handles cancellation (Escape / outside
- * click). The actual persistence call is injected via `onSubmit`, so this
- * component has no dependency on the inline-comment store.
+ * Mention-aware comment input shared by the inline-comment create form, the
+ * list item's and the popover's edit modes, and the reply edit mode. Owns
+ * the CodeMirror editor assembly, submission, and error display — but no
+ * buttons at all: neither Cancel (each caller handles cancellation its own
+ * way — Escape / outside click for the create form, an explicit button in
+ * the edit modes) nor Save / mention-picker. Those are reported outward
+ * through `onControlsChange` and rendered by the caller, which is what lets
+ * the edit modes put Save next to their own Cancel below the input while the
+ * create form keeps it inline to the right of the editor.
+ *
+ * The actual persistence call is injected via `onSubmit`, so this component
+ * has no dependency on the inline-comment store.
  */
 
 import type { JSX } from 'react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { EditorView, tooltips } from '@codemirror/view';
 import { useSetResolvedTheme } from '@growi/editor';
 import { CodeMirrorEditorComment } from '@growi/editor/dist/client/components/CodeMirrorEditorComment';
@@ -16,12 +30,11 @@ import {
   mentionDecorationSettings,
 } from '@growi/editor/dist/client/services';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
-import { useTranslation } from 'react-i18next';
 
 import { useNextThemes } from '~/stores-universal/use-next-themes';
 
 import { fetchMentionUsers } from '../../services/fetch-mention-users';
-import { MentionPickerButton } from '../InlineCommentForm/MentionPickerButton';
+import type { MentionAwareCommentInputControls } from './use-comment-input-controls';
 
 type MentionAwareCommentInputProps = {
   /** CodeMirror editor instance key; callers compute one per editor instance. */
@@ -37,14 +50,26 @@ type MentionAwareCommentInputProps = {
   onSubmitted?: () => void;
   /** An additional, caller-owned guard ANDed with this component's own "has non-empty text" check. */
   disabled?: boolean;
+  /**
+   * Reports the submit / mention-insert controls and whether submitting is
+   * currently possible, so the caller can render those buttons wherever its
+   * own layout needs them. Use `useCommentInputControls()` on the caller
+   * side rather than wiring this by hand.
+   */
+  onControlsChange?: (controls: MentionAwareCommentInputControls) => void;
 };
 
 export const MentionAwareCommentInput = (
   props: MentionAwareCommentInputProps,
 ): JSX.Element => {
-  const { editorKey, initialValue, onSubmit, onSubmitted, disabled } = props;
-
-  const { t } = useTranslation();
+  const {
+    editorKey,
+    initialValue,
+    onSubmit,
+    onSubmitted,
+    disabled,
+    onControlsChange,
+  } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
 
@@ -148,40 +173,54 @@ export const MentionAwareCommentInput = (
     [codeMirrorEditor],
   );
 
+  // The two callables are handed out with a stable identity, backed by a ref
+  // that always points at the latest closure. Without this, `submitHandler`
+  // (whose deps include the caller's `onSubmit`, typically a fresh closure
+  // per render) would change identity every render and the notification
+  // below would fire endlessly against a caller that re-renders on it.
+  // useLayoutEffect (not useEffect): commits before the browser paints and
+  // before a user-initiated click can be handled, closing the (theoretical --
+  // React already flushes pending effects ahead of an event handler) gap
+  // between "this render committed" and "the ref points at this render's
+  // closure."
+  const latestHandlersRef = useRef({ submitHandler, insertMention });
+  useLayoutEffect(() => {
+    latestHandlersRef.current = { submitHandler, insertMention };
+  }, [submitHandler, insertMention]);
+
+  const submit = useCallback(() => {
+    latestHandlersRef.current.submitHandler();
+  }, []);
+  const insertMentionControl = useCallback((username: string) => {
+    latestHandlersRef.current.insertMention(username);
+  }, []);
+
+  useEffect(() => {
+    onControlsChange?.({
+      canSubmit,
+      submit,
+      insertMention: insertMentionControl,
+    });
+  }, [canSubmit, submit, insertMentionControl, onControlsChange]);
+
+  // flex-basis 0% (not the .flex-grow-1 utility's `auto`): the editor's root
+  // sets width:100% internally, so an `auto` basis creates a circular width
+  // reference that collapses this item to near zero. Kept now that the
+  // button group lives in the caller — a caller that keeps its buttons
+  // inline places them as siblings of this element in its own flex row, so
+  // this is still the growing item. The error stays inside rather than as a
+  // sibling, so it cannot become another flex item in that row.
   return (
-    <>
-      <div className="d-flex align-items-start gap-2">
-        {/* flex-basis 0% (not the .flex-grow-1 utility's `auto`): the editor's
-            root sets width:100% internally, so an `auto` basis creates a
-            circular width reference that collapses this item to near zero. */}
-        <div style={{ flex: '1 1 0%', minWidth: 0 }}>
-          <CodeMirrorEditorComment
-            editorKey={editorKey}
-            cmProps={cmProps}
-            hideToolbar
-            onSave={submitHandler}
-          />
-        </div>
-        <div className="d-flex align-items-center gap-1">
-          <MentionPickerButton onInsert={insertMention} />
-          <button
-            type="button"
-            className="btn btn-primary btn-sm p-0 d-inline-flex align-items-center justify-content-center"
-            style={{ width: '2rem', height: '2rem' }}
-            data-testid="inline-comment-submit-button"
-            disabled={!canSubmit}
-            onClick={submitHandler}
-            aria-label={t('page_comment.comment')}
-          >
-            <span className="material-symbols-outlined fs-6" aria-hidden="true">
-              send
-            </span>
-          </button>
-        </div>
-      </div>
+    <div style={{ flex: '1 1 0%', minWidth: 0 }}>
+      <CodeMirrorEditorComment
+        editorKey={editorKey}
+        cmProps={cmProps}
+        hideToolbar
+        onSave={submitHandler}
+      />
       {error != null && (
         <span className="text-danger small d-block mt-1">{error}</span>
       )}
-    </>
+    </div>
   );
 };

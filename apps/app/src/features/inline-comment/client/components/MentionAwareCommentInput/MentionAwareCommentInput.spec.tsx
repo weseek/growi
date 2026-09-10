@@ -1,7 +1,11 @@
+import type { JSX } from 'react';
+import { useRef } from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { MentionPickerButton } from '../InlineCommentForm/MentionPickerButton';
 import { MentionAwareCommentInput } from './MentionAwareCommentInput';
+import { useCommentInputControls } from './use-comment-input-controls';
 
 // --- @growi/editor mocks -------------------------------------------------
 // MentionAwareCommentInput follows CommentEditor.tsx's mention-aware textarea
@@ -102,63 +106,135 @@ vi.mock('../InlineCommentForm/MentionPickerButton', () => ({
   ),
 }));
 
+/**
+ * Stands in for a real caller: it takes the controls through
+ * `onControlsChange` (via the shared `useCommentInputControls` hook every
+ * caller uses) and renders its own submit / mention-picker buttons, which is
+ * the only way those controls exist at all now that the component renders
+ * neither itself.
+ *
+ * `renderCount` is exposed so the "does not re-render endlessly" test below
+ * can assert the controls handshake settles: a caller that stores the whole
+ * controls object in state while passing a fresh `onSubmit` closure every
+ * render is exactly how this contract could loop.
+ */
+const CallerHarness = (props: {
+  onSubmit: (text: string) => Promise<unknown>;
+  onSubmitted?: () => void;
+  disabled?: boolean;
+  initialValue?: string;
+  onRender?: (count: number) => void;
+}): JSX.Element => {
+  const { onSubmit, onSubmitted, disabled, initialValue, onRender } = props;
+  const { canSubmit, submit, insertMention, onControlsChange } =
+    useCommentInputControls();
+
+  const renderCountRef = useRef(0);
+  renderCountRef.current += 1;
+  onRender?.(renderCountRef.current);
+
+  return (
+    <div className="d-flex align-items-start gap-2">
+      <MentionAwareCommentInput
+        editorKey="key-1"
+        initialValue={initialValue}
+        disabled={disabled}
+        // Deliberately a fresh closure on every render, matching how the real
+        // callers pass `onSubmit`.
+        onSubmit={(text) => onSubmit(text)}
+        onSubmitted={onSubmitted}
+        onControlsChange={onControlsChange}
+      />
+      <MentionPickerButton onInsert={insertMention} />
+      <button
+        type="button"
+        data-testid="caller-submit-button"
+        disabled={!canSubmit}
+        onClick={submit}
+      >
+        send
+      </button>
+    </div>
+  );
+};
+
 describe('MentionAwareCommentInput', () => {
   beforeEach(() => {
     editorState.docText = '';
   });
 
-  it('disables submit for empty comment text', () => {
-    render(<MentionAwareCommentInput editorKey="key-1" onSubmit={vi.fn()} />);
+  it("renders neither a submit button nor a mention-picker button of its own — both are the caller's to place", () => {
+    render(
+      <MentionAwareCommentInput
+        editorKey="key-1"
+        onSubmit={vi.fn()}
+        onControlsChange={vi.fn()}
+      />,
+    );
 
-    expect(screen.getByTestId('inline-comment-submit-button')).toBeDisabled();
+    expect(
+      screen.queryByTestId('inline-comment-submit-button'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('mention-picker-button-mock'),
+    ).not.toBeInTheDocument();
   });
 
-  it('disables submit for whitespace-only comment text', () => {
-    render(<MentionAwareCommentInput editorKey="key-1" onSubmit={vi.fn()} />);
+  it('reports controls with canSubmit false while the comment text is empty', () => {
+    const onControlsChange = vi.fn();
+    render(
+      <MentionAwareCommentInput
+        editorKey="key-1"
+        onSubmit={vi.fn()}
+        onControlsChange={onControlsChange}
+      />,
+    );
+
+    expect(onControlsChange).toHaveBeenCalled();
+    const controls = onControlsChange.mock.lastCall?.[0];
+    expect(controls.canSubmit).toBe(false);
+    expect(typeof controls.submit).toBe('function');
+    expect(typeof controls.insertMention).toBe('function');
+  });
+
+  it('reports canSubmit false for whitespace-only comment text', () => {
+    render(<CallerHarness onSubmit={vi.fn()} />);
 
     fireEvent.change(screen.getByTestId('inline-comment-textarea'), {
       target: { value: '   ' },
     });
 
-    expect(screen.getByTestId('inline-comment-submit-button')).toBeDisabled();
+    expect(screen.getByTestId('caller-submit-button')).toBeDisabled();
   });
 
-  it('enables submit once non-whitespace text is entered', () => {
-    render(<MentionAwareCommentInput editorKey="key-1" onSubmit={vi.fn()} />);
+  it('reports canSubmit true once non-whitespace text is entered', () => {
+    render(<CallerHarness onSubmit={vi.fn()} />);
 
     fireEvent.change(screen.getByTestId('inline-comment-textarea'), {
       target: { value: 'hello' },
     });
 
-    expect(
-      screen.getByTestId('inline-comment-submit-button'),
-    ).not.toBeDisabled();
+    expect(screen.getByTestId('caller-submit-button')).not.toBeDisabled();
   });
 
-  it('keeps submit disabled when the disabled prop is true, regardless of text', () => {
-    render(
-      <MentionAwareCommentInput
-        editorKey="key-1"
-        onSubmit={vi.fn()}
-        disabled
-      />,
-    );
+  it('keeps canSubmit false when the disabled prop is true, regardless of text', () => {
+    render(<CallerHarness onSubmit={vi.fn()} disabled />);
 
     fireEvent.change(screen.getByTestId('inline-comment-textarea'), {
       target: { value: 'hello' },
     });
 
-    expect(screen.getByTestId('inline-comment-submit-button')).toBeDisabled();
+    expect(screen.getByTestId('caller-submit-button')).toBeDisabled();
   });
 
-  it('calls onSubmit with the current comment text', async () => {
+  it('calls onSubmit with the current comment text when the caller invokes submit()', async () => {
     const onSubmit = vi.fn().mockResolvedValue(undefined);
-    render(<MentionAwareCommentInput editorKey="key-1" onSubmit={onSubmit} />);
+    render(<CallerHarness onSubmit={onSubmit} />);
 
     fireEvent.change(screen.getByTestId('inline-comment-textarea'), {
       target: { value: 'my comment' },
     });
-    fireEvent.click(screen.getByTestId('inline-comment-submit-button'));
+    fireEvent.click(screen.getByTestId('caller-submit-button'));
 
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith('my comment');
@@ -168,66 +244,72 @@ describe('MentionAwareCommentInput', () => {
   it('clears the text and calls onSubmitted on successful submit', async () => {
     const onSubmit = vi.fn().mockResolvedValue(undefined);
     const onSubmitted = vi.fn();
-    render(
-      <MentionAwareCommentInput
-        editorKey="key-1"
-        onSubmit={onSubmit}
-        onSubmitted={onSubmitted}
-      />,
-    );
+    render(<CallerHarness onSubmit={onSubmit} onSubmitted={onSubmitted} />);
 
     fireEvent.change(screen.getByTestId('inline-comment-textarea'), {
       target: { value: 'my comment' },
     });
-    fireEvent.click(screen.getByTestId('inline-comment-submit-button'));
+    fireEvent.click(screen.getByTestId('caller-submit-button'));
 
     await waitFor(() => expect(onSubmitted).toHaveBeenCalledTimes(1));
     expect(codeMirrorEditorMock.initDoc).toHaveBeenCalledWith('');
-    // The submit button reflects the internal text having been cleared.
-    expect(screen.getByTestId('inline-comment-submit-button')).toBeDisabled();
+    // The caller's button reflects the internal text having been cleared,
+    // which is only possible if the new canSubmit was reported outward.
+    await waitFor(() =>
+      expect(screen.getByTestId('caller-submit-button')).toBeDisabled(),
+    );
   });
 
   it('shows an error and preserves the text when onSubmit rejects', async () => {
     const onSubmit = vi.fn().mockRejectedValue(new Error('failed to post'));
     const onSubmitted = vi.fn();
-    render(
-      <MentionAwareCommentInput
-        editorKey="key-1"
-        onSubmit={onSubmit}
-        onSubmitted={onSubmitted}
-      />,
-    );
+    render(<CallerHarness onSubmit={onSubmit} onSubmitted={onSubmitted} />);
 
     fireEvent.change(screen.getByTestId('inline-comment-textarea'), {
       target: { value: 'my comment' },
     });
-    fireEvent.click(screen.getByTestId('inline-comment-submit-button'));
+    fireEvent.click(screen.getByTestId('caller-submit-button'));
 
     await waitFor(() => {
       expect(screen.getByText('failed to post')).toBeInTheDocument();
     });
     expect(onSubmitted).not.toHaveBeenCalled();
     expect(codeMirrorEditorMock.initDoc).not.toHaveBeenCalled();
-    expect(
-      screen.getByTestId('inline-comment-submit-button'),
-    ).not.toBeDisabled();
+    expect(screen.getByTestId('caller-submit-button')).not.toBeDisabled();
+  });
+
+  it('settles the controls handshake instead of re-rendering the caller endlessly', () => {
+    const renderCounts: number[] = [];
+    render(
+      <CallerHarness
+        onSubmit={vi.fn()}
+        onRender={(count) => renderCounts.push(count)}
+      />,
+    );
+
+    // A loop here would blow the stack rather than return, so any finite
+    // count already proves termination; the bound keeps it honest.
+    expect(renderCounts.at(-1)).toBeLessThan(5);
+
+    fireEvent.change(screen.getByTestId('inline-comment-textarea'), {
+      target: { value: 'hello' },
+    });
+
+    expect(renderCounts.at(-1)).toBeLessThan(10);
   });
 
   it("does not render a Cancel button (cancellation is the caller's responsibility)", () => {
-    render(<MentionAwareCommentInput editorKey="key-1" onSubmit={vi.fn()} />);
+    render(
+      <MentionAwareCommentInput
+        editorKey="key-1"
+        onSubmit={vi.fn()}
+        onControlsChange={vi.fn()}
+      />,
+    );
 
     expect(
       screen.queryByRole('button', { name: 'Cancel' }),
     ).not.toBeInTheDocument();
-  });
-
-  it('labels the submit button via aria-label, since it renders as an icon-only button', () => {
-    render(<MentionAwareCommentInput editorKey="key-1" onSubmit={vi.fn()} />);
-
-    expect(screen.getByTestId('inline-comment-submit-button')).toHaveAttribute(
-      'aria-label',
-      'page_comment.comment',
-    );
   });
 
   it('applies initialValue to the editor exactly once at mount, when provided (edit mode)', () => {
@@ -251,8 +333,8 @@ describe('MentionAwareCommentInput', () => {
     expect(codeMirrorEditorMock.initDoc).not.toHaveBeenCalled();
   });
 
-  it('renders MentionPickerButton and inserts "@<username> " at the cursor on selection', () => {
-    render(<MentionAwareCommentInput editorKey="key-1" onSubmit={vi.fn()} />);
+  it('inserts "@<username> " at the cursor when the caller invokes insertMention()', () => {
+    render(<CallerHarness onSubmit={vi.fn()} />);
 
     fireEvent.click(screen.getByTestId('mention-picker-button-mock'));
 

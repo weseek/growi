@@ -1,7 +1,9 @@
 /**
  * Comment-creation form shown by `SelectionCapture` once a text selection
  * has been captured. The mention-aware editor, submission, and error display
- * are owned by the shared `MentionAwareCommentInput`; this form owns the
+ * are owned by the shared `MentionAwareCommentInput`, whose submit and
+ * mention-picker buttons this form renders itself (inline to the right of
+ * the editor) from the controls that component reports; this form owns the
  * quote (visually hidden — the range is already highlighted in the body, but
  * kept in the DOM for the Playwright suite and screen readers), the
  * composing user's avatar, cancellation (no visible Cancel button — Escape
@@ -11,12 +13,15 @@
 import type { JSX } from 'react';
 import { useEffect, useMemo, useRef } from 'react';
 import { UserPicture } from '@growi/ui/dist/components';
+import { useTranslation } from 'react-i18next';
 
 import { useCurrentUser } from '~/states/global';
 
 import { useSWRxInlineComments } from '../../stores/inline-comment';
 import { MentionAwareCommentInput } from '../MentionAwareCommentInput/MentionAwareCommentInput';
+import { useCommentInputControls } from '../MentionAwareCommentInput/use-comment-input-controls';
 import type { CapturedSelection } from '../SelectionCapture/use-text-selection';
+import { MentionPickerButton } from './MentionPickerButton';
 
 type InlineCommentFormProps = {
   pageId: string;
@@ -36,8 +41,15 @@ export const InlineCommentForm = (
   const { pageId, anchorOriginRevisionId, anchor, onSubmitted, onCanceled } =
     props;
 
+  const { t } = useTranslation();
   const { create } = useSWRxInlineComments(pageId);
   const currentUser = useCurrentUser();
+
+  // The editor reports its submit / mention-insert controls outward and
+  // renders no buttons itself, so this form places them — inline to the
+  // right of the editor, where they have always been.
+  const { canSubmit, submit, insertMention, onControlsChange } =
+    useCommentInputControls();
 
   // One create-form editor instance per page.
   const editorKey = useMemo(() => `inline_comment_new_${pageId}`, [pageId]);
@@ -109,15 +121,30 @@ export const InlineCommentForm = (
       </blockquote>
       <div className="d-flex align-items-start gap-2">
         <UserPicture user={currentUser} noLink noTooltip />
-        <div style={{ flex: '1 1 0%', minWidth: 0 }}>
-          <MentionAwareCommentInput
-            editorKey={editorKey}
-            disabled={!hasValidAnchor}
-            onSubmit={(comment) =>
-              create({ pageId, anchorOriginRevisionId, comment, anchor })
-            }
-            onSubmitted={onSubmitted}
-          />
+        <MentionAwareCommentInput
+          editorKey={editorKey}
+          disabled={!hasValidAnchor}
+          onSubmit={(comment) =>
+            create({ pageId, anchorOriginRevisionId, comment, anchor })
+          }
+          onSubmitted={onSubmitted}
+          onControlsChange={onControlsChange}
+        />
+        <div className="d-flex align-items-center gap-1">
+          <MentionPickerButton onInsert={insertMention} />
+          <button
+            type="button"
+            className="btn btn-primary btn-sm p-0 d-inline-flex align-items-center justify-content-center"
+            style={{ width: '2rem', height: '2rem' }}
+            data-testid="inline-comment-submit-button"
+            disabled={!canSubmit}
+            onClick={submit}
+            aria-label={t('page_comment.comment')}
+          >
+            <span className="material-symbols-outlined fs-6" aria-hidden="true">
+              send
+            </span>
+          </button>
         </div>
       </div>
     </div>

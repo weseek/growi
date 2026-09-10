@@ -1,5 +1,6 @@
 // @vitest-environment happy-dom
 
+import { useEffect } from 'react';
 import {
   act,
   fireEvent,
@@ -119,11 +120,43 @@ vi.mock('~/client/components/NotAvailableForReadOnlyUser', () => ({
 const mentionAwareCommentInputProps = vi.hoisted(
   () => ({ current: undefined }) as { current?: Record<string, unknown> },
 );
+/**
+ * The input hands `{ canSubmit, submit, insertMention }` outward through
+ * `onControlsChange` and each caller renders the submit button itself, so the
+ * mock reproduces that handshake (from an effect, never during render).
+ */
+const commentInputControls = vi.hoisted(() => ({
+  canSubmit: true,
+  submit: vi.fn(),
+  insertMention: vi.fn(),
+}));
 vi.mock('../MentionAwareCommentInput/MentionAwareCommentInput', () => ({
   MentionAwareCommentInput: (props: Record<string, unknown>) => {
     mentionAwareCommentInputProps.current = props;
+    const onControlsChange = props.onControlsChange as
+      | ((controls: unknown) => void)
+      | undefined;
+    useEffect(() => {
+      onControlsChange?.({
+        canSubmit: commentInputControls.canSubmit,
+        submit: commentInputControls.submit,
+        insertMention: commentInputControls.insertMention,
+      });
+    }, [onControlsChange]);
     return <div data-testid="mention-aware-comment-input-mock" />;
   },
+}));
+
+vi.mock('../InlineCommentForm/MentionPickerButton', () => ({
+  MentionPickerButton: (props: { onInsert: (username: string) => void }) => (
+    <button
+      type="button"
+      data-testid="mention-picker-button-mock"
+      onClick={() => props.onInsert('alice')}
+    >
+      @
+    </button>
+  ),
 }));
 
 vi.mock('~/client/components/FormattedDistanceDate', () => ({
@@ -180,6 +213,9 @@ describe('InlineCommentReplies', () => {
     currentUserRef.current = undefined;
     isDisabledRef.current = false;
     mentionAwareCommentInputProps.current = undefined;
+    commentInputControls.canSubmit = true;
+    commentInputControls.submit.mockReset();
+    commentInputControls.insertMention.mockReset();
   });
 
   it('renders each reply nested under the origin comment (indented container)', () => {
@@ -543,6 +579,55 @@ describe('InlineCommentReplies', () => {
           screen.queryByTestId('mention-aware-comment-input-mock'),
         ).not.toBeInTheDocument();
       });
+    });
+
+    // The reply edit mode's layout is out of this spec's visual scope: the
+    // submit button stays where it always was — inline to the right of the
+    // editor, same testid — even though the input component no longer
+    // renders it. Cancel stays on its own row below, untouched.
+    it('renders the submit button inline to the right of the editor, keeping its original testid', () => {
+      currentUserRef.current = { _id: 'user1' };
+      renderReplies({ replies: [ownReply] });
+
+      fireEvent.click(screen.getByTestId('inline-comment-reply-edit-button'));
+
+      const submitButton = screen.getByTestId('inline-comment-submit-button');
+      const input = screen.getByTestId('mention-aware-comment-input-mock');
+      // Same row: the editor and the button group share one flex row, so the
+      // button is not a descendant of the editor's own wrapper.
+      const row = submitButton.parentElement?.parentElement as HTMLElement;
+      expect(row).toHaveClass('d-flex', 'align-items-start', 'gap-2');
+      expect(row.contains(input)).toBe(true);
+      expect(submitButton).toHaveClass('btn', 'btn-sm', 'btn-primary');
+      expect(submitButton).toHaveAttribute(
+        'aria-label',
+        'page_comment.comment',
+      );
+      // Cancel still sits on its own row below, unchanged.
+      const cancelButton = screen.getByTestId(
+        'inline-comment-reply-edit-cancel-button',
+      );
+      expect(row.contains(cancelButton)).toBe(false);
+    });
+
+    it("invokes the input's submit control when the submit button is clicked", () => {
+      currentUserRef.current = { _id: 'user1' };
+      renderReplies({ replies: [ownReply] });
+
+      fireEvent.click(screen.getByTestId('inline-comment-reply-edit-button'));
+      fireEvent.click(screen.getByTestId('inline-comment-submit-button'));
+
+      expect(commentInputControls.submit).toHaveBeenCalledTimes(1);
+    });
+
+    it('disables the submit button while the input reports it cannot submit', () => {
+      commentInputControls.canSubmit = false;
+      currentUserRef.current = { _id: 'user1' };
+      renderReplies({ replies: [ownReply] });
+
+      fireEvent.click(screen.getByTestId('inline-comment-reply-edit-button'));
+
+      expect(screen.getByTestId('inline-comment-submit-button')).toBeDisabled();
     });
 
     it('does NOT call updateReply when the edit is canceled, and reverts to the read-only display', () => {

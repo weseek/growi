@@ -27,7 +27,9 @@ import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useCurrentUser } from '~/states/global';
 
 import type { InlineCommentWithReplies } from '../../../interfaces';
+import { MentionPickerButton } from '../InlineCommentForm/MentionPickerButton';
 import { MentionAwareCommentInput } from '../MentionAwareCommentInput/MentionAwareCommentInput';
+import { useCommentInputControls } from '../MentionAwareCommentInput/use-comment-input-controls';
 import { InlineCommentReplies } from './InlineCommentReplies';
 
 import styles from './InlineCommentItem.module.scss';
@@ -82,6 +84,9 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
   const [deleteError, setDeleteError] = useState<string>();
   const isResolved = comment.resolvedAt != null;
   const isOwnComment = currentUser?._id === comment.creatorId;
+
+  const { canSubmit, submit, insertMention, onControlsChange } =
+    useCommentInputControls();
 
   // `opacity-75` is what makes a resolved comment recede, mirroring the
   // mockup's `.ic-item[data-resolved="true"] { opacity: .8 }`. Besides the
@@ -287,18 +292,27 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
         }
       >
         {isEditing ? (
-          // Accent-colored border around the edit input, and Cancel
-          // right-aligned below it -- the same composition the popover's own
-          // edit mode uses, so the two edit modes read alike. Save is
-          // `MentionAwareCommentInput`'s own built-in submit control and
-          // stays where that (out-of-boundary) component renders it.
+          // Accent-colored border around the edit input, with the mention
+          // picker, Cancel and Save in one row below it -- the same
+          // composition the popover's own edit mode uses, so the two edit
+          // modes read alike. Save is rendered here rather than by
+          // `MentionAwareCommentInput`: that component reports its submit
+          // control outward so each caller can place it, which is what lets
+          // Save sit beside Cancel here.
           <div className="inline-comment-edit-form border border-primary rounded p-2">
             <MentionAwareCommentInput
               editorKey={`inline_comment_edit_${comment.id}`}
               initialValue={comment.comment}
               onSubmit={handleEditSubmit}
+              onControlsChange={onControlsChange}
             />
-            <div className="d-flex justify-content-end mt-1">
+            <div className="d-flex align-items-center justify-content-end gap-2 mt-1">
+              {/* Left end of the same row: the picker has no bearing on
+                  Cancel/Save, so it is pushed away from them by `me-auto`
+                  rather than given a row of its own. */}
+              <span className="me-auto">
+                <MentionPickerButton onInsert={insertMention} />
+              </span>
               <button
                 type="button"
                 data-testid="inline-comment-edit-cancel-button"
@@ -306,6 +320,15 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
                 onClick={handleEditCancel}
               >
                 {t('Cancel')}
+              </button>
+              <button
+                type="button"
+                data-testid="inline-comment-edit-save-button"
+                className="btn btn-sm btn-primary"
+                disabled={!canSubmit}
+                onClick={submit}
+              >
+                {t('Update')}
               </button>
             </div>
           </div>

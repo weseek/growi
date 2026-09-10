@@ -5,15 +5,15 @@
         "x": 487,
         "y": 490.15625,
         "width": 593,
-        "height": 203,
+        "height": 201.390625,
         "right": 1080,
-        "bottom": 693.15625
+        "bottom": 691.546875
       },
       "overflow": {
         "scrollWidth": 593,
         "clientWidth": 593,
-        "scrollHeight": 203,
-        "clientHeight": 203
+        "scrollHeight": 201,
+        "clientHeight": 201
       },
       "styles": {
         "display": "block",
@@ -50,7 +50,7 @@
         "textAlign": "start",
         "whiteSpace": "normal",
         "width": "593px",
-        "height": "203px"
+        "height": "201.391px"
       },
       "before": {
         "content": "none",
@@ -72,15 +72,15 @@
         "x": 487,
         "y": 490.15625,
         "width": 593,
-        "height": 203,
+        "height": 201.390625,
         "right": 1080,
-        "bottom": 693.15625
+        "bottom": 691.546875
       },
       "overflow": {
         "scrollWidth": 591,
         "clientWidth": 591,
-        "scrollHeight": 201,
-        "clientHeight": 201
+        "scrollHeight": 199,
+        "clientHeight": 199
       },
       "styles": {
         "display": "block",
@@ -117,7 +117,7 @@
         "textAlign": "start",
         "whiteSpace": "normal",
         "width": "593px",
-        "height": "203px"
+        "height": "201.391px"
       },
       "before": {
         "content": "\"\"",
@@ -472,11 +472,11 @@
     "iconButtonContainer": {
       "rect": {
         "x": 1007,
-        "y": 718.15625,
+        "y": 716.546875,
         "width": 56,
         "height": 26,
         "right": 1063,
-        "bottom": 744.15625
+        "bottom": 742.546875
       },
       "overflow": {
         "scrollWidth": 56,
@@ -745,15 +745,15 @@
         "x": 504,
         "y": 591.15625,
         "width": 559,
-        "height": 85,
+        "height": 83.390625,
         "right": 1063,
-        "bottom": 676.15625
+        "bottom": 674.546875
       },
       "overflow": {
         "scrollWidth": 559,
         "clientWidth": 559,
-        "scrollHeight": 85,
-        "clientHeight": 85
+        "scrollHeight": 83,
+        "clientHeight": 83
       },
       "styles": {
         "display": "block",
@@ -790,7 +790,7 @@
         "textAlign": "start",
         "whiteSpace": "normal",
         "width": "559px",
-        "height": "85px"
+        "height": "83.3906px"
       },
       "before": {
         "content": "none",
@@ -810,11 +810,11 @@
     "replyFormAvatar": {
       "rect": {
         "x": 548,
-        "y": 956.515625,
+        "y": 954.90625,
         "width": 19.1875,
         "height": 19.1875,
         "right": 567.1875,
-        "bottom": 975.703125
+        "bottom": 974.09375
       },
       "overflow": {
         "scrollWidth": 19,
@@ -879,15 +879,15 @@
         "x": 504,
         "y": 591.15625,
         "width": 559,
-        "height": 85,
+        "height": 83.390625,
         "right": 1063,
-        "bottom": 676.15625
+        "bottom": 674.546875
       },
       "overflow": {
         "scrollWidth": 557,
         "clientWidth": 557,
-        "scrollHeight": 83,
-        "clientHeight": 83
+        "scrollHeight": 81,
+        "clientHeight": 81
       },
       "styles": {
         "display": "block",
@@ -924,7 +924,7 @@
         "textAlign": "start",
         "whiteSpace": "normal",
         "width": "559px",
-        "height": "85px"
+        "height": "83.3906px"
       },
       "before": {
         "content": "none",
@@ -943,12 +943,12 @@
     },
     "editCancelButton": {
       "rect": {
-        "x": 993,
-        "y": 636.15625,
+        "x": 920,
+        "y": 634.546875,
         "width": 61,
         "height": 31,
-        "right": 1054,
-        "bottom": 667.15625
+        "right": 981,
+        "bottom": 665.546875
       },
       "overflow": {
         "scrollWidth": 59,
@@ -1010,37 +1010,37 @@
     },
     "editSubmitButton": {
       "rect": {
-        "x": 1022,
-        "y": 600.15625,
-        "width": 32,
-        "height": 32,
+        "x": 989,
+        "y": 634.546875,
+        "width": 65,
+        "height": 31,
         "right": 1054,
-        "bottom": 632.15625
+        "bottom": 665.546875
       },
       "overflow": {
-        "scrollWidth": 30,
-        "clientWidth": 30,
-        "scrollHeight": 30,
-        "clientHeight": 30
+        "scrollWidth": 63,
+        "clientWidth": 63,
+        "scrollHeight": 29,
+        "clientHeight": 29
       },
       "styles": {
-        "display": "flex",
+        "display": "block",
         "position": "static",
         "visibility": "visible",
         "opacity": "0.65",
         "flexDirection": "row",
-        "alignItems": "center",
-        "justifyContent": "center",
+        "alignItems": "normal",
+        "justifyContent": "normal",
         "columnGap": "normal",
         "rowGap": "normal",
         "marginTop": "0px",
         "marginRight": "0px",
         "marginBottom": "0px",
         "marginLeft": "0px",
-        "paddingTop": "0px",
-        "paddingRight": "0px",
-        "paddingBottom": "0px",
-        "paddingLeft": "0px",
+        "paddingTop": "4px",
+        "paddingRight": "8px",
+        "paddingBottom": "4px",
+        "paddingLeft": "8px",
         "borderTopWidth": "1px",
         "borderRightWidth": "1px",
         "borderBottomWidth": "1px",
@@ -1057,12 +1057,12 @@
         "lineHeight": "21px",
         "textAlign": "center",
         "whiteSpace": "normal",
-        "width": "32px",
-        "height": "32px"
+        "width": "65px",
+        "height": "31px"
       },
       "before": {
         "content": "none",
-        "display": "block",
+        "display": "inline",
         "position": "static",
         "width": "auto",
         "height": "auto",
