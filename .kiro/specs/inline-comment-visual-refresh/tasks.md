@@ -76,7 +76,7 @@
   - _Requirements: 4.4_
   - _Depends: 4.1_
 
-- [ ]* 4.3 既存の単体・結合テストがすべてgreenであることを確認する
+- [x]* 4.3 既存の単体・結合テストがすべてgreenであることを確認する
   - `InlineCommentItem.spec.tsx`／`InlineCommentReplies.spec.tsx`／`InlineCommentPreviewPopover.spec.tsx`を実行し、新しいマークアップ・クラス名に合わせた更新後もすべてgreenであることを確認する（各テストの更新自体はタスク1〜3で既に完了している。ここでは横断的な最終確認のみを行う）
   - 完了したことが分かる状態: 3つの`.spec.tsx`ファイルすべてが green で終了する
   - _Requirements: 4.5_
