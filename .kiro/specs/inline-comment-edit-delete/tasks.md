@@ -13,7 +13,7 @@
   - _Boundary: InlineCommentService_
 
 - [ ] 2. apiv3ルートを追加する（起点・返信 × 更新・削除の4本）
-- [ ] 2.1 (P) 起点コメント更新ルートを追加する
+- [x] 2.1 (P) 起点コメント更新ルートを追加する
   - `PUT /_api/v3/inline-comments/:id` を実装する（`update.ts`）。ミドルウェア順序は `resolve.ts` と同一（`accessTokenParser → loginRequired → validators → apiV3FormValidator`）
   - `findUnique` でページ権限チェック・起点であることの400判定を行い、`InlineCommentService.updateComment` に委譲する
   - `UpdateInlineCommentRequestBody`/`UpdateInlineCommentResponseBody` DTO（`update-inline-comment.ts`）を追加し、`interfaces/dto/index.ts` に再エクスポートする
@@ -123,3 +123,6 @@
 - [ ] 10.4 設計判断の根拠（研究ログの Design Decisions）を `.kiro/specs/inline-comment` の research.md へ移す
 - [ ] 10.5 `.kiro/specs/inline-comment` の spec.json の `updated_at` を更新し、roadmap.md に本スペックの記載があれば削除し、`.kiro/specs/inline-comment-edit-delete/` を削除する
   - _Depends: 9.1, 9.2, 9.3, 9.4_
+
+## Implementation Notes
+- Task 2.1 (and by extension 2.2–2.4): tasks.md's route tasks did not explicitly call out registering the new routes in `apps/app/src/server/routes/apiv3/index.js` (the existing 4 inline-comment routes are wired there under `inlineCommentsRouter`). Added the wiring as part of landing each route so the route is actually reachable in production, not just covered by its own `.integ.ts`. Flagged by task 2.1's reviewer.

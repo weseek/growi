@@ -13,6 +13,7 @@ import { createInlineCommentRouteHandlersFactory } from '~/features/inline-comme
 import { createInlineCommentReplyRouteHandlersFactory } from '~/features/inline-comment/server/routes/create-reply';
 import { listInlineCommentsRouteHandlersFactory } from '~/features/inline-comment/server/routes/list';
 import { resolveInlineCommentRouteHandlersFactory } from '~/features/inline-comment/server/routes/resolve';
+import { updateInlineCommentRouteHandlersFactory } from '~/features/inline-comment/server/routes/update';
 import { factory as mastraRouteFactory } from '~/features/mastra/server/routes';
 import { factory as adminAiSettingsRouteFactory } from '~/features/mastra/server/routes/admin-ai-settings';
 import newsRoute from '~/features/news/server/routes/news';
@@ -226,6 +227,10 @@ export const setup = (crowi, app) => {
     inlineCommentsRouter.put(
       '/:id/resolve',
       resolveInlineCommentRouteHandlersFactory(crowi),
+    );
+    inlineCommentsRouter.put(
+      '/:id',
+      updateInlineCommentRouteHandlersFactory(crowi),
     );
     router.use('/inline-comments', inlineCommentsRouter);
   }
