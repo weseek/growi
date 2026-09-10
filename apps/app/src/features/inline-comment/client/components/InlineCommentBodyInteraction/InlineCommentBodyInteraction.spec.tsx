@@ -541,6 +541,122 @@ describe('InlineCommentBodyInteraction', () => {
     });
   });
 
+  describe('the displayed id disappearing from inlineComments (Req 4.3, 5.1)', () => {
+    it('clears pinnedId (not just the render) when the pinned comment is resolved and filtered out', () => {
+      mockedUseHighlightHitTest.mockReturnValue({
+        commentId: 'comment1',
+        source: 'click',
+      });
+      const { rerender } = renderInteraction({
+        inlineComments: [
+          buildComment({ id: 'comment1' }),
+          buildComment({ id: 'comment2' }),
+        ],
+      });
+      expect(
+        screen.getByTestId('preview-popover-comment-id'),
+      ).toHaveTextContent('comment1');
+
+      // comment1 no longer appears in inlineComments -- simulating it having
+      // been resolved and filtered out upstream (PageView.tsx, task 8). The
+      // pointer also moved off the highlight.
+      mockedUseHighlightHitTest.mockReturnValue(null);
+      rerender(
+        <InlineCommentBodyInteraction
+          containerRef={{ current: document.body }}
+          resolvedRanges={new Map()}
+          inlineComments={[buildComment({ id: 'comment2' })]}
+          createReply={vi.fn().mockResolvedValue(undefined)}
+          resolve={vi.fn().mockResolvedValue(undefined)}
+          rendererOptions={rendererOptions}
+        />,
+      );
+      expect(screen.queryByTestId('preview-popover')).not.toBeInTheDocument();
+
+      // If pinnedId were merely masked by the render guard rather than
+      // actually cleared, it would still be non-null here, and the hover
+      // effect's `if (pinnedId != null) return undefined;` early-return
+      // would keep ignoring every hover hit forever -- comment2 could never
+      // be shown by hovering. Showing it here proves pinnedId was reset to
+      // null, not just rendered around.
+      mockedUseHighlightHitTest.mockReturnValue({
+        commentId: 'comment2',
+        source: 'hover',
+      });
+      rerender(
+        <InlineCommentBodyInteraction
+          containerRef={{ current: document.body }}
+          resolvedRanges={new Map()}
+          inlineComments={[buildComment({ id: 'comment2' })]}
+          createReply={vi.fn().mockResolvedValue(undefined)}
+          resolve={vi.fn().mockResolvedValue(undefined)}
+          rendererOptions={rendererOptions}
+        />,
+      );
+      act(() => {
+        vi.advanceTimersByTime(HOVER_SHOW_DELAY_MS);
+      });
+
+      expect(
+        screen.getByTestId('preview-popover-comment-id'),
+      ).toHaveTextContent('comment2');
+    });
+
+    it('clears hoverPreviewId (not just the render) when the hover-shown comment is deleted', () => {
+      mockedUseHighlightHitTest.mockReturnValue({
+        commentId: 'comment1',
+        source: 'hover',
+      });
+      const { rerender } = renderInteraction({
+        inlineComments: [buildComment({ id: 'comment1' })],
+      });
+      act(() => {
+        vi.advanceTimersByTime(HOVER_SHOW_DELAY_MS);
+      });
+      expect(screen.getByTestId('preview-popover')).toBeInTheDocument();
+
+      // comment1 is deleted -- it no longer appears in inlineComments. The
+      // hook keeps reporting the same hover hit (deletion does not, by
+      // itself, change what the pointer is currently over).
+      rerender(
+        <InlineCommentBodyInteraction
+          containerRef={{ current: document.body }}
+          resolvedRanges={new Map()}
+          inlineComments={[]}
+          createReply={vi.fn().mockResolvedValue(undefined)}
+          resolve={vi.fn().mockResolvedValue(undefined)}
+          rendererOptions={rendererOptions}
+        />,
+      );
+      expect(screen.queryByTestId('preview-popover')).not.toBeInTheDocument();
+
+      // comment1 reappears in inlineComments (e.g. a subsequent refetch). If
+      // hoverPreviewId had never actually been reset to null, the hover
+      // effect's `if (hoverPreviewId !== effectiveHit.commentId)` guard would
+      // see them as already equal and skip arming a new show timer, so the
+      // popover would reappear immediately with no delay. Requiring the
+      // delay to elapse again proves hoverPreviewId was actually cleared.
+      rerender(
+        <InlineCommentBodyInteraction
+          containerRef={{ current: document.body }}
+          resolvedRanges={new Map()}
+          inlineComments={[buildComment({ id: 'comment1' })]}
+          createReply={vi.fn().mockResolvedValue(undefined)}
+          resolve={vi.fn().mockResolvedValue(undefined)}
+          rendererOptions={rendererOptions}
+        />,
+      );
+      expect(screen.queryByTestId('preview-popover')).not.toBeInTheDocument();
+
+      act(() => {
+        vi.advanceTimersByTime(HOVER_SHOW_DELAY_MS);
+      });
+      expect(
+        screen.getByTestId('preview-popover-comment-id'),
+      ).toHaveTextContent('comment1');
+    });
+  });
+
   it('clears pending timers on unmount (no state update after unmount)', () => {
     mockedUseHighlightHitTest.mockReturnValue({
       commentId: 'comment1',

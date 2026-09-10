@@ -79,7 +79,7 @@
   - _Boundary: InlineCommentPreviewPopover_
   - _Depends: 3, 4_
 
-- [ ] 7. (P) 表示中のコメントが消えたときにポップオーバーの内部状態をクリアする（InlineCommentBodyInteraction）
+- [x] 7. (P) 表示中のコメントが消えたときにポップオーバーの内部状態をクリアする（InlineCommentBodyInteraction）
   - `inlineComments.find((c) => c.id === (pinnedId ?? hoverPreviewId))` が `undefined` になった時点で、該当する `pinnedId`／`hoverPreviewId` をクリアする
   - `InlineCommentBodyInteraction.spec.tsx` に、表示中のidが `inlineComments` から消えた場合（解決済み・削除済みいずれのシミュレーションでも）にポップオーバーの描画が止まり、内部stateがクリアされることを検証する単体テストを追加し、すべて green になる
   - _Requirements: 4.3, 5.1_

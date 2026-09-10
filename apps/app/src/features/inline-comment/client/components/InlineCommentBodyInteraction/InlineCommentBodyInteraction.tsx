@@ -240,6 +240,39 @@ export const InlineCommentBodyInteraction: FC<
     setSuppressedHit(hit);
   };
 
+  // Requirement 4.3 / 5.1: once the id `pinnedId`/`hoverPreviewId` points at
+  // stops resolving in `inlineComments` -- whether because it was resolved
+  // and filtered out upstream (PageView.tsx, task 8) or because it was
+  // deleted -- the internal state must stop pointing at it, not just render
+  // nothing for it. Without this, the state would keep referencing an id
+  // that can never resolve again, which the `comment == null -> return null`
+  // guard above hides from the rendered output but does not fix: e.g. a
+  // later hover hit on a *different* highlight would still be ignored while
+  // `pinnedId` is non-null (the guard above), or a hover hit on the *same*
+  // id reappearing later would render with no show delay because
+  // `hoverPreviewId` was never actually reset. This mirrors the invariant
+  // `handleClose` already keeps for an explicit close.
+  useEffect(() => {
+    const currentId = pinnedId ?? hoverPreviewId;
+    if (currentId == null) {
+      return;
+    }
+
+    const stillExists = inlineComments.some(
+      (candidate) => candidate.id === currentId,
+    );
+    if (stillExists) {
+      return;
+    }
+
+    if (pinnedId != null) {
+      setPinnedId(null);
+    }
+    if (hoverPreviewId != null) {
+      setHoverPreviewId(null);
+    }
+  }, [inlineComments, pinnedId, hoverPreviewId]);
+
   // A pin, once set, takes precedence over everything else (a hover
   // elsewhere does nothing while a popover is pinned open). With no pin, the
   // debounced hover-shown id (if any) drives display.
