@@ -37,6 +37,7 @@ import type { InlineCommentWithReplies } from '../../../interfaces';
 vi.mock('./InlineCommentItem.module.scss', () => ({
   default: {
     'inline-comment-item-styles': 'inline-comment-item-styles',
+    'inline-comment-status-badge': 'inline-comment-status-badge',
   },
 }));
 
@@ -350,11 +351,16 @@ describe('InlineCommentItem', () => {
       expect(toggle).not.toBeNull();
     });
 
-    it('keeps the unresolved badge colour scheme (bg-warning text-dark)', () => {
+    it('keeps the unresolved badge colour scheme (rounded-pill bg-warning-subtle text-warning-emphasis)', () => {
       renderItem();
 
       const badge = screen.getByTestId('inline-comment-status');
-      expect(badge).toHaveClass('badge', 'bg-warning', 'text-dark');
+      expect(badge).toHaveClass(
+        'badge',
+        'rounded-pill',
+        'bg-warning-subtle',
+        'text-warning-emphasis',
+      );
       expect(badge).toHaveTextContent('inline_comment.unresolved');
     });
 
@@ -365,8 +371,35 @@ describe('InlineCommentItem', () => {
       });
 
       const badge = screen.getByTestId('inline-comment-status');
-      expect(badge).toHaveClass('badge', 'bg-secondary');
+      expect(badge).toHaveClass(
+        'badge',
+        'rounded-pill',
+        'bg-success-subtle',
+        'text-success-emphasis',
+      );
       expect(badge).toHaveTextContent('inline_comment.resolved');
+    });
+
+    it('gives the badge the status-dot decoration class (CSS Modules ::before, no inline style)', () => {
+      renderItem();
+
+      const badge = screen.getByTestId('inline-comment-status');
+      expect(badge).toHaveClass('inline-comment-status-badge');
+      expect(badge).not.toHaveAttribute('style');
+    });
+
+    it('shapes the resolve toggle as a rounded pill', () => {
+      renderItem();
+
+      const toggle = screen.getByRole('button', {
+        name: 'inline_comment.resolve',
+      });
+      expect(toggle).toHaveClass(
+        'btn',
+        'btn-sm',
+        'btn-outline-secondary',
+        'rounded-pill',
+      );
     });
 
     it('calls resolve(id, true) when an unresolved comment is resolved', async () => {
