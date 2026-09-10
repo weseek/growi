@@ -54,7 +54,7 @@
   - _Boundary: useSWRxInlineComments_
   - _Depends: 2.1, 2.2_（`update`/`updateReply` は `UpdateInlineCommentResponseBody`/`UpdateInlineCommentReplyResponseBody` を `interfaces/dto` から import する。`remove`/`removeReply` にはこの依存はない）
 
-- [ ] 4. (P) `MentionAwareCommentInput` に編集モード用の初期値propを追加する
+- [x] 4. (P) `MentionAwareCommentInput` に編集モード用の初期値propを追加する
   - 任意prop `initialValue?: string` を追加し、渡された場合はマウント時に一度だけ `codeMirrorEditor.initDoc(initialValue)` を適用する
   - `initialValue` を渡さない既存の呼び出し（`InlineCommentForm`／`InlineCommentReplies`の返信入力欄）が現状と変わらず動作することを退行テストで確認する
   - `MentionAwareCommentInput.spec.tsx` に、`initialValue`ありでエディタに反映されること・`initialValue`なしで空のままであること（既存動作の回帰確認）を検証する単体テストを追加し、すべて green になる

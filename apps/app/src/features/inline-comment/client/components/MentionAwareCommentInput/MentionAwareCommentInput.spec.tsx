@@ -230,6 +230,27 @@ describe('MentionAwareCommentInput', () => {
     );
   });
 
+  it('applies initialValue to the editor exactly once at mount, when provided (edit mode)', () => {
+    render(
+      <MentionAwareCommentInput
+        editorKey="key-1"
+        onSubmit={vi.fn()}
+        initialValue="existing comment body"
+      />,
+    );
+
+    expect(codeMirrorEditorMock.initDoc).toHaveBeenCalledWith(
+      'existing comment body',
+    );
+    expect(codeMirrorEditorMock.initDoc).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not touch the editor doc when initialValue is omitted (create-mode regression check)', () => {
+    render(<MentionAwareCommentInput editorKey="key-1" onSubmit={vi.fn()} />);
+
+    expect(codeMirrorEditorMock.initDoc).not.toHaveBeenCalled();
+  });
+
   it('renders MentionPickerButton and inserts "@<username> " at the cursor on selection', () => {
     render(<MentionAwareCommentInput editorKey="key-1" onSubmit={vi.fn()} />);
 

@@ -18,7 +18,7 @@
  */
 
 import type { JSX } from 'react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { EditorView, tooltips } from '@codemirror/view';
 import { useSetResolvedTheme } from '@growi/editor';
 import { CodeMirrorEditorComment } from '@growi/editor/dist/client/components/CodeMirrorEditorComment';
@@ -44,6 +44,14 @@ type MentionAwareCommentInputProps = {
    */
   editorKey: string;
   /**
+   * Edit-mode initial text. Applied to the editor exactly once, at mount
+   * (design.md: "任意prop `initialValue` を1つ追加し、作成・編集の両方で使い
+   * 回す"). Omitted (or left `undefined`) by the create-mode callers today,
+   * which keeps their behavior byte-for-byte identical to before this prop
+   * existed -- an empty editor at mount.
+   */
+  initialValue?: string;
+  /**
    * Persists the comment text. Rejections are caught here and shown as an
    * error; the caller does not need its own try/catch.
    */
@@ -62,7 +70,7 @@ type MentionAwareCommentInputProps = {
 export const MentionAwareCommentInput = (
   props: MentionAwareCommentInputProps,
 ): JSX.Element => {
-  const { editorKey, onSubmit, onSubmitted, disabled } = props;
+  const { editorKey, initialValue, onSubmit, onSubmitted, disabled } = props;
 
   const { t } = useTranslation();
 
@@ -131,6 +139,28 @@ export const MentionAwareCommentInput = (
     // theme extension (both its parts) a single top-level element instead.
     return codeMirrorEditor?.appendExtensions?.([tooltipZIndexTheme]);
   }, [codeMirrorEditor, tooltipZIndexTheme]);
+
+  // Applies `initialValue` to the editor exactly once, the moment
+  // `codeMirrorEditor` first becomes available. Guarded by a ref (not an
+  // empty-deps effect) because `codeMirrorEditor` itself is not available
+  // synchronously at mount -- it arrives asynchronously from
+  // `useCodeMirrorEditorIsolated`, so this effect legitimately re-runs until
+  // that happens. The ref flag is what keeps it from re-applying on every
+  // later re-render (which would fight the user's own edits) or in response
+  // to `initialValue` changing after mount (an edit session's initial value
+  // does not change mid-edit, per design.md).
+  const hasAppliedInitialValueRef = useRef(false);
+  // Runs once, when `codeMirrorEditor` first becomes available.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: `initialValue` is intentionally excluded -- must not re-run when it changes later.
+  useEffect(() => {
+    if (hasAppliedInitialValueRef.current || codeMirrorEditor == null) {
+      return;
+    }
+    if (initialValue != null) {
+      codeMirrorEditor.initDoc(initialValue);
+    }
+    hasAppliedInitialValueRef.current = true;
+  }, [codeMirrorEditor]);
 
   const cmProps = useMemo(
     () => ({
