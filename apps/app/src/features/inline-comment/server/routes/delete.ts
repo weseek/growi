@@ -38,7 +38,7 @@
  *
  * `InlineCommentService.deleteComment()` (already implemented in task 1) is
  * not modified here — it internally calls `prisma.comments.removeWithReplies`,
- * which cascades the delete to every reply (requirement 2.4).
+ * which cascades the delete to every reply (requirement 18.6).
  */
 
 import assert from 'node:assert';

@@ -249,7 +249,7 @@ describe('DELETE /_api/v3/inline-comments/replies/:id', () => {
 
     // Surgical-delete assertion: only the target reply row is gone. The
     // origin comment and the sibling reply must both survive — deleting a
-    // reply must not cascade (requirement 2.3, 2.6, 3.2).
+    // reply must not cascade (requirement 18.5).
     const targetReplyRow = await prisma.comments.findUnique({
       where: { id: targetReplyId },
     });

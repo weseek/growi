@@ -15,7 +15,8 @@
  * not modified here — it internally calls a plain
  * `prisma.comments.delete({ where: { id } })`, with no cascade: deleting a
  * reply must not affect the origin comment or any sibling reply
- * (requirement 2.3, 2.6, 3.2).
+ * (requirement 18.5 — the cascade in requirement 18.6 applies only to
+ * deleting an origin comment, not a reply).
  */
 
 import assert from 'node:assert';

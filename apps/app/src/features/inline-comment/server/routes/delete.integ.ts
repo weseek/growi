@@ -234,7 +234,7 @@ describe('DELETE /_api/v3/inline-comments/:id', () => {
 
     // Cascade assertion: both the origin comment and its reply must be gone
     // from the database, not merely reported as a successful HTTP response
-    // (requirement 2.4 — removeWithReplies cascades the delete).
+    // (requirement 18.6 — removeWithReplies cascades the delete).
     const originRow = await prisma.comments.findUnique({
       where: { id: originId },
     });

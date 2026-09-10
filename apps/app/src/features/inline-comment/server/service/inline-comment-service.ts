@@ -738,8 +738,8 @@ export class InlineCommentService {
    * - Rejects `id` unless it references a row that is itself an origin
    *   inline comment (`isInline: true` and `replyToId: null`) — the same
    *   three rejected shapes as `setResolved()`'s precondition check
-   *   (design.md's Postconditions, requirement 1.5's counterpart for
-   *   "wrong kind of id").
+   *   (design.md's Postconditions — the Service Interface's own
+   *   "wrong kind of id" precondition, not a numbered acceptance criterion).
    * - Additionally rejects when `actorId` does not match the row's
    *   `creatorId` — the service-layer half of defense-in-depth authorization
    *   (design.md: the route layer, task 3.5, re-checks the same thing; both
@@ -752,7 +752,7 @@ export class InlineCommentService {
    *   (see `create()`'s doc). No `prepareMentionNotifications` call — editing
    *   an existing comment's body is not a new mention-notification event
    *   (design.md's Requirements Traceability lists no notification
-   *   integration for requirement 1.x, mirroring `setResolved()`).
+   *   integration for requirement 18.1-18.4, mirroring `setResolved()`).
    */
   async updateComment(
     id: string,
@@ -856,7 +856,7 @@ export class InlineCommentService {
    * - Uses `prisma.comments.removeWithReplies(id)` (existing extension
    *   method, `apps/app/src/features/comment/server/models/comment.ts`) so
    *   the origin and every reply to it are removed together in one
-   *   transaction (design.md's Postconditions, requirement 2.4). This is
+   *   transaction (design.md's Postconditions, requirement 18.6). This is
    *   also this feature's `Allowed Dependencies` entry for that method — see
    *   design.md's Boundary Commitments.
    * - Records an `Activity` (`ACTION_INLINE_COMMENT_DELETE`) — same
