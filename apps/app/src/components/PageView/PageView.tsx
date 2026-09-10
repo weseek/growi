@@ -238,18 +238,29 @@ const PageViewComponent = (props: Props): JSX.Element => {
     remove: removeInlineComment,
     removeReply: removeInlineCommentReply,
   } = useSWRxInlineComments(isSharedPageView ? null : (page?._id ?? null));
+  // Requirement 2.7, 4.1, 4.4: a resolved comment must never become an
+  // anchor, so it is never highlighted or offered a popover in the page body
+  // -- only the footer comment list still shows it. This is the single
+  // source of "which comments are visible in the body": both
+  // `inlineCommentAnchors` below AND the `inlineComments` prop handed to
+  // `InlineCommentBodyInteraction` are derived from this same filtered list,
+  // never from the raw, unfiltered `inlineComments`. Feeding the raw list to
+  // one of the two consumers while the other saw the filtered view was the
+  // root cause of a bug where resolving a pinned-open popover's comment left
+  // `pinnedId` stuck on an id that could never resolve again, silently
+  // blocking every other highlight's hover popover afterward.
+  const bodyInlineComments = useMemo(
+    () =>
+      (inlineComments ?? []).filter((comment) => comment.resolvedAt == null),
+    [inlineComments],
+  );
   const inlineCommentAnchors = useMemo(
     () =>
-      (inlineComments ?? [])
-        // Requirement 2.5, 4.1, 4.4: a resolved comment must never become an
-        // anchor, so it is never highlighted or offered a popover in the
-        // page body -- only the footer comment list still shows it.
-        .filter((comment) => comment.resolvedAt == null)
-        .map((comment) => ({
-          id: comment.id,
-          anchor: comment.anchor,
-        })),
-    [inlineComments],
+      bodyInlineComments.map((comment) => ({
+        id: comment.id,
+        anchor: comment.anchor,
+      })),
+    [bodyInlineComments],
   );
   const resolvedInlineCommentRanges = useAnchorResolver(
     pageBodyContainerRef,
@@ -433,7 +444,7 @@ const PageViewComponent = (props: Props): JSX.Element => {
               <InlineCommentBodyInteraction
                 containerRef={pageBodyContainerRef}
                 resolvedRanges={resolvedInlineCommentRanges}
-                inlineComments={inlineComments ?? []}
+                inlineComments={bodyInlineComments}
                 createReply={createInlineCommentReplyText}
                 resolve={resolveInlineComment}
                 update={updateInlineComment}
@@ -466,7 +477,7 @@ const PageViewComponent = (props: Props): JSX.Element => {
     resolvedInlineCommentRanges,
     isSharedPageView,
     inlineCommentsForComments,
-    inlineComments,
+    bodyInlineComments,
     createInlineCommentReplyText,
     resolveInlineComment,
     updateInlineComment,

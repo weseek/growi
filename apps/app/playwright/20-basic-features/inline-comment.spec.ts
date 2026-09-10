@@ -2019,10 +2019,10 @@ test.describe('Inline comment - hover/click/tap on a saved body highlight opens 
     await expect(popover).toBeVisible();
     await expect(popover).toContainText(commentText);
 
-    // Requirement 2.5 (as amended by inline-comment-edit-delete Requirement 1.7):
-    // the popover now also offers an edit control for the origin comment's own
-    // body (to its own author), in addition to its reply textarea -- covered by
-    // the "Edit flow" suite below, so this test only checks the reply textarea.
+    // Requirement 15, AC 15.5: the popover also offers an edit control for
+    // the origin comment's own body (to its own author), in addition to its
+    // reply textarea -- covered by the "Edit flow" suite below, so this test
+    // only checks the reply textarea.
     await expect(popover.locator('textarea')).toHaveCount(1);
 
     // Requirement 2.4 (hover case): moving the mouse to an unrelated part of
@@ -2284,7 +2284,7 @@ test.describe('Inline comment - hover-to-popover transit and popover-lock timing
     await expect(popover).toBeVisible();
   });
 
-  test('Req 15.10, 4.6: resolving the comment from the popover updates the badge shown in the bottom-of-page list for the same comment', async ({
+  test('Req 15.10, 15.12, 4.6: resolving the comment from the popover closes the popover (no status badge is shown there -- Req 15.13) and updates the badge shown in the bottom-of-page list for the same comment', async ({
     page,
   }, testInfo) => {
     await page.goto(popoverRefinementPagePath(testInfo.retry));
@@ -2294,11 +2294,12 @@ test.describe('Inline comment - hover-to-popover transit and popover-lock timing
     await clickText(page, targetSentence);
     await expect(popover).toBeVisible();
 
-    const popoverStatus = popover.getByTestId('inline-comment-status');
-    await expect(popoverStatus).toHaveText('Unresolved');
-
     await popover.getByRole('button', { name: 'Resolve' }).click();
-    await expect(popoverStatus).toHaveText('Resolved');
+
+    // Req 15.12: the popover auto-closes once its own comment becomes
+    // resolved -- there is no status badge inside it to assert against
+    // (Req 15.13, task 6 removed that markup from the popover entirely).
+    await expect(popover).not.toBeVisible();
 
     // Cross-surface consistency: the same comment's badge in the
     // bottom-of-page list (`InlineCommentItem.tsx`, a structurally different
@@ -3469,7 +3470,7 @@ test.describe('Inline comment - editing an origin comment (from the list and fro
     );
   });
 
-  test('Req 1.7: editing the origin comment from the body popover persists the new text after a reload', async ({
+  test('Req 15.5: editing the origin comment from the body popover persists the new text after a reload', async ({
     page,
   }, testInfo) => {
     await page.goto(editFlowPagePath(testInfo.retry));
@@ -3870,7 +3871,7 @@ test.describe('Inline comment - a resolved comment hides its body highlight/popo
       .toBeGreaterThan(0);
   });
 
-  test('Req 5.1: resolving from within the open popover closes the popover; the comment stays listed as resolved', async ({
+  test('Req 15.12: resolving from within the open popover closes the popover; the comment stays listed as resolved', async ({
     page,
   }, testInfo) => {
     await page.goto(resolvedPagePath(testInfo.retry));
@@ -3889,7 +3890,7 @@ test.describe('Inline comment - a resolved comment hides its body highlight/popo
     );
   });
 
-  test('Req 4.1-4.3: a resolved comment shows no highlight and no popover in the body after reloading, but still appears in the list', async ({
+  test('Req 4.1, 4.2, 2.7: a resolved comment shows no highlight and no popover in the body after reloading, but still appears in the list', async ({
     page,
   }, testInfo) => {
     await page.goto(resolvedPagePath(testInfo.retry));
@@ -3909,8 +3910,8 @@ test.describe('Inline comment - a resolved comment hides its body highlight/popo
       ),
     ).toBe(0);
 
-    // Requirement 4.3: hovering/clicking where the highlight used to be
-    // shows no popover, since there is nothing left to hit-test against.
+    // Requirement 2, AC 2.7: hovering/clicking where the highlight used to
+    // be shows no popover, since there is nothing left to hit-test against.
     const popover = page.getByTestId('inline-comment-preview-popover');
     await hoverText(page, targetSentence);
     await expect(popover).not.toBeVisible();

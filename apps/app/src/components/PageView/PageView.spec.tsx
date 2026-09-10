@@ -387,6 +387,52 @@ describe('PageView', () => {
         { id: inlineComments[0]?.id, anchor: inlineComments[0]?.anchor },
       ]);
     });
+
+    it('excludes a resolved comment from inlineCommentAnchors and from the inlineComments prop handed to InlineCommentBodyInteraction, while an unresolved comment in the same list is included in both (Requirement 2, AC 2.7)', async () => {
+      // Two comments, not one -- with only one comment in the fixture, an
+      // exclusion bug could not be told apart from "the anchors list is
+      // simply empty/wrong for an unrelated reason". A resolved comment
+      // alongside a still-unresolved one is the only way to prove the filter
+      // actually discriminates between them.
+      const unresolvedComment = buildInlineComment({
+        id: 'inline-comment-unresolved',
+      });
+      const resolvedComment = buildInlineComment({
+        id: 'inline-comment-resolved',
+        resolvedAt: new Date('2026-01-02T00:00:00Z'),
+        resolvedById: 'user-2',
+      });
+      mockedUseSWRxInlineComments.mockReturnValue({
+        data: [unresolvedComment, resolvedComment],
+        resolve: vi.fn(),
+        createReply: vi.fn(),
+      } as unknown as ReturnType<typeof useSWRxInlineComments>);
+      mockedUseCurrentPageData.mockReturnValue(buildPage());
+
+      render(
+        <PageView pagePath="/test-page" rendererConfig={rendererConfig} />,
+      );
+
+      await screen.findByTestId('inline-comment-body-interaction');
+
+      // inlineCommentAnchors (fed into useAnchorResolver) must contain only
+      // the unresolved comment's anchor.
+      expect(mockedUseAnchorResolver).toHaveBeenCalledWith(expect.anything(), [
+        { id: unresolvedComment.id, anchor: unresolvedComment.anchor },
+      ]);
+
+      // The SAME filtered list must reach InlineCommentBodyInteraction's
+      // `inlineComments` prop -- this is the exact invariant that regressed
+      // when PageView.tsx fed InlineCommentBodyInteraction the raw,
+      // unfiltered list while only inlineCommentAnchors was filtered: a
+      // resolved comment's popover state could then never be cleared,
+      // permanently blocking every other highlight's hover popover.
+      expect(inlineCommentBodyInteractionSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          inlineComments: [unresolvedComment],
+        }),
+      );
+    });
   });
 
   describe('page-body subtree stability', () => {

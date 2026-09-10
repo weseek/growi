@@ -247,18 +247,20 @@ export const InlineCommentBodyInteraction: FC<
     setSuppressedHit(hit);
   };
 
-  // Requirement 4.3 / 5.1: once the id `pinnedId`/`hoverPreviewId` points at
-  // stops resolving in `inlineComments` -- whether because it was resolved
-  // and filtered out upstream (PageView.tsx, task 8) or because it was
-  // deleted -- the internal state must stop pointing at it, not just render
-  // nothing for it. Without this, the state would keep referencing an id
-  // that can never resolve again, which the `comment == null -> return null`
-  // guard above hides from the rendered output but does not fix: e.g. a
-  // later hover hit on a *different* highlight would still be ignored while
-  // `pinnedId` is non-null (the guard above), or a hover hit on the *same*
-  // id reappearing later would render with no show delay because
-  // `hoverPreviewId` was never actually reset. This mirrors the invariant
-  // `handleClose` already keeps for an explicit close.
+  // Requirement 15.12: once the id `pinnedId`/`hoverPreviewId` points at
+  // stops resolving in `inlineComments` -- because it was resolved and is
+  // now filtered out upstream (PageView.tsx's `bodyInlineComments`, the one
+  // list shared by `inlineCommentAnchors` and this component's own
+  // `inlineComments` prop), or because it was deleted -- the internal state
+  // must stop pointing at it, not just render nothing for it. Without this,
+  // the state would keep referencing an id that can never resolve again,
+  // which the `comment == null -> return null` guard above hides from the
+  // rendered output but does not fix: e.g. a later hover hit on a
+  // *different* highlight would still be ignored while `pinnedId` is
+  // non-null (the guard above), or a hover hit on the *same* id reappearing
+  // later would render with no show delay because `hoverPreviewId` was never
+  // actually reset. This mirrors the invariant `handleClose` already keeps
+  // for an explicit close.
   useEffect(() => {
     const currentId = pinnedId ?? hoverPreviewId;
     if (currentId == null) {

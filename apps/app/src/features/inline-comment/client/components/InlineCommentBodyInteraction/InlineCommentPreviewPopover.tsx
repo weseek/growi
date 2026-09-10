@@ -16,9 +16,12 @@
  * MentionAwareCommentInput.tsx's established composer visual language
  * (requirements.md Requirement 15.3).
  *
- * Editing the origin comment (requirements.md Requirement 1, AC 1.7) is
+ * Editing the origin comment (requirements.md Requirement 15, AC 15.5) is
  * shown only to the comment's own creator (`comment.creatorId ===
- * currentUser?._id`, same check `InlineCommentItem.tsx` uses) and reuses
+ * currentUser?._id`, same check `InlineCommentItem.tsx` uses), gated by the
+ * same `NotAvailableIfReadOnlyUserNotAllowedToComment` restriction
+ * `InlineCommentItem.tsx` applies to its own edit/delete controls
+ * (requirements.md Requirement 18, AC 18.4), and reuses
  * `MentionAwareCommentInput` the same way that component does. There is no
  * delete action here -- delete is list-only (this spec's Boundary Context),
  * and this popover only ever shows an origin comment, never a reply, so
@@ -30,6 +33,7 @@ import type { VirtualElement } from '@popperjs/core';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
+import { NotAvailableIfReadOnlyUserNotAllowedToComment } from '~/client/components/NotAvailableForReadOnlyUser';
 import { CommentCard } from '~/client/components/PageComment/CommentCard';
 import RevisionRenderer from '~/components/PageView/RevisionRenderer';
 import type { RendererOptions } from '~/interfaces/renderer-options';
@@ -65,11 +69,11 @@ type InlineCommentPreviewPopoverProps = {
    */
   resolve: (id: string, resolved: boolean) => Promise<unknown>;
   /**
-   * Persists an edited origin-comment body (requirements.md Requirement 1,
-   * AC 1.7). Same author-only gating and `MentionAwareCommentInput` pattern
-   * as `InlineCommentItem.tsx`'s own edit mode -- this popover only ever
-   * shows an origin comment, never a reply, so there is no reply-edit
-   * counterpart here.
+   * Persists an edited origin-comment body (requirements.md Requirement 15,
+   * AC 15.5). Same author-only and read-only-user gating, and
+   * `MentionAwareCommentInput` pattern, as `InlineCommentItem.tsx`'s own edit
+   * mode -- this popover only ever shows an origin comment, never a reply,
+   * so there is no reply-edit counterpart here.
    */
   update: (id: string, comment: string) => Promise<unknown>;
   onClose: () => void;
@@ -245,14 +249,16 @@ export const InlineCommentPreviewPopover: FC<
           headerEnd={
             <span className="ms-auto d-flex align-items-center gap-2">
               {isOwnComment && !isEditing && (
-                <button
-                  type="button"
-                  data-testid="inline-comment-preview-popover-edit-button"
-                  className="btn btn-sm btn-link p-0"
-                  onClick={() => setIsEditing(true)}
-                >
-                  {t('Edit')}
-                </button>
+                <NotAvailableIfReadOnlyUserNotAllowedToComment>
+                  <button
+                    type="button"
+                    data-testid="inline-comment-preview-popover-edit-button"
+                    className="btn btn-sm btn-link p-0"
+                    onClick={() => setIsEditing(true)}
+                  >
+                    {t('Edit')}
+                  </button>
+                </NotAvailableIfReadOnlyUserNotAllowedToComment>
               )}
               <button
                 type="button"

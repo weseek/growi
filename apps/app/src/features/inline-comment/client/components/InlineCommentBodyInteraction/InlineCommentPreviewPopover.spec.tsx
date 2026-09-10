@@ -72,6 +72,30 @@ vi.mock('~/states/global', () => ({
   useCurrentUser: () => currentUserRef.current,
 }));
 
+// The read-only restriction is `NotAvailableIfReadOnlyUserNotAllowedToComment`'s
+// own concern (it already has its own tests) -- mocked directly at the
+// component boundary exactly as `InlineCommentItem.spec.tsx` mocks it, so a
+// test here can assert "the popover's edit control is disabled under the
+// read-only restriction" without re-deriving `NotAvailable`'s own DOM
+// rendering.
+const isDisabledRef = vi.hoisted(() => ({ current: false }));
+vi.mock('~/client/components/NotAvailableForReadOnlyUser', () => ({
+  NotAvailableIfReadOnlyUserNotAllowedToComment: ({
+    children,
+  }: {
+    children: JSX.Element;
+  }) => {
+    if (!isDisabledRef.current) {
+      return children;
+    }
+    return (
+      <fieldset disabled data-testid="not-available-for-read-only-user">
+        {children}
+      </fieldset>
+    );
+  },
+}));
+
 // MentionAwareCommentInput owns a real CodeMirror editor assembly -- mocked
 // at the component boundary exactly as InlineCommentItem.spec.tsx mocks it,
 // so this file can drive the edit form's onSubmit without instantiating
@@ -167,6 +191,7 @@ describe('InlineCommentPreviewPopover', () => {
     mockCreatePopper.mockClear();
     currentUserRef.current = undefined;
     mentionAwareCommentInputProps.current = undefined;
+    isDisabledRef.current = false;
   });
 
   it('renders its content through a portal into document.body, positioned via the popper mechanism', () => {
@@ -301,7 +326,20 @@ describe('InlineCommentPreviewPopover', () => {
     ).not.toBeInTheDocument();
   });
 
-  it("shows the edit affordance and updates the origin comment through `update` when the current user is the comment's own creator (Requirement 1, AC 1.7)", async () => {
+  it('disables the edit control under the read-only restriction (Requirement 18, AC 18.4)', () => {
+    currentUserRef.current = { _id: 'user1' };
+    isDisabledRef.current = true;
+    renderPopover({ creatorId: 'user1' });
+
+    expect(
+      screen.getByTestId('not-available-for-read-only-user'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('inline-comment-preview-popover-edit-button'),
+    ).toBeDisabled();
+  });
+
+  it("shows the edit affordance and updates the origin comment through `update` when the current user is the comment's own creator (Requirement 15, AC 15.5)", async () => {
     const update = vi.fn().mockResolvedValue(undefined);
     currentUserRef.current = { _id: 'user1' };
     renderPopover({ id: 'comment42', creatorId: 'user1' }, { update });
@@ -345,7 +383,7 @@ describe('InlineCommentPreviewPopover', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('never renders the unresolved/resolved status badge, resolved or not (Requirement 5.3 regression check)', () => {
+  it('never renders the unresolved/resolved status badge, resolved or not (Requirement 15, AC 15.13 regression check)', () => {
     const { rerender } = renderPopover({ resolvedAt: null });
 
     expect(

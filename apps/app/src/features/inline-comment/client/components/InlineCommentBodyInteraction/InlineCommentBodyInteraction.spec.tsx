@@ -549,7 +549,7 @@ describe('InlineCommentBodyInteraction', () => {
     });
   });
 
-  describe('the displayed id disappearing from inlineComments (Req 4.3, 5.1)', () => {
+  describe('the displayed id disappearing from inlineComments (Req 15.12)', () => {
     it('clears pinnedId (not just the render) when the pinned comment is resolved and filtered out', () => {
       mockedUseHighlightHitTest.mockReturnValue({
         commentId: 'comment1',
@@ -565,9 +565,12 @@ describe('InlineCommentBodyInteraction', () => {
         screen.getByTestId('preview-popover-comment-id'),
       ).toHaveTextContent('comment1');
 
-      // comment1 no longer appears in inlineComments -- simulating it having
-      // been resolved and filtered out upstream (PageView.tsx, task 8). The
-      // pointer also moved off the highlight.
+      // comment1 no longer appears in inlineComments -- this is what the
+      // REAL production shape looks like once it is resolved: PageView.tsx's
+      // `bodyInlineComments` filters a resolved comment out of the array
+      // BEFORE it ever reaches this component's `inlineComments` prop (it is
+      // never passed here with `resolvedAt` merely set while remaining in the
+      // array). The pointer also moved off the highlight.
       mockedUseHighlightHitTest.mockReturnValue(null);
       rerender(
         <InlineCommentBodyInteraction
