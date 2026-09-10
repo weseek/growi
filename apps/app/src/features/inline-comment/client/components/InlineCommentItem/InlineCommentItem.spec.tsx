@@ -39,6 +39,7 @@ vi.mock('./InlineCommentItem.module.scss', () => ({
     'inline-comment-item-styles': 'inline-comment-item-styles',
     'inline-comment-status-badge': 'inline-comment-status-badge',
     'icon-button-container': 'icon-button-container',
+    'delete-confirm-alert': 'delete-confirm-alert',
   },
 }));
 
@@ -656,10 +657,14 @@ describe('InlineCommentItem', () => {
         'd-flex',
         'align-items-center',
         'gap-2',
-        'border-start',
-        'border-3',
         'mb-0',
       );
+      // The left accent is a CSS Modules rule, not the `border-start
+      // border-3` utility pair it replaced: those set `border-left-color` to
+      // the neutral `--bs-border-color` with `!important`, which overrode
+      // `alert-danger`'s own tone and painted the accent grey.
+      expect(confirm.className).toContain('delete-confirm-alert');
+      expect(confirm).not.toHaveClass('border-start');
       expect(
         confirm.querySelector('.material-symbols-outlined'),
       ).not.toBeNull();

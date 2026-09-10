@@ -199,14 +199,7 @@ export const InlineCommentPreviewPopover: FC<
       className={`card shadow-sm ${styles['inline-comment-preview-popover-styles']}`}
       onMouseEnter={onPointerEnter}
     >
-      <div className="card-body position-relative">
-        <button
-          type="button"
-          className="btn-close position-absolute top-0 end-0 m-2"
-          aria-label={t('Close')}
-          onClick={onClose}
-        />
-
+      <div className="card-body">
         <CommentCard
           id={comment.id}
           creator={comment.creator}
@@ -215,13 +208,20 @@ export const InlineCommentPreviewPopover: FC<
             <span className="ms-auto d-flex align-items-center gap-2">
               {isOwnComment && !isEditing && (
                 <NotAvailableIfReadOnlyUserNotAllowedToComment>
+                  {/* The same icon-button pattern the list item uses for its
+                      own edit action (`CommentControl.tsx`'s glyph + button
+                      classes, Requirement 3.5), but always visible rather
+                      than hover-revealed: a popover is on screen only
+                      briefly, so a control that needs to be discovered by
+                      hovering would be easy to miss. */}
                   <button
                     type="button"
                     data-testid="inline-comment-preview-popover-edit-button"
-                    className="btn btn-sm btn-link p-0"
+                    className="btn btn-link p-2 opacity-50"
+                    aria-label={t('Edit')}
                     onClick={() => setIsEditing(true)}
                   >
-                    {t('Edit')}
+                    <span className="material-symbols-outlined">edit</span>
                   </button>
                 </NotAvailableIfReadOnlyUserNotAllowedToComment>
               )}
@@ -246,13 +246,25 @@ export const InlineCommentPreviewPopover: FC<
                   ? t('inline_comment.reopen')
                   : t('inline_comment.resolve')}
               </button>
+              {/* Last element of the header row, after the resolve toggle.
+                  It used to be `position-absolute top-0 end-0` on the card
+                  body, which put it above the header row in the card's own
+                  top padding, where it visually collided with the popover's
+                  rounded corner. */}
+              <button
+                type="button"
+                data-testid="inline-comment-preview-popover-close-button"
+                className="btn-close"
+                aria-label={t('Close')}
+                onClick={onClose}
+              />
             </span>
           }
           beforeBody={
             // Same left-accent idiom as InlineCommentItem.tsx's quote, but not a click target.
             <blockquote
               data-testid="inline-comment-preview-popover-quote"
-              className={`inline-comment-quote bg-body-tertiary rounded-end small text-body-secondary mb-2 ps-2 ${styles['inline-comment-preview-popover-quote-clamp']}`}
+              className={`inline-comment-quote bg-body-tertiary rounded-end small text-body-secondary my-2 p-2 ${styles['inline-comment-preview-popover-quote-clamp']}`}
             >
               {comment.anchor.quote}
             </blockquote>
@@ -316,76 +328,94 @@ export const InlineCommentPreviewPopover: FC<
           )}
         </CommentCard>
 
-        <hr className="my-2" />
-
-        {comment.replies.length > 0 && (
+        {/* Edit mode replaces everything below the quote -- the body, the
+            reply thread and the reply form alike -- so the editor is the
+            only thing competing for attention while a comment is being
+            rewritten (Requirement 2.2's edit-mode artboard shows the header,
+            the quote, the editor and its buttons, and nothing else). One
+            guard around the whole group, rather than one per sibling, so a
+            later addition here cannot be forgotten. */}
+        {!isEditing && (
           <>
-            <div
-              data-testid="inline-comment-preview-popover-replies"
-              className="border-start ps-3"
-            >
-              {comment.replies.map((reply) => (
-                <div
-                  key={reply.id}
-                  data-testid="inline-comment-preview-popover-reply"
-                  className="mt-2"
-                >
-                  <CommentCard
-                    id={reply.id}
-                    creator={reply.creatorId}
-                    createdAt={reply.createdAt}
-                  >
-                    {rendererOptions != null ? (
-                      <RevisionRenderer
-                        rendererOptions={rendererOptions}
-                        markdown={reply.comment}
-                      />
-                    ) : (
-                      <span>{reply.comment}</span>
-                    )}
-                  </CommentCard>
-                </div>
-              ))}
-            </div>
-
             <hr className="my-2" />
+
+            {comment.replies.length > 0 && (
+              <>
+                <div
+                  data-testid="inline-comment-preview-popover-replies"
+                  className="border-start ps-3"
+                >
+                  {comment.replies.map((reply) => (
+                    <div
+                      key={reply.id}
+                      data-testid="inline-comment-preview-popover-reply"
+                      className="mt-2"
+                    >
+                      <CommentCard
+                        id={reply.id}
+                        creator={reply.creatorId}
+                        createdAt={reply.createdAt}
+                      >
+                        {rendererOptions != null ? (
+                          <RevisionRenderer
+                            rendererOptions={rendererOptions}
+                            markdown={reply.comment}
+                          />
+                        ) : (
+                          <span>{reply.comment}</span>
+                        )}
+                      </CommentCard>
+                    </div>
+                  ))}
+                </div>
+
+                <hr className="my-2" />
+              </>
+            )}
+
+            <div className="inline-comment-preview-popover-reply-form d-flex align-items-center gap-2">
+              <UserPicture user={currentUser} noLink noTooltip />
+              {/* flex-basis 0% avoids collapsing under the avatar/send button -- see InlineCommentForm.tsx. */}
+              <div style={{ flex: '1 1 0%', minWidth: 0 }}>
+                {/* `rows={1}`: the pill radius only reads as a one-line reply
+                  field at one row's height -- at the textarea's default two
+                  rows the same radius renders as a tall stadium-shaped box
+                  instead. */}
+                <textarea
+                  className="form-control rounded-pill"
+                  rows={1}
+                  placeholder={t('inline_comment.reply_placeholder')}
+                  aria-label={t('inline_comment.reply_placeholder')}
+                  value={draftComment}
+                  disabled={isSubmitting}
+                  onChange={(e) => setDraftComment(e.target.value)}
+                />
+                {submitError != null && (
+                  <span
+                    className="text-danger d-block"
+                    data-testid="inline-comment-preview-popover-reply-error"
+                  >
+                    {submitError}
+                  </span>
+                )}
+              </div>
+              <button
+                type="button"
+                className={`btn btn-primary btn-sm p-0 rounded-circle d-inline-flex align-items-center justify-content-center ${styles['inline-comment-preview-popover-send-button']}`}
+                disabled={draftComment.trim().length === 0 || isSubmitting}
+                onClick={handleSubmit}
+                aria-label={t('page_comment.comment')}
+              >
+                <span
+                  className="material-symbols-outlined fs-6"
+                  aria-hidden="true"
+                >
+                  send
+                </span>
+              </button>
+            </div>
           </>
         )}
-
-        <div className="inline-comment-preview-popover-reply-form d-flex align-items-start gap-2">
-          <UserPicture user={currentUser} noLink noTooltip />
-          {/* flex-basis 0% avoids collapsing under the avatar/send button -- see InlineCommentForm.tsx. */}
-          <div style={{ flex: '1 1 0%', minWidth: 0 }}>
-            <textarea
-              className="form-control rounded-pill"
-              placeholder={t('inline_comment.reply_placeholder')}
-              aria-label={t('inline_comment.reply_placeholder')}
-              value={draftComment}
-              disabled={isSubmitting}
-              onChange={(e) => setDraftComment(e.target.value)}
-            />
-            {submitError != null && (
-              <span
-                className="text-danger d-block"
-                data-testid="inline-comment-preview-popover-reply-error"
-              >
-                {submitError}
-              </span>
-            )}
-          </div>
-          <button
-            type="button"
-            className="btn btn-primary btn-sm p-0 d-inline-flex align-items-center justify-content-center"
-            style={{ width: '2rem', height: '2rem' }}
-            disabled={draftComment.trim().length === 0 || isSubmitting}
-            onClick={handleSubmit}
-            aria-label={t('page_comment.comment')}
-          >
-            <span className="material-symbols-outlined fs-6" aria-hidden="true">
-              send
-            </span>
-          </button>
-        </div>
       </div>
     </div>,
     document.body,

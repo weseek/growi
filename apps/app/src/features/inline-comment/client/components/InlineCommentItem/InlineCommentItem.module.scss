@@ -22,6 +22,23 @@
     border-left: 3px solid var(--grw-inline-comment-marker-bg);
   }
 
+  // The delete confirmation's left accent. Not the `border-start border-3`
+  // utility pair: that sets `border-left-color` to the neutral
+  // `--bs-border-color` with `!important`, which overrode `alert-danger`'s
+  // own tone and painted the accent grey instead of red. No utility can say
+  // "strong danger left border, the alert's own subtle border elsewhere".
+  .delete-confirm-alert {
+    border-left: 3px solid var(--bs-danger);
+  }
+
+  // Every avatar inside a list item comes from the shared `%user-picture`
+  // size. The extend above only reaches the ones inside `.page-comment`, so
+  // the reply form's own avatar (which sits outside any comment card) kept
+  // `UserPicture`'s larger default and was the one odd size on screen.
+  :global(.inline-comment-reply-form) :global(.user-picture) {
+    @extend %user-picture;
+  }
+
   // Edit/delete icon buttons (design.md: 編集・削除アイコン) are hidden by
   // default and revealed only while hovering the card, matching
   // CommentControl.tsx's "parent :hover + child visibility" pattern.
@@ -41,6 +58,15 @@
 // dot's color follows the badge's own text color (bg-warning-subtle /
 // bg-success-subtle already set text-warning-emphasis / text-success-emphasis).
 .inline-comment-status-badge {
+  // The mockup draws the status pill and the resolve toggle at nearly the
+  // same height (24.4px vs 26.4px). Bootstrap's default badge padding left
+  // the badge at 20px against the `btn-sm` toggle's 31px — visibly the
+  // shorter of the two. Set through Bootstrap's own `--bs-badge-padding-y`
+  // (rather than a `padding-block` declaration) so it feeds the `.badge`
+  // rule's existing `padding` shorthand and cannot lose a specificity race
+  // against it.
+  --bs-badge-padding-y: 0.5rem;
+
   &::before {
     content: '';
     display: inline-block;

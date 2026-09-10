@@ -83,6 +83,14 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
   const isResolved = comment.resolvedAt != null;
   const isOwnComment = currentUser?._id === comment.creatorId;
 
+  // `opacity-75` is what makes a resolved comment recede, mirroring the
+  // mockup's `.ic-item[data-resolved="true"] { opacity: .8 }`. Besides the
+  // badge's wording/color and the toggle's wording, that fade is the only
+  // thing the resolved state changes — the layout stays identical.
+  const resolvedRootClassName = isResolved
+    ? 'inline-comment-item-resolved opacity-75'
+    : undefined;
+
   const handleResolveToggle = async (): Promise<void> => {
     try {
       await resolve(comment.id, !isResolved);
@@ -146,7 +154,7 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
         id={comment.id}
         creator={comment.creator}
         createdAt={comment.createdAt}
-        rootClassName={isResolved ? 'inline-comment-item-resolved' : undefined}
+        rootClassName={resolvedRootClassName}
         headerEnd={
           <span className="ms-auto d-flex align-items-center gap-2">
             {isOwnComment && !isEditing && !isDeleteConfirmOpen && (
@@ -212,7 +220,7 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
               className="btn p-0 border-0 bg-transparent text-start w-100"
               onClick={handleQuoteClick}
             >
-              <blockquote className="inline-comment-quote bg-body-tertiary rounded-end small text-body-secondary mb-2 ps-2">
+              <blockquote className="inline-comment-quote bg-body-tertiary rounded-end small text-body-secondary my-2 p-2">
                 {comment.anchor.quote}
               </blockquote>
             </button>
@@ -248,7 +256,14 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
               <div
                 data-testid="inline-comment-delete-confirm"
                 role="alert"
-                className="alert alert-danger d-flex align-items-center gap-2 border-start border-3 mb-0 mt-1"
+                /* The 3px danger left accent lives in the CSS module rather
+                   than in `border-start border-3` utilities: those set
+                   `border-left-color` to the neutral `--bs-border-color`
+                   with `!important`, which silently overrode the alert's own
+                   danger tone and rendered the accent grey. No utility can
+                   express "strong danger left border, alert's own subtle
+                   border elsewhere", so it is a CSS-Modules rule (Req 3.4). */
+                className={`alert alert-danger d-flex align-items-center gap-2 mb-0 mt-1 ${styles['delete-confirm-alert']}`}
               >
                 <span className="material-symbols-outlined">warning</span>
                 <span>{t('page_comment.delete_comment')}</span>
@@ -276,20 +291,27 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
         }
       >
         {isEditing ? (
-          <div className="inline-comment-edit-form">
+          // Accent-colored border around the edit input, and Cancel
+          // right-aligned below it -- the same composition the popover's own
+          // edit mode uses, so the two edit modes read alike. Save is
+          // `MentionAwareCommentInput`'s own built-in submit control and
+          // stays where that (out-of-boundary) component renders it.
+          <div className="inline-comment-edit-form border border-primary rounded p-2">
             <MentionAwareCommentInput
               editorKey={`inline_comment_edit_${comment.id}`}
               initialValue={comment.comment}
               onSubmit={handleEditSubmit}
             />
-            <button
-              type="button"
-              data-testid="inline-comment-edit-cancel-button"
-              className="btn btn-sm btn-outline-secondary mt-1"
-              onClick={handleEditCancel}
-            >
-              {t('Cancel')}
-            </button>
+            <div className="d-flex justify-content-end mt-1">
+              <button
+                type="button"
+                data-testid="inline-comment-edit-cancel-button"
+                className="btn btn-sm btn-outline-secondary"
+                onClick={handleEditCancel}
+              >
+                {t('Cancel')}
+              </button>
+            </div>
           </div>
         ) : rendererOptions != null ? (
           <RevisionRenderer

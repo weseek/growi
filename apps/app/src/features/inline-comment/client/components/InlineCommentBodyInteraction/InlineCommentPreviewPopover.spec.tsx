@@ -411,6 +411,81 @@ describe('InlineCommentPreviewPopover', () => {
     expect(actionsRow).toHaveClass('d-flex', 'justify-content-end');
   });
 
+  it('replaces the reply thread and the reply form while editing, restoring both on cancel (Req 2.2)', async () => {
+    currentUserRef.current = { _id: 'user1' };
+    renderPopover({
+      id: 'comment42',
+      creatorId: 'user1',
+      replies: [
+        {
+          id: 'reply1',
+          pageId: 'page1',
+          creatorId: 'user2',
+          creator: null,
+          comment: 'a reply',
+          replyToId: 'comment42',
+          createdAt: new Date('2026-01-02T00:00:00.000Z'),
+          updatedAt: new Date('2026-01-02T00:00:00.000Z'),
+        },
+      ],
+    });
+
+    // Before editing, both are on screen.
+    expect(
+      screen.getByTestId('inline-comment-preview-popover-replies'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('inline_comment.reply_placeholder'),
+    ).toBeInTheDocument();
+
+    await userEvent.click(
+      screen.getByTestId('inline-comment-preview-popover-edit-button'),
+    );
+
+    // Requirement 2.2's edit-mode artboard shows the header, the quote, the
+    // editor and its buttons -- and nothing else. Editing replaces what is
+    // below the quote wholesale, rather than pushing the editor in above a
+    // still-live reply thread and reply box.
+    expect(
+      screen.queryByTestId('inline-comment-preview-popover-replies'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByPlaceholderText('inline_comment.reply_placeholder'),
+    ).not.toBeInTheDocument();
+
+    await userEvent.click(
+      screen.getByTestId('inline-comment-preview-popover-edit-cancel-button'),
+    );
+
+    expect(
+      screen.getByTestId('inline-comment-preview-popover-replies'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('inline_comment.reply_placeholder'),
+    ).toBeInTheDocument();
+  });
+
+  it('places the close button as the last element of the header row, not absolutely positioned over the card corner', () => {
+    currentUserRef.current = { _id: 'user1' };
+    renderPopover({ creatorId: 'user1' });
+
+    const closeButton = screen.getByTestId(
+      'inline-comment-preview-popover-close-button',
+    );
+    // It used to be `position-absolute top-0 end-0` on the card body, which
+    // put it above the header row in the card's own top padding, where it
+    // collided with the popover's rounded corner.
+    expect(closeButton).not.toHaveClass('position-absolute');
+
+    // `closest`, not the render result's `container`: this popover renders
+    // through a portal into `document.body`, so it is not inside `container`.
+    const headerEnd = closeButton.closest('.ms-auto');
+    expect(headerEnd).not.toBeNull();
+    expect(headerEnd?.lastElementChild).toBe(closeButton);
+    // The header row the slot sits in is the comment card's own header.
+    expect(headerEnd?.closest('.page-comment-main')).not.toBeNull();
+  });
+
   it('has no delete action anywhere in the rendered output (Boundary Context: delete is list-only)', () => {
     currentUserRef.current = { _id: 'user1' };
     renderPopover({ creatorId: 'user1' });

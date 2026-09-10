@@ -11,9 +11,33 @@
 @use 'client/components/PageComment/comment-inheritance';
 
 .inline-comment-preview-popover-styles {
+  // A fixed width. Without one the popover has no width constraint at all,
+  // so it sized itself to whichever content it happened to hold: 602px with
+  // a reply thread and 566px in edit mode — the same popover visibly
+  // changing width as the user worked in it.
+  //
+  // 36rem, not the mockup's own 340px: the header row has to hold an avatar,
+  // a username, a relative timestamp, the edit icon, the status pill, the
+  // resolve toggle and the close button, and at GROWI's 16px base font that
+  // content measures ~470px. Below ~34rem the row silently overflows and
+  // clips the resolve toggle and the close button (measured — 26rem was
+  // tried first and did exactly that). See the checklist's item 16 verdict.
+  //
+  // `max-width` keeps it inside a phone-width viewport, where a fixed 36rem
+  // would otherwise overflow. Neither is expressible as a Bootstrap utility:
+  // the `w-*`/`mw-*` scales are percentages of a sized parent, and this
+  // element is positioned against a text range instead.
+  width: 36rem;
+  max-width: calc(100vw - 2rem);
+
+  // Applies to every avatar in the popover, not just those inside a comment
+  // card: the reply form's own avatar sits outside `.page-comment`, so when
+  // this extend was nested under that class the reply form kept
+  // `UserPicture`'s larger default and was the single odd size on screen.
+  :global(.user-picture) { @extend %user-picture; }
+
   :global(.page-comment) {
     :global(.bg-comment) { @extend %bg-comment; }
-    :global(.user-picture) { @extend %user-picture; }
     :global(.page-comment-main) { @extend %comment-section; }
   }
 
@@ -29,7 +53,23 @@
 // InlineCommentItem.module.scss's `.inline-comment-status-badge`. Kept as a
 // ::before pseudo-element (not an inline style) so the dot's color follows
 // the badge's own text color via `currentColor`.
+// The reply form's send button. A circle needs an explicit, equal width and
+// height (`rounded-circle` alone only rounds whatever box the button already
+// has), and the pair is not expressible as Bootstrap utilities -- this
+// replaces the inline `style={{ width: '2rem', height: '2rem' }}` the button
+// used to carry (Requirement 3.3).
+.inline-comment-preview-popover-send-button {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+}
+
 .inline-comment-preview-popover-status-badge {
+  // Matches InlineCommentItem.module.scss: the mockup draws the status pill
+  // and the resolve toggle at nearly the same height, and Bootstrap's
+  // default badge padding leaves the badge visibly the shorter of the two.
+  --bs-badge-padding-y: 0.5rem;
+
   &::before {
     display: inline-block;
     width: 6px;

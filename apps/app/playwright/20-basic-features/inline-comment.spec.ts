@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { expect, type Page, test } from '@playwright/test';
 
 import type { CreatedPage } from '../utils/api';
@@ -3452,6 +3454,12 @@ test.describe('Inline comment - editing an origin comment (from the list and fro
     const item = page.getByTestId('inline-comment-item').first();
     await expect(item).toBeVisible();
 
+    // The edit/delete icons are `visibility: hidden` until the card is
+    // hovered (the hover-reveal pattern the visual refresh adopted from
+    // `CommentControl.tsx`), so the card has to be hovered before the icon
+    // is clickable at all -- a click without it times out on "element is
+    // not visible".
+    await item.hover();
     await item.getByTestId('inline-comment-edit-button').click();
     const editForm = item.locator('.inline-comment-edit-form');
     await expect(editForm).toBeVisible();
@@ -3486,8 +3494,12 @@ test.describe('Inline comment - editing an origin comment (from the list and fro
     await popover
       .getByTestId('inline-comment-preview-popover-edit-button')
       .click();
-    const editForm = popover.locator(
-      '.inline-comment-preview-popover-edit-form',
+    // By test id, not by a `.inline-comment-preview-popover-edit-form` CSS
+    // class: the popover's edit-mode wrapper carries no such class (it never
+    // did once the visual refresh gave it Bootstrap's accent-border utilities
+    // plus this test id), so the old class selector matched nothing.
+    const editForm = popover.getByTestId(
+      'inline-comment-preview-popover-edit-form',
     );
     await expect(editForm).toBeVisible();
     await editForm
@@ -3523,6 +3535,10 @@ test.describe('Inline comment - editing an origin comment (from the list and fro
     const reply = item.getByTestId('inline-comment-reply');
     await expect(reply).toContainText('a reply before editing');
 
+    // Hover first: the reply's edit/delete icons are hover-revealed too (they
+    // reuse the list item's own `visibility` rule -- see the comment on the
+    // origin comment's edit click above).
+    await reply.hover();
     await reply.getByTestId('inline-comment-reply-edit-button').click();
     const editForm = reply.locator('.inline-comment-edit-form');
     await expect(editForm).toBeVisible();
@@ -3623,6 +3639,8 @@ test.describe('Inline comment - deleting a reply removes only that reply; deleti
     const firstReply = item
       .getByTestId('inline-comment-reply')
       .filter({ hasText: 'the first reply' });
+    // Hover first -- hover-revealed icon, same as the edit case above.
+    await firstReply.hover();
     await firstReply.getByTestId('inline-comment-reply-delete-button').click();
     await expect(
       firstReply.getByTestId('inline-comment-reply-delete-confirm'),
@@ -3654,6 +3672,8 @@ test.describe('Inline comment - deleting a reply removes only that reply; deleti
     const item = page.getByTestId('inline-comment-item').first();
     await expect(item).toBeVisible();
 
+    // Hover first -- hover-revealed icon, same as the edit case above.
+    await item.hover();
     await item.getByTestId('inline-comment-delete-button').click();
     await expect(
       item.getByTestId('inline-comment-delete-confirm'),
@@ -3949,5 +3969,578 @@ test.describe('Inline comment - a resolved comment hides its body highlight/popo
         () => CSS.highlights.get('growi-inline-comment-emphasis')?.size ?? 0,
       );
     await expect.poll(emphasisHighlightSize).toBeGreaterThan(0);
+  });
+});
+
+test.describe('Inline comment - visual refresh: mockup cross-check captures (spec: inline-comment-visual-refresh, Req 4.1/4.2)', () => {
+  // Serial: every test below builds on real backend state created by the
+  // earlier ones (the page, then the origin comment, then its reply), the
+  // same reasoning the other suites in this file use.
+  test.describe.configure({ mode: 'serial' });
+
+  const visualRefreshPagePath = (retry: number) =>
+    `/inline-comment-e2e-visual-refresh${retry}`;
+
+  const targetSentence =
+    'This sentence anchors the visual-refresh mockup cross-check.';
+  const pageBody = [
+    '# Inline comment E2E - visual refresh',
+    '',
+    'Some intro text before the target.',
+    '',
+    targetSentence,
+    '',
+    'Some trailing text after the target.',
+    '',
+  ].join('\n');
+
+  const originCommentText =
+    'The premise would read better if it came first; how about splitting the section?';
+  const replyText =
+    'Agreed - one sentence of context between sections 3 and 4 would help.';
+  const secondReplyText =
+    'A second reply, so the gap between two replies can be measured.';
+
+  /**
+   * Where the captured evidence for this spec lands. Deliberately NOT
+   * `playwright/output` (that directory is gitignored, so nothing there
+   * survives for the independent checklist review in task 4.4): the
+   * screenshots and the measurement dumps are the deliverable this suite
+   * exists to produce, so they are written to a tracked path instead.
+   */
+  const evidenceDir = path.resolve(
+    import.meta.dirname,
+    './__screenshots__/inline-comment-visual-refresh',
+  );
+
+  /**
+   * Same rationale as the visual-consistency suite's own copy above: a
+   * `getComputedStyle` read taken while Bootstrap's ~150ms color/opacity
+   * transitions are still running reports a mid-transition value rather than
+   * the settled one, and a screenshot taken then catches a half-faded
+   * hover-reveal. Kept as this block's own copy because that helper is scoped
+   * inside the other `describe`.
+   */
+  const disableCssTransitions = async (targetPage: Page): Promise<void> => {
+    await targetPage.addStyleTag({
+      content:
+        '*, *::before, *::after { transition: none !important; animation: none !important; }',
+    });
+  };
+
+  /**
+   * The computed properties every measured element reports. Judging the 35
+   * items of `visual-acceptance-checklist.md` means answering questions like
+   * "is the gap between the badge and the toggle button mockup-equivalent?"
+   * and "is the quote block's left/right inner padding right?" — those are
+   * measurements, and eyeballing a PNG is exactly the failure mode this whole
+   * spec exists to prevent. So each capture below is paired with a dump of
+   * these values plus every element's `getBoundingClientRect()`, which is
+   * what makes a per-item verdict checkable rather than an opinion.
+   */
+  const STYLE_PROPS = [
+    'display',
+    'position',
+    'visibility',
+    'opacity',
+    'flexDirection',
+    'alignItems',
+    'justifyContent',
+    'columnGap',
+    'rowGap',
+    'marginTop',
+    'marginRight',
+    'marginBottom',
+    'marginLeft',
+    'paddingTop',
+    'paddingRight',
+    'paddingBottom',
+    'paddingLeft',
+    'borderTopWidth',
+    'borderRightWidth',
+    'borderBottomWidth',
+    'borderLeftWidth',
+    'borderLeftColor',
+    'borderLeftStyle',
+    'borderTopLeftRadius',
+    'borderTopRightRadius',
+    'borderBottomRightRadius',
+    'borderBottomLeftRadius',
+    'backgroundColor',
+    'color',
+    'fontSize',
+    'lineHeight',
+    'textAlign',
+    'whiteSpace',
+    'width',
+    'height',
+  ] as const;
+
+  type ElementMetrics = {
+    rect: {
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      right: number;
+      bottom: number;
+    };
+    styles: Record<string, string>;
+    /** Whether the element's content overflows its own box (i.e. is clipped). */
+    overflow: {
+      scrollWidth: number;
+      clientWidth: number;
+      scrollHeight: number;
+      clientHeight: number;
+    };
+    /**
+     * The `::before` pseudo-element's own computed values. Three checklist
+     * items are judged through a pseudo-element rather than a real node: the
+     * status badge's dot (item 2), the card's shared speech-balloon tail
+     * (item 35), and — for the tail — whether the shared placeholder was
+     * overridden at all. A pseudo-element has no `getBoundingClientRect()`,
+     * so its `content`/size/border values are the only observable evidence.
+     */
+    before: Record<string, string>;
+  };
+
+  /**
+   * Measures every entry of `targets` (name -> CSS selector, resolved inside
+   * `rootSelector`; the empty selector means the root itself) in one round
+   * trip. A missing element is reported as `null` rather than throwing, so a
+   * dump still records "this element was absent" — which is itself the answer
+   * for the items that require an element NOT to be present in a given state
+   * (item 4: no edit/delete icons while editing or confirming a delete).
+   */
+  const collectMetrics = (
+    targetPage: Page,
+    rootSelector: string,
+    targets: Record<string, string>,
+  ): Promise<Record<string, ElementMetrics | null>> =>
+    targetPage.evaluate(
+      ({ rootSel, entries, props, pseudoProps }) => {
+        const root = document.querySelector(rootSel);
+        if (root == null) {
+          throw new Error(`metrics root not found: ${rootSel}`);
+        }
+
+        const readStyles = (
+          style: CSSStyleDeclaration,
+          names: readonly string[],
+        ): Record<string, string> =>
+          Object.fromEntries(
+            names.map((name) => [
+              name,
+              style.getPropertyValue(
+                name.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`),
+              ),
+            ]),
+          );
+
+        const out: Record<string, unknown> = {};
+        for (const [name, selector] of Object.entries(entries)) {
+          const el =
+            selector === '' ? root : root.querySelector(selector as string);
+          if (el == null) {
+            out[name] = null;
+            continue;
+          }
+          const rect = el.getBoundingClientRect();
+          out[name] = {
+            rect: {
+              x: rect.x,
+              y: rect.y,
+              width: rect.width,
+              height: rect.height,
+              right: rect.right,
+              bottom: rect.bottom,
+            },
+            // `scrollWidth > clientWidth` is the observable form of "this row
+            // does not fit and is being clipped" -- the failure mode a fixed
+            // popover width can introduce in the header row, and one that a
+            // screenshot of a *wide* popover would never reveal.
+            overflow: {
+              scrollWidth: el.scrollWidth,
+              clientWidth: el.clientWidth,
+              scrollHeight: el.scrollHeight,
+              clientHeight: el.clientHeight,
+            },
+            styles: readStyles(window.getComputedStyle(el), props),
+            before: readStyles(
+              window.getComputedStyle(el, '::before'),
+              pseudoProps,
+            ),
+          };
+        }
+        return out;
+      },
+      {
+        rootSel: rootSelector,
+        entries: targets,
+        props: [...STYLE_PROPS],
+        pseudoProps: [
+          'content',
+          'display',
+          'position',
+          'width',
+          'height',
+          'marginRight',
+          'backgroundColor',
+          'borderTopWidth',
+          'borderRightWidth',
+          'borderLeftWidth',
+          'borderTopLeftRadius',
+          'borderTopColor',
+        ],
+      },
+    ) as Promise<Record<string, ElementMetrics | null>>;
+
+  const writeMetrics = (name: string, metrics: unknown): void => {
+    fs.mkdirSync(evidenceDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(evidenceDir, `${name}.json`),
+      `${JSON.stringify(metrics, null, 2)}\n`,
+    );
+  };
+
+  /** Selectors for the list item's own card (its nested replies excluded). */
+  const LIST_TARGETS: Record<string, string> = {
+    // The outer `.page-comment`, which is where the resolved state's fade
+    // (`opacity-75`) is applied -- the inner `.page-comment-main` measured
+    // below stays at opacity 1 in both states, so measuring only that one
+    // would report "no fade" for a resolved card that is in fact faded.
+    cardRoot: ':scope > .page-comment',
+    card: ':scope > .page-comment > .page-comment-main',
+    headerRow: ':scope > .page-comment > .page-comment-main > .d-flex',
+    avatar: ':scope > .page-comment > .page-comment-main .user-picture',
+    username: ':scope > .page-comment > .page-comment-main > .d-flex > .small',
+    createdAt: '.page-comment-revision',
+    headerEnd:
+      ':scope > .page-comment > .page-comment-main > .d-flex > .ms-auto',
+    iconButtonContainer: '[class*="icon-button-container"]',
+    editIconButton: '[data-testid="inline-comment-edit-button"]',
+    deleteIconButton: '[data-testid="inline-comment-delete-button"]',
+    statusBadge: '[data-testid="inline-comment-status"]',
+    resolveToggle: '.ms-auto > button.btn-outline-secondary',
+    typeLabel: '.text-body-secondary.fw-bold',
+    quote: '.inline-comment-quote',
+    body: ':scope > .page-comment > .page-comment-main > .page-comment-body',
+    replyFormAvatar: '.inline-comment-reply-form .user-picture',
+    editForm: '.inline-comment-edit-form',
+    editCancelButton: '[data-testid="inline-comment-edit-cancel-button"]',
+    editSubmitButton: '[data-testid="inline-comment-submit-button"]',
+    deleteConfirm: '[data-testid="inline-comment-delete-confirm"]',
+    deleteConfirmIcon:
+      '[data-testid="inline-comment-delete-confirm"] .material-symbols-outlined',
+    deleteConfirmMessage:
+      '[data-testid="inline-comment-delete-confirm"] > span:nth-of-type(2)',
+    deleteConfirmActions:
+      '[data-testid="inline-comment-delete-confirm"] .ms-auto',
+    deleteConfirmCancel: '[data-testid="inline-comment-delete-cancel-button"]',
+    deleteConfirmDelete: '[data-testid="inline-comment-delete-confirm-button"]',
+  };
+
+  const POPOVER_TARGETS: Record<string, string> = {
+    popover: '',
+    cardBody: ':scope > .card-body',
+    closeButton: '.btn-close',
+    card: '.page-comment > .page-comment-main',
+    headerRow: '.page-comment > .page-comment-main > .d-flex',
+    avatar: '.page-comment > .page-comment-main .user-picture',
+    username: '.page-comment > .page-comment-main > .d-flex > .small',
+    createdAt: '.page-comment-revision',
+    headerEnd: '.page-comment > .page-comment-main > .d-flex > .ms-auto',
+    editButton: '[data-testid="inline-comment-preview-popover-edit-button"]',
+    statusBadge: '[data-testid="inline-comment-status"]',
+    resolveToggle: '.ms-auto > button.btn-outline-secondary',
+    quote: '[data-testid="inline-comment-preview-popover-quote"]',
+    body: '.page-comment-body',
+    firstDivider: 'hr',
+    replies: '[data-testid="inline-comment-preview-popover-replies"]',
+    firstReply: '[data-testid="inline-comment-preview-popover-reply"]',
+    firstReplyAvatar:
+      '[data-testid="inline-comment-preview-popover-reply"] .user-picture',
+    firstReplyUsername:
+      '[data-testid="inline-comment-preview-popover-reply"] .page-comment-main > .d-flex > .small',
+    firstReplyBody:
+      '[data-testid="inline-comment-preview-popover-reply"] .page-comment-body',
+    secondReply:
+      '[data-testid="inline-comment-preview-popover-reply"]:nth-of-type(2)',
+    closeButtonInHeader:
+      '[data-testid="inline-comment-preview-popover-close-button"]',
+    replyForm: '.inline-comment-preview-popover-reply-form',
+    replyFormAvatar: '.inline-comment-preview-popover-reply-form .user-picture',
+    replyFormInput: '.inline-comment-preview-popover-reply-form textarea',
+    replyFormSubmit:
+      '.inline-comment-preview-popover-reply-form button.btn-primary',
+    editForm: '[data-testid="inline-comment-preview-popover-edit-form"]',
+    editCancelButton:
+      '[data-testid="inline-comment-preview-popover-edit-cancel-button"]',
+    editSubmitButton: '[data-testid="inline-comment-submit-button"]',
+  };
+
+  /** Every divider in the popover, measured together for items 21 and 26. */
+  const collectDividers = (targetPage: Page): Promise<unknown> =>
+    targetPage.evaluate(() => {
+      const popover = document.querySelector(
+        '[data-testid="inline-comment-preview-popover"]',
+      );
+      if (popover == null) {
+        throw new Error('popover not found');
+      }
+      const cardBody = popover.querySelector('.card-body');
+      const cardBodyRect = cardBody?.getBoundingClientRect();
+      return {
+        cardBody:
+          cardBodyRect == null
+            ? null
+            : { left: cardBodyRect.left, right: cardBodyRect.right },
+        dividers: Array.from(popover.querySelectorAll('hr')).map((hr) => {
+          const rect = hr.getBoundingClientRect();
+          const style = window.getComputedStyle(hr);
+          return {
+            left: rect.left,
+            right: rect.right,
+            width: rect.width,
+            marginTop: style.marginTop,
+            marginBottom: style.marginBottom,
+            borderTopWidth: style.borderTopWidth,
+            color: style.color,
+            opacity: style.opacity,
+          };
+        }),
+      };
+    });
+
+  let createdPage: CreatedPage | undefined;
+
+  test.afterAll(async ({ request }) => {
+    if (createdPage != null) {
+      await deletePagesCompletely(request, [createdPage]);
+    }
+  });
+
+  test('Create a page containing the target sentence', async ({
+    page,
+    request,
+  }, testInfo) => {
+    createdPage = await createPage(request, {
+      path: visualRefreshPagePath(testInfo.retry),
+      body: pageBody,
+    });
+
+    await page.goto(createdPage.path);
+    await expect(page.locator('.wiki').first()).toContainText(targetSentence);
+  });
+
+  test('Create the origin comment and one reply (the popover normal state needs both)', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(visualRefreshPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    await selectTextInPageBody(page, targetSentence);
+    await page.getByTestId('selection-action-button').click();
+    const form = page.getByTestId('inline-comment-form');
+    await expect(form).toBeVisible();
+    await form.locator('.cm-content').fill(originCommentText);
+    await form.getByTestId('inline-comment-submit-button').click();
+    await expect(form).not.toBeVisible();
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+    await expect(item).toContainText(originCommentText);
+
+    await item.getByTestId('inline-comment-reply-toggle-button').click();
+    await item.locator('.cm-content').fill(replyText);
+    await item.getByTestId('comment-submit-button').first().click();
+
+    const reply = item.getByTestId('inline-comment-reply');
+    await expect(reply.first()).toBeVisible();
+    await expect(reply.first()).toContainText(replyText);
+
+    // A SECOND reply, so the spacing *between* two replies is a measured
+    // value rather than one inferred from the class list -- checklist item 22
+    // asks for the reply-to-reply gap, which a single reply cannot show.
+    await item.getByTestId('inline-comment-reply-toggle-button').click();
+    await item.locator('.cm-content').fill(secondReplyText);
+    await item.getByTestId('comment-submit-button').first().click();
+    await expect(reply).toHaveCount(2);
+  });
+
+  test('Capture popover states 5 (normal, with replies + reply form) and 6 (edit mode)', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(visualRefreshPagePath(testInfo.retry));
+    await disableCssTransitions(page);
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    // The saved highlight must actually be registered before the popover can
+    // be opened at all -- it is what `useHighlightHitTest` hit-tests against.
+    await expect
+      .poll(async () =>
+        page.evaluate(
+          () => CSS.highlights.get('growi-inline-comment')?.size ?? 0,
+        ),
+      )
+      .toBeGreaterThan(0);
+
+    // A click (not a hover) pins the popover open via its `onPointerEnter`
+    // promotion, which is what makes it stable enough to screenshot and
+    // measure without the pointer having to stay parked on the text.
+    await clickText(page, targetSentence);
+    const popover = page.getByTestId('inline-comment-preview-popover');
+    await expect(popover).toBeVisible();
+    await expect(popover).toContainText(originCommentText);
+    await expect(
+      popover.getByTestId('inline-comment-preview-popover-reply'),
+    ).toHaveCount(2);
+
+    fs.mkdirSync(evidenceDir, { recursive: true });
+    await popover.screenshot({
+      path: path.join(evidenceDir, '05-popover-normal.png'),
+    });
+    writeMetrics('05-popover-normal', {
+      elements: await collectMetrics(
+        page,
+        '[data-testid="inline-comment-preview-popover"]',
+        POPOVER_TARGETS,
+      ),
+      dividers: await collectDividers(page),
+    });
+
+    // State 6: edit mode replaces the body, the reply list and the reply form.
+    await popover
+      .getByTestId('inline-comment-preview-popover-edit-button')
+      .click();
+    const editForm = popover.getByTestId(
+      'inline-comment-preview-popover-edit-form',
+    );
+    await expect(editForm).toBeVisible();
+    await expect(editForm.locator('.cm-content')).toBeVisible();
+
+    await popover.screenshot({
+      path: path.join(evidenceDir, '06-popover-edit.png'),
+    });
+    writeMetrics('06-popover-edit', {
+      elements: await collectMetrics(
+        page,
+        '[data-testid="inline-comment-preview-popover"]',
+        POPOVER_TARGETS,
+      ),
+      dividers: await collectDividers(page),
+    });
+  });
+
+  test('Capture list-item states 1 (normal/unresolved), 2 (edit mode), 3 (delete confirmation) and 4 (resolved)', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(visualRefreshPagePath(testInfo.retry));
+    await disableCssTransitions(page);
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+    const card = item.locator('.page-comment').first();
+    const editButton = item.getByTestId('inline-comment-edit-button');
+    const deleteButton = item.getByTestId('inline-comment-delete-button');
+
+    fs.mkdirSync(evidenceDir, { recursive: true });
+
+    // --- State 1: normal (unresolved), hovered so the edit/delete icons show ---
+    // The icons are `visibility: hidden` until the card is hovered, so the
+    // order here matters: scroll first (a later scroll would move the pointer
+    // off the card), hover, then assert the icons are actually VISIBLE --
+    // `toBeVisible()` fails on `visibility: hidden`, so it is a real guard
+    // that the hover took effect rather than a screenshot of a still-hidden
+    // control.
+    await card.scrollIntoViewIfNeeded();
+    await card.hover();
+    await expect(editButton).toBeVisible();
+    await expect(deleteButton).toBeVisible();
+
+    await card.screenshot({
+      path: path.join(evidenceDir, '01-list-normal.png'),
+    });
+    await page.screenshot({
+      path: path.join(evidenceDir, '01-list-normal-fullpage.png'),
+      fullPage: true,
+    });
+    writeMetrics('01-list-normal', {
+      elements: await collectMetrics(
+        page,
+        '[data-testid="inline-comment-item"]',
+        LIST_TARGETS,
+      ),
+    });
+
+    // --- State 2: edit mode ---
+    await editButton.click();
+    const editForm = item.locator('.inline-comment-edit-form');
+    await expect(editForm).toBeVisible();
+    await expect(editForm.locator('.cm-content')).toBeVisible();
+    await card.hover();
+
+    await card.screenshot({ path: path.join(evidenceDir, '02-list-edit.png') });
+    writeMetrics('02-list-edit', {
+      elements: await collectMetrics(
+        page,
+        '[data-testid="inline-comment-item"]',
+        LIST_TARGETS,
+      ),
+    });
+
+    await item.getByTestId('inline-comment-edit-cancel-button').click();
+    await expect(editForm).not.toBeVisible();
+
+    // --- State 3: delete confirmation (cancelled again right afterwards --
+    // this suite must not actually delete the comment state 4 still needs) ---
+    await card.hover();
+    await expect(deleteButton).toBeVisible();
+    await deleteButton.click();
+    const deleteConfirm = item.getByTestId('inline-comment-delete-confirm');
+    await expect(deleteConfirm).toBeVisible();
+    await card.hover();
+
+    await card.screenshot({
+      path: path.join(evidenceDir, '03-list-delete-confirm.png'),
+    });
+    writeMetrics('03-list-delete-confirm', {
+      elements: await collectMetrics(
+        page,
+        '[data-testid="inline-comment-item"]',
+        LIST_TARGETS,
+      ),
+    });
+
+    await item.getByTestId('inline-comment-delete-cancel-button').click();
+    await expect(deleteConfirm).not.toBeVisible();
+
+    // --- State 4: resolved ---
+    await item.getByRole('button', { name: 'Resolve', exact: true }).click();
+    await expect(item.getByTestId('inline-comment-status')).toHaveText(
+      'Resolved',
+    );
+    await card.scrollIntoViewIfNeeded();
+    await card.hover();
+    await expect(editButton).toBeVisible();
+
+    await card.screenshot({
+      path: path.join(evidenceDir, '04-list-resolved.png'),
+    });
+    writeMetrics('04-list-resolved', {
+      elements: await collectMetrics(
+        page,
+        '[data-testid="inline-comment-item"]',
+        LIST_TARGETS,
+      ),
+    });
+
+    // Left resolved-free for any retry of this serial group: reopening keeps
+    // the created comment in the same state the earlier tests set up.
+    await item.getByRole('button', { name: 'Reopen', exact: true }).click();
+    await expect(item.getByTestId('inline-comment-status')).toHaveText(
+      'Unresolved',
+    );
   });
 });
