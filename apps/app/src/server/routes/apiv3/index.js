@@ -12,6 +12,7 @@ import {
 import { createInlineCommentRouteHandlersFactory } from '~/features/inline-comment/server/routes/create';
 import { createInlineCommentReplyRouteHandlersFactory } from '~/features/inline-comment/server/routes/create-reply';
 import { deleteInlineCommentRouteHandlersFactory } from '~/features/inline-comment/server/routes/delete';
+import { deleteInlineCommentReplyRouteHandlersFactory } from '~/features/inline-comment/server/routes/delete-reply';
 import { listInlineCommentsRouteHandlersFactory } from '~/features/inline-comment/server/routes/list';
 import { resolveInlineCommentRouteHandlersFactory } from '~/features/inline-comment/server/routes/resolve';
 import { updateInlineCommentRouteHandlersFactory } from '~/features/inline-comment/server/routes/update';
@@ -241,6 +242,10 @@ export const setup = (crowi, app) => {
     inlineCommentsRouter.delete(
       '/:id',
       deleteInlineCommentRouteHandlersFactory(crowi),
+    );
+    inlineCommentsRouter.delete(
+      '/replies/:id',
+      deleteInlineCommentReplyRouteHandlersFactory(crowi),
     );
     router.use('/inline-comments', inlineCommentsRouter);
   }

@@ -12,7 +12,7 @@
   - _Requirements: 1.3, 1.5, 2.3, 2.4, 2.6, 3.1, 3.2_
   - _Boundary: InlineCommentService_
 
-- [ ] 2. apiv3ルートを追加する（起点・返信 × 更新・削除の4本）
+- [x] 2. apiv3ルートを追加する（起点・返信 × 更新・削除の4本）
 - [x] 2.1 (P) 起点コメント更新ルートを追加する
   - `PUT /_api/v3/inline-comments/:id` を実装する（`update.ts`）。ミドルウェア順序は `resolve.ts` と同一（`accessTokenParser → loginRequired → validators → apiV3FormValidator`）
   - `findUnique` でページ権限チェック・起点であることの400判定を行い、`InlineCommentService.updateComment` に委譲する
@@ -39,7 +39,7 @@
   - _Boundary: delete.ts_
   - _Depends: 1_
 
-- [ ] 2.4 (P) 返信削除ルートを追加する
+- [x] 2.4 (P) 返信削除ルートを追加する
   - `DELETE /_api/v3/inline-comments/replies/:id` を実装する（`delete-reply.ts`）。DTOなし、`res.apiv3({})` を返す
   - `findUnique` でページ権限チェック・返信であることの400判定を行い、`InlineCommentService.deleteReply` に委譲する
   - `delete-reply.integ.ts` に、400・403・404・200（成功後、その返信だけが存在しなくなり起点コメントや他の返信は残ること）を検証する結合テストを追加し、すべて green になる
