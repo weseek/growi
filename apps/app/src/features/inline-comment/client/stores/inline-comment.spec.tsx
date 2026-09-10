@@ -10,19 +10,24 @@ import type {
   CreateInlineCommentResponseBody,
   ListInlineCommentsResponseBody,
   ResolveInlineCommentResponseBody,
+  UpdateInlineCommentReplyResponseBody,
+  UpdateInlineCommentResponseBody,
 } from '../../interfaces/dto';
 import { useSWRxInlineComments } from './inline-comment';
 
 // Mock the API boundary — the contract under test is "list/create/createReply/
-// resolve talk to apiv3Get/apiv3Post/apiv3Put and a write causes the list to
-// be refetched", not any SWR internals.
+// resolve/update/updateReply/remove/removeReply talk to
+// apiv3Get/apiv3Post/apiv3Put/apiv3Delete and a write causes the list to be
+// refetched", not any SWR internals.
 const apiv3Get = vi.fn();
 const apiv3Post = vi.fn();
 const apiv3Put = vi.fn();
+const apiv3Delete = vi.fn();
 vi.mock('~/client/util/apiv3-client', () => ({
   apiv3Get: (...args: unknown[]) => apiv3Get(...args),
   apiv3Post: (...args: unknown[]) => apiv3Post(...args),
   apiv3Put: (...args: unknown[]) => apiv3Put(...args),
+  apiv3Delete: (...args: unknown[]) => apiv3Delete(...args),
 }));
 
 // Fresh SWR cache per render so array keys don't leak resolved data between tests.
@@ -54,6 +59,7 @@ beforeEach(() => {
   apiv3Get.mockReset();
   apiv3Post.mockReset();
   apiv3Put.mockReset();
+  apiv3Delete.mockReset();
 });
 
 describe('useSWRxInlineComments', () => {
@@ -253,6 +259,159 @@ describe('useSWRxInlineComments', () => {
     expect(apiv3Put).toHaveBeenCalledWith('/inline-comments/comment1/resolve', {
       resolved: true,
     });
+    expect(apiv3Get).toHaveBeenCalledTimes(2);
+    await waitFor(() => expect(result.current.data).toEqual(secondList));
+  });
+
+  it('revalidates the list after update() succeeds', async () => {
+    const firstList = [originComment()];
+    const updated = originComment({ comment: 'edited comment' });
+    const secondList = [updated];
+    apiv3Get
+      .mockResolvedValueOnce({
+        data: {
+          inlineComments: firstList,
+        } satisfies ListInlineCommentsResponseBody,
+      })
+      .mockResolvedValueOnce({
+        data: {
+          inlineComments: secondList,
+        } satisfies ListInlineCommentsResponseBody,
+      });
+    apiv3Put.mockResolvedValue({
+      data: {
+        inlineComment: updated,
+      } satisfies UpdateInlineCommentResponseBody,
+    });
+
+    const { result } = renderHook(() => useSWRxInlineComments('page1'), {
+      wrapper,
+    });
+    await waitFor(() => expect(result.current.data).toEqual(firstList));
+
+    await act(async () => {
+      await result.current.update('comment1', 'edited comment');
+    });
+
+    expect(apiv3Put).toHaveBeenCalledWith('/inline-comments/comment1', {
+      comment: 'edited comment',
+    });
+    expect(apiv3Get).toHaveBeenCalledTimes(2);
+    await waitFor(() => expect(result.current.data).toEqual(secondList));
+  });
+
+  it('revalidates the list after updateReply() succeeds', async () => {
+    const reply = {
+      id: 'reply1',
+      pageId: 'page1',
+      creatorId: 'user2',
+      creator: null,
+      comment: 'edited reply',
+      replyToId: 'comment1',
+      createdAt: new Date('2026-01-02T00:00:00.000Z'),
+      updatedAt: new Date('2026-01-02T00:00:00.000Z'),
+    };
+    const firstList = [originComment()];
+    const secondList = [originComment({ replies: [reply] })];
+    apiv3Get
+      .mockResolvedValueOnce({
+        data: {
+          inlineComments: firstList,
+        } satisfies ListInlineCommentsResponseBody,
+      })
+      .mockResolvedValueOnce({
+        data: {
+          inlineComments: secondList,
+        } satisfies ListInlineCommentsResponseBody,
+      });
+    apiv3Put.mockResolvedValue({
+      data: {
+        inlineCommentReply: reply,
+      } satisfies UpdateInlineCommentReplyResponseBody,
+    });
+
+    const { result } = renderHook(() => useSWRxInlineComments('page1'), {
+      wrapper,
+    });
+    await waitFor(() => expect(result.current.data).toEqual(firstList));
+
+    await act(async () => {
+      await result.current.updateReply('reply1', 'edited reply');
+    });
+
+    expect(apiv3Put).toHaveBeenCalledWith('/inline-comments/replies/reply1', {
+      comment: 'edited reply',
+    });
+    expect(apiv3Get).toHaveBeenCalledTimes(2);
+    await waitFor(() => expect(result.current.data).toEqual(secondList));
+  });
+
+  it('revalidates the list after remove() succeeds', async () => {
+    const firstList = [originComment()];
+    const secondList: InlineCommentWithReplies[] = [];
+    apiv3Get
+      .mockResolvedValueOnce({
+        data: {
+          inlineComments: firstList,
+        } satisfies ListInlineCommentsResponseBody,
+      })
+      .mockResolvedValueOnce({
+        data: {
+          inlineComments: secondList,
+        } satisfies ListInlineCommentsResponseBody,
+      });
+    apiv3Delete.mockResolvedValue({ data: {} });
+
+    const { result } = renderHook(() => useSWRxInlineComments('page1'), {
+      wrapper,
+    });
+    await waitFor(() => expect(result.current.data).toEqual(firstList));
+
+    await act(async () => {
+      await result.current.remove('comment1');
+    });
+
+    expect(apiv3Delete).toHaveBeenCalledWith('/inline-comments/comment1');
+    expect(apiv3Get).toHaveBeenCalledTimes(2);
+    await waitFor(() => expect(result.current.data).toEqual(secondList));
+  });
+
+  it('revalidates the list after removeReply() succeeds', async () => {
+    const reply = {
+      id: 'reply1',
+      pageId: 'page1',
+      creatorId: 'user2',
+      creator: null,
+      comment: 'a reply',
+      replyToId: 'comment1',
+      createdAt: new Date('2026-01-02T00:00:00.000Z'),
+      updatedAt: new Date('2026-01-02T00:00:00.000Z'),
+    };
+    const firstList = [originComment({ replies: [reply] })];
+    const secondList = [originComment({ replies: [] })];
+    apiv3Get
+      .mockResolvedValueOnce({
+        data: {
+          inlineComments: firstList,
+        } satisfies ListInlineCommentsResponseBody,
+      })
+      .mockResolvedValueOnce({
+        data: {
+          inlineComments: secondList,
+        } satisfies ListInlineCommentsResponseBody,
+      });
+    apiv3Delete.mockResolvedValue({ data: {} });
+
+    const { result } = renderHook(() => useSWRxInlineComments('page1'), {
+      wrapper,
+    });
+    await waitFor(() => expect(result.current.data).toEqual(firstList));
+
+    await act(async () => {
+      await result.current.removeReply('reply1');
+    });
+
+    expect(apiv3Delete).toHaveBeenCalledWith('/inline-comments/replies/reply1');
     expect(apiv3Get).toHaveBeenCalledTimes(2);
     await waitFor(() => expect(result.current.data).toEqual(secondList));
   });

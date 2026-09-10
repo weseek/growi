@@ -47,7 +47,7 @@
   - _Boundary: delete-reply.ts_
   - _Depends: 1_
 
-- [ ] 3. (P) クライアントのstoreに編集・削除ユーティリティを追加する（useSWRxInlineComments）
+- [x] 3. (P) クライアントのstoreに編集・削除ユーティリティを追加する（useSWRxInlineComments）
   - `update(id, comment)`／`updateReply(id, comment)`／`remove(id)`／`removeReply(id)` を追加する。既存の `resolve`／`createReply` とまったく同じ形（PUT/DELETE呼び出し → `mutate()` → ペイロードを返す）にする
   - `inline-comment.spec.ts`（または対応する既存のstoreテストファイル）に、4つのユーティリティそれぞれが正しいエンドポイントを呼び、成功後に一覧を再取得することを検証する単体テストを追加し、すべて green になる
   - _Requirements: 1.3, 2.3_

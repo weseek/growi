@@ -17,7 +17,12 @@
 import { type SWRResponseWithUtils, withUtils } from '@growi/core/dist/swr';
 import useSWR from 'swr';
 
-import { apiv3Get, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
+import {
+  apiv3Delete,
+  apiv3Get,
+  apiv3Post,
+  apiv3Put,
+} from '~/client/util/apiv3-client';
 
 import type { InlineCommentWithReplies } from '../../interfaces';
 import type {
@@ -27,6 +32,8 @@ import type {
   CreateInlineCommentResponseBody,
   ListInlineCommentsResponseBody,
   ResolveInlineCommentResponseBody,
+  UpdateInlineCommentReplyResponseBody,
+  UpdateInlineCommentResponseBody,
 } from '../../interfaces/dto';
 
 type InlineCommentListUtils = {
@@ -50,6 +57,26 @@ type InlineCommentListUtils = {
     id: string,
     resolved: boolean,
   ): Promise<ResolveInlineCommentResponseBody['inlineComment']>;
+  /** PUT /_api/v3/inline-comments/:id, then revalidate this page's list. */
+  update(
+    id: string,
+    comment: string,
+  ): Promise<UpdateInlineCommentResponseBody['inlineComment']>;
+  /**
+   * PUT /_api/v3/inline-comments/replies/:id, then revalidate this page's
+   * list.
+   */
+  updateReply(
+    id: string,
+    comment: string,
+  ): Promise<UpdateInlineCommentReplyResponseBody['inlineCommentReply']>;
+  /** DELETE /_api/v3/inline-comments/:id, then revalidate this page's list. */
+  remove(id: string): Promise<Record<string, never>>;
+  /**
+   * DELETE /_api/v3/inline-comments/replies/:id, then revalidate this page's
+   * list.
+   */
+  removeReply(id: string): Promise<Record<string, never>>;
 };
 
 /**
@@ -106,5 +133,46 @@ export const useSWRxInlineComments = (
     return response.data.inlineComment;
   };
 
-  return withUtils(swrResponse, { create, createReply, resolve });
+  const update: InlineCommentListUtils['update'] = async (id, comment) => {
+    const response = await apiv3Put<UpdateInlineCommentResponseBody>(
+      `/inline-comments/${id}`,
+      { comment },
+    );
+    await swrResponse.mutate();
+    return response.data.inlineComment;
+  };
+
+  const updateReply: InlineCommentListUtils['updateReply'] = async (
+    id,
+    comment,
+  ) => {
+    const response = await apiv3Put<UpdateInlineCommentReplyResponseBody>(
+      `/inline-comments/replies/${id}`,
+      { comment },
+    );
+    await swrResponse.mutate();
+    return response.data.inlineCommentReply;
+  };
+
+  const remove: InlineCommentListUtils['remove'] = async (id) => {
+    const response = await apiv3Delete(`/inline-comments/${id}`);
+    await swrResponse.mutate();
+    return response.data;
+  };
+
+  const removeReply: InlineCommentListUtils['removeReply'] = async (id) => {
+    const response = await apiv3Delete(`/inline-comments/replies/${id}`);
+    await swrResponse.mutate();
+    return response.data;
+  };
+
+  return withUtils(swrResponse, {
+    create,
+    createReply,
+    resolve,
+    update,
+    updateReply,
+    remove,
+    removeReply,
+  });
 };
