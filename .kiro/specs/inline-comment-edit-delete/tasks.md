@@ -92,25 +92,25 @@
   - _Requirements: 2.5, 4.1, 4.4_
   - _Depends: 2, 3, 5, 6, 7_
 
-- [ ] 9. Validation: 実ブラウザでの回帰確認
-- [ ] 9.1 編集フローを確認する
+- [x] 9. Validation: 実ブラウザでの回帰確認
+- [x] 9.1 編集フローを確認する
   - 一覧・ポップオーバーそれぞれから起点コメントを編集し、新しい本文がリロード後も保持されることをPlaywrightで確認する
   - 一覧から返信を編集し、新しい本文が保持されることを確認する
   - _Requirements: 1.1, 1.2, 1.3, 1.7_
   - _Depends: 8_
 
-- [ ] 9.2 削除フローを確認する
+- [x] 9.2 削除フローを確認する
   - 返信を削除すると、その返信だけが消え、起点コメントや他の返信はそのまま残ることを確認する
   - 起点コメントを削除すると、起点・すべての返信・本文中のハイライト／ポップオーバーがすべて消えることを確認する
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
   - _Depends: 8_
 
-- [ ] 9.3 投稿者本人以外からの操作が拒否されることを確認する
+- [x] 9.3 投稿者本人以外からの操作が拒否されることを確認する
   - 投稿者本人以外のブラウザセッションには、一覧・ポップオーバーいずれにも編集・削除操作が表示されないことを確認する
   - _Requirements: 1.5, 1.6, 2.6, 2.7, 3.1_
   - _Depends: 8_
 
-- [ ] 9.4 解決済みコメントの本文非表示と、開いたままのポップオーバーの挙動を確認する
+- [x] 9.4 解決済みコメントの本文非表示と、開いたままのポップオーバーの挙動を確認する
   - 解決済みのコメントは、ページを開き直してもハイライト・ポップオーバーが一切出現せず、一覧には引き続き表示されることを確認する
   - ポップオーバーを開いたまま解決すると、ポップオーバーが閉じることを確認する
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 5.1_
@@ -127,3 +127,4 @@
 ## Implementation Notes
 - Task 2.1 (and by extension 2.2–2.4): tasks.md's route tasks did not explicitly call out registering the new routes in `apps/app/src/server/routes/apiv3/index.js` (the existing 4 inline-comment routes are wired there under `inlineCommentsRouter`). Added the wiring as part of landing each route so the route is actually reachable in production, not just covered by its own `.integ.ts`. Flagged by task 2.1's reviewer.
 - Task 5: `PageComment.tsx`'s existing `<InlineCommentItem>` call site does not yet compile with the new required props (`update`/`remove`/`updateReply`/`removeReply`) — expected, resolved by task 8. Also noted (non-blocking reviewer suggestions): an edit failure may surface in two places (the editor's own error state plus the item-level `editError`), since `MentionAwareCommentInput` re-displays a re-thrown submit error internally too; and `InlineCommentReplies`' per-reply state isolation (via a per-reply subcomponent) has no direct multi-reply test asserting one reply's edit doesn't affect a sibling's — structurally sound but worth a follow-up test.
+- Task 9: a pre-existing Playwright test at `inline-comment.spec.ts` (~line 2013, "Desktop: hovering the highlight shows the comment content...") asserted the popover has NO edit button — that encoded the old Non-Goal this spec's Requirement 1.7 explicitly overturns. Removed the stale `toHaveCount(0)` assertion and updated its comment; the adjacent reply-textarea assertion is untouched. Found and fixed as part of task 9's validation run, verified by task 9's reviewer.

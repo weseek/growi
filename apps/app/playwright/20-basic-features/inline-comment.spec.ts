@@ -2,6 +2,7 @@ import { expect, type Page, test } from '@playwright/test';
 
 import type { CreatedPage } from '../utils/api';
 import { createPage, deletePagesCompletely, updatePage } from '../utils/api';
+import { FILTER_TEST_USER_A } from '../utils/test-users';
 
 /**
  * Selects `text` inside the rendered page body via a Range set on the
@@ -2018,10 +2019,11 @@ test.describe('Inline comment - hover/click/tap on a saved body highlight opens 
     await expect(popover).toBeVisible();
     await expect(popover).toContainText(commentText);
 
-    // Requirement 2.5: no element for editing the origin comment's own body
-    // exists anywhere in the popover -- only its (single) reply textarea.
+    // Requirement 2.5 (as amended by inline-comment-edit-delete Requirement 1.7):
+    // the popover now also offers an edit control for the origin comment's own
+    // body (to its own author), in addition to its reply textarea -- covered by
+    // the "Edit flow" suite below, so this test only checks the reply textarea.
     await expect(popover.locator('textarea')).toHaveCount(1);
-    await expect(popover.getByRole('button', { name: /edit/i })).toHaveCount(0);
 
     // Requirement 2.4 (hover case): moving the mouse to an unrelated part of
     // the body (not merely off-screen, so the pointer's target is still
@@ -3374,5 +3376,545 @@ test.describe('Inline comment - a heading-adjacent comment restores onto the sam
 
     const afterLoad = await highlightedOccurrence(page, duplicatedQuote);
     expect(afterLoad?.nodeText.slice(0, afterLoad?.startOffset)).toBe('Alpha ');
+  });
+});
+
+test.describe('Inline comment - editing an origin comment (from the list and from the popover) and editing a reply from the list all persist across a reload (Req 1.1-1.3, 1.7)', () => {
+  // Serial: each test edits state left behind by the previous one (the
+  // origin's text, then the reply's text), same reasoning the other suites
+  // in this file use for a single shared fixture.
+  test.describe.configure({ mode: 'serial' });
+
+  const editFlowPagePath = (retry: number) =>
+    `/inline-comment-e2e-edit${retry}`;
+
+  const targetSentence = 'This sentence anchors the edit-flow end-to-end test.';
+  const pageBody = [
+    '# Inline comment E2E - edit flow',
+    '',
+    targetSentence,
+    '',
+  ].join('\n');
+
+  let createdPage: CreatedPage | undefined;
+
+  test.afterAll(async ({ request }) => {
+    if (createdPage != null) {
+      await deletePagesCompletely(request, [createdPage]);
+    }
+  });
+
+  test('Create a page and save an inline comment with a reply', async ({
+    page,
+    request,
+  }, testInfo) => {
+    createdPage = await createPage(request, {
+      path: editFlowPagePath(testInfo.retry),
+      body: pageBody,
+    });
+
+    await page.goto(createdPage.path);
+    await expect(page.locator('.wiki').first()).toContainText(targetSentence);
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    await selectTextInPageBody(page, targetSentence);
+    await page.getByTestId('selection-action-button').click();
+    const form = page.getByTestId('inline-comment-form');
+    await expect(form).toBeVisible();
+    await form.locator('.cm-content').fill('an origin comment before editing');
+    await form.getByTestId('inline-comment-submit-button').click();
+    await expect(form).not.toBeVisible();
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+
+    await item.getByTestId('inline-comment-reply-toggle-button').click();
+    await item.locator('.cm-content').fill('a reply before editing');
+    await item.getByTestId('comment-submit-button').first().click();
+    const reply = item.getByTestId('inline-comment-reply');
+    await expect(reply).toContainText('a reply before editing');
+
+    // The highlight must be registered before the next tests click through it.
+    await expect
+      .poll(async () =>
+        page.evaluate(
+          () => CSS.highlights.get('growi-inline-comment')?.size ?? 0,
+        ),
+      )
+      .toBeGreaterThan(0);
+  });
+
+  test('Req 1.1-1.3: editing the origin comment from the bottom list persists the new text after a reload', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(editFlowPagePath(testInfo.retry));
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+
+    await item.getByTestId('inline-comment-edit-button').click();
+    const editForm = item.locator('.inline-comment-edit-form');
+    await expect(editForm).toBeVisible();
+    await editForm
+      .locator('.cm-content')
+      .fill('an origin comment edited from the list');
+    await editForm.getByTestId('inline-comment-submit-button').click();
+
+    await expect(editForm).not.toBeVisible();
+    await expect(item).toContainText('an origin comment edited from the list');
+
+    await page.reload();
+    const reloadedItem = page.getByTestId('inline-comment-item').first();
+    await expect(reloadedItem).toContainText(
+      'an origin comment edited from the list',
+    );
+  });
+
+  test('Req 1.7: editing the origin comment from the body popover persists the new text after a reload', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(editFlowPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    const popover = page.getByTestId('inline-comment-preview-popover');
+    await clickText(page, targetSentence);
+    await expect(popover).toBeVisible();
+    await expect(popover).toContainText(
+      'an origin comment edited from the list',
+    );
+
+    await popover
+      .getByTestId('inline-comment-preview-popover-edit-button')
+      .click();
+    const editForm = popover.locator(
+      '.inline-comment-preview-popover-edit-form',
+    );
+    await expect(editForm).toBeVisible();
+    await editForm
+      .locator('.cm-content')
+      .fill('an origin comment edited from the popover');
+    await editForm.getByTestId('inline-comment-submit-button').click();
+    await expect(editForm).not.toBeVisible();
+    await expect(popover).toContainText(
+      'an origin comment edited from the popover',
+    );
+
+    // Persists across a reload, both in the popover and in the bottom list.
+    await page.reload();
+    await expect(page.getByTestId('inline-comment-item').first()).toContainText(
+      'an origin comment edited from the popover',
+    );
+
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+    const reopenedPopover = page.getByTestId('inline-comment-preview-popover');
+    await clickText(page, targetSentence);
+    await expect(reopenedPopover).toBeVisible();
+    await expect(reopenedPopover).toContainText(
+      'an origin comment edited from the popover',
+    );
+  });
+
+  test('Req 1.3: editing a reply from the bottom list persists the new text after a reload', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(editFlowPagePath(testInfo.retry));
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+    const reply = item.getByTestId('inline-comment-reply');
+    await expect(reply).toContainText('a reply before editing');
+
+    await reply.getByTestId('inline-comment-reply-edit-button').click();
+    const editForm = reply.locator('.inline-comment-edit-form');
+    await expect(editForm).toBeVisible();
+    await editForm.locator('.cm-content').fill('a reply edited from the list');
+    await editForm.getByTestId('inline-comment-submit-button').click();
+    await expect(editForm).not.toBeVisible();
+    await expect(reply).toContainText('a reply edited from the list');
+
+    await page.reload();
+    const reloadedItem = page.getByTestId('inline-comment-item').first();
+    const reloadedReply = reloadedItem.getByTestId('inline-comment-reply');
+    await expect(reloadedReply).toContainText('a reply edited from the list');
+  });
+});
+
+test.describe('Inline comment - deleting a reply removes only that reply; deleting the origin comment removes it, all its replies, and the body highlight/popover (Req 2.1-2.5)', () => {
+  // Serial: the second test deletes one of the two replies created by the
+  // first, and the third deletes the origin comment the first two depend on
+  // -- same reasoning the other suites in this file use for a single shared
+  // fixture.
+  test.describe.configure({ mode: 'serial' });
+
+  const deleteFlowPagePath = (retry: number) =>
+    `/inline-comment-e2e-delete${retry}`;
+
+  const targetSentence =
+    'This sentence anchors the delete-flow end-to-end test.';
+  const pageBody = [
+    '# Inline comment E2E - delete flow',
+    '',
+    targetSentence,
+    '',
+  ].join('\n');
+
+  let createdPage: CreatedPage | undefined;
+
+  test.afterAll(async ({ request }) => {
+    if (createdPage != null) {
+      await deletePagesCompletely(request, [createdPage]);
+    }
+  });
+
+  test('Create a page and save an inline comment with two replies', async ({
+    page,
+    request,
+  }, testInfo) => {
+    createdPage = await createPage(request, {
+      path: deleteFlowPagePath(testInfo.retry),
+      body: pageBody,
+    });
+
+    await page.goto(createdPage.path);
+    await expect(page.locator('.wiki').first()).toContainText(targetSentence);
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    await selectTextInPageBody(page, targetSentence);
+    await page.getByTestId('selection-action-button').click();
+    const form = page.getByTestId('inline-comment-form');
+    await expect(form).toBeVisible();
+    await form.locator('.cm-content').fill('an origin comment to be deleted');
+    await form.getByTestId('inline-comment-submit-button').click();
+    await expect(form).not.toBeVisible();
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+
+    // First reply.
+    await item.getByTestId('inline-comment-reply-toggle-button').click();
+    await item.locator('.cm-content').fill('the first reply');
+    await item.getByTestId('comment-submit-button').first().click();
+    await expect(
+      item.getByTestId('inline-comment-reply').first(),
+    ).toContainText('the first reply');
+
+    // Second reply.
+    await item.getByTestId('inline-comment-reply-toggle-button').click();
+    await item.locator('.cm-content').fill('the second reply');
+    await item.getByTestId('comment-submit-button').first().click();
+    await expect(item.getByTestId('inline-comment-reply')).toHaveCount(2);
+
+    await expect
+      .poll(async () =>
+        page.evaluate(
+          () => CSS.highlights.get('growi-inline-comment')?.size ?? 0,
+        ),
+      )
+      .toBeGreaterThan(0);
+  });
+
+  test('Req 2.1-2.3: deleting a reply removes only that reply -- the origin comment and the other reply remain', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(deleteFlowPagePath(testInfo.retry));
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+    await expect(item.getByTestId('inline-comment-reply')).toHaveCount(2);
+
+    const firstReply = item
+      .getByTestId('inline-comment-reply')
+      .filter({ hasText: 'the first reply' });
+    await firstReply.getByTestId('inline-comment-reply-delete-button').click();
+    await expect(
+      firstReply.getByTestId('inline-comment-reply-delete-confirm'),
+    ).toBeVisible();
+    await firstReply
+      .getByTestId('inline-comment-reply-delete-confirm-button')
+      .click();
+
+    await expect(item.getByTestId('inline-comment-reply')).toHaveCount(1);
+    await expect(item.getByTestId('inline-comment-reply')).toContainText(
+      'the second reply',
+    );
+    await expect(item).toContainText('an origin comment to be deleted');
+
+    await page.reload();
+    const reloadedItem = page.getByTestId('inline-comment-item').first();
+    await expect(reloadedItem.getByTestId('inline-comment-reply')).toHaveCount(
+      1,
+    );
+    await expect(
+      reloadedItem.getByTestId('inline-comment-reply'),
+    ).toContainText('the second reply');
+  });
+
+  test('Req 2.3-2.5: deleting the origin comment removes it, its remaining reply, and the body highlight/popover', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(deleteFlowPagePath(testInfo.retry));
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+
+    await item.getByTestId('inline-comment-delete-button').click();
+    await expect(
+      item.getByTestId('inline-comment-delete-confirm'),
+    ).toBeVisible();
+    await item.getByTestId('inline-comment-delete-confirm-button').click();
+
+    await expect(page.getByTestId('inline-comment-item')).toHaveCount(0);
+
+    // Requirement 2.5: the highlight disappears without needing a reload.
+    await expect
+      .poll(async () =>
+        page.evaluate(
+          () => CSS.highlights.get('growi-inline-comment')?.size ?? 0,
+        ),
+      )
+      .toBe(0);
+
+    await page.reload();
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+    await expect(page.getByTestId('inline-comment-item')).toHaveCount(0);
+    expect(
+      await page.evaluate(
+        () => CSS.highlights.get('growi-inline-comment')?.size ?? 0,
+      ),
+    ).toBe(0);
+
+    const popover = page.getByTestId('inline-comment-preview-popover');
+    await clickText(page, targetSentence);
+    await expect(popover).not.toBeVisible();
+  });
+});
+
+test.describe("Inline comment - a non-owner browser session sees no edit/delete controls for someone else's comment, in the list and the popover (Req 1.5, 2.6)", () => {
+  // Serial: the second and third tests both read the fixture the first test
+  // creates as the admin user, and check what a DIFFERENT logged-in user
+  // (FILTER_TEST_USER_A, provisioned by playwright/users.setup.ts and
+  // reused here as a generic "some other user" session -- it has no
+  // relationship to the search-filter tests it was originally provisioned
+  // for) sees for it.
+  test.describe.configure({ mode: 'serial' });
+
+  const nonOwnerPagePath = (retry: number) =>
+    `/inline-comment-e2e-non-owner${retry}`;
+
+  const targetSentence = 'This sentence anchors the non-owner end-to-end test.';
+  const pageBody = [
+    '# Inline comment E2E - non-owner',
+    '',
+    targetSentence,
+    '',
+  ].join('\n');
+
+  let createdPage: CreatedPage | undefined;
+
+  test.afterAll(async ({ request }) => {
+    if (createdPage != null) {
+      await deletePagesCompletely(request, [createdPage]);
+    }
+  });
+
+  test('Create a page and save an inline comment with a reply, as the admin user', async ({
+    page,
+    request,
+  }, testInfo) => {
+    createdPage = await createPage(request, {
+      path: nonOwnerPagePath(testInfo.retry),
+      body: pageBody,
+    });
+
+    await page.goto(createdPage.path);
+    await expect(page.locator('.wiki').first()).toContainText(targetSentence);
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    await selectTextInPageBody(page, targetSentence);
+    await page.getByTestId('selection-action-button').click();
+    const form = page.getByTestId('inline-comment-form');
+    await expect(form).toBeVisible();
+    await form.locator('.cm-content').fill('an origin comment owned by admin');
+    await form.getByTestId('inline-comment-submit-button').click();
+    await expect(form).not.toBeVisible();
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+
+    await item.getByTestId('inline-comment-reply-toggle-button').click();
+    await item.locator('.cm-content').fill('a reply owned by admin');
+    await item.getByTestId('comment-submit-button').first().click();
+    await expect(item.getByTestId('inline-comment-reply')).toContainText(
+      'a reply owned by admin',
+    );
+
+    await expect
+      .poll(async () =>
+        page.evaluate(
+          () => CSS.highlights.get('growi-inline-comment')?.size ?? 0,
+        ),
+      )
+      .toBeGreaterThan(0);
+  });
+
+  test('Req 1.5, 2.6: a different, non-owner user sees no edit/delete controls in the list, for either the origin comment or the reply', async ({
+    browser,
+  }, testInfo) => {
+    const context = await browser.newContext({
+      storageState: FILTER_TEST_USER_A.authFile,
+    });
+    try {
+      const page = await context.newPage();
+      await page.goto(nonOwnerPagePath(testInfo.retry));
+
+      const item = page.getByTestId('inline-comment-item').first();
+      await expect(item).toBeVisible();
+      await expect(item).toContainText('an origin comment owned by admin');
+
+      await expect(item.getByTestId('inline-comment-edit-button')).toHaveCount(
+        0,
+      );
+      await expect(
+        item.getByTestId('inline-comment-delete-button'),
+      ).toHaveCount(0);
+
+      const reply = item.getByTestId('inline-comment-reply');
+      await expect(reply).toContainText('a reply owned by admin');
+      await expect(
+        reply.getByTestId('inline-comment-reply-edit-button'),
+      ).toHaveCount(0);
+      await expect(
+        reply.getByTestId('inline-comment-reply-delete-button'),
+      ).toHaveCount(0);
+    } finally {
+      await context.close();
+    }
+  });
+
+  test('Req 1.5: the same non-owner user sees no edit control in the body popover for the origin comment', async ({
+    browser,
+  }, testInfo) => {
+    const context = await browser.newContext({
+      storageState: FILTER_TEST_USER_A.authFile,
+    });
+    try {
+      const page = await context.newPage();
+      await page.goto(nonOwnerPagePath(testInfo.retry));
+      await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+      const popover = page.getByTestId('inline-comment-preview-popover');
+      await clickText(page, targetSentence);
+      await expect(popover).toBeVisible();
+      await expect(popover).toContainText('an origin comment owned by admin');
+      await expect(
+        popover.getByTestId('inline-comment-preview-popover-edit-button'),
+      ).toHaveCount(0);
+    } finally {
+      await context.close();
+    }
+  });
+});
+
+test.describe('Inline comment - a resolved comment hides its body highlight/popover but stays listed; resolving from an open popover closes it (Req 4.1-4.3, 5.1)', () => {
+  // Serial: the second test resolves the one comment created by the first,
+  // and the third reloads to check the resolved state persists across a
+  // fresh load -- same reasoning the other suites in this file use.
+  test.describe.configure({ mode: 'serial' });
+
+  const resolvedPagePath = (retry: number) =>
+    `/inline-comment-e2e-resolved${retry}`;
+
+  const targetSentence =
+    'This sentence anchors the resolved-comment end-to-end test.';
+  const pageBody = [
+    '# Inline comment E2E - resolved comment',
+    '',
+    targetSentence,
+    '',
+  ].join('\n');
+
+  let createdPage: CreatedPage | undefined;
+
+  test.afterAll(async ({ request }) => {
+    if (createdPage != null) {
+      await deletePagesCompletely(request, [createdPage]);
+    }
+  });
+
+  test('Create a page and save an inline comment', async ({
+    page,
+    request,
+  }, testInfo) => {
+    createdPage = await createPage(request, {
+      path: resolvedPagePath(testInfo.retry),
+      body: pageBody,
+    });
+
+    await page.goto(createdPage.path);
+    await expect(page.locator('.wiki').first()).toContainText(targetSentence);
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    await selectTextInPageBody(page, targetSentence);
+    await page.getByTestId('selection-action-button').click();
+    const form = page.getByTestId('inline-comment-form');
+    await expect(form).toBeVisible();
+    await form.locator('.cm-content').fill('a comment that will be resolved');
+    await form.getByTestId('inline-comment-submit-button').click();
+    await expect(form).not.toBeVisible();
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+
+    await expect
+      .poll(async () =>
+        page.evaluate(
+          () => CSS.highlights.get('growi-inline-comment')?.size ?? 0,
+        ),
+      )
+      .toBeGreaterThan(0);
+  });
+
+  test('Req 5.1: resolving from within the open popover closes the popover; the comment stays listed as resolved', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(resolvedPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    const popover = page.getByTestId('inline-comment-preview-popover');
+    await clickText(page, targetSentence);
+    await expect(popover).toBeVisible();
+
+    await popover.getByRole('button', { name: 'Resolve' }).click();
+    await expect(popover).not.toBeVisible();
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item.getByTestId('inline-comment-status')).toHaveText(
+      'Resolved',
+    );
+  });
+
+  test('Req 4.1-4.3: a resolved comment shows no highlight and no popover in the body after reloading, but still appears in the list', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(resolvedPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    // Requirement 4.2: still listed at the bottom of the page.
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+    await expect(item.getByTestId('inline-comment-status')).toHaveText(
+      'Resolved',
+    );
+
+    // Requirement 4.1: no highlight registered in the body.
+    expect(
+      await page.evaluate(
+        () => CSS.highlights.get('growi-inline-comment')?.size ?? 0,
+      ),
+    ).toBe(0);
+
+    // Requirement 4.3: hovering/clicking where the highlight used to be
+    // shows no popover, since there is nothing left to hit-test against.
+    const popover = page.getByTestId('inline-comment-preview-popover');
+    await hoverText(page, targetSentence);
+    await expect(popover).not.toBeVisible();
+    await clickText(page, targetSentence);
+    await expect(popover).not.toBeVisible();
   });
 });
