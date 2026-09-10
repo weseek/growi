@@ -206,10 +206,6 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
         }
         beforeBody={
           <>
-            <div className="small fw-bold text-body-secondary d-flex align-items-center gap-1 mb-1">
-              <span className="material-symbols-outlined fs-6">chat</span>
-              {t('inline_comment.label')}
-            </div>
             {/* `inline-comment-quote` is `:global(...)` in the CSS module, so it's
                 referenced as a plain class name -- styles['inline-comment-quote']
                 would be undefined. A real <button> (not a div with role="button")

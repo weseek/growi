@@ -5,15 +5,15 @@
         "x": 487,
         "y": 490.15625,
         "width": 593,
-        "height": 259,
+        "height": 234,
         "right": 1080,
-        "bottom": 749.15625
+        "bottom": 724.15625
       },
       "overflow": {
         "scrollWidth": 593,
         "clientWidth": 593,
-        "scrollHeight": 259,
-        "clientHeight": 259
+        "scrollHeight": 234,
+        "clientHeight": 234
       },
       "styles": {
         "display": "block",
@@ -50,7 +50,7 @@
         "textAlign": "start",
         "whiteSpace": "normal",
         "width": "593px",
-        "height": "259px"
+        "height": "234px"
       },
       "before": {
         "content": "none",
@@ -72,15 +72,15 @@
         "x": 487,
         "y": 490.15625,
         "width": 593,
-        "height": 259,
+        "height": 234,
         "right": 1080,
-        "bottom": 749.15625
+        "bottom": 724.15625
       },
       "overflow": {
         "scrollWidth": 591,
         "clientWidth": 591,
-        "scrollHeight": 257,
-        "clientHeight": 257
+        "scrollHeight": 232,
+        "clientHeight": 232
       },
       "styles": {
         "display": "block",
@@ -117,7 +117,7 @@
         "textAlign": "start",
         "whiteSpace": "normal",
         "width": "593px",
-        "height": "259px"
+        "height": "234px"
       },
       "before": {
         "content": "\"\"",
@@ -472,11 +472,11 @@
     "iconButtonContainer": {
       "rect": {
         "x": 1007,
-        "y": 774.15625,
+        "y": 749.15625,
         "width": 56,
         "height": 26,
         "right": 1063,
-        "bottom": 800.15625
+        "bottom": 775.15625
       },
       "overflow": {
         "scrollWidth": 56,
@@ -672,81 +672,15 @@
         "borderTopColor": "rgb(118, 115, 113)"
       }
     },
-    "typeLabel": {
-      "rect": {
-        "x": 504,
-        "y": 538.15625,
-        "width": 559,
-        "height": 21,
-        "right": 1063,
-        "bottom": 559.15625
-      },
-      "overflow": {
-        "scrollWidth": 559,
-        "clientWidth": 559,
-        "scrollHeight": 21,
-        "clientHeight": 21
-      },
-      "styles": {
-        "display": "flex",
-        "position": "static",
-        "visibility": "visible",
-        "opacity": "1",
-        "flexDirection": "row",
-        "alignItems": "center",
-        "justifyContent": "normal",
-        "columnGap": "4px",
-        "rowGap": "4px",
-        "marginTop": "0px",
-        "marginRight": "0px",
-        "marginBottom": "4px",
-        "marginLeft": "0px",
-        "paddingTop": "0px",
-        "paddingRight": "0px",
-        "paddingBottom": "0px",
-        "paddingLeft": "0px",
-        "borderTopWidth": "0px",
-        "borderRightWidth": "0px",
-        "borderBottomWidth": "0px",
-        "borderLeftWidth": "0px",
-        "borderLeftColor": "rgba(64, 60, 57, 0.75)",
-        "borderLeftStyle": "none",
-        "borderTopLeftRadius": "0px",
-        "borderTopRightRadius": "0px",
-        "borderBottomRightRadius": "0px",
-        "borderBottomLeftRadius": "0px",
-        "backgroundColor": "rgba(0, 0, 0, 0)",
-        "color": "rgba(64, 60, 57, 0.75)",
-        "fontSize": "14px",
-        "lineHeight": "21px",
-        "textAlign": "start",
-        "whiteSpace": "normal",
-        "width": "559px",
-        "height": "21px"
-      },
-      "before": {
-        "content": "none",
-        "display": "block",
-        "position": "static",
-        "width": "auto",
-        "height": "auto",
-        "marginRight": "0px",
-        "backgroundColor": "rgba(0, 0, 0, 0)",
-        "borderTopWidth": "0px",
-        "borderRightWidth": "0px",
-        "borderLeftWidth": "0px",
-        "borderTopLeftRadius": "0px",
-        "borderTopColor": "rgba(64, 60, 57, 0.75)"
-      }
-    },
+    "typeLabel": null,
     "quote": {
       "rect": {
         "x": 504,
-        "y": 571.15625,
+        "y": 546.15625,
         "width": 559,
         "height": 37,
         "right": 1063,
-        "bottom": 608.15625
+        "bottom": 583.15625
       },
       "overflow": {
         "scrollWidth": 556,
@@ -809,11 +743,11 @@
     "body": {
       "rect": {
         "x": 504,
-        "y": 631.15625,
+        "y": 606.15625,
         "width": 559,
         "height": 21,
         "right": 1063,
-        "bottom": 652.15625
+        "bottom": 627.15625
       },
       "overflow": {
         "scrollWidth": 559,
@@ -876,11 +810,11 @@
     "replyFormAvatar": {
       "rect": {
         "x": 548,
-        "y": 1012.515625,
+        "y": 987.515625,
         "width": 19.1875,
         "height": 19.1875,
         "right": 567.1875,
-        "bottom": 1031.703125
+        "bottom": 1006.703125
       },
       "overflow": {
         "scrollWidth": 19,
@@ -946,11 +880,11 @@
     "deleteConfirm": {
       "rect": {
         "x": 504,
-        "y": 667.15625,
+        "y": 642.15625,
         "width": 559,
         "height": 65,
         "right": 1063,
-        "bottom": 732.15625
+        "bottom": 707.15625
       },
       "overflow": {
         "scrollWidth": 555,
@@ -1013,11 +947,11 @@
     "deleteConfirmIcon": {
       "rect": {
         "x": 523,
-        "y": 687.65625,
+        "y": 662.65625,
         "width": 24,
         "height": 24,
         "right": 547,
-        "bottom": 711.65625
+        "bottom": 686.65625
       },
       "overflow": {
         "scrollWidth": 24,
@@ -1080,11 +1014,11 @@
     "deleteConfirmMessage": {
       "rect": {
         "x": 555,
-        "y": 687.65625,
+        "y": 662.65625,
         "width": 121,
         "height": 24,
         "right": 676,
-        "bottom": 711.65625
+        "bottom": 686.65625
       },
       "overflow": {
         "scrollWidth": 121,
@@ -1147,11 +1081,11 @@
     "deleteConfirmActions": {
       "rect": {
         "x": 916,
-        "y": 684.15625,
+        "y": 659.15625,
         "width": 130,
         "height": 31,
         "right": 1046,
-        "bottom": 715.15625
+        "bottom": 690.15625
       },
       "overflow": {
         "scrollWidth": 130,
@@ -1214,11 +1148,11 @@
     "deleteConfirmCancel": {
       "rect": {
         "x": 916,
-        "y": 684.15625,
+        "y": 659.15625,
         "width": 61,
         "height": 31,
         "right": 977,
-        "bottom": 715.15625
+        "bottom": 690.15625
       },
       "overflow": {
         "scrollWidth": 59,
@@ -1281,11 +1215,11 @@
     "deleteConfirmDelete": {
       "rect": {
         "x": 985,
-        "y": 684.15625,
+        "y": 659.15625,
         "width": 61,
         "height": 31,
         "right": 1046,
-        "bottom": 715.15625
+        "bottom": 690.15625
       },
       "overflow": {
         "scrollWidth": 59,

@@ -251,46 +251,30 @@ describe('InlineCommentItem', () => {
     });
   });
 
-  describe('the type label row and the quote (Req 13.6 / 13.10)', () => {
-    it('places the type label row, then the quote, then the body — all inside the shared box', () => {
+  describe('the quote (Req 13.6 / 13.10)', () => {
+    it('places the quote, then the body — both inside the shared box', () => {
       const { container } = renderItem();
 
       const main = getMain(container);
       expect(main).not.toBeNull();
 
-      const label = screen.getByText('inline_comment.label');
       const quote = main?.querySelector('blockquote.inline-comment-quote');
       const body = main?.querySelector('.page-comment-body');
 
       expect(quote).not.toBeNull();
       expect(body).not.toBeNull();
 
-      // every one of them lives inside the shared box
-      const labelRow = label.closest('.page-comment-main');
-      expect(labelRow).toBe(main);
-
       const children = Array.from(main?.children ?? []);
       const indexOf = (el: Element | null | undefined) =>
         children.indexOf(el as Element);
 
-      const labelRowElement = children.find((child) => child.contains(label));
       // the quote lives inside a clickable `<button>` wrapper (task 4.3), so
       // its box-order position is the wrapper's index, not its own.
       const quoteRowElement = children.find((child) =>
         child.contains(quote ?? null),
       );
-      expect(indexOf(labelRowElement)).toBeGreaterThanOrEqual(0);
-      expect(indexOf(labelRowElement)).toBeLessThan(indexOf(quoteRowElement));
+      expect(indexOf(quoteRowElement)).toBeGreaterThanOrEqual(0);
       expect(indexOf(quoteRowElement)).toBeLessThan(indexOf(body));
-    });
-
-    it('shows an icon next to the type label', () => {
-      renderItem();
-
-      const label = screen.getByText('inline_comment.label');
-      expect(
-        label.closest('div')?.querySelector('.material-symbols-outlined'),
-      ).not.toBeNull();
     });
 
     it('shows the anchored quote text in the quote element', () => {
