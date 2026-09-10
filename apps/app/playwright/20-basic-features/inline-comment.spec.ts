@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { expect, type Page, test } from '@playwright/test';
+import { expect, type Locator, type Page, test } from '@playwright/test';
 
 import type { CreatedPage } from '../utils/api';
 import { createPage, deletePagesCompletely, updatePage } from '../utils/api';
@@ -4034,6 +4034,68 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
   };
 
   /**
+   * Waits until `popover`'s own `boundingBox()` reads identically on two
+   * consecutive polls before returning -- both the screenshot and
+   * `collectMetrics`/`writeMetrics` calls for popover states 5/6 must run
+   * only after this resolves.
+   *
+   * Why this exists: the popover's `Locator.isVisible()`/`toContainText()`
+   * assertions used before this helper was added only prove the popover has
+   * *mounted* and has the expected text -- they say nothing about whether its
+   * layout (element spacing in particular) has finished settling. A prior
+   * capture run took the PNG screenshot and the JSON metrics dump far enough
+   * apart in time that a reflow happened in between, so the committed
+   * `05-popover-normal.png` (444px tall) and that same commit's
+   * `05-popover-normal.json` (526px) ended up describing two different
+   * layouts of the same popover. Polling the box at a short interval and
+   * requiring it to stop moving before capturing anything makes the
+   * screenshot and the metrics dump describe the same, settled layout.
+   *
+   * Fails loudly (throws) rather than silently proceeding with a
+   * still-shifting layout if the box never stabilizes within `timeoutMs`.
+   */
+  const waitForPopoverToSettle = async (
+    popover: Locator,
+    timeoutMs = 5000,
+    intervalMs = 150,
+  ): Promise<void> => {
+    const deadline = Date.now() + timeoutMs;
+    let previousBox: {
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+    } | null = null;
+
+    while (Date.now() < deadline) {
+      // biome-ignore lint/performance/noAwaitInLoops: sequential by design -- each poll must observe the box only after the previous wait
+      const box = await popover.boundingBox();
+      if (box == null) {
+        throw new Error(
+          'popover bounding box unavailable while waiting for its layout to settle',
+        );
+      }
+      if (
+        previousBox != null &&
+        box.x === previousBox.x &&
+        box.y === previousBox.y &&
+        box.width === previousBox.width &&
+        box.height === previousBox.height
+      ) {
+        return;
+      }
+      previousBox = box;
+      await new Promise((resolve) => {
+        setTimeout(resolve, intervalMs);
+      });
+    }
+
+    throw new Error(
+      `popover layout did not settle within ${timeoutMs}ms (still moving/resizing on the last two polls)`,
+    );
+  };
+
+  /**
    * The computed properties every measured element reports. Judging the 35
    * items of `visual-acceptance-checklist.md` means answering questions like
    * "is the gap between the badge and the toggle button mockup-equivalent?"
@@ -4401,6 +4463,7 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
     await expect(
       popover.getByTestId('inline-comment-preview-popover-reply'),
     ).toHaveCount(2);
+    await waitForPopoverToSettle(popover);
 
     fs.mkdirSync(evidenceDir, { recursive: true });
     await popover.screenshot({
@@ -4433,6 +4496,7 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
     // ".kiro/specs/inline-comment-edit-delete"). Do NOT assert on the
     // prefilled text here -- doing so makes this capture suite depend on a
     // bug fix outside this task's scope. See tasks.md Implementation Notes.
+    await waitForPopoverToSettle(popover);
 
     await popover.screenshot({
       path: path.join(evidenceDir, '06-popover-edit.png'),
@@ -4654,6 +4718,7 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
     const popover = page.getByTestId('inline-comment-preview-popover');
     await expect(popover).toBeVisible();
     await expect(popover).toContainText(originCommentText);
+    await waitForPopoverToSettle(popover);
 
     fs.mkdirSync(evidenceDir, { recursive: true });
     await popover.screenshot({
@@ -4681,6 +4746,7 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
     // receives `initialValue` in a real browser, so this input renders empty
     // and the Save button renders disabled. Pre-existing and unrelated to the
     // color mode -- do NOT read it as a dark-mode defect.
+    await waitForPopoverToSettle(popover);
 
     await popover.screenshot({
       path: path.join(evidenceDir, '06-popover-edit-dark.png'),
