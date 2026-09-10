@@ -224,6 +224,72 @@ function makeSetResolvedDeps(
 }
 
 /**
+ * Builds a fully-mocked `InlineCommentServiceDeps` for `updateComment()` /
+ * `updateReply()`: `findUnique` resolves with `targetRow` (the precondition
+ * check's lookup) and `update` resolves with `updatedRow` — the same shape
+ * as `makeSetResolvedDeps` above, reused here under its own name since these
+ * methods have their own precondition semantics (creatorId, not just shape).
+ */
+function makeUpdateDeps(
+  targetRow: CommentsRow | null,
+  updatedRow: CommentsRow,
+): InlineCommentServiceDeps {
+  const prisma = mock<PrismaClient>({
+    comments: {
+      findUnique: vi.fn().mockResolvedValue(targetRow),
+      update: vi.fn().mockResolvedValue(updatedRow),
+    },
+    activities: {
+      createByParameters: vi.fn().mockResolvedValue(makeActivity()),
+    },
+  });
+  const commentService = mock<PickedCommentService>({});
+  return { prisma, commentService };
+}
+
+/**
+ * Builds a fully-mocked `InlineCommentServiceDeps` for `deleteComment()`:
+ * `findUnique` resolves with `targetRow` and `removeWithReplies` is a bare
+ * `vi.fn()` (deleteComment's postcondition is "called", not a return value).
+ */
+function makeDeleteCommentDeps(
+  targetRow: CommentsRow | null,
+): InlineCommentServiceDeps {
+  const prisma = mock<PrismaClient>({
+    comments: {
+      findUnique: vi.fn().mockResolvedValue(targetRow),
+      removeWithReplies: vi.fn().mockResolvedValue(undefined),
+    },
+    activities: {
+      createByParameters: vi.fn().mockResolvedValue(makeActivity()),
+    },
+  });
+  const commentService = mock<PickedCommentService>({});
+  return { prisma, commentService };
+}
+
+/**
+ * Builds a fully-mocked `InlineCommentServiceDeps` for `deleteReply()`:
+ * `findUnique` resolves with `targetRow` and a plain `delete` is stubbed
+ * (deleteReply does not use `removeWithReplies` — see design.md).
+ */
+function makeDeleteReplyDeps(
+  targetRow: CommentsRow | null,
+): InlineCommentServiceDeps {
+  const prisma = mock<PrismaClient>({
+    comments: {
+      findUnique: vi.fn().mockResolvedValue(targetRow),
+      delete: vi.fn().mockResolvedValue(targetRow ?? makeReplyRow()),
+    },
+    activities: {
+      createByParameters: vi.fn().mockResolvedValue(makeActivity()),
+    },
+  });
+  const commentService = mock<PickedCommentService>({});
+  return { prisma, commentService };
+}
+
+/**
  * Builds a fully-mocked `InlineCommentServiceDeps` for `listByPageId()`:
  * `findMany` is stubbed to answer the origin-comment query with
  * `originRows` and the replies query with `replyRows`, distinguished by
@@ -963,5 +1029,277 @@ describe('InlineCommentService.setResolved', () => {
         ).not.toHaveBeenCalled();
       }),
     );
+  });
+});
+
+describe('InlineCommentService.updateComment', () => {
+  it('起点コメントでない行（通常コメント／返信自身／存在しないID）を指定するとエラーになり、永続化を一切呼び出さない', async () => {
+    const nonOriginTargets: (CommentsRow | null)[] = [
+      makeOriginRow({ isInline: false, replyToId: null }),
+      makeOriginRow({ replyToId: makeId() }),
+      null,
+    ];
+
+    await Promise.all(
+      nonOriginTargets.map(async (targetRow) => {
+        const deps = makeUpdateDeps(targetRow, makeOriginRow());
+        const service = new InlineCommentService(deps);
+
+        await expect(
+          service.updateComment(makeId(), 'edited', makeId()),
+        ).rejects.toThrow();
+
+        expect(deps.prisma.comments.update).not.toHaveBeenCalled();
+        expect(
+          deps.prisma.activities.createByParameters,
+        ).not.toHaveBeenCalled();
+      }),
+    );
+  });
+
+  it('投稿者本人以外が更新を試みるとエラーになり、永続化を一切呼び出さない', async () => {
+    const id = makeId();
+    const creatorId = makeId();
+    const otherActorId = makeId();
+    const targetRow = makeOriginRow({ id, creatorId });
+    const deps = makeUpdateDeps(targetRow, targetRow);
+    const service = new InlineCommentService(deps);
+
+    await expect(
+      service.updateComment(id, 'edited', otherActorId),
+    ).rejects.toThrow();
+
+    expect(deps.prisma.comments.update).not.toHaveBeenCalled();
+    expect(deps.prisma.activities.createByParameters).not.toHaveBeenCalled();
+  });
+
+  it('投稿者本人が起点コメントの本文を更新すると、comment だけが変わり anchor・resolvedAt はそのまま保たれ ACTION_INLINE_COMMENT_UPDATE を発行する', async () => {
+    const id = makeId();
+    const creatorId = makeId();
+    const targetRow = makeOriginRow({
+      id,
+      creatorId,
+      quote: 'original quote',
+      resolvedById: null,
+      resolvedAt: null,
+    });
+    const updatedRow = makeOriginRow({
+      ...targetRow,
+      comment: 'edited comment',
+    });
+    const deps = makeUpdateDeps(targetRow, updatedRow);
+    const service = new InlineCommentService(deps);
+
+    const result = await service.updateComment(id, 'edited comment', creatorId);
+
+    const updateArgs = vi.mocked(deps.prisma.comments.update).mock
+      .calls[0][0] as { where: { id: string }; data: Record<string, unknown> };
+    expect(updateArgs.where).toEqual({ id });
+    expect(updateArgs.data).toEqual({ comment: 'edited comment' });
+
+    expect(result.comment).toBe('edited comment');
+    // Invariant: anchor/resolvedAt/resolvedById are untouched by this method.
+    expect(result.anchor.quote).toBe('original quote');
+    expect(result.resolvedAt).toBeNull();
+    expect(result.resolvedById).toBeNull();
+
+    const [activityParams] = vi.mocked(
+      deps.prisma.activities.createByParameters,
+    ).mock.calls[0];
+    expect(activityParams.action).toBe(
+      SupportedAction.ACTION_INLINE_COMMENT_UPDATE,
+    );
+    expect(activityParams.user).toBe(creatorId);
+  });
+});
+
+describe('InlineCommentService.updateReply', () => {
+  it('返信でない行（起点コメント自体／存在しないID）を指定するとエラーになり、永続化を一切呼び出さない', async () => {
+    const nonReplyTargets: (CommentsRow | null)[] = [
+      makeOriginRow({ replyToId: null }),
+      null,
+    ];
+
+    await Promise.all(
+      nonReplyTargets.map(async (targetRow) => {
+        const deps = makeUpdateDeps(targetRow, makeReplyRow());
+        const service = new InlineCommentService(deps);
+
+        await expect(
+          service.updateReply(makeId(), 'edited', makeId()),
+        ).rejects.toThrow();
+
+        expect(deps.prisma.comments.update).not.toHaveBeenCalled();
+        expect(
+          deps.prisma.activities.createByParameters,
+        ).not.toHaveBeenCalled();
+      }),
+    );
+  });
+
+  it('投稿者本人以外が返信の更新を試みるとエラーになり、永続化を一切呼び出さない', async () => {
+    const id = makeId();
+    const creatorId = makeId();
+    const otherActorId = makeId();
+    const targetRow = makeReplyRow({ id, creatorId, replyToId: makeId() });
+    const deps = makeUpdateDeps(targetRow, targetRow);
+    const service = new InlineCommentService(deps);
+
+    await expect(
+      service.updateReply(id, 'edited', otherActorId),
+    ).rejects.toThrow();
+
+    expect(deps.prisma.comments.update).not.toHaveBeenCalled();
+    expect(deps.prisma.activities.createByParameters).not.toHaveBeenCalled();
+  });
+
+  it('投稿者本人が返信の本文を更新すると comment が変わり ACTION_INLINE_COMMENT_REPLY_UPDATE を発行する', async () => {
+    const id = makeId();
+    const creatorId = makeId();
+    const parentId = makeId();
+    const targetRow = makeReplyRow({ id, creatorId, replyToId: parentId });
+    const updatedRow = { ...targetRow, comment: 'edited reply' };
+    const deps = makeUpdateDeps(targetRow, updatedRow);
+    const service = new InlineCommentService(deps);
+
+    const result = await service.updateReply(id, 'edited reply', creatorId);
+
+    const updateArgs = vi.mocked(deps.prisma.comments.update).mock
+      .calls[0][0] as { where: { id: string }; data: Record<string, unknown> };
+    expect(updateArgs.where).toEqual({ id });
+    expect(updateArgs.data).toEqual({ comment: 'edited reply' });
+
+    expect(result.comment).toBe('edited reply');
+    expect(result.replyToId).toBe(parentId);
+
+    const [activityParams] = vi.mocked(
+      deps.prisma.activities.createByParameters,
+    ).mock.calls[0];
+    expect(activityParams.action).toBe(
+      SupportedAction.ACTION_INLINE_COMMENT_REPLY_UPDATE,
+    );
+    expect(activityParams.user).toBe(creatorId);
+  });
+});
+
+describe('InlineCommentService.deleteComment', () => {
+  it('起点コメントでない行（通常コメント／返信自身／存在しないID）を指定するとエラーになり、永続化を一切呼び出さない', async () => {
+    const nonOriginTargets: (CommentsRow | null)[] = [
+      makeOriginRow({ isInline: false, replyToId: null }),
+      makeOriginRow({ replyToId: makeId() }),
+      null,
+    ];
+
+    await Promise.all(
+      nonOriginTargets.map(async (targetRow) => {
+        const deps = makeDeleteCommentDeps(targetRow);
+        const service = new InlineCommentService(deps);
+
+        await expect(
+          service.deleteComment(makeId(), makeId()),
+        ).rejects.toThrow();
+
+        expect(deps.prisma.comments.removeWithReplies).not.toHaveBeenCalled();
+        expect(
+          deps.prisma.activities.createByParameters,
+        ).not.toHaveBeenCalled();
+      }),
+    );
+  });
+
+  it('投稿者本人以外が削除を試みるとエラーになり、永続化を一切呼び出さない', async () => {
+    const id = makeId();
+    const creatorId = makeId();
+    const otherActorId = makeId();
+    const targetRow = makeOriginRow({ id, creatorId });
+    const deps = makeDeleteCommentDeps(targetRow);
+    const service = new InlineCommentService(deps);
+
+    await expect(service.deleteComment(id, otherActorId)).rejects.toThrow();
+
+    expect(deps.prisma.comments.removeWithReplies).not.toHaveBeenCalled();
+    expect(deps.prisma.activities.createByParameters).not.toHaveBeenCalled();
+  });
+
+  it('投稿者本人が起点コメントを削除すると removeWithReplies が呼ばれ（返信も道連れに削除され）ACTION_INLINE_COMMENT_DELETE を発行する', async () => {
+    const id = makeId();
+    const creatorId = makeId();
+    const targetRow = makeOriginRow({ id, creatorId });
+    const deps = makeDeleteCommentDeps(targetRow);
+    const service = new InlineCommentService(deps);
+
+    await service.deleteComment(id, creatorId);
+
+    expect(deps.prisma.comments.removeWithReplies).toHaveBeenCalledWith(id);
+
+    const [activityParams] = vi.mocked(
+      deps.prisma.activities.createByParameters,
+    ).mock.calls[0];
+    expect(activityParams.action).toBe(
+      SupportedAction.ACTION_INLINE_COMMENT_DELETE,
+    );
+    expect(activityParams.user).toBe(creatorId);
+  });
+});
+
+describe('InlineCommentService.deleteReply', () => {
+  it('返信でない行（起点コメント自体／存在しないID）を指定するとエラーになり、永続化を一切呼び出さない', async () => {
+    const nonReplyTargets: (CommentsRow | null)[] = [
+      makeOriginRow({ replyToId: null }),
+      null,
+    ];
+
+    await Promise.all(
+      nonReplyTargets.map(async (targetRow) => {
+        const deps = makeDeleteReplyDeps(targetRow);
+        const service = new InlineCommentService(deps);
+
+        await expect(service.deleteReply(makeId(), makeId())).rejects.toThrow();
+
+        expect(deps.prisma.comments.delete).not.toHaveBeenCalled();
+        expect(
+          deps.prisma.activities.createByParameters,
+        ).not.toHaveBeenCalled();
+      }),
+    );
+  });
+
+  it('投稿者本人以外が返信の削除を試みるとエラーになり、永続化を一切呼び出さない', async () => {
+    const id = makeId();
+    const creatorId = makeId();
+    const otherActorId = makeId();
+    const targetRow = makeReplyRow({ id, creatorId, replyToId: makeId() });
+    const deps = makeDeleteReplyDeps(targetRow);
+    const service = new InlineCommentService(deps);
+
+    await expect(service.deleteReply(id, otherActorId)).rejects.toThrow();
+
+    expect(deps.prisma.comments.delete).not.toHaveBeenCalled();
+    expect(deps.prisma.activities.createByParameters).not.toHaveBeenCalled();
+  });
+
+  it('投稿者本人が返信を削除すると自分自身だけを prisma.comments.delete で削除し（removeWithReplies は使わず）ACTION_INLINE_COMMENT_REPLY_DELETE を発行する', async () => {
+    const id = makeId();
+    const creatorId = makeId();
+    const parentId = makeId();
+    const targetRow = makeReplyRow({ id, creatorId, replyToId: parentId });
+    const deps = makeDeleteReplyDeps(targetRow);
+    const service = new InlineCommentService(deps);
+
+    await service.deleteReply(id, creatorId);
+
+    expect(deps.prisma.comments.delete).toHaveBeenCalledWith({
+      where: { id },
+    });
+    // No cascade for a reply — see design.md: only deleteComment cascades.
+    expect(deps.prisma.comments.removeWithReplies).not.toHaveBeenCalled();
+
+    const [activityParams] = vi.mocked(
+      deps.prisma.activities.createByParameters,
+    ).mock.calls[0];
+    expect(activityParams.action).toBe(
+      SupportedAction.ACTION_INLINE_COMMENT_REPLY_DELETE,
+    );
+    expect(activityParams.user).toBe(creatorId);
   });
 });

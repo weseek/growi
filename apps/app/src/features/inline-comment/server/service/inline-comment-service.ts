@@ -134,6 +134,17 @@ export interface InlineCommentServiceDeps {
   commentService: Pick<CommentService, 'prepareMentionNotifications'>;
 }
 
+/**
+ * The `comments` row shape a reply-targeted `update()` (no `include`) reads
+ * back — the reply counterpart of `InlineCommentUpdateResult` above, used by
+ * `updateReply()`.
+ */
+type InlineCommentReplyUpdateResult = Prisma.Result<
+  PrismaClient['comments'],
+  object,
+  'update'
+>;
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -360,6 +371,38 @@ function toIInlineCommentFromUpdateResult(
     },
     resolvedById: row.resolvedById,
     resolvedAt: row.resolvedAt,
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
+  };
+}
+
+/**
+ * Maps an `updateReply()` `update()` row to `InlineCommentReply` — the
+ * update-result counterpart of `toInlineCommentReply`/`toInlineCommentReplyFromListRow`
+ * above, paired the same way `toIInlineCommentFromUpdateResult` pairs with
+ * `toIInlineComment`.
+ */
+function toInlineCommentReplyFromUpdateResult(
+  row: InlineCommentReplyUpdateResult,
+): InlineCommentReply {
+  // updateReply only ever updates a reply (validated by its own findUnique
+  // check before this update runs), which always carries these fields
+  // together — same guarantee createReply()'s insert relies on.
+  if (row.creatorId == null || row.replyToId == null) {
+    throw new Error(
+      `Inline comment reply row '${row.id}' is missing required fields`,
+    );
+  }
+
+  return {
+    id: row.id,
+    pageId: row.pageId,
+    creatorId: row.creatorId,
+    // updateReply()'s update() requests no `creator` include, same reason as
+    // toInlineCommentReply() above.
+    creator: null,
+    comment: row.comment,
+    replyToId: row.replyToId,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
   };
@@ -685,5 +728,214 @@ export class InlineCommentService {
     });
 
     return toIInlineCommentFromUpdateResult(updated);
+  }
+
+  /**
+   * Updates the body of an origin (anchored) inline comment
+   * (design.md's Service Interface —
+   * `updateComment(id: string, comment: string, actorId: string): Promise<IInlineComment>`).
+   *
+   * - Rejects `id` unless it references a row that is itself an origin
+   *   inline comment (`isInline: true` and `replyToId: null`) — the same
+   *   three rejected shapes as `setResolved()`'s precondition check
+   *   (design.md's Postconditions, requirement 1.5's counterpart for
+   *   "wrong kind of id").
+   * - Additionally rejects when `actorId` does not match the row's
+   *   `creatorId` — the service-layer half of defense-in-depth authorization
+   *   (design.md: the route layer, task 3.5, re-checks the same thing; both
+   *   must agree, and a mismatch would be a bug, not a race).
+   * - Only `comment` is written; `anchor`/`anchorOriginRevisionId`/
+   *   `resolvedAt`/`resolvedById` are never touched by this method
+   *   (design.md's Invariants).
+   * - Records an `Activity` (`ACTION_INLINE_COMMENT_UPDATE`), using the same
+   *   self-minted-`activityId` mechanism as the other methods in this class
+   *   (see `create()`'s doc). No `prepareMentionNotifications` call — editing
+   *   an existing comment's body is not a new mention-notification event
+   *   (design.md's Requirements Traceability lists no notification
+   *   integration for requirement 1.x, mirroring `setResolved()`).
+   */
+  async updateComment(
+    id: string,
+    comment: string,
+    actorId: string,
+  ): Promise<IInlineComment> {
+    const target = await this.deps.prisma.comments.findUnique({
+      where: { id },
+    });
+
+    if (
+      target == null ||
+      !target.isInline ||
+      target.replyToId != null ||
+      target.creatorId !== actorId
+    ) {
+      throw new Error(
+        `Inline comment '${id}' is not an origin inline comment owned by '${actorId}'`,
+      );
+    }
+
+    const updated = await this.deps.prisma.comments.update({
+      where: { id },
+      data: { comment },
+    });
+
+    const activityId = new Types.ObjectId().toString();
+
+    await this.deps.prisma.activities.createByParameters({
+      id: activityId,
+      action: SupportedAction.ACTION_INLINE_COMMENT_UPDATE,
+      user: actorId,
+      target: updated.pageId,
+      targetModel: SupportedTargetModel.MODEL_PAGE,
+      event: updated.id,
+      eventModel: SupportedEventModel.MODEL_COMMENT,
+    });
+
+    return toIInlineCommentFromUpdateResult(updated);
+  }
+
+  /**
+   * Updates the body of a reply to an origin inline comment
+   * (design.md's Service Interface —
+   * `updateReply(id: string, comment: string, actorId: string): Promise<InlineCommentReply>`).
+   *
+   * Mirrors `updateComment()` exactly, except the precondition requires
+   * `replyToId != null` (this row IS a reply, not an origin comment), and
+   * this method emits `ACTION_INLINE_COMMENT_REPLY_UPDATE` instead — see
+   * `updateComment()`'s doc for the shared reasoning (creatorId
+   * defense-in-depth check, no touched anchor/resolved fields, no mention
+   * notification).
+   */
+  async updateReply(
+    id: string,
+    comment: string,
+    actorId: string,
+  ): Promise<InlineCommentReply> {
+    const target = await this.deps.prisma.comments.findUnique({
+      where: { id },
+    });
+
+    if (
+      target == null ||
+      !target.isInline ||
+      target.replyToId == null ||
+      target.creatorId !== actorId
+    ) {
+      throw new Error(
+        `Inline comment reply '${id}' is not a reply owned by '${actorId}'`,
+      );
+    }
+
+    const updated = await this.deps.prisma.comments.update({
+      where: { id },
+      data: { comment },
+    });
+
+    const activityId = new Types.ObjectId().toString();
+
+    await this.deps.prisma.activities.createByParameters({
+      id: activityId,
+      action: SupportedAction.ACTION_INLINE_COMMENT_REPLY_UPDATE,
+      user: actorId,
+      target: updated.pageId,
+      targetModel: SupportedTargetModel.MODEL_PAGE,
+      event: updated.id,
+      eventModel: SupportedEventModel.MODEL_COMMENT,
+    });
+
+    return toInlineCommentReplyFromUpdateResult(updated);
+  }
+
+  /**
+   * Deletes an origin (anchored) inline comment together with its replies
+   * (design.md's Service Interface —
+   * `deleteComment(id: string, actorId: string): Promise<void>`).
+   *
+   * - Same precondition check as `updateComment()` (origin-comment shape +
+   *   `creatorId === actorId`) — see that method's doc.
+   * - Uses `prisma.comments.removeWithReplies(id)` (existing extension
+   *   method, `apps/app/src/features/comment/server/models/comment.ts`) so
+   *   the origin and every reply to it are removed together in one
+   *   transaction (design.md's Postconditions, requirement 2.4). This is
+   *   also this feature's `Allowed Dependencies` entry for that method — see
+   *   design.md's Boundary Commitments.
+   * - Records an `Activity` (`ACTION_INLINE_COMMENT_DELETE`) — same
+   *   self-minted-`activityId` mechanism as the other methods here. No
+   *   `prepareMentionNotifications` call (deleting is not a mention event).
+   */
+  async deleteComment(id: string, actorId: string): Promise<void> {
+    const target = await this.deps.prisma.comments.findUnique({
+      where: { id },
+    });
+
+    if (
+      target == null ||
+      !target.isInline ||
+      target.replyToId != null ||
+      target.creatorId !== actorId
+    ) {
+      throw new Error(
+        `Inline comment '${id}' is not an origin inline comment owned by '${actorId}'`,
+      );
+    }
+
+    await this.deps.prisma.comments.removeWithReplies(id);
+
+    const activityId = new Types.ObjectId().toString();
+
+    await this.deps.prisma.activities.createByParameters({
+      id: activityId,
+      action: SupportedAction.ACTION_INLINE_COMMENT_DELETE,
+      user: actorId,
+      target: target.pageId,
+      targetModel: SupportedTargetModel.MODEL_PAGE,
+      event: target.id,
+      eventModel: SupportedEventModel.MODEL_COMMENT,
+    });
+  }
+
+  /**
+   * Deletes a single reply to an origin inline comment
+   * (design.md's Service Interface —
+   * `deleteReply(id: string, actorId: string): Promise<void>`).
+   *
+   * - Same precondition check as `updateReply()` (reply shape + `creatorId
+   *   === actorId`) — see that method's doc.
+   * - Uses a plain `prisma.comments.delete({ where: { id } })` — unlike
+   *   `deleteComment()`, no cascade is needed here: a reply has no rows that
+   *   depend on it (design.md's Responsibilities: "単純な
+   *   `prisma.comments.delete({ where: { id } })`（道連れ削除は不要）").
+   * - Records an `Activity` (`ACTION_INLINE_COMMENT_REPLY_DELETE`) — same
+   *   mechanism as the other methods here.
+   */
+  async deleteReply(id: string, actorId: string): Promise<void> {
+    const target = await this.deps.prisma.comments.findUnique({
+      where: { id },
+    });
+
+    if (
+      target == null ||
+      !target.isInline ||
+      target.replyToId == null ||
+      target.creatorId !== actorId
+    ) {
+      throw new Error(
+        `Inline comment reply '${id}' is not a reply owned by '${actorId}'`,
+      );
+    }
+
+    await this.deps.prisma.comments.delete({ where: { id } });
+
+    const activityId = new Types.ObjectId().toString();
+
+    await this.deps.prisma.activities.createByParameters({
+      id: activityId,
+      action: SupportedAction.ACTION_INLINE_COMMENT_REPLY_DELETE,
+      user: actorId,
+      target: target.pageId,
+      targetModel: SupportedTargetModel.MODEL_PAGE,
+      event: target.id,
+      eventModel: SupportedEventModel.MODEL_COMMENT,
+    });
   }
 }
