@@ -305,6 +305,16 @@ describe('InlineCommentItem', () => {
       expect(quote).toHaveTextContent('a distinctive quoted range');
     });
 
+    // Requirement 1.7 / 3.4 (design.md 決定3): the left-border marker color
+    // stays as-is, and a subtle background utility class is added on top of
+    // it, so the list-side quote keeps its existing coloring.
+    it('gives the quote block a subtle background in addition to the marker-color left border', () => {
+      const { container } = renderItem();
+
+      const quote = container.querySelector('blockquote.inline-comment-quote');
+      expect(quote).toHaveClass('bg-body-tertiary');
+    });
+
     it('calls scrollToRange(comment.id) when the quote is clicked (Req 3.1)', async () => {
       const scrollToRange = vi.fn(() => true);
       const { container } = renderItem({}, { scrollToRange });
@@ -628,6 +638,44 @@ describe('InlineCommentItem', () => {
       expect(
         screen.getByTestId('inline-comment-delete-confirm'),
       ).toBeInTheDocument();
+    });
+
+    // Requirement 1.3 / 3.1 / 3.4 (design.md: 削除確認): the bare-text-row
+    // confirmation is replaced by a Bootstrap `alert` component-based
+    // layout (icon + message + button group in one row), not a modal.
+    it('renders the delete confirmation as a Bootstrap alert with an icon, message and button group (Req 1.3 / 3.1 / 3.4)', async () => {
+      currentUserRef.current = { _id: 'user1' };
+      renderItem({ id: 'comment42', creatorId: 'user1' });
+
+      await userEvent.click(screen.getByTestId('inline-comment-delete-button'));
+
+      const confirm = screen.getByTestId('inline-comment-delete-confirm');
+      expect(confirm).toHaveClass(
+        'alert',
+        'alert-danger',
+        'd-flex',
+        'align-items-center',
+        'gap-2',
+        'border-start',
+        'border-3',
+        'mb-0',
+      );
+      expect(
+        confirm.querySelector('.material-symbols-outlined'),
+      ).not.toBeNull();
+      expect(confirm).toHaveTextContent('page_comment.delete_comment');
+      expect(
+        confirm.querySelector(
+          '[data-testid="inline-comment-delete-confirm-button"]',
+        ),
+      ).not.toBeNull();
+      expect(
+        confirm.querySelector(
+          '[data-testid="inline-comment-delete-cancel-button"]',
+        ),
+      ).not.toBeNull();
+      // No modal is used for the confirmation.
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     });
 
     it('calls remove(id) only after the delete confirmation is confirmed', async () => {

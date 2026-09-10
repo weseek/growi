@@ -212,7 +212,7 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
               className="btn p-0 border-0 bg-transparent text-start w-100"
               onClick={handleQuoteClick}
             >
-              <blockquote className="inline-comment-quote small text-body-secondary mb-2 ps-2">
+              <blockquote className="inline-comment-quote bg-body-tertiary rounded-end small text-body-secondary mb-2 ps-2">
                 {comment.anchor.quote}
               </blockquote>
             </button>
@@ -247,25 +247,29 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
             {isDeleteConfirmOpen && (
               <div
                 data-testid="inline-comment-delete-confirm"
-                className="d-flex align-items-center gap-2 mt-1"
+                role="alert"
+                className="alert alert-danger d-flex align-items-center gap-2 border-start border-3 mb-0 mt-1"
               >
+                <span className="material-symbols-outlined">warning</span>
                 <span>{t('page_comment.delete_comment')}</span>
-                <button
-                  type="button"
-                  data-testid="inline-comment-delete-confirm-button"
-                  className="btn btn-sm btn-danger"
-                  onClick={handleDeleteConfirm}
-                >
-                  {t('Delete')}
-                </button>
-                <button
-                  type="button"
-                  data-testid="inline-comment-delete-cancel-button"
-                  className="btn btn-sm btn-outline-secondary"
-                  onClick={() => setIsDeleteConfirmOpen(false)}
-                >
-                  {t('Cancel')}
-                </button>
+                <span className="ms-auto d-flex gap-2">
+                  <button
+                    type="button"
+                    data-testid="inline-comment-delete-cancel-button"
+                    className="btn btn-sm btn-outline-secondary"
+                    onClick={() => setIsDeleteConfirmOpen(false)}
+                  >
+                    {t('Cancel')}
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="inline-comment-delete-confirm-button"
+                    className="btn btn-sm btn-danger"
+                    onClick={handleDeleteConfirm}
+                  >
+                    {t('Delete')}
+                  </button>
+                </span>
               </div>
             )}
           </>
