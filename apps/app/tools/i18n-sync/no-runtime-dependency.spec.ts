@@ -4,14 +4,13 @@ import { fileURLToPath } from 'node:url';
 
 // --- Contract --------------------------------------------------------------
 //
-// Requirement 4 (実行時の外部サービス非依存): the running GROWI application
-// must never talk to POEditor itself — only the sync tooling in this
-// directory (`apps/app/tools/i18n-sync/`), which runs from GitHub Actions,
-// is allowed to call the POEditor API. If anyone ever imports
-// `poeditor-client.ts` (or another file from this directory) into
-// `apps/app/src/`, or hardcodes the POEditor domain into application code,
-// the running app would gain a runtime dependency on POEditor's
-// availability — exactly what Requirement 4 forbids.
+// The running GROWI application must never talk to POEditor itself — only
+// the sync tooling in this directory (`apps/app/tools/i18n-sync/`), which
+// runs from GitHub Actions, is allowed to call the POEditor API. If anyone
+// ever imports `poeditor-client.ts` (or another file from this directory)
+// into `apps/app/src/`, or hardcodes the POEditor domain into application
+// code, the running app would gain a runtime dependency on POEditor's
+// availability.
 //
 // This is a drift test with no natural RED state: today `apps/app/src/`
 // has zero references to POEditor, so this spec passes trivially on the

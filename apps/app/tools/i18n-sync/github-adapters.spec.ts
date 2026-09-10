@@ -18,9 +18,9 @@ import type {
 // ---------------------------------------------------------------------------
 
 /**
- * Two deliberately dissimilar token strings. The whole point of task 3.2's
- * split between `TranslationOnlyPrPublisher` and `ApprovalReviewer` is that
- * these two never reach the same call, so every isolation assertion below is
+ * Two deliberately dissimilar token strings. The whole point of the split
+ * between `TranslationOnlyPrPublisher` and `ApprovalReviewer` is that these
+ * two never reach the same call, so every isolation assertion below is
  * written against these exact literals.
  */
 const PUBLISH_TOKEN = 'publish-token-PPPPPPPP';
@@ -119,7 +119,7 @@ describe('createTranslationOnlyPrPublisher', () => {
         BASE_SHA,
       ]);
       // `--` separates paths from revisions, and only the listed file is
-      // staged -- never `git add -A` (design.md's PR-granularity invariant).
+      // staged -- never `git add -A`.
       expect(gitCalls[2]).toEqual([
         'add',
         '--',
@@ -164,7 +164,7 @@ describe('createTranslationOnlyPrPublisher', () => {
       // the structural one, so the structural commit can find the other
       // group's files sitting in the index. It must not pick them up: that
       // would put a translation-only change into the human-review pull
-      // request (design.md's PR-granularity invariant).
+      // request.
       const calls: { command: string; args: readonly string[] }[] = [];
       const runCommand: RunCommand = (command, args) => {
         calls.push({ command, args });
@@ -373,15 +373,14 @@ describe('createTranslationOnlyPrPublisher', () => {
 });
 
 describe('createBaseRefResolver', () => {
-  it('resolves the base ref once and hands the same commit to every publisher (PR-granularity invariant)', async () => {
+  it('resolves the base ref once and hands the same commit to every publisher', async () => {
     const { translationOnly, structural, calls } = buildPublishers();
 
     // The real `main()` order: the translation-only branch is committed
     // first, then the structural one. If the structural publisher branched
     // off `HEAD` (or re-resolved it now), it would branch off the
-    // translation-only commit and carry those files into the
-    // human-review pull request -- exactly what design.md's PR-granularity
-    // invariant forbids.
+    // translation-only commit and carry those files into the human-review
+    // pull request.
     await translationOnly.publishBranch({
       headBranch: 'i18n-sync/translation-only',
       commitMessage: 'translation-only',
@@ -432,14 +431,13 @@ describe('createApprovalReviewer', () => {
     });
 
     // No method that could write repository content or change a pull
-    // request's contents may exist on the approving identity's adapter
-    // (design.md Security Considerations: the approval bot has no
-    // `contents: write`).
+    // request's contents may exist on the approving identity's adapter —
+    // the approval bot has no `contents: write`.
     expect(Object.keys(reviewer)).toEqual(['submitApprovalReview']);
   });
 });
 
-describe('approval token isolation (design.md Security Considerations)', () => {
+describe('approval token isolation', () => {
   it('sends the approval token only on the review call, and never sends the publish token there', async () => {
     const { runCommand, calls } = createRunCommandFake();
     const fetchFn = vi.fn();
@@ -521,8 +519,8 @@ describe('createI18nLintGate', () => {
     const result = await createI18nLintGate({ runCommand }).run();
 
     expect(result).toEqual({ ok: true });
-    // The gate is the existing i18n CI gate, invoked as-is (design.md Out of
-    // Boundary: this feature calls it and never reimplements it).
+    // The gate is the existing i18n CI gate, invoked as-is -- this feature
+    // calls it and never reimplements it.
     expect(calls).toEqual([{ command: 'pnpm', args: ['run', 'lint:i18n'] }]);
   });
 

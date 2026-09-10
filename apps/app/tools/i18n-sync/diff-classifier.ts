@@ -1,12 +1,10 @@
 /**
- * DiffClassifier (design.md: Components and Interfaces > Sync Tooling >
- * DiffClassifier). Compares a locale namespace's leaf key paths before/after
- * a POEditor export and classifies the change as one of `no_change` /
+ * Compares a locale namespace's leaf key paths before/after a POEditor
+ * export and classifies the change as one of `no_change` /
  * `translation_only` / `structural`.
  *
- * This is a pure function with no I/O: no file reads, no network/API calls.
- * Reading files and calling POEditor is `PullTranslationSync`'s
- * responsibility, not this module's (design.md: "I/O を一切持たない").
+ * Pure function, no I/O — reading files and calling POEditor is
+ * `PullTranslationSync`'s responsibility, not this module's.
  */
 
 export type ClassificationResult =

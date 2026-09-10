@@ -1,15 +1,11 @@
 /**
- * PullTranslationSync (design.md: Components and Interfaces > Sync Tooling >
- * PullTranslationSync（CLI）). Exports each namespace x non-source language
- * combination's translations from POEditor, classifies each combination
- * against the current repository content via `DiffClassifier`, and groups
- * the results into exactly two collections per design.md's Pull Flow
- * PR-granularity invariant ("PRの粒度（不変条件）"):
- *
- *   1回のpull実行で対象になる最大12通り（namespace3×非ソース言語4）の判定結果は、
- *   必ず2本以下のPRに分ける。「訳文のみ」の組み合わせは1本のPRにまとめ、
- *   「構造変更」の組み合わせは別の1本のPRにまとめる。同一PRの中に構造変更の
- *   組み合わせを1件でも含めてはならない。
+ * Exports each namespace x non-source language combination's translations
+ * from POEditor, classifies each combination against the current repository
+ * content via `DiffClassifier`, and groups the results into exactly two
+ * collections: every combination that only changed translation values goes
+ * into one pull request, and every combination that added or removed a key
+ * goes into a separate one — a structural change must never ride along in
+ * the same pull request as a translation-only one.
  *
  * `collectClassifications` builds exactly that grouping as data: every
  * `translation_only` combination goes into `translationOnly`, every
@@ -21,20 +17,12 @@
  * without a type error, not just a runtime check. A combination whose
  * POEditor export failed to parse as JSON (`invalid_json`) is excluded from
  * both groups too, but — unlike a read/export failure — does not abort the
- * run; it is reported separately via the result's `skipped` list (design.md
- * "Error Handling > Error Categories and Responses" > 「不正な形式の
- * exportデータ」).
+ * run; it is reported separately via the result's `skipped` list.
  *
  * `applyTranslationOnlyChanges` then takes the `translationOnly` group and
- * carries it all the way to an approved, auto-mergeable PR (design.md
- * "PullTranslationSync（CLI）" Responsibilities & Constraints). The
- * `structural` group's review-required PR remains task 3.3's scope.
- *
- * Follows the dependency direction SyncConfig -> PoeditorClient ->
- * PullTranslationSync (design.md "依存方向: SyncConfig → PoeditorClient →
- * PushSourceSync / PullTranslationSync"): this file reads `SYNC_TARGETS`,
- * calls `PoeditorClient`, and calls `DiffClassifier`'s `classify`, never the
- * reverse.
+ * carries it all the way to an approved, auto-mergeable PR. The `structural`
+ * group instead goes through `applyStructuralChanges`, whose PR always
+ * awaits human review.
  */
 
 import { readFile, writeFile } from 'node:fs/promises';
@@ -57,8 +45,7 @@ import {
 import { type NamespaceSyncEntry, SYNC_TARGETS } from './sync-config.ts';
 
 /**
- * The 4 non-source languages this CLI pulls translations for (design.md:
- * "namespace × 非ソース言語（4言語）それぞれについて export"). en_US is
+ * The 4 non-source languages this CLI pulls translations for. en_US is
  * GROWI's source language, pushed (not pulled) by `PushSourceSync`.
  */
 export const NON_SOURCE_LANGUAGES = [
@@ -110,8 +97,8 @@ export interface TranslationOnlyCombination {
    * where a contributor can add or remove a term at any moment, so a second
    * export could return content with a *different* key set than the one
    * classified as `translation_only` — and that content would then take the
-   * auto-merge path with no human review, breaking design.md's PR-granularity
-   * invariant and Requirement 3.2.
+   * auto-merge path with no human review, even though it might in fact
+   * contain a structural change.
    */
   readonly content: Readonly<Record<string, unknown>>;
 }
@@ -126,14 +113,11 @@ export interface StructuralCombination {
    * `applyStructuralChanges` writes back to.
    *
    * Deliberately named differently from `TranslationOnlyCombination`'s
-   * `absoluteFilePath` (task 3.2's Implementation Notes: keep the two
-   * combination types non-interchangeable in field naming, not just in
-   * their surrounding types). This is a naming-level safety margin on top
-   * of the existing structural one -- `StructuralCombination` and
-   * `TranslationOnlyCombination` are already distinct types, so nothing
-   * type-checks a swap between them, but matching field names would still
-   * let a careless refactor rename one type to the other without a compile
-   * error. Different names make that refactor fail loudly instead.
+   * `absoluteFilePath`: `StructuralCombination` and `TranslationOnlyCombination`
+   * are already distinct types, so nothing type-checks a swap between them,
+   * but matching field names would still let a careless refactor rename one
+   * type to the other without a compile error. Different names make that
+   * refactor fail loudly instead.
    */
   readonly filePath: string;
   /**
@@ -166,13 +150,13 @@ type CombinationFailure =
       readonly message: string;
     };
 
-/** The subset of `CombinationFailure` that is surfaced but does not abort the run (design.md: 「不正な形式のexportデータ」). */
+/** The subset of `CombinationFailure` that is surfaced but does not abort the run. */
 type InvalidJsonFailure = Extract<
   CombinationFailure,
   { reason: 'invalid_json' }
 >;
 
-/** The subset of `CombinationFailure` that aborts the whole run (design.md: read/export failures, "いずれかの namespace で失敗したら残りの処理を中止する"). */
+/** The subset of `CombinationFailure` (read/export failures) that aborts the whole run. */
 type AbortingFailure = Exclude<CombinationFailure, InvalidJsonFailure>;
 
 export type CollectClassificationsResult =
@@ -182,12 +166,11 @@ export type CollectClassificationsResult =
       readonly structural: readonly StructuralCombination[];
       /**
        * (namespace, language) combinations excluded from classification
-       * because the POEditor export content failed to JSON.parse
-       * (design.md "Error Handling > Error Categories and Responses" >
-       * 「不正な形式のexportデータ」). Unlike `read_failed`/`export_failed`,
-       * this does not abort the run: export is read-only and never mutates
-       * the repository, so a single malformed combination is tolerated
-       * rather than blocking the other (up to 11) combinations.
+       * because the POEditor export content failed to JSON.parse. Unlike
+       * `read_failed`/`export_failed`, this does not abort the run: export
+       * is read-only and never mutates the repository, so a single
+       * malformed combination is tolerated rather than blocking the other
+       * (up to 11) combinations.
        */
       readonly skipped: readonly InvalidJsonFailure[];
     }
@@ -238,8 +221,7 @@ const safeJsonParse = (
  * and the export call run concurrently since they are independent I/O
  * operations on unrelated systems; only `PoeditorClient.uploadTerms`
  * (a different method, used by `PushSourceSync`) is subject to POEditor's
- * upload rate limit — `exportTranslations` is not (design.md's throttle note
- * is scoped to uploads).
+ * upload rate limit — `exportTranslations` is not.
  */
 interface ReadCombinationOptions {
   readonly target: NamespaceSyncEntry;
@@ -330,22 +312,19 @@ const readCombination = async ({
  * For every (namespace, language) combination, reads the current repository
  * content and exports the POEditor content, classifies the pair via
  * `DiffClassifier.classify`, then groups the classified combinations into
- * `translationOnly` / `structural` (design.md's PR-granularity invariant —
- * see this file's header comment).
+ * `translationOnly` / `structural` (see this file's header comment).
  *
- * Mirrors `PushSourceSync.runPush`'s all-or-nothing error handling
- * (`PoeditorClient`'s Invariants, design.md: "いずれかの namespace で失敗し
- * たら残りの処理を中止する", Requirement 8.1): if any combination fails to
- * read the current repository file (`read_failed`) or export from POEditor
- * (`export_failed`), the whole run reports failure and no grouping is
- * returned, so a later task can never build a PR out of a partial result.
+ * Mirrors `PushSourceSync.runPush`'s all-or-nothing error handling: if any
+ * combination fails to read the current repository file (`read_failed`) or
+ * export from POEditor (`export_failed`), the whole run reports failure and
+ * no grouping is returned, so a caller can never build a PR out of a
+ * partial result.
  *
  * `invalid_json` (the exported content fails to `JSON.parse`) is the one
- * exception, per design.md's "不正な形式のexportデータ" bullet: export is
- * read-only and never mutates the repository, so it tolerates a single
- * malformed combination rather than aborting. That combination alone is
- * excluded from `translationOnly`/`structural` and reported via `skipped`;
- * the rest of the run proceeds and groups normally.
+ * exception: export is read-only and never mutates the repository, so it
+ * tolerates a single malformed combination rather than aborting. That
+ * combination alone is excluded from `translationOnly`/`structural` and
+ * reported via `skipped`; the rest of the run proceeds and groups normally.
  */
 export const collectClassifications = async (
   options: CollectClassificationsOptions,
@@ -370,11 +349,9 @@ export const collectClassifications = async (
     ),
   );
 
-  // `read_failed` / `export_failed` still abort the whole run (unchanged —
-  // design.md's general "いずれかの namespace で失敗したら残りの処理を中止
-  // する" rule). `invalid_json` is handled separately below: per design.md's
-  // 「不正な形式のexportデータ」 bullet, it only excludes its own
-  // combination and lets the others continue.
+  // `read_failed` / `export_failed` still abort the whole run. `invalid_json`
+  // is handled separately below: it only excludes its own combination and
+  // lets the others continue.
   const abortingFailures = combinationInputs
     .map((input) => input.failure)
     .filter(
@@ -430,8 +407,7 @@ export const collectClassifications = async (
       });
     }
     // 'no_change' combinations are intentionally excluded from both groups —
-    // there is nothing to report for them (design.md: "no_change（変更なし）
-    // の組み合わせのみだった場合は何もしない").
+    // there is nothing to report for them.
   }
 
   return { ok: true, translationOnly, structural, skipped };
@@ -445,9 +421,7 @@ export const collectClassifications = async (
  * rewrites this branch to the current POEditor state, so at most one
  * translation-only PR can ever be open. It is the same reasoning as
  * `sync_terms=1` on the push side — the operation converges to the current
- * state instead of accumulating one artifact per run (design.md
- * PullTranslationSync Batch Contract: 「既存の未マージPRがあれば更新する
- * （重複PRを作らない）」).
+ * state instead of accumulating one artifact per run.
  */
 export const TRANSLATION_ONLY_BRANCH = 'i18n-sync/translation-only';
 
@@ -469,12 +443,12 @@ export interface PullRequestRef {
  * Everything the translation-only path needs to turn locally-written locale
  * files into an open pull request. Deliberately kept separate from
  * `ApprovalReviewer`: the two are performed by *different* GitHub identities
- * (GitHub refuses a self-approval), and the approving identity is scoped to
- * `pull-requests: write` with no content-write permission at all (design.md
- * Security Considerations, `I18N_SYNC_APPROVAL_TOKEN`). Splitting the
- * interfaces makes that separation structural rather than a convention: an
- * implementation of `ApprovalReviewer` is handed no method that could write
- * repository content.
+ * (GitHub refuses a self-approval), and the approving identity
+ * (`I18N_SYNC_APPROVAL_TOKEN`) is scoped to `pull-requests: write` with no
+ * content-write permission at all. Splitting the interfaces makes that
+ * separation structural rather than a convention: an implementation of
+ * `ApprovalReviewer` is handed no method that could write repository
+ * content.
  */
 export interface TranslationOnlyPrPublisher {
   /**
@@ -484,9 +458,7 @@ export interface TranslationOnlyPrPublisher {
    * working tree. A single pull run classifies both groups against the same
    * checkout, so the structural group's locale files can already be modified
    * alongside these; sweeping them in would put a structural change into the
-   * translation-only pull request and merge it with no human review, which
-   * design.md forbids outright (「同一PRの中に構造変更の組み合わせを1件でも
-   * 含めてはならない」, Requirement 3.2).
+   * translation-only pull request and merge it with no human review.
    */
   publishBranch(input: {
     readonly headBranch: string;
@@ -521,10 +493,9 @@ export type LintGateResult =
 
 /**
  * The existing i18n CI gate (`pnpm run lint:i18n` /
- * `apps/app/tools/i18n-audit/`). design.md's Out of Boundary is explicit that
- * this feature only *calls* the gate and never touches its detection logic,
- * so it enters here as an injected collaborator rather than as a direct
- * dependency on the audit tooling.
+ * `apps/app/tools/i18n-audit/`). This feature only *calls* the gate and
+ * never touches its detection logic, so it enters here as an injected
+ * collaborator rather than as a direct dependency on the audit tooling.
  */
 export interface I18nLintGate {
   run(): Promise<LintGateResult>;
@@ -588,7 +559,7 @@ const PR_TITLE = 'chore(i18n): apply translation-only updates from POEditor';
  * Applies the `translation_only` group: writes each combination's exported
  * content to its locale file, gathers them into a *single* pull request, runs
  * the existing i18n CI gate, and — only if the gate passes — has the approval
- * bot submit an approving review (Requirements 3.3, 3.4, 8.1).
+ * bot submit an approving review.
  *
  * **Why approving is enough, and why it does not bypass CI.** The approving
  * review only satisfies the `#approved-reviews-by >= 1` condition of the
@@ -596,13 +567,12 @@ const PR_TITLE = 'chore(i18n): apply translation-only updates from POEditor';
  * merely puts the PR into the merge queue. The queue's own `queue_rules`
  * independently require `check-success ~= ci-app-lint` (which contains
  * `lint:i18n`) before anything merges. So the gate is applied twice and is
- * never circumvented, exactly as Requirement 3.4 demands — this file adds no
- * new merge route and changes no Mergify rule.
+ * never circumvented — this file adds no new merge route and changes no
+ * Mergify rule.
  *
  * **Step order is load-bearing, not incidental.** The gate reads the locale
- * files from disk, so it must run *after* they are written; and design.md's
- * Error Handling requires a failing gate to remain visible 「失敗したチェック
- * として残す」, which needs a pull request to carry that check. Hence:
+ * files from disk, so it must run *after* they are written, and a failing
+ * gate needs an open pull request to attach its failing check to. Hence:
  * write → publish branch → create-or-update the PR → run the gate → approve.
  *
  * **Why writing whole files is safe.** `translation_only` means the two leaf
@@ -612,7 +582,7 @@ const PR_TITLE = 'chore(i18n): apply translation-only updates from POEditor';
  *
  * On a gate failure nothing is approved and the PR is deliberately left open
  * with its failing check; the failure is returned so the caller can fail the
- * workflow (Requirement 8.1).
+ * workflow.
  */
 export const applyTranslationOnlyChanges = async (
   options: ApplyTranslationOnlyChangesOptions,
@@ -622,8 +592,7 @@ export const applyTranslationOnlyChanges = async (
 
   if (combinations.length === 0) {
     // Nothing to propose: opening an empty pull request (and paying for a
-    // gate run on it) would be pure noise (design.md: 「no_change（変更なし）
-    // の組み合わせのみだった場合は何もしない」).
+    // gate run on it) would be pure noise.
     return { ok: true, outcome: 'no_changes' };
   }
 
@@ -644,7 +613,7 @@ export const applyTranslationOnlyChanges = async (
     headBranch: TRANSLATION_ONLY_BRANCH,
     commitMessage: PR_TITLE,
     // Only this group's files: see publishBranch's contract for why staging
-    // anything else would break the PR-granularity invariant.
+    // anything else would carry the other group's changes into this PR.
     filePaths,
   });
 
@@ -685,12 +654,10 @@ export const applyTranslationOnlyChanges = async (
 
 /**
  * The single branch every structural-review sync run converges onto,
- * mirroring `TRANSLATION_ONLY_BRANCH`'s "no duplicate PRs" reasoning
- * (design.md PullTranslationSync Batch Contract: 「既存の未マージPRがあれば
- * 更新する（重複PRを作らない）」). Deliberately a different fixed branch than
- * `TRANSLATION_ONLY_BRANCH` -- the two groups must never land on the same
- * branch, or a structural change would ride along in the no-human-review
- * translation-only PR (design.md's PR-granularity invariant).
+ * mirroring `TRANSLATION_ONLY_BRANCH`'s "no duplicate PRs" reasoning.
+ * Deliberately a different fixed branch than `TRANSLATION_ONLY_BRANCH` --
+ * the two groups must never land on the same branch, or a structural change
+ * would ride along in the no-human-review translation-only PR.
  */
 export const STRUCTURAL_BRANCH = 'i18n-sync/structural-review';
 
@@ -714,8 +681,7 @@ export interface StructuralPrPublisher {
    * Commits the locale files at `filePaths` onto `headBranch` and pushes it.
    * Same "only these paths, never the whole working tree" contract as
    * `TranslationOnlyPrPublisher.publishBranch` -- staging the translation-only
-   * group's files here would break the PR-granularity invariant the other
-   * way around.
+   * group's files here would carry them into this PR instead.
    */
   publishBranch(input: {
     readonly headBranch: string;
@@ -776,16 +742,14 @@ const STRUCTURAL_PR_TITLE =
   'chore(i18n): review structural updates from POEditor';
 
 /**
- * Applies the `structural` group (task 3.3): writes each combination's
- * exported content to its locale file and gathers them into a *single*
- * pull request awaiting human review (Requirement 3.2). Unlike
- * `applyTranslationOnlyChanges`, this function has no `ApprovalReviewer`
- * parameter at all and never runs the i18n lint gate itself -- both are
- * deliberately absent rather than merely unused, so no code path here can
- * submit a bot approval even by mistake. The existing `ci-app-lint` check
- * still runs on this PR the same way it runs on any other pull request;
- * only the auto-approval step is skipped (design.md: 「構造変更PRは通常の
- * レビュー必須PRとして作成するのみで、承認ボットは関与しない」).
+ * Applies the `structural` group: writes each combination's exported
+ * content to its locale file and gathers them into a *single* pull request
+ * awaiting human review. Unlike `applyTranslationOnlyChanges`, this
+ * function has no `ApprovalReviewer` parameter at all and never runs the
+ * i18n lint gate itself -- both are deliberately absent rather than merely
+ * unused, so no code path here can submit a bot approval even by mistake.
+ * The existing `ci-app-lint` check still runs on this PR the same way it
+ * runs on any other pull request; only the auto-approval step is skipped.
  *
  * Mirrors `applyTranslationOnlyChanges`'s idempotency: a fixed branch name
  * (`STRUCTURAL_BRANCH`) means a second run against the same diff updates
@@ -799,8 +763,7 @@ export const applyStructuralChanges = async (
 
   if (combinations.length === 0) {
     // Nothing to propose -- same reasoning as applyTranslationOnlyChanges's
-    // empty-group short circuit (design.md: 「no_change（変更なし）の組み合わ
-    // せのみだった場合は何もしない」).
+    // empty-group short circuit.
     return { ok: true, outcome: 'no_changes' };
   }
 
@@ -846,21 +809,20 @@ export const applyStructuralChanges = async (
 
 /**
  * Everything one full pull run needs, and the pure orchestration function
- * that sequences task 3.1/3.2/3.3's three exported functions the way
- * `main()` (below) is required to (task 3.3's tasks.md text). Kept as its
- * own function -- separate from `main()` -- so the sequencing and failure
- * aggregation are unit-testable with injected fakes, without touching
- * `process.env` or a real process exit (mirrors `push-source.ts`'s
+ * that sequences `collectClassifications` / `applyTranslationOnlyChanges` /
+ * `applyStructuralChanges` the way `main()` (below) is required to. Kept as
+ * its own function -- separate from `main()` -- so the sequencing and
+ * failure aggregation are unit-testable with injected fakes, without
+ * touching `process.env` or a real process exit (mirrors `push-source.ts`'s
  * `runPush`/`main` split).
  *
  * **Step order is load-bearing**: `applyTranslationOnlyChanges` runs before
  * `applyStructuralChanges` on purpose. `applyTranslationOnlyChanges`'s
- * `I18nLintGate` reads the working tree from disk (task 3.2's
- * Implementation Notes), so if the structural group's files were written
- * first, the gate could see structural (key-adding/removing) content and
- * fail for the wrong reason. Running translation-only first, gate included,
- * keeps that check's view of the tree limited to what it is actually
- * judging.
+ * `I18nLintGate` reads the working tree from disk, so if the structural
+ * group's files were written first, the gate could see structural
+ * (key-adding/removing) content and fail for the wrong reason. Running
+ * translation-only first, gate included, keeps that check's view of the
+ * tree limited to what it is actually judging.
  *
  * Both apply steps run even if one fails -- they write to different
  * branches and open different pull requests, so a translation-only gate
@@ -902,12 +864,10 @@ export type RunPullResult =
       readonly ok: true;
       /**
        * (namespace, language) combinations `collectClassifications` excluded
-       * because their POEditor export was not valid JSON (design.md "Error
-       * Handling > Error Categories and Responses" > 「不正な形式の
-       * exportデータ」). The run still succeeds -- this is threaded through so
-       * `main()` can warn about them instead of the run completing silently
-       * with no trace of the skipped combination (Requirement 8.1: 「黙って
-       * 結果をスキップしない」).
+       * because their POEditor export was not valid JSON. The run still
+       * succeeds -- this is threaded through so `main()` can warn about them
+       * instead of the run completing silently with no trace of the skipped
+       * combination.
        */
       readonly skipped: readonly InvalidJsonFailure[];
     }
@@ -1009,13 +969,13 @@ interface GitHubRunConfig {
  * as far as force-pushing a branch and only then discovers it has no
  * approval identity leaves an unapproved pull request behind.
  *
- * The equality check is the runtime backstop for design.md's Security
- * Considerations: `ApprovalReviewer` being its own interface makes it
- * impossible for the approving adapter to write content, but nothing at the
- * type level stops an operator from putting the *same secret* into both
- * workflow inputs. GitHub refuses a self-approval, so such a run could never
- * satisfy `.github/mergify.yml`'s `#approved-reviews-by >= 1` anyway — it
- * would just fail late and confusingly instead of early and clearly.
+ * The equality check is the runtime backstop for the identity separation:
+ * `ApprovalReviewer` being its own interface makes it impossible for the
+ * approving adapter to write content, but nothing at the type level stops
+ * an operator from putting the *same secret* into both workflow inputs.
+ * GitHub refuses a self-approval, so such a run could never satisfy
+ * `.github/mergify.yml`'s `#approved-reviews-by >= 1` anyway — it would
+ * just fail late and confusingly instead of early and clearly.
  */
 const readGitHubRunConfig = (
   env: NodeJS.ProcessEnv,
@@ -1094,11 +1054,11 @@ const readGitHubRunConfig = (
 };
 
 /**
- * `main()`'s real collaborators (task 5.2). The two publishers share one
- * base-ref resolver on purpose — see `createBaseRefResolver`'s doc comment:
- * both sync branches must be cut from the checkout's original commit, or the
+ * `main()`'s real collaborators. The two publishers share one base-ref
+ * resolver on purpose — see `createBaseRefResolver`'s doc comment: both
+ * sync branches must be cut from the checkout's original commit, or the
  * structural pull request would inherit the translation-only commit made
- * moments earlier and design.md's PR-granularity invariant would break.
+ * moments earlier.
  *
  * The approving identity is constructed from `approvalToken` alone and is
  * never handed `publishToken`; conversely the publishers are never handed
@@ -1131,15 +1091,15 @@ const createGitHubCollaborators = (
 /**
  * Process-entrypoint wrapper, mirroring `push-source.ts`'s `main()`: reads
  * the POEditor API token from `process.env`, runs `runPull`, prints the
- * outcome, and sets a non-zero exit code on failure (Requirement 8.1).
+ * outcome, and sets a non-zero exit code on failure.
  *
  * Accepts an optional `overrides` argument -- unlike `push-source.ts`'s
  * `main()`, which takes none -- specifically so tests can exercise this
- * function's own failure-aggregation/exit-code behavior (task 3.3's
- * observable completion criterion) with injected/mocked sub-functions,
- * without needing a real `POEDITOR_API_TOKEN` or GitHub credentials. A real
- * invocation (`main()`, no arguments) uses the real `PoeditorClient` and the
- * real GitHub adapters built by `createGitHubCollaborators`.
+ * function's own failure-aggregation/exit-code behavior with
+ * injected/mocked sub-functions, without needing a real
+ * `POEDITOR_API_TOKEN` or GitHub credentials. A real invocation (`main()`,
+ * no arguments) uses the real `PoeditorClient` and the real GitHub adapters
+ * built by `createGitHubCollaborators`.
  */
 export const main = async (
   overrides: Partial<
@@ -1194,12 +1154,9 @@ export const main = async (
 
   if (result.ok) {
     if (result.skipped.length > 0) {
-      // A skipped combination must never disappear silently (design.md
-      // "Error Handling > Error Categories and Responses" > 「不正な形式の
-      // exportデータ」; Requirement 8.1 「黙って結果をスキップしない」). The
-      // run still succeeds -- design.md requires the other combinations to
-      // keep going -- so this is a warning, not a failing exit code; the
-      // Monitoring section treats this GitHub Actions run log as the
+      // A skipped combination must never disappear silently. The run still
+      // succeeds -- the other combinations keep going -- so this is a
+      // warning, not a failing exit code; this GitHub Actions run log is the
       // maintainer-visible channel for it.
       // biome-ignore lint/suspicious/noConsole: this is a CI script, console output is expected.
       console.error(

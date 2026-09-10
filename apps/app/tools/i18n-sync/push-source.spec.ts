@@ -128,10 +128,9 @@ describe('runPush', () => {
   });
 
   it('stops uploading at the first upload failure and reports an upload_failed result, never reaching later namespaces', async () => {
-    // design.md's Error Strategy requires upload failures to abort the whole
-    // run just like read failures do — no partial reflection in POEditor.
-    // "admin" (1st) succeeds, "translation" (2nd) fails, and "commons" (3rd)
-    // must never be attempted.
+    // Upload failures must abort the whole run just like read failures do —
+    // no partial reflection in POEditor. "admin" (1st) succeeds,
+    // "translation" (2nd) fails, and "commons" (3rd) must never be attempted.
     const poeditorClient = mock<PoeditorClient>();
     const readNamespaceFile = vi.fn(
       async (absolutePath: string) => FILE_CONTENTS[absolutePath],
@@ -168,10 +167,10 @@ describe('runPush', () => {
   it('relies on PoeditorClient.uploadTerms itself to space out calls (no additional sleep is invoked by PushSourceSync)', async () => {
     // This is a documentation-style assertion: PushSourceSync must not add a
     // second, redundant throttle on top of PoeditorClient's own internal
-    // 20-second gap (design.md: PoeditorClient "responsibility"). Since
-    // `runPush` never receives or calls a `sleep` function at all, there is
-    // nothing here to fake — the absence of such a parameter is itself the
-    // guarantee. This test documents that intent and would fail to compile
+    // 20-second gap. Since `runPush` never receives or calls a `sleep`
+    // function at all, there is nothing here to fake — the absence of such a
+    // parameter is itself the guarantee. This test documents that intent and
+    // would fail to compile
     // if `RunPushOptions` ever grew a redundant sleep-injection parameter
     // that the implementation started calling directly instead of trusting
     // the client's own throttle.

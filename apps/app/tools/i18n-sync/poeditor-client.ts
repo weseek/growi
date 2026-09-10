@@ -1,31 +1,24 @@
 /**
- * PoeditorClient (design.md: Components and Interfaces > Sync Tooling >
- * PoeditorClient). A thin wrapper around the POEditor API v2's
- * upload/export/languages endpoints.
+ * A thin wrapper around the POEditor API v2's upload/export/languages
+ * endpoints.
  *
- * Responsibilities & constraints this file must uphold (design.md):
- * - The API token is injected by the caller (via `createPoeditorClient`'s
- *   `apiToken` parameter) — this file never reads `process.env` directly.
- *   Reading the env var is a Config layer concern, out of this task's
- *   boundary.
+ * - The API token is injected by the caller (`createPoeditorClient`'s
+ *   `apiToken`) — this file never reads `process.env` directly.
  * - `uploadTerms` enforces at least a 20-second gap between successive
- *   upload calls (POEditor's documented upload rate limit, research.md).
- *   The wait mechanism is injected as `sleep` so tests can fake it instead
- *   of actually waiting 20 real seconds.
+ *   upload calls (POEditor's documented upload rate limit). The wait is
+ *   injected as `sleep` so tests can fake it instead of waiting 20 real
+ *   seconds.
  * - `exportTranslations` resolves the download URL from POEditor, then
- *   fetches that URL itself and resolves to the downloaded file content —
- *   callers never see the intermediate URL.
- * - Errors are returned as a `Result<T, PoeditorApiError>` discriminated
- *   union rather than thrown; only a genuinely unexpected failure (a
- *   rejected/throwing fetch call) is caught and turned into a
- *   `network_error`, per design.md's Invariants ("呼び出し元は
- *   PoeditorApiError を握りつぶさず...").
+ *   fetches that URL itself so callers never see the intermediate URL.
+ * - Errors are returned as a `Result<T, PoeditorApiError>` rather than
+ *   thrown; only a genuinely unexpected failure (a rejected/throwing fetch
+ *   call) is caught and turned into a `network_error`.
  */
 
 const POEDITOR_API_BASE = 'https://api.poeditor.com/v2';
 
 // POEditor's documented upload rate limit: no more than one request every
-// 20 seconds (research.md).
+// 20 seconds.
 const UPLOAD_THROTTLE_MS = 20_000;
 
 export type Result<T, E> =
