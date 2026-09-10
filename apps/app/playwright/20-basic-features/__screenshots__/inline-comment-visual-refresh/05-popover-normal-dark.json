@@ -1,4 +1,20 @@
 {
+  "themeProbe": {
+    "light": {
+      "dataBsTheme": "light",
+      "bodyBackgroundColor": "rgb(255, 255, 255)",
+      "bodyColor": "rgb(64, 60, 57)",
+      "bsBodyBg": "white",
+      "bsBodyColor": "#403c39"
+    },
+    "dark": {
+      "dataBsTheme": "dark",
+      "bodyBackgroundColor": "rgb(28, 26, 26)",
+      "bodyColor": "rgb(230, 229, 227)",
+      "bsBodyBg": "#1c1a1a",
+      "bsBodyColor": "#e6e5e3"
+    }
+  },
   "elements": {
     "popover": {
       "rect": {
@@ -37,14 +53,14 @@
         "borderRightWidth": "1px",
         "borderBottomWidth": "1px",
         "borderLeftWidth": "1px",
-        "borderLeftColor": "rgba(0, 0, 0, 0.176)",
+        "borderLeftColor": "rgba(255, 255, 255, 0.15)",
         "borderLeftStyle": "solid",
         "borderTopLeftRadius": "6px",
         "borderTopRightRadius": "6px",
         "borderBottomRightRadius": "6px",
         "borderBottomLeftRadius": "6px",
-        "backgroundColor": "rgb(255, 255, 255)",
-        "color": "rgb(64, 60, 57)",
+        "backgroundColor": "rgb(28, 26, 26)",
+        "color": "rgb(230, 229, 227)",
         "fontSize": "16px",
         "lineHeight": "24px",
         "textAlign": "start",
@@ -64,7 +80,7 @@
         "borderRightWidth": "0px",
         "borderLeftWidth": "0px",
         "borderTopLeftRadius": "0px",
-        "borderTopColor": "rgb(64, 60, 57)"
+        "borderTopColor": "rgb(230, 229, 227)"
       }
     },
     "cardBody": {
@@ -104,14 +120,14 @@
         "borderRightWidth": "0px",
         "borderBottomWidth": "0px",
         "borderLeftWidth": "0px",
-        "borderLeftColor": "rgb(64, 60, 57)",
+        "borderLeftColor": "rgb(230, 229, 227)",
         "borderLeftStyle": "none",
         "borderTopLeftRadius": "0px",
         "borderTopRightRadius": "0px",
         "borderBottomRightRadius": "0px",
         "borderBottomLeftRadius": "0px",
         "backgroundColor": "rgba(0, 0, 0, 0)",
-        "color": "rgb(64, 60, 57)",
+        "color": "rgb(230, 229, 227)",
         "fontSize": "16px",
         "lineHeight": "24px",
         "textAlign": "start",
@@ -131,7 +147,7 @@
         "borderRightWidth": "0px",
         "borderLeftWidth": "0px",
         "borderTopLeftRadius": "0px",
-        "borderTopColor": "rgb(64, 60, 57)"
+        "borderTopColor": "rgb(230, 229, 227)"
       }
     },
     "closeButton": {
@@ -238,14 +254,14 @@
         "borderRightWidth": "1px",
         "borderBottomWidth": "1px",
         "borderLeftWidth": "1px",
-        "borderLeftColor": "rgb(239, 238, 237)",
+        "borderLeftColor": "rgb(77, 74, 72)",
         "borderLeftStyle": "solid",
         "borderTopLeftRadius": "6px",
         "borderTopRightRadius": "6px",
         "borderBottomRightRadius": "6px",
         "borderBottomLeftRadius": "6px",
-        "backgroundColor": "rgba(239, 238, 237, 0.5)",
-        "color": "rgb(64, 60, 57)",
+        "backgroundColor": "rgba(64, 60, 57, 0.3)",
+        "color": "rgb(230, 229, 227)",
         "fontSize": "16px",
         "lineHeight": "24px",
         "textAlign": "start",
@@ -305,14 +321,14 @@
         "borderRightWidth": "0px",
         "borderBottomWidth": "0px",
         "borderLeftWidth": "0px",
-        "borderLeftColor": "rgb(64, 60, 57)",
+        "borderLeftColor": "rgb(230, 229, 227)",
         "borderLeftStyle": "none",
         "borderTopLeftRadius": "0px",
         "borderTopRightRadius": "0px",
         "borderBottomRightRadius": "0px",
         "borderBottomLeftRadius": "0px",
         "backgroundColor": "rgba(0, 0, 0, 0)",
-        "color": "rgb(64, 60, 57)",
+        "color": "rgb(230, 229, 227)",
         "fontSize": "16px",
         "lineHeight": "24px",
         "textAlign": "start",
@@ -332,7 +348,7 @@
         "borderRightWidth": "0px",
         "borderLeftWidth": "0px",
         "borderTopLeftRadius": "0px",
-        "borderTopColor": "rgb(64, 60, 57)"
+        "borderTopColor": "rgb(230, 229, 227)"
       }
     },
     "avatar": {
@@ -372,14 +388,14 @@
         "borderRightWidth": "0px",
         "borderBottomWidth": "0px",
         "borderLeftWidth": "0px",
-        "borderLeftColor": "rgb(64, 60, 57)",
+        "borderLeftColor": "rgb(230, 229, 227)",
         "borderLeftStyle": "none",
         "borderTopLeftRadius": "50%",
         "borderTopRightRadius": "50%",
         "borderBottomRightRadius": "50%",
         "borderBottomLeftRadius": "50%",
         "backgroundColor": "rgba(0, 0, 0, 0)",
-        "color": "rgb(64, 60, 57)",
+        "color": "rgb(230, 229, 227)",
         "fontSize": "16px",
         "lineHeight": "24px",
         "textAlign": "start",
@@ -399,7 +415,7 @@
         "borderRightWidth": "0px",
         "borderLeftWidth": "0px",
         "borderTopLeftRadius": "0px",
-        "borderTopColor": "rgb(64, 60, 57)"
+        "borderTopColor": "rgb(230, 229, 227)"
       }
     },
     "username": {
@@ -439,14 +455,14 @@
         "borderRightWidth": "0px",
         "borderBottomWidth": "0px",
         "borderLeftWidth": "0px",
-        "borderLeftColor": "rgb(64, 60, 57)",
+        "borderLeftColor": "rgb(230, 229, 227)",
         "borderLeftStyle": "none",
         "borderTopLeftRadius": "0px",
         "borderTopRightRadius": "0px",
         "borderBottomRightRadius": "0px",
         "borderBottomLeftRadius": "0px",
         "backgroundColor": "rgba(0, 0, 0, 0)",
-        "color": "rgb(64, 60, 57)",
+        "color": "rgb(230, 229, 227)",
         "fontSize": "14px",
         "lineHeight": "21px",
         "textAlign": "start",
@@ -466,7 +482,7 @@
         "borderRightWidth": "0px",
         "borderLeftWidth": "0px",
         "borderTopLeftRadius": "0px",
-        "borderTopColor": "rgb(64, 60, 57)"
+        "borderTopColor": "rgb(230, 229, 227)"
       }
     },
     "createdAt": {
@@ -506,14 +522,14 @@
         "borderRightWidth": "0px",
         "borderBottomWidth": "0px",
         "borderLeftWidth": "0px",
-        "borderLeftColor": "rgb(67, 66, 64)",
+        "borderLeftColor": "rgb(178, 176, 174)",
         "borderLeftStyle": "none",
         "borderTopLeftRadius": "0px",
         "borderTopRightRadius": "0px",
         "borderBottomRightRadius": "0px",
         "borderBottomLeftRadius": "0px",
         "backgroundColor": "rgba(0, 0, 0, 0)",
-        "color": "rgb(67, 66, 64)",
+        "color": "rgb(178, 176, 174)",
         "fontSize": "14px",
         "lineHeight": "21px",
         "textAlign": "start",
@@ -533,7 +549,7 @@
         "borderRightWidth": "0px",
         "borderLeftWidth": "0px",
         "borderTopLeftRadius": "0px",
-        "borderTopColor": "rgb(67, 66, 64)"
+        "borderTopColor": "rgb(178, 176, 174)"
       }
     },
     "headerEnd": {
@@ -573,14 +589,14 @@
         "borderRightWidth": "0px",
         "borderBottomWidth": "0px",
         "borderLeftWidth": "0px",
-        "borderLeftColor": "rgb(64, 60, 57)",
+        "borderLeftColor": "rgb(230, 229, 227)",
         "borderLeftStyle": "none",
         "borderTopLeftRadius": "0px",
         "borderTopRightRadius": "0px",
         "borderBottomRightRadius": "0px",
         "borderBottomLeftRadius": "0px",
         "backgroundColor": "rgba(0, 0, 0, 0)",
-        "color": "rgb(64, 60, 57)",
+        "color": "rgb(230, 229, 227)",
         "fontSize": "16px",
         "lineHeight": "24px",
         "textAlign": "start",
@@ -600,7 +616,7 @@
         "borderRightWidth": "0px",
         "borderLeftWidth": "0px",
         "borderTopLeftRadius": "0px",
-        "borderTopColor": "rgb(64, 60, 57)"
+        "borderTopColor": "rgb(230, 229, 227)"
       }
     },
     "editButton": {
@@ -647,7 +663,7 @@
         "borderBottomRightRadius": "50%",
         "borderBottomLeftRadius": "50%",
         "backgroundColor": "rgba(0, 0, 0, 0)",
-        "color": "rgb(67, 66, 64)",
+        "color": "rgb(178, 176, 174)",
         "fontSize": "16px",
         "lineHeight": "24px",
         "textAlign": "center",
@@ -667,7 +683,7 @@
         "borderRightWidth": "0px",
         "borderLeftWidth": "0px",
         "borderTopLeftRadius": "0px",
-        "borderTopColor": "rgb(67, 66, 64)"
+        "borderTopColor": "rgb(178, 176, 174)"
       }
     },
     "statusBadge": {
@@ -707,14 +723,14 @@
         "borderRightWidth": "0px",
         "borderBottomWidth": "0px",
         "borderLeftWidth": "0px",
-        "borderLeftColor": "rgb(152, 117, 26)",
+        "borderLeftColor": "rgb(255, 218, 106)",
         "borderLeftStyle": "none",
         "borderTopLeftRadius": "800px",
         "borderTopRightRadius": "800px",
         "borderBottomRightRadius": "800px",
         "borderBottomLeftRadius": "800px",
-        "backgroundColor": "rgb(250, 245, 232)",
-        "color": "rgb(152, 117, 26)",
+        "backgroundColor": "rgb(51, 39, 1)",
+        "color": "rgb(255, 218, 106)",
         "fontSize": "12px",
         "lineHeight": "12px",
         "textAlign": "center",
@@ -729,12 +745,12 @@
         "width": "6px",
         "height": "6px",
         "marginRight": "4px",
-        "backgroundColor": "rgb(152, 117, 26)",
+        "backgroundColor": "rgb(255, 218, 106)",
         "borderTopWidth": "0px",
         "borderRightWidth": "0px",
         "borderLeftWidth": "0px",
         "borderTopLeftRadius": "50%",
-        "borderTopColor": "rgb(152, 117, 26)"
+        "borderTopColor": "rgb(255, 218, 106)"
       }
     },
     "resolveToggle": {
@@ -774,13 +790,13 @@
         "borderRightWidth": "1px",
         "borderBottomWidth": "1px",
         "borderLeftWidth": "1px",
-        "borderLeftColor": "rgb(118, 115, 113)",
+        "borderLeftColor": "rgb(78, 75, 72)",
         "borderLeftStyle": "solid",
         "borderTopLeftRadius": "800px",
         "borderTopRightRadius": "800px",
         "borderBottomRightRadius": "800px",
         "borderBottomLeftRadius": "800px",
-        "backgroundColor": "rgb(241, 241, 241)",
+        "backgroundColor": "rgb(50, 47, 42)",
         "color": "rgb(118, 115, 113)",
         "fontSize": "14px",
         "lineHeight": "21px",
@@ -841,14 +857,14 @@
         "borderRightWidth": "0px",
         "borderBottomWidth": "0px",
         "borderLeftWidth": "3px",
-        "borderLeftColor": "rgb(255, 250, 144)",
+        "borderLeftColor": "rgb(136, 128, 0)",
         "borderLeftStyle": "solid",
         "borderTopLeftRadius": "0px",
         "borderTopRightRadius": "6px",
         "borderBottomRightRadius": "6px",
         "borderBottomLeftRadius": "0px",
-        "backgroundColor": "rgb(250, 249, 248)",
-        "color": "rgba(64, 60, 57, 0.75)",
+        "backgroundColor": "rgb(51, 48, 44)",
+        "color": "rgba(230, 229, 227, 0.75)",
         "fontSize": "14px",
         "lineHeight": "21px",
         "textAlign": "start",
@@ -868,7 +884,7 @@
         "borderRightWidth": "0px",
         "borderLeftWidth": "0px",
         "borderTopLeftRadius": "0px",
-        "borderTopColor": "rgba(64, 60, 57, 0.75)"
+        "borderTopColor": "rgba(230, 229, 227, 0.75)"
       }
     },
     "body": {
@@ -908,14 +924,14 @@
         "borderRightWidth": "0px",
         "borderBottomWidth": "0px",
         "borderLeftWidth": "0px",
-        "borderLeftColor": "rgb(64, 60, 57)",
+        "borderLeftColor": "rgb(230, 229, 227)",
         "borderLeftStyle": "none",
         "borderTopLeftRadius": "0px",
         "borderTopRightRadius": "0px",
         "borderBottomRightRadius": "0px",
         "borderBottomLeftRadius": "0px",
         "backgroundColor": "rgba(0, 0, 0, 0)",
-        "color": "rgb(64, 60, 57)",
+        "color": "rgb(230, 229, 227)",
         "fontSize": "16px",
         "lineHeight": "24px",
         "textAlign": "start",
@@ -935,7 +951,7 @@
         "borderRightWidth": "0px",
         "borderLeftWidth": "0px",
         "borderTopLeftRadius": "0px",
-        "borderTopColor": "rgb(64, 60, 57)"
+        "borderTopColor": "rgb(230, 229, 227)"
       }
     },
     "firstDivider": {
@@ -975,14 +991,14 @@
         "borderRightWidth": "0px",
         "borderBottomWidth": "0px",
         "borderLeftWidth": "0px",
-        "borderLeftColor": "rgb(64, 60, 57)",
+        "borderLeftColor": "rgb(230, 229, 227)",
         "borderLeftStyle": "none",
         "borderTopLeftRadius": "0px",
         "borderTopRightRadius": "0px",
         "borderBottomRightRadius": "0px",
         "borderBottomLeftRadius": "0px",
         "backgroundColor": "rgba(0, 0, 0, 0)",
-        "color": "rgb(64, 60, 57)",
+        "color": "rgb(230, 229, 227)",
         "fontSize": "16px",
         "lineHeight": "24px",
         "textAlign": "start",
@@ -1002,7 +1018,7 @@
         "borderRightWidth": "0px",
         "borderLeftWidth": "0px",
         "borderTopLeftRadius": "0px",
-        "borderTopColor": "rgb(64, 60, 57)"
+        "borderTopColor": "rgb(230, 229, 227)"
       }
     },
     "replies": {
@@ -1042,14 +1058,14 @@
         "borderRightWidth": "0px",
         "borderBottomWidth": "0px",
         "borderLeftWidth": "1px",
-        "borderLeftColor": "rgb(231, 231, 229)",
+        "borderLeftColor": "rgb(67, 66, 64)",
         "borderLeftStyle": "solid",
         "borderTopLeftRadius": "0px",
         "borderTopRightRadius": "0px",
         "borderBottomRightRadius": "0px",
         "borderBottomLeftRadius": "0px",
         "backgroundColor": "rgba(0, 0, 0, 0)",
-        "color": "rgb(64, 60, 57)",
+        "color": "rgb(230, 229, 227)",
         "fontSize": "16px",
         "lineHeight": "24px",
         "textAlign": "start",
@@ -1069,7 +1085,7 @@
         "borderRightWidth": "0px",
         "borderLeftWidth": "0px",
         "borderTopLeftRadius": "0px",
-        "borderTopColor": "rgb(64, 60, 57)"
+        "borderTopColor": "rgb(230, 229, 227)"
       }
     },
     "firstReply": {
@@ -1109,14 +1125,14 @@
         "borderRightWidth": "0px",
         "borderBottomWidth": "0px",
         "borderLeftWidth": "0px",
-        "borderLeftColor": "rgb(64, 60, 57)",
+        "borderLeftColor": "rgb(230, 229, 227)",
         "borderLeftStyle": "none",
         "borderTopLeftRadius": "0px",
         "borderTopRightRadius": "0px",
         "borderBottomRightRadius": "0px",
         "borderBottomLeftRadius": "0px",
         "backgroundColor": "rgba(0, 0, 0, 0)",
-        "color": "rgb(64, 60, 57)",
+        "color": "rgb(230, 229, 227)",
         "fontSize": "16px",
         "lineHeight": "24px",
         "textAlign": "start",
@@ -1136,7 +1152,7 @@
         "borderRightWidth": "0px",
         "borderLeftWidth": "0px",
         "borderTopLeftRadius": "0px",
-        "borderTopColor": "rgb(64, 60, 57)"
+        "borderTopColor": "rgb(230, 229, 227)"
       }
     },
     "firstReplyAvatar": {
@@ -1176,14 +1192,14 @@
         "borderRightWidth": "0px",
         "borderBottomWidth": "0px",
         "borderLeftWidth": "0px",
-        "borderLeftColor": "rgb(64, 60, 57)",
+        "borderLeftColor": "rgb(230, 229, 227)",
         "borderLeftStyle": "none",
         "borderTopLeftRadius": "50%",
         "borderTopRightRadius": "50%",
         "borderBottomRightRadius": "50%",
         "borderBottomLeftRadius": "50%",
         "backgroundColor": "rgba(0, 0, 0, 0)",
-        "color": "rgb(64, 60, 57)",
+        "color": "rgb(230, 229, 227)",
         "fontSize": "16px",
         "lineHeight": "24px",
         "textAlign": "start",
@@ -1203,7 +1219,7 @@
         "borderRightWidth": "0px",
         "borderLeftWidth": "0px",
         "borderTopLeftRadius": "0px",
-        "borderTopColor": "rgb(64, 60, 57)"
+        "borderTopColor": "rgb(230, 229, 227)"
       }
     },
     "firstReplyUsername": {
@@ -1243,14 +1259,14 @@
         "borderRightWidth": "0px",
         "borderBottomWidth": "0px",
         "borderLeftWidth": "0px",
-        "borderLeftColor": "rgb(64, 60, 57)",
+        "borderLeftColor": "rgb(230, 229, 227)",
         "borderLeftStyle": "none",
         "borderTopLeftRadius": "0px",
         "borderTopRightRadius": "0px",
         "borderBottomRightRadius": "0px",
         "borderBottomLeftRadius": "0px",
         "backgroundColor": "rgba(0, 0, 0, 0)",
-        "color": "rgb(64, 60, 57)",
+        "color": "rgb(230, 229, 227)",
         "fontSize": "14px",
         "lineHeight": "21px",
         "textAlign": "start",
@@ -1270,7 +1286,7 @@
         "borderRightWidth": "0px",
         "borderLeftWidth": "0px",
         "borderTopLeftRadius": "0px",
-        "borderTopColor": "rgb(64, 60, 57)"
+        "borderTopColor": "rgb(230, 229, 227)"
       }
     },
     "firstReplyBody": {
@@ -1310,14 +1326,14 @@
         "borderRightWidth": "0px",
         "borderBottomWidth": "0px",
         "borderLeftWidth": "0px",
-        "borderLeftColor": "rgb(64, 60, 57)",
+        "borderLeftColor": "rgb(230, 229, 227)",
         "borderLeftStyle": "none",
         "borderTopLeftRadius": "0px",
         "borderTopRightRadius": "0px",
         "borderBottomRightRadius": "0px",
         "borderBottomLeftRadius": "0px",
         "backgroundColor": "rgba(0, 0, 0, 0)",
-        "color": "rgb(64, 60, 57)",
+        "color": "rgb(230, 229, 227)",
         "fontSize": "16px",
         "lineHeight": "24px",
         "textAlign": "start",
@@ -1337,7 +1353,7 @@
         "borderRightWidth": "0px",
         "borderLeftWidth": "0px",
         "borderTopLeftRadius": "0px",
-        "borderTopColor": "rgb(64, 60, 57)"
+        "borderTopColor": "rgb(230, 229, 227)"
       }
     },
     "secondReply": {
@@ -1377,14 +1393,14 @@
         "borderRightWidth": "0px",
         "borderBottomWidth": "0px",
         "borderLeftWidth": "0px",
-        "borderLeftColor": "rgb(64, 60, 57)",
+        "borderLeftColor": "rgb(230, 229, 227)",
         "borderLeftStyle": "none",
         "borderTopLeftRadius": "0px",
         "borderTopRightRadius": "0px",
         "borderBottomRightRadius": "0px",
         "borderBottomLeftRadius": "0px",
         "backgroundColor": "rgba(0, 0, 0, 0)",
-        "color": "rgb(64, 60, 57)",
+        "color": "rgb(230, 229, 227)",
         "fontSize": "16px",
         "lineHeight": "24px",
         "textAlign": "start",
@@ -1404,7 +1420,7 @@
         "borderRightWidth": "0px",
         "borderLeftWidth": "0px",
         "borderTopLeftRadius": "0px",
-        "borderTopColor": "rgb(64, 60, 57)"
+        "borderTopColor": "rgb(230, 229, 227)"
       }
     },
     "closeButtonInHeader": {
@@ -1511,14 +1527,14 @@
         "borderRightWidth": "0px",
         "borderBottomWidth": "0px",
         "borderLeftWidth": "0px",
-        "borderLeftColor": "rgb(64, 60, 57)",
+        "borderLeftColor": "rgb(230, 229, 227)",
         "borderLeftStyle": "none",
         "borderTopLeftRadius": "0px",
         "borderTopRightRadius": "0px",
         "borderBottomRightRadius": "0px",
         "borderBottomLeftRadius": "0px",
         "backgroundColor": "rgba(0, 0, 0, 0)",
-        "color": "rgb(64, 60, 57)",
+        "color": "rgb(230, 229, 227)",
         "fontSize": "16px",
         "lineHeight": "24px",
         "textAlign": "start",
@@ -1538,7 +1554,7 @@
         "borderRightWidth": "0px",
         "borderLeftWidth": "0px",
         "borderTopLeftRadius": "0px",
-        "borderTopColor": "rgb(64, 60, 57)"
+        "borderTopColor": "rgb(230, 229, 227)"
       }
     },
     "replyFormAvatar": {
@@ -1578,14 +1594,14 @@
         "borderRightWidth": "0px",
         "borderBottomWidth": "0px",
         "borderLeftWidth": "0px",
-        "borderLeftColor": "rgb(64, 60, 57)",
+        "borderLeftColor": "rgb(230, 229, 227)",
         "borderLeftStyle": "none",
         "borderTopLeftRadius": "50%",
         "borderTopRightRadius": "50%",
         "borderBottomRightRadius": "50%",
         "borderBottomLeftRadius": "50%",
         "backgroundColor": "rgba(0, 0, 0, 0)",
-        "color": "rgb(64, 60, 57)",
+        "color": "rgb(230, 229, 227)",
         "fontSize": "16px",
         "lineHeight": "24px",
         "textAlign": "start",
@@ -1605,7 +1621,7 @@
         "borderRightWidth": "0px",
         "borderLeftWidth": "0px",
         "borderTopLeftRadius": "0px",
-        "borderTopColor": "rgb(64, 60, 57)"
+        "borderTopColor": "rgb(230, 229, 227)"
       }
     },
     "replyFormInput": {
@@ -1645,14 +1661,14 @@
         "borderRightWidth": "1px",
         "borderBottomWidth": "1px",
         "borderLeftWidth": "1px",
-        "borderLeftColor": "rgb(231, 231, 229)",
+        "borderLeftColor": "rgb(67, 66, 64)",
         "borderLeftStyle": "solid",
         "borderTopLeftRadius": "800px",
         "borderTopRightRadius": "800px",
         "borderBottomRightRadius": "800px",
         "borderBottomLeftRadius": "800px",
-        "backgroundColor": "rgb(255, 255, 255)",
-        "color": "rgb(64, 60, 57)",
+        "backgroundColor": "rgb(28, 26, 26)",
+        "color": "rgb(230, 229, 227)",
         "fontSize": "16px",
         "lineHeight": "24px",
         "textAlign": "start",
@@ -1672,7 +1688,7 @@
         "borderRightWidth": "0px",
         "borderLeftWidth": "0px",
         "borderTopLeftRadius": "0px",
-        "borderTopColor": "rgb(64, 60, 57)"
+        "borderTopColor": "rgb(230, 229, 227)"
       }
     },
     "replyFormSubmit": {
@@ -1759,7 +1775,7 @@
         "marginTop": "8px",
         "marginBottom": "8px",
         "borderTopWidth": "1px",
-        "color": "rgb(64, 60, 57)",
+        "color": "rgb(230, 229, 227)",
         "opacity": "0.25"
       },
       {
@@ -1769,7 +1785,7 @@
         "marginTop": "8px",
         "marginBottom": "8px",
         "borderTopWidth": "1px",
-        "color": "rgb(64, 60, 57)",
+        "color": "rgb(230, 229, 227)",
         "opacity": "0.25"
       }
     ]

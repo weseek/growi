@@ -4562,4 +4562,250 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
       'Unresolved',
     );
   });
+
+  // --- Task 4.2: the same 6 states, captured in dark mode -------------------
+  // Requirement 4.4 asks whether the semantic color classes this spec uses
+  // (`bg-warning-subtle`/`text-warning-emphasis` on the unresolved badge,
+  // `bg-success-subtle`/`text-success-emphasis` on the resolved one,
+  // `alert-danger` on the delete confirmation) keep their intended role in
+  // BOTH color modes. The two tests below re-capture the same 6 states the
+  // light-mode tests above capture, with `data-bs-theme="dark"` set, and dump
+  // the same measured values so the light/dark colors can be compared value
+  // by value rather than eyeballed.
+
+  /**
+   * Same technique (and same rationale) as the visual-consistency suite's own
+   * `setBsTheme` further up this file: `data-bs-theme` on `<html>` is the
+   * exact attribute Bootstrap's `color-mode` mixin keys its dark rule set off
+   * (`[data-bs-theme="dark"] { ... }`), and nothing was observed to overwrite
+   * it once written. Kept as this block's own copy because that helper is
+   * scoped inside the other `describe`.
+   */
+  const setBsTheme = async (
+    targetPage: Page,
+    theme: 'light' | 'dark',
+  ): Promise<void> => {
+    await targetPage.evaluate((t) => {
+      document.documentElement.setAttribute('data-bs-theme', t);
+    }, theme);
+  };
+
+  /**
+   * The page-level colors the whole Bootstrap theme hangs off. Read in light
+   * and again in dark, they are the guard that the theme switch ACTUALLY took
+   * effect: without it, a run where `data-bs-theme` never reached the
+   * stylesheet would silently produce six light-looking screenshots and every
+   * "dark mode is fine" claim built on them would be unfalsifiable — exactly
+   * the failure mode this spec exists to prevent.
+   */
+  const readThemeProbe = (targetPage: Page): Promise<Record<string, string>> =>
+    targetPage.evaluate(() => {
+      const rootStyle = window.getComputedStyle(document.documentElement);
+      const bodyStyle = window.getComputedStyle(document.body);
+      return {
+        dataBsTheme:
+          document.documentElement.getAttribute('data-bs-theme') ?? '(unset)',
+        bodyBackgroundColor: bodyStyle.backgroundColor,
+        bodyColor: bodyStyle.color,
+        bsBodyBg: rootStyle.getPropertyValue('--bs-body-bg').trim(),
+        bsBodyColor: rootStyle.getPropertyValue('--bs-body-color').trim(),
+      };
+    });
+
+  /**
+   * Switches the page to dark mode and returns the light/dark page-level
+   * probe pair, having asserted that the two differ.
+   */
+  const switchToDarkMode = async (
+    targetPage: Page,
+  ): Promise<{
+    light: Record<string, string>;
+    dark: Record<string, string>;
+  }> => {
+    await setBsTheme(targetPage, 'light');
+    const light = await readThemeProbe(targetPage);
+    await setBsTheme(targetPage, 'dark');
+    const dark = await readThemeProbe(targetPage);
+
+    expect(dark.dataBsTheme).toBe('dark');
+    expect(dark.bodyBackgroundColor).not.toBe(light.bodyBackgroundColor);
+    expect(dark.bodyColor).not.toBe(light.bodyColor);
+
+    return { light, dark };
+  };
+
+  test('Capture popover states 5 (normal) and 6 (edit mode) in DARK mode (Req 4.4)', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(visualRefreshPagePath(testInfo.retry));
+    await disableCssTransitions(page);
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+    const themeProbe = await switchToDarkMode(page);
+
+    await expect
+      .poll(async () =>
+        page.evaluate(
+          () => CSS.highlights.get('growi-inline-comment')?.size ?? 0,
+        ),
+      )
+      .toBeGreaterThan(0);
+
+    await clickText(page, targetSentence);
+    const popover = page.getByTestId('inline-comment-preview-popover');
+    await expect(popover).toBeVisible();
+    await expect(popover).toContainText(originCommentText);
+
+    fs.mkdirSync(evidenceDir, { recursive: true });
+    await popover.screenshot({
+      path: path.join(evidenceDir, '05-popover-normal-dark.png'),
+    });
+    writeMetrics('05-popover-normal-dark', {
+      themeProbe,
+      elements: await collectMetrics(
+        page,
+        '[data-testid="inline-comment-preview-popover"]',
+        POPOVER_TARGETS,
+      ),
+      dividers: await collectDividers(page),
+    });
+
+    await popover
+      .getByTestId('inline-comment-preview-popover-edit-button')
+      .click();
+    const editForm = popover.getByTestId(
+      'inline-comment-preview-popover-edit-form',
+    );
+    await expect(editForm).toBeVisible();
+    await expect(editForm.locator('.cm-content')).toBeVisible();
+    // Same KNOWN BUG as in the light-mode capture above: `.cm-content` never
+    // receives `initialValue` in a real browser, so this input renders empty
+    // and the Save button renders disabled. Pre-existing and unrelated to the
+    // color mode -- do NOT read it as a dark-mode defect.
+
+    await popover.screenshot({
+      path: path.join(evidenceDir, '06-popover-edit-dark.png'),
+    });
+    writeMetrics('06-popover-edit-dark', {
+      themeProbe,
+      elements: await collectMetrics(
+        page,
+        '[data-testid="inline-comment-preview-popover"]',
+        POPOVER_TARGETS,
+      ),
+      dividers: await collectDividers(page),
+    });
+  });
+
+  test('Capture list-item states 1-4 in DARK mode (Req 4.4)', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(visualRefreshPagePath(testInfo.retry));
+    await disableCssTransitions(page);
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+    const themeProbe = await switchToDarkMode(page);
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+    const card = item.locator('.page-comment').first();
+    const editButton = item.getByTestId('inline-comment-edit-button');
+    const deleteButton = item.getByTestId('inline-comment-delete-button');
+
+    fs.mkdirSync(evidenceDir, { recursive: true });
+
+    // --- State 1: normal (unresolved), hovered so the edit/delete icons show ---
+    await card.scrollIntoViewIfNeeded();
+    await card.hover();
+    await expect(editButton).toBeVisible();
+    await expect(deleteButton).toBeVisible();
+
+    await card.screenshot({
+      path: path.join(evidenceDir, '01-list-normal-dark.png'),
+    });
+    await page.screenshot({
+      path: path.join(evidenceDir, '01-list-normal-fullpage-dark.png'),
+      fullPage: true,
+    });
+    writeMetrics('01-list-normal-dark', {
+      themeProbe,
+      elements: await collectMetrics(
+        page,
+        '[data-testid="inline-comment-item"]',
+        LIST_TARGETS,
+      ),
+    });
+
+    // --- State 2: edit mode ---
+    await editButton.click();
+    const editForm = item.locator('.inline-comment-edit-form');
+    await expect(editForm).toBeVisible();
+    await expect(editForm.locator('.cm-content')).toBeVisible();
+    await card.hover();
+
+    await card.screenshot({
+      path: path.join(evidenceDir, '02-list-edit-dark.png'),
+    });
+    writeMetrics('02-list-edit-dark', {
+      themeProbe,
+      elements: await collectMetrics(
+        page,
+        '[data-testid="inline-comment-item"]',
+        LIST_TARGETS,
+      ),
+    });
+
+    await item.getByTestId('inline-comment-edit-cancel-button').click();
+    await expect(editForm).not.toBeVisible();
+
+    // --- State 3: delete confirmation (cancelled again right afterwards) ---
+    await card.hover();
+    await expect(deleteButton).toBeVisible();
+    await deleteButton.click();
+    const deleteConfirm = item.getByTestId('inline-comment-delete-confirm');
+    await expect(deleteConfirm).toBeVisible();
+    await card.hover();
+
+    await card.screenshot({
+      path: path.join(evidenceDir, '03-list-delete-confirm-dark.png'),
+    });
+    writeMetrics('03-list-delete-confirm-dark', {
+      themeProbe,
+      elements: await collectMetrics(
+        page,
+        '[data-testid="inline-comment-item"]',
+        LIST_TARGETS,
+      ),
+    });
+
+    await item.getByTestId('inline-comment-delete-cancel-button').click();
+    await expect(deleteConfirm).not.toBeVisible();
+
+    // --- State 4: resolved ---
+    await item.getByRole('button', { name: 'Resolve', exact: true }).click();
+    await expect(item.getByTestId('inline-comment-status')).toHaveText(
+      'Resolved',
+    );
+    await card.scrollIntoViewIfNeeded();
+    await card.hover();
+    await expect(editButton).toBeVisible();
+
+    await card.screenshot({
+      path: path.join(evidenceDir, '04-list-resolved-dark.png'),
+    });
+    writeMetrics('04-list-resolved-dark', {
+      themeProbe,
+      elements: await collectMetrics(
+        page,
+        '[data-testid="inline-comment-item"]',
+        LIST_TARGETS,
+      ),
+    });
+
+    // Same reasoning as the light-mode capture: leave the comment unresolved
+    // so a retry of this serial group starts from the state the setup tests
+    // created.
+    await item.getByRole('button', { name: 'Reopen', exact: true }).click();
+    await expect(item.getByTestId('inline-comment-status')).toHaveText(
+      'Unresolved',
+    );
+  });
 });
