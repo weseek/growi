@@ -1,29 +1,17 @@
 /**
- * SyncConfig (design.md: Components and Interfaces > Sync Tooling >
- * SyncConfig). The single source of truth for the namespace <-> POEditor
- * project ID mapping, and for resolving a namespace's locale file path.
- *
- * `PushSourceSync` / `PullTranslationSync` read `SYNC_TARGETS` and never
- * hard-code a namespace name or project ID themselves (coding-style.md's
- * Executor pattern: executors take their work-set as input).
- *
- * This module has no dependencies on any other component in this feature —
- * it is the base of the dependency chain (design.md: "依存方向: SyncConfig
- * -> PoeditorClient -> PushSourceSync / PullTranslationSync").
+ * The single source of truth for the namespace <-> POEditor project ID
+ * mapping. `PushSourceSync` / `PullTranslationSync` read `SYNC_TARGETS`
+ * rather than hard-coding a namespace name or project ID themselves.
  */
 
 export interface NamespaceSyncEntry {
   readonly namespace: 'admin' | 'translation' | 'commons';
   /**
-   * POEditor project ID for this namespace's dedicated project (design.md:
-   * "namespace ごとに POEditor プロジェクトを1つ割り当てる"). Public,
-   * non-secret data — safe to commit (design.md State Management: "POEditor
-   * プロジェクトIDは公開してよい情報（トークンではない）").
+   * POEditor project ID for this namespace's dedicated project. Public,
+   * non-secret data — safe to commit (it is not a token).
    *
-   * Note (POEditor provisioning, tracked as a separate operational task —
-   * design.md "Operational Prerequisites"): these are placeholder values.
-   * The 3 POEditor projects have not been created yet, so no real project
-   * ID exists. Replace with the real IDs once
+   * Placeholder value: the 3 POEditor projects have not been created yet.
+   * Replace with the real IDs once
    * `docs/i18n-community-translation-setup.md`'s provisioning steps run.
    */
   readonly poeditorProjectId: string;
@@ -44,11 +32,8 @@ const buildLocaleFilePath = (
 /**
  * The 3 real namespaces the repository has locale files for
  * (`admin.json` / `translation.json` / `commons.json`), each mapped to its
- * own POEditor project (Requirement 2.1). `translation` is included here,
- * which is what carries `packages/editor`'s `toolbar.*` keys into the same
- * sync range as the rest of apps/app's translation keys (Requirement 6.1) —
- * those keys already live inside `translation.json`, so no separate
- * declaration is needed for them.
+ * own POEditor project. `packages/editor`'s `toolbar.*` keys already live
+ * inside `translation.json`, so they need no separate declaration here.
  */
 export const SYNC_TARGETS: readonly NamespaceSyncEntry[] = [
   {

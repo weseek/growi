@@ -1,27 +1,17 @@
 /**
- * PushSourceSync (design.md: Components and Interfaces > Sync Tooling >
- * PushSourceSync（CLI）). Reads the en_US (source language) locale file for
- * each namespace declared in `SyncConfig` and pushes it to that namespace's
- * POEditor project via `PoeditorClient.uploadTerms`.
+ * Reads the en_US (source language) locale file for each namespace declared
+ * in `SyncConfig` and pushes it to that namespace's POEditor project via
+ * `PoeditorClient.uploadTerms`.
  *
- * Responsibilities & constraints this file must uphold (design.md):
- * - Read every namespace file first, then upload. If any namespace file
- *   fails to read, abort the whole run and call `uploadTerms` zero times
- *   (Requirement 2.3, 8.1: no partial reflection — a namespace must never
- *   be silently skipped, and a failure must never let some namespaces sync
- *   while others don't).
- * - Upload sequentially, once per namespace declared in `SYNC_TARGETS`. The
- *   at-least-20-second gap between uploads is already enforced inside
- *   `PoeditorClient.uploadTerms` itself (its internal throttle, injectable
- *   via `sleep` for tests) — this file must not duplicate that wait.
- * - Follows the dependency direction SyncConfig -> PoeditorClient ->
- *   PushSourceSync (design.md "依存方向"): this file reads `SYNC_TARGETS`
- *   and calls `PoeditorClient`, never the reverse.
+ * - Reads every namespace file first, then uploads. If any namespace file
+ *   fails to read, the whole run aborts and `uploadTerms` is called zero
+ *   times — a namespace must never sync while another silently fails.
+ * - Uploads sequentially, once per namespace. The at-least-20-second gap
+ *   between uploads is already enforced inside `PoeditorClient.uploadTerms`
+ *   itself, so this file must not duplicate that wait.
  * - The POEditor API token is read from `process.env` only in the
  *   process-entrypoint wrapper (`main`), never inside `runPush` itself, so
- *   the pure orchestration logic stays testable without touching env vars
- *   (mirrors apps/app/tools/i18n-audit/run-audit.ts's two-execution-mode
- *   pattern).
+ *   the orchestration logic stays testable without touching env vars.
  */
 
 import { readFile } from 'node:fs/promises';
@@ -35,7 +25,7 @@ import {
 } from './poeditor-client.ts';
 import { type NamespaceSyncEntry, SYNC_TARGETS } from './sync-config.ts';
 
-/** The language this CLI pushes: en_US is GROWI's source language (Requirement 2.1). */
+/** The language this CLI pushes: en_US is GROWI's source language. */
 export const SOURCE_LANGUAGE = 'en_US';
 
 /** Injectable file-reading function, so tests can simulate a read failure without touching the real filesystem. */
@@ -87,9 +77,9 @@ const APP_ROOT = fileURLToPath(new URL('../../', import.meta.url));
 /**
  * Reads every declared namespace's en_US file first, then uploads them all
  * sequentially. Reading everything before uploading anything is what makes
- * the "abort before any upload" guarantee (Requirement 2.3) hold cleanly:
- * there is no interleaved read+upload step where a later read failure could
- * leave an earlier namespace already pushed.
+ * the "abort before any upload" guarantee hold cleanly: there is no
+ * interleaved read+upload step where a later read failure could leave an
+ * earlier namespace already pushed.
  */
 export const runPush = async (options: RunPushOptions): Promise<PushResult> => {
   const targets = options.targets ?? SYNC_TARGETS;
@@ -127,21 +117,17 @@ export const runPush = async (options: RunPushOptions): Promise<PushResult> => {
     return { ok: false, reason: 'read_failed', failures: readFailures };
   }
 
-  // Upload sequentially and stop at the first failure. design.md's Error
-  // Strategy ("一部のnamespaceで失敗した場合は残りを継続せず、ワークフロー
-  // 全体を失敗として終了する") and PoeditorClient's Invariants both require
-  // this to be symmetric with the read-failure path above: a namespace must
-  // never be pushed while a preceding one is known to have failed, so a
-  // partial reflection in POEditor (some namespaces updated, some not) can
-  // never happen.
+  // Upload sequentially and stop at the first failure, symmetric with the
+  // read-failure path above: a namespace must never be pushed while a
+  // preceding one is known to have failed, so POEditor never ends up with
+  // some namespaces updated and others not.
   for (const result of readResults) {
     // Safe: readFailures.length === 0 above guarantees every result has a
     // fileContent, since the only way to reach here is with zero errors.
     const fileContent = result.fileContent as string;
-    // Uploads must run sequentially, not in parallel via Promise.all —
-    // PoeditorClient enforces a 20-second gap between consecutive
-    // uploadTerms calls (design.md), which only holds if each call starts
-    // after the previous one settles.
+    // Must run sequentially, not via Promise.all — PoeditorClient enforces
+    // a 20-second gap between consecutive uploadTerms calls, which only
+    // holds if each call starts after the previous one settles.
     // biome-ignore lint/performance/noAwaitInLoops: sequential by design, see comment above.
     const uploadResult = await options.poeditorClient.uploadTerms({
       projectId: result.target.poeditorProjectId,
@@ -174,8 +160,7 @@ const formatFailure = (
 /**
  * Process-entrypoint wrapper: reads the POEditor API token from
  * `process.env`, runs `runPush`, prints the outcome, and sets a non-zero
- * exit code on failure (Requirement 8.1 — surfaced as a GitHub Actions
- * workflow failure). Kept separate from `runPush` so the orchestration
+ * exit code on failure. Kept separate from `runPush` so the orchestration
  * logic stays testable without an env var or a real process exit.
  */
 export const main = async (): Promise<void> => {

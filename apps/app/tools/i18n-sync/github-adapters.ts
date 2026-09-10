@@ -1,25 +1,21 @@
 /**
  * The real GitHub-side adapters behind `pull-translations.ts`'s injected
- * collaborator interfaces (design.md: Components and Interfaces > Sync
- * Tooling > PullTranslationSync). Tasks 3.2/3.3 defined
- * `TranslationOnlyPrPublisher` / `ApprovalReviewer` / `StructuralPrPublisher`
- * / `I18nLintGate` as interfaces only; this file implements all four.
+ * collaborator interfaces: implements `TranslationOnlyPrPublisher` /
+ * `ApprovalReviewer` / `StructuralPrPublisher` / `I18nLintGate`.
  *
  * **Two mechanisms, chosen per operation, not per taste.**
  * - Pull request read/write and the approving review go through the GitHub
  *   REST API with an **explicitly passed** token. That explicitness is the
- *   point: design.md's Security Considerations require the approving identity
- *   to be a different, content-write-less identity than the one that authors
- *   the pull request, and a REST call carries its token in its own
- *   `Authorization` header, so "which token authorized this call" is a value
- *   a unit test can read back. The `gh` CLI authenticates ambiently (a
- *   `GH_TOKEN` environment variable or stored login state), which would make
- *   that separation an unverifiable convention.
+ *   point: the approving identity must be a different, content-write-less
+ *   identity than the one that authors the pull request, and a REST call
+ *   carries its token in its own `Authorization` header, so "which token
+ *   authorized this call" is a value a unit test can read back. The `gh` CLI
+ *   authenticates ambiently (a `GH_TOKEN` environment variable or stored
+ *   login state), which would make that separation an unverifiable
+ *   convention.
  * - Branch publishing and the lint gate shell out, because they genuinely are
  *   local commands: `git` operating on the Actions checkout, and the existing
- *   `pnpm run lint:i18n` gate this feature only ever *calls* (design.md Out of
- *   Boundary). `apps/app/tools/i18n-audit/run-audit.ts` sets the precedent for
- *   invoking an external command from this tooling.
+ *   `pnpm run lint:i18n` gate this feature only ever *calls*.
  *
  * **Identity separation is structural here, not conventional.**
  * `createApprovalReviewer` accepts an `approvalToken` and nothing else that
@@ -121,9 +117,9 @@ export type FetchFn = typeof fetch;
  * Resolves — **once per run, shared by every publisher** — the commit both
  * sync branches are cut from.
  *
- * This is load-bearing for design.md's PR-granularity invariant. `main()`
- * publishes the translation-only branch first and the structural branch
- * second, so by the time the structural publisher runs, `HEAD` is the
+ * This is load-bearing for keeping the two sync pull requests independent.
+ * `main()` publishes the translation-only branch first and the structural
+ * branch second, so by the time the structural publisher runs, `HEAD` is the
  * translation-only commit. A publisher that branched off `HEAD` (or resolved
  * its own base ref lazily at that point) would carry the translation-only
  * locale files into the human-review pull request, and — worse in the other
@@ -174,8 +170,8 @@ interface GitHubRequestOptions {
 /**
  * One GitHub REST call, authorized by the token passed in — never by an
  * ambient credential. A non-2xx response throws, so `runPull` aggregates it
- * as a run failure (Requirement 8.1); the message carries the status and the
- * response body, and deliberately never the token.
+ * as a run failure; the message carries the status and the response body,
+ * and deliberately never the token.
  */
 const githubRequest = async (
   options: GitHubRequestOptions,
@@ -215,8 +211,7 @@ export interface PrPublisherOptions {
   /**
    * The identity that authors the sync pull requests. **Never the approval
    * token** — GitHub refuses a self-approval, so a run wired with one token
-   * for both roles cannot merge anything (design.md Boundary Commitments >
-   * Allowed Dependencies).
+   * for both roles cannot merge anything.
    */
   readonly publishToken: string;
   /** `owner/repo`, as GitHub Actions exposes it in `GITHUB_REPOSITORY`. */
@@ -299,8 +294,7 @@ const createPrPublisher = (options: PrPublisherOptions) => {
       await git(['checkout', '-B', input.headBranch, baseRef]);
       // Only the caller's paths, with `--` so a path can never be read as a
       // revision. Staging the working tree wholesale would sweep the other
-      // group's locale files into this pull request and break design.md's
-      // PR-granularity invariant (Requirement 3.2).
+      // group's locale files into this pull request.
       await git(['add', '--', ...input.filePaths]);
       // Authorship is set per-invocation rather than by mutating the
       // repository's git config, so this adapter leaves no state behind.
@@ -311,9 +305,7 @@ const createPrPublisher = (options: PrPublisherOptions) => {
       // succeeded but its `commit` did not -- `runPull` reports that failure
       // and carries on to the other group), a bare commit here would sweep
       // the other group's locale files into this pull request. Naming the
-      // paths makes the commit contain exactly them, which is what
-      // publishBranch's contract promises and what design.md's
-      // PR-granularity invariant requires.
+      // paths makes the commit contain exactly them.
       await git([
         '-c',
         `user.name=${gitAuthorName}`,
@@ -394,8 +386,8 @@ export interface ApprovalReviewerOptions {
   /**
    * The approving bot's token (`secrets.I18N_SYNC_APPROVAL_TOKEN`). This is
    * the only credential this adapter is given, and submitting an approving
-   * review is the only thing it can do with it — matching design.md's
-   * Security Considerations, where this identity holds no `contents: write`.
+   * review is the only thing it can do with it — this identity holds no
+   * `contents: write`.
    */
   readonly approvalToken: string;
   /** `owner/repo`, as GitHub Actions exposes it in `GITHUB_REPOSITORY`. */
@@ -413,7 +405,7 @@ export interface ApprovalReviewerOptions {
  * Approving only puts the pull request into the merge queue; the queue's own
  * `queue_conditions` / `merge_conditions` still require
  * `check-success ~= ci-app-lint` before anything merges, so this adds no
- * route around the i18n CI gate (Requirement 3.4).
+ * route around the i18n CI gate.
  *
  * The returned object has exactly one method on purpose: there is no code
  * path from this adapter to repository content, so the approval token cannot
@@ -457,12 +449,10 @@ export interface I18nLintGateOptions {
 
 /**
  * Runs the repository's existing i18n CI gate as-is
- * (`pnpm run lint:i18n` → `apps/app/tools/i18n-audit/`). design.md's Out of
- * Boundary is explicit that this feature calls the gate and never touches
- * its detection logic, so this adapter does nothing but invoke the script and
- * map its exit code: 0 passes, anything else fails and carries the captured
- * output so a maintainer can see *why* from the workflow log
- * (Requirement 3.3, 8.1).
+ * (`pnpm run lint:i18n` → `apps/app/tools/i18n-audit/`) — this feature calls
+ * the gate and never touches its detection logic. Maps the exit code: 0
+ * passes, anything else fails and carries the captured output so a
+ * maintainer can see *why* from the workflow log.
  */
 export const createI18nLintGate = (
   options: I18nLintGateOptions = {},

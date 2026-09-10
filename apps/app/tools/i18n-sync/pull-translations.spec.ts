@@ -138,14 +138,11 @@ describe('collectClassifications', () => {
   });
 
   it('separates translation_only and structural combinations into two disjoint groups with no mixing, from a 12-combination input mixing all 3 classification kinds', async () => {
-    // This is the task's named critical invariant test (design.md's
-    // PR-granularity invariant): a real pull run mixes no_change,
-    // translation_only, and structural results across the 12 combinations,
-    // and the two output groups must never let a structural result leak
-    // into the translationOnly group (or vice versa) -- doing so would let
-    // a structural, key-adding-or-removing change auto-merge via the
-    // translation_only PR's no-human-review path, silently breaking
-    // Requirement 3.2.
+    // A real pull run mixes no_change, translation_only, and structural
+    // results across the 12 combinations, and the two output groups must
+    // never let a structural result leak into the translationOnly group (or
+    // vice versa) -- doing so would let a structural, key-adding-or-removing
+    // change auto-merge via the translation_only PR's no-human-review path.
     const poeditorClient = buildPoeditorClient();
     const readNamespaceFile = buildReadNamespaceFile();
 
@@ -223,8 +220,8 @@ describe('collectClassifications', () => {
       addedKeys: ['k3'],
       removedKeys: ['k2'],
       // Same reasoning as translationOnly's absoluteFilePath/content above,
-      // under different field names (task 3.2's Implementation Notes; see
-      // StructuralCombination's doc comment).
+      // under different field names (see StructuralCombination's doc
+      // comment).
       filePath: '/base/locales/zh_CN/admin.json',
       exportedContent: { k1: 'v1', k3: 'v3' },
     });
@@ -338,11 +335,9 @@ describe('collectClassifications', () => {
   });
 
   it('does not abort the run when one combination has invalid-JSON export content -- only that combination is skipped, the rest classify normally', async () => {
-    // design.md "Error Handling > Error Categories and Responses" >
-    // 「不正な形式のexportデータ」: unlike read_failed/export_failed,
-    // invalid_json only excludes its own (namespace, language) combination
-    // -- export is read-only, so a single malformed combination is
-    // tolerated rather than aborting the whole run.
+    // Unlike read_failed/export_failed, invalid_json only excludes its own
+    // (namespace, language) combination -- export is read-only, so a single
+    // malformed combination is tolerated rather than aborting the whole run.
     const poeditorClient = mock<PoeditorClient>();
     poeditorClient.exportTranslations.mockImplementation(
       // biome-ignore lint/suspicious/useAwait: must match PoeditorClient's Promise-returning signature.
@@ -581,8 +576,7 @@ describe('applyTranslationOnlyChanges', () => {
     // The branch carries exactly this group's files and nothing else. The
     // structural group is classified against the same checkout, so a
     // publisher told to stage the whole working tree would sweep a structural
-    // change into this no-human-review pull request -- the one thing
-    // design.md's PR-granularity invariant forbids.
+    // change into this no-human-review pull request.
     expect(harness.prPublisher.publishBranch).toHaveBeenCalledWith(
       expect.objectContaining({
         headBranch: TRANSLATION_ONLY_BRANCH,
@@ -595,11 +589,11 @@ describe('applyTranslationOnlyChanges', () => {
   });
 
   it('submits no approving review at all and surfaces the failure when the i18n lint gate fails', async () => {
-    // Requirement 3.3 / 3.4: a failing i18n CI gate must stop the change from
-    // reaching the default branch. Since the only thing moving this PR into
-    // the merge queue is the bot's approving review, "not approving" is
-    // exactly what blocks it -- so this test fails loudly if the approval
-    // collaborator is touched even once on the failing path.
+    // A failing i18n CI gate must stop the change from reaching the default
+    // branch. Since the only thing moving this PR into the merge queue is
+    // the bot's approving review, "not approving" is exactly what blocks it
+    // -- so this test fails loudly if the approval collaborator is touched
+    // even once on the failing path.
     const harness = buildApplyHarness({ lintGatePasses: false });
 
     const result = await applyTranslationOnlyChanges({
@@ -622,9 +616,8 @@ describe('applyTranslationOnlyChanges', () => {
       message: 'lint:i18n failed: 3 missing keys in ko_KR/commons.json',
     });
 
-    // The PR is deliberately left open with its failing check on it
-    // (design.md Error Handling: 「自動反映経路であってもPRを自動マージせず、
-    // 失敗したチェックとして残す」), so the maintainer can see what failed.
+    // The PR is deliberately left open with its failing check on it, so the
+    // maintainer can see what failed.
     expect(harness.prPublisher.createPr).toHaveBeenCalledTimes(1);
   });
 
@@ -810,12 +803,10 @@ describe('applyStructuralChanges', () => {
   });
 });
 
-describe('translation-only-empty / structural-only integration (task 3.3 observable completion state)', () => {
+describe('translation-only-empty / structural-only integration', () => {
   it('creates only the structural review PR and never touches the approval bot or the translation-only publisher when the translation-only group is empty', async () => {
-    // This is the task's named integration test: 訳文のみのグループが空でも
-    // 構造変更のグループが存在する場合は、構造変更側の変更提案だけが作られる
-    // ことを検証する. Runs both apply functions the way `runPull`/`main()`
-    // would, against a translationOnly=[] / structural=[...] split.
+    // Runs both apply functions the way `runPull`/`main()` would, against a
+    // translationOnly=[] / structural=[...] split.
     const translationOnlyHarness = buildApplyHarness({ lintGatePasses: true });
     const structuralHarness = buildStructuralHarness();
     const structuralCombinations = [buildStructuralCombination()];
@@ -1082,9 +1073,9 @@ describe('main', () => {
   it('refuses to run when the approval bot token and the publishing token are the same value', async () => {
     // The separation between the pull-request author and the approving
     // identity is the whole reason `ApprovalReviewer` exists as its own
-    // interface (design.md Security Considerations). One value wired to both
-    // roles would silently defeat it -- and GitHub refuses a self-approval
-    // anyway, so such a run could never merge.
+    // interface. One value wired to both roles would silently defeat it --
+    // and GitHub refuses a self-approval anyway, so such a run could never
+    // merge.
     process.env.I18N_SYNC_PUBLISH_TOKEN = 'same-token';
     process.env.I18N_SYNC_APPROVAL_TOKEN = 'same-token';
     const collectClassificationsFn = vi.fn();
@@ -1208,7 +1199,7 @@ describe('main', () => {
     expect(process.exitCode).toBeUndefined();
   });
 
-  it('sets a non-zero exit code when any step reports failure (task 3.3 observable completion state)', async () => {
+  it('sets a non-zero exit code when any step reports failure', async () => {
     await main({
       collectClassificationsFn: vi.fn(async () => ({
         ok: true as const,
@@ -1229,7 +1220,7 @@ describe('main', () => {
     expect(process.exitCode).toBe(1);
   });
 
-  it('warns about skipped (invalid_json) combinations on the success path, but leaves the exit code unset (design.md 「不正な形式のexportデータ」, Requirement 8.1)', async () => {
+  it('warns about skipped (invalid_json) combinations on the success path, but leaves the exit code unset', async () => {
     // A combination whose POEditor export failed to parse must never
     // disappear silently even though the overall run still succeeds -- see
     // this file's header comment and the `skipped` field's doc comment.

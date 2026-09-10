@@ -149,8 +149,8 @@ describe('createPoeditorClient', () => {
       // the real clock is inherently subject to sub-millisecond scheduling
       // jitter between the two awaited uploadTerms() calls below — this is
       // what made the test intermittently fail with e.g. "19999 to be
-      // greater than or equal to 20000" (tasks.md 6.3 / 3.2 review notes).
-      // Freezing the clock with fake timers removes that jitter entirely:
+      // greater than or equal to 20000". Freezing the clock with fake timers
+      // removes that jitter entirely:
       // Date.now() returns the same value for both calls, so the elapsed
       // time between them is exactly 0 and the computed remaining wait is
       // deterministically 20000, every run.
