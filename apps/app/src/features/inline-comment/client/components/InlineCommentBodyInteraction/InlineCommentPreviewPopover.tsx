@@ -32,6 +32,8 @@ import { MentionAwareCommentInput } from '../MentionAwareCommentInput/MentionAwa
 import { rangeToVirtualElement } from '../SelectionPopover/selection-virtual-element';
 import { usePopperPosition } from '../SelectionPopover/use-popper-position';
 
+import styles from './InlineCommentPreviewPopover.module.scss';
+
 type ReferenceRect = ReturnType<VirtualElement['getBoundingClientRect']>;
 
 const isZeroRect = (rect: ReferenceRect): boolean =>
@@ -194,7 +196,7 @@ export const InlineCommentPreviewPopover: FC<
       ref={setPopperElement}
       data-testid="inline-comment-preview-popover"
       style={{ zIndex: 1070 }}
-      className="card shadow-sm"
+      className={`card shadow-sm ${styles['inline-comment-preview-popover-styles']}`}
       onMouseEnter={onPointerEnter}
     >
       <div className="card-body position-relative">
@@ -223,9 +225,21 @@ export const InlineCommentPreviewPopover: FC<
                   </button>
                 </NotAvailableIfReadOnlyUserNotAllowedToComment>
               )}
+              <span
+                data-testid="inline-comment-status"
+                className={`badge rounded-pill ${styles['inline-comment-preview-popover-status-badge']} ${
+                  isResolved
+                    ? 'bg-success-subtle text-success-emphasis'
+                    : 'bg-warning-subtle text-warning-emphasis'
+                }`}
+              >
+                {isResolved
+                  ? t('inline_comment.resolved')
+                  : t('inline_comment.unresolved')}
+              </span>
               <button
                 type="button"
-                className="btn btn-sm btn-outline-secondary"
+                className="btn btn-sm btn-outline-secondary rounded-pill"
                 onClick={handleResolveToggle}
               >
                 {isResolved
@@ -238,13 +252,7 @@ export const InlineCommentPreviewPopover: FC<
             // Same left-accent idiom as InlineCommentItem.tsx's quote, but not a click target.
             <blockquote
               data-testid="inline-comment-preview-popover-quote"
-              className="inline-comment-preview-popover-quote small text-body-secondary bg-body-tertiary border-start border-3 rounded-1 ps-2 py-1 mb-2"
-              style={{
-                display: '-webkit-box',
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: 'vertical',
-                overflow: 'hidden',
-              }}
+              className={`inline-comment-quote bg-body-tertiary rounded-end small text-body-secondary mb-2 ps-2 ${styles['inline-comment-preview-popover-quote-clamp']}`}
             >
               {comment.anchor.quote}
             </blockquote>

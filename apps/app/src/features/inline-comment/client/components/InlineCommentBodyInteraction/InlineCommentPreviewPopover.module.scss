@@ -1,0 +1,52 @@
+// Popover-only counterpart to InlineCommentItem.module.scss. The popover
+// never had a CSS Module of its own before this file -- it relied entirely
+// on Bootstrap utilities plus one inline style (the 2-line quote clamp).
+// Minor duplication of the `%bg-comment`/`%user-picture`/`%comment-section`
+// extends and the status-dot/quote-border rules against
+// InlineCommentItem.module.scss is intentional and accepted by design.md's
+// "New Files" section -- each rule is a few lines, not worth a shared file.
+//
+// `next.config.ts` sets `loadPaths: [<app>/src]`, which is what lets this
+// `@use` be written from anywhere under `src`.
+@use 'client/components/PageComment/comment-inheritance';
+
+.inline-comment-preview-popover-styles {
+  :global(.page-comment) {
+    :global(.bg-comment) { @extend %bg-comment; }
+    :global(.user-picture) { @extend %user-picture; }
+    :global(.page-comment-main) { @extend %comment-section; }
+  }
+
+  // Same left-border accent as InlineCommentItem.module.scss's own
+  // `.inline-comment-quote` rule (Requirement 1.7: unify the quote block
+  // between the list item and the popover).
+  :global(.inline-comment-quote) {
+    border-left: 3px solid var(--grw-inline-comment-marker-bg);
+  }
+}
+
+// Status-dot decoration for the resolved/unresolved badge, mirroring
+// InlineCommentItem.module.scss's `.inline-comment-status-badge`. Kept as a
+// ::before pseudo-element (not an inline style) so the dot's color follows
+// the badge's own text color via `currentColor`.
+.inline-comment-preview-popover-status-badge {
+  &::before {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-right: 0.25rem;
+    content: '';
+    background-color: currentColor;
+    border-radius: 50%;
+  }
+}
+
+// The 2-line clamp cannot be expressed with a Bootstrap utility class, so it
+// stays as a CSS Modules rule instead of the inline style it replaces
+// (Requirement 3.3).
+.inline-comment-preview-popover-quote-clamp {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}

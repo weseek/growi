@@ -383,12 +383,15 @@ describe('InlineCommentPreviewPopover', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('never renders the unresolved/resolved status badge, resolved or not (Requirement 15, AC 15.13 regression check)', () => {
+  it('renders the resolved/unresolved status badge with the same class composition as the list item (Req 1.7, 2.3)', () => {
     const { rerender } = renderPopover({ resolvedAt: null });
 
-    expect(
-      screen.queryByTestId('inline-comment-status'),
-    ).not.toBeInTheDocument();
+    const unresolvedBadge = screen.getByTestId('inline-comment-status');
+    expect(unresolvedBadge).toHaveClass('badge', 'rounded-pill');
+    expect(unresolvedBadge).toHaveClass(
+      'bg-warning-subtle',
+      'text-warning-emphasis',
+    );
 
     rerender(
       <InlineCommentPreviewPopover
@@ -405,9 +408,26 @@ describe('InlineCommentPreviewPopover', () => {
       />,
     );
 
-    expect(
-      screen.queryByTestId('inline-comment-status'),
-    ).not.toBeInTheDocument();
+    const resolvedBadge = screen.getByTestId('inline-comment-status');
+    expect(resolvedBadge).toHaveClass('badge', 'rounded-pill');
+    expect(resolvedBadge).toHaveClass(
+      'bg-success-subtle',
+      'text-success-emphasis',
+    );
+  });
+
+  it('gives the resolve-toggle button the same rounded-pill class composition as the list item (Req 2.3)', () => {
+    renderPopover({ resolvedAt: null });
+
+    const toggleButton = screen.getByRole('button', {
+      name: 'inline_comment.resolve',
+    });
+    expect(toggleButton).toHaveClass(
+      'btn',
+      'btn-sm',
+      'btn-outline-secondary',
+      'rounded-pill',
+    );
   });
 
   it('closes on an explicit close-button click (Req 2.4)', async () => {
@@ -533,6 +553,30 @@ describe('InlineCommentPreviewPopover', () => {
     // Distinct from the comment body: the quote text never appears inside
     // the body's own rendered markdown.
     expect(quoteStrip).not.toHaveTextContent('the comment body');
+  });
+
+  it('unifies the quote block class composition with the list item (Req 1.7) and drops the inline style', () => {
+    renderPopover({
+      anchor: {
+        quote: 'the quoted range',
+        prefix: '',
+        suffix: '',
+        approxOffset: 0,
+      },
+    });
+
+    const quoteStrip = screen.getByTestId(
+      'inline-comment-preview-popover-quote',
+    );
+
+    // Same left-border/background class composition as InlineCommentItem's
+    // own quote block -- the accent-colored left border comes from the
+    // shared `.inline-comment-quote` rule (border-left:
+    // var(--grw-inline-comment-marker-bg)), not from a component-local color.
+    expect(quoteStrip).toHaveClass('inline-comment-quote', 'bg-body-tertiary');
+    // The 2-line clamp must now be expressed as a CSS Modules class, not an
+    // inline style attribute (Requirement 3.3).
+    expect(quoteStrip.getAttribute('style')).toBeFalsy();
   });
 
   it('renders the reply composer as an avatar + input row with an icon send button (Req 15.3)', () => {
