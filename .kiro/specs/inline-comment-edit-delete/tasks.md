@@ -31,7 +31,7 @@
   - _Boundary: update-reply.ts_
   - _Depends: 1_
 
-- [ ] 2.3 (P) 起点コメント削除ルートを追加する
+- [x] 2.3 (P) 起点コメント削除ルートを追加する
   - `DELETE /_api/v3/inline-comments/:id` を実装する（`delete.ts`）。DTOは追加せず、成功時は `res.apiv3({})` を返す
   - `findUnique` でページ権限チェック・起点であることの400判定を行い、`InlineCommentService.deleteComment` に委譲する
   - `delete.integ.ts` に、400・403・404・200（成功後、対象の起点コメントとその返信がすべて存在しなくなること）を検証する結合テストを追加し、すべて green になる

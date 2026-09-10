@@ -11,6 +11,7 @@ import {
 } from '~/features/growi-vault/server';
 import { createInlineCommentRouteHandlersFactory } from '~/features/inline-comment/server/routes/create';
 import { createInlineCommentReplyRouteHandlersFactory } from '~/features/inline-comment/server/routes/create-reply';
+import { deleteInlineCommentRouteHandlersFactory } from '~/features/inline-comment/server/routes/delete';
 import { listInlineCommentsRouteHandlersFactory } from '~/features/inline-comment/server/routes/list';
 import { resolveInlineCommentRouteHandlersFactory } from '~/features/inline-comment/server/routes/resolve';
 import { updateInlineCommentRouteHandlersFactory } from '~/features/inline-comment/server/routes/update';
@@ -236,6 +237,10 @@ export const setup = (crowi, app) => {
     inlineCommentsRouter.put(
       '/replies/:id',
       updateInlineCommentReplyRouteHandlersFactory(crowi),
+    );
+    inlineCommentsRouter.delete(
+      '/:id',
+      deleteInlineCommentRouteHandlersFactory(crowi),
     );
     router.use('/inline-comments', inlineCommentsRouter);
   }
