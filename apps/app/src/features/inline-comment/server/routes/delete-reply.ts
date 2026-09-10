@@ -6,9 +6,10 @@
  * be a reply — `replyToId != null` — rather than an origin comment) and the
  * route delegates to `InlineCommentService.deleteReply()` instead of
  * `deleteComment()`. See delete.ts's file header for the shared reasoning
- * (middleware order, why `certifySharedPage`/`addActivity` are not applied,
- * and why this route performs its own creatorId check rather than relying
- * solely on the service's precondition check).
+ * (middleware order including `excludeReadOnlyUserIfCommentNotAllowed`, why
+ * `certifySharedPage`/`addActivity` are not applied, and why this route
+ * performs its own creatorId check rather than relying solely on the
+ * service's precondition check).
  *
  * `InlineCommentService.deleteReply()` (already implemented in task 1) is
  * not modified here — it internally calls a plain
@@ -28,6 +29,7 @@ import type { HydratedDocument } from 'mongoose';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
+import { excludeReadOnlyUserIfCommentNotAllowed } from '~/server/middlewares/exclude-read-only-user';
 import loginRequiredFactory from '~/server/middlewares/login-required';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import { findPageAndMetaDataByViewer } from '~/server/service/page/find-page-and-meta-data-by-viewer';
@@ -60,6 +62,7 @@ export const deleteInlineCommentReplyRouteHandlersFactory = (
   return [
     accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequired,
+    excludeReadOnlyUserIfCommentNotAllowed,
     ...validator,
     apiV3FormValidator,
     async (req: Req, res: ApiV3Response) => {

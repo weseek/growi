@@ -42,12 +42,14 @@ vi.mock('~/server/middlewares/login-required', () => ({
 const FIXTURE_ROOT = '/inline-comment-delete-route-integ';
 const creatorUsername = 'inline-comment-delete-route-integ-creator';
 const otherUsername = 'inline-comment-delete-route-integ-other';
+const readOnlyUsername = 'inline-comment-delete-route-integ-readonly';
 
 describe('DELETE /_api/v3/inline-comments/:id', () => {
   let app: express.Application;
   let crowi: Crowi;
   let creator: HydratedDocument<IUserHasId>;
   let other: HydratedDocument<IUserHasId>;
+  let readOnlyUser: HydratedDocument<IUserHasId>;
   let publicPage: HydratedDocument<PageDocument>;
 
   const mountAppAs = (requester: HydratedDocument<IUserHasId>) => {
@@ -113,7 +115,7 @@ describe('DELETE /_api/v3/inline-comments/:id', () => {
     const User = mongoose.model<IUserHasId>('User');
 
     await User.deleteMany({
-      username: { $in: [creatorUsername, otherUsername] },
+      username: { $in: [creatorUsername, otherUsername, readOnlyUsername] },
     });
     creator = await User.create({
       name: creatorUsername,
@@ -124,6 +126,16 @@ describe('DELETE /_api/v3/inline-comments/:id', () => {
       name: otherUsername,
       username: otherUsername,
       email: `${otherUsername}@example.com`,
+    });
+    // Read-only-user restriction (requirements.md Requirement 18, AC 18.8/
+    // 18.9): `security:isRomUserAllowedToComment` defaults to false
+    // (config-definition.ts), so this user is denied by
+    // `excludeReadOnlyUserIfCommentNotAllowed` with no further config setup.
+    readOnlyUser = await User.create({
+      name: readOnlyUsername,
+      username: readOnlyUsername,
+      email: `${readOnlyUsername}@example.com`,
+      readOnly: true,
     });
 
     publicPage = await Page.create({
@@ -145,7 +157,7 @@ describe('DELETE /_api/v3/inline-comments/:id', () => {
     const { Page } = crowi.models;
     await Page.deleteMany({ _id: publicPage._id });
     await crowi.models.User.deleteMany({
-      username: { $in: [creatorUsername, otherUsername] },
+      username: { $in: [creatorUsername, otherUsername, readOnlyUsername] },
     });
     // Replies before origins — see create-reply.integ.ts's afterAll comment
     // for why (Prisma's Mongo connector rejects deleting a parent and its
@@ -156,6 +168,20 @@ describe('DELETE /_api/v3/inline-comments/:id', () => {
     await prisma.comments.deleteMany({
       where: { pageId: String(publicPage._id) },
     });
+  });
+
+  it('returns 400 when a read-only user (not allowed to comment) attempts the delete', async () => {
+    const { originId } = await createOriginWithReply();
+    const readOnlyApp = mountAppAs(readOnlyUser);
+
+    const res = await request(readOnlyApp).delete(
+      `/_api/v3/inline-comments/${originId}`,
+    );
+
+    expect(res.status).toBe(400);
+    expect(res.body.errors).toEqual([
+      expect.objectContaining({ code: 'validation_failed' }),
+    ]);
   });
 
   it('returns 400 when :id is a reply (not an origin comment)', async () => {

@@ -28,7 +28,13 @@
  * create-reply.integ.ts / list.integ.ts / resolve.integ.ts, each asserting a
  * uniform 404 per apps/app/.claude/rules/page-write-action-403-404.md.
  *
- * Requirements: 1.5, 1.6, 6.1
+ * update.ts/update-reply.ts/delete.ts/delete-reply.ts (the origin-comment and
+ * reply edit/delete routes) are included below for the same "no login"
+ * real-auth-chain coverage the original four routes already had -- this
+ * suite previously covered only create/create-reply/list/resolve, leaving
+ * the four newer routes' real-chain rejection unverified.
+ *
+ * Requirements: 1.5, 1.6, 6.1, 18.3, 18.7
  */
 
 import express from 'express';
@@ -42,8 +48,12 @@ import addCustomFunctionToResponse from '~/server/routes/apiv3/response';
 
 import { createInlineCommentRouteHandlersFactory } from './create';
 import { createInlineCommentReplyRouteHandlersFactory } from './create-reply';
+import { deleteInlineCommentRouteHandlersFactory } from './delete';
+import { deleteInlineCommentReplyRouteHandlersFactory } from './delete-reply';
 import { listInlineCommentsRouteHandlersFactory } from './list';
 import { resolveInlineCommentRouteHandlersFactory } from './resolve';
+import { updateInlineCommentRouteHandlersFactory } from './update';
+import { updateInlineCommentReplyRouteHandlersFactory } from './update-reply';
 
 /** Where production mounts this router (apps/app/src/server/routes/apiv3/index.js). */
 const MOUNT_PREFIX = '/_api/v3/inline-comments';
@@ -86,6 +96,22 @@ describe('inline-comment routes — real auth chain, no login', () => {
       '/:id/resolve',
       resolveInlineCommentRouteHandlersFactory(crowi),
     );
+    inlineCommentsRouter.put(
+      '/:id',
+      updateInlineCommentRouteHandlersFactory(crowi),
+    );
+    inlineCommentsRouter.put(
+      '/replies/:id',
+      updateInlineCommentReplyRouteHandlersFactory(crowi),
+    );
+    inlineCommentsRouter.delete(
+      '/:id',
+      deleteInlineCommentRouteHandlersFactory(crowi),
+    );
+    inlineCommentsRouter.delete(
+      '/replies/:id',
+      deleteInlineCommentReplyRouteHandlersFactory(crowi),
+    );
     app.use(MOUNT_PREFIX, inlineCommentsRouter);
   }, 120_000);
 
@@ -119,6 +145,34 @@ describe('inline-comment routes — real auth chain, no login', () => {
     const res = await request(app)
       .put(`${MOUNT_PREFIX}/${new Types.ObjectId()}/resolve`)
       .send({ resolved: true });
+    expect(res.status).toBe(403);
+  });
+
+  it('PUT /inline-comments/:id without login is rejected with 403', async () => {
+    const res = await request(app)
+      .put(`${MOUNT_PREFIX}/${new Types.ObjectId()}`)
+      .send({ comment: 'edited' });
+    expect(res.status).toBe(403);
+  });
+
+  it('PUT /inline-comments/replies/:id without login is rejected with 403', async () => {
+    const res = await request(app)
+      .put(`${MOUNT_PREFIX}/replies/${new Types.ObjectId()}`)
+      .send({ comment: 'edited' });
+    expect(res.status).toBe(403);
+  });
+
+  it('DELETE /inline-comments/:id without login is rejected with 403', async () => {
+    const res = await request(app).delete(
+      `${MOUNT_PREFIX}/${new Types.ObjectId()}`,
+    );
+    expect(res.status).toBe(403);
+  });
+
+  it('DELETE /inline-comments/replies/:id without login is rejected with 403', async () => {
+    const res = await request(app).delete(
+      `${MOUNT_PREFIX}/replies/${new Types.ObjectId()}`,
+    );
     expect(res.status).toBe(403);
   });
 });

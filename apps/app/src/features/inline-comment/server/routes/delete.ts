@@ -3,7 +3,16 @@
  * its replies).
  *
  * Middleware order (design.md's API Contract, matching update.ts/resolve.ts):
- *   accessTokenParser → loginRequired → express-validator → apiV3FormValidator
+ *   accessTokenParser → loginRequired → excludeReadOnlyUserIfCommentNotAllowed
+ *   → express-validator → apiV3FormValidator
+ *
+ * `excludeReadOnlyUserIfCommentNotAllowed` (requirements.md Requirement 18,
+ * AC 18.8/18.9) is the same middleware normal comments use for
+ * `/comments.remove` (`apps/app/src/server/routes/index.js`), placed right
+ * after `loginRequired` — this is what makes the read-only-user restriction
+ * a server-side guarantee rather than only a client-side affordance
+ * (`NotAvailableIfReadOnlyUserNotAllowedToComment` gates the client's delete
+ * button, but a direct API call could otherwise bypass it entirely).
  *
  * `certifySharedPage` is intentionally NOT applied (requirement 6.1, same as
  * every other inline-comment route). `addActivity` is also intentionally NOT
@@ -43,6 +52,7 @@ import type { HydratedDocument } from 'mongoose';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
+import { excludeReadOnlyUserIfCommentNotAllowed } from '~/server/middlewares/exclude-read-only-user';
 import loginRequiredFactory from '~/server/middlewares/login-required';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import { findPageAndMetaDataByViewer } from '~/server/service/page/find-page-and-meta-data-by-viewer';
@@ -75,6 +85,7 @@ export const deleteInlineCommentRouteHandlersFactory = (
   return [
     accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequired,
+    excludeReadOnlyUserIfCommentNotAllowed,
     ...validator,
     apiV3FormValidator,
     async (req: Req, res: ApiV3Response) => {
