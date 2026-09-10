@@ -149,6 +149,30 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
         rootClassName={isResolved ? 'inline-comment-item-resolved' : undefined}
         headerEnd={
           <span className="ms-auto d-flex align-items-center gap-2">
+            {isOwnComment && !isEditing && !isDeleteConfirmOpen && (
+              <NotAvailableIfReadOnlyUserNotAllowedToComment>
+                <span
+                  className={`d-flex align-items-center gap-1 ${styles['icon-button-container']}`}
+                >
+                  <button
+                    type="button"
+                    data-testid="inline-comment-edit-button"
+                    className="btn btn-link p-2 opacity-50"
+                    onClick={() => setIsEditing(true)}
+                  >
+                    <span className="material-symbols-outlined">edit</span>
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="inline-comment-delete-button"
+                    className="btn btn-link p-2 opacity-50 text-danger"
+                    onClick={() => setIsDeleteConfirmOpen(true)}
+                  >
+                    <span className="material-symbols-outlined">delete</span>
+                  </button>
+                </span>
+              </NotAvailableIfReadOnlyUserNotAllowedToComment>
+            )}
             <span
               data-testid="inline-comment-status"
               className={`badge rounded-pill ${styles['inline-comment-status-badge']} ${
@@ -219,28 +243,6 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
               >
                 {deleteError}
               </span>
-            )}
-            {isOwnComment && !isEditing && !isDeleteConfirmOpen && (
-              <NotAvailableIfReadOnlyUserNotAllowedToComment>
-                <div className="inline-comment-controls d-flex gap-2 mt-1">
-                  <button
-                    type="button"
-                    data-testid="inline-comment-edit-button"
-                    className="btn btn-sm btn-link p-0"
-                    onClick={() => setIsEditing(true)}
-                  >
-                    {t('Edit')}
-                  </button>
-                  <button
-                    type="button"
-                    data-testid="inline-comment-delete-button"
-                    className="btn btn-sm btn-link p-0 text-danger"
-                    onClick={() => setIsDeleteConfirmOpen(true)}
-                  >
-                    {t('Delete')}
-                  </button>
-                </div>
-              </NotAvailableIfReadOnlyUserNotAllowedToComment>
             )}
             {isDeleteConfirmOpen && (
               <div

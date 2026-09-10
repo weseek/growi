@@ -21,6 +21,19 @@
   :global(.inline-comment-quote) {
     border-left: 3px solid var(--grw-inline-comment-marker-bg);
   }
+
+  // Edit/delete icon buttons (design.md: 編集・削除アイコン) are hidden by
+  // default and revealed only while hovering the card, matching
+  // CommentControl.tsx's "parent :hover + child visibility" pattern.
+  // `visibility` (not `display`) keeps the header row's layout stable while
+  // the buttons are hidden.
+  .icon-button-container {
+    visibility: hidden;
+  }
+
+  &:hover .icon-button-container {
+    visibility: visible;
+  }
 }
 
 // Status-dot decoration for the resolved/unresolved badge (design.md: 状態バッジ).

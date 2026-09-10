@@ -38,6 +38,7 @@ vi.mock('./InlineCommentItem.module.scss', () => ({
   default: {
     'inline-comment-item-styles': 'inline-comment-item-styles',
     'inline-comment-status-badge': 'inline-comment-status-badge',
+    'icon-button-container': 'icon-button-container',
   },
 }));
 
@@ -656,6 +657,67 @@ describe('InlineCommentItem', () => {
       expect(
         screen.queryByTestId('inline-comment-delete-confirm'),
       ).not.toBeInTheDocument();
+    });
+
+    // Requirement 1.5 / 1.6 / 3.3 / 3.5: edit/delete moved from an
+    // always-visible footer text link to hover-revealed icon buttons that
+    // live in the same header-row container as the status badge / resolve
+    // toggle (design.md: headerEnd's `<span className="ms-auto ...">`).
+    it('renders the edit/delete controls as icon buttons (material-symbols-outlined edit/delete glyphs), matching the CommentControl.tsx pattern', () => {
+      currentUserRef.current = { _id: 'user1' };
+      renderItem({ creatorId: 'user1' });
+
+      const editButton = screen.getByTestId('inline-comment-edit-button');
+      const deleteButton = screen.getByTestId('inline-comment-delete-button');
+
+      expect(
+        editButton.querySelector('.material-symbols-outlined'),
+      ).toHaveTextContent('edit');
+      expect(
+        deleteButton.querySelector('.material-symbols-outlined'),
+      ).toHaveTextContent('delete');
+      // No more always-visible text-link markup left behind.
+      expect(editButton).not.toHaveTextContent('Edit');
+      expect(deleteButton).not.toHaveTextContent('Delete');
+    });
+
+    it('places the edit/delete icon buttons in the same header-row container as the status badge and resolve-toggle button (DOM structure)', () => {
+      currentUserRef.current = { _id: 'user1' };
+      const { container } = renderItem({ creatorId: 'user1' });
+
+      const header = getMain(container)?.querySelector(
+        '.d-flex.align-items-center',
+      );
+      const headerEnd = header?.querySelector('.ms-auto');
+      expect(headerEnd).not.toBeNull();
+
+      const editButton = screen.getByTestId('inline-comment-edit-button');
+      const deleteButton = screen.getByTestId('inline-comment-delete-button');
+      const badge = screen.getByTestId('inline-comment-status');
+      const toggle = screen.getByRole('button', {
+        name: 'inline_comment.resolve',
+      });
+
+      expect(headerEnd?.contains(editButton)).toBe(true);
+      expect(headerEnd?.contains(deleteButton)).toBe(true);
+      expect(headerEnd?.contains(badge)).toBe(true);
+      expect(headerEnd?.contains(toggle)).toBe(true);
+    });
+
+    it('gives the icon-button container the hover-visibility CSS Modules class, scoped under the card root class (not display:none)', () => {
+      currentUserRef.current = { _id: 'user1' };
+      const { container } = renderItem({ creatorId: 'user1' });
+
+      const editButton = screen.getByTestId('inline-comment-edit-button');
+      const iconButtonContainer = editButton.closest('.icon-button-container');
+      expect(iconButtonContainer).not.toBeNull();
+      expect(
+        container
+          .querySelector('.inline-comment-item-styles')
+          ?.contains(iconButtonContainer as Element),
+      ).toBe(true);
+      // display is never used for the hover toggle (would cause layout shift).
+      expect(iconButtonContainer).not.toHaveStyle({ display: 'none' });
     });
   });
 });

@@ -9,7 +9,7 @@
   - _Requirements: 1.1, 1.4, 3.1, 3.2, 3.4_
   - _Boundary: InlineCommentItem, InlineCommentItem.module.scss_
 
-- [ ] 1.2 編集・削除操作を、通常コメントと同じホバー表示アイコンボタンに変更する
+- [x] 1.2 編集・削除操作を、通常コメントと同じホバー表示アイコンボタンに変更する
   - 現在の常時表示フッターテキストリンク（編集・削除）を撤去し、`CommentControl.tsx`と同じ`material-symbols-outlined`のアイコン・ボタンクラスパターンを使ったアイコンボタンに置き換える
   - アイコンボタンをヘッダー行の状態バッジ・解決トグルボタンの隣（左側）に配置し、カード全体へのホバー時のみ表示されるようにする（`visibility`切り替え、`display`は使わない——非表示時のレイアウトシフトを避けるため）
   - `NotAvailableIfReadOnlyUserNotAllowedToComment`によるガード判定は変更しない
@@ -88,3 +88,7 @@
   - 完了したことが分かる状態: 独立レビューにより、チェックリストの適用対象項目すべてに✅の判定が記録され、GO判定が下されている
   - _Requirements: 4.3, 4.6_
   - _Depends: 4.1, 4.2, 4.3_
+
+## Implementation Notes
+
+- Task 1.2: design.md contains two descriptions of the delete icon's glyph that disagree — the general restatement near the top (line 59/151, "same as CommentControl.tsx", which uses `close`) versus the authoritative `InlineCommentItem` Responsibilities & Constraints bullet (line 174, which explicitly specifies the `delete` glyph + `text-danger`). The implementation followed the line-174 bullet, since it is the section this task's boundary points at. Flag this for the port-back step (task N in `.claude/rules/spec-lifecycle.md`'s procedure, when this amend spec folds back into `.kiro/specs/inline-comment`) so the two passages get reconciled into one consistent statement.
