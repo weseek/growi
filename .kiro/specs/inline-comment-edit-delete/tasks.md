@@ -70,7 +70,7 @@
   - _Boundary: InlineCommentItem, InlineCommentReplies_
   - _Depends: 3, 4_
 
-- [ ] 6. (P) ポップオーバー（InlineCommentPreviewPopover）に起点コメントの編集を追加し、状態バッジを削除する
+- [x] 6. (P) ポップオーバー（InlineCommentPreviewPopover）に起点コメントの編集を追加し、状態バッジを削除する
   - 起点コメントの編集手段を追加する（同じ投稿者本人チェック、`MentionAwareCommentInput`の`initialValue`を再利用）
   - `inline-comment-status` バッジのマークアップを完全に削除する（このポップオーバーは未解決のコメントに対してしか開かれないため）
   - 解決する操作ボタンは残す。削除操作は追加しない

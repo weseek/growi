@@ -14,8 +14,15 @@
  * "本文中ポップオーバーの返信UIを...同じにすること") -- only its surrounding
  * layout (avatar + row + icon send button) borrows InlineCommentForm.tsx's/
  * MentionAwareCommentInput.tsx's established composer visual language
- * (requirements.md Requirement 15.3). It has no editing UI for the origin
- * comment's own body at all (Req 2.5).
+ * (requirements.md Requirement 15.3).
+ *
+ * Editing the origin comment (requirements.md Requirement 1, AC 1.7) is
+ * shown only to the comment's own creator (`comment.creatorId ===
+ * currentUser?._id`, same check `InlineCommentItem.tsx` uses) and reuses
+ * `MentionAwareCommentInput` the same way that component does. There is no
+ * delete action here -- delete is list-only (this spec's Boundary Context),
+ * and this popover only ever shows an origin comment, never a reply, so
+ * there is no reply-edit counterpart either.
  */
 import { type FC, type JSX, useEffect, useMemo, useRef, useState } from 'react';
 import { UserPicture } from '@growi/ui/dist/components';
@@ -29,6 +36,7 @@ import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useCurrentUser } from '~/states/global';
 
 import type { InlineCommentWithReplies } from '../../../interfaces';
+import { MentionAwareCommentInput } from '../MentionAwareCommentInput/MentionAwareCommentInput';
 import { rangeToVirtualElement } from '../SelectionPopover/selection-virtual-element';
 import { usePopperPosition } from '../SelectionPopover/use-popper-position';
 
@@ -56,6 +64,14 @@ type InlineCommentPreviewPopoverProps = {
    * component with that file).
    */
   resolve: (id: string, resolved: boolean) => Promise<unknown>;
+  /**
+   * Persists an edited origin-comment body (requirements.md Requirement 1,
+   * AC 1.7). Same author-only gating and `MentionAwareCommentInput` pattern
+   * as `InlineCommentItem.tsx`'s own edit mode -- this popover only ever
+   * shows an origin comment, never a reply, so there is no reply-edit
+   * counterpart here.
+   */
+  update: (id: string, comment: string) => Promise<unknown>;
   onClose: () => void;
   /**
    * Fired from the root portaled div's native `onMouseEnter` once the
@@ -76,11 +92,13 @@ export const InlineCommentPreviewPopover: FC<
     rendererOptions,
     createReply,
     resolve,
+    update,
     onClose,
     onPointerEnter,
   } = props;
   const { t } = useTranslation();
   const currentUser = useCurrentUser();
+  const isOwnComment = currentUser?._id === comment.creatorId;
 
   // A state-backed callback ref (not useRef): `usePopperPosition` takes the
   // popper element as an effect dependency, and the same node also serves as
@@ -148,6 +166,33 @@ export const InlineCommentPreviewPopover: FC<
     }
   };
 
+  const [isEditing, setIsEditing] = useState(false);
+  const [editError, setEditError] = useState<string>();
+
+  const handleEditSubmit = async (text: string): Promise<void> => {
+    try {
+      await update(comment.id, text);
+      setEditError(undefined);
+      setIsEditing(false);
+    } catch (err) {
+      setEditError(
+        err instanceof Error
+          ? err.message
+          : 'An unknown error occurred when updating the comment',
+      );
+      // Rethrown so MentionAwareCommentInput's own submit handler treats
+      // this as a failure too (keeps the edited text on screen instead of
+      // clearing it as if the submit had succeeded) -- same idiom as
+      // InlineCommentItem.tsx's own handleEditSubmit.
+      throw err;
+    }
+  };
+
+  const handleEditCancel = (): void => {
+    setIsEditing(false);
+    setEditError(undefined);
+  };
+
   const [draftComment, setDraftComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string>();
@@ -199,14 +244,16 @@ export const InlineCommentPreviewPopover: FC<
           createdAt={comment.createdAt}
           headerEnd={
             <span className="ms-auto d-flex align-items-center gap-2">
-              <span
-                data-testid="inline-comment-status"
-                className={`badge ${isResolved ? 'bg-secondary' : 'bg-warning text-dark'}`}
-              >
-                {isResolved
-                  ? t('inline_comment.resolved')
-                  : t('inline_comment.unresolved')}
-              </span>
+              {isOwnComment && !isEditing && (
+                <button
+                  type="button"
+                  data-testid="inline-comment-preview-popover-edit-button"
+                  className="btn btn-sm btn-link p-0"
+                  onClick={() => setIsEditing(true)}
+                >
+                  {t('Edit')}
+                </button>
+              )}
               <button
                 type="button"
                 className="btn btn-sm btn-outline-secondary"
@@ -238,17 +285,43 @@ export const InlineCommentPreviewPopover: FC<
             </blockquote>
           }
           footer={
-            resolveError != null ? (
-              <span
-                className="text-danger d-block"
-                data-testid="inline-comment-resolve-error"
-              >
-                {resolveError}
-              </span>
-            ) : undefined
+            <>
+              {resolveError != null && (
+                <span
+                  className="text-danger d-block"
+                  data-testid="inline-comment-resolve-error"
+                >
+                  {resolveError}
+                </span>
+              )}
+              {editError != null && (
+                <span
+                  className="text-danger d-block"
+                  data-testid="inline-comment-preview-popover-edit-error"
+                >
+                  {editError}
+                </span>
+              )}
+            </>
           }
         >
-          {rendererOptions != null ? (
+          {isEditing ? (
+            <div className="inline-comment-preview-popover-edit-form">
+              <MentionAwareCommentInput
+                editorKey={`inline_comment_preview_popover_edit_${comment.id}`}
+                initialValue={comment.comment}
+                onSubmit={handleEditSubmit}
+              />
+              <button
+                type="button"
+                data-testid="inline-comment-preview-popover-edit-cancel-button"
+                className="btn btn-sm btn-outline-secondary mt-1"
+                onClick={handleEditCancel}
+              >
+                {t('Cancel')}
+              </button>
+            </div>
+          ) : rendererOptions != null ? (
             <RevisionRenderer
               rendererOptions={rendererOptions}
               markdown={comment.comment}

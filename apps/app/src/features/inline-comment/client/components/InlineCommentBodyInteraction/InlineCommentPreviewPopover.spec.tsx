@@ -13,7 +13,13 @@
  * complete, not merely present.
  */
 
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { mock } from 'vitest-mock-extended';
 
@@ -54,8 +60,30 @@ vi.mock('~/client/components/FormattedDistanceDate', () => ({
   default: () => <span data-testid="formatted-distance-date" />,
 }));
 
+// The current user drives the author-only check for the edit affordance
+// (`comment.creatorId === currentUser?._id`, same check
+// `InlineCommentItem.tsx` uses). Mutable via `currentUserRef` so individual
+// tests can simulate "viewing as the comment's own author" vs. "viewing as
+// someone else".
+const currentUserRef = vi.hoisted(
+  () => ({ current: undefined }) as { current?: { _id: string } },
+);
 vi.mock('~/states/global', () => ({
-  useCurrentUser: () => undefined,
+  useCurrentUser: () => currentUserRef.current,
+}));
+
+// MentionAwareCommentInput owns a real CodeMirror editor assembly -- mocked
+// at the component boundary exactly as InlineCommentItem.spec.tsx mocks it,
+// so this file can drive the edit form's onSubmit without instantiating
+// CodeMirror.
+const mentionAwareCommentInputProps = vi.hoisted(
+  () => ({ current: undefined }) as { current?: Record<string, unknown> },
+);
+vi.mock('../MentionAwareCommentInput/MentionAwareCommentInput', () => ({
+  MentionAwareCommentInput: (props: Record<string, unknown>) => {
+    mentionAwareCommentInputProps.current = props;
+    return <div data-testid="mention-aware-comment-input-mock" />;
+  },
 }));
 
 import { InlineCommentPreviewPopover } from './InlineCommentPreviewPopover';
@@ -116,6 +144,7 @@ const renderPopover = (
     createReply?: (parentId: string, comment: string) => Promise<unknown>;
     onClose?: () => void;
     resolve?: (id: string, resolved: boolean) => Promise<unknown>;
+    update?: (id: string, comment: string) => Promise<unknown>;
     onPointerEnter?: () => void;
   } = {},
   range: Range = buildRange(),
@@ -128,6 +157,7 @@ const renderPopover = (
       createReply={handlers.createReply ?? vi.fn().mockResolvedValue(undefined)}
       onClose={handlers.onClose ?? vi.fn()}
       resolve={handlers.resolve ?? vi.fn().mockResolvedValue(undefined)}
+      update={handlers.update ?? vi.fn().mockResolvedValue(undefined)}
       onPointerEnter={handlers.onPointerEnter ?? vi.fn()}
     />,
   );
@@ -135,6 +165,8 @@ const renderPopover = (
 describe('InlineCommentPreviewPopover', () => {
   beforeEach(() => {
     mockCreatePopper.mockClear();
+    currentUserRef.current = undefined;
+    mentionAwareCommentInputProps.current = undefined;
   });
 
   it('renders its content through a portal into document.body, positioned via the popper mechanism', () => {
@@ -251,15 +283,92 @@ describe('InlineCommentPreviewPopover', () => {
     expect(textarea).toHaveValue('a reply');
   });
 
-  it('has no controls for editing the origin comment body (Req 2.5)', () => {
-    renderPopover();
+  it("hides the edit affordance when the current user is not the comment's own creator", () => {
+    currentUserRef.current = { _id: 'someone-else' };
+    renderPopover({ creatorId: 'user1' });
 
-    const popover = screen.getByTestId('inline-comment-preview-popover');
-    // Only the single reply textarea should exist -- none targeting the
-    // origin comment's own body.
-    expect(popover.querySelectorAll('textarea')).toHaveLength(1);
     expect(
-      screen.queryByRole('button', { name: /edit/i }),
+      screen.queryByTestId('inline-comment-preview-popover-edit-button'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('hides the edit affordance when there is no current user', () => {
+    currentUserRef.current = undefined;
+    renderPopover({ creatorId: 'user1' });
+
+    expect(
+      screen.queryByTestId('inline-comment-preview-popover-edit-button'),
+    ).not.toBeInTheDocument();
+  });
+
+  it("shows the edit affordance and updates the origin comment through `update` when the current user is the comment's own creator (Requirement 1, AC 1.7)", async () => {
+    const update = vi.fn().mockResolvedValue(undefined);
+    currentUserRef.current = { _id: 'user1' };
+    renderPopover({ id: 'comment42', creatorId: 'user1' }, { update });
+
+    await userEvent.click(
+      screen.getByTestId('inline-comment-preview-popover-edit-button'),
+    );
+
+    expect(
+      screen.getByTestId('mention-aware-comment-input-mock'),
+    ).toBeInTheDocument();
+    expect(mentionAwareCommentInputProps.current?.initialValue).toBe(
+      'the comment body',
+    );
+
+    await act(async () => {
+      await (
+        mentionAwareCommentInputProps.current?.onSubmit as (
+          text: string,
+        ) => Promise<unknown>
+      )('the edited comment body');
+    });
+
+    expect(update).toHaveBeenCalledWith('comment42', 'the edited comment body');
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId('mention-aware-comment-input-mock'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it('has no delete action anywhere in the rendered output (Boundary Context: delete is list-only)', () => {
+    currentUserRef.current = { _id: 'user1' };
+    renderPopover({ creatorId: 'user1' });
+
+    expect(
+      screen.queryByRole('button', { name: /delete/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('inline-comment-delete-button'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('never renders the unresolved/resolved status badge, resolved or not (Requirement 5.3 regression check)', () => {
+    const { rerender } = renderPopover({ resolvedAt: null });
+
+    expect(
+      screen.queryByTestId('inline-comment-status'),
+    ).not.toBeInTheDocument();
+
+    rerender(
+      <InlineCommentPreviewPopover
+        comment={originComment({
+          resolvedAt: new Date('2026-01-03T00:00:00.000Z'),
+        })}
+        range={buildRange()}
+        rendererOptions={rendererOptions}
+        createReply={vi.fn().mockResolvedValue(undefined)}
+        onClose={vi.fn()}
+        resolve={vi.fn().mockResolvedValue(undefined)}
+        update={vi.fn().mockResolvedValue(undefined)}
+        onPointerEnter={vi.fn()}
+      />,
+    );
+
+    expect(
+      screen.queryByTestId('inline-comment-status'),
     ).not.toBeInTheDocument();
   });
 
@@ -298,14 +407,9 @@ describe('InlineCommentPreviewPopover', () => {
     expect(onClose).not.toHaveBeenCalled();
   });
 
-  it('renders an unresolved badge and a Resolve control, and toggles to resolved on click (Req 15.10, 4.6)', async () => {
+  it('renders a Resolve control for an unresolved comment, and toggles to resolved on click (Req 4.6)', async () => {
     const resolve = vi.fn().mockResolvedValue(undefined);
     renderPopover({ id: 'comment42', resolvedAt: null }, { resolve });
-
-    const popover = screen.getByTestId('inline-comment-preview-popover');
-    expect(
-      popover.querySelector('[data-testid="inline-comment-status"]'),
-    ).toHaveTextContent('inline_comment.unresolved');
 
     await userEvent.click(
       screen.getByRole('button', { name: 'inline_comment.resolve' }),
@@ -314,17 +418,12 @@ describe('InlineCommentPreviewPopover', () => {
     expect(resolve).toHaveBeenCalledWith('comment42', true);
   });
 
-  it('renders a resolved badge and a Reopen control, and toggles to unresolved on click (Req 15.10, 4.6)', async () => {
+  it('renders a Reopen control for a resolved comment, and toggles to unresolved on click (Req 4.6)', async () => {
     const resolve = vi.fn().mockResolvedValue(undefined);
     renderPopover(
       { id: 'comment42', resolvedAt: new Date('2026-01-03T00:00:00.000Z') },
       { resolve },
     );
-
-    const popover = screen.getByTestId('inline-comment-preview-popover');
-    expect(
-      popover.querySelector('[data-testid="inline-comment-status"]'),
-    ).toHaveTextContent('inline_comment.resolved');
 
     await userEvent.click(
       screen.getByRole('button', { name: 'inline_comment.reopen' }),
