@@ -279,20 +279,32 @@ export const InlineCommentPreviewPopover: FC<
           }
         >
           {isEditing ? (
-            <div className="inline-comment-preview-popover-edit-form">
+            // Accent-colored border marks the edit-mode input, echoing the
+            // primary-accent color already used by the submit/send buttons
+            // in this popover (Requirement 2.2, 3.1: semantic Bootstrap
+            // utility classes only, no hardcoded hex).
+            <div
+              data-testid="inline-comment-preview-popover-edit-form"
+              className="border border-primary rounded p-2"
+            >
               <MentionAwareCommentInput
                 editorKey={`inline_comment_preview_popover_edit_${comment.id}`}
                 initialValue={comment.comment}
                 onSubmit={handleEditSubmit}
               />
-              <button
-                type="button"
-                data-testid="inline-comment-preview-popover-edit-cancel-button"
-                className="btn btn-sm btn-outline-secondary mt-1"
-                onClick={handleEditCancel}
-              >
-                {t('Cancel')}
-              </button>
+              {/* Save is MentionAwareCommentInput's own built-in submit
+                  control; Cancel is placed below, right-aligned, to sit
+                  alongside it (Requirement 2.2). */}
+              <div className="d-flex justify-content-end mt-1">
+                <button
+                  type="button"
+                  data-testid="inline-comment-preview-popover-edit-cancel-button"
+                  className="btn btn-sm btn-outline-secondary"
+                  onClick={handleEditCancel}
+                >
+                  {t('Cancel')}
+                </button>
+              </div>
             </div>
           ) : rendererOptions != null ? (
             <RevisionRenderer

@@ -379,6 +379,38 @@ describe('InlineCommentPreviewPopover', () => {
     });
   });
 
+  it('wraps the edit-mode input in an accent-colored border using semantic Bootstrap classes (Req 2.2, 3.1)', async () => {
+    currentUserRef.current = { _id: 'user1' };
+    renderPopover({ id: 'comment42', creatorId: 'user1' });
+
+    await userEvent.click(
+      screen.getByTestId('inline-comment-preview-popover-edit-button'),
+    );
+
+    const editForm = screen.getByTestId(
+      'inline-comment-preview-popover-edit-form',
+    );
+    // Semantic Bootstrap accent-border utility classes only -- no hardcoded
+    // hex color, no inline style (Requirement 3.1).
+    expect(editForm).toHaveClass('border', 'border-primary', 'rounded');
+    expect(editForm.getAttribute('style')).toBeFalsy();
+  });
+
+  it('places the Cancel button below the input, right-aligned (Req 2.2)', async () => {
+    currentUserRef.current = { _id: 'user1' };
+    renderPopover({ id: 'comment42', creatorId: 'user1' });
+
+    await userEvent.click(
+      screen.getByTestId('inline-comment-preview-popover-edit-button'),
+    );
+
+    const cancelButton = screen.getByTestId(
+      'inline-comment-preview-popover-edit-cancel-button',
+    );
+    const actionsRow = cancelButton.parentElement;
+    expect(actionsRow).toHaveClass('d-flex', 'justify-content-end');
+  });
+
   it('has no delete action anywhere in the rendered output (Boundary Context: delete is list-only)', () => {
     currentUserRef.current = { _id: 'user1' };
     renderPopover({ creatorId: 'user1' });
