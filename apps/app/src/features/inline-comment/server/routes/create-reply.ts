@@ -1,26 +1,14 @@
 /**
  * POST /_api/v3/inline-comments/:id/replies — reply-to-inline-comment creation.
  *
- * Middleware order (design.md's API Contract):
- *   accessTokenParser → loginRequired → express-validator → apiV3FormValidator
- *
- * `certifySharedPage` is intentionally NOT applied (requirement 6.1). `addActivity`
- * is also intentionally NOT applied — see create.ts's file doc for why (same
- * reasoning applies to `InlineCommentService.createReply()`).
- *
- * `:id` names an origin inline comment, not a page, so this route cannot run the
- * page-permission check directly off the request the way create.ts/list.ts do — it
- * must first resolve `:id`'s `pageId` via a `findUnique`. That same lookup also lets
- * the route distinguish, per design.md's literal API Contract for this endpoint
- * ("400（`:id`が起点コメントでない）, ..., 404"):
+ * `:id` names an origin inline comment, not a page, so this route cannot run
+ * the page-permission check directly off the request — it resolves `:id`'s
+ * `pageId` via `findUnique` first, then:
  *   - `:id` does not exist at all → 404
- *   - `:id` exists but is not an origin inline comment (a reply, a non-inline
- *     comment, or already a page-visible-but-wrong-shape row) → 400
+ *   - `:id` exists but is not an origin inline comment → 400
  * `InlineCommentService.createReply()` re-validates the same precondition
- * internally (it does its own `findUnique`) — a small duplicated query, but it keeps
- * the service's own precondition contract intact for callers that do not need the
- * 400/404 split (see .kiro/specs/inline-comment/tasks.md's Implementation Notes,
- * option (a)).
+ * internally (its own `findUnique`) — a small duplicated query, kept so the
+ * service's own precondition contract stays intact for other callers.
  */
 
 import assert from 'node:assert';
@@ -58,11 +46,6 @@ const validator = [
   body('comment').isString().withMessage('comment must be a string'),
 ];
 
-/**
- * Factory function that wires the inline-comment reply creation route.
- *
- * @returns Express RequestHandler array to be spread into router.post().
- */
 export const createInlineCommentReplyRouteHandlersFactory = (
   crowi: Crowi,
 ): RequestHandler[] => {
@@ -93,15 +76,9 @@ export const createInlineCommentReplyRouteHandlersFactory = (
         select: { pageId: true, isInline: true, replyToId: true },
       });
 
-      // Page-permission check runs before the comment-existence/shape check
-      // below, whenever a pageId is known (i.e. `parentId` exists), so an
-      // authenticated-but-unauthorized caller cannot use this endpoint as an
-      // existence oracle for a page they cannot view (see
-      // apps/app/.claude/rules/page-write-action-403-404.md — the same class
-      // of leak, applied here to a comment id instead of a page id). When
-      // `parentId` does not exist at all, there is no pageId to check
-      // permission against, so this falls through to the not-found branch
-      // below unconditionally.
+      // Runs before the comment-existence/shape check below, whenever a
+      // pageId is known, so an authenticated-but-unauthorized caller can't
+      // use this endpoint as an existence oracle (see page-write-action-403-404.md).
       if (parent != null) {
         const { meta } = await findPageAndMetaDataByViewer(
           pageService,
@@ -151,10 +128,8 @@ export const createInlineCommentReplyRouteHandlersFactory = (
         );
         return res.apiv3({ inlineCommentReply }, 201);
       } catch (err) {
-        // The precondition (parentId not an origin comment) was already checked
-        // above, so an Error here can only come from a race (the parent row
-        // changed/vanished between the check and this call) — treat it as the
-        // same "not an origin comment" 400 design.md's API Contract lists.
+        // The precondition was already checked above, so an Error here can
+        // only come from a race (the parent row changed/vanished meanwhile).
         logger.error('Failed to create inline comment reply', err);
         return res.apiv3Err(
           new ErrorV3(

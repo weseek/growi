@@ -31,32 +31,28 @@ type CommentsProps = {
   isReadOnly?: boolean;
   onLoaded?: () => void;
   /**
-   * Forwarded to `PageComment` unchanged (design.md decision 3 / tasks.md
-   * 6.1's Implementation Notes): this is the caller's
+   * Forwarded to `PageComment` unchanged: this is the caller's
    * `useSWRxInlineComments` result bundled with `resolve`/`createReply`, not
    * a plain array. `Comments` must not default a missing value to an empty
    * list -- that would fabricate a "no inline comments" object without the
-   * accompanying callbacks. When the caller omits this prop, `Comments`
-   * simply doesn't pass it to `PageComment` either, and `PageComment`'s own
-   * default handles the omitted case.
+   * accompanying callbacks.
    */
   inlineComments?: {
     comments: InlineCommentWithReplies[];
     resolve: (id: string, resolved: boolean) => Promise<unknown>;
     createReply: (parentId: string, comment: string) => Promise<unknown>;
-    /** Persists an edited origin-comment body (Requirement 18.1, 18.2). */
+    /** Persists an edited origin-comment body. */
     update: (id: string, comment: string) => Promise<unknown>;
-    /** Deletes the origin comment, along with its replies (Requirement 18.5, 18.6). */
+    /** Deletes the origin comment, along with its replies. */
     remove: (id: string) => Promise<unknown>;
-    /** Persists an edited reply body (Requirement 18.1, 18.2). */
+    /** Persists an edited reply body. */
     updateReply: (id: string, comment: string) => Promise<unknown>;
-    /** Deletes a single reply (Requirement 18.5). */
+    /** Deletes a single reply. */
     removeReply: (id: string) => Promise<unknown>;
     /**
      * Scrolls the page body to the highlighted range this comment anchors
-     * to; returns `false` when the range no longer resolves (failed
-     * re-anchor). Passed straight through to `PageComment` unchanged --
-     * see `PageComment.tsx`'s own `inlineComments` doc comment.
+     * to; returns `false` when the range no longer resolves. Passed
+     * straight through to `PageComment` unchanged.
      */
     scrollToRange: (commentId: string) => boolean;
   };

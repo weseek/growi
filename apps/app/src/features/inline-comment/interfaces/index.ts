@@ -1,12 +1,10 @@
 /**
  * Types shared between the client and server halves of the inline-comment
- * feature (design.md: File Structure Plan > interfaces/index.ts).
+ * feature.
  *
  * `InlineCommentAnchor` intentionally mirrors the shape already declared
- * locally in `client/services/quote-matcher.ts` (that file predates this
- * barrel and keeps its own copy for now — see the comment there). Keep the
- * two in sync if either changes; unifying them is left to whichever task
- * next touches the client anchor-matching code.
+ * locally in `client/services/quote-matcher.ts`; keep the two in sync if
+ * either changes.
  */
 
 import type { IUserHasId } from '@growi/core';
@@ -15,7 +13,7 @@ import type { IUserSerializedSecurely } from '@growi/core/dist/models/serializer
 /**
  * The stored anchor of an inline comment: the exact quote as it was
  * selected, its surrounding context windows, and a rough offset of the
- * selection start. Never normalized (requirement 1.4).
+ * selection start. Never normalized.
  */
 export interface InlineCommentAnchor {
   quote: string;
@@ -38,26 +36,14 @@ export interface IInlineComment {
   pageId: string;
   creatorId: string;
   /**
-   * Populated only by `listByPageId()` (requirement 13.5). The creator, run
-   * through `serializeUserSecurely`, the same sanitization the ordinary
-   * comment list applies. `null` when the user could not be resolved, or
-   * when this `IInlineComment` was produced by `create()`/`setResolved()`
-   * (neither of those fetches the creator relation — requirement 13.5's
-   * scope is the list response, and the client re-fetches the list via
-   * `mutate()` right after create anyway).
-   *
-   * Typed as `IUserSerializedSecurely<IUserHasId>` (not `IUserHasId`)
-   * because sanitization actually removes `password`/`apiToken` (and
-   * conditionally `email`) — the same convention as
-   * `access-token-parser.ts`'s `AccessTokenParserReq.user`.
+   * Populated only by `listByPageId()`, run through `serializeUserSecurely`
+   * (the same sanitization the ordinary comment list applies). `null` when
+   * the user could not be resolved, or when produced by
+   * `create()`/`setResolved()` (neither fetches the creator relation).
    */
   creator: IUserSerializedSecurely<IUserHasId> | null;
   comment: string;
-  /**
-   * The revision the anchor was computed against. Set once at creation and
-   * never rewritten afterward, regardless of re-anchoring outcome
-   * (requirement 5.4, 5.5).
-   */
+  /** The revision the anchor was computed against. Set once at creation and never rewritten. */
   anchorOriginRevisionId: string;
   anchor: InlineCommentAnchor;
   resolvedById: string | null;
@@ -68,21 +54,15 @@ export interface IInlineComment {
 
 /**
  * A reply to an origin inline comment (`isInline: true` with a non-null
- * `replyToId`). Design.md's aggregate model (`InlineCommentReply`, "子エン
- * ティティ") explicitly holds no anchor and no resolved state — it is a
- * plain comment attached to its parent — so this type omits those fields
- * entirely rather than carrying them as `null` (requirement 1.9).
+ * `replyToId`). Holds no anchor and no resolved state — a plain comment
+ * attached to its parent — so this type omits those fields entirely rather
+ * than carrying them as `null`.
  */
 export interface InlineCommentReply {
   id: string;
   pageId: string;
   creatorId: string;
-  /**
-   * Populated only by `listByPageId()`, mirroring `IInlineComment.creator`
-   * above. `null` when the user could not be resolved, or when this
-   * `InlineCommentReply` was produced by `createReply()` (which does not
-   * fetch the creator relation).
-   */
+  /** Populated only by `listByPageId()`, mirroring `IInlineComment.creator` above. */
   creator: IUserSerializedSecurely<IUserHasId> | null;
   comment: string;
   /** The origin inline comment this reply belongs to. */
@@ -91,13 +71,7 @@ export interface InlineCommentReply {
   updatedAt: Date;
 }
 
-/**
- * An origin inline comment together with its replies, nested per
- * design.md's `listByPageId` Service Interface
- * (`listByPageId(pageId: string): Promise<InlineComment[]>; // 各要素が返信のネスト配列を含む`)
- * and Domain Model (`InlineComment` is the aggregate root holding a nested
- * `InlineCommentReply[]`).
- */
+/** An origin inline comment together with its replies. */
 export interface InlineCommentWithReplies extends IInlineComment {
   /** Replies to this origin comment, ordered the same way as the top-level list. */
   replies: InlineCommentReply[];
@@ -105,12 +79,10 @@ export interface InlineCommentWithReplies extends IInlineComment {
 
 /**
  * Where an origin comment's anchor currently resolves to in the rendered
- * page text, as produced by `useAnchorResolver`
- * (design.md: AnchorResolver > State Management).
- *
- * `startOffset`/`endOffset` are UTF-16 code-unit offsets into the original
- * (un-normalized) text returned by `renderedTextOf` — the same coordinate
- * space `matchQuote`'s `QuoteMatchResult` reports in.
+ * page text, as produced by `useAnchorResolver`. `startOffset`/`endOffset`
+ * are UTF-16 code-unit offsets into the original (un-normalized) text
+ * returned by `renderedTextOf` — the same coordinate space `matchQuote`'s
+ * `QuoteMatchResult` reports in.
  */
 export type ResolvedRange =
   | { status: 'exact' | 'fuzzy'; startOffset: number; endOffset: number }

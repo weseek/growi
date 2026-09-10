@@ -11,7 +11,7 @@ export interface ResolveInlineCommentRequestBody {
   resolved: boolean;
 }
 
-/** Response body for PUT /_api/v3/inline-comments/:id/resolve — design.md's `InlineComment`. */
+/** Response body for PUT /_api/v3/inline-comments/:id/resolve. */
 export interface ResolveInlineCommentResponseBody {
   inlineComment: IInlineComment;
 }

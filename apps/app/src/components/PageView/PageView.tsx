@@ -128,29 +128,14 @@ type Props = {
   className?: string;
 };
 
-/**
- * A THIRD `CSS.highlights` name, alongside `growi-inline-comment` (saved
- * anchors, drawn by InlineCommentHighlight) and
- * `growi-inline-comment-pending` (the in-creation selection). Registered for a
- * moment right after scrolling so the reader can see WHICH range the comment
- * list just took them to (Requirement 3.3). The same `Range` may be
- * registered under several names at once; the later-registered name paints on
- * top, so this wins over the saved highlight while it lasts.
- */
+// A third CSS.highlights name (alongside the saved-anchor and pending-selection
+// ones), registered briefly after scrolling to flash the target range. A Range
+// registered under multiple names paints with the later-registered one on top.
 const EMPHASIS_HIGHLIGHT_NAME = 'growi-inline-comment-emphasis';
 
-/**
- * Long enough for the smooth scroll to finish and for the eye to land on the
- * range, short enough that it reads as a flash rather than a fourth
- * persistent highlight state.
- */
 const EMPHASIS_DURATION_MS = 2000;
 
-/**
- * Mirrors InlineCommentHighlight's own capability probe (that copy is
- * unexported and its file is outside this task's boundary). Browsers without
- * the CSS Custom Highlight API still scroll — they just get no emphasis.
- */
+// Browsers without the CSS Custom Highlight API still scroll — they just get no emphasis.
 const supportsCustomHighlightApi = (): boolean =>
   typeof CSS !== 'undefined' &&
   CSS.highlights != null &&
@@ -174,14 +159,9 @@ const arePropsEqual = (prevProps: Props, nextProps: Props): boolean =>
 
 const PageViewComponent = (props: Props): JSX.Element => {
   const commentsContainerRef = useRef<HTMLDivElement>(null);
-  // Wraps whichever of PageContentRenderer/SlideRenderer is rendered below,
-  // giving SelectionCapture/AnchorResolver/InlineCommentHighlight a container
-  // scoped to the page body only (excludes the sidebar and the comment
-  // threads). RevisionRenderer.tsx already forwards a ref to its own
-  // ReactMarkdown-wrapping div (task 5.1); this outer div reads the same
-  // rendered text since it contains nothing else, without requiring
-  // PageContentRenderer.tsx (a thin dynamic-import wrapper) to also forward
-  // a ref through next/dynamic.
+  // Scopes SelectionCapture/AnchorResolver/InlineCommentHighlight to the page
+  // body only (excludes sidebar and comment threads), without requiring
+  // PageContentRenderer (a dynamic-import wrapper) to forward its own ref.
   const pageBodyContainerRef = useRef<HTMLDivElement>(null);
 
   const { pagePath, rendererConfig, className } = props;
@@ -213,20 +193,10 @@ const PageViewComponent = (props: Props): JSX.Element => {
   // Auto-scroll to URL hash target, handling lazy-rendered content
   useHashAutoScroll({ key: currentPageId, contentContainerId });
 
-  // Inline comments (Requirements 1.1, 2.1, 2.5, 6.2). PageView.tsx is only
-  // ever rendered by the normal page route (`pages/[[...path]]`) — the
-  // share-link route renders the separate `ShareLinkPageView` component
-  // instead, which this task does not touch, and only THAT route's
-  // `useHydratePageAtoms(..., { shareLinkId })` call ever sets
-  // `shareLinkIdAtom` (see `pages/share/[[...path]]/index.page.tsx` vs.
-  // `pages/[[...path]]/index.page.tsx`). So `useShareLinkId()` is always
-  // `undefined` on every route that actually renders this component today.
-  // The check below is still added as explicit defense-in-depth (mirrors
-  // the client-side `isSharedPage`-style guard other share-link-sensitive UI
-  // in this codebase uses) so that if PageView.tsx is ever reused under a
-  // share-link context in the future, the inline-comment UI — and the
-  // network request below — stay off by construction rather than by the
-  // routes happening to stay separate.
+  // `useShareLinkId()` is always undefined on the routes that render this
+  // component today (the share-link route renders a separate component
+  // instead) — this check is defense-in-depth so inline comments stay off
+  // by construction if that ever changes.
   const shareLinkId = useShareLinkId();
   const isSharedPageView = shareLinkId != null;
   const {
@@ -238,33 +208,20 @@ const PageViewComponent = (props: Props): JSX.Element => {
     remove: removeInlineComment,
     removeReply: removeInlineCommentReply,
   } = useSWRxInlineComments(isSharedPageView ? null : (page?._id ?? null));
-  // Requirement 2.7, 4.1, 4.4: a resolved comment must never be passively
-  // highlighted or offered a popover in the page body -- only the footer
-  // comment list still shows it. `bodyInlineComments` is the single source
-  // of "which comments are visible in the body [for passive display]": the
-  // `inlineComments` prop handed to `InlineCommentBodyInteraction`, and
-  // `visibleResolvedRanges` below (which `InlineCommentHighlight` and
-  // `InlineCommentBodyInteraction`'s hit-testing consume), are both derived
-  // from this same filtered list. Feeding the raw list to one of the two
-  // consumers while the other saw the filtered view was the root cause of a
-  // bug where resolving a pinned-open popover's comment left `pinnedId`
-  // stuck on an id that could never resolve again, silently blocking every
-  // other highlight's hover popover afterward.
+  // Single source of "which comments are visible in the body": both
+  // InlineCommentBodyInteraction and visibleResolvedRanges below must derive
+  // from this same filtered list. Feeding one the raw list and the other the
+  // filtered view previously caused a stuck `pinnedId` after resolving an
+  // open popover's comment.
   const bodyInlineComments = useMemo(
     () =>
       (inlineComments ?? []).filter((comment) => comment.resolvedAt == null),
     [inlineComments],
   );
-  // Anchors (and therefore `resolvedInlineCommentRanges`) are computed for
-  // ALL comments, resolved included -- Requirement 16 (scrolling from the
-  // footer list to the comment's location in the body) must still work for a
-  // resolved comment; resolving one only suppresses its PASSIVE highlight and
-  // popover, it does not delete the comment or its position. Excluding
-  // resolved comments here too (as an earlier version of this fix did)
-  // regressed list-click navigation: `scrollToRange` could no longer find the
-  // comment's Range at all, so clicking a resolved item in the list showed
-  // the generic "could not be found... may have been edited or removed"
-  // error, which is wrong -- the text is still there, it's simply resolved.
+  // Computed for ALL comments, resolved included: list-click scroll navigation
+  // must still work for a resolved comment (resolving only suppresses its
+  // passive highlight/popover, not its position). Excluding resolved comments
+  // here too previously broke `scrollToRange` for resolved list items.
   const inlineCommentAnchors = useMemo(
     () =>
       (inlineComments ?? []).map((comment) => ({
@@ -277,11 +234,8 @@ const PageViewComponent = (props: Props): JSX.Element => {
     pageBodyContainerRef,
     inlineCommentAnchors,
   );
-  // The filtered view of `resolvedInlineCommentRanges`, excluding resolved
-  // comments -- this is what feeds anything that renders a highlight or
-  // offers a popover (Requirement 2.7/4.1/4.3). `scrollToRange` deliberately
-  // does NOT use this filtered view; see the comment on `inlineCommentAnchors`
-  // above.
+  // Feeds anything that renders a highlight/popover; scrollToRange
+  // deliberately uses the unfiltered ranges instead (see inlineCommentAnchors above).
   const visibleResolvedRanges = useMemo(() => {
     const visibleIds = new Set(bodyInlineComments.map((comment) => comment.id));
     return new Map(
@@ -290,31 +244,13 @@ const PageViewComponent = (props: Props): JSX.Element => {
       ),
     );
   }, [resolvedInlineCommentRanges, bodyInlineComments]);
-  // Comments'/PageComment's (and InlineCommentBodyInteraction's)
-  // inlineComments.createReply prop takes the reply text directly; the
-  // store's createReply takes the POST body ({ comment }). Adapt the shape
-  // once here, shared by both consumers below, rather than duplicating the
-  // same one-line adapter (and risking the two drifting if the DTO shape
-  // ever changes).
+  // Adapts the reply-text prop shape to the store's createReply({ comment }) POST body.
   const createInlineCommentReplyText = useCallback(
     (parentId: string, comment: string) =>
       createInlineCommentReply(parentId, { comment }),
     [createInlineCommentReply],
   );
-  // Bundled with resolve/createReply from the SAME useSWRxInlineComments()
-  // call as the data (design.md 決定3 / tasks.md 6.1's Implementation Notes)
-  // -- InlineCommentItem needs those callbacks bound to this exact fetch, so
-  // that no second fetch site is introduced (Requirement 13.8: the
-  // share-link view must never fetch inline comments at all). Omitted
-  // entirely (not an empty bundle) while data hasn't arrived yet or the
-  // fetch is disabled, matching Comments'/PageComment's own "omit when
-  // absent" default.
 
-  // Scroll navigation from the page-footer comment list to the highlighted
-  // range in the page body (Requirements 3.1, 3.2, 3.3 / design.md 決定4).
-  // PageView already owns both inputs -- the container ref and the resolver's
-  // output -- so the capability is implemented here and handed to the list as
-  // a callback rather than re-deriving either of them downstream.
   const emphasisTimeoutRef = useRef<number | undefined>(undefined);
   const clearEmphasis = useCallback(() => {
     if (emphasisTimeoutRef.current != null) {
@@ -337,9 +273,6 @@ const PageViewComponent = (props: Props): JSX.Element => {
           ? undefined
           : rangesById(container, resolvedInlineCommentRanges).get(commentId);
       if (range == null) {
-        // Requirement 3.2: the anchor no longer resolves to anywhere in the
-        // current body, so there is nothing to scroll to -- say so instead of
-        // failing silently.
         toastError(t('inline_comment.range_not_found'));
         return false;
       }
@@ -349,7 +282,6 @@ const PageViewComponent = (props: Props): JSX.Element => {
         block: 'center',
       });
 
-      // Requirement 3.3
       clearEmphasis();
       if (supportsCustomHighlightApi()) {
         CSS.highlights.set(EMPHASIS_HIGHLIGHT_NAME, new Highlight(range));
@@ -423,12 +355,9 @@ const PageViewComponent = (props: Props): JSX.Element => {
       </>
     ) : null;
 
-  // NOTE: this MUST stay a memoized *element*, never a component defined in
-  // the render body. When it was `const Contents = useCallback(...)` rendered
-  // as `<Contents />`, every dependency change produced a new function
-  // identity, so React saw a different element `type` and unmounted/remounted
-  // this whole subtree — silently discarding SelectionCapture's in-progress
-  // inline-comment form.
+  // Must stay a memoized element, not a component (`useCallback` + `<Contents />`):
+  // a new function identity per dependency change made React remount this
+  // subtree, discarding SelectionCapture's in-progress inline-comment form.
   const contents = useMemo(() => {
     if (isNotFound || page?.revision == null) {
       return <NotFoundPage path={pagePath} />;
@@ -515,17 +444,7 @@ const PageViewComponent = (props: Props): JSX.Element => {
       footerContents={footerContents}
       expandContentWidth={shouldExpandContent}
     >
-      {/*
-        The `::highlight()` rule for the transient emphasis above. Reuses the
-        existing themed marker family (`--grw-marker-bg-red`) rather than
-        introducing a fourth inline-comment token: this is a one-off flash, not
-        a state a theme needs to override independently, and red is the
-        remaining marker colour that is unmistakably distinct from the saved
-        (yellow) and pending (blue) inline-comment highlights in both colour
-        modes. Declared globally, following InlineCommentHighlight's own
-        pattern -- `CSS.highlights` is a document-level registry, so the rule
-        cannot be component-scoped.
-      */}
+      {/* Declared globally: CSS.highlights is a document-level registry, not component-scoped. */}
       <style jsx global>
         {`
           ::highlight(${EMPHASIS_HIGHLIGHT_NAME}) {

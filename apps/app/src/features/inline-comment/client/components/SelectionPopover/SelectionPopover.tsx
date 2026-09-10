@@ -1,11 +1,10 @@
 /**
- * Places arbitrary children next to a DOM Range (a text selection), and
- * nothing else: it knows nothing about quotes, anchors or comments — purely a
- * positioning shell (design.md, SelectionPopover: 「選択そのものの意味は一切扱わない」).
+ * Places arbitrary children next to a DOM Range (a text selection) — purely a
+ * positioning shell with no knowledge of quotes, anchors, or comments.
  *
- * The children are rendered through a portal into `document.body` so the
- * popover escapes the stacking context (and any `overflow: hidden`) of the
- * page-body ancestors it floats over.
+ * Children are rendered through a portal into `document.body` so the popover
+ * escapes the stacking context (and any `overflow: hidden`) of the page-body
+ * ancestors it floats over.
  */
 
 import type { JSX, ReactNode } from 'react';
@@ -54,11 +53,8 @@ export const SelectionPopover = (
       getBoundingClientRect: () => {
         const rect = rangeElement.getBoundingClientRect();
 
-        // A zero rect means the range no longer resolves to laid-out content
-        // (e.g. its nodes were replaced by a re-render). Handing that to
-        // Popper would snap the popover to the viewport origin, so the last
-        // known good position is kept instead (research.md, Risks &
-        // Mitigations).
+        // A zero rect means the range no longer resolves to laid-out content;
+        // handing that to Popper would snap the popover to the viewport origin.
         if (isZeroRect(rect)) {
           return lastValidRectRef.current ?? rect;
         }
@@ -72,16 +68,10 @@ export const SelectionPopover = (
   usePopperPosition(virtualElement, popperElement);
 
   return createPortal(
-    // Popper positions this node itself (it writes `position` / `transform`
-    // inline via its applyStyles modifier). `zIndex` is the one style this
-    // element owns: some page-layout flex items between `.wiki` and `body`
-    // set an explicit `z-index` (e.g. Bootstrap's `.z-1`) with no stacking
-    // context in between to contain it, so it escapes to the document root
-    // and would otherwise paint over this portal's implicit z-index of 0,
-    // making the action button/form unclickable. 1070 mirrors Bootstrap's
-    // `$zindex-popover` — no shared TS-side z-index scale exists in this
-    // codebase yet (`PageItemControl.tsx`/`BookmarkFolderItemControl.tsx`
-    // hardcode `1055` the same way for `$zindex-modal`).
+    // zIndex is the one style this element owns (Popper writes position/transform
+    // itself). Some page-layout ancestors set an explicit z-index with no
+    // stacking context to contain it, so without this the portal would paint
+    // behind them. 1070 mirrors Bootstrap's $zindex-popover.
     <div ref={setPopperElement} style={{ zIndex: 1070 }}>
       {children}
     </div>,

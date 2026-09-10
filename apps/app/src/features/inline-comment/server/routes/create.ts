@@ -1,18 +1,13 @@
 /**
  * POST /_api/v3/inline-comments — origin (anchored) inline comment creation.
  *
- * Middleware order (design.md's API Contract):
- *   accessTokenParser → loginRequired → express-validator → apiV3FormValidator
- *
  * `certifySharedPage` is intentionally NOT applied — this route must be
- * unreachable from a share-link context (requirement 6.1, design.md's
- * Security Considerations). `addActivity` is also intentionally NOT applied —
- * `InlineCommentService.create()` self-mints its own Activity id via
- * `prisma.activities.createByParameters` (see
- * `.kiro/specs/inline-comment/tasks.md`'s Implementation Notes and
+ * unreachable from a share-link context. `addActivity` is also intentionally
+ * NOT applied: `InlineCommentService.create()` self-mints its own Activity id
+ * via `prisma.activities.createByParameters` (see
  * `.claude/rules/activity-recording.md`); applying `addActivity` here would
  * register a failsafe finalizer that writes a spurious `ACTION_UNSETTLED` row
- * alongside the real `ACTION_INLINE_COMMENT_CREATE` row the service already wrote.
+ * alongside the real one the service already wrote.
  */
 
 import assert from 'node:assert';
@@ -64,11 +59,6 @@ const validator = [
     .withMessage('anchor.approxOffset must be a non-negative integer'),
 ];
 
-/**
- * Factory function that wires the origin inline-comment creation route.
- *
- * @returns Express RequestHandler array to be spread into router.post().
- */
 export const createInlineCommentRouteHandlersFactory = (
   crowi: Crowi,
 ): RequestHandler[] => {
@@ -93,19 +83,14 @@ export const createInlineCommentRouteHandlersFactory = (
 
       const { pageId, anchorOriginRevisionId, comment, anchor } = req.body;
 
-      // Viewer-filtered lookup, same mechanism get-page-info.ts / respond-with-page-markdown.ts
-      // use. A uniform 404 on any failure (page missing OR forbidden) — see
-      // apps/app/.claude/rules/page-write-action-403-404.md: this route's only
-      // existence-check on `pageId` must not let an authenticated-but-unauthorized
-      // caller distinguish "does not exist" from "exists but I cannot see it".
+      // Viewer-filtered lookup; uniform 404 on any failure, page missing or
+      // forbidden — see apps/app/.claude/rules/page-write-action-403-404.md.
       const { meta } = await findPageAndMetaDataByViewer(
         pageService,
         pageGrantService,
         { pageId, path: null, user, basicOnly: true },
       );
       if (isIPageNotFoundInfo(meta)) {
-        // Always respond 404 regardless of forbidden vs not-found — see
-        // apps/app/.claude/rules/page-write-action-403-404.md
         return res.apiv3Err(
           new ErrorV3(
             'Page is not found or forbidden',
@@ -127,9 +112,7 @@ export const createInlineCommentRouteHandlersFactory = (
         );
         return res.apiv3({ inlineComment }, 201);
       } catch (err) {
-        // The service's only precondition error here is an empty
-        // `anchor.quote` (design.md's API Contract: "400（空クオート・不正な
-        // pageId)"), so any Error it throws maps to 400.
+        // The service's only precondition error here is an empty anchor.quote.
         logger.error('Failed to create inline comment', err);
         return res.apiv3Err(
           new ErrorV3(

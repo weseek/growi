@@ -6,46 +6,22 @@ import { renderedTextOf } from '../../services/rendered-text';
  * The result of capturing a text selection: the exact (unnormalized) quote,
  * grapheme-safe surrounding context windows, and a rough code-unit offset
  * into the container's extracted text (see `renderedTextOf`).
- *
- * Shape mirrors `InlineCommentAnchor` (quote/prefix/suffix/approxOffset) as
- * described in design.md's Data Models section. It is declared locally here
- * (rather than imported from the shared interfaces module) because this
- * task's boundary is `use-text-selection` only, and the shared
- * `interfaces/index.ts` barrel does not exist yet in this worktree — it is
- * owned by a different, possibly-concurrent task.
  */
 export interface CapturedSelection {
-  /**
-   * The exact, unnormalized selected text. NFC normalization is deliberately
-   * NOT applied here — that only happens later, at match time, in
-   * quote-matcher (Requirement 1.4).
-   */
+  /** The exact, unnormalized selected text; NFC normalization happens later, at match time, in quote-matcher. */
   quote: string;
   prefix: string;
   suffix: string;
   /**
-   * A rough UTF-16 code-unit offset of the selection start within the text
-   * `renderedTextOf` extracts from the container — NOT within the container's
-   * raw `textContent`, which additionally counts the excluded subtrees
-   * (`.katex`, `aria-hidden="true"`). Counting it the same way anchor
-   * resolution does is what keeps this value comparable at match time
-   * (Requirement 1.2). Used only to disambiguate multiple occurrences
-   * of the same quote when re-matching later (see quote-matcher's algorithm
-   * contract in design.md) — not read for any other purpose.
+   * A rough UTF-16 code-unit offset within the text `renderedTextOf` extracts
+   * from the container — NOT the container's raw `textContent` (which also
+   * counts excluded subtrees like `.katex`). Used only to disambiguate
+   * multiple occurrences of the same quote when re-matching later.
    */
   approxOffset: number;
 }
 
-/**
- * Default size (in UTF-16 code units) of the prefix/suffix context window.
- *
- * design.md pins the exact window-building technique (Intl.Segmenter +
- * inward grapheme-boundary snapping) but does not pin a specific size for
- * *this* hook (only for quote-matcher's consumption of prefix/suffix, which
- * reuses the same technique). 40 was chosen here as a reasonable amount of
- * surrounding context for later disambiguation without inflating the stored
- * anchor payload; callers may override it via `CaptureSelectionOptions`.
- */
+/** Default size (in UTF-16 code units) of the prefix/suffix context window; callers may override via `CaptureSelectionOptions`. */
 export const DEFAULT_TARGET_CONTEXT_WINDOW_SIZE = 40;
 
 /**
@@ -66,15 +42,9 @@ export interface CaptureSelectionOptions {
 
 /**
  * Builds a CapturedSelection from a live DOM Selection, scoped to
- * `containerEl`. Returns null when there is nothing (usefully) selected —
- * a collapsed selection, an empty selected string (Requirement 1.7), or a
- * selection that falls outside the given container.
- *
- * Character-level (UTF-16 code unit) start/end handling throughout — no
- * rounding to line/paragraph boundaries (Requirement 1.3).
- *
- * Pure with respect to the DOM: only reads from `selection` and
- * `containerEl`, never mutates either.
+ * `containerEl`. Returns null for a collapsed selection, an empty selected
+ * string, or a selection outside the given container. Pure with respect to
+ * the DOM: only reads, never mutates.
  */
 export function captureSelection(
   selection: Selection | null,
@@ -101,9 +71,8 @@ export function captureSelection(
     locale = 'en',
     targetWindowSize = DEFAULT_TARGET_CONTEXT_WINDOW_SIZE,
   } = options;
-  // Single source of truth for "what text does this container currently hold":
-  // counting here the same way anchor resolution counts later is what keeps a
-  // stored approxOffset comparable at match time (Requirement 1.2).
+  // Counting here the same way anchor resolution counts later is what keeps
+  // a stored approxOffset comparable at match time.
   const rendered = renderedTextOf(containerEl);
   const fullText = rendered.text;
   const startOffset = rendered.textOffsetOf(
@@ -122,9 +91,8 @@ export function captureSelection(
 
 /**
  * Pure hook: watches the document's selection state and returns the
- * currently captured selection (quote/prefix/suffix/approxOffset) scoped to
- * `containerRef`, or null when there is no non-empty selection inside it
- * (Requirement 1.7).
+ * currently captured selection scoped to `containerRef`, or null when there
+ * is no non-empty selection inside it.
  */
 export function useTextSelection(
   containerRef: RefObject<HTMLElement | null>,

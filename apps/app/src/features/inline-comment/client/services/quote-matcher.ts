@@ -5,11 +5,6 @@ import { createNormalizedOffsetMapper } from './normalized-offset-mapping';
 /**
  * The stored anchor of an inline comment: the exact quote as it was selected,
  * its surrounding context windows, and a rough offset of the selection start.
- *
- * Declared locally (rather than imported from a shared interfaces barrel)
- * because that barrel does not exist yet in this worktree and is owned by a
- * different, possibly-concurrent task — the same reasoning `use-text-selection`
- * records for `CapturedSelection`.
  */
 export interface InlineCommentAnchor {
   quote: string;
@@ -30,10 +25,7 @@ export interface QuoteMatchResult {
   endOffset: number | null;
 }
 
-/**
- * Fraction of the quote's length allowed as edit errors during fuzzy matching.
- * Exported as a named constant because design.md asks for it to be tunable.
- */
+/** Fraction of the quote's length allowed as edit errors during fuzzy matching. */
 export const FUZZY_MATCH_ERROR_RATE = 0.2;
 
 /**
@@ -113,10 +105,8 @@ const matchExactly = (
  * Runs the approximate search over the NFC-normalized forms and converts the
  * winning match back into the original text's coordinates.
  *
- * `anchor.prefix` / `anchor.suffix` are deliberately unused: design.md's
- * algorithm searches for the quote alone and breaks ties on `approxOffset`
- * alone, so feeding the context windows into the search (or into a similarity
- * score) would be behavior the contract does not describe.
+ * `anchor.prefix` / `anchor.suffix` are deliberately unused: the search runs
+ * on the quote alone and breaks ties on `approxOffset` alone.
  */
 const matchApproximately = (
   text: string,

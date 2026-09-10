@@ -37,38 +37,28 @@ type PageCommentProps = {
   isReadOnly: boolean;
   /**
    * The page's inline comments together with the writers that revalidate
-   * them, supplied by the caller (design.md 決定3): this component must not
-   * fetch them itself, because `Comments` is also mounted by
-   * `ShareLinkPageView`, where inline comments must never be requested
-   * (requirement 13.8).
-   *
-   * The three values travel as one object because they belong to one
-   * `useSWRxInlineComments` call — `resolve`/`createReply` revalidate exactly
-   * the list held in `comments`. Bundling them also makes "all three or none"
-   * a type rather than a convention, so a caller cannot supply a list whose
-   * resolve toggle silently does nothing.
-   *
-   * Omitted by callers that show no inline comments at all (the share-link
-   * view, and the search-result preview in `SearchResultContent`).
+   * them, supplied by the caller: this component must not fetch them
+   * itself, since `Comments` is also mounted by `ShareLinkPageView`, where
+   * inline comments must never be requested. Bundled as one object because
+   * they belong to one `useSWRxInlineComments` call, and omitted by callers
+   * that show no inline comments (the share-link view, search-result preview).
    */
   inlineComments?: {
     comments: InlineCommentWithReplies[];
     resolve: (id: string, resolved: boolean) => Promise<unknown>;
     createReply: (parentId: string, comment: string) => Promise<unknown>;
-    /** Persists an edited origin-comment body (Requirement 18.1, 18.2). */
+    /** Persists an edited origin-comment body. */
     update: (id: string, comment: string) => Promise<unknown>;
-    /** Deletes the origin comment, along with its replies (Requirement 18.5, 18.6). */
+    /** Deletes the origin comment, along with its replies. */
     remove: (id: string) => Promise<unknown>;
-    /** Persists an edited reply body (Requirement 18.1, 18.2). */
+    /** Persists an edited reply body. */
     updateReply: (id: string, comment: string) => Promise<unknown>;
-    /** Deletes a single reply (Requirement 18.5). */
+    /** Deletes a single reply. */
     removeReply: (id: string) => Promise<unknown>;
     /**
      * Scrolls the page body to the highlighted range this comment anchors
-     * to; returns `false` when the range no longer resolves (failed
-     * re-anchor) so the caller can surface that instead of scrolling to
-     * nothing (design.md 決定4 / Requirement 3.1, 3.2). Wired to the anchored
-     * quote's click handler inside `InlineCommentItem`.
+     * to; returns `false` when the range no longer resolves so the caller
+     * can surface that instead of scrolling to nothing.
      */
     scrollToRange: (commentId: string) => boolean;
   };
@@ -127,10 +117,7 @@ export const PageComment: FC<PageCommentProps> = memo(
       () => commentsFromOldest?.filter((comment) => comment.replyTo == null),
       [commentsFromOldest],
     );
-    /**
-     * The single list requirement 13.1/13.2 asks for: origin normal comments
-     * and inline comments interleaved by posting date, ascending.
-     */
+    // Normal and inline comments interleaved by posting date, ascending.
     const items = useMemo<CommentListItem[]>(
       () =>
         [

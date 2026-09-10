@@ -1,46 +1,21 @@
 /**
- * A single inline comment in the comment list (design.md:
- * `InlineCommentItem`（`InlineCommentList` から移動・構造を変更）).
- *
- * The box, the header row (author picture / name / posted date) and the body
- * container all come from the shared `CommentCard`, so an inline comment sits
- * in exactly the same box as a normal comment (requirement 13.3, 13.4). Only
- * the parts that genuinely differ are supplied through its slots:
- *
- * - `headerEnd`: the unresolved/resolved badge and the resolve toggle
- *   (requirement 13.7), right-aligned by this component's own `ms-auto`
- *   wrapper — `CommentCard` renders `headerEnd` unwrapped precisely because
- *   the normal comment needs a different margin there (`ms-2`).
- * - `beforeBody`: the type-label row that tells an inline comment apart from
- *   a normal one (requirement 13.10) followed by the anchored quote
- *   (requirement 13.6).
- *
- * The unresolved badge keeps `bg-warning text-dark`. Requirement 11 covers
- * the creation UI, not this badge, and switching it to `primary` would give
- * it the send button's color and make a status read like an action — see
- * design.md 「未解決の札の色は変えない」.
+ * A single inline comment in the comment list. The box, header row, and body
+ * container all come from the shared `CommentCard`, so an inline comment
+ * sits in exactly the same box as a normal comment; only the parts that
+ * genuinely differ are supplied through its slots (the resolved badge/toggle
+ * via `headerEnd`, the type label + anchored quote via `beforeBody`).
  *
  * `RevisionRenderer` receives `additionalClassName="comment"`, matching
- * `Comment.tsx`; without it the rendered markdown only gets the `wiki` class
- * and `Comment.module.scss`'s paragraph/blockquote spacing (scoped to
- * `.wiki.comment`) never reaches an inline comment.
+ * `Comment.tsx`; without it, `Comment.module.scss`'s paragraph/blockquote
+ * spacing (scoped to `.wiki.comment`) never reaches an inline comment.
  *
- * The replies subtree stays outside the box, below it, as a nested thread —
- * each reply gets its own box of its own.
- *
- * Edit/delete (requirements.md Requirement 18): shown only to the comment's
- * own creator (`comment.creatorId === currentUser?._id` -- `creator` is not
- * used for this check, see design.md's `InlineCommentItem` /
- * `InlineCommentReplies` section: `creator` is only ever populated by
- * `listByPageId()`, and checking `creatorId` keeps this component consistent
- * with the popover, which cannot rely on a populated `creator`), and gated by
- * the same `NotAvailableIfReadOnlyUserNotAllowedToComment` restriction
- * `CommentControl.tsx` applies to a normal comment. Editing swaps the body
- * slot for `MentionAwareCommentInput` (task 4's `initialValue`); canceling
- * reverts to the read-only body without calling `update`. Deleting opens a
- * small inline confirmation (not `DeleteCommentModal` -- design.md explains
- * why that component is not reused here) and only calls `remove` once
- * confirmed.
+ * Edit/delete: shown only to the comment's own creator (`comment.creatorId
+ * === currentUser?._id` — `creator` is not used for this check since it's
+ * only ever populated by `listByPageId()`, and the popover cannot rely on a
+ * populated `creator` either). Gated by the same
+ * `NotAvailableIfReadOnlyUserNotAllowedToComment` restriction
+ * `CommentControl.tsx` applies to a normal comment. Deleting opens a small
+ * inline confirmation, not `DeleteCommentModal`.
  */
 import { type FC, type JSX, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -67,21 +42,18 @@ type InlineCommentItemProps = {
   rendererOptions: RendererOptions | undefined;
   resolve: (id: string, resolved: boolean) => Promise<unknown>;
   createReply: (parentId: string, comment: string) => Promise<unknown>;
-  /** Persists an edited origin-comment body (Requirement 18.1, 18.2). */
+  /** Persists an edited origin-comment body. */
   update: (id: string, comment: string) => Promise<unknown>;
-  /** Deletes the origin comment, along with its replies (Requirement 18.5, 18.6). */
+  /** Deletes the origin comment, along with its replies. */
   remove: (id: string) => Promise<unknown>;
-  /** Persists an edited reply body (Requirement 18.1, 18.2), forwarded to `InlineCommentReplies`. */
+  /** Persists an edited reply body, forwarded to `InlineCommentReplies`. */
   updateReply: (id: string, comment: string) => Promise<unknown>;
-  /** Deletes a single reply (Requirement 18.5), forwarded to `InlineCommentReplies`. */
+  /** Deletes a single reply, forwarded to `InlineCommentReplies`. */
   removeReply: (id: string) => Promise<unknown>;
   /**
-   * Scrolls the page body to the highlighted range this comment anchors to
-   * (design.md 決定4 / requirement 3.1). Wired to the anchored quote below —
-   * clicking the quote is the natural trigger since it is literally the text
-   * being jumped to. The boolean re-anchor-failure result is handled entirely
-   * inside `scrollToRange` itself (task 4.1); this component does not need to
-   * interpret it.
+   * Scrolls the page body to the highlighted range this comment anchors to.
+   * Wired to the anchored quote below; the boolean re-anchor-failure result
+   * is handled entirely inside `scrollToRange` itself.
    */
   scrollToRange: (commentId: string) => boolean;
 };
@@ -139,9 +111,7 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
           ? err.message
           : 'An unknown error occurred when updating the comment',
       );
-      // Rethrown so MentionAwareCommentInput's own submit handler treats
-      // this as a failure too (keeps the edited text on screen instead of
-      // clearing it as if the submit had succeeded).
+      // Rethrown so MentionAwareCommentInput keeps the edited text on screen instead of clearing it.
       throw err;
     }
   };
@@ -204,18 +174,11 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
               <span className="material-symbols-outlined fs-6">chat</span>
               {t('inline_comment.label')}
             </div>
-            {/* `inline-comment-quote` is `:global(.inline-comment-quote)` in
-                the CSS module (see InlineCommentItem.module.scss), so it is
-                referenced here as a plain class name — CSS Modules never adds
-                a `:global()` selector to the `styles` lookup table, so
-                `styles['inline-comment-quote']` would always be `undefined`. */}
-            {/* A real `<button>` wraps the quote so the click target is
-                keyboard-accessible by default (biome's a11y rules reject a
-                `role="button"` div/blockquote in favor of a real button
-                element) -- clicking or activating it (Enter/Space, native to
-                `<button>`) jumps to the anchored range in the page body
-                (requirement 3.1). Reset to plain-text styling so it still
-                reads as the quote, not a button. */}
+            {/* `inline-comment-quote` is `:global(...)` in the CSS module, so it's
+                referenced as a plain class name -- styles['inline-comment-quote']
+                would be undefined. A real <button> (not a div with role="button")
+                wraps the quote for default keyboard accessibility, reset to
+                plain-text styling so it still reads as the quote. */}
             <button
               type="button"
               className="btn p-0 border-0 bg-transparent text-start w-100"

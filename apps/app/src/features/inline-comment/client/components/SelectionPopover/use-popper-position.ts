@@ -6,9 +6,7 @@ import { createPopper, type VirtualElement } from '@popperjs/core';
  * the reference (a virtual element, e.g. from `rangeToVirtualElement`) and
  * the popper DOM element are available, and destroys it on cleanup.
  *
- * Only the standard `flip` / `preventOverflow` / `offset` modifiers are used
- * (no custom modifiers), per research.md's Design Decision on adopting
- * `@popperjs/core`.
+ * Only the standard `flip` / `preventOverflow` / `offset` modifiers are used (no custom modifiers).
  *
  * `virtualElement` and `popperElement` are expected to change identity
  * across renders (a new Range-backed virtual element per selection change, a

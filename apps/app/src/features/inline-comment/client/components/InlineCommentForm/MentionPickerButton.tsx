@@ -1,12 +1,8 @@
 /**
- * Explicit mention-target picker used by `InlineCommentForm` (design.md's
- * `MentionPickerButton` component; Requirement 3.1-3.3).
- *
- * On press it fetches candidates via `fetchMentionUsers('')` (an empty query,
- * per design.md's Responsibilities) and shows them in a `reactstrap`
- * `Dropdown`. Selecting a candidate calls `onInsert(username)` exactly once;
- * incremental in-list filtering is explicitly out of scope (see design.md's
- * Non-Goals).
+ * Explicit mention-target picker used by `InlineCommentForm`. On press it
+ * fetches candidates via `fetchMentionUsers('')` (an empty query) and shows
+ * them in a `reactstrap` `Dropdown`. Selecting a candidate calls
+ * `onInsert(username)` exactly once; incremental in-list filtering is out of scope.
  */
 
 import type { JSX } from 'react';
@@ -38,11 +34,10 @@ export const MentionPickerButton = (
   const [candidates, setCandidates] = useState<MentionCandidate[]>([]);
 
   const toggle = useCallback(() => {
-    // Fire-and-forget: the Invariant (design.md) says the button must not
-    // disable itself while fetching is in progress. This must stay outside
-    // the setIsOpen updater below -- updater functions must be pure (React
-    // may invoke them more than once, e.g. under StrictMode), so a fetch
-    // triggered from inside one can fire twice per press.
+    // Fire-and-forget: the button must not disable itself while fetching.
+    // Must stay outside the setIsOpen updater below -- updater functions
+    // must be pure (React may invoke them more than once, e.g. StrictMode),
+    // so a fetch triggered from inside one can fire twice per press.
     if (!isOpen) {
       fetchMentionUsers('').then(setCandidates);
     }

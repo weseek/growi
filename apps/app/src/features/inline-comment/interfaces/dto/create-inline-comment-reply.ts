@@ -11,7 +11,7 @@ export interface CreateInlineCommentReplyRequestBody {
   comment: string;
 }
 
-/** Response body for POST /_api/v3/inline-comments/:id/replies — design.md's `InlineCommentReply`. */
+/** Response body for POST /_api/v3/inline-comments/:id/replies. */
 export interface CreateInlineCommentReplyResponseBody {
   inlineCommentReply: InlineCommentReply;
 }

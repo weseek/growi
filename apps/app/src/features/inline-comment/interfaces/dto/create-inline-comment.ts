@@ -15,7 +15,7 @@ export interface CreateInlineCommentRequestBody {
   anchor: InlineCommentAnchor;
 }
 
-/** Response body for POST /_api/v3/inline-comments — design.md's `InlineComment`. */
+/** Response body for POST /_api/v3/inline-comments. */
 export interface CreateInlineCommentResponseBody {
   inlineComment: IInlineComment;
 }

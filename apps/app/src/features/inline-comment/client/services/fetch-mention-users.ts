@@ -4,9 +4,8 @@ import { apiv3Get } from '~/client/util/apiv3-client';
 
 /**
  * User search used for the `@` mention completion and the explicit mention
- * picker within the `inline-comment` feature (design.md's `fetchMentionUsers`
- * component). Deliberately not shared with `CommentEditor.tsx`'s own local
- * implementation — see research.md's "メンション候補取得の重複" entry for why.
+ * picker within the `inline-comment` feature. Deliberately not shared with
+ * `CommentEditor.tsx`'s own local implementation.
  */
 export const fetchMentionUsers: FetchUsersFn = async (query: string) => {
   try {

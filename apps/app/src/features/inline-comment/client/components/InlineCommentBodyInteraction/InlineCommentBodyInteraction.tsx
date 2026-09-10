@@ -1,39 +1,24 @@
 /**
- * Combines the hit-test hook (task 3.1, `use-highlight-hit-test.ts`) with the
- * content-preview popover (task 3.2, `InlineCommentPreviewPopover.tsx`) and
- * decides, on every render, which comment id (if any) should have its
- * popover open (design.md 決定2, requirements.md Requirement 2), plus the
- * hover show/hide delay and pointer-enter-lock timing (requirements.md
- * Requirement 15.7-15.9).
+ * Combines the hit-test hook with the content-preview popover and decides,
+ * on every render, which comment id (if any) should have its popover open.
  *
- * `useHighlightHitTest` reports only the *current* hit and does not latch a
- * click-selected id itself (see tasks.md's Implementation Notes for task
- * 3.1): once the pointer leaves the highlight after a click, the next
- * `pointermove` clears the hook's own value back to `null`. This component
- * is the one responsible for "pinning" a click-opened popover open despite
- * that -- `pinnedId` below persists across the hook clearing its hit, and is
- * cleared only by the popover's own close mechanism (outside click / close
- * button, AC 2.4), never merely because a hover hit stopped being reported.
+ * `useHighlightHitTest` reports only the *current* hit and doesn't latch a
+ * click-selected id itself — once the pointer leaves the highlight after a
+ * click, the next pointermove clears the hook's value back to `null`. This
+ * component owns "pinning" a click-opened popover despite that: `pinnedId`
+ * persists across the hook clearing its hit, and is cleared only by the
+ * popover's own close mechanism, never merely because a hover hit stopped
+ * being reported. While pinned, a hover elsewhere does nothing; a new click
+ * always redirects the pin.
  *
- * Precedence while a popover is pinned open: a hover elsewhere does nothing
- * -- `pinnedId` (once set) is shown regardless of what the hook currently
- * reports, exactly like a modal taking precedence over a tooltip. A *new*
- * click hit (on the same or a different highlight) always updates the pin,
- * since a click as the more deliberate gesture is allowed to redirect an
- * already-open popover to a new target.
- *
- * A hover-sourced hit is not shown immediately: it is only promoted into
- * `hoverPreviewId` once it has been the current hit continuously for
- * `HOVER_SHOW_DELAY_MS`, and once shown, it survives the hit clearing to
- * `null` for `HOVER_HIDE_DELAY_MS` (research.md's "Debounce timing
- * constants" decision) -- this is what lets the pointer travel from the
- * highlight to the (DOM-disjoint, portaled) popover without the popover
- * disappearing mid-transit. `handlePointerEnterPopover` (called once the
- * popover itself reports the pointer has actually arrived) cancels that
- * grace-period timer and promotes `hoverPreviewId` into the same `pinnedId`
- * state a click uses (research.md's "Reuse pinnedId" decision), so from
- * that moment on the popover behaves exactly like a click-pinned one and is
- * closed only by the existing `handleClose` path.
+ * A hover-sourced hit is only promoted into `hoverPreviewId` after it has
+ * been the current hit continuously for `HOVER_SHOW_DELAY_MS`, and survives
+ * the hit clearing for `HOVER_HIDE_DELAY_MS` — this is what lets the pointer
+ * travel from the highlight to the (DOM-disjoint, portaled) popover without
+ * it disappearing mid-transit. `handlePointerEnterPopover` cancels that
+ * grace timer once the pointer actually arrives and promotes
+ * `hoverPreviewId` into `pinnedId`, so from then on it behaves like a
+ * click-pinned popover.
  */
 import {
   type FC,
@@ -60,31 +45,17 @@ type InlineCommentBodyInteractionProps = {
   resolvedRanges: ReadonlyMap<string, ResolvedRange>;
   inlineComments: InlineCommentWithReplies[];
   createReply: (parentId: string, comment: string) => Promise<unknown>;
-  /**
-   * Toggles a comment's resolved state -- forwarded as-is to
-   * `InlineCommentPreviewPopover`, which uses it exactly as
-   * `InlineCommentItem.tsx` uses its own `resolve` prop.
-   */
+  /** Toggles a comment's resolved state; forwarded as-is to `InlineCommentPreviewPopover`. */
   resolve: (id: string, resolved: boolean) => Promise<unknown>;
-  /**
-   * Persists an edited origin-comment body -- forwarded as-is to
-   * `InlineCommentPreviewPopover`, which uses it exactly as
-   * `InlineCommentItem.tsx` uses its own `update` prop (Requirement 15.5).
-   */
+  /** Persists an edited origin-comment body; forwarded as-is to `InlineCommentPreviewPopover`. */
   update: (id: string, comment: string) => Promise<unknown>;
-  /**
-   * Undefined while the caller's renderer options are still loading --
-   * forwarded as-is to `InlineCommentPreviewPopover`, which falls back to
-   * plain text rendering in that case.
-   */
+  /** Undefined while renderer options are still loading; the popover falls back to plain text. */
   rendererOptions: RendererOptions | undefined;
 };
 
 const EMPTY_RANGES: ReadonlyMap<string, Range> = new Map();
 
-// research.md's "Debounce timing constants" decision: short delays tuned for
-// re-confirming an already-familiar UI element (a highlight the user already
-// knows shows a comment), not a first-time tooltip.
+// Short delays tuned for re-confirming an already-familiar highlight, not a first-time tooltip.
 const HOVER_SHOW_DELAY_MS = 150;
 const HOVER_HIDE_DELAY_MS = 250;
 
@@ -101,11 +72,9 @@ export const InlineCommentBodyInteraction: FC<
     rendererOptions,
   } = props;
 
-  // Rebuilt on every render from the container's current DOM, never cached
-  // -- the same policy `resolved-range.ts` documents for its own callers
-  // (design.md 決定3). The same map serves both `useHighlightHitTest` (which
-  // only needs the structural `HitTestTarget` surface, `getClientRects()`)
-  // and the popover lookup below (which needs the actual `Range`).
+  // Rebuilt on every render from the container's current DOM, never cached —
+  // same policy as resolved-range.ts. Serves both the hit-test hook and the
+  // popover lookup below.
   const container = containerRef.current;
   const ranges: ReadonlyMap<string, Range> =
     container != null ? rangesById(container, resolvedRanges) : EMPTY_RANGES;
@@ -113,35 +82,20 @@ export const InlineCommentBodyInteraction: FC<
   const hit = useHighlightHitTest(containerRef, ranges);
 
   const [pinnedId, setPinnedId] = useState<string | null>(null);
-  // The hover-sourced id currently shown, once it has survived the show
-  // delay -- see the file doc comment. `null` while nothing hover-shown is
-  // displayed. Superseded entirely by `pinnedId` once set (see `displayedId`
-  // below and `handlePointerEnterPopover`'s promotion).
   const [hoverPreviewId, setHoverPreviewId] = useState<string | null>(null);
-  // The exact hit value that was showing when the popover's own close
-  // mechanism last fired (AC 2.4). Needed because closing does not, by
-  // itself, change what `useHighlightHitTest` reports -- most concretely,
-  // its close button is portaled outside `containerRef`'s subtree, so the
-  // click that triggers it is invisible to the hook's container-scoped
-  // listeners and its hit value would otherwise stay exactly as it was,
-  // causing the popover to reappear on the very next render. Suppression is
-  // compared by value, not identity, and is cleared as soon as the hook
-  // reports a genuinely different hit (a real subsequent interaction).
+  // The hit value showing when the popover's own close last fired. Needed
+  // because closing doesn't itself change what useHighlightHitTest reports:
+  // its close button is portaled outside containerRef's subtree, so the
+  // click that triggers it is invisible to the hook, and the hit would
+  // otherwise stay unchanged and reopen the popover on the next render.
   const [suppressedHit, setSuppressedHit] = useState<HighlightHit | null>(null);
 
-  // Pending debounce timers for the hover show/hide transitions. Refs, not
-  // state, because starting/cancelling a timer is not itself something the
-  // popover's rendered output depends on -- only `hoverPreviewId` is.
+  // Refs, not state: starting/cancelling a timer doesn't itself affect rendered output.
   const showTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // A click hit pins the popover open on that id, overriding whatever was
-  // previously pinned, and lifts any prior suppression -- a new click is a
-  // deliberate gesture that always reopens/redirects. Hover hits are
-  // intentionally not observed here; pinning must only ever be driven by a
-  // click/tap. This effect only re-runs when `hit`'s reference actually
-  // changes, which `useHighlightHitTest` guarantees happens only when its
-  // reported value genuinely differs from before.
+  // A click hit pins the popover open on that id and lifts any prior
+  // suppression. Hover hits are intentionally not observed here.
   useEffect(() => {
     if (hit?.source === 'click') {
       setPinnedId(hit.commentId);
@@ -157,13 +111,8 @@ export const InlineCommentBodyInteraction: FC<
     suppressedHit.source === hit.source;
   const effectiveHit = isHitSuppressed ? null : hit;
 
-  // Debounced show/hide for hover-sourced hits (Requirement 15.7, 15.8). A
-  // click hit is handled entirely by the effect above -- while a popover is
-  // pinned, hover hits are ignored outright (existing invariant, Requirement
-  // 15.1/the file doc comment's "a hover elsewhere does nothing" precedence).
-  //
-  // The cleanup function clears both timers whenever this effect is about to
-  // re-run (a genuinely new `effectiveHit`/`pinnedId`/`hoverPreviewId`) and on
+  // Debounced show/hide for hover-sourced hits. While pinned, hover hits are
+  // ignored outright. The cleanup clears both timers on every re-run and on
   // unmount, so no timer ever fires against a stale hit.
   useEffect(() => {
     if (pinnedId != null) {
@@ -171,9 +120,7 @@ export const InlineCommentBodyInteraction: FC<
     }
 
     if (effectiveHit?.source === 'hover') {
-      // Reaching the highlight again (same or different id) always cancels
-      // a pending hide -- Requirement 15.9's "reached before the grace period
-      // elapses" case, generalized to "a new hover hit arrived at all".
+      // Reaching the highlight again always cancels a pending hide.
       if (hideTimerRef.current != null) {
         clearTimeout(hideTimerRef.current);
         hideTimerRef.current = null;
@@ -189,11 +136,8 @@ export const InlineCommentBodyInteraction: FC<
         }, HOVER_SHOW_DELAY_MS);
       }
     } else {
-      // The hit cleared (or is a suppressed/click hit handled elsewhere): a
-      // hover hit that had not yet survived its show delay must not appear
-      // at all, so cancel any pending show. If something is already shown
-      // via hover, keep it for the hide grace period (Requirement 15.8)
-      // before clearing it.
+      // Hit cleared: a hover hit that hasn't survived its show delay must not
+      // appear at all; something already shown gets a hide grace period first.
       if (showTimerRef.current != null) {
         clearTimeout(showTimerRef.current);
         showTimerRef.current = null;
@@ -219,14 +163,9 @@ export const InlineCommentBodyInteraction: FC<
     };
   }, [effectiveHit, pinnedId, hoverPreviewId]);
 
-  // Called once the popover itself reports the pointer has entered its own
-  // DOM (Requirement 15.9). Cancels the pending hide (there is nothing left
-  // to hide-timeout since the pointer has arrived) and promotes the
-  // hover-shown id into `pinnedId`, reusing the existing pin mechanism
-  // (research.md's "Reuse pinnedId, don't add a second locked state"
-  // decision) -- a no-op if a click has already pinned a popover in the
-  // meantime (Requirement 15.9's "no auto-close" is then already satisfied by
-  // the pin itself).
+  // Called once the popover reports the pointer has entered its own DOM.
+  // Cancels the pending hide and promotes the hover-shown id into pinnedId;
+  // a no-op if a click already pinned a popover in the meantime.
   const handlePointerEnterPopover = useCallback((): void => {
     if (hideTimerRef.current != null) {
       clearTimeout(hideTimerRef.current);
@@ -247,20 +186,10 @@ export const InlineCommentBodyInteraction: FC<
     setSuppressedHit(hit);
   };
 
-  // Requirement 15.12: once the id `pinnedId`/`hoverPreviewId` points at
-  // stops resolving in `inlineComments` -- because it was resolved and is
-  // now filtered out upstream (PageView.tsx's `bodyInlineComments`, the one
-  // list shared by `inlineCommentAnchors` and this component's own
-  // `inlineComments` prop), or because it was deleted -- the internal state
-  // must stop pointing at it, not just render nothing for it. Without this,
-  // the state would keep referencing an id that can never resolve again,
-  // which the `comment == null -> return null` guard above hides from the
-  // rendered output but does not fix: e.g. a later hover hit on a
-  // *different* highlight would still be ignored while `pinnedId` is
-  // non-null (the guard above), or a hover hit on the *same* id reappearing
-  // later would render with no show delay because `hoverPreviewId` was never
-  // actually reset. This mirrors the invariant `handleClose` already keeps
-  // for an explicit close.
+  // Once the pinned/preview id stops resolving in inlineComments (resolved
+  // and filtered out upstream, or deleted), the internal state must clear it,
+  // not just render nothing — otherwise a later hover hit on a different
+  // highlight would still be ignored while pinnedId stays non-null.
   useEffect(() => {
     const currentId = pinnedId ?? hoverPreviewId;
     if (currentId == null) {
@@ -282,21 +211,15 @@ export const InlineCommentBodyInteraction: FC<
     }
   }, [inlineComments, pinnedId, hoverPreviewId]);
 
-  // A pin, once set, takes precedence over everything else (a hover
-  // elsewhere does nothing while a popover is pinned open). With no pin, the
-  // debounced hover-shown id (if any) drives display.
   const displayedId = pinnedId ?? hoverPreviewId ?? null;
 
   const comment =
     displayedId != null
       ? inlineComments.find((candidate) => candidate.id === displayedId)
       : undefined;
-  // Requirement 2.6: a comment whose anchor failed to resolve is never
-  // offered a popover. Structurally this lookup should always succeed --
-  // useHighlightHitTest is only ever given ids that ARE in `ranges`, which
-  // is itself built from `resolvedRanges` -- but the inline-comments list
-  // can momentarily lag behind during a refetch, so this stays a defensive
-  // guard rather than an assumed invariant.
+  // Should always resolve (hit ids come from `ranges`, itself built from
+  // resolvedRanges), but the comments list can momentarily lag during a
+  // refetch, so this stays a defensive guard.
   const range = displayedId != null ? ranges.get(displayedId) : undefined;
 
   if (comment == null || range == null) {

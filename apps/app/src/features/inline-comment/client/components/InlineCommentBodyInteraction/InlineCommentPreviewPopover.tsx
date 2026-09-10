@@ -1,31 +1,19 @@
 /**
  * Content-preview + simple-reply popover shown when a saved inline-comment
- * highlight in the page body is hovered/clicked/tapped (design.md 決定2,
- * requirements.md Requirement 2).
+ * highlight in the page body is hovered/clicked/tapped.
  *
- * Positioning follows exactly the same building blocks `SelectionPopover`
- * uses (`rangeToVirtualElement` + `usePopperPosition`, portaled into
- * `document.body`, z-index 1070, last-valid-rect fallback for a zero rect) --
- * `SelectionPopover` itself is not reused as a wrapper here because it has no
- * outside-click-to-close behavior, which this popover requires (Req 2.4).
+ * Positioning follows the same building blocks `SelectionPopover` uses, but
+ * `SelectionPopover` itself isn't reused as a wrapper: it has no
+ * outside-click-to-close behavior, which this popover needs.
  *
- * The reply input is deliberately a plain `<textarea>`, not the mention-aware
- * editor the bottom-of-page comment list uses (design.md Non-Goals:
- * "本文中ポップオーバーの返信UIを...同じにすること") -- only its surrounding
- * layout (avatar + row + icon send button) borrows InlineCommentForm.tsx's/
- * MentionAwareCommentInput.tsx's established composer visual language
- * (requirements.md Requirement 15.3).
+ * The reply input is a plain `<textarea>`, not the mention-aware editor the
+ * bottom-of-page comment list uses — only the surrounding composer layout
+ * borrows that visual language.
  *
- * Editing the origin comment (requirements.md Requirement 15, AC 15.5) is
- * shown only to the comment's own creator (`comment.creatorId ===
- * currentUser?._id`, same check `InlineCommentItem.tsx` uses), gated by the
- * same `NotAvailableIfReadOnlyUserNotAllowedToComment` restriction
- * `InlineCommentItem.tsx` applies to its own edit/delete controls
- * (requirements.md Requirement 18, AC 18.4), and reuses
- * `MentionAwareCommentInput` the same way that component does. There is no
- * delete action here -- delete is list-only (this spec's Boundary Context),
- * and this popover only ever shows an origin comment, never a reply, so
- * there is no reply-edit counterpart either.
+ * Editing the origin comment is shown only to its own creator, gated by the
+ * same read-only-user restriction `InlineCommentItem.tsx` applies. There is
+ * no delete action here (list-only), and this popover never shows a reply,
+ * so there's no reply-edit counterpart either.
  */
 import { type FC, type JSX, useEffect, useMemo, useRef, useState } from 'react';
 import { UserPicture } from '@growi/ui/dist/components';
@@ -60,30 +48,12 @@ type InlineCommentPreviewPopoverProps = {
    */
   rendererOptions: RendererOptions | undefined;
   createReply: (parentId: string, comment: string) => Promise<unknown>;
-  /**
-   * Toggles the origin comment's resolved state. Used exactly as
-   * `InlineCommentItem.tsx` uses its own `resolve` prop (design.md's
-   * `InlineCommentPreviewPopover` block; research.md's "Duplicate the
-   * resolve badge/button markup" decision -- not extracted into a shared
-   * component with that file).
-   */
+  /** Toggles the origin comment's resolved state. */
   resolve: (id: string, resolved: boolean) => Promise<unknown>;
-  /**
-   * Persists an edited origin-comment body (requirements.md Requirement 15,
-   * AC 15.5). Same author-only and read-only-user gating, and
-   * `MentionAwareCommentInput` pattern, as `InlineCommentItem.tsx`'s own edit
-   * mode -- this popover only ever shows an origin comment, never a reply,
-   * so there is no reply-edit counterpart here.
-   */
+  /** Persists an edited origin-comment body; same author-only/read-only-user gating as `InlineCommentItem.tsx`. */
   update: (id: string, comment: string) => Promise<unknown>;
   onClose: () => void;
-  /**
-   * Fired from the root portaled div's native `onMouseEnter` once the
-   * pointer has actually arrived on the popover -- the only real caller
-   * (`InlineCommentBodyInteraction`) promotes a hover-shown popover into its
-   * pinned state on this signal (design.md's "Hover show/hide/lock
-   * sequence", requirements.md 1.3/1.4).
-   */
+  /** Fired once the pointer has actually arrived on the popover; the caller promotes a hover-shown popover into its pinned state on this signal. */
   onPointerEnter: () => void;
 };
 
@@ -132,11 +102,8 @@ export const InlineCommentPreviewPopover: FC<
 
   usePopperPosition(virtualElement, popperElement);
 
-  // Requirement 2.4: a click/mousedown outside the popover closes it. This is
-  // new behavior `SelectionPopover` does not provide, so it is implemented
-  // here directly (same idiom as MentionCandidateList.tsx's pointer
-  // dismissal: a `mousedown` listener on `document` that checks whether the
-  // event target is inside the popover's own DOM node).
+  // A click/mousedown outside the popover closes it -- SelectionPopover has
+  // no such behavior, so it's implemented directly here.
   useEffect(() => {
     const handlePointerDown = (event: MouseEvent): void => {
       const target = event.target as Node | null;
@@ -184,10 +151,7 @@ export const InlineCommentPreviewPopover: FC<
           ? err.message
           : 'An unknown error occurred when updating the comment',
       );
-      // Rethrown so MentionAwareCommentInput's own submit handler treats
-      // this as a failure too (keeps the edited text on screen instead of
-      // clearing it as if the submit had succeeded) -- same idiom as
-      // InlineCommentItem.tsx's own handleEditSubmit.
+      // Rethrown so MentionAwareCommentInput keeps the edited text on screen instead of clearing it.
       throw err;
     }
   };
@@ -224,9 +188,8 @@ export const InlineCommentPreviewPopover: FC<
   };
 
   return createPortal(
-    // zIndex 1070 mirrors SelectionPopover's own portal (Bootstrap's
-    // `$zindex-popover`) for the same stacking-context escape reason.
-    // biome-ignore lint/a11y/noStaticElementInteractions: not an interactive element -- onMouseEnter only reports "pointer arrived" to the caller so it can lock the popover open (design.md's hover show/hide/lock sequence)
+    // zIndex 1070 mirrors SelectionPopover's own portal (Bootstrap's $zindex-popover).
+    // biome-ignore lint/a11y/noStaticElementInteractions: not an interactive element -- onMouseEnter only reports "pointer arrived" so the caller can lock the popover open
     <div
       ref={setPopperElement}
       data-testid="inline-comment-preview-popover"
@@ -272,11 +235,7 @@ export const InlineCommentPreviewPopover: FC<
             </span>
           }
           beforeBody={
-            // Requirement 15.11: the saved anchor quote, visually distinguished
-            // from the comment body via a left-accent border and a muted
-            // background (same left-accent idiom as InlineCommentItem.tsx's
-            // own quote, but this one is not a click target -- the popover
-            // has no page-body scroll-to-range affordance).
+            // Same left-accent idiom as InlineCommentItem.tsx's quote, but not a click target.
             <blockquote
               data-testid="inline-comment-preview-popover-quote"
               className="inline-comment-preview-popover-quote small text-body-secondary bg-body-tertiary border-start border-3 rounded-1 ps-2 py-1 mb-2"
@@ -370,17 +329,9 @@ export const InlineCommentPreviewPopover: FC<
           </>
         )}
 
-        {/* Requirement 15.3: avatar + input row + icon send button,
-            matching InlineCommentForm.tsx's/MentionAwareCommentInput.tsx's
-            established composer visual language. The underlying
-            handleSubmit/createReply call above is unchanged -- only this
-            surrounding layout is new. */}
         <div className="inline-comment-preview-popover-reply-form d-flex align-items-start gap-2">
           <UserPicture user={currentUser} noLink noTooltip />
-          {/* `flex: 1 1 0%` + `minWidth: 0`, not `flex-grow-1`/`w-100`: see
-              InlineCommentForm.tsx's own comment on this same pattern -- an
-              `auto` flex-basis here would collapse the input under the
-              avatar and send button instead of sharing the row with them. */}
+          {/* flex-basis 0% avoids collapsing under the avatar/send button -- see InlineCommentForm.tsx. */}
           <div style={{ flex: '1 1 0%', minWidth: 0 }}>
             <textarea
               className="form-control"

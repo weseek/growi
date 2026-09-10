@@ -1,22 +1,12 @@
 /**
  * DELETE /_api/v3/inline-comments/replies/:id — reply delete (surgical, no
- * cascade).
+ * cascade — a plain `prisma.comments.delete`, unlike `deleteComment()`'s
+ * `removeWithReplies`).
  *
  * Mirrors delete.ts exactly, except the shape check is inverted (`:id` must
- * be a reply — `replyToId != null` — rather than an origin comment) and the
- * route delegates to `InlineCommentService.deleteReply()` instead of
- * `deleteComment()`. See delete.ts's file header for the shared reasoning
- * (middleware order including `excludeReadOnlyUserIfCommentNotAllowed`, why
- * `certifySharedPage`/`addActivity` are not applied, and why this route
- * performs its own creatorId check rather than relying solely on the
- * service's precondition check).
- *
- * `InlineCommentService.deleteReply()` (already implemented in task 1) is
- * not modified here — it internally calls a plain
- * `prisma.comments.delete({ where: { id } })`, with no cascade: deleting a
- * reply must not affect the origin comment or any sibling reply
- * (requirement 18.5 — the cascade in requirement 18.6 applies only to
- * deleting an origin comment, not a reply).
+ * be a reply, not an origin comment) and it delegates to
+ * `InlineCommentService.deleteReply()` instead of `deleteComment()`. See
+ * delete.ts's file header for the shared reasoning.
  */
 
 import assert from 'node:assert';
@@ -49,11 +39,6 @@ const validator = [
   param('id').isMongoId().withMessage('id must be a valid MongoId'),
 ];
 
-/**
- * Factory function that wires the inline-comment reply delete route.
- *
- * @returns Express RequestHandler array to be spread into router.delete().
- */
 export const deleteInlineCommentReplyRouteHandlersFactory = (
   crowi: Crowi,
 ): RequestHandler[] => {
@@ -89,12 +74,7 @@ export const deleteInlineCommentReplyRouteHandlersFactory = (
         },
       });
 
-      // Page-permission check runs before the comment-existence/shape/owner
-      // checks below, whenever a pageId is known (i.e. `id` exists) — same
-      // existence-oracle reasoning as delete.ts's equivalent comment (see
-      // apps/app/.claude/rules/page-write-action-403-404.md). When `id` does
-      // not exist at all, there is no pageId to check permission against, so
-      // this falls through to the not-found branch below unconditionally.
+      // See apps/app/.claude/rules/page-write-action-403-404.md.
       if (target != null) {
         const { meta } = await findPageAndMetaDataByViewer(
           pageService,
@@ -152,9 +132,7 @@ export const deleteInlineCommentReplyRouteHandlersFactory = (
         await service.deleteReply(id, user._id.toString());
         return res.apiv3({});
       } catch (err) {
-        // The preconditions (shape, ownership) were already checked above, so
-        // an Error here can only come from a race — see delete.ts's
-        // equivalent comment.
+        // Preconditions were already checked above; an Error here can only come from a race.
         logger.error('Failed to delete inline comment reply', err);
         return res.apiv3Err(
           new ErrorV3(

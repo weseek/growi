@@ -1,35 +1,19 @@
 /**
  * PUT /_api/v3/inline-comments/:id — origin comment body edit.
  *
- * Middleware order (design.md's API Contract, matching resolve.ts):
- *   accessTokenParser → loginRequired → excludeReadOnlyUserIfCommentNotAllowed
- *   → express-validator → apiV3FormValidator
+ * `excludeReadOnlyUserIfCommentNotAllowed` is the same middleware normal
+ * comments use for `/comments.update`, placed right after `loginRequired` —
+ * this makes the read-only-user restriction a server-side guarantee, not
+ * only a client-side affordance a direct API call could bypass.
  *
- * `excludeReadOnlyUserIfCommentNotAllowed` (requirements.md Requirement 18,
- * AC 18.4/18.9) is the same middleware normal comments use for
- * `/comments.update` (`apps/app/src/server/routes/index.js`), placed right
- * after `loginRequired` — this is what makes the read-only-user restriction
- * a server-side guarantee rather than only a client-side affordance
- * (`NotAvailableIfReadOnlyUserNotAllowedToComment` gates the client's edit
- * button, but a direct API call could otherwise bypass it entirely).
+ * `certifySharedPage`/`addActivity` are intentionally NOT applied — same
+ * reasoning as create.ts's file doc.
  *
- * `certifySharedPage` is intentionally NOT applied (requirement 6.1, same as
- * every other inline-comment route). `addActivity` is also intentionally NOT
- * applied — `InlineCommentService.updateComment()` self-mints its own
- * Activity id via `prisma.activities.createByParameters`, same reasoning as
- * create.ts's file doc.
- *
- * `:id` / 400-vs-403-vs-404 split (design.md's Error Handling): a `findUnique`
- * distinguishes "id does not exist" (404), "id exists but is not an origin
- * inline comment" (400, mirroring resolve.ts's `inline-comment-not-origin`),
- * and "id is an origin comment but the requester is not its creator" (403
- * `inline-comment-forbidden`, a new error code named after
- * `inline-comment-not-origin`'s convention). This route performs the
- * creatorId check itself (rather than only relying on
- * `InlineCommentService.updateComment()`'s own re-check) so it can surface
- * the 403 distinctly — the service only throws a single generic Error for
- * every precondition failure, which this route would otherwise be unable to
- * map to a specific status code.
+ * `findUnique` distinguishes "id does not exist" (404), "id exists but isn't
+ * an origin inline comment" (400), and "id is an origin comment but the
+ * requester isn't its creator" (403). This route checks creatorId itself
+ * (rather than relying only on the service's own re-check) so it can surface
+ * the 403 distinctly — the service only throws a single generic Error.
  */
 
 import assert from 'node:assert';
@@ -71,11 +55,6 @@ const validator = [
     .withMessage('comment must be a non-empty string'),
 ];
 
-/**
- * Factory function that wires the origin inline-comment update route.
- *
- * @returns Express RequestHandler array to be spread into router.put().
- */
 export const updateInlineCommentRouteHandlersFactory = (
   crowi: Crowi,
 ): RequestHandler[] => {
@@ -112,12 +91,8 @@ export const updateInlineCommentRouteHandlersFactory = (
         },
       });
 
-      // Page-permission check runs before the comment-existence/shape/owner
-      // checks below, whenever a pageId is known (i.e. `id` exists) — same
-      // existence-oracle reasoning as resolve.ts's equivalent comment (see
-      // apps/app/.claude/rules/page-write-action-403-404.md). When `id` does
-      // not exist at all, there is no pageId to check permission against, so
-      // this falls through to the not-found branch below unconditionally.
+      // Runs before the comment-existence/shape/owner checks below, whenever
+      // a pageId is known — see apps/app/.claude/rules/page-write-action-403-404.md.
       if (target != null) {
         const { meta } = await findPageAndMetaDataByViewer(
           pageService,
@@ -178,9 +153,7 @@ export const updateInlineCommentRouteHandlersFactory = (
         );
         return res.apiv3({ inlineComment });
       } catch (err) {
-        // The preconditions (shape, ownership) were already checked above, so
-        // an Error here can only come from a race — see resolve.ts's
-        // equivalent comment.
+        // Preconditions were already checked above; an Error here can only come from a race.
         logger.error('Failed to update inline comment', err);
         return res.apiv3Err(
           new ErrorV3(

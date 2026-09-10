@@ -1,14 +1,11 @@
 /**
- * SWR store for the inline-comment feature (design.md's File Structure Plan:
- * `client/stores/inline-comment.ts`, "SWRフック（一覧取得・起点作成・返信作成・
- * 解決トグルのmutate）").
+ * SWR store for the inline-comment feature.
  *
- * Follows the established `useSWRx*` + `withUtils` pattern (see
- * `features/external-user-group/client/stores/external-user-group.ts`): the
- * list hook owns the SWR key, and each write helper (`create`/`createReply`/
- * `resolve`) posts/puts through `apiv3Post`/`apiv3Put` and then calls the
- * bound `mutate()` from the SAME `useSWR` call, so a write always revalidates
- * the exact list the caller is looking at rather than a globally-keyed one.
+ * Follows the established `useSWRx*` + `withUtils` pattern: the list hook
+ * owns the SWR key, and each write helper posts/puts through
+ * `apiv3Post`/`apiv3Put` and then calls the bound `mutate()` from the SAME
+ * `useSWR` call, so a write always revalidates the exact list the caller is
+ * looking at rather than a globally-keyed one.
  *
  * The SWR key is `['/inline-comments', pageId]` (an array key, not the bare
  * endpoint string) so that different pages never share a cache entry.

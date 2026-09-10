@@ -12,18 +12,13 @@ export type CommentCardProps = {
   /** The id an anchor link points at (the normal comment passes comment._id) */
   id?: string;
   /**
-   * The author, forwarded as-is to UserPicture / Username (both already have
-   * their own fallback display for a missing/unpopulated creator — UserPicture
-   * shows a default icon, Username shows "(anyone)") — so CommentCard never
-   * decides to hide them itself. This keeps a normal comment whose creator is
-   * unpopulated rendering exactly as it does today (Req 13.9). A normal
-   * comment passes `undefined` here (its own `isPopulated` check leaves the
-   * creator undefined, never null), so this accepts both. An inline comment
-   * (task 5.1) passes an already-serialized `IUserSerializedSecurely<IUserHasId>`
-   * (or `null`), since its `listByPageId()` response already ran the row
-   * through `serializeUserSecurely` server-side -- so that shape is accepted
-   * too, alongside the unpopulated `Ref<IUser>` shape a normal comment can
-   * pass when its creator wasn't populated.
+   * The author, forwarded as-is to UserPicture / Username (both already fall
+   * back for a missing/unpopulated creator), so CommentCard never decides to
+   * hide them itself. A normal comment passes `undefined` or an unpopulated
+   * `Ref<IUser>`; an inline comment passes an already-serialized
+   * `IUserSerializedSecurely<IUserHasId>` (or `null`), since its
+   * `listByPageId()` response already ran the row through
+   * `serializeUserSecurely` server-side.
    */
   creator:
     | IUserHasId

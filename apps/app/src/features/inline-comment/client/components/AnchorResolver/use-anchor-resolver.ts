@@ -73,40 +73,29 @@ const useStableByContent = <T extends object>(value: T): T => {
 
 /**
  * Resolves every origin comment's anchor against the currently rendered page
- * text, keyed by comment id (design.md: AnchorResolver > State Management).
+ * text, keyed by comment id.
  *
- * design.md's State Management describes recomputation as driven by
- * `useContainerSettle` alone. In practice a plain markdown page (no
- * lsx/drawio/mermaid widget) settles exactly once, at mount — before
- * `useSWRxInlineComments`'s list fetch has resolved, so `anchors` is still
- * `[]` at that point and the container never settles again (no rendering
- * element ever appears to re-arm `useContainerSettle`'s observer). Without a
- * second trigger, the real anchors that arrive later are never matched
- * against the DOM. This extends the design's "no persistent cache, always
- * recompute idempotently" principle to a second, independent trigger: an
- * effect that also recomputes whenever `anchors`' own content changes, not
- * only its reference (see `useStableByContent` above). That second trigger
- * resolves only while nothing is mid-render (`hasRenderingElements`); when the
- * list arrives first it defers to the settle signal instead of matching
- * against a half-built DOM.
+ * Recomputation has two independent triggers. `useContainerSettle` alone is
+ * not enough: a plain markdown page settles exactly once, at mount, before
+ * `useSWRxInlineComments`'s list fetch resolves, so `anchors` is still `[]`
+ * at that point and the container never settles again. Without a second
+ * trigger, anchors that arrive later would never get matched against the
+ * DOM — so an effect also recomputes whenever `anchors`' own content changes,
+ * not only its reference (see `useStableByContent` above), resolving only
+ * while nothing is mid-render (`hasRenderingElements`).
  *
  * Recomputation itself is the same idempotent full-`Map` rebuild either way:
- * `renderedTextOf` is called once and `matchQuote` is run for each anchor,
- * producing a fresh `Map` that replaces the previous one. There is no
- * persistent cache — design.md's "解決済みオフセットキャッシュを持たない判断"
- * explicitly rejects one, so every trigger recomputes from scratch and the
- * result is thrown away and rebuilt, not patched in place.
+ * `renderedTextOf` runs once and `matchQuote` runs for each anchor,
+ * producing a fresh `Map` that replaces the previous one — no persistent
+ * cache, so every trigger recomputes from scratch.
  *
  * This hook only reads the DOM; it never writes to it. Highlight rendering
  * is `InlineCommentHighlight`'s separate responsibility.
  *
  * `anchors` is read fresh on every settle via the closure `useContainerSettle`
- * captures each render (it re-points its internal ref without re-subscribing
- * the observer) — so no extra memoization or locking is needed here either;
- * concurrent settle events just apply React's normal "last `setState` wins"
- * semantics, per design.md's explicit call-out that no extra lock is added.
- * The same "last write wins, no lock" semantics apply between the settle
- * callback and the anchors-content-change effect.
+ * captures each render, so concurrent settle events just apply React's
+ * normal "last `setState` wins" semantics — no extra lock is needed, and the
+ * same applies between the settle callback and the anchors-content-change effect.
  */
 export const useAnchorResolver = (
   containerRef: RefObject<HTMLElement | null>,

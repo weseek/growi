@@ -11,7 +11,7 @@ export interface UpdateInlineCommentRequestBody {
   comment: string;
 }
 
-/** Response body for PUT /_api/v3/inline-comments/:id — design.md's `InlineComment`. */
+/** Response body for PUT /_api/v3/inline-comments/:id. */
 export interface UpdateInlineCommentResponseBody {
   inlineComment: IInlineComment;
 }

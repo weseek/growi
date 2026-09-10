@@ -50,11 +50,6 @@ const validator = [
     .withMessage('comment must be a non-empty string'),
 ];
 
-/**
- * Factory function that wires the inline-comment reply update route.
- *
- * @returns Express RequestHandler array to be spread into router.put().
- */
 export const updateInlineCommentReplyRouteHandlersFactory = (
   crowi: Crowi,
 ): RequestHandler[] => {
@@ -91,12 +86,7 @@ export const updateInlineCommentReplyRouteHandlersFactory = (
         },
       });
 
-      // Page-permission check runs before the comment-existence/shape/owner
-      // checks below, whenever a pageId is known (i.e. `id` exists) — same
-      // existence-oracle reasoning as update.ts's equivalent comment (see
-      // apps/app/.claude/rules/page-write-action-403-404.md). When `id` does
-      // not exist at all, there is no pageId to check permission against, so
-      // this falls through to the not-found branch below unconditionally.
+      // See apps/app/.claude/rules/page-write-action-403-404.md.
       if (target != null) {
         const { meta } = await findPageAndMetaDataByViewer(
           pageService,
@@ -158,9 +148,7 @@ export const updateInlineCommentReplyRouteHandlersFactory = (
         );
         return res.apiv3({ inlineCommentReply });
       } catch (err) {
-        // The preconditions (shape, ownership) were already checked above, so
-        // an Error here can only come from a race — see update.ts's
-        // equivalent comment.
+        // Preconditions were already checked above; an Error here can only come from a race.
         logger.error('Failed to update inline comment reply', err);
         return res.apiv3Err(
           new ErrorV3(

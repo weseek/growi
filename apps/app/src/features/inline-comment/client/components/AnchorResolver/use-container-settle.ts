@@ -24,30 +24,20 @@ export const hasRenderingElements = (container: HTMLElement): boolean => {
  * container is confirmed to hold no element carrying the GROWI "content
  * rendering" status protocol (`data-growi-is-content-rendering`).
  *
- * Firing is not limited to the moment the number of such elements reaches
- * zero: a change that carries no rendering marker at all — a heading's edit
- * button appearing once collaborative-editing state loads, for instance —
- * also changes the container's text and must give the caller a chance to
- * re-resolve. This backs the self-healing re-anchoring described in
- * design.md's System Flows ("次の静定シグナルで再計算が走り、ハイライトの
- * ズレは自己修復される"), but only within the WATCH_TIMEOUT_MS window; see
- * below.
+ * Firing is not limited to the moment such elements reach zero: any change
+ * with no rendering marker at all (e.g. a heading's edit button appearing
+ * once collaborative-editing state loads) also changes the container's text
+ * and must give the caller a chance to re-resolve.
  *
  * Checks triggered by an observed DOM change are coalesced per animation
- * frame, so many changes belonging to one rendering pass produce at most one
- * `onSettle` (the "wait one frame before announcing completion" idiom). The
- * mount-time check is deliberately **not** coalesced: it fires synchronously,
- * so the initial settle notification is not reordered against the caller's
- * own mount-time work (`useAnchorResolver` resolves once for the settle
- * signal and once for its `anchors` input, and delaying the former by a frame
- * flips their order).
+ * frame, so many changes in one rendering pass produce at most one
+ * `onSettle`. The mount-time check is deliberately **not** coalesced: it
+ * fires synchronously, so it isn't reordered against `useAnchorResolver`'s
+ * own mount-time resolve of its `anchors` input.
  *
- * If rendering elements are still present after WATCH_TIMEOUT_MS, observation
- * stops (mirroring `watchRenderingAndReScroll`'s own timeout behavior:
- * disconnect the observer and clear all timers) and `onSettle` fires once as
- * a best-effort fallback, so the caller is never left waiting forever
- * (Requirements 2.1, 5.1; design.md's use-container-settle section: "監視を
- * 打ち切り、その時点のDOMに対して1回だけ...実行する").
+ * If rendering elements are still present after WATCH_TIMEOUT_MS,
+ * observation stops and `onSettle` fires once as a best-effort fallback, so
+ * the caller is never left waiting forever.
  *
  * Returns a cleanup function that stops observation and clears timers.
  */

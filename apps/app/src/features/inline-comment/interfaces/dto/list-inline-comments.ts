@@ -12,9 +12,9 @@ export interface ListInlineCommentsRequestQuery {
 }
 
 /**
- * Response body — design.md's `InlineComment[]` (creation-order, each element
- * carrying its nested `replies`). Wrapped in an object because `res.apiv3()`
- * requires a plain object body, not a bare array.
+ * Response body, creation-order, each element carrying its nested `replies`.
+ * Wrapped in an object because `res.apiv3()` requires a plain object body,
+ * not a bare array.
  */
 export interface ListInlineCommentsResponseBody {
   inlineComments: InlineCommentWithReplies[];

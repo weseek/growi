@@ -147,8 +147,8 @@ const toNormalized = (
  * Converts offsets between a text and its NFC form in both directions.
  *
  * Build one per text and reuse it: the parallel walk runs once, and matching a quote needs
- * both directions (design.md's quote-matcher contract converts `approxOffset` forward into
- * normalized coordinates in step 4, then converts the match position back in step 5).
+ * both directions (quote-matcher converts `approxOffset` forward into normalized coordinates,
+ * then converts the match position back).
  */
 export interface NormalizedOffsetMapper {
   /** `original.normalize('NFC')`. Owned here so callers cannot pass a mismatched pair. */

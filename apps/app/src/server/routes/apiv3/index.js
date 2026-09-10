@@ -212,8 +212,7 @@ export const setup = (crowi, app) => {
   router.use('/vault', createVaultPageRouterWithDeps(crowi));
 
   {
-    // certifySharedPage is intentionally never applied to any of these routes
-    // (requirement 6.1 — .kiro/specs/inline-comment/design.md).
+    // certifySharedPage is intentionally never applied to any of these routes.
     const inlineCommentsRouter = express.Router();
     inlineCommentsRouter.post(
       '/',

@@ -31,8 +31,7 @@ export interface HighlightHit {
  * than `getBoundingClientRect()`, whose all-zero result for such a Range would
  * make a pointer at the viewport origin match an invisible highlight.
  *
- * Overlapping highlights are resolved by iteration order only; z-order is out
- * of scope (design.md 決定2).
+ * Overlapping highlights are resolved by iteration order only; z-order is out of scope.
  */
 export const hitTestRanges = (
   candidates: Iterable<readonly [string, HitTestTarget]>,
@@ -59,26 +58,22 @@ export const hitTestRanges = (
 
 /**
  * Hit-tests pointer interactions inside the page body against the saved
- * inline-comment highlights, and reports the currently hit comment id
- * (Requirements 2.1, 2.2, 2.6).
+ * inline-comment highlights, and reports the currently hit comment id.
  *
  * Saved highlights have no DOM element of their own — they exist only as
- * `Range`s registered in `CSS.highlights` — so there is nothing to attach a
- * listener to. The events are therefore taken at the document level and
- * filtered to those originating inside `containerRef`'s subtree: taking them
- * on the container element itself would attach nothing when the ref is still
- * null on the first effect run, which is the normal case for a body container
- * rendered in the same commit.
+ * `Range`s registered in `CSS.highlights` — so there's nothing to attach a
+ * listener to. Events are taken at the document level and filtered to those
+ * originating inside `containerRef`'s subtree, since the container ref is
+ * still null on the first effect run for a body container rendered in the
+ * same commit.
  *
  * `pointermove` is coalesced to at most one hit test per animation frame, and
  * is only consulted at desktop width; at tablet-and-below width `click` (tap)
- * is the sole trigger. Both interactions are live at desktop width.
+ * is the sole trigger.
  *
- * The `not_found` anchors of Requirement 2.6 need no handling here: they are
- * already absent from `rangesById()`'s output, so they are never candidates.
- * Closing the popover on an outside click (Requirement 2.4) is not this hook's
- * job either — the popover renders outside the body container, so a
- * container-scoped hook structurally cannot see those clicks; its owner
+ * Closing the popover on an outside click is not this hook's job: the
+ * popover renders outside the body container, so a container-scoped hook
+ * structurally cannot see those clicks; its owner
  * (`InlineCommentBodyInteraction`) handles it.
  */
 export const useHighlightHitTest = (

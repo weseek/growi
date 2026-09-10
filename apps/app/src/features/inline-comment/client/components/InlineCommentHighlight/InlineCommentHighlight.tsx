@@ -7,8 +7,7 @@ import { rangesById } from '../../services/resolved-range';
 /**
  * Name registered with `CSS.highlights` (the CSS Custom Highlight API) for
  * every currently-resolved inline-comment anchor. A single shared name is
- * enough for this task's boundary (design.md doesn't ask for `exact`/`fuzzy`
- * to look different) — see the `::highlight()` rule this component renders.
+ * enough here -- `exact`/`fuzzy` matches don't need to look different.
  */
 const HIGHLIGHT_NAME = 'growi-inline-comment';
 
@@ -19,12 +18,7 @@ export interface InlineCommentHighlightProps {
   resolvedRanges: ReadonlyMap<string, ResolvedRange>;
 }
 
-/**
- * `CSS.highlights` support is checked once per module load (not per render)
- * since it does not change at runtime; browsers without it (design.md's
- * fallback for "見つからなければハイライトなし" applies the same way here:
- * no highlight, comment stays in the list) simply render nothing.
- */
+// Checked once per module load (not per render) since support does not change at runtime.
 const supportsCustomHighlightApi = (): boolean =>
   typeof CSS !== 'undefined' &&
   CSS.highlights != null &&

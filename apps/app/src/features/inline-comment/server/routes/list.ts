@@ -1,15 +1,11 @@
 /**
  * GET /_api/v3/inline-comments?pageId=... — page-scoped inline comment listing.
  *
- * Middleware order (design.md's API Contract):
- *   accessTokenParser → loginRequired → express-validator → apiV3FormValidator
- *
- * `certifySharedPage` is intentionally NOT applied — a share-link viewer must never
- * reach this route (requirement 6.1/6.2). GET routes are in scope for
- * `apps/app/.claude/rules/page-write-action-403-404.md` exactly like write routes
- * (any authenticated caller can hit a GET the same way they hit a POST/PUT), so the
- * `pageId` lookup below responds a uniform 404 on both "does not exist" and
- * "exists but forbidden".
+ * `certifySharedPage` is intentionally NOT applied — a share-link viewer must
+ * never reach this route. GET routes are in scope for
+ * `apps/app/.claude/rules/page-write-action-403-404.md` exactly like write
+ * routes, so the `pageId` lookup below responds a uniform 404 on both "does
+ * not exist" and "exists but forbidden".
  */
 
 import assert from 'node:assert';
@@ -46,11 +42,6 @@ const validator = [
   query('pageId').isMongoId().withMessage('pageId must be a valid MongoId'),
 ];
 
-/**
- * Factory function that wires the page-scoped inline-comment listing route.
- *
- * @returns Express RequestHandler array to be spread into router.get().
- */
 export const listInlineCommentsRouteHandlersFactory = (
   crowi: Crowi,
 ): RequestHandler[] => {

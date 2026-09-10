@@ -5,30 +5,22 @@ const logger = loggerFactory('growi:migrate:backfill-comments-isinline');
 
 /**
  * Backfill `isInline: false` onto every `comments` document that predates
- * the inline-comment feature (`.kiro/specs/inline-comment`).
+ * the inline-comment feature.
  *
  * WHY: `findCommentsByPageId` / `findCommentsByRevisionId` /
- * `countCommentByPageId` (apps/app/src/features/comment/server/models/comment.ts)
- * filter with `where: { isInline: { not: true } }` to keep inline comments
- * out of the page-footer comment thread / count. Prisma's MongoDB connector
- * does NOT match `{ not: true }` (nor `NOT: { isInline: true }`, nor
- * `OR: [{ isInline: false }, { isInline: null }]`) against a document where
- * the `isInline` field is entirely absent from the underlying MongoDB
- * document — it only matches a document where the field is explicitly
- * stored as `false`/some non-true value. Every comment created before this
- * feature shipped has no `isInline` field at all, so without this backfill
- * every pre-existing comment becomes invisible from the page-footer comment
- * thread and vanishes from the comment count badge as soon as this feature
- * ships. This is the same Mongo-null-vs-absent gotcha already found and
- * fixed once for `InlineCommentService.create()`'s `replyToId: null` write
- * (see comments.ts's `data.replyToId` handling and this feature's
- * `list.integ.ts`) — this migration back-applies the same fix to the
- * earlier, different query added by task 1.3.
+ * `countCommentByPageId` filter with `where: { isInline: { not: true } }` to
+ * keep inline comments out of the page-footer thread/count. Prisma's MongoDB
+ * connector does NOT match `{ not: true }` against a document where
+ * `isInline` is entirely absent — only where it's explicitly stored as a
+ * non-true value. Every pre-existing comment has no `isInline` field at all,
+ * so without this backfill it becomes invisible from the comment thread and
+ * count badge as soon as this feature ships (the same Mongo null-vs-absent
+ * gotcha already fixed once for `InlineCommentService.create()`'s
+ * `replyToId: null` write).
  *
- * `{ isInline: null }` matches BOTH an explicit `null` and a missing field
- * in MongoDB, and does NOT match a document that already stores `true` or
- * `false` — so this backfill only ever touches documents that genuinely
- * lack the field, and is idempotent / safe to re-run.
+ * `{ isInline: null }` matches BOTH an explicit `null` and a missing field in
+ * MongoDB, and does NOT match `true`/`false` — so this backfill only ever
+ * touches documents that genuinely lack the field, and is idempotent.
  */
 export async function up() {
   logger.info('Apply migration: backfill comments.isInline');

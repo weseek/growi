@@ -1,20 +1,9 @@
 /**
  * Mention-aware comment input used by `InlineCommentForm.tsx`. Owns the
- * CodeMirror editor assembly (`CodeMirrorEditorComment` +
- * `useCodeMirrorEditorIsolated` + mention completion/decoration extensions,
- * following `CommentEditor.tsx`'s mention-aware textarea pattern),
- * submission, and error display.
- *
- * The editor sits in one row alongside the mention-picker and submit
- * buttons (buttons pinned to the top-right via `align-items-start`, so a
- * multi-line comment grows the editor without moving them). There is no
- * Cancel button here -- `InlineCommentForm` handles cancellation itself
- * (Escape key / outside click), matching the reference mockup, which shows
- * no Cancel affordance at all.
- *
- * The actual persistence call (creating an origin comment) is intentionally
- * NOT owned here: the caller injects it via `onSubmit`, so this component
- * has no dependency on the inline-comment store.
+ * CodeMirror editor assembly, submission, and error display. No Cancel
+ * button here — `InlineCommentForm` handles cancellation (Escape / outside
+ * click). The actual persistence call is injected via `onSubmit`, so this
+ * component has no dependency on the inline-comment store.
  */
 
 import type { JSX } from 'react';
@@ -35,21 +24,9 @@ import { fetchMentionUsers } from '../../services/fetch-mention-users';
 import { MentionPickerButton } from '../InlineCommentForm/MentionPickerButton';
 
 type MentionAwareCommentInputProps = {
-  /**
-   * CodeMirror editor instance key. Callers compute this themselves: one
-   * shared "new comment" editor per page (`InlineCommentForm`'s
-   * `inline_comment_new_${pageId}`, mirroring `CommentEditor`'s
-   * `GlobalCodeMirrorEditorKey.COMMENT_NEW` reuse), or one per reply thread
-   * for the future reply-input consumer.
-   */
+  /** CodeMirror editor instance key; callers compute one per editor instance. */
   editorKey: string;
-  /**
-   * Edit-mode initial text. Applied to the editor exactly once, at mount
-   * (design.md: "任意prop `initialValue` を1つ追加し、作成・編集の両方で使い
-   * 回す"). Omitted (or left `undefined`) by the create-mode callers today,
-   * which keeps their behavior byte-for-byte identical to before this prop
-   * existed -- an empty editor at mount.
-   */
+  /** Edit-mode initial text, applied to the editor exactly once at mount. */
   initialValue?: string;
   /**
    * Persists the comment text. Rejections are caught here and shown as an
@@ -58,12 +35,7 @@ type MentionAwareCommentInputProps = {
   onSubmit: (commentText: string) => Promise<unknown>;
   /** Called after a successful submit (e.g. to close the form / clear the selection). */
   onSubmitted?: () => void;
-  /**
-   * An additional, caller-owned guard ANDed with this component's own
-   * "has non-empty text" check (e.g. `InlineCommentForm`'s Requirement 1.7
-   * anchor-quote guard, which this component has no way to know about on
-   * its own since it never receives the anchor).
-   */
+  /** An additional, caller-owned guard ANDed with this component's own "has non-empty text" check. */
   disabled?: boolean;
 };
 
@@ -98,28 +70,17 @@ export const MentionAwareCommentInput = (
     return codeMirrorEditor?.appendExtensions?.(mentionExtension);
   }, [codeMirrorEditor, mentionExtension]);
 
-  // Without an explicit `parent`, CodeMirror's tooltip plugin appends the
-  // mention-completion popup as a child of the editor's own DOM
-  // (`view.dom`, `.cm-editor`) instead of `document.body`. `.cm-editor` has
-  // `overflow: hidden` in its base theme, and this form is a small, fixed-
-  // height box -- so without this, the popup renders clipped and scrolling
-  // inside the form instead of floating above it.
-  //
-  // Once appended to `document.body`, the popup is a sibling of
-  // SelectionPopover's own portal (InlineCommentForm's ancestor), which sets
-  // an explicit `z-index: 1070` (Bootstrap's `$zindex-popover`). The popup
-  // itself gets no z-index from CodeMirror's base theme, so as a plain
-  // `z-index: auto` sibling it paints BELOW that positioned ancestor
-  // regardless of DOM order -- behind the form, unreachable by the mouse.
-  // `1080` mirrors Bootstrap's own `$zindex-tooltip` tier, one step above
-  // `$zindex-popover` (see SelectionPopover.tsx's own z-index comment for
-  // why this codebase hardcodes Bootstrap's scale rather than importing it).
+  // Without an explicit `parent`, the mention-completion popup appends inside
+  // `.cm-editor`, which has `overflow: hidden` in its base theme, so it would
+  // render clipped in this small fixed-height form instead of floating above it.
   useEffect(() => {
     return codeMirrorEditor?.appendExtensions?.(
       tooltips({ parent: document.body }),
     );
   }, [codeMirrorEditor]);
 
+  // 1080 is one step above Bootstrap's $zindex-popover (1070), so this popup
+  // paints above SelectionPopover's portal instead of behind it.
   const tooltipZIndexTheme = useMemo(
     () =>
       EditorView.theme({
@@ -129,28 +90,17 @@ export const MentionAwareCommentInput = (
   );
 
   useEffect(() => {
-    // Wrapped in an array on purpose: `EditorView.theme()` itself returns an
-    // array of two extensions (`[theme.of(...), styleModule.of(...)]`), not a
-    // single one. `useAppendExtensions` (packages/editor) unpacks whatever it
-    // is given at the top level and gives EACH element its own slot in one
-    // shared Compartment -- passed bare, that unpacks theme()'s two internal
-    // elements and throws "Duplicate use of compartment in extensions" on the
-    // very first flatten. Wrapping in `[tooltipZIndexTheme]` makes the whole
-    // theme extension (both its parts) a single top-level element instead.
+    // Must stay wrapped in an array: EditorView.theme() itself returns two
+    // extensions, and appendExtensions would otherwise unpack them into two
+    // top-level slots and throw "Duplicate use of compartment".
     return codeMirrorEditor?.appendExtensions?.([tooltipZIndexTheme]);
   }, [codeMirrorEditor, tooltipZIndexTheme]);
 
-  // Applies `initialValue` to the editor exactly once, the moment
-  // `codeMirrorEditor` first becomes available. Guarded by a ref (not an
-  // empty-deps effect) because `codeMirrorEditor` itself is not available
-  // synchronously at mount -- it arrives asynchronously from
-  // `useCodeMirrorEditorIsolated`, so this effect legitimately re-runs until
-  // that happens. The ref flag is what keeps it from re-applying on every
-  // later re-render (which would fight the user's own edits) or in response
-  // to `initialValue` changing after mount (an edit session's initial value
-  // does not change mid-edit, per design.md).
+  // Applies `initialValue` once codeMirrorEditor first becomes available
+  // (it arrives asynchronously, so this effect re-runs until then). The ref
+  // flag stops it from re-applying on later re-renders, which would fight
+  // the user's own edits.
   const hasAppliedInitialValueRef = useRef(false);
-  // Runs once, when `codeMirrorEditor` first becomes available.
   // biome-ignore lint/correctness/useExhaustiveDependencies: `initialValue` is intentionally excluded -- must not re-run when it changes later.
   useEffect(() => {
     if (hasAppliedInitialValueRef.current || codeMirrorEditor == null) {
@@ -165,10 +115,7 @@ export const MentionAwareCommentInput = (
   const cmProps = useMemo(
     () => ({
       onChange: (value: string) => setCommentText(value),
-      // The line-number and fold gutters come from @uiw/react-codemirror's
-      // default `basicSetup: true`; this is a one-to-few line input where
-      // that gutter width is pure wasted space (design.md 決定5).
-      basicSetup: { lineNumbers: false, foldGutter: false },
+      basicSetup: { lineNumbers: false, foldGutter: false }, // gutters are wasted space in this one-to-few-line input
     }),
     [],
   );
@@ -194,9 +141,6 @@ export const MentionAwareCommentInput = (
     }
   }, [canSubmit, onSubmit, commentText, codeMirrorEditor, onSubmitted]);
 
-  // Requirement 3.3 (inline-comment-creation spec): inserts "@<username> " at
-  // the current cursor position in the comment body, via the same
-  // insertText API EmojiButton.tsx uses for its own "insert at cursor" pattern.
   const insertMention = useCallback(
     (username: string) => {
       codeMirrorEditor?.insertText(`@${username} `);
@@ -207,15 +151,9 @@ export const MentionAwareCommentInput = (
   return (
     <>
       <div className="d-flex align-items-start gap-2">
-        {/* `flex: 1 1 0%` (not the `.flex-grow-1` utility, which leaves
-            `flex-basis: auto`): the editor's own root sets `width: 100%`
-            internally, so an `auto` basis makes this item's width depend on
-            its content's width, which depends on the item's own width --
-            a circular reference the browser resolves by collapsing it to
-            near zero. Pinning the basis to 0% breaks that circularity, and
-            `min-width: 0` overrides the flex-item default of `auto`, which
-            would otherwise refuse to shrink below the (still-circular)
-            content width and push the button column out of the row. */}
+        {/* flex-basis 0% (not the .flex-grow-1 utility's `auto`): the editor's
+            root sets width:100% internally, so an `auto` basis creates a
+            circular width reference that collapses this item to near zero. */}
         <div style={{ flex: '1 1 0%', minWidth: 0 }}>
           <CodeMirrorEditorComment
             editorKey={editorKey}
