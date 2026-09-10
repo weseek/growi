@@ -238,34 +238,58 @@ const PageViewComponent = (props: Props): JSX.Element => {
     remove: removeInlineComment,
     removeReply: removeInlineCommentReply,
   } = useSWRxInlineComments(isSharedPageView ? null : (page?._id ?? null));
-  // Requirement 2.7, 4.1, 4.4: a resolved comment must never become an
-  // anchor, so it is never highlighted or offered a popover in the page body
-  // -- only the footer comment list still shows it. This is the single
-  // source of "which comments are visible in the body": both
-  // `inlineCommentAnchors` below AND the `inlineComments` prop handed to
-  // `InlineCommentBodyInteraction` are derived from this same filtered list,
-  // never from the raw, unfiltered `inlineComments`. Feeding the raw list to
-  // one of the two consumers while the other saw the filtered view was the
-  // root cause of a bug where resolving a pinned-open popover's comment left
-  // `pinnedId` stuck on an id that could never resolve again, silently
-  // blocking every other highlight's hover popover afterward.
+  // Requirement 2.7, 4.1, 4.4: a resolved comment must never be passively
+  // highlighted or offered a popover in the page body -- only the footer
+  // comment list still shows it. `bodyInlineComments` is the single source
+  // of "which comments are visible in the body [for passive display]": the
+  // `inlineComments` prop handed to `InlineCommentBodyInteraction`, and
+  // `visibleResolvedRanges` below (which `InlineCommentHighlight` and
+  // `InlineCommentBodyInteraction`'s hit-testing consume), are both derived
+  // from this same filtered list. Feeding the raw list to one of the two
+  // consumers while the other saw the filtered view was the root cause of a
+  // bug where resolving a pinned-open popover's comment left `pinnedId`
+  // stuck on an id that could never resolve again, silently blocking every
+  // other highlight's hover popover afterward.
   const bodyInlineComments = useMemo(
     () =>
       (inlineComments ?? []).filter((comment) => comment.resolvedAt == null),
     [inlineComments],
   );
+  // Anchors (and therefore `resolvedInlineCommentRanges`) are computed for
+  // ALL comments, resolved included -- Requirement 16 (scrolling from the
+  // footer list to the comment's location in the body) must still work for a
+  // resolved comment; resolving one only suppresses its PASSIVE highlight and
+  // popover, it does not delete the comment or its position. Excluding
+  // resolved comments here too (as an earlier version of this fix did)
+  // regressed list-click navigation: `scrollToRange` could no longer find the
+  // comment's Range at all, so clicking a resolved item in the list showed
+  // the generic "could not be found... may have been edited or removed"
+  // error, which is wrong -- the text is still there, it's simply resolved.
   const inlineCommentAnchors = useMemo(
     () =>
-      bodyInlineComments.map((comment) => ({
+      (inlineComments ?? []).map((comment) => ({
         id: comment.id,
         anchor: comment.anchor,
       })),
-    [bodyInlineComments],
+    [inlineComments],
   );
   const resolvedInlineCommentRanges = useAnchorResolver(
     pageBodyContainerRef,
     inlineCommentAnchors,
   );
+  // The filtered view of `resolvedInlineCommentRanges`, excluding resolved
+  // comments -- this is what feeds anything that renders a highlight or
+  // offers a popover (Requirement 2.7/4.1/4.3). `scrollToRange` deliberately
+  // does NOT use this filtered view; see the comment on `inlineCommentAnchors`
+  // above.
+  const visibleResolvedRanges = useMemo(() => {
+    const visibleIds = new Set(bodyInlineComments.map((comment) => comment.id));
+    return new Map(
+      Array.from(resolvedInlineCommentRanges).filter(([id]) =>
+        visibleIds.has(id),
+      ),
+    );
+  }, [resolvedInlineCommentRanges, bodyInlineComments]);
   // Comments'/PageComment's (and InlineCommentBodyInteraction's)
   // inlineComments.createReply prop takes the reply text directly; the
   // store's createReply takes the POST body ({ comment }). Adapt the shape
@@ -439,11 +463,11 @@ const PageViewComponent = (props: Props): JSX.Element => {
               />
               <InlineCommentHighlight
                 containerRef={pageBodyContainerRef}
-                resolvedRanges={resolvedInlineCommentRanges}
+                resolvedRanges={visibleResolvedRanges}
               />
               <InlineCommentBodyInteraction
                 containerRef={pageBodyContainerRef}
-                resolvedRanges={resolvedInlineCommentRanges}
+                resolvedRanges={visibleResolvedRanges}
                 inlineComments={bodyInlineComments}
                 createReply={createInlineCommentReplyText}
                 resolve={resolveInlineComment}
@@ -474,7 +498,7 @@ const PageViewComponent = (props: Props): JSX.Element => {
     isSlide,
     isIdenticalPathPage,
     page,
-    resolvedInlineCommentRanges,
+    visibleResolvedRanges,
     isSharedPageView,
     inlineCommentsForComments,
     bodyInlineComments,

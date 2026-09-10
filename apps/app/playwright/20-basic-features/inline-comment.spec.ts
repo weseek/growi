@@ -3918,4 +3918,36 @@ test.describe('Inline comment - a resolved comment hides its body highlight/popo
     await clickText(page, targetSentence);
     await expect(popover).not.toBeVisible();
   });
+
+  test('Requirement 16: clicking a RESOLVED comment in the list still scrolls to its quote instead of reporting "could not be found" -- resolving must only suppress the passive highlight/popover, not list-click navigation', async ({
+    page,
+  }, testInfo) => {
+    await page.goto(resolvedPagePath(testInfo.retry));
+    await expect(page.getByTestId('inline-comment-ready')).toBeAttached();
+
+    const item = page.getByTestId('inline-comment-item').first();
+    await expect(item).toBeVisible();
+    await expect(item.getByTestId('inline-comment-status')).toHaveText(
+      'Resolved',
+    );
+
+    const quoteButton = item
+      .getByRole('button')
+      .filter({ hasText: targetSentence });
+
+    await quoteButton.click();
+
+    // The regression this guards against: PageView.tsx once excluded resolved
+    // comments from anchor resolution entirely, so `scrollToRange` could no
+    // longer locate the comment's Range and fell back to the generic
+    // not-found error toast -- even though the commented text is still on the
+    // page, unedited, simply resolved.
+    await expect(page.locator('.Toastify__toast')).not.toBeVisible();
+
+    const emphasisHighlightSize = () =>
+      page.evaluate(
+        () => CSS.highlights.get('growi-inline-comment-emphasis')?.size ?? 0,
+      );
+    await expect.poll(emphasisHighlightSize).toBeGreaterThan(0);
+  });
 });

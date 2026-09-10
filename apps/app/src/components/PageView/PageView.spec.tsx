@@ -388,12 +388,12 @@ describe('PageView', () => {
       ]);
     });
 
-    it('excludes a resolved comment from inlineCommentAnchors and from the inlineComments prop handed to InlineCommentBodyInteraction, while an unresolved comment in the same list is included in both (Requirement 2, AC 2.7)', async () => {
+    it('computes anchors for ALL comments (resolved included), but excludes a resolved comment from the resolved-ranges and inlineComments props handed to the highlight/popover consumers, while an unresolved comment in the same list is included in both (Requirement 2, AC 2.7)', async () => {
       // Two comments, not one -- with only one comment in the fixture, an
-      // exclusion bug could not be told apart from "the anchors list is
-      // simply empty/wrong for an unrelated reason". A resolved comment
-      // alongside a still-unresolved one is the only way to prove the filter
-      // actually discriminates between them.
+      // exclusion bug could not be told apart from "the list is simply
+      // empty/wrong for an unrelated reason". A resolved comment alongside a
+      // still-unresolved one is the only way to prove the filter actually
+      // discriminates between them.
       const unresolvedComment = buildInlineComment({
         id: 'inline-comment-unresolved',
       });
@@ -408,6 +408,18 @@ describe('PageView', () => {
         createReply: vi.fn(),
       } as unknown as ReturnType<typeof useSWRxInlineComments>);
       mockedUseCurrentPageData.mockReturnValue(buildPage());
+      mockedUseAnchorResolver.mockReturnValue(
+        new Map([
+          [
+            unresolvedComment.id,
+            { status: 'exact', startOffset: 0, endOffset: 1 },
+          ],
+          [
+            resolvedComment.id,
+            { status: 'exact', startOffset: 2, endOffset: 3 },
+          ],
+        ]),
+      );
 
       render(
         <PageView pagePath="/test-page" rendererConfig={rendererConfig} />,
@@ -415,16 +427,41 @@ describe('PageView', () => {
 
       await screen.findByTestId('inline-comment-body-interaction');
 
-      // inlineCommentAnchors (fed into useAnchorResolver) must contain only
-      // the unresolved comment's anchor.
-      expect(mockedUseAnchorResolver).toHaveBeenCalledWith(expect.anything(), [
-        { id: unresolvedComment.id, anchor: unresolvedComment.anchor },
-      ]);
+      // useAnchorResolver must be asked to resolve BOTH comments' anchors --
+      // resolving a comment must not stop the page from being able to locate
+      // it (Requirement 16: clicking it in the footer list must still scroll
+      // to its position). Excluding it here regressed that: `scrollToRange`
+      // could no longer find the comment's Range at all, so clicking a
+      // resolved item in the list showed a "could not be found... may have
+      // been edited or removed" error, which is wrong -- the text is still
+      // there, it's simply resolved.
+      expect(mockedUseAnchorResolver).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.arrayContaining([
+          { id: unresolvedComment.id, anchor: unresolvedComment.anchor },
+          { id: resolvedComment.id, anchor: resolvedComment.anchor },
+        ]),
+      );
 
-      // The SAME filtered list must reach InlineCommentBodyInteraction's
+      // The resolved-ranges prop reaching the highlight/popover consumers
+      // must exclude the resolved comment's range, even though
+      // useAnchorResolver resolved it -- this is what actually keeps it from
+      // being passively highlighted or offered a popover.
+      expect(inlineCommentBodyInteractionSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          resolvedRanges: new Map([
+            [
+              unresolvedComment.id,
+              { status: 'exact', startOffset: 0, endOffset: 1 },
+            ],
+          ]),
+        }),
+      );
+
+      // The SAME filtered comment list must reach InlineCommentBodyInteraction's
       // `inlineComments` prop -- this is the exact invariant that regressed
       // when PageView.tsx fed InlineCommentBodyInteraction the raw,
-      // unfiltered list while only inlineCommentAnchors was filtered: a
+      // unfiltered list while only the resolved-ranges view was filtered: a
       // resolved comment's popover state could then never be cleared,
       // permanently blocking every other highlight's hover popover.
       expect(inlineCommentBodyInteractionSpy).toHaveBeenCalledWith(
@@ -589,6 +626,35 @@ describe('PageView', () => {
       // ...and gone once it is.
       vi.advanceTimersByTime(1);
       expect(highlightRegistry.has(EMPHASIS_NAME)).toBe(false);
+    });
+
+    it("still scrolls to a RESOLVED comment's range and returns true (Requirement 16 must keep working after resolving -- only the passive highlight/popover are suppressed, not list-click navigation)", async () => {
+      mockedUseCurrentPageData.mockReturnValue(buildPage());
+      mockedUseSWRxInlineComments.mockReturnValue({
+        data: [
+          buildInlineComment({
+            resolvedAt: new Date('2026-01-02T00:00:00Z'),
+            resolvedById: 'user-2',
+          }),
+        ],
+        resolve: vi.fn(),
+        createReply: vi.fn(),
+      } as unknown as ReturnType<typeof useSWRxInlineComments>);
+      mockedUseAnchorResolver.mockReturnValue(resolvedExact());
+
+      render(
+        <PageView pagePath="/test-page" rendererConfig={rendererConfig} />,
+      );
+      await screen.findByTestId('comments');
+
+      const scrollToRange =
+        commentsSpy.mock.calls.at(-1)?.[0]?.inlineComments?.scrollToRange;
+      expect(scrollToRange).toBeTypeOf('function');
+
+      // biome-ignore lint/style/noNonNullAssertion: asserted to be a function directly above
+      expect(scrollToRange!('inline-comment-1')).toBe(true);
+      expect(scrollIntoViewSpy).toHaveBeenCalled();
+      expect(toastError).not.toHaveBeenCalled();
     });
 
     it('returns false, does not scroll, and notifies the user when the anchor failed to re-anchor', async () => {
