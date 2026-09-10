@@ -144,6 +144,7 @@ const renderInteraction = (
     resolvedRanges: ReadonlyMap<string, ResolvedRange>;
     createReply: (parentId: string, comment: string) => Promise<unknown>;
     resolve: (id: string, resolved: boolean) => Promise<unknown>;
+    update: (id: string, comment: string) => Promise<unknown>;
   }> = {},
 ) => {
   const container = document.createElement('div');
@@ -159,6 +160,7 @@ const renderInteraction = (
         overrides.createReply ?? vi.fn().mockResolvedValue(undefined)
       }
       resolve={overrides.resolve ?? vi.fn().mockResolvedValue(undefined)}
+      update={overrides.update ?? vi.fn().mockResolvedValue(undefined)}
       rendererOptions={rendererOptions}
     />,
   );
@@ -228,6 +230,7 @@ describe('InlineCommentBodyInteraction', () => {
         inlineComments={[buildComment()]}
         createReply={vi.fn().mockResolvedValue(undefined)}
         resolve={vi.fn().mockResolvedValue(undefined)}
+        update={vi.fn().mockResolvedValue(undefined)}
         rendererOptions={rendererOptions}
       />,
     );
@@ -270,6 +273,7 @@ describe('InlineCommentBodyInteraction', () => {
         ]}
         createReply={vi.fn().mockResolvedValue(undefined)}
         resolve={vi.fn().mockResolvedValue(undefined)}
+        update={vi.fn().mockResolvedValue(undefined)}
         rendererOptions={rendererOptions}
       />,
     );
@@ -301,6 +305,7 @@ describe('InlineCommentBodyInteraction', () => {
         inlineComments={[buildComment()]}
         createReply={vi.fn().mockResolvedValue(undefined)}
         resolve={vi.fn().mockResolvedValue(undefined)}
+        update={vi.fn().mockResolvedValue(undefined)}
         rendererOptions={rendererOptions}
       />,
     );
@@ -350,6 +355,7 @@ describe('InlineCommentBodyInteraction', () => {
         inlineComments={[buildComment()]}
         createReply={vi.fn().mockResolvedValue(undefined)}
         resolve={vi.fn().mockResolvedValue(undefined)}
+        update={vi.fn().mockResolvedValue(undefined)}
         rendererOptions={rendererOptions}
       />,
     );
@@ -388,6 +394,7 @@ describe('InlineCommentBodyInteraction', () => {
         ]}
         createReply={vi.fn().mockResolvedValue(undefined)}
         resolve={vi.fn().mockResolvedValue(undefined)}
+        update={vi.fn().mockResolvedValue(undefined)}
         rendererOptions={rendererOptions}
       />,
     );
@@ -483,6 +490,7 @@ describe('InlineCommentBodyInteraction', () => {
           inlineComments={[buildComment()]}
           createReply={vi.fn().mockResolvedValue(undefined)}
           resolve={vi.fn().mockResolvedValue(undefined)}
+          update={vi.fn().mockResolvedValue(undefined)}
           rendererOptions={rendererOptions}
         />,
       );
@@ -568,6 +576,7 @@ describe('InlineCommentBodyInteraction', () => {
           inlineComments={[buildComment({ id: 'comment2' })]}
           createReply={vi.fn().mockResolvedValue(undefined)}
           resolve={vi.fn().mockResolvedValue(undefined)}
+          update={vi.fn().mockResolvedValue(undefined)}
           rendererOptions={rendererOptions}
         />,
       );
@@ -590,6 +599,7 @@ describe('InlineCommentBodyInteraction', () => {
           inlineComments={[buildComment({ id: 'comment2' })]}
           createReply={vi.fn().mockResolvedValue(undefined)}
           resolve={vi.fn().mockResolvedValue(undefined)}
+          update={vi.fn().mockResolvedValue(undefined)}
           rendererOptions={rendererOptions}
         />,
       );
@@ -625,6 +635,7 @@ describe('InlineCommentBodyInteraction', () => {
           inlineComments={[]}
           createReply={vi.fn().mockResolvedValue(undefined)}
           resolve={vi.fn().mockResolvedValue(undefined)}
+          update={vi.fn().mockResolvedValue(undefined)}
           rendererOptions={rendererOptions}
         />,
       );
@@ -643,6 +654,7 @@ describe('InlineCommentBodyInteraction', () => {
           inlineComments={[buildComment({ id: 'comment1' })]}
           createReply={vi.fn().mockResolvedValue(undefined)}
           resolve={vi.fn().mockResolvedValue(undefined)}
+          update={vi.fn().mockResolvedValue(undefined)}
           rendererOptions={rendererOptions}
         />,
       );

@@ -233,13 +233,22 @@ const PageViewComponent = (props: Props): JSX.Element => {
     data: inlineComments,
     resolve: resolveInlineComment,
     createReply: createInlineCommentReply,
+    update: updateInlineComment,
+    updateReply: updateInlineCommentReply,
+    remove: removeInlineComment,
+    removeReply: removeInlineCommentReply,
   } = useSWRxInlineComments(isSharedPageView ? null : (page?._id ?? null));
   const inlineCommentAnchors = useMemo(
     () =>
-      (inlineComments ?? []).map((comment) => ({
-        id: comment.id,
-        anchor: comment.anchor,
-      })),
+      (inlineComments ?? [])
+        // Requirement 2.5, 4.1, 4.4: a resolved comment must never become an
+        // anchor, so it is never highlighted or offered a popover in the
+        // page body -- only the footer comment list still shows it.
+        .filter((comment) => comment.resolvedAt == null)
+        .map((comment) => ({
+          id: comment.id,
+          anchor: comment.anchor,
+        })),
     [inlineComments],
   );
   const resolvedInlineCommentRanges = useAnchorResolver(
@@ -328,12 +337,20 @@ const PageViewComponent = (props: Props): JSX.Element => {
             comments: inlineComments,
             resolve: resolveInlineComment,
             createReply: createInlineCommentReplyText,
+            update: updateInlineComment,
+            remove: removeInlineComment,
+            updateReply: updateInlineCommentReply,
+            removeReply: removeInlineCommentReply,
             scrollToRange,
           },
     [
       inlineComments,
       resolveInlineComment,
       createInlineCommentReplyText,
+      updateInlineComment,
+      removeInlineComment,
+      updateInlineCommentReply,
+      removeInlineCommentReply,
       scrollToRange,
     ],
   );
@@ -419,6 +436,7 @@ const PageViewComponent = (props: Props): JSX.Element => {
                 inlineComments={inlineComments ?? []}
                 createReply={createInlineCommentReplyText}
                 resolve={resolveInlineComment}
+                update={updateInlineComment}
                 rendererOptions={viewOptions}
               />
 
@@ -451,6 +469,7 @@ const PageViewComponent = (props: Props): JSX.Element => {
     inlineComments,
     createInlineCommentReplyText,
     resolveInlineComment,
+    updateInlineComment,
   ]);
 
   return (

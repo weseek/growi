@@ -67,6 +67,12 @@ type InlineCommentBodyInteractionProps = {
    */
   resolve: (id: string, resolved: boolean) => Promise<unknown>;
   /**
+   * Persists an edited origin-comment body -- forwarded as-is to
+   * `InlineCommentPreviewPopover`, which uses it exactly as
+   * `InlineCommentItem.tsx` uses its own `update` prop (Requirement 1).
+   */
+  update: (id: string, comment: string) => Promise<unknown>;
+  /**
    * Undefined while the caller's renderer options are still loading --
    * forwarded as-is to `InlineCommentPreviewPopover`, which falls back to
    * plain text rendering in that case.
@@ -91,6 +97,7 @@ export const InlineCommentBodyInteraction: FC<
     inlineComments,
     createReply,
     resolve,
+    update,
     rendererOptions,
   } = props;
 
@@ -301,6 +308,7 @@ export const InlineCommentBodyInteraction: FC<
       rendererOptions={rendererOptions}
       createReply={createReply}
       resolve={resolve}
+      update={update}
       onClose={handleClose}
       onPointerEnter={handlePointerEnterPopover}
     />

@@ -85,7 +85,7 @@
   - _Requirements: 4.3, 5.1_
   - _Boundary: InlineCommentBodyInteraction_
 
-- [ ] 8. 解決済みコメントのアンカー除外と、更新・削除ユーティリティの配線を行う（PageView.tsx）
+- [x] 8. 解決済みコメントのアンカー除外と、更新・削除ユーティリティの配線を行う（PageView.tsx）
   - `inlineCommentAnchors` の既存の `.map()` の前に `.filter((c) => c.resolvedAt == null)` を追加する
   - 新しい `update`／`updateReply`／`remove`／`removeReply` を、既存の `resolve`／`createReply` と並べて一覧側バンドルと `InlineCommentBodyInteraction`／`InlineCommentPreviewPopover` へ渡す
   - 型チェック・既存の全単体テストがgreenのまま保たれることを確認する

@@ -58,6 +58,10 @@ const renderComments = (
     comments: InlineCommentWithReplies[];
     resolve: (id: string, resolved: boolean) => Promise<unknown>;
     createReply: (parentId: string, comment: string) => Promise<unknown>;
+    update: (id: string, comment: string) => Promise<unknown>;
+    remove: (id: string) => Promise<unknown>;
+    updateReply: (id: string, comment: string) => Promise<unknown>;
+    removeReply: (id: string) => Promise<unknown>;
     scrollToRange: (commentId: string) => boolean;
   },
 ) =>
@@ -136,6 +140,10 @@ describe('Comments.tsx', () => {
       comments: [] as InlineCommentWithReplies[],
       resolve: vi.fn(),
       createReply: vi.fn(),
+      update: vi.fn(),
+      remove: vi.fn(),
+      updateReply: vi.fn(),
+      removeReply: vi.fn(),
       scrollToRange: vi.fn(() => true),
     };
 
@@ -152,6 +160,10 @@ describe('Comments.tsx', () => {
       comments: [] as InlineCommentWithReplies[],
       resolve: vi.fn(),
       createReply: vi.fn(),
+      update: vi.fn(),
+      remove: vi.fn(),
+      updateReply: vi.fn(),
+      removeReply: vi.fn(),
       scrollToRange,
     };
 

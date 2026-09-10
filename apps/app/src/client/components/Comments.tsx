@@ -44,6 +44,14 @@ type CommentsProps = {
     comments: InlineCommentWithReplies[];
     resolve: (id: string, resolved: boolean) => Promise<unknown>;
     createReply: (parentId: string, comment: string) => Promise<unknown>;
+    /** Persists an edited origin-comment body (Requirement 1). */
+    update: (id: string, comment: string) => Promise<unknown>;
+    /** Deletes the origin comment, along with its replies (Requirement 2.4). */
+    remove: (id: string) => Promise<unknown>;
+    /** Persists an edited reply body (Requirement 1). */
+    updateReply: (id: string, comment: string) => Promise<unknown>;
+    /** Deletes a single reply (Requirement 2). */
+    removeReply: (id: string) => Promise<unknown>;
     /**
      * Scrolls the page body to the highlighted range this comment anchors
      * to; returns `false` when the range no longer resolves (failed

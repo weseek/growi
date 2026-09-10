@@ -146,6 +146,10 @@ const inlineComment = (
 
 const resolveInlineComment = vi.fn(async () => undefined);
 const createInlineCommentReply = vi.fn(async () => undefined);
+const updateInlineComment = vi.fn(async () => undefined);
+const removeInlineComment = vi.fn(async () => undefined);
+const updateInlineCommentReply = vi.fn(async () => undefined);
+const removeInlineCommentReply = vi.fn(async () => undefined);
 
 const renderPageComment = (inlineComments: InlineCommentWithReplies[] = []) =>
   render(
@@ -161,6 +165,10 @@ const renderPageComment = (inlineComments: InlineCommentWithReplies[] = []) =>
         comments: inlineComments,
         resolve: resolveInlineComment,
         createReply: createInlineCommentReply,
+        update: updateInlineComment,
+        remove: removeInlineComment,
+        updateReply: updateInlineCommentReply,
+        removeReply: removeInlineCommentReply,
         scrollToRange: vi.fn(() => true),
       }}
     />,
