@@ -4418,6 +4418,15 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
     );
     await expect(editForm).toBeVisible();
     await expect(editForm.locator('.cm-content')).toBeVisible();
+    // KNOWN BUG (out of this spec's boundary -- MentionAwareCommentInput.tsx
+    // is Out of Boundary per design.md): `codeMirrorEditor.initDoc(initialValue)`
+    // does not populate `.cm-content` in a real browser -- confirmed empty
+    // after 16x500ms polling in manual investigation. This affects both this
+    // popover's edit form and the list item's edit form identically; it
+    // predates this visual-refresh spec (introduced in commit ced90db1db,
+    // ".kiro/specs/inline-comment-edit-delete"). Do NOT assert on the
+    // prefilled text here -- doing so makes this capture suite depend on a
+    // bug fix outside this task's scope. See tasks.md Implementation Notes.
 
     await popover.screenshot({
       path: path.join(evidenceDir, '06-popover-edit.png'),
@@ -4479,6 +4488,10 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
     const editForm = item.locator('.inline-comment-edit-form');
     await expect(editForm).toBeVisible();
     await expect(editForm.locator('.cm-content')).toBeVisible();
+    // KNOWN BUG -- see the matching comment in the popover capture above:
+    // `.cm-content` does not actually receive `initialValue` in a real
+    // browser (confirmed via manual polling, not a timing flake). Out of
+    // this spec's boundary to fix; do not assert on the prefilled text here.
     await card.hover();
 
     await card.screenshot({ path: path.join(evidenceDir, '02-list-edit.png') });

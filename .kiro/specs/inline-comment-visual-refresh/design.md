@@ -242,7 +242,7 @@ graph TB
   4. 一覧アイテム・解決済み
   5. ポップオーバー・通常表示（返信＋返信フォーム込み）
   6. ポップオーバー・編集モード
-- 撮影したスクリーンショットは、`.kiro/specs/inline-comment-visual-refresh/visual-acceptance-checklist.md` に列挙された33項目と1つずつ突き合わせる（Requirement 4.2・4.3）。この照合は実装したエージェント自身の自己申告ではなく、独立した最終レビュー（`/kiro-validate-impl` の一環、Opusクラスのモデルによる実行）で行う（Requirement 4.6）
+- 撮影したスクリーンショットは、`.kiro/specs/inline-comment-visual-refresh/visual-acceptance-checklist.md` に列挙された35項目（うち適用対象外4件を除く31件）と1つずつ突き合わせる（Requirement 4.2・4.3）。この照合は実装したエージェント自身の自己申告ではなく、独立した最終レビュー（`/kiro-validate-impl` の一環、Opusクラスのモデルによる実行）で行う（Requirement 4.6）
 - 一覧アイテムで投稿者本人としてホバーすると編集・削除アイコンが現れ、ホバーを外すと消えることを確認する（実ブラウザでの `:hover` 挙動——単体テストでは検証できない）
 - ライトモード・ダークモードそれぞれで6状態を確認し、意味付きカラークラスが両モードで正しい役割（警告・危険・成功）を保っていることを確認する
 
