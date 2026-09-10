@@ -117,10 +117,10 @@
   - _Depends: 8_
 
 - [ ] 10. 変更を inline-comment スペックへ port back し、本スペックを削除する
-- [ ] 10.1 `.kiro/specs/inline-comment` の Non-Goals（requirements.md Introduction・design.md）から「インラインコメントの編集・削除」の除外を撤回する
-- [ ] 10.2 `.kiro/specs/inline-comment` の Requirement 15.5 を、ポップオーバーからの編集を許可する記述に改める。あわせて **Requirement 2**（インラインコメントの表示）に「解決済みは本文中に表示しない」受け入れ基準を追加し、**Requirement 15** に編集・削除・解決済み関連の新しい受け入れ基準を追加する（Amend Targetセクションが挙げる両方の要件に確実に反映する）
-- [ ] 10.3 `.kiro/specs/inline-comment` の design.md における関連コンポーネントの記述を、本スペックの決定（サービスメソッドの分割方針・`removeWithReplies`の再利用・`inlineCommentAnchors`でのフィルタ・ポップオーバーのバッジ削除）を反映して書き直す
-- [ ] 10.4 設計判断の根拠（研究ログの Design Decisions）を `.kiro/specs/inline-comment` の research.md へ移す
+- [x] 10.1 `.kiro/specs/inline-comment` の Non-Goals（requirements.md Introduction・design.md）から「インラインコメントの編集・削除」の除外を撤回する
+- [x] 10.2 `.kiro/specs/inline-comment` の Requirement 15.5 を、ポップオーバーからの編集を許可する記述に改める。あわせて **Requirement 2**（インラインコメントの表示）に「解決済みは本文中に表示しない」受け入れ基準を追加し、**Requirement 15** に編集・削除・解決済み関連の新しい受け入れ基準を追加する（Amend Targetセクションが挙げる両方の要件に確実に反映する）
+- [x] 10.3 `.kiro/specs/inline-comment` の design.md における関連コンポーネントの記述を、本スペックの決定（サービスメソッドの分割方針・`removeWithReplies`の再利用・`inlineCommentAnchors`でのフィルタ・ポップオーバーのバッジ削除）を反映して書き直す
+- [x] 10.4 設計判断の根拠（研究ログの Design Decisions）を `.kiro/specs/inline-comment` の research.md へ移す
 - [ ] 10.5 `.kiro/specs/inline-comment` の spec.json の `updated_at` を更新し、roadmap.md に本スペックの記載があれば削除し、`.kiro/specs/inline-comment-edit-delete/` を削除する
   - _Depends: 9.1, 9.2, 9.3, 9.4_
 
@@ -128,3 +128,4 @@
 - Task 2.1 (and by extension 2.2–2.4): tasks.md's route tasks did not explicitly call out registering the new routes in `apps/app/src/server/routes/apiv3/index.js` (the existing 4 inline-comment routes are wired there under `inlineCommentsRouter`). Added the wiring as part of landing each route so the route is actually reachable in production, not just covered by its own `.integ.ts`. Flagged by task 2.1's reviewer.
 - Task 5: `PageComment.tsx`'s existing `<InlineCommentItem>` call site does not yet compile with the new required props (`update`/`remove`/`updateReply`/`removeReply`) — expected, resolved by task 8. Also noted (non-blocking reviewer suggestions): an edit failure may surface in two places (the editor's own error state plus the item-level `editError`), since `MentionAwareCommentInput` re-displays a re-thrown submit error internally too; and `InlineCommentReplies`' per-reply state isolation (via a per-reply subcomponent) has no direct multi-reply test asserting one reply's edit doesn't affect a sibling's — structurally sound but worth a follow-up test.
 - Task 9: a pre-existing Playwright test at `inline-comment.spec.ts` (~line 2013, "Desktop: hovering the highlight shows the comment content...") asserted the popover has NO edit button — that encoded the old Non-Goal this spec's Requirement 1.7 explicitly overturns. Removed the stale `toHaveCount(0)` assertion and updated its comment; the adjacent reply-textarea assertion is untouched. Found and fixed as part of task 9's validation run, verified by task 9's reviewer.
+- Task 10.2: the Amend Target section suggested folding new edit/delete ACs into existing Requirements 1-5/15, but appending them to Requirement 1 (whose Objective is comment creation via text selection) read as a mismatched grab-bag on review. Created a new **Requirement 18: 起点コメント・返信の編集・削除** in the target spec instead, holding ACs 18.1-18.9 (the edit/delete-specific ACs); Requirement 2 and 15 still received their own display/popover-specific new ACs as originally planned.

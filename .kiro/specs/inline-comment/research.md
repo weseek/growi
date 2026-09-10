@@ -283,3 +283,57 @@ jsdomにはレイアウト・ペイントエンジインが無いため、ユニ
 ### ポップオーバーの解決トグルを、一覧側（`InlineCommentItem`）と共通コンポーネント化しなかった理由
 
 `InlineCommentItem.tsx` とポップオーバーの解決バッジ＋ボタンは、クラス名・翻訳キー・判定（`resolvedAt != null`）まで完全に同じ見た目になる。それでも共有コンポーネントへ切り出さなかったのは、この改修のスコープが一覧側のロジックを触らないことを前提にしていたためで、共有化すると一覧側のファイルにも手が入ってしまう。加えて2箇所の周囲のレイアウト（一覧の`headerEnd`とポップオーバー本文内）が異なり、エラー表示の置き場所の要件も違うため、抽象化してもパラメータ化のコストに見合う再利用が今のところない。同じ見た目のマークアップが2箇所に存在する状態は許容し、3箇所目の利用が現れた時点で切り出しを検討する。
+
+## 起点コメント・返信の編集・削除（amend spec `inline-comment-edit-delete` より統合）
+
+投稿者本人による編集・削除、および解決済みインラインコメントの本文中非表示を追加するにあたって比較検討した案と、その採否の理由を残す。
+
+### 通常コメントの編集・削除の仕組みは「権限のルールとカスケード削除の部品」だけを持ってきて、「通信の作法」は持ってこない
+
+Requirement 18.9・15.5 が、編集・削除を通常コメント（`comments.update`／`comments.remove`）とまったく同じ権限モデルにすることを求めている。通常コメント側の実装（`Comment.tsx`／`CommentControl.tsx`／`DeleteCommentModal`／`apps/app/src/server/routes/comment.js`）を調査した結果、編集は `Comment.tsx` の `isReEdit` state が `CommentCard` を `CommentEditor` に切り替える形、削除は `CommentControl` → `PageComment.tsx` のモーダルstate → `DeleteCommentModal`／`DeleteCommentModalSubstance` という形で実装されており、どちらも apiv1 のプレーンな `Error` ベースのレスポンス（`ApiResponse.error`）を使っている。サーバー側はどちらも `prisma.comments.findUnique` → 未発見チェック → `Page.isAccessiblePageByViewer` → **投稿者本人チェック**（`creatorId` 比較）という順で処理し、削除は `removeWithReplies(commentId)`（トランザクション内で返信をすべて削除してから本体を削除）を呼ぶ。
+
+*権限のルール*（投稿者本人限定、`creatorId` 比較、サーバー側が最終判断）と*カスケード削除の部品*（`removeWithReplies`）はそのまま持ってきたが、*通信の作法*は持ってこなかった——インラインコメント自身の既存ルート（`create.ts`／`create-reply.ts`／`list.ts`／`resolve.ts`）はすべて apiv3 なので、新しい更新・削除ルートも apiv1 風のペアを別に持ち込むのではなく、この既存の apiv3 の作法（ファクトリ関数、`ErrorV3`、`res.apiv3Err`／`res.apiv3`）に従っている。`creatorId`（ただの文字列）はどのエンドポイントが生成したオブジェクトであっても必ず入っている投稿者特定フィールドだが、`creator`（populatedなユーザーオブジェクト）は `listByPageId()` の出力以外では `null` になる。権限判定（クライアント側の表示切り替えであれ、サーバー側の認可であれ）は必ず `creatorId` で比較し、`creator` では比較しない。
+
+### 更新・削除は操作ごとに1つの共有サービスメソッドとし、起点／返信で重複実装しない
+
+**Context**: 更新・削除は起点コメント・返信の両方に必要で、下回りのPrisma操作（`comment` フィールドの更新／行の削除）はどちらでもまったく同じだが、既存の慣習（`create.ts` と `create-reply.ts` の分離）に合わせると*ルート・DTOの形*は起点と返信で分ける方が筋が良い。
+
+**Alternatives Considered**:
+1. 「インラインコメントらしき任意の行を更新する」単一のルート・サービスメソッドにまとめ、レスポンスを判別可能なunion型にする。
+2. 操作ごとに起点用・返信用の2ルート・2DTOに分ける（`create`／`create-reply` の分離にならう）。共通のPrisma操作・Activity発行は、サービス内部の共有ヘルパーとして重複を避ける。
+
+**Selected Approach**: (2)。
+
+**Rationale**: `create.ts`／`create-reply.ts` がすでに「コメントの種類ごとに1ルート」という慣習を確立している。判別可能なunionレスポンスはこの慣習から最初に外れることになるうえ、得られる利益がない（`{inlineComment}` と `{inlineCommentReply}` という2つのレスポンス形は、すでに別々のDTOとして存在している）。実際に重複を避けるべき箇所（Prisma呼び出しの形、Activity発行）は、共有の内部ヘルパーが担うべき仕事であり、公開されるルート・サービスの表面がそれを担うべきではない。
+
+**Trade-offs**: 操作ごとに2ファイルではなく4ファイルの新規ルートになるが、既存の「コメントの種類ごとに1ファイル」というパターン（`.claude/rules/coding-style.md` の「小さいファイルを多数」）に沿っている。
+
+### 編集モードには、新しい編集専用コンポーネントではなく、任意の初期値propを足した `MentionAwareCommentInput` を再利用する
+
+**Context**: 一覧側の編集フローとポップオーバー側の編集フローの両方で、現在の本文をあらかじめ入力欄に入れておく必要がある（Requirement 18.1, 15.5）。
+
+**Alternatives Considered**:
+1. 編集専用の新しい入力コンポーネントを作る。
+2. `MentionAwareCommentInput` に任意の `initialValue` prop を足す（マウント時に一度だけ `codeMirrorEditor.initDoc(initialValue)` を適用する）。呼び出し側は `onSubmit` を、文脈に応じて `create` にも `update` にも配線できるようにする——コンポーネント自身はどちらなのかを知る必要がない。
+
+**Selected Approach**: (2)。
+
+**Rationale**: `MentionAwareCommentInput` はもともと永続化への依存を持たず（`onSubmit` は呼び出し側が注入する）——これはまさに「作成か編集か」の分岐が本来あるべき継ぎ目である（コンポーネント内部ではなく呼び出し側が決める）。これを再利用することで、作成時と編集時のメンション対応の編集体験（CodeMirror、メンション補完）が完全に一致し、見た目をあわせて保守すべき新規コンポーネントも増えない。
+
+**Trade-offs**: 編集モード用の新しい `editorKey` は、コメントidごとに区別できる値（例: `inline_comment_edit_${commentId}`）にする必要がある。そうしないと、あるコメントの編集がページの「新規コメント」用エディタや、別のコメントの編集セッションとCodeMirrorのstateを共有してしまう。
+
+### 一覧側の削除確認に `DeleteCommentModal` を再利用しなかった理由
+
+`DeleteCommentModal`／`DeleteCommentModalSubstance` を再利用する代わりに、インラインコメント専用の新しい削除確認UIを使うことにした。`DeleteCommentModal` は通常コメント自身のstore・型（`ICommentHasId`）に強く結びついており、この機能の既存の方針（`inline-comment-popover-refinement` の「解決トグルのマークアップを共有化しない」判断と同じ）は、小さく型の異なるUIは無理に共有コンポーネント化しないというものである。
+
+### 解決済みインラインコメントの本文中非表示を `inlineCommentAnchors` 1箇所でフィルタする理由
+
+「解決済みコメントにはハイライトを付けない」（Requirement 2.7）をどこで実装するかについて、(1) 各消費者（`InlineCommentHighlight`、`InlineCommentBodyInteraction`）がそれぞれ独立にフィルタする案と、(2) `PageView.tsx` の `inlineCommentAnchors`（すべての消費者が `resolvedRanges` を介して間接的に読み取っている唯一の起点）で一度だけフィルタする案を検討し、(2) を選んだ。`resolvedRanges`（`useAnchorResolver` の出力）はすでに `InlineCommentHighlight` と `InlineCommentBodyInteraction` の両方が消費している唯一の絞り込みポイントであり、解決済みコメントはそもそも `Range` が計算されないだけなので、両方の消費者は解決状態を自分で意識する必要が一切なくなる（`.claude/rules/coding-style.md` の「単一の情報源を持ち、消費者ごとに個別分岐しない」原則）。
+
+ポップオーバーを開いたまま対象が解決済みに変わった場合（Requirement 15.12）についても、`InlineCommentBodyInteraction` に `comment?.resolvedAt` を監視する新しい `useEffect` を追加する案と、すでにある「`comment == null` ならなにも描画しない」というガード（再アンカリング失敗のケース、Requirement 15.6ですでに使われている）に任せる案を検討し、後者を選んだ。`InlineCommentBodyInteraction` はidで `inlineComments` を検索しているため、フィルタ後は解決済みコメントもこのガードに引っかかって自然に対象外になる——新しい監視effectを足す必要がない。ただし、表示中のidに対応するコメントが `inlineComments` から消えて `comment` が `null` になった時点で、`pinnedId`／`hoverPreviewId` もあわせてクリアする小さなeffectを追加している。そうしないと、消えたidを指したままのstateが残ってしまう（同じidが二度と現れなくなる以上実害はないが、`handleClose` がすでに保っている「`pinnedId` は表示中のコメントが存在することを含意する」という不変条件を、この経路でも保つため）。コメントがこの経路で単に消えた場合、ポップオーバー自身の `onClose`／`suppressedHit` の後始末は走らない（`handleClose` を経由したときだけ走る）——解決済みである限り当たり判定がそのidを二度と報告しないため、抑制すべきものが残らず問題ない。
+
+### Risks & Mitigations
+
+- Risk: クライアント側の `creatorId === currentUser._id` チェックはそれ自体では認可の境界にならない（クライアント側のstateは古い可能性・偽装される可能性がある）。— Mitigation: `comments.update`／`comments.remove` とまったく同じく、サーバー側のルート・サービスが変更前に投稿者本人であることを独立に再検証する。クライアント側のチェックはどのボタンを表示するかだけを決める。
+- Risk: 返信を持つ起点コメントを削除したときに、返信行が孤立して残ってしまう。— Mitigation: すでにトランザクション化され、通常コメントの削除で実績のある `removeWithReplies` をそのまま再利用する。
+- Risk: `MentionAwareCommentInput` に新しい `initialValue` prop を足すことが、既存の「新規コメント」呼び出し元に対して純粋な追加にならず退行を生む可能性。— Mitigation: 既定値を `undefined`／空にし、既存の呼び出し元（`InlineCommentForm`、`InlineCommentReplies` の返信入力欄）に影響が出ないようにする。「`initialValue` を渡さない場合は現状と変わらない」ことを確認する退行テストでカバーする。
