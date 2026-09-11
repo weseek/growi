@@ -42,11 +42,7 @@
 
   :global(.wiki) {
     p {
-      margin: 4px 0;
-    }
-    ul:not(.nav), ol:not(.nav) {
       margin: 8px 0;
-      // padding-left: 20px;
     }
   }
 
