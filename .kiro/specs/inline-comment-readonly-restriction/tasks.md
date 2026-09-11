@@ -59,14 +59,14 @@
 
 - [ ] 4. inline-commentへの変更の折り込みと本specの削除
   - _Depends: 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 2.4, 3.1, 3.2_
-- [ ] 4.1 inline-commentのdesign.mdの記述を書き換える
-  - design.md（Server節、`API Contract`直後の段落）とresearch.md（341〜345行）の「作成・解決トグルの既存3ルートにはこの制限が無いが、これは本スペックの対象外」という記述を、現在の事実（3ルートとも`excludeReadOnlyUserIfCommentNotAllowed`を通す）に書き換える。他specへの参照や経緯の説明は残さない
+- [x] 4.1 inline-commentのdesign.mdの記述を書き換える
+  - design.md（Server節、`API Contract`直後の段落、`API Contract`表の3行、Security Considerations、Requirements Traceability）とresearch.mdの該当段落を、現在の事実（書き込み系7ルートすべてが`excludeReadOnlyUserIfCommentNotAllowed`を通す）に書き換えた。requirements.mdにはRequirement 1.10・4.7を追記（既存ID未変更）。research.mdには経緯を要約として残した（削除予定のamend spec名への生きたリンクは外した）
   - _Requirements: —（spec-lifecycle手続き）_
-- [ ] 4.2 inline-commentのspec.jsonのupdated_atを更新する
-  - `phase`・`approvals`は変更しない
+- [x] 4.2 inline-commentのspec.jsonのupdated_atを更新する
+  - `phase`・`approvals`は変更していない
   - _Requirements: —（spec-lifecycle手続き）_
-- [ ] 4.3 roadmap.md等の本spec参照を除去する
-  - 本specの行が`.kiro/steering/roadmap.md`等に存在する場合は削除する（無ければ何もしない）
+- [x] 4.3 roadmap.md等の本spec参照を除去する
+  - `.kiro/steering/roadmap.md`他を検索したが本specへの参照は存在しなかった（何もする必要なし）
   - _Requirements: —（spec-lifecycle手続き）_
 - [ ] 4.4 .kiro/specs/inline-comment-readonly-restriction/を削除する
   - _Requirements: —（spec-lifecycle手続き）_

@@ -346,13 +346,13 @@ Requirement 18.9・15.5 が、編集・削除を通常コメント（`comments.u
 - Risk: 返信を持つ起点コメントを削除したときに、返信行が孤立して残ってしまう。— Mitigation: すでにトランザクション化され、通常コメントの削除で実績のある `removeWithReplies` をそのまま再利用する。
 - Risk: `MentionAwareCommentInput` に新しい `initialValue` prop を足すことが、既存の「新規コメント」呼び出し元に対して純粋な追加にならず退行を生む可能性。— Mitigation: 既定値を `undefined`／空にし、既存の呼び出し元（`InlineCommentForm`、`InlineCommentReplies` の返信入力欄）に影響が出ないようにする。「`initialValue` を渡さない場合は現状と変わらない」ことを確認する退行テストでカバーする。
 
-### 読み取り専用利用者の制限は編集・削除の4ルートにのみサーバー側で適用し、作成・解決トグルの既存3ルートには適用しない理由
+### 読み取り専用利用者の制限は書き込み系7ルートすべてにサーバー側で適用する
 
-編集・削除の4ルート（`update.ts`／`update-reply.ts`／`delete.ts`／`delete-reply.ts`）には、`comments.update`／`comments.remove`（apiv1）と同じ `excludeReadOnlyUserIfCommentNotAllowed` ミドルウェアを追加し、読み取り専用利用者の制限をサーバー側で最終判定する（要件18.9）。
+編集・削除の4ルート（`update.ts`／`update-reply.ts`／`delete.ts`／`delete-reply.ts`）は当初から、`comments.update`／`comments.remove`（apiv1）と同じ `excludeReadOnlyUserIfCommentNotAllowed` ミドルウェアを持ち、読み取り専用利用者の制限をサーバー側で最終判定していた（要件18.9）。
 
-一方、作成・解決トグルの既存3ルート（`create.ts`／`create-reply.ts`／`resolve.ts`）にはこのミドルウェアが無く、読み取り専用利用者の制限はクライアント側の表示制御にしか存在しない。これは編集・削除の追加によって新しく生まれた穴ではなく、`inline-comment` 機能自体が最初から持っていた既存の欠落である。この欠落を今回まとめて塞ぐことは意図的に見送った——対象範囲が編集・削除の受け入れ基準（要件18.9）を超えて、作成・解決という別の受け入れ基準（要件1・4）にまで及ぶためである。
+作成・返信作成・解決トグルの3ルート（`create.ts`／`create-reply.ts`／`resolve.ts`）にはこのミドルウェアが無く、読み取り専用利用者の制限がクライアント側の表示制御にしか存在しない期間があった——`inline-comment` 機能が最初にこの3ルートを実装した時点からの既存の欠落で、編集・削除の追加時にも対象範囲外として意図的に見送られていた（要件1・4の受け入れ基準に及ぶ変更だったため）。
 
-是正は [inline-comment-readonly-restriction](../inline-comment-readonly-restriction/) という別のamend specとして起票済み（2026-09-11）。当初この段落は「`inline-comment` 機能自体の課題として別途起票・対応する」と書いていたが、この段落を書いたamend spec（`inline-comment-edit-delete`）自身が後に`inline-comment`本体へ折り込まれ削除されたため、その指し先は自分自身を指す循環参照になっていた——`/kiro-validate-impl`の再検証で発見され、上記の新しいamend specの起票で解消した。
+この欠落は `inline-comment-readonly-restriction` というamend specで是正済み（2026-09-11起票・実装完了・本体へ折り込み済み。amend spec自体は`.claude/rules/spec-lifecycle.md`の手順により削除済み）。`create.ts`／`create-reply.ts`／`resolve.ts` の3ルートに同じミドルウェアを追加し（要件1.10・4.7）、対応するクライアント側の操作起点（`SelectionCapture`・`InlineCommentReplies`・`InlineCommentItem`・`InlineCommentPreviewPopover`）にも `NotAvailableIfReadOnlyUserNotAllowedToComment` ガードを追加した。現在は書き込み系7ルートすべてが同じ位置・同じミドルウェアでこの制限をサーバー側最終判定している。
 
 ## 見た目の刷新（amend spec `inline-comment-visual-refresh` より統合）
 
