@@ -5,7 +5,7 @@
 インラインコメント機能は、ページ本文の読み取り専用ビュー（`RevisionRenderer.tsx` がレンダリングした結果）に対して、閲覧者が選んだテキスト範囲を対象としたコメントを作成・閲覧できるようにする。位置情報はDOM XPathやmarkdownソースの文字オフセットではなく、レンダリング後のプレーンテキストに対する「選択文字列（exact quote）＋前後文脈（prefix/suffix）＋おおよそのオフセット」（W3C Web Annotation Data Model の TextQuoteSelector/TextPositionSelector 相当）として保存し、表示のたびにクライアント側で再検索してハイライトを復元する。
 
 **Users**: ページ閲覧者・編集者が、本文の特定範囲について議論するために利用する。
-**Impact**: 既存のページ末尾コメントスレッド（`apps/app/src/features/comment/`、`/_api/comments.*`）の**投稿・編集・削除・通知の挙動は変更しない**。データは既存の `comments` Prisma/Mongooseモデルに新しいフィールドを追加する形で共存させ、新しい種類の行（インラインコメント）を区別するための識別フィールドを1つ追加する。既存の一覧取得（`/_api/comments.get`）には、この新しい種類の行を結果から除外するフィルタを追加する（これは既存機能の挙動変更ではなく、新しいデータ種別が増えたことに伴う最小限の対応）。既存の `RevisionRenderer.tsx` に対する変更は「コンテナへのref転送」1点のみに限定する。本文レンダリング用コンポーネントのうち `Header.tsx`／`TableWithEditButton.tsx`／`DrawioViewerWithEditButton.tsx` の3つには、条件付き表示の編集ボタンのアイコン要素へ `aria-hidden="true"` を付与する変更が入る（本文テキストの抽出範囲を安定させるための標準属性の付与であり、これらのコンポーネントの表示条件・振る舞い・見た目は変えない）。既存の `PageView.tsx` に対する変更は、そのrefを本文コンテナまで橋渡しする配線と、この機能のクライアントコンポーネント3つ（`SelectionCapture`／`InlineCommentHighlight`／`InlineCommentBodyInteraction`。いずれも `next/dynamic(..., { ssr: false })` 経由）およびフック2つ（`useAnchorResolver`／`useSWRxInlineComments`）の組み込みで構成される（タスク5.2）。`InlineCommentForm` はこの一覧に含まれない——`SelectionCapture` の内部で描画される子コンポーネントであり、`PageView.tsx` が直接組み込むわけではない。また `PageView.tsx` には、この配線とは別にもう1点、既存の不具合修正が入っている——本文サブツリーが `useCallback` を要素の型として使っていたため、依存が変わるたびに（本機能が加えたアンカー再計算の依存を含め）サブツリー全体が再マウントされてしまう問題があり、`useMemo` で値をレンダーする形に直した（経緯は tasks.md の Implementation Notes と `PageView.tsx` 内のコメントを参照）。
+**Impact**: 既存のページ末尾コメントスレッド（`apps/app/src/features/comment/`、`/_api/comments.*`）の**投稿・編集・削除・通知の挙動は変更しない**。データは既存の `comments` Prisma/Mongooseモデルに新しいフィールドを追加する形で共存させ、新しい種類の行（インラインコメント）を区別するための識別フィールドを1つ追加する。既存の一覧取得（`/_api/comments.get`）には、この新しい種類の行を結果から除外するフィルタを追加する（これは既存機能の挙動変更ではなく、新しいデータ種別が増えたことに伴う最小限の対応）。既存の `RevisionRenderer.tsx` に対する変更は「コンテナへのref転送」1点のみに限定する。本文レンダリング用コンポーネントのうち `Header.tsx`／`TableWithEditButton.tsx`／`DrawioViewerWithEditButton.tsx` の3つには、条件付き表示の編集ボタンのアイコン要素へ `aria-hidden="true"` を付与する変更が入る（本文テキストの抽出範囲を安定させるための標準属性の付与であり、これらのコンポーネントの表示条件・振る舞い・見た目は変えない）。既存の `PageView.tsx` に対する変更は、本文コンテナへの参照を得るための配線と、この機能のクライアントコンポーネント3つ（`SelectionCapture`／`InlineCommentHighlight`／`InlineCommentBodyInteraction`。いずれも `next/dynamic(..., { ssr: false })` 経由）およびフック2つ（`useAnchorResolver`／`useSWRxInlineComments`）の組み込みで構成される（タスク5.2）。`InlineCommentForm` はこの一覧に含まれない——`SelectionCapture` の内部で描画される子コンポーネントであり、`PageView.tsx` が直接組み込むわけではない。また `PageView.tsx` には、この配線とは別にもう1点、既存の不具合修正が入っている——本文サブツリーが `useCallback` を要素の型として使っていたため、依存が変わるたびに（本機能が加えたアンカー再計算の依存を含め）サブツリー全体が再マウントされてしまう問題があり、`useMemo` で値をレンダーする形に直した（経緯は tasks.md の Implementation Notes と `PageView.tsx` 内のコメントを参照）。
 
 ### Goals
 - 文字単位で選択したテキスト範囲にインラインコメントを作成・表示できる（1.1–2.6）
@@ -45,7 +45,7 @@
 - `apps/app/src/interfaces/activity.ts` の `SupportedAction` — 新しい `ACTION_INLINE_COMMENT_*` 定数を追加する
 - 既存 `apiv3` ミドルウェアチェーン（`accessTokenParser` → `loginRequired` → express-validator → `apiV3FormValidator` → `res.apiv3()`/`res.apiv3Err()`）、`revision-diff` フィーチャーモジュールが確立した構成規約（`interfaces/` + `server/{service,routes}`）
 - 外部ライブラリ `approx-string-match`（新規直接依存、あいまい一致の実装に採用。選定理由は後述）
-- `RevisionRenderer.tsx` が転送するコンテナDOM要素への参照（新規に追加する、この設計唯一のレンダリングパイプライン変更点）
+- `RevisionRenderer.tsx` が転送するコンテナDOM要素への参照（新規に追加する、この設計唯一のレンダリングパイプライン変更点。ただし実際の`PageView.tsx`への組み込みでは、`PageView.tsx`とこのrefの間に挟まる`PageContentRenderer.tsx`がこのrefを中継しない構造だったため——`PageContentRenderer.tsx`自体はModified Filesに含まれない、This Spec Ownsの範囲外——`PageView.tsx`は本文コンテナ参照を別の手段（後述Modified Filesの`PageView.tsx`の項参照）で得ている。`RevisionRenderer.tsx`のref転送自体はタスク5.1で実装・テスト済みの機能として提供されており、通常コメント（`Comment.tsx`）を含む他の呼び出し元から将来利用できる状態にはあるが、本機能のクライアント側配線はこの経路を使っていない）
 - `GROWI_IS_CONTENT_RENDERING_ATTR`/`GROWI_IS_CONTENT_RENDERING_SELECTOR`（`@growi/core/dist/consts`）— [auto-scroll](../auto-scroll/) スペックが確立した「レンダリング状態属性プロトコル」を静定検知にそのまま再利用する（後述）。drawio・mermaid・plantUML・lsxはこのプロトコルに既に参加している
 - `prisma.comments.removeWithReplies(id)`（既存、`apps/app/src/features/comment/server/models/comment.ts`）— 通常コメントの削除が使っているカスケード削除を、起点インラインコメント削除時の返信道連れ削除にそのまま流用する
 - `NotAvailableIfReadOnlyUserNotAllowedToComment`（既存、`apps/app/src/client/components/NotAvailableForReadOnlyUser.tsx`）— 一覧・ポップオーバーの編集・削除操作に組み込み、通常コメントと同じリードオンリー制限をかける
@@ -294,10 +294,11 @@ apps/app/src/features/inline-comment/
 ```
 
 ### Modified Files
-- `apps/app/src/components/PageView/RevisionRenderer.tsx` — `ReactMarkdown` を包むコンテナ `div` に `ref` を転送するよう変更（新規rehype/remarkプラグインは追加しない）
-- `apps/app/src/components/PageView/PageView.tsx` — 転送されたrefを`AnchorResolver`/`SelectionCapture`に配線し、既存の `Comments` と並置する。共有リンク経由のページ表示（`!isSharedPageView`）では`SelectionCapture`/`InlineCommentHighlight`/`PendingSelectionHighlight`/`InlineCommentBodyInteraction`のいずれもレンダーしないガードもここに置く。`scrollToRange(commentId): boolean`（`rangesById()`で対象の`Range`を再構築できればスクロール＋一時的な強調ハイライト`growi-inline-comment-emphasis`の登録、できなければ既存の通知UIで知らせる）を実装し、`resolve`/`createReply`/`update`/`updateReply`/`remove`/`removeReply`とあわせて`inlineCommentsForComments`バンドルとして`Comments`に渡す。`inlineCommentAnchors`は解決済みを含む全件のまま`useAnchorResolver`に渡し（一覧クリックでの解決済みコメントへのスクロールナビゲーションを成立させるため）、別途`bodyInlineComments`（`.filter((c) => c.resolvedAt == null)`）で絞り込んだ`visibleResolvedRanges`を本文中のハイライト・当たり判定・ポップオーバー側にだけ渡す（一覧側は影響を受けない。詳細はArchitecture節「解決済みインラインコメントの本文中非表示は、アンカー解決を全件に対して行ったうえで表示側だけを絞り込む2段構えで実現する」参照）
+- `apps/app/src/components/PageView/RevisionRenderer.tsx` — `ReactMarkdown` を包むコンテナ `div` に `ref` を転送するよう変更（新規rehype/remarkプラグインは追加しない）。テスト済みの機能として提供済みだが、実際の本文コンテナ参照の配線は`PageView.tsx`側の別経路（後述`PageView.tsx`の項参照）を使っており、この機能自体はこのrefを消費していない。他の呼び出し元（`Comment.tsx`等）が将来利用できる汎用の拡張として残す
+- `apps/app/src/components/PageView/PageView.tsx` — 本文サブツリー（`PageContentRenderer`/`SlideRenderer`の出力）を無名の`<div ref={pageBodyContainerRef}>`で包み、そのrefを`AnchorResolver`/`SelectionCapture`に配線する（`PageView.tsx`と`RevisionRenderer.tsx`の間に挟まる`PageContentRenderer.tsx`がrefを中継しない構造のため、`RevisionRenderer.tsx`が転送するrefは経由しない。このdivは他に何も内包しないため、`RevisionRenderer.tsx`自身のrefを取るのと同じテキストが得られる）。既存の `Comments` と並置する。共有リンク経由のページ表示（`!isSharedPageView`）では`SelectionCapture`/`InlineCommentHighlight`/`PendingSelectionHighlight`/`InlineCommentBodyInteraction`のいずれもレンダーしないガードもここに置く。`scrollToRange(commentId): boolean`（`rangesById()`で対象の`Range`を再構築できればスクロール＋一時的な強調ハイライト`growi-inline-comment-emphasis`の登録、できなければ既存の通知UIで知らせる）を実装し、`resolve`/`createReply`/`update`/`updateReply`/`remove`/`removeReply`とあわせて`inlineCommentsForComments`バンドルとして`Comments`に渡す。`inlineCommentAnchors`は解決済みを含む全件のまま`useAnchorResolver`に渡し（一覧クリックでの解決済みコメントへのスクロールナビゲーションを成立させるため）、別途`bodyInlineComments`（`.filter((c) => c.resolvedAt == null)`）で絞り込んだ`visibleResolvedRanges`を本文中のハイライト・当たり判定・ポップオーバー側にだけ渡す（一覧側は影響を受けない。詳細はArchitecture節「解決済みインラインコメントの本文中非表示は、アンカー解決を全件に対して行ったうえで表示側だけを絞り込む2段構えで実現する」参照）
 - `apps/app/src/client/components/ReactMarkdownComponents/Header.tsx` / `TableWithEditButton.tsx` / `DrawioViewerWithEditButton.tsx` — 条件付きで表示される編集ボタンのアイコン用 `<span>`（例: `<span className="material-symbols-outlined">edit_square</span>`）に `aria-hidden="true"` を追加する。表示条件・クリック時の振る舞い・見た目は変えない。この標準属性が、本文テキスト抽出の除外条件（Architecture節「本文テキストの抽出範囲」）から読み取られる
-- `apps/app/package.json` — `@popperjs/core`を`dependencies`に追加（選択範囲近傍への配置に使用）
+- `apps/app/package.json` — `@popperjs/core`を`devDependencies`から`dependencies`へ移動（選択範囲近傍への配置に使用）。`approx-string-match`を`dependencies`に新規追加（あいまい一致の実装に採用。選定理由はArchitecture節参照）
+- `apps/app/turbo.json` — `test:components`タスクの`dependsOn`に`dev:pre:styles-commons`／`dev:pre:styles-components`を追加（ベンダースタイルの事前生成が揃わないまま`test:components`が走ると失敗するのを防ぐ）
 - `apps/app/src/server/routes/apiv3/index.js` — `inline-comment` フィーチャーモジュールのルートファクトリをimportし、`/inline-comments` にマウントする（`revisions` と同じマウントパターン）
 - `apps/app/src/features/comment/server/models/comment.ts` — Mongooseスキーマに `isInline`／アンカー4フィールド／`anchorOriginRevisionId`／`resolvedById`／`resolvedAt` を追加。`findCommentsByPageId`／`findCommentsByRevisionId`／`countCommentByPageId` の `where` 条件に `isInline: { not: true }` を追加（無条件フィルタ。呼び出し元からオーバーライド不可）。`@@index([pageId, isInline])` の宣言を追加
 - `apps/app/prisma/schema.prisma` — `comments` モデルに同じフィールドを追加。既存の `creator` リレーション（現在は無名の暗黙リレーション）に `@relation("CommentCreator", ...)` と明示的な名前を付け、新設する `resolvedBy` リレーションと区別できるようにする（`comments`→`users` 間に2本のリレーションができるため、Prismaの制約でどちらも名前付けが必須になる）。`users` モデル側の `comments comments[]` も `@relation("CommentCreator")` を付け、新設する `resolvedInlineComments comments[] @relation("InlineCommentResolver")` を追加する
@@ -318,6 +319,13 @@ apps/app/src/features/inline-comment/
 - `apps/app/src/client/components/PageComment/Comment.module.scss` — ホバー表示セレクタを直接の子（`>`）から子孫セレクタに変更する（`.page-comment-control` がもう `.page-comment-main` の直接の子ではないため）
 - `apps/app/src/client/components/PageComment/ReplyComments.tsx` — 返信の削除確認を `DeleteConfirmAlert` に、編集・削除アイコンを `CommentEditDeleteButtons` に置き換える
 - `apps/app/src/client/components/PageComment/DeleteCommentModal/` — 削除（`Comment.tsx`／`ReplyComments.tsx` とも `DeleteConfirmAlert` に移行したため不要）
+- `apps/app/src/client/components/PageComment/CommentCard/`（新規、`CommentCard.tsx` + `index.ts`） — Components and Interfaces節に記載の共有部品本体
+- `apps/app/src/client/components/PageComment/CommentControl.tsx` — `CommentEditDeleteButtons`／`DeleteConfirmAlert`への置き換えに伴う配線の調整（表示条件・クリック時の振る舞いは変えない）
+- `apps/app/src/client/components/PageComment/CommentEditor.tsx` — `MentionAwareCommentInput`が持つメンション補完ロジックとの整合を取るための小さな調整（メンション取得処理自体は意図的に共有せず、`fetch-mention-users.ts`側に独立した実装を持つ。理由はArchitecture節参照）
+- `apps/app/src/client/components/PageComment/_comment-inheritance.scss` — `InlineCommentItem`／`CommentCard`からも`@extend`できるよう`%bg-comment`／`%comment-section`／`%user-picture`を調整
+- `apps/app/src/components/User/Username.tsx` — `user` propの型に、インラインコメント一覧APIのレスポンスがすでに`serializeUserSecurely`を通した形で返す`IUserSerializedSecurely<IUserHasId>`を追加（`isPopulated`によるフォールバック挙動は変えない。通常コメント側の呼び出しには影響しない）
+- `apps/app/src/migrations/20260901160138-backfill-comments-isinline.js`（新規） — 既存コメント行に`isInline: false`を書き込む移行。Prisma/Mongoコネクタが`isInline`欠落行を`{ not: true }`にマッチさせないため必須（詳細は`comment.integ.ts`のコメント参照）
+- `apps/app/playwright/20-basic-features/inline-comment.spec.ts`（新規） — Requirement網羅のE2E一式（作成・表示・再アンカー・解決トグル・編集削除・見た目の視覚比較スクリーンショットを含む）
 
 ## System Flows
 
@@ -657,18 +665,18 @@ interface InlineCommentService {
 ##### API Contract
 | Method | Endpoint | Request | Response | Errors |
 |---|---|---|---|---|
-| POST | `/_api/v3/inline-comments` | `CreateInlineCommentInput` | `InlineComment` | 400（空クオート・不正なpageId）, 403, 500 |
-| POST | `/_api/v3/inline-comments/:id/replies` | `CreateInlineCommentReplyInput` | `InlineCommentReply` | 400（`:id`が起点コメントでない）, 403, 404, 500 |
-| GET | `/_api/v3/inline-comments?pageId=...` | `{ pageId: string }` | `InlineComment[]`（作成日時順、各要素に返信のネスト配列を含む） | 400, 403, 500 |
-| PUT | `/_api/v3/inline-comments/:id/resolve` | `{ resolved: boolean }` | `InlineComment` | 400（`:id`が返信）, 403, 404, 500 |
-| PUT | `/_api/v3/inline-comments/:id` | `{ comment: string }` | `{ inlineComment: InlineComment }` | 400（`:id`が起点コメントでない、または読み取り専用利用者にコメントが許可されていない）, 403（投稿者でない）, 404, 500 |
-| PUT | `/_api/v3/inline-comments/replies/:id` | `{ comment: string }` | `{ inlineCommentReply: InlineCommentReply }` | 400（`:id`が返信でない、または読み取り専用利用者にコメントが許可されていない）, 403（投稿者でない）, 404, 500 |
-| DELETE | `/_api/v3/inline-comments/:id` | — | `{}` | 400（読み取り専用利用者にコメントが許可されていない）, 403（投稿者でない）, 404, 500 |
-| DELETE | `/_api/v3/inline-comments/replies/:id` | — | `{}` | 400（読み取り専用利用者にコメントが許可されていない）, 403（投稿者でない）, 404, 500 |
+| POST | `/_api/v3/inline-comments` | `CreateInlineCommentInput` | `InlineComment` | 400（空クオート・不正なpageId）, 404（ページが存在しない、または閲覧権限がない。両者を区別しない一様な404。`apps/app/.claude/rules/page-write-action-403-404.md`）, 500 |
+| POST | `/_api/v3/inline-comments/:id/replies` | `CreateInlineCommentReplyInput` | `InlineCommentReply` | 400（`:id`が起点コメントでない）, 404（`:id`が存在しない、または親ページの閲覧権限がない。一様な404）, 500 |
+| GET | `/_api/v3/inline-comments?pageId=...` | `{ pageId: string }` | `InlineComment[]`（作成日時順、各要素に返信のネスト配列を含む） | 400, 404（ページが存在しない、または閲覧権限がない。一様な404）, 500 |
+| PUT | `/_api/v3/inline-comments/:id/resolve` | `{ resolved: boolean }` | `InlineComment` | 400（`:id`が返信）, 404（`:id`が存在しない、または閲覧権限がない。一様な404）, 500 |
+| PUT | `/_api/v3/inline-comments/:id` | `{ comment: string }` | `{ inlineComment: InlineComment }` | 400（`:id`が起点コメントでない、または読み取り専用利用者にコメントが許可されていない）, 403（投稿者でない）, 404（`:id`が存在しない。閲覧権限がない場合も同じ404）, 500 |
+| PUT | `/_api/v3/inline-comments/replies/:id` | `{ comment: string }` | `{ inlineCommentReply: InlineCommentReply }` | 400（`:id`が返信でない、または読み取り専用利用者にコメントが許可されていない）, 403（投稿者でない）, 404（`:id`が存在しない。閲覧権限がない場合も同じ404）, 500 |
+| DELETE | `/_api/v3/inline-comments/:id` | — | `{}` | 400（読み取り専用利用者にコメントが許可されていない）, 403（投稿者でない）, 404（`:id`が存在しない。閲覧権限がない場合も同じ404）, 500 |
+| DELETE | `/_api/v3/inline-comments/replies/:id` | — | `{}` | 400（読み取り専用利用者にコメントが許可されていない）, 403（投稿者でない）, 404（`:id`が存在しない。閲覧権限がない場合も同じ404）, 500 |
 
-未ログインのアクセスは、この実装が使う `loginRequiredFactory` がapiv3リクエストに対して常に403を返すため（401ではない）、表中の403に含まれる。当初の設計では401を想定していたが、実際の挙動と異なっていたため訂正した（タスク3.5／6.2のE2Eテストで実際の挙動として確認済み）。
+すべてのルートで、ページ（または対象コメントが属するページ）が存在しない場合と、存在するが閲覧権限がない場合を区別せず、一様に404を返す（`apps/app/.claude/rules/page-write-action-403-404.md`——ページの存在をレスポンスから漏らさないための既存規則。当初の設計ではこのケースを403としていたが、実装時にこの規則に従って404へ訂正した）。表中で403として残っているのは「対象は見つかったが投稿者本人でない」場合のみで、こちらは意図的に区別している。未ログインのアクセスは、この実装が使う `loginRequiredFactory` がapiv3リクエストに対して常に403を返すため（401ではない）、当初の設計では401を想定していたが、実際の挙動と異なっていたため訂正した（タスク3.5／6.2のE2Eテストで実際の挙動として確認済み）。
 
-すべてのエンドポイントは `accessTokenParser` → `loginRequired` → express-validator → `apiV3FormValidator` のチェーンを通す。**`certifySharedPage` ミドルウェアはこれらのルートに一切適用しない**（要件6.1/6.2）。編集・削除の4ルート（`update.ts`／`update-reply.ts`／`delete.ts`／`delete-reply.ts`）のみ、`loginRequired` の直後・express-validatorより前に `excludeReadOnlyUserIfCommentNotAllowed` を通す（apiv1の `/comments.update`／`/comments.remove` と同じ位置）。読み取り専用利用者にコメントが許可されていない場合、この時点で400を返す（要件18.4／18.8／18.9）。作成・解決トグルの既存3ルート（`create.ts`／`create-reply.ts`／`resolve.ts`）にはこの制限が無いが、これは本スペックの対象外——同じ制限の欠落が編集・削除の追加以前から存在しており、その是正は元の `inline-comment` 機能自体の課題として別途扱う（research.md参照）。編集・削除ルートの投稿者本人チェックはルート側（`findUnique` で `creatorId` を取得するのと同じタイミング）とサービス側内部（多層防御としての再検証）の2回行う。
+すべてのエンドポイントは `accessTokenParser` → `loginRequired` → express-validator → `apiV3FormValidator` のチェーンを通す。**`certifySharedPage` ミドルウェアはこれらのルートに一切適用しない**（要件6.1/6.2）。編集・削除の4ルート（`update.ts`／`update-reply.ts`／`delete.ts`／`delete-reply.ts`）のみ、`loginRequired` の直後・express-validatorより前に `excludeReadOnlyUserIfCommentNotAllowed` を通す（apiv1の `/comments.update`／`/comments.remove` と同じ位置）。読み取り専用利用者にコメントが許可されていない場合、この時点で400を返す（要件18.4／18.8／18.9）。作成・解決トグルの既存3ルート（`create.ts`／`create-reply.ts`／`resolve.ts`）にはこの制限が無いが、これは本スペックの対象外——同じ制限の欠落が編集・削除の追加以前から存在しており、その是正は [inline-comment-readonly-restriction](../inline-comment-readonly-restriction/) という別のamend specで扱う（research.md参照）。編集・削除ルートの投稿者本人チェックはルート側（`findUnique` で `creatorId` を取得するのと同じタイミング）とサービス側内部（多層防御としての再検証）の2回行う。
 
 ## Client / ロジック層
 

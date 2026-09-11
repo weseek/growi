@@ -342,7 +342,9 @@ Requirement 18.9・15.5 が、編集・削除を通常コメント（`comments.u
 
 編集・削除の4ルート（`update.ts`／`update-reply.ts`／`delete.ts`／`delete-reply.ts`）には、`comments.update`／`comments.remove`（apiv1）と同じ `excludeReadOnlyUserIfCommentNotAllowed` ミドルウェアを追加し、読み取り専用利用者の制限をサーバー側で最終判定する（要件18.9）。
 
-一方、作成・解決トグルの既存3ルート（`create.ts`／`create-reply.ts`／`resolve.ts`）にはこのミドルウェアが無く、読み取り専用利用者の制限はクライアント側の表示制御にしか存在しない。これは編集・削除の追加によって新しく生まれた穴ではなく、`inline-comment` 機能自体が最初から持っていた既存の欠落である。この欠落を今回まとめて塞ぐことは意図的に見送った——対象範囲が編集・削除の受け入れ基準（要件18.9）を超えて、作成・解決という別の受け入れ基準（要件1・4）にまで及ぶためである。是正するとしても、それは `inline-comment` 機能自体の課題として別途起票・対応するのが筋であり、本amend specの対象には含めない。
+一方、作成・解決トグルの既存3ルート（`create.ts`／`create-reply.ts`／`resolve.ts`）にはこのミドルウェアが無く、読み取り専用利用者の制限はクライアント側の表示制御にしか存在しない。これは編集・削除の追加によって新しく生まれた穴ではなく、`inline-comment` 機能自体が最初から持っていた既存の欠落である。この欠落を今回まとめて塞ぐことは意図的に見送った——対象範囲が編集・削除の受け入れ基準（要件18.9）を超えて、作成・解決という別の受け入れ基準（要件1・4）にまで及ぶためである。
+
+是正は [inline-comment-readonly-restriction](../inline-comment-readonly-restriction/) という別のamend specとして起票済み（2026-09-11）。当初この段落は「`inline-comment` 機能自体の課題として別途起票・対応する」と書いていたが、この段落を書いたamend spec（`inline-comment-edit-delete`）自身が後に`inline-comment`本体へ折り込まれ削除されたため、その指し先は自分自身を指す循環参照になっていた——`/kiro-validate-impl`の再検証で発見され、上記の新しいamend specの起票で解消した。
 
 ## 見た目の刷新（amend spec `inline-comment-visual-refresh` より統合）
 
