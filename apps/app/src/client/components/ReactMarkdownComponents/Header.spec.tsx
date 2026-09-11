@@ -80,9 +80,7 @@ describe('Header', () => {
 
     const heading = container.querySelector('h2');
     expect(heading).not.toBeNull();
-    // GROWI's own class must survive (drives active/blink styling)
     expect(heading?.classList.contains('position-relative')).toBe(true);
-    // The user's class from the original HTML must also survive
     expect(heading?.classList.contains('h6')).toBe(true);
     expect(heading?.classList.contains('font-weight-bold')).toBe(true);
     expect(heading?.classList.contains('mb-3')).toBe(true);
