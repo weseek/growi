@@ -50,6 +50,7 @@ const FIXTURE_ROOT = '/inline-comment-create-route-integ';
 const requesterUsername = 'inline-comment-create-route-integ-requester';
 const ownerUsername = 'inline-comment-create-route-integ-owner';
 const mentionedUsername = 'inline-comment-create-route-integ-mentioned';
+const readOnlyUsername = 'inline-comment-create-route-integ-readonly';
 
 describe('POST /_api/v3/inline-comments', () => {
   let app: express.Application;
@@ -57,8 +58,32 @@ describe('POST /_api/v3/inline-comments', () => {
   let requester: HydratedDocument<IUserHasId>;
   let owner: HydratedDocument<IUserHasId>;
   let mentionedUser: HydratedDocument<IUserHasId>;
+  let readOnlyUser: HydratedDocument<IUserHasId>;
   let publicPage: HydratedDocument<PageDocument>;
   let forbiddenPage: HydratedDocument<PageDocument>;
+
+  const mountAppAs = (requesterUser: HydratedDocument<IUserHasId>) => {
+    const responseHelpers: { response: Record<string, unknown> } = {
+      response: {},
+    };
+    addCustomFunctionToResponse(responseHelpers);
+
+    const mounted = express();
+    mounted.use(express.json());
+    mounted.use((_req, res, next) => {
+      Object.assign(res, responseHelpers.response);
+      next();
+    });
+    mounted.use((req: AuthenticatedRequest, _res, next) => {
+      req.user = requesterUser;
+      next();
+    });
+    mounted.use(
+      '/_api/v3/inline-comments',
+      createInlineCommentRouteHandlersFactory(crowi),
+    );
+    return mounted;
+  };
 
   beforeAll(async () => {
     crowi = await getInstance();
@@ -67,7 +92,14 @@ describe('POST /_api/v3/inline-comments', () => {
     const User = mongoose.model<IUserHasId>('User');
 
     await User.deleteMany({
-      username: { $in: [requesterUsername, ownerUsername, mentionedUsername] },
+      username: {
+        $in: [
+          requesterUsername,
+          ownerUsername,
+          mentionedUsername,
+          readOnlyUsername,
+        ],
+      },
     });
     requester = await User.create({
       name: requesterUsername,
@@ -83,6 +115,16 @@ describe('POST /_api/v3/inline-comments', () => {
       name: mentionedUsername,
       username: mentionedUsername,
       email: `${mentionedUsername}@example.com`,
+    });
+    // Read-only-user restriction (requirements.md Requirement 1, AC 1.1/1.4):
+    // `security:isRomUserAllowedToComment` defaults to false
+    // (config-definition.ts), so this user is denied by
+    // `excludeReadOnlyUserIfCommentNotAllowed` with no further config setup.
+    readOnlyUser = await User.create({
+      name: readOnlyUsername,
+      username: readOnlyUsername,
+      email: `${readOnlyUsername}@example.com`,
+      readOnly: true,
     });
 
     publicPage = await Page.create({
@@ -104,25 +146,7 @@ describe('POST /_api/v3/inline-comments', () => {
       lastUpdateUser: owner._id,
     });
 
-    const responseHelpers: { response: Record<string, unknown> } = {
-      response: {},
-    };
-    addCustomFunctionToResponse(responseHelpers);
-
-    app = express();
-    app.use(express.json());
-    app.use((_req, res, next) => {
-      Object.assign(res, responseHelpers.response);
-      next();
-    });
-    app.use((req: AuthenticatedRequest, _res, next) => {
-      req.user = requester;
-      next();
-    });
-    app.use(
-      '/_api/v3/inline-comments',
-      createInlineCommentRouteHandlersFactory(crowi),
-    );
+    app = mountAppAs(requester);
   }, 120_000);
 
   afterAll(async () => {
@@ -131,7 +155,14 @@ describe('POST /_api/v3/inline-comments', () => {
       _id: { $in: [publicPage._id, forbiddenPage._id] },
     });
     await crowi.models.User.deleteMany({
-      username: { $in: [requesterUsername, ownerUsername, mentionedUsername] },
+      username: {
+        $in: [
+          requesterUsername,
+          ownerUsername,
+          mentionedUsername,
+          readOnlyUsername,
+        ],
+      },
     });
     await InAppNotification.deleteMany({ user: mentionedUser._id });
   });
@@ -194,6 +225,18 @@ describe('POST /_api/v3/inline-comments', () => {
       targetModel: SupportedTargetModel.MODEL_PAGE,
     });
     expect(notification).not.toBeNull();
+  });
+
+  it('returns 400 when a read-only user (not allowed to comment) attempts to create', async () => {
+    const readOnlyApp = mountAppAs(readOnlyUser);
+    const res = await request(readOnlyApp)
+      .post('/_api/v3/inline-comments')
+      .send(validBody());
+
+    expect(res.status).toBe(400);
+    expect(res.body.errors).toEqual([
+      expect.objectContaining({ code: 'validation_failed' }),
+    ]);
   });
 
   it('returns 400 when anchor.quote is empty (service precondition)', async () => {

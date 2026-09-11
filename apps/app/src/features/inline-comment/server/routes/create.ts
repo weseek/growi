@@ -8,6 +8,12 @@
  * `.claude/rules/activity-recording.md`); applying `addActivity` here would
  * register a failsafe finalizer that writes a spurious `ACTION_UNSETTLED` row
  * alongside the real one the service already wrote.
+ *
+ * `excludeReadOnlyUserIfCommentNotAllowed` is the same middleware normal
+ * comments use for `/comments.add`, and that `update.ts` already applies to
+ * inline comment edits, placed right after `loginRequired` — this makes the
+ * read-only-user restriction a server-side guarantee for creation too, not
+ * only a client-side affordance a direct API call could bypass.
  */
 
 import assert from 'node:assert';
@@ -21,6 +27,7 @@ import type { HydratedDocument } from 'mongoose';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
+import { excludeReadOnlyUserIfCommentNotAllowed } from '~/server/middlewares/exclude-read-only-user';
 import loginRequiredFactory from '~/server/middlewares/login-required';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import { findPageAndMetaDataByViewer } from '~/server/service/page/find-page-and-meta-data-by-viewer';
@@ -68,6 +75,7 @@ export const createInlineCommentRouteHandlersFactory = (
   return [
     accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequired,
+    excludeReadOnlyUserIfCommentNotAllowed,
     ...validator,
     apiV3FormValidator,
     async (req: Req, res: ApiV3Response) => {
