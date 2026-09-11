@@ -10,7 +10,7 @@ import { FormattedDistanceDate } from '../../FormattedDistanceDate';
 
 export type CommentCardProps = {
   /** The id an anchor link points at (the normal comment passes comment._id) */
-  id?: string;
+  id: string;
   /**
    * The author, forwarded as-is to UserPicture / Username (both already fall
    * back for a missing/unpopulated creator), so CommentCard never decides to

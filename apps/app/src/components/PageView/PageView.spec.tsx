@@ -211,6 +211,7 @@ vi.mock('~/states/page', () => ({
 }));
 vi.mock('~/stores/renderer', () => ({
   useViewOptions: vi.fn(() => ({ data: undefined })),
+  useCommentForCurrentPageOptions: vi.fn(() => ({ data: undefined })),
 }));
 vi.mock('~/services/layout/use-should-expand-content', () => ({
   useShouldExpandContent: vi.fn(() => false),

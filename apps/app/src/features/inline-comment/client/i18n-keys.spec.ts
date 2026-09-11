@@ -11,9 +11,8 @@ import * as path from 'node:path';
  * `label` (the "Inline Comment" type-label row) was removed once the
  * approved visual-refresh mockup showed no such row.
  *
- * Task 1.3 of inline-comment-interaction-ux (Requirements 2.3, 3.2) adds two
- * more keys ahead of the components that will consume them (tasks 3.2, 4.1):
- * the placeholder for the popover's simple reply textarea, and the toast
+ * Task 1.3 of inline-comment-interaction-ux (Requirements 2.3, 3.2) adds one
+ * more key ahead of the component that will consume it (task 4.1): the toast
  * shown when a list item's scroll-to-range fails because the comment's
  * anchor could not be re-resolved. The popover's submit button (task 3.2)
  * is left to follow the existing `page_comment.comment` submit-button
@@ -22,6 +21,16 @@ import * as path from 'node:path';
  * list-side "Reply..." toggle button per design.md 決定5. The popover's
  * close affordance reuses the existing top-level `Close` key. None of these
  * reused keys are duplicated here.
+ *
+ * `reply_placeholder` was added here ahead of the popover's reply textarea,
+ * back when Requirement 15.3 only called for "a simple input field" with no
+ * further UI spec. Requirement 17 (added later) replaced that simple input
+ * with the same mention-aware `MentionAwareCommentInput` component the
+ * normal comment reply uses (Req 17.2/17.4) — a CodeMirror editor with no
+ * placeholder prop, matching the normal comment reply UI, which also has no
+ * placeholder. No acceptance criterion calls for placeholder text, so the
+ * key was never wired up; removed as unused (caught by `lint:i18n`'s
+ * unused-key check).
  */
 
 const INLINE_COMMENT_KEYS = [
@@ -30,7 +39,6 @@ const INLINE_COMMENT_KEYS = [
   'unresolved',
   'resolve',
   'reopen',
-  'reply_placeholder',
   'range_not_found',
 ] as const;
 

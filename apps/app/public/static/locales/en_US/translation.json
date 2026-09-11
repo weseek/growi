@@ -425,7 +425,6 @@
     "unresolved": "Unresolved",
     "resolve": "Resolve",
     "reopen": "Reopen",
-    "reply_placeholder": "Write a reply...",
     "range_not_found": "The commented text could not be found on this page. It may have been edited or removed."
   },
   "page_api_error": {
