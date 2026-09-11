@@ -248,20 +248,72 @@ describe('InlineCommentPreviewPopover', () => {
     renderPopover({ comment: 'the comment body' });
 
     const popover = screen.getByTestId('inline-comment-preview-popover');
-    // Scoped to the origin comment's own header row (not the whole popover):
-    // the reply composer added in task 3 also renders a UserPicture, so an
-    // unscoped query here would still pass even if the origin comment's own
-    // avatar were missing (same scoping InlineCommentItem.spec.tsx uses).
-    const header = popover.querySelector('.d-flex.align-items-center');
-    expect(header).not.toBeNull();
+    // Scoped to the origin comment's own header row by test id, not by class:
+    // the reply composer also renders a UserPicture inside a
+    // `d-flex align-items-center` row, so a class-based query here would
+    // depend on document order rather than on the header actually being the
+    // element it found.
+    const header = screen.getByTestId('inline-comment-preview-popover-header');
+    expect(header.querySelector('[data-testid="user-picture"]')).not.toBeNull();
+    expect(header.querySelector('[data-testid="username"]')).not.toBeNull();
     expect(
-      header?.querySelector('[data-testid="user-picture"]'),
-    ).not.toBeNull();
-    expect(header?.querySelector('[data-testid="username"]')).not.toBeNull();
-    expect(
-      header?.querySelector('[data-testid="formatted-distance-date"]'),
+      header.querySelector('[data-testid="formatted-distance-date"]'),
     ).not.toBeNull();
     expect(popover).toHaveTextContent('the comment body');
+  });
+
+  // 2026-09-11 design change (design.md「Popover 再設計」): the origin comment
+  // is no longer rendered through `CommentCard`. The list item keeps reusing
+  // it; the popover builds its own header/body so the popover can carry the
+  // mockup's own surface treatment instead of the shared comment box
+  // (gray `bg-comment` fill, speech-bubble triangle, 6px corners).
+  it('renders the origin comment outside the shared CommentCard box (design.md「Popover 再設計」)', () => {
+    renderPopover();
+
+    const origin = screen.getByTestId('inline-comment-preview-popover-origin');
+    expect(origin.closest('.page-comment')).toBeNull();
+    expect(origin.querySelector('.page-comment-main')).toBeNull();
+    expect(origin.querySelector('.bg-comment')).toBeNull();
+
+    // The body keeps an identity of its own now that `.page-comment-body`
+    // (CommentCard's) belongs to the replies only.
+    const body = screen.getByTestId('inline-comment-preview-popover-body');
+    expect(origin).toContainElement(body);
+    expect(body).toHaveTextContent('the comment body');
+    expect(body.classList.contains('page-comment-body')).toBe(false);
+  });
+
+  it('keeps rendering replies through the shared CommentCard box (design.md「Popover 再設計」: replies unchanged)', () => {
+    renderPopover({
+      replies: [
+        {
+          id: 'reply1',
+          pageId: 'page1',
+          creatorId: 'user2',
+          creator: null,
+          comment: 'an existing reply',
+          replyToId: 'comment1',
+          createdAt: new Date('2026-01-02T00:00:00.000Z'),
+          updatedAt: new Date('2026-01-02T00:00:00.000Z'),
+        },
+      ],
+    });
+
+    const reply = screen.getByTestId('inline-comment-preview-popover-reply');
+    expect(
+      reply.querySelector('.page-comment .page-comment-main.bg-comment'),
+    ).not.toBeNull();
+  });
+
+  it('gives the popover itself the mockup card treatment with semantic utility classes only (Req 2.1, 3.1)', () => {
+    renderPopover();
+
+    const popover = screen.getByTestId('inline-comment-preview-popover');
+    // `card` supplies the surface background and the 1px border; the radius
+    // and the diffuse drop shadow are the mockup's own `--radius-lg` /
+    // `--shadow` approximated by Bootstrap's own scale (Requirement 3.1: no
+    // hardcoded hex, no bespoke shadow).
+    expect(popover).toHaveClass('card', 'rounded-4', 'shadow');
   });
 
   it('shows the existing replies (Req 2.1)', () => {
@@ -607,8 +659,14 @@ describe('InlineCommentPreviewPopover', () => {
     const headerEnd = closeButton.closest('.ms-auto');
     expect(headerEnd).not.toBeNull();
     expect(headerEnd?.lastElementChild).toBe(closeButton);
-    // The header row the slot sits in is the comment card's own header.
-    expect(headerEnd?.closest('.page-comment-main')).not.toBeNull();
+    // The row the controls sit in is the origin comment's own header row.
+    // (Before the 2026-09-11 redesign this was `CommentCard`'s
+    // `.page-comment-main` header; the popover now builds its own.)
+    expect(
+      headerEnd?.closest(
+        '[data-testid="inline-comment-preview-popover-header"]',
+      ),
+    ).not.toBeNull();
   });
 
   it('has no delete action anywhere in the rendered output (Boundary Context: delete is list-only)', () => {
@@ -623,15 +681,16 @@ describe('InlineCommentPreviewPopover', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders the resolved/unresolved status badge with the same class composition as the list item (Req 1.7, 2.3)', () => {
+  // 2026-09-11 design change (design.md「Popover 再設計」・不解決バッジの撤去):
+  // the status badge is gone from the popover in both states -- the resolve
+  // toggle alone carries the state, since its own label already says which
+  // way the state will go. The list item keeps its badge.
+  it('shows no status badge in either state (design.md「Popover 再設計」)', () => {
     const { rerender } = renderPopover({ resolvedAt: null });
 
-    const unresolvedBadge = screen.getByTestId('inline-comment-status');
-    expect(unresolvedBadge).toHaveClass('badge', 'rounded-pill');
-    expect(unresolvedBadge).toHaveClass(
-      'bg-warning-subtle',
-      'text-warning-emphasis',
-    );
+    expect(
+      screen.queryByTestId('inline-comment-status'),
+    ).not.toBeInTheDocument();
 
     rerender(
       <InlineCommentPreviewPopover
@@ -648,12 +707,13 @@ describe('InlineCommentPreviewPopover', () => {
       />,
     );
 
-    const resolvedBadge = screen.getByTestId('inline-comment-status');
-    expect(resolvedBadge).toHaveClass('badge', 'rounded-pill');
-    expect(resolvedBadge).toHaveClass(
-      'bg-success-subtle',
-      'text-success-emphasis',
-    );
+    expect(
+      screen.queryByTestId('inline-comment-status'),
+    ).not.toBeInTheDocument();
+    // The state is still reachable: the toggle's own label switches.
+    expect(
+      screen.getByRole('button', { name: 'inline_comment.reopen' }),
+    ).toBeInTheDocument();
   });
 
   it('gives the resolve-toggle button the same rounded-pill class composition as the list item (Req 2.3)', () => {

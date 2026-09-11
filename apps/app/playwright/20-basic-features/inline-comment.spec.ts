@@ -4311,17 +4311,25 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
     popover: '',
     cardBody: ':scope > .card-body',
     closeButton: '.btn-close',
-    card: '.page-comment > .page-comment-main',
-    headerRow: '.page-comment > .page-comment-main > .d-flex',
-    avatar: '.page-comment > .page-comment-main .user-picture',
-    username: '.page-comment > .page-comment-main > .d-flex > .small',
-    createdAt: '.page-comment-revision',
-    headerEnd: '.page-comment > .page-comment-main > .d-flex > .ms-auto',
+    // The origin comment is the popover's own markup, not a `CommentCard`
+    // (design.md「Popover 再設計」), so these target its own test ids. The
+    // `.page-comment*` selectors they replace now resolve to the first reply
+    // instead -- which still reads as a hit, and would have reported a
+    // reply's measurements as the origin comment's.
+    origin: '[data-testid="inline-comment-preview-popover-origin"]',
+    headerRow: '[data-testid="inline-comment-preview-popover-header"]',
+    avatar:
+      '[data-testid="inline-comment-preview-popover-header"] .user-picture',
+    username:
+      '[data-testid="inline-comment-preview-popover-header"] > .fw-semibold',
+    createdAt:
+      '[data-testid="inline-comment-preview-popover-header"] > .text-body-secondary',
+    headerEnd:
+      '[data-testid="inline-comment-preview-popover-header"] > .ms-auto',
     editButton: '[data-testid="inline-comment-preview-popover-edit-button"]',
-    statusBadge: '[data-testid="inline-comment-status"]',
     resolveToggle: '.ms-auto > button.btn-outline-secondary',
     quote: '[data-testid="inline-comment-preview-popover-quote"]',
-    body: '.page-comment-body',
+    body: '[data-testid="inline-comment-preview-popover-body"]',
     firstDivider: 'hr',
     replies: '[data-testid="inline-comment-preview-popover-replies"]',
     firstReply: '[data-testid="inline-comment-preview-popover-reply"]',

@@ -10,6 +10,13 @@
  * bottom-of-page comment list uses — only the surrounding composer layout
  * borrows that visual language.
  *
+ * The origin comment's header and body are this popover's own markup, not the
+ * shared `CommentCard`: the mockup draws the origin comment flat on the
+ * popover's surface, while `CommentCard` brings the shared comment box (a
+ * gray fill, a speech-bubble triangle, its own small avatar). The replies
+ * below still use `CommentCard` — a reply *is* a small boxed comment in the
+ * mockup too. See design.md「Popover 再設計」.
+ *
  * Editing the origin comment is shown only to its own creator, gated by the
  * same read-only-user restriction `InlineCommentItem.tsx` applies. There is
  * no delete action here (list-only), and this popover never shows a reply,
@@ -21,9 +28,11 @@ import type { VirtualElement } from '@popperjs/core';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
+import FormattedDistanceDate from '~/client/components/FormattedDistanceDate';
 import { NotAvailableIfReadOnlyUserNotAllowedToComment } from '~/client/components/NotAvailableForReadOnlyUser';
 import { CommentCard } from '~/client/components/PageComment/CommentCard';
 import RevisionRenderer from '~/components/PageView/RevisionRenderer';
+import { Username } from '~/components/User/Username';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useCurrentUser } from '~/states/global';
 
@@ -201,15 +210,46 @@ export const InlineCommentPreviewPopover: FC<
       ref={setPopperElement}
       data-testid="inline-comment-preview-popover"
       style={{ zIndex: 1070 }}
-      className={`card shadow-sm ${styles['inline-comment-preview-popover-styles']}`}
+      // `card` gives the mockup's own surface color and 1px border; the
+      // corner radius and the diffuse drop shadow are its `--radius-lg`
+      // (14px -> Bootstrap's 1rem `rounded-4`, the nearest step) and
+      // `--shadow`, taken from Bootstrap's own scale rather than written as
+      // hex/bespoke values (Requirement 3.1). The card treatment lives here,
+      // on the popover itself, because the mockup puts the origin comment
+      // flat on this surface instead of in a box of its own.
+      className={`card rounded-4 shadow ${styles['inline-comment-preview-popover-styles']}`}
       onMouseEnter={onPointerEnter}
     >
       <div className="card-body">
-        <CommentCard
-          id={comment.id}
-          creator={comment.creator}
-          createdAt={comment.createdAt}
-          headerEnd={
+        <div data-testid="inline-comment-preview-popover-origin">
+          {/* The origin comment's own header row: avatar, author, posted
+              date, then the controls pushed to the right edge. Built here
+              rather than taken from `CommentCard` so the row can carry the
+              mockup's own sizes (a 30px avatar) on the popover's own
+              surface. */}
+          <div
+            data-testid="inline-comment-preview-popover-header"
+            className="d-flex align-items-center gap-2"
+          >
+            <span
+              className={
+                styles['inline-comment-preview-popover-author-picture']
+              }
+            >
+              <UserPicture user={comment.creator} />
+            </span>
+            <span className="small fw-semibold">
+              {/* `Username`'s prop type excludes null but treats
+                  null/undefined/unpopulated alike at runtime, so the same
+                  normalization `CommentCard` does applies here. */}
+              <Username user={comment.creator ?? undefined} />
+            </span>
+            <span className="small text-body-secondary">
+              {/* Plain muted text, not `CommentCard`'s anchor link to
+                  `#{id}`: an inline comment has no element with that id to
+                  jump to, and the mockup draws the timestamp as text. */}
+              <FormattedDistanceDate id={comment.id} date={comment.createdAt} />
+            </span>
             <span className="ms-auto d-flex align-items-center gap-2">
               {isOwnComment && !isEditing && (
                 <NotAvailableIfReadOnlyUserNotAllowedToComment>
@@ -230,18 +270,10 @@ export const InlineCommentPreviewPopover: FC<
                   </button>
                 </NotAvailableIfReadOnlyUserNotAllowedToComment>
               )}
-              <span
-                data-testid="inline-comment-status"
-                className={`badge rounded-pill ${styles['inline-comment-preview-popover-status-badge']} ${
-                  isResolved
-                    ? 'bg-success-subtle text-success-emphasis'
-                    : 'bg-warning-subtle text-warning-emphasis'
-                }`}
-              >
-                {isResolved
-                  ? t('inline_comment.resolved')
-                  : t('inline_comment.unresolved')}
-              </span>
+              {/* No status badge here (design.md「Popover 再設計」): the
+                  toggle's own label already says which way the state will
+                  go, and the badge repeated that in the popover's tight
+                  header row. The list item keeps its badge. */}
               <button
                 type="button"
                 className="btn btn-sm btn-outline-secondary rounded-pill"
@@ -264,37 +296,16 @@ export const InlineCommentPreviewPopover: FC<
                 onClick={onClose}
               />
             </span>
-          }
-          beforeBody={
-            // Same left-accent idiom as InlineCommentItem.tsx's quote, but not a click target.
-            <blockquote
-              data-testid="inline-comment-preview-popover-quote"
-              className={`inline-comment-quote bg-body-tertiary rounded-end small text-body-secondary my-2 p-2 ${styles['inline-comment-preview-popover-quote-clamp']}`}
-            >
-              {comment.anchor.quote}
-            </blockquote>
-          }
-          footer={
-            <>
-              {resolveError != null && (
-                <span
-                  className="text-danger d-block"
-                  data-testid="inline-comment-resolve-error"
-                >
-                  {resolveError}
-                </span>
-              )}
-              {editError != null && (
-                <span
-                  className="text-danger d-block"
-                  data-testid="inline-comment-preview-popover-edit-error"
-                >
-                  {editError}
-                </span>
-              )}
-            </>
-          }
-        >
+          </div>
+
+          {/* Same left-accent idiom as InlineCommentItem.tsx's quote, but not a click target. */}
+          <blockquote
+            data-testid="inline-comment-preview-popover-quote"
+            className={`inline-comment-quote bg-body-tertiary rounded-end small text-body-secondary my-2 p-2 ${styles['inline-comment-preview-popover-quote-clamp']}`}
+          >
+            {comment.anchor.quote}
+          </blockquote>
+
           {isEditing ? (
             // Accent-colored border marks the edit-mode input, echoing the
             // primary-accent color already used by the submit/send buttons
@@ -340,15 +351,41 @@ export const InlineCommentPreviewPopover: FC<
                 </button>
               </div>
             </div>
-          ) : rendererOptions != null ? (
-            <RevisionRenderer
-              rendererOptions={rendererOptions}
-              markdown={comment.comment}
-            />
           ) : (
-            <span>{comment.comment}</span>
+            // A named wrapper, where `CommentCard` used to supply
+            // `.page-comment-body`: the replies below still carry that class,
+            // so the origin body needs an identity of its own for tests and
+            // for the mockup cross-check's measurements to tell the two
+            // apart.
+            <div data-testid="inline-comment-preview-popover-body">
+              {rendererOptions != null ? (
+                <RevisionRenderer
+                  rendererOptions={rendererOptions}
+                  markdown={comment.comment}
+                />
+              ) : (
+                <span>{comment.comment}</span>
+              )}
+            </div>
           )}
-        </CommentCard>
+
+          {resolveError != null && (
+            <span
+              className="text-danger d-block"
+              data-testid="inline-comment-resolve-error"
+            >
+              {resolveError}
+            </span>
+          )}
+          {editError != null && (
+            <span
+              className="text-danger d-block"
+              data-testid="inline-comment-preview-popover-edit-error"
+            >
+              {editError}
+            </span>
+          )}
+        </div>
 
         {/* Edit mode replaces everything below the quote -- the body, the
             reply thread and the reply form alike -- so the editor is the

@@ -17,11 +17,15 @@
   // changing width as the user worked in it.
   //
   // 36rem, not the mockup's own 340px: the header row has to hold an avatar,
-  // a username, a relative timestamp, the edit icon, the status pill, the
-  // resolve toggle and the close button, and at GROWI's 16px base font that
-  // content measures ~470px. Below ~34rem the row silently overflows and
-  // clips the resolve toggle and the close button (measured — 26rem was
-  // tried first and did exactly that). See the checklist's item 16 verdict.
+  // a username, a relative timestamp, the edit icon, the resolve toggle and
+  // the close button, and at GROWI's 16px base font that content measures
+  // ~470px. Below ~34rem the row silently overflows and clips the resolve
+  // toggle and the close button (measured — 26rem was tried first and did
+  // exactly that). See the checklist's item 16 verdict.
+  //
+  // Those ~470px were measured while the row still carried a status pill,
+  // which the 2026-09-11 redesign removed. The width stays at the
+  // user-approved 576px (checklist item 16) rather than being re-derived.
   //
   // `max-width` keeps it inside a phone-width viewport, where a fixed 36rem
   // would otherwise overflow. Neither is expressible as a Bootstrap utility:
@@ -36,9 +40,24 @@
   // `UserPicture`'s larger default and was the single odd size on screen.
   :global(.user-picture) { @extend %user-picture; }
 
+  // These apply to the replies only: the origin comment stopped going
+  // through `CommentCard` in the 2026-09-11 redesign, while each reply is
+  // still a `CommentCard`. Removing them would strip the replies of the
+  // shared comment box they are meant to keep.
   :global(.page-comment) {
     :global(.bg-comment) { @extend %bg-comment; }
     :global(.page-comment-main) { @extend %comment-section; }
+  }
+
+  // The origin comment's avatar, at the mockup's 30px. `UserPicture`'s own
+  // size scale has no 30px step (lg 48 / md 24 / sm 18 / xs 14), so the size
+  // is set from here; nested inside this block so it outranks the
+  // `%user-picture` extend above on specificity rather than on source order.
+  .inline-comment-preview-popover-author-picture {
+    :global(.user-picture) {
+      width: 30px;
+      height: 30px;
+    }
   }
 
   // Same left-border accent as InlineCommentItem.module.scss's own
@@ -49,10 +68,6 @@
   }
 }
 
-// Status-dot decoration for the resolved/unresolved badge, mirroring
-// InlineCommentItem.module.scss's `.inline-comment-status-badge`. Kept as a
-// ::before pseudo-element (not an inline style) so the dot's color follows
-// the badge's own text color via `currentColor`.
 // The reply form's send button. A circle needs an explicit, equal width and
 // height (`rounded-circle` alone only rounds whatever box the button already
 // has), and the pair is not expressible as Bootstrap utilities -- this
@@ -80,23 +95,6 @@
 
   :global(.material-symbols-outlined) {
     font-size: 1rem;
-  }
-}
-
-.inline-comment-preview-popover-status-badge {
-  // Matches InlineCommentItem.module.scss: the mockup draws the status pill
-  // and the resolve toggle at nearly the same height, and Bootstrap's
-  // default badge padding leaves the badge visibly the shorter of the two.
-  --bs-badge-padding-y: 0.5rem;
-
-  &::before {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    margin-right: 0.25rem;
-    content: '';
-    background-color: currentColor;
-    border-radius: 50%;
   }
 }
 
