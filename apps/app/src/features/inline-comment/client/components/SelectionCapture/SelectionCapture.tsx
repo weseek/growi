@@ -8,6 +8,8 @@
 import type { JSX, RefObject } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
+import { NotAvailableIfReadOnlyUserNotAllowedToComment } from '~/client/components/NotAvailableForReadOnlyUser';
+
 import { InlineCommentForm } from '../InlineCommentForm/InlineCommentForm';
 import { PendingSelectionHighlight } from '../PendingSelectionHighlight/PendingSelectionHighlight';
 import { SelectionPopover } from '../SelectionPopover/SelectionPopover';
@@ -120,7 +122,9 @@ export const SelectionCapture = (
               below, where the user must be able to put the caret into the textarea. */}
           {/* biome-ignore lint/a11y/noStaticElementInteractions: not an interactive element itself — it only suppresses mousedown's selection-collapsing default for the button it wraps */}
           <div onMouseDown={(event) => event.preventDefault()}>
-            <SelectionActionButton onCommit={commit} />
+            <NotAvailableIfReadOnlyUserNotAllowedToComment>
+              <SelectionActionButton onCommit={commit} />
+            </NotAvailableIfReadOnlyUserNotAllowedToComment>
           </div>
         </SelectionPopover>
       </>

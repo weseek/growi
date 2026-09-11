@@ -6,6 +6,26 @@ import { mock } from 'vitest-mock-extended';
 import { SelectionCapture } from './SelectionCapture';
 import type { CapturedSelection } from './use-text-selection';
 
+// Same mocking pattern already used by InlineCommentPopoverEntry.spec.tsx /
+// InlineCommentItem.spec.tsx for this exact guard (Requirement 2.1, 2.4).
+const isDisabledRef = vi.hoisted(() => ({ current: false }));
+vi.mock('~/client/components/NotAvailableForReadOnlyUser', () => ({
+  NotAvailableIfReadOnlyUserNotAllowedToComment: ({
+    children,
+  }: {
+    children: JSX.Element;
+  }) => {
+    if (!isDisabledRef.current) {
+      return children;
+    }
+    return (
+      <fieldset disabled data-testid="not-available-for-read-only-user">
+        {children}
+      </fieldset>
+    );
+  },
+}));
+
 const textSelectionStore = vi.hoisted(() => ({
   captured: null as CapturedSelection | null,
 }));
@@ -178,6 +198,7 @@ describe('SelectionCapture', () => {
     removeAllRanges.mockClear();
     setLiveSelection(null);
     pendingHighlightCalls.length = 0;
+    isDisabledRef.current = false;
   });
 
   afterEach(() => {
@@ -428,5 +449,39 @@ describe('SelectionCapture', () => {
     expect(
       screen.queryByTestId('pending-selection-highlight'),
     ).not.toBeInTheDocument();
+  });
+
+  // Requirement 2.1: while a read-only user is not allowed to comment, the
+  // create-trigger button is disabled via the same guard already used for
+  // the edit/delete actions elsewhere in this feature.
+  it('disables the action button when the read-only user is not allowed to comment', () => {
+    isDisabledRef.current = true;
+    const { live } = buildLiveRange();
+    setLiveSelection(live);
+    textSelectionStore.captured = ANCHOR;
+
+    renderCapture();
+
+    expect(
+      screen.getByTestId('not-available-for-read-only-user'),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('selection-action-button')).toBeInTheDocument();
+  });
+
+  // Requirement 2.4: an allowed read-only (or normal) user keeps the usual,
+  // unguarded button — covered implicitly by every other test above (they
+  // never set `isDisabledRef.current`), asserted explicitly here too.
+  it('does not disable the action button when the read-only user is allowed to comment', () => {
+    isDisabledRef.current = false;
+    const { live } = buildLiveRange();
+    setLiveSelection(live);
+    textSelectionStore.captured = ANCHOR;
+
+    renderCapture();
+
+    expect(
+      screen.queryByTestId('not-available-for-read-only-user'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('selection-action-button')).toBeInTheDocument();
   });
 });
