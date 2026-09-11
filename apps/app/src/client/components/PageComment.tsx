@@ -23,7 +23,6 @@ import { NotAvailableForGuest } from './NotAvailableForGuest';
 import { NotAvailableIfReadOnlyUserNotAllowedToComment } from './NotAvailableForReadOnlyUser';
 import { Comment } from './PageComment/Comment';
 import { CommentEditor } from './PageComment/CommentEditor';
-import { DeleteCommentModalLazyLoaded } from './PageComment/DeleteCommentModal';
 import { ReplyComments } from './PageComment/ReplyComments';
 
 import styles from './PageComment.module.scss';
@@ -98,13 +97,7 @@ export const PageComment: FC<PageCommentProps> = memo(
     const { data: rendererOptionsForCurrentPage } =
       useCommentForCurrentPageOptions();
 
-    const [commentToBeDeleted, setCommentToBeDeleted] =
-      useState<ICommentHasId | null>(null);
-    const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] =
-      useState<boolean>(false);
     const [showEditorIds, setShowEditorIds] = useState<Set<string>>(new Set());
-    const [errorMessageOnDelete, setErrorMessageOnDelete] =
-      useState<string>('');
     const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(pageId);
 
     const { t } = useTranslation('');
@@ -152,37 +145,29 @@ export const PageComment: FC<PageCommentProps> = memo(
       });
     }
 
-    const onClickDeleteButton = useCallback((comment: ICommentHasId) => {
-      setCommentToBeDeleted(comment);
-      setIsDeleteConfirmModalShown(true);
-    }, []);
-
-    const onCancelDeleteComment = useCallback(() => {
-      setCommentToBeDeleted(null);
-      setIsDeleteConfirmModalShown(false);
-    }, []);
-
-    const onDeleteCommentAfterOperation = useCallback(() => {
-      onCancelDeleteComment();
-      mutate();
-      mutatePageInfo();
-    }, [mutate, onCancelDeleteComment, mutatePageInfo]);
-
-    const onDeleteComment = useCallback(async () => {
-      if (commentToBeDeleted == null) return;
-      try {
-        await apiPost('/comments.remove', {
-          comment_id: commentToBeDeleted._id,
-        });
-        onDeleteCommentAfterOperation();
-      } catch (error: unknown) {
-        const message =
-          error instanceof Error ? error.message : (error as any).toString();
-
-        setErrorMessageOnDelete(message);
-        toastError(message);
-      }
-    }, [commentToBeDeleted, onDeleteCommentAfterOperation]);
+    /**
+     * Deletes one comment. Each list item asks for the confirmation itself
+     * and calls this once the reader confirms, so there is no page-level
+     * "which comment is being deleted" state any more (design.md:
+     * 削除確認UIの共通化). The failure is reported twice on purpose: the toast
+     * is the page-level notification, and the rethrow lets the item that
+     * asked show the reason next to the comment it applies to.
+     */
+    const onDeleteConfirmed = useCallback(
+      async (comment: ICommentHasId): Promise<void> => {
+        try {
+          await apiPost('/comments.remove', { comment_id: comment._id });
+          mutate();
+          mutatePageInfo();
+        } catch (error: unknown) {
+          const message =
+            error instanceof Error ? error.message : (error as any).toString();
+          toastError(message);
+          throw error;
+        }
+      },
+      [mutate, mutatePageInfo],
+    );
 
     const removeShowEditorId = useCallback((commentId: string) => {
       setShowEditorIds((previousState) => {
@@ -230,7 +215,7 @@ export const PageComment: FC<PageCommentProps> = memo(
         isReadOnly={isReadOnly}
         pageId={pageId}
         pagePath={pagePath}
-        deleteBtnClicked={onClickDeleteButton}
+        onDeleteConfirmed={onDeleteConfirmed}
         onComment={mutate}
       />
     );
@@ -245,7 +230,7 @@ export const PageComment: FC<PageCommentProps> = memo(
         replyList={replyComments}
         pageId={pageId}
         pagePath={pagePath}
-        deleteBtnClicked={onClickDeleteButton}
+        onDeleteConfirmed={onDeleteConfirmed}
         onComment={mutate}
       />
     );
@@ -352,16 +337,6 @@ export const PageComment: FC<PageCommentProps> = memo(
             })}
           </div>
         </div>
-
-        {!isReadOnly && (
-          <DeleteCommentModalLazyLoaded
-            isShown={isDeleteConfirmModalShown}
-            comment={commentToBeDeleted}
-            errorMessage={errorMessageOnDelete}
-            cancelToDelete={onCancelDeleteComment}
-            confirmToDelete={onDeleteComment}
-          />
-        )}
       </div>
     );
   },

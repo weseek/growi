@@ -14,14 +14,16 @@
  * only ever populated by `listByPageId()`, and the popover cannot rely on a
  * populated `creator` either). Gated by the same
  * `NotAvailableIfReadOnlyUserNotAllowedToComment` restriction
- * `CommentControl.tsx` applies to a normal comment. Deleting opens a small
- * inline confirmation, not `DeleteCommentModal`.
+ * `CommentControl.tsx` applies to a normal comment. Deleting opens the
+ * `DeleteConfirmAlert` shown in place, the same confirmation a normal
+ * comment uses.
  */
 import { type FC, type JSX, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { NotAvailableIfReadOnlyUserNotAllowedToComment } from '~/client/components/NotAvailableForReadOnlyUser';
 import { CommentCard } from '~/client/components/PageComment/CommentCard';
+import { DeleteConfirmAlert } from '~/client/components/PageComment/DeleteConfirmAlert';
 import RevisionRenderer from '~/components/PageView/RevisionRenderer';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useCurrentUser } from '~/states/global';
@@ -254,39 +256,11 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
               </span>
             )}
             {isDeleteConfirmOpen && (
-              <div
-                data-testid="inline-comment-delete-confirm"
-                role="alert"
-                /* The 3px danger left accent lives in the CSS module rather
-                   than in `border-start border-3` utilities: those set
-                   `border-left-color` to the neutral `--bs-border-color`
-                   with `!important`, which silently overrode the alert's own
-                   danger tone and rendered the accent grey. No utility can
-                   express "strong danger left border, alert's own subtle
-                   border elsewhere", so it is a CSS-Modules rule (Req 3.4). */
-                className={`alert alert-danger d-flex align-items-center gap-2 mb-0 mt-1 ${styles['delete-confirm-alert']}`}
-              >
-                <span className="material-symbols-outlined">warning</span>
-                <span>{t('page_comment.delete_comment')}</span>
-                <span className="ms-auto d-flex gap-2">
-                  <button
-                    type="button"
-                    data-testid="inline-comment-delete-cancel-button"
-                    className="btn btn-sm btn-outline-secondary"
-                    onClick={() => setIsDeleteConfirmOpen(false)}
-                  >
-                    {t('Cancel')}
-                  </button>
-                  <button
-                    type="button"
-                    data-testid="inline-comment-delete-confirm-button"
-                    className="btn btn-sm btn-danger"
-                    onClick={handleDeleteConfirm}
-                  >
-                    {t('Delete')}
-                  </button>
-                </span>
-              </div>
+              <DeleteConfirmAlert
+                testIdPrefix="inline-comment"
+                onCancel={() => setIsDeleteConfirmOpen(false)}
+                onConfirm={handleDeleteConfirm}
+              />
             )}
           </>
         }

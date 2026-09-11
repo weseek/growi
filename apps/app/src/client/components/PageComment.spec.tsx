@@ -21,6 +21,7 @@
 
 import type { ReactNode } from 'react';
 import { render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { InlineCommentWithReplies } from '../../features/inline-comment/interfaces';
@@ -37,15 +38,36 @@ const commentStore = vi.hoisted(() => ({
   data: undefined as unknown[] | undefined,
 }));
 
+/**
+ * The comment-list and page-info revalidations, plus the delete request
+ * itself: these are what `onDeleteConfirmed` — the callback that replaced the
+ * page-level delete modal — is responsible for.
+ */
+const mutateComments = vi.hoisted(() => vi.fn());
+const mutatePageInfo = vi.hoisted(() => vi.fn());
+const apiPostMock = vi.hoisted(() => vi.fn(async () => undefined));
+const toastErrorMock = vi.hoisted(() => vi.fn());
+/** Promises returned by `onDeleteConfirmed`, so a test can await/inspect them. */
+const deleteResults = vi.hoisted(() => [] as Promise<void>[]);
+
 vi.mock('./PageComment.module.scss', () => ({
   default: { 'page-comment-styles': 'page-comment-styles' },
 }));
 
 vi.mock('~/stores/comment', () => ({
-  useSWRxPageComment: () => ({ data: commentStore.data, mutate: vi.fn() }),
+  useSWRxPageComment: () => ({
+    data: commentStore.data,
+    mutate: mutateComments,
+  }),
 }));
 vi.mock('~/stores/page', () => ({
-  useSWRMUTxPageInfo: () => ({ trigger: vi.fn() }),
+  useSWRMUTxPageInfo: () => ({ trigger: mutatePageInfo }),
+}));
+vi.mock('~/client/util/apiv1-client', () => ({
+  apiPost: apiPostMock,
+}));
+vi.mock('~/client/util/toastr', () => ({
+  toastError: toastErrorMock,
 }));
 vi.mock('~/stores/renderer', () => ({
   useCommentForCurrentPageOptions: () => ({ data: undefined }),
@@ -57,9 +79,35 @@ vi.mock('@growi/ui/dist/components', () => ({
   UserPicture: () => <span data-testid="user-picture" />,
 }));
 
+/**
+ * The item is stubbed, but its stub exposes `onDeleteConfirmed` as a button:
+ * that callback is this component's own contract (it owns the delete request
+ * and the revalidations that follow), and the only way to exercise it is
+ * through the item it is handed to.
+ */
 vi.mock('./PageComment/Comment', () => ({
-  Comment: ({ comment }: { comment: ICommentHasId }) => (
-    <div data-testid="normal-comment" data-comment-id={comment._id} />
+  Comment: ({
+    comment,
+    onDeleteConfirmed,
+  }: {
+    comment: ICommentHasId;
+    onDeleteConfirmed: (comment: ICommentHasId) => Promise<void>;
+  }) => (
+    <div data-testid="normal-comment" data-comment-id={comment._id}>
+      <button
+        type="button"
+        data-testid={`confirm-delete-${comment._id}`}
+        onClick={() => {
+          const result = onDeleteConfirmed(comment);
+          deleteResults.push(result);
+          // A rejection is asserted through `deleteResults`; this only keeps
+          // Node from flagging it as unhandled in the meantime.
+          result.catch(() => undefined);
+        }}
+      >
+        delete
+      </button>
+    </div>
   ),
 }));
 vi.mock('./PageComment/ReplyComments', () => ({
@@ -72,9 +120,6 @@ vi.mock('./PageComment/ReplyComments', () => ({
 }));
 vi.mock('./PageComment/CommentEditor', () => ({
   CommentEditor: () => <div data-testid="comment-editor" />,
-}));
-vi.mock('./PageComment/DeleteCommentModal', () => ({
-  DeleteCommentModalLazyLoaded: () => null,
 }));
 vi.mock('./NotAvailableForGuest', () => ({
   NotAvailableForGuest: ({ children }: { children: ReactNode }) => (
@@ -290,5 +335,55 @@ describe('PageComment — one list holding both kinds of comment', () => {
     const { container } = renderPageComment([]);
 
     expect(container.querySelector('.page-comments-list')).toBeNull();
+  });
+});
+
+/**
+ * The delete request used to live behind a page-level modal whose open state
+ * this component owned; it is now a per-comment callback the item calls once
+ * its own inline confirmation is confirmed (design.md: 削除確認UIの共通化).
+ * What stays this component's own contract is the request itself and the two
+ * revalidations that must follow it.
+ */
+describe('PageComment — onDeleteConfirmed', () => {
+  beforeEach(() => {
+    commentStore.data = undefined;
+    deleteResults.length = 0;
+    apiPostMock.mockResolvedValue(undefined);
+  });
+
+  it('removes the confirmed comment and revalidates the list and the page info', async () => {
+    commentStore.data = [normalComment('normal-1', '2024-01-01T00:00:00.000Z')];
+
+    const { container } = renderPageComment();
+
+    await userEvent.click(
+      container.querySelector<HTMLElement>(
+        '[data-testid="confirm-delete-normal-1"]',
+      ) as HTMLElement,
+    );
+    await Promise.all(deleteResults);
+
+    expect(apiPostMock).toHaveBeenCalledWith('/comments.remove', {
+      comment_id: 'normal-1',
+    });
+    expect(mutateComments).toHaveBeenCalled();
+    expect(mutatePageInfo).toHaveBeenCalled();
+  });
+
+  it('surfaces a failed delete as a toast and rejects, so the item can report it in place', async () => {
+    commentStore.data = [normalComment('normal-1', '2024-01-01T00:00:00.000Z')];
+    apiPostMock.mockRejectedValue(new Error('deletion refused'));
+
+    const { container } = renderPageComment();
+
+    await userEvent.click(
+      container.querySelector<HTMLElement>(
+        '[data-testid="confirm-delete-normal-1"]',
+      ) as HTMLElement,
+    );
+
+    await expect(deleteResults[0]).rejects.toThrow('deletion refused');
+    expect(toastErrorMock).toHaveBeenCalledWith('deletion refused');
   });
 });

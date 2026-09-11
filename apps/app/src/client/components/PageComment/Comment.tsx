@@ -15,6 +15,7 @@ import type { ICommentHasId } from '../../../interfaces/comment';
 import { CommentCard } from './CommentCard';
 import { CommentControl } from './CommentControl';
 import { CommentEditor } from './CommentEditor';
+import { DeleteConfirmAlert } from './DeleteConfirmAlert';
 
 import styles from './Comment.module.scss';
 
@@ -27,7 +28,12 @@ type CommentProps = {
   isReadOnly: boolean;
   pageId: string;
   pagePath: string;
-  deleteBtnClicked: (comment: ICommentHasId) => void;
+  /**
+   * Deletes this comment, called once the reader has confirmed it in the
+   * inline confirmation below. The request and the list revalidation belong
+   * to the parent; a rejection is reported in place by this component.
+   */
+  onDeleteConfirmed: (comment: ICommentHasId) => Promise<void>;
   onComment: () => void;
 };
 
@@ -41,7 +47,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
     isReadOnly,
     pageId,
     pagePath,
-    deleteBtnClicked,
+    onDeleteConfirmed,
     onComment,
   } = props;
 
@@ -51,6 +57,8 @@ export const Comment = (props: CommentProps): JSX.Element => {
 
   const [markdown, setMarkdown] = useState('');
   const [isReEdit, setIsReEdit] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [deleteError, setDeleteError] = useState<string>();
 
   const commentId = comment._id;
   const creator = isPopulated(comment.creator) ? comment.creator : undefined;
@@ -118,8 +126,19 @@ export const Comment = (props: CommentProps): JSX.Element => {
     return modifiers.length > 0 ? modifiers.join(' ') : undefined;
   };
 
-  const deleteBtnClickedHandler = () => {
-    deleteBtnClicked(comment);
+  const handleDeleteConfirm = async (): Promise<void> => {
+    try {
+      await onDeleteConfirmed(comment);
+      setDeleteError(undefined);
+    } catch (err) {
+      setDeleteError(
+        err instanceof Error
+          ? err.message
+          : 'An unknown error occurred when deleting the comment',
+      );
+    } finally {
+      setIsDeleteConfirmOpen(false);
+    }
   };
 
   const commentBody = useMemo(() => {
@@ -199,10 +218,30 @@ export const Comment = (props: CommentProps): JSX.Element => {
                   </>
                 )}
               </div>
-              {isCurrentUserEqualsToAuthor() && !isReadOnly && (
-                <CommentControl
-                  onClickDeleteBtn={deleteBtnClickedHandler}
-                  onClickEditBtn={() => setIsReEdit(true)}
+              {deleteError != null && (
+                <span
+                  className="text-danger d-block"
+                  data-testid="comment-delete-error"
+                >
+                  {deleteError}
+                </span>
+              )}
+              {/* The controls step aside while the confirmation stands in
+                  their place, so the delete request cannot be started twice
+                  -- the same composition InlineCommentItem uses. */}
+              {isCurrentUserEqualsToAuthor() &&
+                !isReadOnly &&
+                !isDeleteConfirmOpen && (
+                  <CommentControl
+                    onClickDeleteBtn={() => setIsDeleteConfirmOpen(true)}
+                    onClickEditBtn={() => setIsReEdit(true)}
+                  />
+                )}
+              {isDeleteConfirmOpen && (
+                <DeleteConfirmAlert
+                  testIdPrefix="comment"
+                  onCancel={() => setIsDeleteConfirmOpen(false)}
+                  onConfirm={handleDeleteConfirm}
                 />
               )}
             </>

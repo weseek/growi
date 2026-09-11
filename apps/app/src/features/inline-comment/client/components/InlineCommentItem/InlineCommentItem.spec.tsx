@@ -41,13 +41,29 @@ vi.mock('./InlineCommentItem.module.scss', () => ({
     'inline-comment-status-badge': 'inline-comment-status-badge',
     'icon-button-container': 'icon-button-container',
     'icon-button': 'icon-button',
-    'delete-confirm-alert': 'delete-confirm-alert',
   },
 }));
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
+
+// The shared `DeleteConfirmAlert` translates through `next-i18next`, the form
+// its own directory (`client/components/PageComment/`) uses. Mocking it is not
+// only about the stubbed labels: loading the real `next-i18next` here drags
+// Next.js internals into this spec's module graph, which replaces DOM globals
+// and made an unrelated DOM-structure test below read `undefined` out of an
+// element's own `children`.
+vi.mock('next-i18next', () => ({
+  useTranslation: () => ({ t: (key: string) => key }),
+}));
+
+vi.mock(
+  '~/client/components/PageComment/DeleteConfirmAlert.module.scss',
+  () => ({
+    default: { 'delete-confirm-alert': 'delete-confirm-alert' },
+  }),
+);
 
 vi.mock('@growi/ui/dist/components', () => ({
   UserPicture: () => <span data-testid="user-picture" />,
