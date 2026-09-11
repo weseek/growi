@@ -1,6 +1,23 @@
 import assert from 'assert';
+import type { Element, Root } from 'hast';
+import { sanitize } from 'hast-util-sanitize';
 
 import { attributes, tagNames } from './recommended-whitelist';
+
+// Mirrors the schema shape `getCommonSanitizeOption` builds in renderer.tsx
+// ({ tagNames, attributes, clobberPrefix: '' }) so this test exercises the same
+// sanitize behavior a real page render goes through, not just the raw config shape.
+const sanitizeHtmlElement = (element: Element): Element => {
+  const tree: Root = { type: 'root', children: [element] };
+  // `sanitize` types its return as the broader `Nodes` union (it accepts any
+  // Node), but passing a `Root` in always yields a `Root` out.
+  const result = sanitize(tree, {
+    tagNames,
+    attributes,
+    clobberPrefix: '',
+  }) as Root;
+  return result.children[0] as Element;
+};
 
 describe('recommended-whitelist', () => {
   test('.tagNames should return iframe tag', () => {
@@ -79,6 +96,37 @@ describe('recommended-whitelist', () => {
       'className',
       'data-footnote-backref',
     ]);
+  });
+
+  // hast-util-sanitize's defaultSchema restricts h2's class/className to the
+  // single literal value 'sr-only' (defaultSchema.attributes.h2 === [['className', 'sr-only']]).
+  // Since hast-util-sanitize stops looking once it finds a tag-specific rule, this
+  // per-tag restriction shadows the common '*' rule that otherwise allows arbitrary
+  // class/className values, so any user-authored `<h2 class="...">` other than
+  // exactly "sr-only" gets stripped before it reaches the Header component.
+  //
+  // This asserts the observable sanitize behavior (the class survives an actual
+  // sanitize pass), not just the shape of the attributes config -- a config-shape
+  // assertion alone cannot tell an empty allow-list ("this tag allows nothing")
+  // from a missing key ("fall through to '*'"), and only one of those actually
+  // preserves the class.
+  test('sanitizing an h2 with a non-"sr-only" class should keep that class, not strip it', () => {
+    const sanitized = sanitizeHtmlElement({
+      type: 'element',
+      tagName: 'h2',
+      properties: {
+        className: ['h6', 'font-weight-bold', 'mb-3'],
+        style: 'color: #ff0000;',
+      },
+      children: [{ type: 'text', value: 'Heading' }],
+    });
+
+    expect(sanitized.properties.className).toEqual([
+      'h6',
+      'font-weight-bold',
+      'mb-3',
+    ]);
+    expect(sanitized.properties.style).toBe('color: #ff0000;');
   });
 
   // Tests for restored semantic HTML tags

@@ -37,6 +37,14 @@ relaxedSchemaAttributes.ul = excludeRestrictedClassAttributes(
 relaxedSchemaAttributes.li = excludeRestrictedClassAttributes(
   relaxedSchemaAttributes.li,
 );
+// hast-util-sanitize's defaultSchema restricts h2's class/className to the single
+// literal value 'sr-only' ([['className', 'sr-only']]). Since a tag-specific rule
+// shadows the common '*' rule (which otherwise allows arbitrary class/className
+// values), leaving this restriction in place strips any user-authored
+// `<h2 class="...">` other than exactly "sr-only" before it reaches the renderer.
+relaxedSchemaAttributes.h2 = excludeRestrictedClassAttributes(
+  relaxedSchemaAttributes.h2,
+);
 
 /**
  * reference: https://meta.stackexchange.com/questions/1777/what-html-tags-are-allowed-on-stack-exchange-sites,
