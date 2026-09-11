@@ -20,6 +20,7 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { mock } from 'vitest-mock-extended';
@@ -108,17 +109,23 @@ vi.mock('~/client/components/NotAvailableForReadOnlyUser', () => ({
 
 // MentionAwareCommentInput owns a real CodeMirror editor assembly -- mocked
 // at the component boundary exactly as InlineCommentItem.spec.tsx mocks it,
-// so this file can drive the edit form's onSubmit without instantiating
-// CodeMirror.
-const mentionAwareCommentInputProps = vi.hoisted(
-  () => ({ current: undefined }) as { current?: Record<string, unknown> },
+// so this file can drive an input's onSubmit without instantiating
+// CodeMirror. Since the origin edit form, a reply's edit form, and the reply
+// composer can all be mounted at once (2026-09-11 その4: the composer now
+// uses this same input, not a plain `<textarea>`), instances are keyed by
+// `editorKey` rather than kept in a single "last rendered" ref -- a single
+// ref would silently point at whichever instance happened to render last.
+const mentionAwareCommentInputInstances = vi.hoisted(
+  () => new Map<string, Record<string, unknown>>(),
 );
 /**
  * The input hands `{ canSubmit, submit, insertMention }` outward through
- * `onControlsChange` and the caller renders the Save button, so the mock has
- * to reproduce that handshake (from an effect, never during render — calling
- * the parent's setter mid-render is what would loop). `canSubmit` is
- * settable per test.
+ * `onControlsChange` and the caller renders the Save/Send button, so the
+ * mock has to reproduce that handshake (from an effect, never during render
+ * — calling the parent's setter mid-render is what would loop). Shared
+ * across every instance: no test in this file exercises two of the input's
+ * own controls at once, so one settable `canSubmit` plus one pair of spies
+ * is enough to tell "which button was clicked" apart.
  */
 const commentInputControls = vi.hoisted(() => ({
   canSubmit: true,
@@ -127,7 +134,8 @@ const commentInputControls = vi.hoisted(() => ({
 }));
 vi.mock('../MentionAwareCommentInput/MentionAwareCommentInput', () => ({
   MentionAwareCommentInput: (props: Record<string, unknown>) => {
-    mentionAwareCommentInputProps.current = props;
+    const editorKey = props.editorKey as string;
+    mentionAwareCommentInputInstances.set(editorKey, props);
     const onControlsChange = props.onControlsChange as
       | ((controls: unknown) => void)
       | undefined;
@@ -138,7 +146,12 @@ vi.mock('../MentionAwareCommentInput/MentionAwareCommentInput', () => ({
         insertMention: commentInputControls.insertMention,
       });
     }, [onControlsChange]);
-    return <div data-testid="mention-aware-comment-input-mock" />;
+    return (
+      <div
+        data-testid="mention-aware-comment-input-mock"
+        data-editor-key={editorKey}
+      />
+    );
   },
 }));
 
@@ -259,7 +272,7 @@ describe('InlineCommentPreviewPopover', () => {
   beforeEach(() => {
     mockCreatePopper.mockClear();
     currentUserRef.current = undefined;
-    mentionAwareCommentInputProps.current = undefined;
+    mentionAwareCommentInputInstances.clear();
     isDisabledRef.current = false;
     commentInputControls.canSubmit = true;
     commentInputControls.submit.mockReset();
@@ -386,69 +399,47 @@ describe('InlineCommentPreviewPopover', () => {
     ).toHaveLength(2);
   });
 
-  it('submits the typed text through createReply with the comment id (Req 2.3)', async () => {
+  // 2026-09-11 その4: the reply composer is `MentionAwareCommentInput`, same
+  // as every other comment input in this feature -- draft text, the empty/
+  // whitespace-only submit guard, clearing on success, and error display on
+  // rejection are all that component's own contract (covered by
+  // MentionAwareCommentInput.spec.tsx). This file's own contract is only the
+  // wiring: which id the popover passes to `createReply`, and that the send
+  // button reflects the input's own `canSubmit`.
+  it('wires the reply composer submit to createReply with the comment id (Req 2.3)', async () => {
     const createReply = vi.fn().mockResolvedValue(undefined);
     renderPopover({ id: 'comment42' }, { createReply });
 
-    await userEvent.type(
-      screen.getByPlaceholderText('inline_comment.reply_placeholder'),
-      'a quick reply',
+    const composerInput = mentionAwareCommentInputInstances.get(
+      'inline_comment_preview_popover_new_reply_comment42',
     );
-    await userEvent.click(
-      screen.getByRole('button', { name: 'page_comment.comment' }),
-    );
+
+    await act(async () => {
+      await (composerInput?.onSubmit as (text: string) => Promise<unknown>)(
+        'a quick reply',
+      );
+    });
 
     expect(createReply).toHaveBeenCalledWith('comment42', 'a quick reply');
   });
 
-  it('does not submit an empty or whitespace-only reply (Req 2.3)', async () => {
-    const createReply = vi.fn();
-    renderPopover({}, { createReply });
-
-    await userEvent.type(
-      screen.getByPlaceholderText('inline_comment.reply_placeholder'),
-      '   ',
-    );
+  it('disables the send button while the reply composer reports it cannot submit (Req 2.3)', () => {
+    commentInputControls.canSubmit = false;
+    renderPopover();
 
     expect(
       screen.getByRole('button', { name: 'page_comment.comment' }),
     ).toBeDisabled();
-    expect(createReply).not.toHaveBeenCalled();
   });
 
-  it('clears the draft after a successful submission', async () => {
-    const createReply = vi.fn().mockResolvedValue(undefined);
-    renderPopover({}, { createReply });
+  it('invokes the composer submit control when the send button is clicked (Req 15.3)', async () => {
+    renderPopover();
 
-    const textarea = screen.getByPlaceholderText(
-      'inline_comment.reply_placeholder',
-    );
-    await userEvent.type(textarea, 'a reply');
     await userEvent.click(
       screen.getByRole('button', { name: 'page_comment.comment' }),
     );
 
-    await waitFor(() => expect(textarea).toHaveValue(''));
-  });
-
-  it('surfaces an error and keeps the draft when createReply rejects', async () => {
-    const createReply = vi.fn().mockRejectedValue(new Error('network down'));
-    renderPopover({}, { createReply });
-
-    const textarea = screen.getByPlaceholderText(
-      'inline_comment.reply_placeholder',
-    );
-    await userEvent.type(textarea, 'a reply');
-    await userEvent.click(
-      screen.getByRole('button', { name: 'page_comment.comment' }),
-    );
-
-    await waitFor(() => {
-      expect(
-        screen.getByTestId('inline-comment-preview-popover-reply-error'),
-      ).toHaveTextContent('network down');
-    });
-    expect(textarea).toHaveValue('a reply');
+    expect(commentInputControls.submit).toHaveBeenCalledTimes(1);
   });
 
   it("hides the edit affordance when the current user is not the comment's own creator", () => {
@@ -491,16 +482,17 @@ describe('InlineCommentPreviewPopover', () => {
       screen.getByTestId('inline-comment-preview-popover-edit-button'),
     );
 
+    const originEditorKey = 'inline_comment_preview_popover_edit_comment42';
     expect(
-      screen.getByTestId('mention-aware-comment-input-mock'),
-    ).toBeInTheDocument();
-    expect(mentionAwareCommentInputProps.current?.initialValue).toBe(
-      'the comment body',
-    );
+      mentionAwareCommentInputInstances.get(originEditorKey),
+    ).toBeDefined();
+    expect(
+      mentionAwareCommentInputInstances.get(originEditorKey)?.initialValue,
+    ).toBe('the comment body');
 
     await act(async () => {
       await (
-        mentionAwareCommentInputProps.current?.onSubmit as (
+        mentionAwareCommentInputInstances.get(originEditorKey)?.onSubmit as (
           text: string,
         ) => Promise<unknown>
       )('the edited comment body');
@@ -509,7 +501,7 @@ describe('InlineCommentPreviewPopover', () => {
     expect(update).toHaveBeenCalledWith('comment42', 'the edited comment body');
     await waitFor(() => {
       expect(
-        screen.queryByTestId('mention-aware-comment-input-mock'),
+        screen.queryByTestId('inline-comment-preview-popover-edit-form'),
       ).not.toBeInTheDocument();
     });
   });
@@ -571,7 +563,12 @@ describe('InlineCommentPreviewPopover', () => {
       cancelButton.compareDocumentPosition(saveButton) &
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
-    const input = screen.getByTestId('mention-aware-comment-input-mock');
+    const editForm = screen.getByTestId(
+      'inline-comment-preview-popover-edit-form',
+    );
+    const input = within(editForm).getByTestId(
+      'mention-aware-comment-input-mock',
+    );
     expect(
       input.compareDocumentPosition(actionsRow as Node) &
         Node.DOCUMENT_POSITION_FOLLOWING,
@@ -587,7 +584,10 @@ describe('InlineCommentPreviewPopover', () => {
       screen.getByTestId('inline-comment-preview-popover-edit-button'),
     );
 
-    const picker = screen.getByTestId('mention-picker-button-mock');
+    const editForm = screen.getByTestId(
+      'inline-comment-preview-popover-edit-form',
+    );
+    const picker = within(editForm).getByTestId('mention-picker-button-mock');
     const cancelButton = screen.getByTestId(
       'inline-comment-preview-popover-edit-cancel-button',
     );
@@ -658,8 +658,8 @@ describe('InlineCommentPreviewPopover', () => {
       screen.getByTestId('inline-comment-preview-popover-reply'),
     ).toHaveTextContent('a reply');
     expect(
-      screen.getByPlaceholderText('inline_comment.reply_placeholder'),
-    ).toBeInTheDocument();
+      document.querySelector('.inline-comment-preview-popover-reply-form'),
+    ).not.toBeNull();
   });
 
   it("editing a reply leaves the origin's body and the other replies displayed (design.md 方針転換その2-3)", async () => {
@@ -679,9 +679,13 @@ describe('InlineCommentPreviewPopover', () => {
     expect(editButtons).toHaveLength(2);
     await userEvent.click(editButtons[0]);
 
-    // Exactly one editor is open, and everything else still reads normally.
+    // Exactly one reply is being edited -- scoped to the replies container so
+    // the always-mounted reply composer's own MentionAwareCommentInput
+    // instance (2026-09-11 その4) doesn't get counted as a second "editor".
     expect(
-      screen.getAllByTestId('mention-aware-comment-input-mock'),
+      within(
+        screen.getByTestId('inline-comment-preview-popover-replies'),
+      ).getAllByTestId('mention-aware-comment-input-mock'),
     ).toHaveLength(1);
     expect(
       screen.getByTestId('inline-comment-preview-popover-body'),
@@ -690,8 +694,8 @@ describe('InlineCommentPreviewPopover', () => {
       screen.getByTestId('inline-comment-preview-popover'),
     ).toHaveTextContent('the other reply');
     expect(
-      screen.getByPlaceholderText('inline_comment.reply_placeholder'),
-    ).toBeInTheDocument();
+      document.querySelector('.inline-comment-preview-popover-reply-form'),
+    ).not.toBeNull();
   });
 
   it("shows a reply's edit/delete affordances only to that reply's own creator (Req 1.6, 2.6)", () => {
@@ -738,13 +742,14 @@ describe('InlineCommentPreviewPopover', () => {
     await userEvent.click(
       screen.getByTestId('inline-comment-preview-popover-reply-edit-button'),
     );
-    expect(mentionAwareCommentInputProps.current?.initialValue).toBe(
-      'an existing reply',
-    );
+    const replyEditorKey = 'inline_comment_preview_popover_reply_edit_reply7';
+    expect(
+      mentionAwareCommentInputInstances.get(replyEditorKey)?.initialValue,
+    ).toBe('an existing reply');
 
     await act(async () => {
       await (
-        mentionAwareCommentInputProps.current?.onSubmit as (
+        mentionAwareCommentInputInstances.get(replyEditorKey)?.onSubmit as (
           text: string,
         ) => Promise<unknown>
       )('the edited reply');
@@ -978,9 +983,10 @@ describe('InlineCommentPreviewPopover', () => {
     const onClose = vi.fn();
     renderPopover({}, { onClose });
 
-    await userEvent.click(
-      screen.getByPlaceholderText('inline_comment.reply_placeholder'),
-    );
+    const composer = document.querySelector(
+      '.inline-comment-preview-popover-reply-form',
+    ) as HTMLElement;
+    await userEvent.click(composer);
 
     expect(onClose).not.toHaveBeenCalled();
   });
@@ -1099,50 +1105,45 @@ describe('InlineCommentPreviewPopover', () => {
     expect(quoteStrip.getAttribute('style')).toBeFalsy();
   });
 
-  it('renders the reply composer as an avatar + input row with an icon send button (Req 15.3)', () => {
+  // 2026-09-11 その4: the pill-shaped plain `<textarea>` was replaced by the
+  // same `MentionAwareCommentInput` + `MentionPickerButton` pairing every
+  // other comment input in this feature uses, so a mention picker button is
+  // available here too (the user's own request: "reply-form にも mention
+  // picker button ほしいですね").
+  it('renders the reply composer as an avatar + mention-aware input + mention-picker + send button row (Req 15.3, 2.7)', () => {
     renderPopover();
 
     // Scoped to the composer row itself, not the whole popover -- the origin
-    // comment's own CommentCard header already renders a (mocked)
-    // user-picture, so asserting against the full popover would pass even
-    // without the composer's own avatar.
+    // comment's own header already renders a (mocked) user-picture, so
+    // asserting against the full popover would pass even without the
+    // composer's own avatar.
     const composer = document.querySelector(
       '.inline-comment-preview-popover-reply-form',
-    );
-    const textarea = screen.getByPlaceholderText(
-      'inline_comment.reply_placeholder',
-    );
-    const sendButton = screen.getByRole('button', {
-      name: 'page_comment.comment',
-    });
+    ) as HTMLElement;
 
     expect(composer).not.toBeNull();
+    expect(within(composer).getByTestId('user-picture')).toBeInTheDocument();
     expect(
-      composer?.querySelector('[data-testid="user-picture"]'),
-    ).not.toBeNull();
-    expect(composer).toContainElement(textarea);
-    expect(composer).toContainElement(sendButton);
-    // The reply input is rounded (rounded-pill), suited to a single-line
-    // input, per design.md -- the send button stays the existing circular
-    // button and is not touched here.
-    expect(textarea).toHaveClass('form-control', 'rounded-pill');
+      within(composer).getByTestId('mention-aware-comment-input-mock'),
+    ).toBeInTheDocument();
+    expect(
+      within(composer).getByTestId('mention-picker-button-mock'),
+    ).toBeInTheDocument();
+    expect(
+      within(composer).getByRole('button', { name: 'page_comment.comment' }),
+    ).toBeInTheDocument();
   });
 
-  it('still calls createReply when submitting via the restyled composer (Req 15.3)', async () => {
-    const createReply = vi.fn().mockResolvedValue(undefined);
-    const onClose = vi.fn();
-    renderPopover({ id: 'comment42' }, { createReply, onClose });
+  it('wires the mention picker next to the send button to the composer insertMention control (Req 2.7)', async () => {
+    renderPopover();
 
-    await userEvent.type(
-      screen.getByPlaceholderText('inline_comment.reply_placeholder'),
-      'a restyled reply',
-    );
-    await userEvent.click(
-      screen.getByRole('button', { name: 'page_comment.comment' }),
-    );
+    const composer = document.querySelector(
+      '.inline-comment-preview-popover-reply-form',
+    ) as HTMLElement;
+    const picker = within(composer).getByTestId('mention-picker-button-mock');
 
-    expect(createReply).toHaveBeenCalledWith('comment42', 'a restyled reply');
-    // Req 15.3: the popover stays open after a successful reply submission.
-    expect(onClose).not.toHaveBeenCalled();
+    await userEvent.click(picker);
+
+    expect(commentInputControls.insertMention).toHaveBeenCalledWith('alice');
   });
 });

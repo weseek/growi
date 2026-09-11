@@ -6,9 +6,13 @@
  * `SelectionPopover` itself isn't reused as a wrapper: it has no
  * outside-click-to-close behavior, which this popover needs.
  *
- * The reply input is a plain `<textarea>`, not the mention-aware editor the
- * bottom-of-page comment list uses — only the surrounding composer layout
- * borrows that visual language.
+ * The reply composer uses the same `MentionAwareCommentInput` +
+ * `MentionPickerButton` pairing as every other comment input in this feature
+ * (2026-09-11 その4, design.md「Popover: 起点・返信の統合」の続き) — it used to be a
+ * plain `<textarea>` that only borrowed the surrounding composer's visual
+ * language, but that meant mention insertion had no shared implementation to
+ * plug into here, so the pill-shaped one-line layout was dropped in favor of
+ * the same boxed editor the edit forms already use.
  *
  * Every displayed comment — the origin and each reply — is an
  * `InlineCommentPopoverEntry`, this popover's own flat markup rather than the
@@ -32,6 +36,9 @@ import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useCurrentUser } from '~/states/global';
 
 import type { InlineCommentWithReplies } from '../../../interfaces';
+import { MentionPickerButton } from '../InlineCommentForm/MentionPickerButton';
+import { MentionAwareCommentInput } from '../MentionAwareCommentInput/MentionAwareCommentInput';
+import { useCommentInputControls } from '../MentionAwareCommentInput/use-comment-input-controls';
 import { rangeToVirtualElement } from '../SelectionPopover/selection-virtual-element';
 import { usePopperPosition } from '../SelectionPopover/use-popper-position';
 import { InlineCommentPopoverEntry } from './InlineCommentPopoverEntry';
@@ -129,6 +136,17 @@ export const InlineCommentPreviewPopover: FC<
       ) {
         return;
       }
+      // The mention-completion popup (typing "@" inside any
+      // MentionAwareCommentInput in this popover -- an edit form or the
+      // reply composer) is portaled to document.body, outside popperElement,
+      // exactly like InlineCommentForm.tsx's own outside-click guard has to
+      // account for.
+      if (
+        target instanceof Element &&
+        target.closest('.cm-tooltip-autocomplete') != null
+      ) {
+        return;
+      }
       onClose();
     };
 
@@ -162,31 +180,18 @@ export const InlineCommentPreviewPopover: FC<
     onClose();
   };
 
-  const [draftComment, setDraftComment] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string>();
-
-  const handleSubmit = async (): Promise<void> => {
-    const trimmed = draftComment.trim();
-    if (trimmed.length === 0 || isSubmitting) {
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      await createReply(comment.id, trimmed);
-      setDraftComment('');
-      setSubmitError(undefined);
-    } catch (err) {
-      setSubmitError(
-        err instanceof Error
-          ? err.message
-          : 'An unknown error occurred when posting the reply',
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  // The reply composer is `MentionAwareCommentInput`, same as every other
+  // comment input in this feature -- it owns its own draft text, submit
+  // guard, and error display, and reports `{ canSubmit, submit,
+  // insertMention }` outward for this component to render (same handshake
+  // `InlineCommentForm.tsx` uses).
+  const {
+    canSubmit: canSubmitReply,
+    submit: submitReply,
+    insertMention: insertMentionIntoReply,
+    onControlsChange: onReplyControlsChange,
+  } = useCommentInputControls();
+  const replyEditorKey = `inline_comment_preview_popover_new_reply_${comment.id}`;
 
   return createPortal(
     // zIndex 1070 mirrors SelectionPopover's own portal (Bootstrap's $zindex-popover).
@@ -303,41 +308,28 @@ export const InlineCommentPreviewPopover: FC<
 
         <div className="inline-comment-preview-popover-reply-form d-flex align-items-center gap-2">
           <UserPicture user={currentUser} noLink noTooltip />
-          {/* flex-basis 0% avoids collapsing under the avatar/send button -- see InlineCommentForm.tsx. */}
-          <div style={{ flex: '1 1 0%', minWidth: 0 }}>
-            {/* `rows={1}`: the pill radius only reads as a one-line reply
-              field at one row's height -- at the textarea's default two
-              rows the same radius renders as a tall stadium-shaped box
-              instead. */}
-            <textarea
-              className="form-control rounded-pill"
-              rows={1}
-              placeholder={t('inline_comment.reply_placeholder')}
-              aria-label={t('inline_comment.reply_placeholder')}
-              value={draftComment}
-              disabled={isSubmitting}
-              onChange={(e) => setDraftComment(e.target.value)}
-            />
-            {submitError != null && (
+          <MentionAwareCommentInput
+            editorKey={replyEditorKey}
+            onSubmit={(text) => createReply(comment.id, text)}
+            onControlsChange={onReplyControlsChange}
+          />
+          <div className="d-flex align-items-center gap-1">
+            <MentionPickerButton onInsert={insertMentionIntoReply} />
+            <button
+              type="button"
+              className={`btn btn-primary btn-sm p-0 d-inline-flex align-items-center justify-content-center ${styles['inline-comment-preview-popover-send-button']}`}
+              disabled={!canSubmitReply}
+              onClick={submitReply}
+              aria-label={t('page_comment.comment')}
+            >
               <span
-                className="text-danger d-block"
-                data-testid="inline-comment-preview-popover-reply-error"
+                className="material-symbols-outlined fs-6"
+                aria-hidden="true"
               >
-                {submitError}
+                send
               </span>
-            )}
+            </button>
           </div>
-          <button
-            type="button"
-            className={`btn btn-primary btn-sm p-0 d-inline-flex align-items-center justify-content-center ${styles['inline-comment-preview-popover-send-button']}`}
-            disabled={draftComment.trim().length === 0 || isSubmitting}
-            onClick={handleSubmit}
-            aria-label={t('page_comment.comment')}
-          >
-            <span className="material-symbols-outlined fs-6" aria-hidden="true">
-              send
-            </span>
-          </button>
         </div>
       </div>
     </div>,

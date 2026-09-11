@@ -4345,7 +4345,14 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
       '[data-testid="inline-comment-preview-popover-close-button"]',
     replyForm: '.inline-comment-preview-popover-reply-form',
     replyFormAvatar: '.inline-comment-preview-popover-reply-form .user-picture',
-    replyFormInput: '.inline-comment-preview-popover-reply-form textarea',
+    // 2026-09-11 その4: the reply composer swapped its plain `<textarea>` for
+    // `MentionAwareCommentInput` (a CodeMirror editor), same as every other
+    // comment input in this feature -- `.cm-content` is the established
+    // selector for that editor's editable surface (see the many `.cm-content`
+    // usages elsewhere in this file).
+    replyFormInput: '.inline-comment-preview-popover-reply-form .cm-content',
+    replyFormMentionPicker:
+      '.inline-comment-preview-popover-reply-form [data-testid="mention-picker-button"]',
     replyFormSubmit:
       '.inline-comment-preview-popover-reply-form button.btn-primary',
     editForm: '[data-testid="inline-comment-preview-popover-edit-form"]',
