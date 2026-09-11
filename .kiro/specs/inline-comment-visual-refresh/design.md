@@ -154,7 +154,7 @@ const shouldUpdate =
 - `CommentCard` のスロット構成（`headerEnd`／`beforeBody`／`footer`）が変わった場合、一覧アイテムとポップオーバーの返信部分は再確認が必要（ポップオーバーの起点コメント部分はもう `CommentCard` に依存しないため対象外）
 - `CommentControl.tsx` の編集・削除アイコンの視覚パターン（グリフ・ボタンクラス）が変わった場合、Requirement 3.5（同じパターンを踏襲する）の前提が崩れるため再確認する必要がある
 - GROWIのBootstrapテーマの `-subtle`／`-emphasis` トークンの実装が変わった場合（例: Bootstrapの将来のメジャーアップデート）、色の見え方を再確認する必要がある
-- **（2026-09-11追加）** ポップオーバーの起点コメント部分は `CommentCard` のスロットAPIには依存しなくなったが、代わりに `CommentCard` が生成するクラス名（`.page-comment`／`.page-comment-main`／`.bg-comment` 等）に、返信部分のSCSS・`InlineCommentPreviewPopover.spec.tsx` の一部テストが依存し続けている。これらのクラス名が変わった場合は再確認が必要
+- ~~（2026-09-11追加）ポップオーバーの起点コメント部分は `CommentCard` のスロットAPIには依存しなくなったが、代わりに `CommentCard` が生成するクラス名（`.page-comment`／`.page-comment-main`／`.bg-comment` 等）に、返信部分のSCSS・`InlineCommentPreviewPopover.spec.tsx` の一部テストが依存し続けている。これらのクラス名が変わった場合は再確認が必要~~ **（2026-09-11 その2で撤回。「Popover: 起点・返信の統合」により返信も `CommentCard` を使わなくなったため、この依存自体が無くなった）**
 
 ## Architecture
 
