@@ -39,9 +39,21 @@ vi.mock('./InlineCommentItem.module.scss', () => ({
     'inline-comment-item-styles': 'inline-comment-item-styles',
     'inline-comment-status-badge': 'inline-comment-status-badge',
     'icon-button-container': 'icon-button-container',
-    'icon-button': 'icon-button',
   },
 }));
+
+// The edit/delete buttons' own sizing/opacity class now lives in the shared
+// `CommentEditDeleteButtons.module.scss` (2026-09-11), not this file's own
+// module -- mocked the same identity way so assertions can match the plain
+// string.
+vi.mock(
+  '~/client/components/PageComment/CommentEditDeleteButtons.module.scss',
+  () => ({
+    default: {
+      'icon-button': 'icon-button',
+    },
+  }),
+);
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),

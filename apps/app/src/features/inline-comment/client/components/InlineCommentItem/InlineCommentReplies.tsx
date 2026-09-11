@@ -9,9 +9,11 @@
  * `reply.creatorId` (not the populated `creator`) is compared against
  * `currentUser._id` to decide reply ownership, matching `InlineCommentItem`.
  *
- * Edit/delete icon buttons reuse `InlineCommentItem.module.scss`'s
- * `.icon-button-container` hover-visibility rule and `.icon-button` sizing/
- * opacity rule (imported here, not duplicated): `.icon-button-container` is
+ * Edit/delete icon buttons are the shared `CommentEditDeleteButtons`
+ * component (also used by `CommentControl.tsx` for a normal comment and by
+ * `InlineCommentItem.tsx` for the origin comment), wrapped here in
+ * `InlineCommentItem.module.scss`'s `.icon-button-container` hover-visibility
+ * rule (imported here, not duplicated): that rule is
  * `.inline-comment-item-styles .icon-button-container` with no `:global()`
  * wrapper, so it is a CSS-Modules-scoped selector, not a plain global class
  * name — matching it requires reading the class through `styles[...]` from
@@ -23,17 +25,15 @@
  * reply's OWN `.page-comment-main` (its `CommentCard`'s box), not the shared
  * ancestor, so hovering one reply reveals only that reply's own buttons
  * (2026-09-11, matching normal comments' per-row reveal -- see that rule's
- * own comment in `InlineCommentItem.module.scss` for why). `.icon-button` is
- * a top-level rule in the same module (not nested under
- * `.inline-comment-item-styles`), so it applies regardless of ancestor.
+ * own comment in `InlineCommentItem.module.scss` for why).
  */
 
 import { type FC, type JSX, useMemo, useState } from 'react';
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'react-i18next';
 
-import { NotAvailableIfReadOnlyUserNotAllowedToComment } from '~/client/components/NotAvailableForReadOnlyUser';
 import { CommentCard } from '~/client/components/PageComment/CommentCard';
+import { CommentEditDeleteButtons } from '~/client/components/PageComment/CommentEditDeleteButtons';
 import { CommentEditor } from '~/client/components/PageComment/CommentEditor';
 import { DeleteConfirmAlert } from '~/client/components/PageComment/DeleteConfirmAlert';
 import RevisionRenderer from '~/components/PageView/RevisionRenderer';
@@ -115,28 +115,15 @@ const InlineCommentReplyItem: FC<InlineCommentReplyItemProps> = (
           !isEditing &&
           !isDeleteConfirmOpen && (
             <span className="ms-auto d-flex align-items-center gap-2">
-              <NotAvailableIfReadOnlyUserNotAllowedToComment>
-                <span
-                  className={`d-flex align-items-center gap-1 ${styles['icon-button-container']}`}
-                >
-                  <button
-                    type="button"
-                    data-testid="inline-comment-reply-edit-button"
-                    className={`btn btn-link ${styles['icon-button']}`}
-                    onClick={() => setIsEditing(true)}
-                  >
-                    <span className="material-symbols-outlined">edit</span>
-                  </button>
-                  <button
-                    type="button"
-                    data-testid="inline-comment-reply-delete-button"
-                    className={`btn btn-link text-danger ${styles['icon-button']}`}
-                    onClick={() => setIsDeleteConfirmOpen(true)}
-                  >
-                    <span className="material-symbols-outlined">delete</span>
-                  </button>
-                </span>
-              </NotAvailableIfReadOnlyUserNotAllowedToComment>
+              <span
+                className={`d-flex align-items-center gap-1 ${styles['icon-button-container']}`}
+              >
+                <CommentEditDeleteButtons
+                  testIdPrefix="inline-comment-reply"
+                  onClickEditBtn={() => setIsEditing(true)}
+                  onClickDeleteBtn={() => setIsDeleteConfirmOpen(true)}
+                />
+              </span>
             </span>
           )
         }

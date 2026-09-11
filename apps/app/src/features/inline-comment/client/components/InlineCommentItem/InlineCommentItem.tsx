@@ -12,17 +12,17 @@
  * Edit/delete: shown only to the comment's own creator (`comment.creatorId
  * === currentUser?._id` — `creator` is not used for this check since it's
  * only ever populated by `listByPageId()`, and the popover cannot rely on a
- * populated `creator` either). Gated by the same
- * `NotAvailableIfReadOnlyUserNotAllowedToComment` restriction
- * `CommentControl.tsx` applies to a normal comment. Deleting opens the
- * `DeleteConfirmAlert` shown in place, the same confirmation a normal
- * comment uses.
+ * populated `creator` either). The buttons themselves, and the read-only-user
+ * gating around them, come from the shared `CommentEditDeleteButtons` --
+ * the same component `CommentControl.tsx` uses for a normal comment.
+ * Deleting opens the `DeleteConfirmAlert` shown in place, the same
+ * confirmation a normal comment uses.
  */
 import { type FC, type JSX, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { NotAvailableIfReadOnlyUserNotAllowedToComment } from '~/client/components/NotAvailableForReadOnlyUser';
 import { CommentCard } from '~/client/components/PageComment/CommentCard';
+import { CommentEditDeleteButtons } from '~/client/components/PageComment/CommentEditDeleteButtons';
 import { CommentEditor } from '~/client/components/PageComment/CommentEditor';
 import { DeleteConfirmAlert } from '~/client/components/PageComment/DeleteConfirmAlert';
 import RevisionRenderer from '~/components/PageView/RevisionRenderer';
@@ -142,28 +142,15 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
         headerEnd={
           <span className="ms-auto d-flex align-items-center gap-2">
             {isOwnComment && !isEditing && !isDeleteConfirmOpen && (
-              <NotAvailableIfReadOnlyUserNotAllowedToComment>
-                <span
-                  className={`d-flex align-items-center gap-1 ${styles['icon-button-container']}`}
-                >
-                  <button
-                    type="button"
-                    data-testid="inline-comment-edit-button"
-                    className={`btn btn-link ${styles['icon-button']}`}
-                    onClick={() => setIsEditing(true)}
-                  >
-                    <span className="material-symbols-outlined">edit</span>
-                  </button>
-                  <button
-                    type="button"
-                    data-testid="inline-comment-delete-button"
-                    className={`btn btn-link text-danger ${styles['icon-button']}`}
-                    onClick={() => setIsDeleteConfirmOpen(true)}
-                  >
-                    <span className="material-symbols-outlined">delete</span>
-                  </button>
-                </span>
-              </NotAvailableIfReadOnlyUserNotAllowedToComment>
+              <span
+                className={`d-flex align-items-center gap-1 ${styles['icon-button-container']}`}
+              >
+                <CommentEditDeleteButtons
+                  testIdPrefix="inline-comment"
+                  onClickEditBtn={() => setIsEditing(true)}
+                  onClickDeleteBtn={() => setIsDeleteConfirmOpen(true)}
+                />
+              </span>
             )}
             <span
               data-testid="inline-comment-status"

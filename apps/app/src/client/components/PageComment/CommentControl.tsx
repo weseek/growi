@@ -1,8 +1,6 @@
 import type { JSX } from 'react';
 
-import { NotAvailableIfReadOnlyUserNotAllowedToComment } from '../NotAvailableForReadOnlyUser';
-
-import styles from './CommentControl.module.scss';
+import { CommentEditDeleteButtons } from './CommentEditDeleteButtons';
 
 type CommentControlProps = {
   onClickEditBtn: () => void;
@@ -15,26 +13,11 @@ export const CommentControl = (props: CommentControlProps): JSX.Element => {
   return (
     // The page-comment-control class is imported from Comment.module.scss
     <div className="page-comment-control">
-      <NotAvailableIfReadOnlyUserNotAllowedToComment>
-        <>
-          <button
-            data-testid="comment-edit-button"
-            type="button"
-            className={`btn btn-link p-2 ${styles['icon-button']}`}
-            onClick={onClickEditBtn}
-          >
-            <span className="material-symbols-outlined">edit</span>
-          </button>
-          <button
-            data-testid="comment-delete-button"
-            type="button"
-            className={`btn btn-link text-danger p-2 me-2 ${styles['icon-button']}`}
-            onClick={onClickDeleteBtn}
-          >
-            <span className="material-symbols-outlined">delete</span>
-          </button>
-        </>
-      </NotAvailableIfReadOnlyUserNotAllowedToComment>
+      <CommentEditDeleteButtons
+        testIdPrefix="comment"
+        onClickEditBtn={onClickEditBtn}
+        onClickDeleteBtn={onClickDeleteBtn}
+      />
     </div>
   );
 };

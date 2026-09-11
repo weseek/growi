@@ -38,18 +38,29 @@ import { InlineCommentReplies } from './InlineCommentReplies';
 // ---------------------------------------------------------------------------
 
 // `InlineCommentReplyItem` reuses `InlineCommentItem.module.scss`'s
-// `.icon-button-container` hover-visibility rule and `.icon-button` sizing
-// rule via import, not by duplicating new rules -- see
-// InlineCommentReplies.tsx's top-of-file comment. Both are CSS-Modules-scoped
-// local classes (no `:global()`); this identity mock mirrors
-// InlineCommentItem.spec.tsx's own mock so assertions can match on the plain
-// string.
+// `.icon-button-container` hover-visibility rule via import, not by
+// duplicating a new rule -- see InlineCommentReplies.tsx's top-of-file
+// comment. It's a CSS-Modules-scoped local class (no `:global()`); this
+// identity mock mirrors InlineCommentItem.spec.tsx's own mock so assertions
+// can match on the plain string.
 vi.mock('./InlineCommentItem.module.scss', () => ({
   default: {
     'icon-button-container': 'icon-button-container',
-    'icon-button': 'icon-button',
   },
 }));
+
+// The edit/delete buttons' own sizing/opacity class now lives in the shared
+// `CommentEditDeleteButtons.module.scss` (2026-09-11), not this file's own
+// module -- mocked the same identity way so assertions can match the plain
+// string.
+vi.mock(
+  '~/client/components/PageComment/CommentEditDeleteButtons.module.scss',
+  () => ({
+    default: {
+      'icon-button': 'icon-button',
+    },
+  }),
+);
 
 const commentEditorProps = vi.hoisted(
   () => ({ current: undefined }) as { current?: Record<string, unknown> },

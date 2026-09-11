@@ -111,6 +111,17 @@
 - `InlineCommentReplies.tsx` の `InlineCommentReplyItemProps` に `pageId`/`revisionId` を追加（`MentionAwareCommentInput` は不要だったが `CommentEditor` の必須propのため）——`InlineCommentReplies` 自身が返信作成フォーム向けにすでに保持している値をそのまま渡すだけで足りた。
 - **見た目・挙動への影響（このamendmentの新しい意図ではなく、`CommentEditor` をそのまま流用した結果として自然に生じるもの）**: コンパクトなアクセント枠のボックスから、`CommentEditor` のフル機能UI（ツールバー・添付ファイル・プレビュータブ、編集中でも常に「Add a comment」と表示される`CommentEditor`自体の既存の仕様——今回新たに持ち込んだものではなくそのまま踏襲）に変わる。明示的なメンションピッカーボタンはなくなるが、メンション機能自体は同じCodeMirror拡張で引き続き動作する（「@」を打てば候補が出る）。
 
+### 2026-09-11 の方針転換 その10（編集・削除アイコンボタンの組を共通コンポーネント化）
+
+その9の調査結果を受けて、ユーザーから「`InlineCommentItem.tsx` と `Comment.tsx` が別々なのはもうどうにもならないのか、挙動がばらついてメンテナンス性が良くない」という設計相談があった。完全な統合は非推奨と回答した——ヘッダー行の中身（解決トグル＋状態バッジ vs 履歴リンク）が本質的に異なり、無理に1コンポーネントへまとめると「inlineかどうかで分岐する巨大コンポーネント」になり、coding-styleの「モード分岐を消費側に持たない」方針にも反するため。一方で、編集・削除アイコンボタンの組は `CommentControl.tsx`・`InlineCommentItem.tsx`・`InlineCommentReplies.tsx` の3箇所で同じ形のJSXが手書きで重複していることを指摘し、ここだけを共通化することを提案、ユーザーが承認した。
+
+実装中に判明: その6でopacityは揃えたものの、**サイズは実はまだ揃っていなかった**——通常コメント側は本スペック以前からの `p-2`（パディング）によるサイズ調整のまま、インライン側だけが本スペックのモックアップ対応で32px正方形になっていた。ユーザーに確認し、32px正方形へ完全統一する方針で実施。
+
+- 新規 `CommentEditDeleteButtons.tsx`（＋`.module.scss`。32px・opacityのルールは `CommentControl.module.scss` と `InlineCommentItem.module.scss` にそれぞれ別々にあったものを統合）。`DeleteConfirmAlert` と同じ `testIdPrefix` パラメータ化パターンで、各呼び出し元の既存testidをそのまま維持する。外側のラッパー（ホバー表示の仕組み）はコンポーネント自身は持たない——通常コメントの絶対配置 (`.page-comment-control`) とインラインコメントのインラインflex行 (`.icon-button-container`) は本質的に別物のため、各呼び出し元がそのまま持ち続ける。
+- `CommentControl.tsx` は共通コンポーネントへの薄いラッパーに縮小（`Comment.tsx` からの既存の import 契約を維持するためファイル自体は残す）。`CommentControl.module.scss` は削除（ルールを共通モジュールへ移動）。
+- `InlineCommentItem.tsx`／`InlineCommentReplies.tsx` の手書きボタンJSXを `<CommentEditDeleteButtons testIdPrefix="..." .../>` に置き換え。`InlineCommentItem.module.scss` の `.icon-button`（サイズ・opacity）ルールは削除し、`.icon-button-container`（ホバー表示の仕組み、こちらは各サーフェス固有のため残す）のみ残した。
+- **今回のスコープに含めなかったもの（ユーザー自身が挙げた重複箇所の対象外）**: ポップオーバー（`InlineCommentPopoverEntry.tsx`）は独自の `.inline-comment-preview-popover-icon-button` をそのまま維持——常時表示（ホバー表示ではない）という本質的な挙動差がすでにそのファイル自身のコメントで明記されている、意図的な重複であり、今回の3箇所には含まれていなかったため。
+- 実ブラウザで確認（確認用の使い捨てPlaywrightテストは確認後に削除）: 通常コメントとインラインコメントアイテムの編集ボタンが、どちらも 32×32px・opacity 0.5 で完全に一致することを確認済み。
 
 ### This Spec Owns
 - `InlineCommentItem.tsx`／`InlineCommentReplies.tsx`／`InlineCommentPreviewPopover.tsx` のJSXマークアップとクラス名
