@@ -1,22 +1,18 @@
 import { type JSX, useEffect, useMemo, useState } from 'react';
-import Link from 'next/link';
 import { type IUser, isPopulated } from '@growi/core';
-import * as pathUtils from '@growi/core/dist/utils/path-utils';
-import { UserPicture } from '@growi/ui/dist/components';
 import { format } from 'date-fns/format';
 import { parseISO } from 'date-fns/parseISO';
-import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
-import urljoin from 'url-join';
 
 import type { RendererOptions } from '~/interfaces/renderer-options';
 
 import RevisionRenderer from '../../../components/PageView/RevisionRenderer';
-import { Username } from '../../../components/User/Username';
 import type { ICommentHasId } from '../../../interfaces/comment';
-import { FormattedDistanceDate } from '../FormattedDistanceDate';
+import { CommentCard } from './CommentCard';
 import { CommentControl } from './CommentControl';
 import { CommentEditor } from './CommentEditor';
+import { CommentRevisionLink } from './CommentRevisionLink';
+import { DeleteConfirmAlert } from './DeleteConfirmAlert';
 
 import styles from './Comment.module.scss';
 
@@ -29,7 +25,12 @@ type CommentProps = {
   isReadOnly: boolean;
   pageId: string;
   pagePath: string;
-  deleteBtnClicked: (comment: ICommentHasId) => void;
+  /**
+   * Deletes this comment, called once the reader has confirmed it in the
+   * inline confirmation below. The request and the list revalidation belong
+   * to the parent; a rejection is reported in place by this component.
+   */
+  onDeleteConfirmed: (comment: ICommentHasId) => Promise<void>;
   onComment: () => void;
 };
 
@@ -43,16 +44,14 @@ export const Comment = (props: CommentProps): JSX.Element => {
     isReadOnly,
     pageId,
     pagePath,
-    deleteBtnClicked,
+    onDeleteConfirmed,
     onComment,
   } = props;
 
-  const { returnPathForURL } = pathUtils;
-
-  const { t } = useTranslation();
-
   const [markdown, setMarkdown] = useState('');
   const [isReEdit, setIsReEdit] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [deleteError, setDeleteError] = useState<string>();
 
   const commentId = comment._id;
   const creator = isPopulated(comment.creator) ? comment.creator : undefined;
@@ -81,8 +80,14 @@ export const Comment = (props: CommentProps): JSX.Element => {
     return creator.username === currentUser.username;
   };
 
-  const getRootClassName = (comment: ICommentHasId) => {
-    let className = 'page-comment flex-column';
+  /**
+   * Only the modifier classes for `.page-comment`. `CommentCard` supplies the
+   * `page-comment flex-column` prefix itself, so this must not repeat it.
+   * Returns undefined when there is no modifier, to avoid a trailing space in
+   * the emitted class attribute.
+   */
+  const getRootClassName = (comment: ICommentHasId): string | undefined => {
+    const modifiers: string[] = [];
 
     // TODO: fix so that `comment.createdAt` to be type Date https://redmine.weseek.co.jp/issues/113876
     const commentCreatedAtFixed =
@@ -97,25 +102,36 @@ export const Comment = (props: CommentProps): JSX.Element => {
     // Conditional for called from SearchResultContext
     if (revisionId != null && revisionCreatedAt != null) {
       if (comment.revision === revisionId) {
-        className += ' page-comment-current';
+        modifiers.push('page-comment-current');
       } else if (
         commentCreatedAtFixed.getTime() > revisionCreatedAtFixed.getTime()
       ) {
-        className += ' page-comment-newer';
+        modifiers.push('page-comment-newer');
       } else {
-        className += ' page-comment-older';
+        modifiers.push('page-comment-older');
       }
     }
 
     if (isCurrentUserEqualsToAuthor()) {
-      className += ' page-comment-me';
+      modifiers.push('page-comment-me');
     }
 
-    return className;
+    return modifiers.length > 0 ? modifiers.join(' ') : undefined;
   };
 
-  const deleteBtnClickedHandler = () => {
-    deleteBtnClicked(comment);
+  const handleDeleteConfirm = async (): Promise<void> => {
+    try {
+      await onDeleteConfirmed(comment);
+      setDeleteError(undefined);
+    } catch (err) {
+      setDeleteError(
+        err instanceof Error
+          ? err.message
+          : 'An unknown error occurred when deleting the comment',
+      );
+    } finally {
+      setIsDeleteConfirmOpen(false);
+    }
   };
 
   const commentBody = useMemo(() => {
@@ -133,7 +149,6 @@ export const Comment = (props: CommentProps): JSX.Element => {
   }, [markdown, rendererOptions]);
 
   const rootClassName = getRootClassName(comment);
-  const revHref = `?revisionId=${comment.revision}`;
   const editedDateId = `editedDate-${comment._id}`;
   const editedDateFormatted = isEdited
     ? format(updatedAt, 'yyyy/MM/dd HH:mm')
@@ -155,64 +170,97 @@ export const Comment = (props: CommentProps): JSX.Element => {
           revisionId={revisionId}
         />
       ) : (
-        <div id={commentId} className={rootClassName}>
-          <div className="page-comment-main bg-comment rounded mb-2">
-            <div className="d-flex align-items-center">
-              <UserPicture user={creator} className="me-2" />
-              <div className="small fw-bold me-3">
-                <Username user={creator} />
-              </div>
-              <Link
-                href={`#${commentId}`}
-                prefetch={false}
-                className="small page-comment-revision"
-              >
-                <FormattedDistanceDate
-                  id={commentId}
-                  date={comment.createdAt}
-                />
-              </Link>
+        <CommentCard
+          id={commentId}
+          creator={creator}
+          createdAt={comment.createdAt}
+          rootClassName={rootClassName}
+          headerEnd={
+            <>
+              {/* Unchanged position: right after the date, same `ms-2` as
+                  before this round's fix. */}
               <span className="ms-2">
-                <Link
-                  id={`page-comment-revision-${commentId}`}
-                  href={urljoin(returnPathForURL(pagePath, pageId), revHref)}
-                  className="page-comment-revision"
-                  prefetch={false}
-                >
-                  <span className="material-symbols-outlined">history</span>
-                </Link>
-                <UncontrolledTooltip
-                  placement="bottom"
-                  fade={false}
-                  target={`page-comment-revision-${commentId}`}
-                >
-                  {t('page_comment.display_the_page_when_posting_this_comment')}
-                </UncontrolledTooltip>
+                <CommentRevisionLink
+                  id={commentId}
+                  pagePath={pagePath}
+                  pageId={pageId}
+                  // `comment.revision` is typed `Ref<IRevision>` (populated
+                  // or not), but this control only ever needs its id -- the
+                  // same implicit stringification the pre-extraction inline
+                  // markup relied on via template-literal interpolation.
+                  revisionId={String(comment.revision)}
+                />
               </span>
-            </div>
-            <div className="page-comment-body">{commentBody}</div>
-            <div className="page-comment-meta">
-              {isEdited && (
-                <>
-                  <span id={editedDateId}>&nbsp;(edited)</span>
-                  <UncontrolledTooltip
-                    placement="bottom"
-                    fade={false}
-                    target={editedDateId}
-                  >
-                    {editedDateFormatted}
-                  </UncontrolledTooltip>
-                </>
+              {/* 2026-09-11: only the edit/delete controls are pushed to the
+                  row's right edge with `ms-auto`, matching
+                  InlineCommentItem.tsx's own headerEnd pattern -- previously
+                  `CommentControl` rendered in the `footer` slot but was
+                  pulled to the top-right corner via
+                  `position: absolute; top: 0; right: 0`, which (per the CSS
+                  spec) is anchored to the containing block's padding edge
+                  and so ignored `.page-comment-main`'s own `1em` padding,
+                  sitting flush against the card's border instead of inset
+                  like every other header-row item (user report: looked
+                  broken next to the inline comment item, which was already
+                  in normal flow). Moving it into the header row's own flex
+                  flow makes it respect that padding the same way the
+                  revision-history link already does. The history link
+                  itself keeps its original `ms-2` position (not part of
+                  this `ms-auto` group) -- pulling it into the group too
+                  dragged it away from the date it's meant to sit next to
+                  (caught by user report right after the first version of
+                  this fix). The controls step aside while the confirmation
+                  stands in their place, so the delete request cannot be
+                  started twice -- the same composition InlineCommentItem
+                  uses. */}
+              {isCurrentUserEqualsToAuthor() &&
+                !isReadOnly &&
+                !isDeleteConfirmOpen && (
+                  <span className="ms-auto">
+                    <CommentControl
+                      onClickDeleteBtn={() => setIsDeleteConfirmOpen(true)}
+                      onClickEditBtn={() => setIsReEdit(true)}
+                    />
+                  </span>
+                )}
+            </>
+          }
+          footer={
+            <>
+              <div className="page-comment-meta">
+                {isEdited && (
+                  <>
+                    <span id={editedDateId}>&nbsp;(edited)</span>
+                    <UncontrolledTooltip
+                      placement="bottom"
+                      fade={false}
+                      target={editedDateId}
+                    >
+                      {editedDateFormatted}
+                    </UncontrolledTooltip>
+                  </>
+                )}
+              </div>
+              {deleteError != null && (
+                <span
+                  className="text-danger d-block"
+                  data-testid="comment-delete-error"
+                >
+                  {deleteError}
+                </span>
               )}
-            </div>
-            {isCurrentUserEqualsToAuthor() && !isReadOnly && (
-              <CommentControl
-                onClickDeleteBtn={deleteBtnClickedHandler}
-                onClickEditBtn={() => setIsReEdit(true)}
-              />
-            )}
-          </div>
-        </div>
+              {isDeleteConfirmOpen && (
+                <DeleteConfirmAlert
+                  testIdPrefix="comment"
+                  onCancel={() => setIsDeleteConfirmOpen(false)}
+                  onConfirm={handleDeleteConfirm}
+                />
+              )}
+            </>
+          }
+        >
+          {commentBody}
+        </CommentCard>
       )}
     </div>
   );

@@ -110,7 +110,7 @@
       "outputLogs": "new-only"
     },
     "test:components": {
-      "dependsOn": ["^dev", "pre:styles-bulk-export", "dev:pre:styles-components"],
+      "dependsOn": ["^dev", "dev:pre:styles-commons", "dev:pre:styles-components", "pre:styles-bulk-export"],
       "outputLogs": "new-only"
     },
 
