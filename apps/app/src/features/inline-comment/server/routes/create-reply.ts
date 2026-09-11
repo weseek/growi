@@ -9,6 +9,12 @@
  * `InlineCommentService.createReply()` re-validates the same precondition
  * internally (its own `findUnique`) — a small duplicated query, kept so the
  * service's own precondition contract stays intact for other callers.
+ *
+ * `excludeReadOnlyUserIfCommentNotAllowed` is the same middleware normal
+ * comments use for `/comments.add`, placed right after `loginRequired` — this
+ * makes the read-only-user restriction a server-side guarantee, not only a
+ * client-side affordance a direct API call could bypass (same pattern as
+ * update.ts).
  */
 
 import assert from 'node:assert';
@@ -22,6 +28,7 @@ import type { HydratedDocument } from 'mongoose';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
+import { excludeReadOnlyUserIfCommentNotAllowed } from '~/server/middlewares/exclude-read-only-user';
 import loginRequiredFactory from '~/server/middlewares/login-required';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import { findPageAndMetaDataByViewer } from '~/server/service/page/find-page-and-meta-data-by-viewer';
@@ -55,6 +62,7 @@ export const createInlineCommentReplyRouteHandlersFactory = (
   return [
     accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequired,
+    excludeReadOnlyUserIfCommentNotAllowed,
     ...validator,
     apiV3FormValidator,
     async (req: Req, res: ApiV3Response) => {
