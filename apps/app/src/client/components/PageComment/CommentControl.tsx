@@ -1,4 +1,4 @@
-import React, { type JSX } from 'react';
+import type { JSX } from 'react';
 
 import { NotAvailableIfReadOnlyUserNotAllowedToComment } from '../NotAvailableForReadOnlyUser';
 
@@ -26,10 +26,10 @@ export const CommentControl = (props: CommentControlProps): JSX.Element => {
           <button
             data-testid="comment-delete-button"
             type="button"
-            className="btn btn-link p-2 me-2 opacity-50"
+            className="btn btn-link text-danger p-2 me-2 opacity-50"
             onClick={onClickDeleteBtn}
           >
-            <span className="material-symbols-outlined">close</span>
+            <span className="material-symbols-outlined">delete</span>
           </button>
         </>
       </NotAvailableIfReadOnlyUserNotAllowedToComment>
