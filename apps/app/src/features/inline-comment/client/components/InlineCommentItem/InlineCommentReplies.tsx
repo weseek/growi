@@ -32,6 +32,7 @@ import { type FC, type JSX, useMemo, useState } from 'react';
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'react-i18next';
 
+import { NotAvailableIfReadOnlyUserNotAllowedToComment } from '~/client/components/NotAvailableForReadOnlyUser';
 import { CommentCard } from '~/client/components/PageComment/CommentCard';
 import { CommentEditDeleteButtons } from '~/client/components/PageComment/CommentEditDeleteButtons';
 import { CommentEditor } from '~/client/components/PageComment/CommentEditor';
@@ -226,21 +227,28 @@ export const InlineCommentReplies: FC<InlineCommentRepliesProps> = (
             onCanceled={() => setIsReplyOpen(false)}
           />
         ) : (
-          <button
-            type="button"
-            data-testid="inline-comment-reply-toggle-button"
-            // No `ms-5` here (unlike PageComment.tsx's reply toggle): the
-            // indent is already applied by the wrapping `.inline-comment-reply-form`,
-            // so adding it again would double the indent.
-            className="btn btn-secondary btn-comment-reply text-start w-100"
-            onClick={() => setIsReplyOpen(true)}
-          >
-            <UserPicture user={currentUser} noLink noTooltip className="me-2" />
-            <span className="material-symbols-outlined me-1 fs-5 pb-1">
-              reply
-            </span>
-            <small>{t('page_comment.reply')}...</small>
-          </button>
+          <NotAvailableIfReadOnlyUserNotAllowedToComment>
+            <button
+              type="button"
+              data-testid="inline-comment-reply-toggle-button"
+              // No `ms-5` here (unlike PageComment.tsx's reply toggle): the
+              // indent is already applied by the wrapping `.inline-comment-reply-form`,
+              // so adding it again would double the indent.
+              className="btn btn-secondary btn-comment-reply text-start w-100"
+              onClick={() => setIsReplyOpen(true)}
+            >
+              <UserPicture
+                user={currentUser}
+                noLink
+                noTooltip
+                className="me-2"
+              />
+              <span className="material-symbols-outlined me-1 fs-5 pb-1">
+                reply
+              </span>
+              <small>{t('page_comment.reply')}...</small>
+            </button>
+          </NotAvailableIfReadOnlyUserNotAllowedToComment>
         )}
       </div>
     </div>

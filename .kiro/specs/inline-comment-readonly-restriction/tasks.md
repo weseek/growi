@@ -26,7 +26,7 @@
   - _Requirements: 2.1, 2.4_
   - _Boundary: SelectionCapture.tsx_
 
-- [ ] 2.2 (P) 一覧側の返信作成トリガーを無効化する
+- [x] 2.2 (P) 一覧側の返信作成トリガーを無効化する
   - `InlineCommentReplies.tsx`の「Reply...」トグルボタンを`NotAvailableIfReadOnlyUserNotAllowedToComment`で包む
   - 観測できる完了条件：読み取り専用利用者にコメント投稿が許可されていない場合、「Reply...」ボタンが無効化されることを単体テストで確認できる。許可されている場合は従来どおり返信フォームを開ける
   - _Requirements: 2.2, 2.4_

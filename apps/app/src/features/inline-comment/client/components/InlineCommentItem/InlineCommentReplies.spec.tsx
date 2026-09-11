@@ -398,6 +398,18 @@ describe('InlineCommentReplies', () => {
         screen.queryByTestId('inline-comment-reply-editor-mock'),
       ).not.toBeInTheDocument();
     });
+
+    it('disables the reply toggle button under the read-only restriction (Requirement 2.2, 2.4)', () => {
+      isDisabledRef.current = true;
+      renderReplies();
+
+      expect(
+        screen.getByTestId('not-available-for-read-only-user'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('inline-comment-reply-toggle-button'),
+      ).toBeDisabled();
+    });
   });
 
   describe('edit/delete on an already-posted reply (Requirement 18.1, 18.2, 18.5)', () => {
@@ -498,12 +510,15 @@ describe('InlineCommentReplies', () => {
       isDisabledRef.current = true;
       renderReplies({ replies: [ownReply] });
 
+      // Two independent guards render under this restriction now: the
+      // edit/delete controls here, and the reply toggle button covered by
+      // its own test below -- assert this one via the edit/delete buttons'
+      // own ancestor fieldset rather than a page-wide single-match query.
+      const editButton = screen.getByTestId('inline-comment-reply-edit-button');
       expect(
-        screen.getByTestId('not-available-for-read-only-user'),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByTestId('inline-comment-reply-edit-button'),
-      ).toBeDisabled();
+        editButton.closest('[data-testid="not-available-for-read-only-user"]'),
+      ).not.toBeNull();
+      expect(editButton).toBeDisabled();
       expect(
         screen.getByTestId('inline-comment-reply-delete-button'),
       ).toBeDisabled();
