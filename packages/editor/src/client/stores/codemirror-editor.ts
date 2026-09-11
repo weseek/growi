@@ -58,11 +58,17 @@ export const useCodeMirrorEditorIsolated = (
 
   const newData = useCodeMirrorEditor(mergedProps);
 
+  // An incomplete editor must never reach the shared atom -- not even as the
+  // first published value. @uiw/react-codemirror initializes view/state via
+  // useState, so they are still undefined on the render right after the
+  // container element attaches. Consumers that apply an initial value exactly
+  // once (e.g. MentionAwareCommentInput) would spend that single chance on a
+  // no-op initDoc against a view-less editor.
   const shouldUpdate =
     key != null &&
     container != null &&
-    (currentData == null ||
-      (isValid(newData) && !isDeepEquals(currentData, newData)));
+    isValid(newData) &&
+    (currentData == null || !isDeepEquals(currentData, newData));
 
   // Update atom when data changes
   useEffect(() => {
