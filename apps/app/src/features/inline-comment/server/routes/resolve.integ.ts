@@ -3,7 +3,8 @@
  *
  * Same passthrough-auth pattern as create.integ.ts — see that file's header.
  *
- * Requirements: 4.1-4.5, 1.5, 1.6, 6.1
+ * Requirements: 4.1-4.5, 1.5, 1.6, 6.1 (inline-comment); 1.3, 1.4, 1.5
+ * (inline-comment-readonly-restriction)
  */
 
 import { type IUserHasId, PageGrant } from '@growi/core';
@@ -42,17 +43,49 @@ vi.mock('~/server/middlewares/login-required', () => ({
 const FIXTURE_ROOT = '/inline-comment-resolve-route-integ';
 const requesterUsername = 'inline-comment-resolve-route-integ-requester';
 const ownerUsername = 'inline-comment-resolve-route-integ-owner';
+const readOnlyUsername = 'inline-comment-resolve-route-integ-readonly';
 
 describe('PUT /_api/v3/inline-comments/:id/resolve', () => {
   let app: express.Application;
   let crowi: Crowi;
   let requester: HydratedDocument<IUserHasId>;
   let owner: HydratedDocument<IUserHasId>;
+  let readOnlyUser: HydratedDocument<IUserHasId>;
   let publicPage: HydratedDocument<PageDocument>;
   let forbiddenPage: HydratedDocument<PageDocument>;
   let originCommentId: string;
   let originCommentOnForbiddenPageId: string;
   let replyCommentId: string;
+
+  const mountAppAs = (requesterUser: HydratedDocument<IUserHasId>) => {
+    const responseHelpers: { response: Record<string, unknown> } = {
+      response: {},
+    };
+    addCustomFunctionToResponse(responseHelpers);
+
+    const mounted = express();
+    mounted.use(express.json());
+    mounted.use((_req, res, next) => {
+      Object.assign(res, responseHelpers.response);
+      next();
+    });
+    mounted.use((req: AuthenticatedRequest, _res, next) => {
+      req.user = requesterUser;
+      next();
+    });
+    // NOTE: app.use(prefix, handlers) does NOT parse an `:id` route param —
+    // only a Router route registration (post/get/put) does. Mirror
+    // production's mounting (apps/app/src/server/routes/apiv3/index.js)
+    // exactly, or `req.params.id` is undefined and every request 400s on
+    // express-validator's `param('id').isMongoId()`.
+    const inlineCommentsRouter = express.Router();
+    inlineCommentsRouter.put(
+      '/:id/resolve',
+      resolveInlineCommentRouteHandlersFactory(crowi),
+    );
+    mounted.use('/_api/v3/inline-comments', inlineCommentsRouter);
+    return mounted;
+  };
 
   beforeAll(async () => {
     crowi = await getInstance();
@@ -61,7 +94,7 @@ describe('PUT /_api/v3/inline-comments/:id/resolve', () => {
     const User = mongoose.model<IUserHasId>('User');
 
     await User.deleteMany({
-      username: { $in: [requesterUsername, ownerUsername] },
+      username: { $in: [requesterUsername, ownerUsername, readOnlyUsername] },
     });
     requester = await User.create({
       name: requesterUsername,
@@ -72,6 +105,16 @@ describe('PUT /_api/v3/inline-comments/:id/resolve', () => {
       name: ownerUsername,
       username: ownerUsername,
       email: `${ownerUsername}@example.com`,
+    });
+    // Read-only-user restriction (requirements.md Requirement 1, AC 1.3/1.4):
+    // `security:isRomUserAllowedToComment` defaults to false
+    // (config-definition.ts), so this user is denied by
+    // `excludeReadOnlyUserIfCommentNotAllowed` with no further config setup.
+    readOnlyUser = await User.create({
+      name: readOnlyUsername,
+      username: readOnlyUsername,
+      email: `${readOnlyUsername}@example.com`,
+      readOnly: true,
     });
 
     publicPage = await Page.create({
@@ -134,32 +177,7 @@ describe('PUT /_api/v3/inline-comments/:id/resolve', () => {
     });
     replyCommentId = reply.id;
 
-    const responseHelpers: { response: Record<string, unknown> } = {
-      response: {},
-    };
-    addCustomFunctionToResponse(responseHelpers);
-
-    app = express();
-    app.use(express.json());
-    app.use((_req, res, next) => {
-      Object.assign(res, responseHelpers.response);
-      next();
-    });
-    app.use((req: AuthenticatedRequest, _res, next) => {
-      req.user = requester;
-      next();
-    });
-    // NOTE: app.use(prefix, handlers) does NOT parse an `:id` route param —
-    // only a Router route registration (post/get/put) does. Mirror
-    // production's mounting (apps/app/src/server/routes/apiv3/index.js)
-    // exactly, or `req.params.id` is undefined and every request 400s on
-    // express-validator's `param('id').isMongoId()`.
-    const inlineCommentsRouter = express.Router();
-    inlineCommentsRouter.put(
-      '/:id/resolve',
-      resolveInlineCommentRouteHandlersFactory(crowi),
-    );
-    app.use('/_api/v3/inline-comments', inlineCommentsRouter);
+    app = mountAppAs(requester);
   }, 120_000);
 
   afterAll(async () => {
@@ -168,7 +186,7 @@ describe('PUT /_api/v3/inline-comments/:id/resolve', () => {
       _id: { $in: [publicPage._id, forbiddenPage._id] },
     });
     await crowi.models.User.deleteMany({
-      username: { $in: [requesterUsername, ownerUsername] },
+      username: { $in: [requesterUsername, ownerUsername, readOnlyUsername] },
     });
     // Replies before origins — see create-reply.integ.ts's afterAll comment
     // for why (Prisma's Mongo connector rejects deleting a parent and its
@@ -204,6 +222,18 @@ describe('PUT /_api/v3/inline-comments/:id/resolve', () => {
     expect(unresolveRes.status).toBe(200);
     expect(unresolveRes.body.inlineComment.resolvedById).toBeNull();
     expect(unresolveRes.body.inlineComment.resolvedAt).toBeNull();
+  });
+
+  it('returns 400 when a read-only user (not allowed to comment) attempts to resolve', async () => {
+    const readOnlyApp = mountAppAs(readOnlyUser);
+    const res = await request(readOnlyApp)
+      .put(`/_api/v3/inline-comments/${originCommentId}/resolve`)
+      .send({ resolved: true });
+
+    expect(res.status).toBe(400);
+    expect(res.body.errors).toEqual([
+      expect.objectContaining({ code: 'validation_failed' }),
+    ]);
   });
 
   it('returns 400 when :id is a reply (not an origin comment)', async () => {

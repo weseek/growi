@@ -9,6 +9,11 @@
  * This route checks page view permission the same way create-reply.ts does
  * and adds no creator-only restriction.
  *
+ * `excludeReadOnlyUserIfCommentNotAllowed` is the same middleware normal
+ * comments use for `/comments.update`, placed right after `loginRequired` —
+ * see update.ts's file doc for why this makes the read-only-user restriction
+ * a server-side guarantee, not only a client-side affordance.
+ *
  * `findUnique` distinguishes "id does not exist" (404) from "id exists but
  * isn't an origin inline comment" (400) — same reasoning as create-reply.ts.
  */
@@ -24,6 +29,7 @@ import type { HydratedDocument } from 'mongoose';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
+import { excludeReadOnlyUserIfCommentNotAllowed } from '~/server/middlewares/exclude-read-only-user';
 import loginRequiredFactory from '~/server/middlewares/login-required';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import { findPageAndMetaDataByViewer } from '~/server/service/page/find-page-and-meta-data-by-viewer';
@@ -57,6 +63,7 @@ export const resolveInlineCommentRouteHandlersFactory = (
   return [
     accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequired,
+    excludeReadOnlyUserIfCommentNotAllowed,
     ...validator,
     apiV3FormValidator,
     async (req: Req, res: ApiV3Response) => {
