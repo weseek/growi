@@ -2,7 +2,7 @@
 
 /**
  * Unit tests for the popover's shared "one displayed comment" component, used
- * by both the origin comment and every reply (design.md「Popover: 起点・返信の統合」,
+ * by both the origin comment and every reply,
  * requirements.md Requirement 2, ACs 2.1/2.2/2.6).
  *
  * The two callers differ only in what they pass: the origin adds a quote
@@ -176,7 +176,7 @@ describe('InlineCommentPopoverEntry', () => {
     );
   });
 
-  it('does not build the shared CommentCard box around itself (design.md「Popover: 起点・返信の統合」)', () => {
+  it('does not build the shared CommentCard box around itself', () => {
     const { container } = renderEntry();
 
     expect(container.querySelector('.page-comment')).toBeNull();
@@ -246,7 +246,7 @@ describe('InlineCommentPopoverEntry', () => {
     ).toBeDisabled();
   });
 
-  it('gives its icon buttons a square, non-circular shape (design.md 方針転換その2-1)', () => {
+  it('gives its icon buttons a square, non-circular shape', () => {
     renderEntry();
 
     for (const testId of [

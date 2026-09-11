@@ -8,9 +8,9 @@
  *
  * While editing, `CommentCard` is not kept mounted underneath the editor --
  * it is replaced entirely by the bare `CommentEditor`, matching
- * `Comment.tsx`'s own re-edit exactly (2026-09-11 方針転換その12, user request:
- * keeping the box/header/quote/badge visible around a second, nested editor
- * UI read as redundant, not as an intentionally-kept feature). This means
+ * `Comment.tsx`'s own re-edit exactly (user request: keeping the
+ * box/header/quote/badge visible around a second, nested editor UI read as
+ * redundant, not as an intentionally-kept feature). This means
  * the badge, resolve toggle, and quote are all hidden for the duration of an
  * edit, same as a normal comment's revision link and header disappear during
  * its own edit.
@@ -148,8 +148,8 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
       className={`inline-comment-item mb-3 ${styles['inline-comment-item-styles']}`}
     >
       {isEditing ? (
-        // 2026-09-11 (方針転換その12): matches `Comment.tsx`'s own re-edit --
-        // the whole `CommentCard` (box, header, quote, badge, resolve toggle)
+        // Matches `Comment.tsx`'s own re-edit -- the whole `CommentCard`
+        // (box, header, quote, badge, resolve toggle)
         // is replaced by the bare `CommentEditor` while editing, not kept
         // mounted underneath it. `onSubmit` overrides `CommentEditor`'s
         // default post/update path to route through this comment's own

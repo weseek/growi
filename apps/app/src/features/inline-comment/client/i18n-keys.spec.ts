@@ -8,10 +8,8 @@ import * as path from 'node:path';
  * resolve/reopen toggle). This repo is English-first (see project memory):
  * only `en_US` is required for now, other locales are deferred.
  *
- * `label` (the "Inline Comment" type-label row) was removed by
- * inline-comment-visual-refresh task 4.1, which dropped the row from the
- * markup because the approved mockup doesn't have it (see
- * .kiro/specs/inline-comment-visual-refresh/tasks.md Implementation Notes).
+ * `label` (the "Inline Comment" type-label row) was removed once the
+ * approved visual-refresh mockup showed no such row.
  *
  * Task 1.3 of inline-comment-interaction-ux (Requirements 2.3, 3.2) adds two
  * more keys ahead of the components that will consume them (tasks 3.2, 4.1):

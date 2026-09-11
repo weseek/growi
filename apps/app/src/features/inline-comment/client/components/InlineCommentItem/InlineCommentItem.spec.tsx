@@ -672,7 +672,7 @@ describe('InlineCommentItem', () => {
       expect(commentEditorProps.current?.onCanceled).toBeInstanceOf(Function);
     });
 
-    // 2026-09-11 方針転換その12: `CommentCard` is replaced entirely by the
+    // `CommentCard` is replaced entirely by the
     // editor while editing (matching `Comment.tsx`'s own re-edit), not kept
     // mounted underneath it -- the box, header (avatar/username/date), quote,
     // and status badge/resolve toggle all disappear for the duration of an

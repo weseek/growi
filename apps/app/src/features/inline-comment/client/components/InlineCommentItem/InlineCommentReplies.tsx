@@ -107,8 +107,8 @@ const InlineCommentReplyItem: FC<InlineCommentReplyItemProps> = (
       className="inline-comment-reply ms-4 ms-sm-5 mt-2"
     >
       {isEditing ? (
-        // 2026-09-11 (方針転換その12): matches the origin comment's own edit
-        // mode (see `InlineCommentItem.tsx`) and `Comment.tsx`'s re-edit --
+        // Matches the origin comment's own edit mode (see
+        // `InlineCommentItem.tsx`) and `Comment.tsx`'s re-edit --
         // `CommentCard` is replaced entirely by the bare `CommentEditor`
         // while editing, not kept mounted underneath it. `onSubmit`
         // overrides the default post/update path to route through this

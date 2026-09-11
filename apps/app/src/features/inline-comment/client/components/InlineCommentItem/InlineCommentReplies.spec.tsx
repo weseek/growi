@@ -85,7 +85,7 @@ vi.mock('react-i18next', () => ({
 }));
 
 // `DeleteConfirmAlert` (now shared with this file's delete confirmation, see
-// design.md「削除確認UIの共通化」) reads `next-i18next`, not `react-i18next`.
+// (`DeleteConfirmAlert.tsx`) reads `next-i18next`, not `react-i18next`.
 vi.mock('next-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
@@ -440,7 +440,7 @@ describe('InlineCommentReplies', () => {
         'icon-button',
       );
       // 32px squares, not circles: the same shape `InlineCommentItem.tsx`'s
-      // own icon buttons already took in be49248348 (design.md 方針転換その2-1).
+      // own icon buttons already took in be49248348.
       expect(editButton).not.toHaveClass('rounded-circle');
       expect(deleteButton).not.toHaveClass('rounded-circle');
       expect(
@@ -541,7 +541,7 @@ describe('InlineCommentReplies', () => {
       expect(commentEditorProps.current?.onCanceled).toBeInstanceOf(Function);
     });
 
-    // 2026-09-11 方針転換その12: `CommentCard` is replaced entirely by the
+    // `CommentCard` is replaced entirely by the
     // editor while editing (matching `Comment.tsx`'s own re-edit and the
     // origin comment's edit mode), not kept mounted underneath it -- the box
     // and its header (avatar/username/date) disappear for the duration of an

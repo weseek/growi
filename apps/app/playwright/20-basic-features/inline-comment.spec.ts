@@ -3991,7 +3991,7 @@ test.describe('Inline comment - a resolved comment hides its body highlight/popo
   });
 });
 
-test.describe('Inline comment - visual refresh: mockup cross-check captures (spec: inline-comment-visual-refresh, Req 4.1/4.2)', () => {
+test.describe('Inline comment - visual refresh: mockup cross-check captures', () => {
   // Serial: every test below builds on real backend state created by the
   // earlier ones (the page, then the origin comment, then its reply), the
   // same reasoning the other suites in this file use.
@@ -4110,14 +4110,14 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
   };
 
   /**
-   * The computed properties every measured element reports. Judging the 35
-   * items of `visual-acceptance-checklist.md` means answering questions like
-   * "is the gap between the badge and the toggle button mockup-equivalent?"
-   * and "is the quote block's left/right inner padding right?" — those are
-   * measurements, and eyeballing a PNG is exactly the failure mode this whole
-   * spec exists to prevent. So each capture below is paired with a dump of
-   * these values plus every element's `getBoundingClientRect()`, which is
-   * what makes a per-item verdict checkable rather than an opinion.
+   * The computed properties every measured element reports. Judging mockup
+   * fidelity means answering questions like "is the gap between the badge
+   * and the toggle button mockup-equivalent?" and "is the quote block's
+   * left/right inner padding right?" — those are measurements, and
+   * eyeballing a PNG is exactly the failure mode this whole spec exists to
+   * prevent. So each capture below is paired with a dump of these values
+   * plus every element's `getBoundingClientRect()`, which is what makes a
+   * verdict checkable rather than an opinion.
    */
   const STYLE_PROPS = [
     'display',
@@ -4469,8 +4469,8 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
     await expect(reply.first()).toContainText(replyText);
 
     // A SECOND reply, so the spacing *between* two replies is a measured
-    // value rather than one inferred from the class list -- checklist item 22
-    // asks for the reply-to-reply gap, which a single reply cannot show.
+    // value rather than one inferred from the class list -- the
+    // reply-to-reply gap, which a single reply cannot show.
     await item.getByTestId('inline-comment-reply-toggle-button').click();
     await item.locator('.cm-content').fill(secondReplyText);
     await item.getByTestId('comment-submit-button').first().click();

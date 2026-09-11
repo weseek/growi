@@ -306,12 +306,12 @@ describe('InlineCommentPreviewPopover', () => {
     expect(popover).toHaveTextContent('the comment body');
   });
 
-  // 2026-09-11 design change (design.md「Popover 再設計」): the origin comment
+  // 2026-09-11 design change: the origin comment
   // is no longer rendered through `CommentCard`. The list item keeps reusing
   // it; the popover builds its own header/body so the popover can carry the
   // mockup's own surface treatment instead of the shared comment box
   // (gray `bg-comment` fill, speech-bubble triangle, 6px corners).
-  it('renders the origin comment outside the shared CommentCard box (design.md「Popover 再設計」)', () => {
+  it('renders the origin comment outside the shared CommentCard box', () => {
     renderPopover();
 
     const origin = screen.getByTestId('inline-comment-preview-popover-origin');
@@ -327,11 +327,11 @@ describe('InlineCommentPreviewPopover', () => {
     expect(body.classList.contains('page-comment-body')).toBe(false);
   });
 
-  // 2026-09-11 その2 (design.md「Popover: 起点・返信の統合」): a reply is no
+  // 2026-09-11 その2: a reply is no
   // longer a boxed `CommentCard` either -- origin and reply now share the
   // same flat markup, so the only thing that still distinguishes them in the
   // popover is the quote block the origin carries.
-  it('renders replies with the same flat markup as the origin, not a CommentCard box (design.md「Popover: 起点・返信の統合」)', () => {
+  it('renders replies with the same flat markup as the origin, not a CommentCard box', () => {
     renderPopover({ replies: [reply({ comment: 'an existing reply' })] });
 
     const replyElement = screen.getByTestId(
@@ -566,10 +566,9 @@ describe('InlineCommentPreviewPopover', () => {
     expect(actionsRow).toHaveClass('d-flex', 'justify-content-end');
   });
 
-  // Checklist item 30 (the list item's item 11 counterpart): Save joins
-  // Cancel in that same row, in the same order, so the two edit modes read
-  // alike (checklist item 33).
-  it('places Cancel and Save together in that row, Cancel first (checklist item 30)', async () => {
+  // Save joins Cancel in that same row, in the same order, so the popover's
+  // edit mode reads the same way as the list item's own edit mode.
+  it('places Cancel and Save together in that row, Cancel first', async () => {
     currentUserRef.current = { _id: 'user1' };
     renderPopover({ id: 'comment42', creatorId: 'user1' });
 
@@ -658,11 +657,11 @@ describe('InlineCommentPreviewPopover', () => {
     ).toBeDisabled();
   });
 
-  // 2026-09-11 その2, design.md 方針転換その2-3: editing the origin used to be
+  // 2026-09-11 その2: editing the origin used to be
   // guarded as `!isEditing && (<>replies + reply form</>)`, which made the
   // whole thread vanish as soon as the origin was edited. Each entry now owns
   // its own edit state, so only the edited body is replaced.
-  it('keeps the reply thread and the reply form on screen while the origin is being edited (design.md 方針転換その2-3)', async () => {
+  it('keeps the reply thread and the reply form on screen while the origin is being edited', async () => {
     currentUserRef.current = { _id: 'user1' };
     renderPopover({
       id: 'comment42',
@@ -690,7 +689,7 @@ describe('InlineCommentPreviewPopover', () => {
     ).not.toBeNull();
   });
 
-  it("editing a reply leaves the origin's body and the other replies displayed (design.md 方針転換その2-3)", async () => {
+  it("editing a reply leaves the origin's body and the other replies displayed", async () => {
     currentUserRef.current = { _id: 'user2' };
     renderPopover({
       id: 'comment42',
@@ -931,9 +930,9 @@ describe('InlineCommentPreviewPopover', () => {
     ).not.toBeInTheDocument();
   });
 
-  // design.md 方針転換その2-1: every icon button in the popover is a 32px
+  // Every icon button in the popover is a 32px
   // square now, following the user's own `be49248348` / `6ef7593ce8`.
-  it('has no circular icon buttons left anywhere in the popover (design.md 方針転換その2-1)', () => {
+  it('has no circular icon buttons left anywhere in the popover', () => {
     currentUserRef.current = { _id: 'user1' };
     renderPopover({
       creatorId: 'user1',
@@ -944,11 +943,11 @@ describe('InlineCommentPreviewPopover', () => {
     expect(popover.querySelectorAll('button.rounded-circle')).toHaveLength(0);
   });
 
-  // 2026-09-11 design change (design.md「Popover 再設計」・不解決バッジの撤去):
+  // 2026-09-11 design change (status badge removed):
   // the status badge is gone from the popover in both states -- the resolve
   // toggle alone carries the state, since its own label already says which
   // way the state will go. The list item keeps its badge.
-  it('shows no status badge in either state (design.md「Popover 再設計」)', () => {
+  it('shows no status badge in either state', () => {
     const { rerender } = renderPopover({ resolvedAt: null });
 
     expect(

@@ -8,7 +8,7 @@
  *
  * The reply composer uses the same `MentionAwareCommentInput` +
  * `MentionPickerButton` pairing as every other comment input in this feature
- * (2026-09-11 その4, design.md「Popover: 起点・返信の統合」の続き) — it used to be a
+ * (2026-09-11) — it used to be a
  * plain `<textarea>` that only borrowed the surrounding composer's visual
  * language, but that meant mention insertion had no shared implementation to
  * plug into here, so the pill-shaped one-line layout was dropped in favor of
@@ -19,7 +19,7 @@
  * shared `CommentCard`: the mockup draws them flat on the popover's surface,
  * while `CommentCard` brings the shared comment box (a gray fill, a
  * speech-bubble triangle, its own small avatar). The bottom-of-page list keeps
- * using `CommentCard`. See design.md「Popover 再設計」「Popover: 起点・返信の統合」.
+ * using `CommentCard`.
  *
  * Editing and deleting are offered only to an entry's own creator, gated by
  * the same read-only-user restriction `InlineCommentItem.tsx` applies. Each
@@ -245,7 +245,7 @@ export const InlineCommentPreviewPopover: FC<
             }
             headerExtra={
               <>
-                {/* No status badge here (design.md「Popover 再設計」): the
+                {/* No status badge here: the
                     toggle's own label already says which way the state will
                     go, and the badge repeated that in the popover's tight
                     header row. The list item keeps its badge. */}
@@ -287,9 +287,9 @@ export const InlineCommentPreviewPopover: FC<
           )}
         </div>
 
-        {/* No `!isEditing` guard around the thread any more (design.md
-            方針転換その2-3): each entry owns its own edit / delete state, so
-            editing one leaves every sibling and the reply form displayed. */}
+        {/* No `!isEditing` guard around the thread: each entry owns its own
+            edit / delete state, so editing one leaves every sibling and the
+            reply form displayed. */}
         {repliesFromOldest.length > 0 && (
           <div data-testid="inline-comment-preview-popover-replies">
             {repliesFromOldest.map((reply) => (

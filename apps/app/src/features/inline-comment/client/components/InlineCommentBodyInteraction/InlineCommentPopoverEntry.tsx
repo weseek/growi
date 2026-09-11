@@ -1,6 +1,6 @@
 /**
  * One displayed comment inside `InlineCommentPreviewPopover` — used for the
- * origin comment and for every reply alike (design.md「Popover: 起点・返信の統合」).
+ * origin comment and for every reply alike.
  *
  * The popover deliberately does not render its entries through the shared
  * `CommentCard`: the mockup draws every entry flat on the popover's own
@@ -18,7 +18,7 @@
  * `isEditing` / `isDeleteConfirmOpen` are local to each instance, so one
  * entry being edited leaves every sibling (and the reply form) displayed as
  * usual. That is what fixes the popover's earlier behavior of hiding the whole
- * reply thread whenever the origin comment was edited (design.md 方針転換その2-3).
+ * reply thread whenever the origin comment was edited.
  */
 import { type JSX, type ReactNode, useState } from 'react';
 import type { IUserHasId } from '@growi/core';
@@ -165,7 +165,7 @@ export const InlineCommentPopoverEntry = (
                   that has to be discovered by hovering would be easy to miss.
                   `CommentControl.tsx`'s glyphs and button classes are kept
                   (Requirement 3.5), with no `rounded-circle` -- every icon
-                  button here is a 32px square (design.md 方針転換その2-1). */}
+                  button here is a 32px square. */}
               <span className="d-flex align-items-center gap-1">
                 <button
                   type="button"
