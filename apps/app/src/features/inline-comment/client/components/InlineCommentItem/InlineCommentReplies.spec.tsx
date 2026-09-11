@@ -541,6 +541,33 @@ describe('InlineCommentReplies', () => {
       expect(commentEditorProps.current?.onCanceled).toBeInstanceOf(Function);
     });
 
+    // 2026-09-11 方針転換その12: `CommentCard` is replaced entirely by the
+    // editor while editing (matching `Comment.tsx`'s own re-edit and the
+    // origin comment's edit mode), not kept mounted underneath it -- the box
+    // and its header (avatar/username/date) disappear for the duration of an
+    // edit.
+    it("replaces the whole CommentCard box with the editor while editing, matching a normal comment's re-edit", () => {
+      currentUserRef.current = { _id: 'user1' };
+      renderReplies({ replies: [ownReply] });
+
+      expect(
+        screen
+          .getByTestId('inline-comment-reply')
+          .querySelector('.page-comment'),
+      ).not.toBeNull();
+
+      fireEvent.click(screen.getByTestId('inline-comment-reply-edit-button'));
+
+      expect(
+        screen.getByTestId('inline-comment-reply-editor-mock'),
+      ).toBeInTheDocument();
+      expect(
+        screen
+          .getByTestId('inline-comment-reply')
+          .querySelector('.page-comment'),
+      ).toBeNull();
+    });
+
     it('calls updateReply(id, text) via the onSubmit override, and leaves edit mode when onCommented fires', async () => {
       const updateReply = vi.fn().mockResolvedValue(undefined);
       currentUserRef.current = { _id: 'user1' };

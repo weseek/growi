@@ -123,6 +123,13 @@
 - **今回のスコープに含めなかったもの（ユーザー自身が挙げた重複箇所の対象外）**: ポップオーバー（`InlineCommentPopoverEntry.tsx`）は独自の `.inline-comment-preview-popover-icon-button` をそのまま維持——常時表示（ホバー表示ではない）という本質的な挙動差がすでにそのファイル自身のコメントで明記されている、意図的な重複であり、今回の3箇所には含まれていなかったため。
 - 実ブラウザで確認（確認用の使い捨てPlaywrightテストは確認後に削除）: 通常コメントとインラインコメントアイテムの編集ボタンが、どちらも 32×32px・opacity 0.5 で完全に一致することを確認済み。
 
+### 2026-09-11 の方針転換 その12（編集モードは箱ごと差し替える）
+
+投稿済みの起点コメント・返信を編集する際、`InlineCommentItem.tsx`／`InlineCommentReplies.tsx` はこれまで `CommentCard`（ヘッダー行・バッジ・引用・resolveトグル）を常にマウントしたまま、その`children`スロットの中に`CommentEditor`を入れ子でレンダリングしていた。通常コメント（`Comment.tsx`）は編集中、`CommentCard`ごと`CommentEditor`単体に丸ごと差し替える（`isReEdit ? <CommentEditor/> : <CommentCard>...`）——実ブラウザでの比較調査（その11参照）で、この構造差が実在することを確認済みだった。ユーザーが「通常コメントと同様に編集中は箱ごと差し替える」と明示的に決定した。
+
+- `InlineCommentItem.tsx`／`InlineCommentReplies.tsx` の両方で、`isEditing` の分岐を `CommentCard` の外側に引き上げ、`CommentCard`（ヘッダー行・アバター・ユーザー名・日時・状態バッジ・resolveトグル・引用）と裸の `CommentEditor` のどちらか一方だけがDOMに存在するようにした。編集中は`CommentCard`が完全にアンマウントされるため、その11で確認された「編集中にアバターが3つ画面に出る」二重表示も、この構造変更の副産物として同時に解消された。
+- 編集/削除アイコンボタンを表示する条件式から、今では冗長になった `!isEditing` ガードを削除した（カードごと消えるため、編集中にボタンだけを個別に隠す必要がなくなったため）。
+
 ### This Spec Owns
 - `InlineCommentItem.tsx`／`InlineCommentReplies.tsx`／`InlineCommentPreviewPopover.tsx` のJSXマークアップとクラス名
 - `InlineCommentItem.module.scss`（既存）の拡張、および新規 `InlineCommentPreviewPopover.module.scss` の追加

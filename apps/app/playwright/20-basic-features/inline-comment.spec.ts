@@ -4605,9 +4605,15 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
     await expect(editForm.locator('.cm-content')).toContainText(
       originCommentText,
     );
-    await card.hover();
+    // 2026-09-11 (方針転換その12): `card` (`.page-comment`) no longer exists
+    // while editing -- the whole box is replaced by the bare editor, so
+    // `card`'s locator would now resolve to the NEXT `.page-comment` in the
+    // item (a reply's own box) instead of failing loudly. Screenshot/hover
+    // `item` itself (the origin comment's outer container, which still
+    // exists) for this state.
+    await item.hover();
 
-    await card.screenshot({ path: path.join(evidenceDir, '02-list-edit.png') });
+    await item.screenshot({ path: path.join(evidenceDir, '02-list-edit.png') });
     writeMetrics('02-list-edit', {
       elements: await collectMetrics(
         page,
@@ -4856,9 +4862,11 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
     await expect(editForm.locator('.cm-content')).toContainText(
       originCommentText,
     );
-    await card.hover();
+    // Same reasoning as the light-mode capture above -- `card` no longer
+    // resolves to the origin comment's box while editing, so use `item`.
+    await item.hover();
 
-    await card.screenshot({
+    await item.screenshot({
       path: path.join(evidenceDir, '02-list-edit-dark.png'),
     });
     writeMetrics('02-list-edit-dark', {

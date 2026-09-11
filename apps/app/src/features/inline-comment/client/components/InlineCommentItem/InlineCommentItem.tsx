@@ -1,9 +1,19 @@
 /**
- * A single inline comment in the comment list. The box, header row, and body
- * container all come from the shared `CommentCard`, so an inline comment
- * sits in exactly the same box as a normal comment; only the parts that
- * genuinely differ are supplied through its slots (the resolved badge/toggle
- * via `headerEnd`, the type label + anchored quote via `beforeBody`).
+ * A single inline comment in the comment list. In its read-only display, the
+ * box, header row, and body container all come from the shared
+ * `CommentCard`, so an inline comment sits in exactly the same box as a
+ * normal comment; only the parts that genuinely differ are supplied through
+ * its slots (the resolved badge/toggle via `headerEnd`, the anchored quote
+ * via `beforeBody`).
+ *
+ * While editing, `CommentCard` is not kept mounted underneath the editor --
+ * it is replaced entirely by the bare `CommentEditor`, matching
+ * `Comment.tsx`'s own re-edit exactly (2026-09-11 方針転換その12, user request:
+ * keeping the box/header/quote/badge visible around a second, nested editor
+ * UI read as redundant, not as an intentionally-kept feature). This means
+ * the badge, resolve toggle, and quote are all hidden for the duration of an
+ * edit, same as a normal comment's revision link and header disappear during
+ * its own edit.
  *
  * `RevisionRenderer` receives `additionalClassName="comment"`, matching
  * `Comment.tsx`; without it, `Comment.module.scss`'s paragraph/blockquote
@@ -134,121 +144,122 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
       data-resolved={isResolved}
       className={`inline-comment-item mb-3 ${styles['inline-comment-item-styles']}`}
     >
-      <CommentCard
-        id={comment.id}
-        creator={comment.creator}
-        createdAt={comment.createdAt}
-        rootClassName={resolvedRootClassName}
-        headerEnd={
-          <span className="ms-auto d-flex align-items-center gap-2">
-            {isOwnComment && !isEditing && !isDeleteConfirmOpen && (
+      {isEditing ? (
+        // 2026-09-11 (方針転換その12): matches `Comment.tsx`'s own re-edit --
+        // the whole `CommentCard` (box, header, quote, badge, resolve toggle)
+        // is replaced by the bare `CommentEditor` while editing, not kept
+        // mounted underneath it. `onSubmit` overrides `CommentEditor`'s
+        // default post/update path to route through this comment's own
+        // `update`, the same override technique `InlineCommentReplies.tsx`'s
+        // reply composer already uses for `createReply`.
+        <CommentEditor
+          pageId={comment.pageId}
+          currentCommentId={comment.id}
+          commentBody={comment.comment}
+          revisionId={comment.anchorOriginRevisionId}
+          onCanceled={handleEditCancel}
+          onCommented={() => setIsEditing(false)}
+          onSubmit={(text) => update(comment.id, text)}
+        />
+      ) : (
+        <CommentCard
+          id={comment.id}
+          creator={comment.creator}
+          createdAt={comment.createdAt}
+          rootClassName={resolvedRootClassName}
+          headerEnd={
+            <span className="ms-auto d-flex align-items-center gap-2">
+              {isOwnComment && !isDeleteConfirmOpen && (
+                <span
+                  className={`d-flex align-items-center gap-1 ${styles['icon-button-container']}`}
+                >
+                  <CommentEditDeleteButtons
+                    testIdPrefix="inline-comment"
+                    onClickEditBtn={() => setIsEditing(true)}
+                    onClickDeleteBtn={() => setIsDeleteConfirmOpen(true)}
+                  />
+                </span>
+              )}
               <span
-                className={`d-flex align-items-center gap-1 ${styles['icon-button-container']}`}
+                data-testid="inline-comment-status"
+                className={`badge rounded-pill ${styles['inline-comment-status-badge']} ${
+                  isResolved
+                    ? 'bg-success-subtle text-success-emphasis'
+                    : 'bg-warning-subtle text-warning-emphasis'
+                }`}
               >
-                <CommentEditDeleteButtons
-                  testIdPrefix="inline-comment"
-                  onClickEditBtn={() => setIsEditing(true)}
-                  onClickDeleteBtn={() => setIsDeleteConfirmOpen(true)}
-                />
+                {isResolved
+                  ? t('inline_comment.resolved')
+                  : t('inline_comment.unresolved')}
               </span>
-            )}
-            <span
-              data-testid="inline-comment-status"
-              className={`badge rounded-pill ${styles['inline-comment-status-badge']} ${
-                isResolved
-                  ? 'bg-success-subtle text-success-emphasis'
-                  : 'bg-warning-subtle text-warning-emphasis'
-              }`}
-            >
-              {isResolved
-                ? t('inline_comment.resolved')
-                : t('inline_comment.unresolved')}
+              <button
+                type="button"
+                className="btn btn-sm btn-outline-secondary rounded-pill"
+                onClick={handleResolveToggle}
+              >
+                {isResolved
+                  ? t('inline_comment.reopen')
+                  : t('inline_comment.resolve')}
+              </button>
             </span>
-            <button
-              type="button"
-              className="btn btn-sm btn-outline-secondary rounded-pill"
-              onClick={handleResolveToggle}
-            >
-              {isResolved
-                ? t('inline_comment.reopen')
-                : t('inline_comment.resolve')}
-            </button>
-          </span>
-        }
-        beforeBody={
-          <>
-            {/* `inline-comment-quote` is `:global(...)` in the CSS module, so it's
-                referenced as a plain class name -- styles['inline-comment-quote']
-                would be undefined. A real <button> (not a div with role="button")
-                wraps the quote for default keyboard accessibility, reset to
-                plain-text styling so it still reads as the quote. */}
-            <button
-              type="button"
-              className="btn p-0 border-0 bg-transparent text-start w-100"
-              onClick={handleQuoteClick}
-            >
-              <blockquote className="inline-comment-quote bg-body-tertiary rounded-end small text-body-secondary my-2 p-2">
-                {comment.anchor.quote}
-              </blockquote>
-            </button>
-          </>
-        }
-        footer={
-          <>
-            {resolveError != null && (
-              <span
-                className="text-danger d-block"
-                data-testid="inline-comment-resolve-error"
+          }
+          beforeBody={
+            <>
+              {/* `inline-comment-quote` is `:global(...)` in the CSS module, so it's
+                  referenced as a plain class name -- styles['inline-comment-quote']
+                  would be undefined. A real <button> (not a div with role="button")
+                  wraps the quote for default keyboard accessibility, reset to
+                  plain-text styling so it still reads as the quote. */}
+              <button
+                type="button"
+                className="btn p-0 border-0 bg-transparent text-start w-100"
+                onClick={handleQuoteClick}
               >
-                {resolveError}
-              </span>
-            )}
-            {deleteError != null && (
-              <span
-                className="text-danger d-block"
-                data-testid="inline-comment-delete-error"
-              >
-                {deleteError}
-              </span>
-            )}
-            {isDeleteConfirmOpen && (
-              <DeleteConfirmAlert
-                testIdPrefix="inline-comment"
-                onCancel={() => setIsDeleteConfirmOpen(false)}
-                onConfirm={handleDeleteConfirm}
-              />
-            )}
-          </>
-        }
-      >
-        {isEditing ? (
-          // 2026-09-11: uses the literal same `CommentEditor` the normal
-          // comment's own re-edit uses (`Comment.tsx`), matching the user's
-          // request to unify the two editing experiences -- toolbar,
-          // attachments, preview tab and all. `onSubmit` overrides
-          // `CommentEditor`'s default post/update path to route through this
-          // comment's own `update`, the same override technique
-          // `InlineCommentReplies.tsx`'s reply composer already uses for
-          // `createReply`.
-          <CommentEditor
-            pageId={comment.pageId}
-            currentCommentId={comment.id}
-            commentBody={comment.comment}
-            revisionId={comment.anchorOriginRevisionId}
-            onCanceled={handleEditCancel}
-            onCommented={() => setIsEditing(false)}
-            onSubmit={(text) => update(comment.id, text)}
-          />
-        ) : rendererOptions != null ? (
-          <RevisionRenderer
-            rendererOptions={rendererOptions}
-            markdown={comment.comment}
-            additionalClassName="comment"
-          />
-        ) : (
-          <span>{comment.comment}</span>
-        )}
-      </CommentCard>
+                <blockquote className="inline-comment-quote bg-body-tertiary rounded-end small text-body-secondary my-2 p-2">
+                  {comment.anchor.quote}
+                </blockquote>
+              </button>
+            </>
+          }
+          footer={
+            <>
+              {resolveError != null && (
+                <span
+                  className="text-danger d-block"
+                  data-testid="inline-comment-resolve-error"
+                >
+                  {resolveError}
+                </span>
+              )}
+              {deleteError != null && (
+                <span
+                  className="text-danger d-block"
+                  data-testid="inline-comment-delete-error"
+                >
+                  {deleteError}
+                </span>
+              )}
+              {isDeleteConfirmOpen && (
+                <DeleteConfirmAlert
+                  testIdPrefix="inline-comment"
+                  onCancel={() => setIsDeleteConfirmOpen(false)}
+                  onConfirm={handleDeleteConfirm}
+                />
+              )}
+            </>
+          }
+        >
+          {rendererOptions != null ? (
+            <RevisionRenderer
+              rendererOptions={rendererOptions}
+              markdown={comment.comment}
+              additionalClassName="comment"
+            />
+          ) : (
+            <span>{comment.comment}</span>
+          )}
+        </CommentCard>
+      )}
 
       <InlineCommentReplies
         parentId={comment.id}

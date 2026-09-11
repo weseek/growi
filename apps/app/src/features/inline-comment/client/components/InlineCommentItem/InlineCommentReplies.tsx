@@ -106,71 +106,73 @@ const InlineCommentReplyItem: FC<InlineCommentReplyItemProps> = (
       data-testid="inline-comment-reply"
       className="inline-comment-reply ms-4 ms-sm-5 mt-2"
     >
-      <CommentCard
-        id={reply.id}
-        creator={reply.creator}
-        createdAt={reply.createdAt}
-        headerEnd={
-          isOwnReply &&
-          !isEditing &&
-          !isDeleteConfirmOpen && (
-            <span className="ms-auto d-flex align-items-center gap-2">
-              <span
-                className={`d-flex align-items-center gap-1 ${styles['icon-button-container']}`}
-              >
-                <CommentEditDeleteButtons
+      {isEditing ? (
+        // 2026-09-11 (方針転換その12): matches the origin comment's own edit
+        // mode (see `InlineCommentItem.tsx`) and `Comment.tsx`'s re-edit --
+        // `CommentCard` is replaced entirely by the bare `CommentEditor`
+        // while editing, not kept mounted underneath it. `onSubmit`
+        // overrides the default post/update path to route through this
+        // reply's own `updateReply`.
+        <CommentEditor
+          pageId={pageId}
+          currentCommentId={reply.id}
+          commentBody={reply.comment}
+          revisionId={revisionId}
+          onCanceled={handleEditCancel}
+          onCommented={() => setIsEditing(false)}
+          onSubmit={(text) => updateReply(reply.id, text)}
+        />
+      ) : (
+        <CommentCard
+          id={reply.id}
+          creator={reply.creator}
+          createdAt={reply.createdAt}
+          headerEnd={
+            isOwnReply &&
+            !isDeleteConfirmOpen && (
+              <span className="ms-auto d-flex align-items-center gap-2">
+                <span
+                  className={`d-flex align-items-center gap-1 ${styles['icon-button-container']}`}
+                >
+                  <CommentEditDeleteButtons
+                    testIdPrefix="inline-comment-reply"
+                    onClickEditBtn={() => setIsEditing(true)}
+                    onClickDeleteBtn={() => setIsDeleteConfirmOpen(true)}
+                  />
+                </span>
+              </span>
+            )
+          }
+          footer={
+            <>
+              {deleteError != null && (
+                <span
+                  className="text-danger d-block"
+                  data-testid="inline-comment-reply-delete-error"
+                >
+                  {deleteError}
+                </span>
+              )}
+              {isDeleteConfirmOpen && (
+                <DeleteConfirmAlert
                   testIdPrefix="inline-comment-reply"
-                  onClickEditBtn={() => setIsEditing(true)}
-                  onClickDeleteBtn={() => setIsDeleteConfirmOpen(true)}
+                  onCancel={() => setIsDeleteConfirmOpen(false)}
+                  onConfirm={handleDeleteConfirm}
                 />
-              </span>
-            </span>
-          )
-        }
-        footer={
-          <>
-            {deleteError != null && (
-              <span
-                className="text-danger d-block"
-                data-testid="inline-comment-reply-delete-error"
-              >
-                {deleteError}
-              </span>
-            )}
-            {isDeleteConfirmOpen && (
-              <DeleteConfirmAlert
-                testIdPrefix="inline-comment-reply"
-                onCancel={() => setIsDeleteConfirmOpen(false)}
-                onConfirm={handleDeleteConfirm}
-              />
-            )}
-          </>
-        }
-      >
-        {isEditing ? (
-          // 2026-09-11: same `CommentEditor` the origin comment's own edit
-          // mode now uses (see `InlineCommentItem.tsx`), which is itself the
-          // same component the normal comment's re-edit uses -- unifying all
-          // three editing experiences. `onSubmit` overrides the default
-          // post/update path to route through this reply's own `updateReply`.
-          <CommentEditor
-            pageId={pageId}
-            currentCommentId={reply.id}
-            commentBody={reply.comment}
-            revisionId={revisionId}
-            onCanceled={handleEditCancel}
-            onCommented={() => setIsEditing(false)}
-            onSubmit={(text) => updateReply(reply.id, text)}
-          />
-        ) : rendererOptions != null ? (
-          <RevisionRenderer
-            rendererOptions={rendererOptions}
-            markdown={reply.comment}
-          />
-        ) : (
-          <span>{reply.comment}</span>
-        )}
-      </CommentCard>
+              )}
+            </>
+          }
+        >
+          {rendererOptions != null ? (
+            <RevisionRenderer
+              rendererOptions={rendererOptions}
+              markdown={reply.comment}
+            />
+          ) : (
+            <span>{reply.comment}</span>
+          )}
+        </CommentCard>
+      )}
     </div>
   );
 };
