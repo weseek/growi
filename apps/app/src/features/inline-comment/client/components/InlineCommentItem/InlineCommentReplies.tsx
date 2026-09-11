@@ -77,7 +77,6 @@ const InlineCommentReplyItem: FC<InlineCommentReplyItemProps> = (
     removeReply,
     isOwnReply,
   } = props;
-  const { t } = useTranslation();
 
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
