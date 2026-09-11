@@ -493,12 +493,17 @@ describe('InlineCommentPreviewPopover', () => {
     isDisabledRef.current = true;
     renderPopover({ creatorId: 'user1' });
 
+    // Scoped via `.closest()` from the edit button itself, not a bare
+    // `getByTestId('not-available-for-read-only-user')`: the resolve toggle
+    // and the reply composer (inline-comment-readonly-restriction Req 2.2,
+    // 2.3) now render their own guards at the same time.
+    const editButton = screen.getByTestId(
+      'inline-comment-preview-popover-edit-button',
+    );
     expect(
-      screen.getByTestId('not-available-for-read-only-user'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId('inline-comment-preview-popover-edit-button'),
-    ).toBeDisabled();
+      editButton.closest('[data-testid="not-available-for-read-only-user"]'),
+    ).not.toBeNull();
+    expect(editButton).toBeDisabled();
   });
 
   it("shows the edit affordance and updates the origin comment through `update` when the current user is the comment's own creator (Requirement 15, AC 15.5)", async () => {
@@ -993,6 +998,92 @@ describe('InlineCommentPreviewPopover', () => {
       'btn-outline-secondary',
       'rounded-pill',
     );
+  });
+
+  // inline-comment-readonly-restriction Requirement 2.3, 2.4: the resolve
+  // toggle gets the same read-only-user guard the edit/delete controls
+  // already have (Design File Structure Plan, InlineCommentPreviewPopover.tsx
+  // item (1)). Scoped via `.closest()` from the toggle button itself, not a
+  // bare `getByTestId('not-available-for-read-only-user')`, because the
+  // origin entry's own edit/delete guard (InlineCommentPopoverEntry.tsx,
+  // unmocked here) and the reply-form guard can render at the same time.
+  it('disables the resolve toggle under the read-only restriction (inline-comment-readonly-restriction Req 2.3, 2.4)', () => {
+    isDisabledRef.current = true;
+    renderPopover({ resolvedAt: null });
+
+    const toggleButton = screen.getByTestId(
+      'inline-comment-preview-popover-resolve-toggle-button',
+    );
+    expect(toggleButton).toBeDisabled();
+    expect(
+      toggleButton.closest('[data-testid="not-available-for-read-only-user"]'),
+    ).not.toBeNull();
+  });
+
+  it('keeps the resolve toggle enabled when the read-only restriction does not apply (inline-comment-readonly-restriction Req 2.4)', () => {
+    isDisabledRef.current = false;
+    renderPopover({ resolvedAt: null });
+
+    expect(
+      screen.getByTestId(
+        'inline-comment-preview-popover-resolve-toggle-button',
+      ),
+    ).not.toBeDisabled();
+  });
+
+  // inline-comment-readonly-restriction Requirement 2.2, 2.4: the whole reply
+  // composer (avatar + input + mention picker + send button) is wrapped as a
+  // single unit -- there is no open/closed toggle stage in this popover, so
+  // the guard has to cover the always-shown form entirely (Design File
+  // Structure Plan, InlineCommentPreviewPopover.tsx item (2)).
+  it('disables the reply composer under the read-only restriction (inline-comment-readonly-restriction Req 2.2, 2.4)', () => {
+    isDisabledRef.current = true;
+    renderPopover();
+
+    const composer = document.querySelector(
+      '.inline-comment-preview-popover-reply-form',
+    ) as HTMLElement;
+    const guard = composer.closest(
+      '[data-testid="not-available-for-read-only-user"]',
+    );
+    expect(guard).not.toBeNull();
+
+    const sendButton = within(composer).getByRole('button', {
+      name: 'page_comment.comment',
+    });
+    expect(sendButton).toBeDisabled();
+  });
+
+  it('keeps the reply composer usable when the read-only restriction does not apply (inline-comment-readonly-restriction Req 2.4)', () => {
+    isDisabledRef.current = false;
+    renderPopover();
+
+    const composer = document.querySelector(
+      '.inline-comment-preview-popover-reply-form',
+    ) as HTMLElement;
+    expect(
+      composer.closest('[data-testid="not-available-for-read-only-user"]'),
+    ).toBeNull();
+    expect(
+      within(composer).getByRole('button', { name: 'page_comment.comment' }),
+    ).not.toBeDisabled();
+  });
+
+  // The close button must remain reachable in every mode -- same invariant
+  // InlineCommentPopoverEntry.tsx's own headerExtra comment states for the
+  // edit/delete guard. Only this guard covers the resolve toggle; the close
+  // button sits outside it.
+  it('never disables the close button, even when the read-only restriction applies (inline-comment-readonly-restriction Req 2.3)', () => {
+    isDisabledRef.current = true;
+    renderPopover({ creatorId: 'user1' });
+
+    const closeButton = screen.getByTestId(
+      'inline-comment-preview-popover-close-button',
+    );
+    expect(closeButton).not.toBeDisabled();
+    expect(
+      closeButton.closest('[data-testid="not-available-for-read-only-user"]'),
+    ).toBeNull();
   });
 
   it('closes on an explicit close-button click (Req 2.4)', async () => {

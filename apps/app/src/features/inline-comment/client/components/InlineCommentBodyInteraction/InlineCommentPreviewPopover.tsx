@@ -32,6 +32,7 @@ import type { VirtualElement } from '@popperjs/core';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
+import { NotAvailableIfReadOnlyUserNotAllowedToComment } from '~/client/components/NotAvailableForReadOnlyUser';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useCurrentUser } from '~/states/global';
 
@@ -249,15 +250,24 @@ export const InlineCommentPreviewPopover: FC<
                     toggle's own label already says which way the state will
                     go, and the badge repeated that in the popover's tight
                     header row. The list item keeps its badge. */}
-                <button
-                  type="button"
-                  className="btn btn-sm btn-outline-secondary rounded-pill"
-                  onClick={handleResolveToggle}
-                >
-                  {isResolved
-                    ? t('inline_comment.reopen')
-                    : t('inline_comment.resolve')}
-                </button>
+                {/* Read-only-user restriction (inline-comment-readonly-restriction
+                    Requirement 2.3, 2.4) -- same guard the origin's
+                    edit/delete controls above already use. Only this button
+                    is wrapped, not the close button next to it: the close
+                    control must stay reachable in every mode (see this
+                    file's own header comment). */}
+                <NotAvailableIfReadOnlyUserNotAllowedToComment>
+                  <button
+                    type="button"
+                    data-testid="inline-comment-preview-popover-resolve-toggle-button"
+                    className="btn btn-sm btn-outline-secondary rounded-pill"
+                    onClick={handleResolveToggle}
+                  >
+                    {isResolved
+                      ? t('inline_comment.reopen')
+                      : t('inline_comment.resolve')}
+                  </button>
+                </NotAvailableIfReadOnlyUserNotAllowedToComment>
                 {/* Last element of the header row, after the resolve toggle.
                     It used to be `position-absolute top-0 end-0` on the card
                     body, which put it above the header row in the card's own
@@ -317,31 +327,37 @@ export const InlineCommentPreviewPopover: FC<
           </div>
         )}
 
-        <div className="inline-comment-preview-popover-reply-form d-flex align-items-start border border-primary-subtle rounded p-2 gap-2">
-          <UserPicture user={currentUser} className="ms-2" noLink noTooltip />
-          <MentionAwareCommentInput
-            editorKey={replyEditorKey}
-            onSubmit={(text) => createReply(comment.id, text)}
-            onControlsChange={onReplyControlsChange}
-          />
-          <div className="d-flex align-items-center gap-1">
-            <MentionPickerButton onInsert={insertMentionIntoReply} />
-            <button
-              type="button"
-              className={`btn btn-primary btn-sm p-0 d-inline-flex align-items-center justify-content-center ${styles['inline-comment-preview-popover-send-button']}`}
-              disabled={!canSubmitReply}
-              onClick={submitReply}
-              aria-label={t('page_comment.comment')}
-            >
-              <span
-                className="material-symbols-outlined fs-6"
-                aria-hidden="true"
+        {/* Read-only-user restriction (inline-comment-readonly-restriction
+            Requirement 2.2, 2.4). This form has no open/closed toggle stage
+            like the list view's reply toggle -- it's always shown -- so the
+            whole form is wrapped, not just the send button. */}
+        <NotAvailableIfReadOnlyUserNotAllowedToComment>
+          <div className="inline-comment-preview-popover-reply-form d-flex align-items-start border border-primary-subtle rounded p-2 gap-2">
+            <UserPicture user={currentUser} className="ms-2" noLink noTooltip />
+            <MentionAwareCommentInput
+              editorKey={replyEditorKey}
+              onSubmit={(text) => createReply(comment.id, text)}
+              onControlsChange={onReplyControlsChange}
+            />
+            <div className="d-flex align-items-center gap-1">
+              <MentionPickerButton onInsert={insertMentionIntoReply} />
+              <button
+                type="button"
+                className={`btn btn-primary btn-sm p-0 d-inline-flex align-items-center justify-content-center ${styles['inline-comment-preview-popover-send-button']}`}
+                disabled={!canSubmitReply}
+                onClick={submitReply}
+                aria-label={t('page_comment.comment')}
               >
-                send
-              </span>
-            </button>
+                <span
+                  className="material-symbols-outlined fs-6"
+                  aria-hidden="true"
+                >
+                  send
+                </span>
+              </button>
+            </div>
           </div>
-        </div>
+        </NotAvailableIfReadOnlyUserNotAllowedToComment>
       </div>
     </div>,
     document.body,

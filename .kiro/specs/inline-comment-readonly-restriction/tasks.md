@@ -38,7 +38,7 @@
   - _Requirements: 2.3, 2.4_
   - _Boundary: InlineCommentItem.tsx_
 
-- [ ] 2.4 (P) ポップオーバー側の返信作成フォームと解決トグルを無効化する
+- [x] 2.4 (P) ポップオーバー側の返信作成フォームと解決トグルを無効化する
   - `InlineCommentPreviewPopover.tsx`の返信入力フォーム全体（トグル段階を持たず常時表示のため）と、解決/未解決切り替えボタンの2箇所を、それぞれ`NotAvailableIfReadOnlyUserNotAllowedToComment`で包む
   - 観測できる完了条件：読み取り専用利用者にコメント投稿が許可されていない場合、ポップオーバー内の返信フォーム・解決トグルの両方が無効化されることを単体テストで確認できる。許可されている場合は従来どおり操作できる
   - _Requirements: 2.2, 2.3, 2.4_
