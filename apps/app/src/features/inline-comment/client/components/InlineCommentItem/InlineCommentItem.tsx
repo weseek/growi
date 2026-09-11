@@ -31,6 +31,7 @@
 import { type FC, type JSX, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { NotAvailableIfReadOnlyUserNotAllowedToComment } from '~/client/components/NotAvailableForReadOnlyUser';
 import { CommentCard } from '~/client/components/PageComment/CommentCard';
 import { CommentEditDeleteButtons } from '~/client/components/PageComment/CommentEditDeleteButtons';
 import { CommentEditor } from '~/client/components/PageComment/CommentEditor';
@@ -205,15 +206,18 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
                   </span>
                 )}
                 <span className={styles['icon-button-container']}>
-                  <button
-                    type="button"
-                    className="btn btn-sm btn-outline-secondary rounded-pill"
-                    onClick={handleResolveToggle}
-                  >
-                    {isResolved
-                      ? t('inline_comment.reopen')
-                      : t('inline_comment.resolve')}
-                  </button>
+                  <NotAvailableIfReadOnlyUserNotAllowedToComment>
+                    <button
+                      type="button"
+                      data-testid="inline-comment-resolve-toggle-button"
+                      className="btn btn-sm btn-outline-secondary rounded-pill"
+                      onClick={handleResolveToggle}
+                    >
+                      {isResolved
+                        ? t('inline_comment.reopen')
+                        : t('inline_comment.resolve')}
+                    </button>
+                  </NotAvailableIfReadOnlyUserNotAllowedToComment>
                 </span>
                 <span
                   data-testid="inline-comment-status"

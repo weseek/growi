@@ -32,7 +32,7 @@
   - _Requirements: 2.2, 2.4_
   - _Boundary: InlineCommentReplies.tsx_
 
-- [ ] 2.3 (P) 一覧側の解決トグルを無効化する
+- [x] 2.3 (P) 一覧側の解決トグルを無効化する
   - `InlineCommentItem.tsx`の解決/未解決切り替えボタンを`NotAvailableIfReadOnlyUserNotAllowedToComment`で包む
   - 観測できる完了条件：読み取り専用利用者にコメント投稿が許可されていない場合、一覧側の解決トグルボタンが無効化されることを単体テストで確認できる。許可されている場合は従来どおり切り替えられる
   - _Requirements: 2.3, 2.4_

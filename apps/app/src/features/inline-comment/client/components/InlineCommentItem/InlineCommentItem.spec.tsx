@@ -492,6 +492,35 @@ describe('InlineCommentItem', () => {
       expect(resolve).toHaveBeenCalledWith('comment1', false);
     });
 
+    // Requirement 2.3 / 2.4: the resolve/reopen toggle must not be usable by
+    // a read-only user who is not allowed to comment. Scoped to the resolve
+    // button's own ancestor fieldset (not a page-wide single-match query)
+    // because the edit/delete controls' own guard (a separate,
+    // independently-rendered fieldset) renders at the same time under this
+    // restriction -- same precedent as InlineCommentReplies.spec.tsx's
+    // "disables the edit/delete controls" test.
+    it('disables the resolve toggle under the read-only restriction', () => {
+      isDisabledRef.current = true;
+      renderItem();
+
+      const toggle = screen.getByTestId('inline-comment-resolve-toggle-button');
+      expect(
+        toggle.closest('[data-testid="not-available-for-read-only-user"]'),
+      ).not.toBeNull();
+      expect(toggle).toBeDisabled();
+    });
+
+    it('keeps the resolve toggle enabled when read-only users are allowed to comment', () => {
+      isDisabledRef.current = false;
+      renderItem();
+
+      const toggle = screen.getByTestId('inline-comment-resolve-toggle-button');
+      expect(
+        toggle.closest('[data-testid="not-available-for-read-only-user"]'),
+      ).toBeNull();
+      expect(toggle).not.toBeDisabled();
+    });
+
     it('surfaces an error and keeps the item on screen when resolve() rejects', async () => {
       const resolve = vi.fn().mockRejectedValue(new Error('network down'));
       renderItem({}, { resolve });
@@ -632,10 +661,18 @@ describe('InlineCommentItem', () => {
       isDisabledRef.current = true;
       renderItem({ creatorId: 'user1' });
 
+      // Two independent guards render under this restriction now: the
+      // edit/delete controls here, and the resolve toggle covered by its own
+      // test in the "status badge and resolve toggle" describe block above
+      // -- assert this one via the edit button's own ancestor fieldset
+      // rather than a page-wide single-match query (same precedent as
+      // InlineCommentReplies.spec.tsx's own "disables the edit/delete
+      // controls" test).
+      const editButton = screen.getByTestId('inline-comment-edit-button');
       expect(
-        screen.getByTestId('not-available-for-read-only-user'),
-      ).toBeInTheDocument();
-      expect(screen.getByTestId('inline-comment-edit-button')).toBeDisabled();
+        editButton.closest('[data-testid="not-available-for-read-only-user"]'),
+      ).not.toBeNull();
+      expect(editButton).toBeDisabled();
       expect(screen.getByTestId('inline-comment-delete-button')).toBeDisabled();
     });
 
