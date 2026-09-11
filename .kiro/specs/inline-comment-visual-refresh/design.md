@@ -17,7 +17,7 @@
 - 実装完了の判定に、実ブラウザ（Playwright）でのスクリーンショット目視照合を含める
 
 ### Non-Goals
-- 解決トグルの仕組み自体の変更（モックアップの「ピルをクリックしてトグル」案は不採用。現行の「バッジ＋別ボタン」を維持）
+- 解決トグルの仕組み自体の変更（モックアップの「ピルをクリックしてトグル」案は不採用。現行の「バッジ＋別ボタン」を維持。**ただし2026-09-11の判断により、ポップオーバーはバッジ自体を表示しない — Requirement 2.5参照。これは「トグルの仕組み」ではなく「バッジの表示有無」の変更であり、この非目標と矛盾しない**）
 - ポップオーバーへの削除操作の追加
 - API・サービス・データモデルの変更
 - 新しい受け入れ基準・機能の追加
@@ -87,21 +87,22 @@
 この切り分けにより、`CommentCard`・共有スタイルへの変更は文字通りゼロ件になり、実装のスコープも小さくなる。トレードオフとして、投稿者アイコンはモックアップより小さく、カードには吹き出しの飾りが残った状態で仕上がる——これは実装のミスではなく、意図した仕様である。
 
 ### Allowed Dependencies
-- `CommentCard`（既存）の `headerEnd`／`beforeBody`／`footer` スロット — 新しい見た目はすべてこれらのスロットの中身の変更で実現し、`CommentCard` 自体には手を入れない
+- `CommentCard`（既存）の `headerEnd`／`beforeBody`／`footer` スロット — 一覧アイテム（`InlineCommentItem`）とポップオーバーの返信部分は、新しい見た目をこれらのスロットの中身の変更で実現し、`CommentCard` 自体には手を入れない。**（2026-09-11 訂正）ポップオーバーの起点コメント部分はこの限りでない** — 「Popover 再設計」の決定により `CommentCard` を使わず独自マークアップで描画する（返信部分は引き続き `CommentCard` を使う）
 - GROWIのBootstrapテーマ（`packages/core-styles`）が提供する意味付きユーティリティクラス（`badge`／`rounded-pill`／`bg-warning-subtle`／`bg-danger-subtle`／`bg-success-subtle`／`text-*-emphasis`／`btn-outline-secondary`／`btn-link`／`btn-close` 等、Bootstrap 5.3.8で実際に生成されることを確認済み）
 - `material-symbols-outlined` アイコンフォント（既存、アプリ全体で読み込み済み）— `CommentControl.tsx` と同じ `edit`／`close` グリフを踏襲する
 - `_comment-inheritance.scss` の共有プレースホルダ（`%bg-comment`／`%user-picture`／`%comment-section`）— 既存の `InlineCommentItem.module.scss` がすでに `@extend` しているものをそのまま使う。新しいプレースホルダは追加しない
 
 ### Revalidation Triggers
-- `CommentCard` のスロット構成（`headerEnd`／`beforeBody`／`footer`）が変わった場合、この設計の3ファイルすべてを再確認する必要がある
+- `CommentCard` のスロット構成（`headerEnd`／`beforeBody`／`footer`）が変わった場合、一覧アイテムとポップオーバーの返信部分は再確認が必要（ポップオーバーの起点コメント部分はもう `CommentCard` に依存しないため対象外）
 - `CommentControl.tsx` の編集・削除アイコンの視覚パターン（グリフ・ボタンクラス）が変わった場合、Requirement 3.5（同じパターンを踏襲する）の前提が崩れるため再確認する必要がある
 - GROWIのBootstrapテーマの `-subtle`／`-emphasis` トークンの実装が変わった場合（例: Bootstrapの将来のメジャーアップデート）、色の見え方を再確認する必要がある
+- **（2026-09-11追加）** ポップオーバーの起点コメント部分は `CommentCard` のスロットAPIには依存しなくなったが、代わりに `CommentCard` が生成するクラス名（`.page-comment`／`.page-comment-main`／`.bg-comment` 等）に、返信部分のSCSS・`InlineCommentPreviewPopover.spec.tsx` の一部テストが依存し続けている。これらのクラス名が変わった場合は再確認が必要
 
 ## Architecture
 
 ### Existing Architecture Analysis
 
-3つのコンポーネントはすでに `CommentCard` の3スロット（`headerEnd`／`beforeBody`／`footer`）に見た目の差分を注入する構成になっている（`.kiro/specs/inline-comment` design.md 参照）。本スペックはこの構成をそのまま維持し、各スロットに渡すJSXの中身とクラス名だけを変更する——新しいレイヤーやコンポーネントは一切追加しない。
+3つのコンポーネントはすでに `CommentCard` の3スロット（`headerEnd`／`beforeBody`／`footer`）に見た目の差分を注入する構成になっている（`.kiro/specs/inline-comment` design.md 参照）。本スペックは当初この構成をそのまま維持する方針で始まったが、**2026-09-11の「Popover 再設計」決定により、ポップオーバーの起点コメント部分だけはこの構成から外れ、`CommentCard` を使わない独自マークアップになった**（一覧アイテム・ポップオーバーの返信部分は当初方針のまま）。
 
 現状の3つの相違点（変更対象）:
 1. **状態バッジ**: `<span className="badge bg-warning text-dark">`／`bg-secondary` — Bootstrapの生の配色クラスを直接使っており、`-subtle`／`-emphasis` トークンを使っていない
