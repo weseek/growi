@@ -239,6 +239,41 @@ describe('POST /_api/v3/inline-comments', () => {
     ]);
   });
 
+  it('creates the comment (201) for a read-only user when the config allows it (requirement 3.3)', async () => {
+    // `excludeReadOnlyUserIfCommentNotAllowed` reads this config at request
+    // time — flip it on for this one request, then restore the default
+    // (false) so the earlier "denied" test above is not affected by order.
+    await crowi.configManager.updateConfig(
+      'security:isRomUserAllowedToComment',
+      true,
+    );
+    try {
+      const readOnlyApp = mountAppAs(readOnlyUser);
+      const res = await request(readOnlyApp)
+        .post('/_api/v3/inline-comments')
+        .send(validBody());
+
+      // Same status/body shape as the normal-user success test above — this
+      // is what "unchanged success response" (requirement 3.3) means here.
+      expect(res.status).toBe(201);
+      expect(res.body.inlineComment).toMatchObject({
+        pageId: String(publicPage._id),
+        comment: 'inline comment body',
+        anchor: {
+          quote: 'quoted text',
+          prefix: 'before ',
+          suffix: ' after',
+          approxOffset: 10,
+        },
+      });
+    } finally {
+      await crowi.configManager.updateConfig(
+        'security:isRomUserAllowedToComment',
+        false,
+      );
+    }
+  });
+
   it('returns 400 when anchor.quote is empty (service precondition)', async () => {
     const res = await request(app)
       .post('/_api/v3/inline-comments')

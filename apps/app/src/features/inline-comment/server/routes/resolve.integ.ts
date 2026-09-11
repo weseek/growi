@@ -236,6 +236,39 @@ describe('PUT /_api/v3/inline-comments/:id/resolve', () => {
     ]);
   });
 
+  it('resolves (200) for a read-only user when the config allows it (requirement 3.3)', async () => {
+    // `excludeReadOnlyUserIfCommentNotAllowed` reads this config at request
+    // time — flip it on for this one request, then restore the default
+    // (false) so the "denied" test above is not affected by order.
+    await crowi.configManager.updateConfig(
+      'security:isRomUserAllowedToComment',
+      true,
+    );
+    try {
+      const readOnlyApp = mountAppAs(readOnlyUser);
+      const res = await request(readOnlyApp)
+        .put(`/_api/v3/inline-comments/${originCommentId}/resolve`)
+        .send({ resolved: true });
+
+      // Same status/body shape as the normal-user success test above — this
+      // is what "unchanged success response" (requirement 3.3) means here.
+      expect(res.status).toBe(200);
+      expect(res.body.inlineComment.resolvedById).toBe(
+        String(readOnlyUser._id),
+      );
+      expect(res.body.inlineComment.resolvedAt).not.toBeNull();
+    } finally {
+      // Leave the fixture unresolved again, as the earlier success test did.
+      await request(app)
+        .put(`/_api/v3/inline-comments/${originCommentId}/resolve`)
+        .send({ resolved: false });
+      await crowi.configManager.updateConfig(
+        'security:isRomUserAllowedToComment',
+        false,
+      );
+    }
+  });
+
   it('returns 400 when :id is a reply (not an origin comment)', async () => {
     const res = await request(app)
       .put(`/_api/v3/inline-comments/${replyCommentId}/resolve`)
