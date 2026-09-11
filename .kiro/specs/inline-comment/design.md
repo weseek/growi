@@ -49,6 +49,7 @@
 - `GROWI_IS_CONTENT_RENDERING_ATTR`/`GROWI_IS_CONTENT_RENDERING_SELECTOR`（`@growi/core/dist/consts`）— [auto-scroll](../auto-scroll/) スペックが確立した「レンダリング状態属性プロトコル」を静定検知にそのまま再利用する（後述）。drawio・mermaid・plantUML・lsxはこのプロトコルに既に参加している
 - `prisma.comments.removeWithReplies(id)`（既存、`apps/app/src/features/comment/server/models/comment.ts`）— 通常コメントの削除が使っているカスケード削除を、起点インラインコメント削除時の返信道連れ削除にそのまま流用する
 - `NotAvailableIfReadOnlyUserNotAllowedToComment`（既存、`apps/app/src/client/components/NotAvailableForReadOnlyUser.tsx`）— 一覧・ポップオーバーの編集・削除操作に組み込み、通常コメントと同じリードオンリー制限をかける
+- `packages/editor` の `CodeMirrorEditorComment`／`useCodeMirrorEditorIsolated`（既存） — `MentionAwareCommentInput`の土台として利用する。利用にあたり `packages/editor` 側に2件の既存バグ修正を要した（詳細はModified Files参照）。この機能固有の新規ロジックはpackages/editor側には追加していない
 
 ### Revalidation Triggers
 - `comments` Prisma/Mongooseスキーマの構造変更、特に `isInline` の意味・型・デフォルト値の変更
@@ -64,9 +65,10 @@
 - `_comment-inheritance.scss` の `%bg-comment`／`%comment-section`／`%user-picture` の中身が変わったとき（通常コメントの箱とインラインコメントの箱の両方が同時に変わる、共有の抽象のため）
 - `packages/core-styles/scss/bootstrap/theming/_root.scss` のprimary/secondary限定の絞り込みが外れたとき（`--bs-warning-*` 等がテーマ対応になれば、専用のカスタムプロパティを持つ理由が薄れる）
 - `Comments`／`PageComment` の呼び出し元が増えたとき（共有リンク画面（`ShareLinkPageView.tsx`）に `inlineComments` が渡らないことを再確認する。取得は `PageView.tsx` 側の1箇所に閉じており、`Comments`／`PageComment` 自身はインラインコメントを取得しない）
-- `PageView.tsx` の `inlineCommentAnchors` が別の理由で変更された場合、解決済みコメントを除外する `.filter((c) => c.resolvedAt == null)` が残っているか再確認する必要がある
+- `PageView.tsx` の `inlineCommentAnchors`／`bodyInlineComments`／`visibleResolvedRanges` が別の理由で変更された場合、「アンカー解決とスクロールナビゲーションは解決済みコメントも含めた全件に対して行う（`inlineCommentAnchors`は未フィルタのまま）」「本文中のハイライト・当たり判定・ポップオーバーだけを解決済み除外した`visibleResolvedRanges`経由で描画する」という2段構えの分離が保たれているか再確認する必要がある。`inlineCommentAnchors`自体を`.filter((c) => c.resolvedAt == null)`してしまうと、一覧クリックでの解決済みコメントへのスクロールナビゲーション（Requirement 16.1）が壊れる（当初案がこれで、`scrollToRange`が機能しなくなったため2段構えに直した経緯がある）
 - `removeWithReplies` の挙動（例えば `isInline` によるフィルタが追加される等）が変わった場合、起点コメント削除時の返信道連れ削除が引き続き機能するか再確認する必要がある
 - `IInlineComment`／`InlineCommentReply` の形（フィールドの追加・削除）が変わった場合、更新用DTOとサービス側の行形状チェック（起点／返信の判別）を再確認する必要がある
+- `packages/editor` の `useCodeMirrorEditorIsolated`（共有atomのライフサイクル）が変わる場合、`MentionAwareCommentInput` の一度きりの`initialValue`適用（マウント時1回だけ`initDoc`）が引き続き成立するか再確認する必要がある。この機能の実装中に見つけた2件の既存バグ修正（未初期化エディタをatomの初回値にしない／発行元アンマウント時にatomをクリアする）は`packages/editor`側の一般的な修正であり、他の`CodeMirrorEditorComment`利用箇所（通常コメントの返信・編集）にも影響する
 
 ## Architecture
 
@@ -131,9 +133,14 @@ brief.mdの討論メモは「再アンカーに成功した場合の解決済み
 
 `anchorOriginRevisionId`（既存の `revisionId` とは別に保持する不変フィールド）は、この決定により**再アンカーのオフセット計算やキャッシュ無効化には使われない**。役割は「このアンカーがどの本文に対して作られたものかを、diffを行わずに判定できるようにする」provenance（来歴）情報のみであり、作成後は再アンカーの成否にかかわらず書き換えない。
 
-### 解決済みインラインコメントの本文中非表示は `inlineCommentAnchors` 1箇所でフィルタする
+### 解決済みインラインコメントの本文中非表示は、アンカー解決を全件に対して行ったうえで表示側だけを絞り込む2段構えで実現する
 
-「解決済みコメントには本文中でハイライトを付けない」（Requirement 2.7）は、`InlineCommentHighlight`／`InlineCommentBodyInteraction` それぞれが個別に解決状態をチェックするのではなく、`PageView.tsx` の `inlineCommentAnchors`（すべての消費者が `resolvedRanges` を介して間接的に読み取っている唯一の起点）に `.filter((c) => c.resolvedAt == null)` を1つ加えるだけで実現する。解決済みコメントはそもそも `Range` が計算されなくなるため、下流のどのコンポーネントも解決状態を自分で意識する必要がない（`.claude/rules/coding-style.md` の「単一の情報源を持ち、消費者ごとに個別分岐しない」原則）。`InlineCommentBodyInteraction` の `displayedId` はこの同じ `inlineComments` によって駆動されているため、`inlineComments.find((c) => c.id === displayedId)` が `undefined` を返すようになった時点で、既存の「対象が見つからなければポップオーバーを描画しない」ガード（再アンカリング失敗時にも使われている、Requirement 15.6と同じ仕組み）が自然にポップオーバーを閉じる。ポップオーバーを開いたまま対象が解決済みに変わった場合（Requirement 15.12）も同じ経路で閉じるが、`pinnedId`／`hoverPreviewId` が消えたidを指したまま残らないよう、対象が `inlineComments` から消えた時点でこれらもクリアする小さなeffectを `InlineCommentBodyInteraction` に持たせている。画面最下部の一覧側（`inlineCommentAnchors` を経由しない）は影響を受けず、解決済みのインラインコメントも引き続き表示される。
+「解決済みコメントには本文中でハイライトを付けない」（Requirement 2.7）と「一覧クリックでの解決済みコメントへのスクロールナビゲーション」（Requirement 16.1）は両立する必要がある。当初案は `PageView.tsx` の `inlineCommentAnchors`（アンカー解決の入力そのもの）に `.filter((c) => c.resolvedAt == null)` を1つ加えるだけの単純な形だったが、これだと解決済みコメントの `Range` がそもそも計算されなくなり、一覧からのスクロールナビゲーション（`scrollToRange`）が解決済みコメントに対して機能しなくなる。そのため実装は次の2段構えを取る：
+
+- `inlineCommentAnchors`（→ `useAnchorResolver` への入力）は**未フィルタのまま**、解決済みを含む全件を渡す。これにより `resolvedInlineCommentRanges`（全件分の`Range`）と、それを参照する `scrollToRange` は解決済みコメントに対しても機能する
+- `bodyInlineComments`（`inlineComments.filter((c) => c.resolvedAt == null)`）と、それで`resolvedInlineCommentRanges`を絞り込んだ `visibleResolvedRanges` を新たに導出し、本文中のハイライト・当たり判定・ポップオーバーはこちらだけを参照する
+
+`InlineCommentHighlight`／`InlineCommentBodyInteraction` それぞれが個別に解決状態をチェックするのではなく、この `visibleResolvedRanges` 1箇所への絞り込みだけで実現する点は変わらない（`.claude/rules/coding-style.md` の「単一の情報源を持ち、消費者ごとに個別分岐しない」原則）。`InlineCommentBodyInteraction` の `displayedId` は `bodyInlineComments` によって駆動されているため、`bodyInlineComments.find((c) => c.id === displayedId)` が `undefined` を返すようになった時点で、既存の「対象が見つからなければポップオーバーを描画しない」ガード（再アンカリング失敗時にも使われている、Requirement 15.6と同じ仕組み）が自然にポップオーバーを閉じる。ポップオーバーを開いたまま対象が解決済みに変わった場合（Requirement 15.12）も同じ経路で閉じるが、`pinnedId`／`hoverPreviewId` が消えたidを指したまま残らないよう、対象が `bodyInlineComments` から消えた時点でこれらもクリアする小さなeffectを `InlineCommentBodyInteraction` に持たせている。画面最下部の一覧側（`inlineCommentAnchors`／`bodyInlineComments` いずれも経由しない、`inlineComments` を直接参照する）は影響を受けず、解決済みのインラインコメントも引き続き表示される。
 
 ### 編集・削除の権限判定は通常コメントと同じ規律に従う
 
@@ -288,7 +295,7 @@ apps/app/src/features/inline-comment/
 
 ### Modified Files
 - `apps/app/src/components/PageView/RevisionRenderer.tsx` — `ReactMarkdown` を包むコンテナ `div` に `ref` を転送するよう変更（新規rehype/remarkプラグインは追加しない）
-- `apps/app/src/components/PageView/PageView.tsx` — 転送されたrefを`AnchorResolver`/`SelectionCapture`に配線し、既存の `Comments` と並置する。共有リンク経由のページ表示（`!isSharedPageView`）では`SelectionCapture`/`InlineCommentHighlight`/`PendingSelectionHighlight`/`InlineCommentBodyInteraction`のいずれもレンダーしないガードもここに置く。`scrollToRange(commentId): boolean`（`rangesById()`で対象の`Range`を再構築できればスクロール＋一時的な強調ハイライト`growi-inline-comment-emphasis`の登録、できなければ既存の通知UIで知らせる）を実装し、`resolve`/`createReply`/`update`/`updateReply`/`remove`/`removeReply`とあわせて`inlineCommentsForComments`バンドルとして`Comments`に渡す。`inlineCommentAnchors`は既存の`.map()`の前に`.filter((c) => c.resolvedAt == null)`を1つ加え、解決済みコメントをアンカー解決の対象から除外する（本文中のハイライト・当たり判定・ポップオーバーの全消費者から一度に除外される。一覧側は影響を受けない）
+- `apps/app/src/components/PageView/PageView.tsx` — 転送されたrefを`AnchorResolver`/`SelectionCapture`に配線し、既存の `Comments` と並置する。共有リンク経由のページ表示（`!isSharedPageView`）では`SelectionCapture`/`InlineCommentHighlight`/`PendingSelectionHighlight`/`InlineCommentBodyInteraction`のいずれもレンダーしないガードもここに置く。`scrollToRange(commentId): boolean`（`rangesById()`で対象の`Range`を再構築できればスクロール＋一時的な強調ハイライト`growi-inline-comment-emphasis`の登録、できなければ既存の通知UIで知らせる）を実装し、`resolve`/`createReply`/`update`/`updateReply`/`remove`/`removeReply`とあわせて`inlineCommentsForComments`バンドルとして`Comments`に渡す。`inlineCommentAnchors`は解決済みを含む全件のまま`useAnchorResolver`に渡し（一覧クリックでの解決済みコメントへのスクロールナビゲーションを成立させるため）、別途`bodyInlineComments`（`.filter((c) => c.resolvedAt == null)`）で絞り込んだ`visibleResolvedRanges`を本文中のハイライト・当たり判定・ポップオーバー側にだけ渡す（一覧側は影響を受けない。詳細はArchitecture節「解決済みインラインコメントの本文中非表示は、アンカー解決を全件に対して行ったうえで表示側だけを絞り込む2段構えで実現する」参照）
 - `apps/app/src/client/components/ReactMarkdownComponents/Header.tsx` / `TableWithEditButton.tsx` / `DrawioViewerWithEditButton.tsx` — 条件付きで表示される編集ボタンのアイコン用 `<span>`（例: `<span className="material-symbols-outlined">edit_square</span>`）に `aria-hidden="true"` を追加する。表示条件・クリック時の振る舞い・見た目は変えない。この標準属性が、本文テキスト抽出の除外条件（Architecture節「本文テキストの抽出範囲」）から読み取られる
 - `apps/app/package.json` — `@popperjs/core`を`dependencies`に追加（選択範囲近傍への配置に使用）
 - `apps/app/src/server/routes/apiv3/index.js` — `inline-comment` フィーチャーモジュールのルートファクトリをimportし、`/inline-comments` にマウントする（`revisions` と同じマウントパターン）
@@ -301,7 +308,9 @@ apps/app/src/features/inline-comment/
 - `.../InlineCommentItem/InlineCommentItem.tsx`（旧`InlineCommentList/InlineCommentList.tsx`から移動・構造を変更） — アンカーの引用文を`<button>`で包み、クリックで`scrollToRange(comment.id)`を呼ぶ
 - `.../InlineCommentItem/InlineCommentReplies.tsx` — 素の`<textarea>`ベースの返信欄を、`showEditorIds`パターンを踏襲した「Reply...」⇄`MentionAwareCommentInput`のトグルに置き換える
 - `apps/app/src/client/components/Comments.tsx` / `PageComment.tsx` — `inlineComments` prop の型に `scrollToRange: (commentId: string) => boolean` を追加し、そのまま素通しする（ロジック変更なし）。`InlineCommentItem` へ `pagePath` を配線する（`CommentRevisionLink` が必要とする）
-- `apps/app/public/static/locales/en_US/translation.json` — 本文ハイライトのポップオーバー（返信欄プレースホルダ等）・一覧側の再アンカー失敗通知に必要な文言キーを追加
+- `apps/app/public/static/locales/en_US/translation.json` — 一覧側の再アンカー失敗通知など、本文ハイライトのポップオーバー・一覧表示に必要な文言キーを追加（返信欄プレースホルダは検討したが、返信入力欄が`MentionAwareCommentInput`＝プレースホルダを持たないCodeMirrorエディタである以上不要と判明し追加しなかった）
+- `packages/editor/src/client/components-internal/CodeMirrorEditor/CodeMirrorEditor.tsx` — `hideToolbar`（既存、内部ラッパー限定の`Props`型にのみあった）を公開の`CodeMirrorEditorProps`型へ移動し、`CodeMirrorEditorComment`経由でこの機能の`MentionAwareCommentInput`からも渡せるようにする。挙動自体は変えない
+- `packages/editor/src/client/stores/codemirror-editor.ts`（`useCodeMirrorEditorIsolated`） — この機能の実装中に見つかった既存バグ2件を修正。(1) `@uiw/react-codemirror`がview/stateを`useState`経由で初期化するため、コンテナ接続直後の1レンダーは未初期化の値になるが、この未初期化値が共有atomの初回値としてそのまま公開されてしまっていた（一度きりの初期値適用を行う`MentionAwareCommentInput`がこの未初期化値に対して無駄なinitDocを行い、以後永久に初期値を適用する機会を失う）。(2) 発行元（`container`を持つ側、例: `CodeMirrorEditor`）がアンマウントしても共有atomがそのまま残り、同じkeyで再マウントした際に破棄済みの古いエディタを見てしまっていた（Cancel後に同じコメントを再度編集する操作で顕在化）。どちらも一般的な既存バグの修正であり、インラインコメント固有のNon-Goalには抵触しない
 - `apps/app/src/client/components/PageComment/DeleteConfirmAlert.tsx`（新規、+`.module.scss`） — 削除確認のインライン警告帯。通常コメント（`Comment.tsx`／`ReplyComments.tsx`）と一覧側インラインコメント（`InlineCommentItem.tsx`／`InlineCommentReplies.tsx`）で共用する。呼び出し元ごとに `testIdPrefix` で `data-testid` を切り替える。ボタンの並びは Cancel → Delete
 - `apps/app/src/client/components/PageComment/CommentEditDeleteButtons.tsx`（新規、+`.module.scss`） — 編集・削除アイコンボタンの組（32px四方、`opacity: 0.5`／ホバーで`0.75`）。通常コメント・一覧側インラインコメントで共用する。ホバーで出す仕組み自体（`visibility`切り替えのトリガーとなるラッパー）は各呼び出し元が持ち、この部品自体は持たない
 - `apps/app/src/client/components/PageComment/CommentRevisionLink.tsx`（新規） — リビジョン履歴へのリンク。通常コメント・一覧側インラインコメントで共用する。投稿日時の直後、`ms-2` で配置する
@@ -503,7 +512,7 @@ sequenceDiagram
 | 1.9 | 返信はアンカーを持たない | InlineCommentService, Data Models | `replyToId` 行の全アンカーフィールドが `null` | 作成フロー（返信） |
 | 2.1–2.4 | 完全一致→あいまい一致→ハイライトなしの3段階 | AnchorResolver, use-container-settle, rendered-text, quote-matcher | `useAnchorResolver`, `hasRenderingElements`, `matchQuote` | 表示・再アンカーフロー |
 | 2.5–2.6 | 一覧表示・作成日時順 | InlineCommentItem, inline-comment store | GET /inline-comments | — |
-| 2.7 | 解決済みは本文中で非表示（ハイライト・ポップオーバーとも） | PageView (`inlineCommentAnchors`), InlineCommentBodyInteraction | `.filter((c) => c.resolvedAt == null)` | — |
+| 2.7 | 解決済みは本文中で非表示（ハイライト・ポップオーバーとも） | PageView (`bodyInlineComments`, `visibleResolvedRanges`), InlineCommentBodyInteraction | `.filter((c) => c.resolvedAt == null)` | — |
 | 2.8 | 起点削除で本文中のハイライトも消える | PageView (`inlineCommentAnchors`) | SWR再取得 | 削除シーケンス |
 | 3.1–3.2 | メンションハイライト・通知の再利用 | InlineCommentForm・InlineCommentItem・InlineCommentReplies（いずれも既存remarkプラグインを利用）, InlineCommentService, CommentService | `prepareMentionNotifications` | 作成フロー |
 | 4.1–4.4 | 解決/未解決管理 | InlineCommentService, InlineCommentItem | PUT /inline-comments/:id/resolve | — |
@@ -590,7 +599,7 @@ sequenceDiagram
 | DeleteConfirmAlert（`PageComment/`） | Client / UI | 削除確認のインライン警告帯（モーダルは使わない）。通常コメント・一覧側インラインコメント（起点・返信とも）で共用する。呼び出し元ごとに`testIdPrefix`で`data-testid`を切り替える。ボタンの並びはCancel→Delete | 1.3(→18.5), 18.5, 18.8 | — | — |
 | CommentEditDeleteButtons（`PageComment/`） | Client / UI | 編集・削除アイコンボタンの組（32px四方、`opacity: 0.5`／ホバーで`0.75`）。通常コメント（`CommentControl.tsx`が薄くラップする）・一覧側インラインコメントで共用する。ホバーで出す仕組み（`visibility`切り替えのトリガーとなるラッパー）は各呼び出し元が持ち、この部品自体は持たない | 18.1, 18.5 | — | — |
 | CommentRevisionLink（`PageComment/`） | Client / UI | リビジョン履歴へのリンク。通常コメント・一覧側インラインコメントで共用する。投稿日時の直後、`ms-2`で配置する | 13.11 | — | — |
-| PageView (`inlineCommentAnchors`) | Client / Orchestration | 解決済みコメントのアンカーをアンカー解決の対象から除外し、`update`/`updateReply`/`remove`/`removeReply`を一覧・ポップオーバーへ配線する | 2.7-2.8, 4.4 | useAnchorResolver(P0), useSWRxInlineComments(P0) | State |
+| PageView (`inlineCommentAnchors`, `bodyInlineComments`, `visibleResolvedRanges`) | Client / Orchestration | アンカー解決自体は解決済みコメントも含む全件（`inlineCommentAnchors`）に対して行い（一覧からのスクロールナビゲーションを成立させるため）、本文中のハイライト・ポップオーバーだけを解決済み除外後の`visibleResolvedRanges`に絞り込む。`update`/`updateReply`/`remove`/`removeReply`を一覧・ポップオーバーへ配線する | 2.7-2.8, 4.4, 16.1 | useAnchorResolver(P0), useSWRxInlineComments(P0) | State |
 
 ### Server
 
@@ -920,7 +929,7 @@ model comments {
   - `InlineCommentPreviewPopover` / `InlineCommentPopoverEntry`: 状態バッジが一切描画されないこと（退行防止。「正しい状態が表示される」ではなく「そもそも存在しない」ことを検証する）。編集手段が起点コメント・返信それぞれの本文を更新すること。削除手段が起点コメント（返信も道連れ）・返信それぞれを削除すること。返信が投稿日時の古い順に表示されること
   - `InlineCommentBodyInteraction`: `inlineComments` から消えたid（解決・削除いずれのシミュレーションでも）に対して、それを指していた `pinnedId`／`hoverPreviewId` がクリアされ、ポップオーバーの描画が止まること
   - `MentionAwareCommentInput`: `initialValue` がマウント時に一度だけエディタへ反映されること。渡さない場合は現状とまったく同じ挙動であること（退行防止）
-  - `PageView` の `inlineCommentAnchors`（または単体テスト可能な形に切り出した同等のもの）: 解決済みは除外され、未解決は含まれること
+  - `PageView` の `visibleResolvedRanges`（または単体テスト可能な形に切り出した同等のもの）: 解決済みは除外され、未解決は含まれること。あわせて `inlineCommentAnchors`／`resolvedInlineCommentRanges`（`scrollToRange`が参照する側）は解決済みも含む全件であること（一覧クリックでの解決済みコメントへのスクロールナビゲーションの回帰防止）
 - **Integration Tests**:
   - `POST /inline-comments` → `prepareMentionNotifications` が呼ばれメンション通知が発火すること（3.2）
   - `POST /inline-comments` にログインなし・ページ権限なしでアクセスした場合に拒否されること（1.5, 1.6）
