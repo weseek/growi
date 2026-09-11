@@ -244,6 +244,7 @@ export const InlineCommentPopoverEntry = (
             <RevisionRenderer
               rendererOptions={rendererOptions}
               markdown={commentText}
+              additionalClassName="comment"
             />
           ) : (
             <span>{commentText}</span>

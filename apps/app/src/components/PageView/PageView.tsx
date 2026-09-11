@@ -33,7 +33,10 @@ import {
   usePageNotFound,
   useShareLinkId,
 } from '~/states/page';
-import { useViewOptions } from '~/stores/renderer';
+import {
+  useCommentForCurrentPageOptions,
+  useViewOptions,
+} from '~/stores/renderer';
 
 import { UserInfo } from '../User/UserInfo';
 import { PageAlerts } from './PageAlerts/PageAlerts';
@@ -178,6 +181,12 @@ const PageViewComponent = (props: Props): JSX.Element => {
 
   const page = useCurrentPageData();
   const { data: viewOptions } = useViewOptions();
+  // Inline-comment popovers render comment bodies, not page bodies -- they
+  // need the same comment-scoped options (comment-only linebreak setting,
+  // @mention highlighting, no page-body-only plugins like plantuml/drawio)
+  // that the bottom-of-page comment list already gets via
+  // `useCommentForCurrentPageOptions()` inside `PageComment.tsx`.
+  const { data: commentRendererOptions } = useCommentForCurrentPageOptions();
 
   const isNotFound = isNotFoundMeta || page == null;
   const isUsersHomepagePath = isUsersHomepage(pagePath);
@@ -404,7 +413,7 @@ const PageViewComponent = (props: Props): JSX.Element => {
                 remove={removeInlineComment}
                 updateReply={updateInlineCommentReply}
                 removeReply={removeInlineCommentReply}
-                rendererOptions={viewOptions}
+                rendererOptions={commentRendererOptions}
               />
 
               <div id="comments-container" ref={commentsContainerRef}>
@@ -427,6 +436,7 @@ const PageViewComponent = (props: Props): JSX.Element => {
     rendererConfig,
     pagePath,
     viewOptions,
+    commentRendererOptions,
     isSlide,
     isIdenticalPathPage,
     page,

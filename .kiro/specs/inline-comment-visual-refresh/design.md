@@ -41,6 +41,13 @@
 6. **起点コメントもポップオーバーから削除できるようにする。** Requirement 2.4（削除は一覧のみ）を撤回する（Requirement 2.6として新しい受け入れ基準を追記）。ユーザーの判断: 「インラインコメントとreplyとの仕様差をほぼ無くす」ため、起点コメントもポップオーバーから削除できるようにする。
 7. **ポップオーバー内で起点コメントと返信の仕様差をほぼ無くし、コードも共通化する。** 引用ブロックの有無を除き、見た目・編集・削除の挙動をほぼ同一にする。返信も `CommentCard` を使わず、起点コメントと同じフラットな独自マークアップにする（**この「`CommentCard` を使わない」方針はポップオーバー限定。一覧側〈`InlineCommentItem`／`InlineCommentReplies`〉は`CommentCard` 流用のまま**）。「Popover: 起点・返信の統合」参照。
 
+### 2026-09-11 の方針転換 その3（Markdownレンダリングオプションの不一致調査）
+
+ユーザーから「通常コメントとインラインコメントで、Markdownのレンダリングオプション（改行の扱いなど）は一致しているか」という質問があり、調査した結果、2件の不一致が見つかった。見た目の刷新（本スペックの本来のスコープ）ではないが、本amendmentの一連の作業と地続きの実装バグであり、ユーザー承認のうえ同じ回で修正した。
+
+1. **バグ修正: ポップオーバーのタイポグラフィが `.wiki.comment` を適用していない。** `InlineCommentPopoverEntry.tsx` の `RevisionRenderer` 呼び出しに `additionalClassName="comment"` が指定されておらず、`Comment.tsx`／`InlineCommentItem.tsx` が使っている `.wiki.comment`（`apps/app/src/styles/organisms/_wiki.scss`、フォントサイズ14px・行間1.5em・見出し余白0.95倍）が適用されていなかった。`additionalClassName="comment"` を追加して揃えた。
+2. **バグ修正: ポップオーバーがページ本文用のレンダリングオプションを使っていた。** `PageView.tsx` の `<InlineCommentBodyInteraction rendererOptions={viewOptions} .../>` が、ページ本文用の `useViewOptions()`（`generateViewOptions`——math/plantuml/drawio/mermaid等の重量プラグイン一式、ページ全体の改行設定 `isEnabledLinebreaks` に従う）をそのまま渡していた。画面最下部のコメント一覧（`PageComment.tsx`）はすでに `useCommentForCurrentPageOptions()`（`generateCommentViewOptions`——軽量な `generateSimpleViewOptions` ベース＋`mention.remarkPlugin`〈@メンションのハイライト〉、コメント専用の改行設定 `isEnabledLinebreaksInComments` に従う）を使っており、ポップオーバーだけが一覧と異なるオプションでレンダリングされていた。`PageView.tsx` に `useCommentForCurrentPageOptions()` を追加で呼び出し、`InlineCommentBodyInteraction` にはその結果（`commentRendererOptions`）を渡すように変更した（`PageContentRenderer` に渡す `viewOptions` は変更なし）。実ブラウザで、ポップオーバー本文に `.wiki.comment` クラスが付くこと、および `@admin` のようなメンション記法が `.mention-user` としてハイライトされることを確認した。
+
 ## Boundary Commitments
 
 ### This Spec Owns
