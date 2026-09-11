@@ -256,6 +256,7 @@ export const PageComment: FC<PageCommentProps> = memo(
                   >
                     <InlineCommentItem
                       comment={item.comment}
+                      pagePath={pagePath}
                       rendererOptions={rendererOptions}
                       resolve={inline.resolve}
                       createReply={inline.createReply}

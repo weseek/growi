@@ -34,6 +34,7 @@ import { useTranslation } from 'react-i18next';
 import { CommentCard } from '~/client/components/PageComment/CommentCard';
 import { CommentEditDeleteButtons } from '~/client/components/PageComment/CommentEditDeleteButtons';
 import { CommentEditor } from '~/client/components/PageComment/CommentEditor';
+import { CommentRevisionLink } from '~/client/components/PageComment/CommentRevisionLink';
 import { DeleteConfirmAlert } from '~/client/components/PageComment/DeleteConfirmAlert';
 import RevisionRenderer from '~/components/PageView/RevisionRenderer';
 import type { RendererOptions } from '~/interfaces/renderer-options';
@@ -46,6 +47,7 @@ import styles from './InlineCommentItem.module.scss';
 
 type InlineCommentItemProps = {
   comment: InlineCommentWithReplies;
+  pagePath: string;
   /**
    * Undefined while the caller's renderer options are still loading — the
    * body then falls back to plain text rather than blocking the whole list
@@ -75,6 +77,7 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
 ): JSX.Element => {
   const {
     comment,
+    pagePath,
     rendererOptions,
     resolve,
     createReply,
@@ -168,40 +171,64 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
           createdAt={comment.createdAt}
           rootClassName={resolvedRootClassName}
           headerEnd={
-            <span className="ms-auto d-flex align-items-center gap-2">
-              {isOwnComment && !isDeleteConfirmOpen && (
-                <span
-                  className={`d-flex align-items-center gap-1 ${styles['icon-button-container']}`}
-                >
-                  <CommentEditDeleteButtons
-                    testIdPrefix="inline-comment"
-                    onClickEditBtn={() => setIsEditing(true)}
-                    onClickDeleteBtn={() => setIsDeleteConfirmOpen(true)}
-                  />
-                </span>
-              )}
-              <span
-                data-testid="inline-comment-status"
-                className={`badge rounded-pill ${styles['inline-comment-status-badge']} ${
-                  isResolved
-                    ? 'bg-success-subtle text-success-emphasis'
-                    : 'bg-warning-subtle text-warning-emphasis'
-                }`}
-              >
-                {isResolved
-                  ? t('inline_comment.resolved')
-                  : t('inline_comment.unresolved')}
+            <>
+              {/* Same position as a normal comment's own history link:
+                  right after the date, not part of the `ms-auto` group
+                  below (2026-09-11, user request). */}
+              <span className="ms-2">
+                <CommentRevisionLink
+                  id={comment.id}
+                  pagePath={pagePath}
+                  pageId={comment.pageId}
+                  revisionId={comment.anchorOriginRevisionId}
+                />
               </span>
-              <button
-                type="button"
-                className="btn btn-sm btn-outline-secondary rounded-pill"
-                onClick={handleResolveToggle}
-              >
-                {isResolved
-                  ? t('inline_comment.reopen')
-                  : t('inline_comment.resolve')}
-              </button>
-            </span>
+              {/* 2026-09-11 (user request): order left-to-right is
+                  edit/delete, resolve/reopen, then the status badge, so the
+                  badge sits at the row's very corner. The resolve/reopen
+                  button now shares `.icon-button-container` with
+                  edit/delete, hover-revealed the same way -- previously
+                  always visible, inconsistent with edit/delete's
+                  hover-reveal right next to it. The badge stays outside
+                  `.icon-button-container` and always visible, since it is
+                  the item's own status, not an action button. */}
+              <span className="ms-auto d-flex align-items-center gap-2">
+                {isOwnComment && !isDeleteConfirmOpen && (
+                  <span
+                    className={`d-flex align-items-center gap-1 ${styles['icon-button-container']}`}
+                  >
+                    <CommentEditDeleteButtons
+                      testIdPrefix="inline-comment"
+                      onClickEditBtn={() => setIsEditing(true)}
+                      onClickDeleteBtn={() => setIsDeleteConfirmOpen(true)}
+                    />
+                  </span>
+                )}
+                <span className={styles['icon-button-container']}>
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-outline-secondary rounded-pill"
+                    onClick={handleResolveToggle}
+                  >
+                    {isResolved
+                      ? t('inline_comment.reopen')
+                      : t('inline_comment.resolve')}
+                  </button>
+                </span>
+                <span
+                  data-testid="inline-comment-status"
+                  className={`badge rounded-pill ${styles['inline-comment-status-badge']} ${
+                    isResolved
+                      ? 'bg-success-subtle text-success-emphasis'
+                      : 'bg-warning-subtle text-warning-emphasis'
+                  }`}
+                >
+                  {isResolved
+                    ? t('inline_comment.resolved')
+                    : t('inline_comment.unresolved')}
+                </span>
+              </span>
+            </>
           }
           beforeBody={
             <>

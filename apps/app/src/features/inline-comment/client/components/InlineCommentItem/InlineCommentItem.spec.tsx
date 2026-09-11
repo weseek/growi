@@ -200,6 +200,7 @@ const renderItem = (
   render(
     <InlineCommentItem
       comment={originComment(overrides)}
+      pagePath="/page1"
       rendererOptions={rendererOptions}
       resolve={handlers.resolve ?? vi.fn().mockResolvedValue(undefined)}
       createReply={handlers.createReply ?? vi.fn().mockResolvedValue(undefined)}
@@ -384,6 +385,34 @@ describe('InlineCommentItem', () => {
       expect(toggle).not.toBeNull();
     });
 
+    // 2026-09-11 (user request): the badge sits at the row's very corner,
+    // with the resolve/reopen toggle just to its left and hover-revealed
+    // the same way edit/delete are -- previously always visible.
+    it('orders the toggle before the badge and wraps the toggle in the hover-reveal container', () => {
+      const { container } = renderItem();
+
+      const headerEnd = getMain(container)?.querySelector('.ms-auto');
+      const toggle = screen.getByRole('button', {
+        name: 'inline_comment.resolve',
+      });
+      const badge = screen.getByTestId('inline-comment-status');
+
+      // DOM order: toggle comes before the badge among headerEnd's children.
+      const children = Array.from(headerEnd?.children ?? []);
+      const toggleContainerIndex = children.findIndex((el) =>
+        el.contains(toggle),
+      );
+      const badgeIndex = children.indexOf(badge);
+      expect(toggleContainerIndex).toBeGreaterThanOrEqual(0);
+      expect(badgeIndex).toBeGreaterThan(toggleContainerIndex);
+
+      // The toggle shares the same hover-reveal wrapper class as edit/delete.
+      expect(toggle.closest('.icon-button-container')).not.toBeNull();
+      // The badge itself is not inside that hover-reveal wrapper -- it stays
+      // always visible as the item's own status, not an action button.
+      expect(badge.closest('.icon-button-container')).toBeNull();
+    });
+
     it('keeps the unresolved badge colour scheme (rounded-pill bg-warning-subtle text-warning-emphasis)', () => {
       renderItem();
 
@@ -480,6 +509,35 @@ describe('InlineCommentItem', () => {
     });
   });
 
+  // 2026-09-11 (user request): links to the page as it looked when this
+  // comment was posted, the same `CommentRevisionLink` a normal comment
+  // uses (`Comment.tsx`), reused verbatim rather than a parallel
+  // reimplementation.
+  describe('the revision-history link', () => {
+    // `.page-comment-revision` is also the class CommentCard's own date link
+    // carries, so a query by that class alone would match the wrong element
+    // -- select by the unique id `CommentRevisionLink` sets instead
+    // (`page-comment-revision-${id}`, also its tooltip target).
+    it('renders right after the date, not inside the ms-auto header-end group', () => {
+      const { container } = renderItem();
+
+      const header = getMain(container)?.querySelector(
+        '.d-flex.align-items-center',
+      );
+      const link = header?.querySelector('#page-comment-revision-comment1');
+      expect(link).not.toBeNull();
+      expect(link?.closest('.ms-auto')).toBeNull();
+      expect(link?.closest('.ms-2')?.parentElement).toBe(header);
+    });
+
+    it('links to the page at the anchor origin revision', () => {
+      renderItem({ pageId: 'page42', anchorOriginRevisionId: 'revision99' });
+
+      const link = document.getElementById('page-comment-revision-comment1');
+      expect(link).toHaveAttribute('href', '/page42?revisionId=revision99');
+    });
+  });
+
   describe('the comment body', () => {
     it('renders the body through RevisionRenderer with the comment class, inside .page-comment-body', async () => {
       // Req 13.3: without `additionalClassName="comment"` the rendered markdown
@@ -501,6 +559,7 @@ describe('InlineCommentItem', () => {
       const { container } = render(
         <InlineCommentItem
           comment={originComment({ comment: 'unrendered body' })}
+          pagePath="/page1"
           rendererOptions={undefined}
           resolve={vi.fn()}
           createReply={vi.fn()}

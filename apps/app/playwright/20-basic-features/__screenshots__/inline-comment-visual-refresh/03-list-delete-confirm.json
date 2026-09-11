@@ -430,7 +430,7 @@
         "marginTop": "0px",
         "marginRight": "0px",
         "marginBottom": "0px",
-        "marginLeft": "167.406px",
+        "marginLeft": "135.406px",
         "paddingTop": "0px",
         "paddingRight": "0px",
         "paddingBottom": "0px",
@@ -471,29 +471,29 @@
     },
     "iconButtonContainer": {
       "rect": {
-        "x": 995,
-        "y": 572.765625,
+        "x": 896.40625,
+        "y": 330.765625,
         "width": 68,
-        "height": 32,
-        "right": 1063,
-        "bottom": 604.765625
+        "height": 31,
+        "right": 964.40625,
+        "bottom": 361.765625
       },
       "overflow": {
         "scrollWidth": 68,
         "clientWidth": 68,
-        "scrollHeight": 32,
-        "clientHeight": 32
+        "scrollHeight": 31,
+        "clientHeight": 31
       },
       "styles": {
-        "display": "flex",
+        "display": "block",
         "position": "static",
-        "visibility": "hidden",
+        "visibility": "visible",
         "opacity": "1",
         "flexDirection": "row",
-        "alignItems": "center",
+        "alignItems": "normal",
         "justifyContent": "normal",
-        "columnGap": "4px",
-        "rowGap": "4px",
+        "columnGap": "normal",
+        "rowGap": "normal",
         "marginTop": "0px",
         "marginRight": "0px",
         "marginBottom": "0px",
@@ -519,11 +519,11 @@
         "textAlign": "start",
         "whiteSpace": "normal",
         "width": "68px",
-        "height": "32px"
+        "height": "31px"
       },
       "before": {
         "content": "none",
-        "display": "block",
+        "display": "inline",
         "position": "static",
         "width": "auto",
         "height": "auto",
@@ -540,11 +540,11 @@
     "deleteIconButton": null,
     "statusBadge": {
       "rect": {
-        "x": 896.40625,
+        "x": 972.40625,
         "y": 332.265625,
         "width": 90.59375,
         "height": 28,
-        "right": 987,
+        "right": 1063,
         "bottom": 360.265625
       },
       "overflow": {
@@ -607,11 +607,11 @@
     },
     "resolveToggle": {
       "rect": {
-        "x": 995,
+        "x": 896.40625,
         "y": 330.765625,
         "width": 68,
         "height": 31,
-        "right": 1063,
+        "right": 964.40625,
         "bottom": 361.765625
       },
       "overflow": {
@@ -621,7 +621,7 @@
         "clientHeight": 29
       },
       "styles": {
-        "display": "block",
+        "display": "inline-block",
         "position": "static",
         "visibility": "visible",
         "opacity": "1",

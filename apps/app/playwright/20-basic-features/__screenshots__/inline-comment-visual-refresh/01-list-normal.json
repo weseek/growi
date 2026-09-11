@@ -430,7 +430,7 @@
         "marginTop": "0px",
         "marginRight": "0px",
         "marginBottom": "0px",
-        "marginLeft": "91.4062px",
+        "marginLeft": "59.4062px",
         "paddingTop": "0px",
         "paddingRight": "0px",
         "paddingBottom": "0px",
@@ -672,11 +672,11 @@
     },
     "statusBadge": {
       "rect": {
-        "x": 896.40625,
+        "x": 972.40625,
         "y": 509.15625,
         "width": 90.59375,
         "height": 28,
-        "right": 987,
+        "right": 1063,
         "bottom": 537.15625
       },
       "overflow": {
@@ -739,11 +739,11 @@
     },
     "resolveToggle": {
       "rect": {
-        "x": 995,
+        "x": 896.40625,
         "y": 507.65625,
         "width": 68,
         "height": 31,
-        "right": 1063,
+        "right": 964.40625,
         "bottom": 538.65625
       },
       "overflow": {
@@ -753,7 +753,7 @@
         "clientHeight": 29
       },
       "styles": {
-        "display": "block",
+        "display": "inline-block",
         "position": "static",
         "visibility": "visible",
         "opacity": "1",

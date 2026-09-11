@@ -1,12 +1,8 @@
 import { type JSX, useEffect, useMemo, useState } from 'react';
-import Link from 'next/link';
 import { type IUser, isPopulated } from '@growi/core';
-import * as pathUtils from '@growi/core/dist/utils/path-utils';
 import { format } from 'date-fns/format';
 import { parseISO } from 'date-fns/parseISO';
-import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
-import urljoin from 'url-join';
 
 import type { RendererOptions } from '~/interfaces/renderer-options';
 
@@ -15,6 +11,7 @@ import type { ICommentHasId } from '../../../interfaces/comment';
 import { CommentCard } from './CommentCard';
 import { CommentControl } from './CommentControl';
 import { CommentEditor } from './CommentEditor';
+import { CommentRevisionLink } from './CommentRevisionLink';
 import { DeleteConfirmAlert } from './DeleteConfirmAlert';
 
 import styles from './Comment.module.scss';
@@ -50,10 +47,6 @@ export const Comment = (props: CommentProps): JSX.Element => {
     onDeleteConfirmed,
     onComment,
   } = props;
-
-  const { returnPathForURL } = pathUtils;
-
-  const { t } = useTranslation();
 
   const [markdown, setMarkdown] = useState('');
   const [isReEdit, setIsReEdit] = useState(false);
@@ -156,7 +149,6 @@ export const Comment = (props: CommentProps): JSX.Element => {
   }, [markdown, rendererOptions]);
 
   const rootClassName = getRootClassName(comment);
-  const revHref = `?revisionId=${comment.revision}`;
   const editedDateId = `editedDate-${comment._id}`;
   const editedDateFormatted = isEdited
     ? format(updatedAt, 'yyyy/MM/dd HH:mm')
@@ -188,21 +180,16 @@ export const Comment = (props: CommentProps): JSX.Element => {
               {/* Unchanged position: right after the date, same `ms-2` as
                   before this round's fix. */}
               <span className="ms-2">
-                <Link
-                  id={`page-comment-revision-${commentId}`}
-                  href={urljoin(returnPathForURL(pagePath, pageId), revHref)}
-                  className="page-comment-revision"
-                  prefetch={false}
-                >
-                  <span className="material-symbols-outlined">history</span>
-                </Link>
-                <UncontrolledTooltip
-                  placement="bottom"
-                  fade={false}
-                  target={`page-comment-revision-${commentId}`}
-                >
-                  {t('page_comment.display_the_page_when_posting_this_comment')}
-                </UncontrolledTooltip>
+                <CommentRevisionLink
+                  id={commentId}
+                  pagePath={pagePath}
+                  pageId={pageId}
+                  // `comment.revision` is typed `Ref<IRevision>` (populated
+                  // or not), but this control only ever needs its id -- the
+                  // same implicit stringification the pre-extraction inline
+                  // markup relied on via template-literal interpolation.
+                  revisionId={String(comment.revision)}
+                />
               </span>
               {/* 2026-09-11: only the edit/delete controls are pushed to the
                   row's right edge with `ms-auto`, matching

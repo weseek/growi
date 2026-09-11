@@ -4302,7 +4302,11 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
     editIconButton: '[data-testid="inline-comment-edit-button"]',
     deleteIconButton: '[data-testid="inline-comment-delete-button"]',
     statusBadge: '[data-testid="inline-comment-status"]',
-    resolveToggle: '.ms-auto > button.btn-outline-secondary',
+    // Descendant selector, not `>`: the toggle is no longer a direct child of
+    // `.ms-auto` (2026-09-11) -- it moved inside its own hover-reveal
+    // `.icon-button-container` span, alongside edit/delete, to match their
+    // hover behavior (user request).
+    resolveToggle: '.ms-auto button.btn-outline-secondary',
     typeLabel: '.text-body-secondary.fw-bold',
     quote: '.inline-comment-quote',
     body: ':scope > .page-comment > .page-comment-main > .page-comment-body',
@@ -4649,11 +4653,15 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
     await expect(deleteConfirm).not.toBeVisible();
 
     // --- State 4: resolved ---
+    // 2026-09-11: the resolve/reopen toggle is now hover-revealed like
+    // edit/delete (user request), so it needs the same hover-first
+    // treatment the other buttons in this test already get.
+    await card.scrollIntoViewIfNeeded();
+    await card.hover();
     await item.getByRole('button', { name: 'Resolve', exact: true }).click();
     await expect(item.getByTestId('inline-comment-status')).toHaveText(
       'Resolved',
     );
-    await card.scrollIntoViewIfNeeded();
     await card.hover();
     await expect(editButton).toBeVisible();
 
@@ -4905,11 +4913,14 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
     await expect(deleteConfirm).not.toBeVisible();
 
     // --- State 4: resolved ---
+    // 2026-09-11: same hover-first treatment as the light-mode capture above
+    // -- the resolve/reopen toggle is now hover-revealed like edit/delete.
+    await card.scrollIntoViewIfNeeded();
+    await card.hover();
     await item.getByRole('button', { name: 'Resolve', exact: true }).click();
     await expect(item.getByTestId('inline-comment-status')).toHaveText(
       'Resolved',
     );
-    await card.scrollIntoViewIfNeeded();
     await card.hover();
     await expect(editButton).toBeVisible();
 
