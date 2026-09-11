@@ -291,7 +291,19 @@ export const PageComment: FC<PageCommentProps> = memo(
                   {hasReply && replyCommentsElement(allReplies[comment._id])}
 
                   {!isReadOnly && !showEditorIds.has(comment._id) && (
-                    <div className="d-flex flex-row-reverse">
+                    // `mt-2` here (not relying on the preceding comment's own
+                    // bottom margin) matches InlineCommentReplies.tsx's own
+                    // reply-toggle wrapper: the comment above this button
+                    // renders as `CommentCard`'s `.page-comment-main mb-2` in
+                    // its normal state, but as bare `CommentEditor` (no
+                    // margin at all) while being edited -- relying on that
+                    // margin left this button stuck directly against the
+                    // editor with no gap. A top margin on this wrapper is
+                    // stable regardless of the preceding element's own state,
+                    // and collapses harmlessly with the existing `mb-2` when
+                    // not editing (both 0.5rem, so the gap is unchanged in
+                    // the normal case) (user request, 2026-09-11).
+                    <div className="d-flex flex-row-reverse mt-2">
                       <NotAvailableForGuest>
                         <NotAvailableIfReadOnlyUserNotAllowedToComment>
                           <button
