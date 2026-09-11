@@ -7,12 +7,12 @@
     "username": null,
     "createdAt": {
       "rect": {
-        "x": 702.1875,
-        "y": 752.65625,
+        "x": 713,
+        "y": 746.65625,
         "width": 64,
         "height": 21,
-        "right": 766.1875,
-        "bottom": 773.65625
+        "right": 777,
+        "bottom": 767.65625
       },
       "overflow": {
         "scrollWidth": 64,
@@ -76,11 +76,11 @@
     "iconButtonContainer": {
       "rect": {
         "x": 995,
-        "y": 747.15625,
+        "y": 741.15625,
         "width": 68,
         "height": 32,
         "right": 1063,
-        "bottom": 779.15625
+        "bottom": 773.15625
       },
       "overflow": {
         "scrollWidth": 68,
@@ -150,17 +150,17 @@
     "replyFormAvatar": {
       "rect": {
         "x": 548,
-        "y": 997.515625,
-        "width": 19.1875,
-        "height": 19.1875,
-        "right": 567.1875,
-        "bottom": 1016.703125
+        "y": 987.15625,
+        "width": 30,
+        "height": 30,
+        "right": 578,
+        "bottom": 1017.15625
       },
       "overflow": {
-        "scrollWidth": 19,
-        "clientWidth": 19,
-        "scrollHeight": 19,
-        "clientHeight": 19
+        "scrollWidth": 30,
+        "clientWidth": 30,
+        "scrollHeight": 30,
+        "clientHeight": 30
       },
       "styles": {
         "display": "inline",
@@ -196,8 +196,8 @@
         "lineHeight": "24px",
         "textAlign": "left",
         "whiteSpace": "normal",
-        "width": "19.1875px",
-        "height": "19.1875px"
+        "width": "30px",
+        "height": "30px"
       },
       "before": {
         "content": "none",
@@ -217,11 +217,11 @@
     "editForm": {
       "rect": {
         "x": 487,
-        "y": 270.15625,
+        "y": 264.15625,
         "width": 593,
         "height": 452,
         "right": 1080,
-        "bottom": 722.15625
+        "bottom": 716.15625
       },
       "overflow": {
         "scrollWidth": 593,
@@ -284,11 +284,11 @@
     "editCancelButton": {
       "rect": {
         "x": 867,
-        "y": 667.15625,
+        "y": 661.15625,
         "width": 73,
         "height": 38,
         "right": 940,
-        "bottom": 705.15625
+        "bottom": 699.15625
       },
       "overflow": {
         "scrollWidth": 71,
@@ -351,11 +351,11 @@
     "editSubmitButton": {
       "rect": {
         "x": 948,
-        "y": 667.15625,
+        "y": 661.15625,
         "width": 107,
         "height": 38,
         "right": 1055,
-        "bottom": 705.15625
+        "bottom": 699.15625
       },
       "overflow": {
         "scrollWidth": 105,

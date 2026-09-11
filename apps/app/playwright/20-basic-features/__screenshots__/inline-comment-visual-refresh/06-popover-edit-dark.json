@@ -1295,17 +1295,17 @@
     "replyFormAvatar": {
       "rect": {
         "x": 444,
-        "y": 721.140625,
-        "width": 19.1875,
-        "height": 19.1875,
-        "right": 463.1875,
-        "bottom": 740.328125
+        "y": 716.78125,
+        "width": 30,
+        "height": 30,
+        "right": 474,
+        "bottom": 746.78125
       },
       "overflow": {
-        "scrollWidth": 19,
-        "clientWidth": 19,
-        "scrollHeight": 19,
-        "clientHeight": 19
+        "scrollWidth": 30,
+        "clientWidth": 30,
+        "scrollHeight": 30,
+        "clientHeight": 30
       },
       "styles": {
         "display": "inline",
@@ -1341,8 +1341,8 @@
         "lineHeight": "24px",
         "textAlign": "start",
         "whiteSpace": "normal",
-        "width": "19.1875px",
-        "height": "19.1875px"
+        "width": "30px",
+        "height": "30px"
       },
       "before": {
         "content": "none",
@@ -1361,16 +1361,16 @@
     },
     "replyFormInput": {
       "rect": {
-        "x": 471.1875,
+        "x": 482,
         "y": 716.78125,
-        "width": 403.25,
+        "width": 392.4375,
         "height": 30.390625,
         "right": 874.4375,
         "bottom": 747.171875
       },
       "overflow": {
-        "scrollWidth": 403,
-        "clientWidth": 403,
+        "scrollWidth": 392,
+        "clientWidth": 392,
         "scrollHeight": 30,
         "clientHeight": 30
       },
@@ -1408,7 +1408,7 @@
         "lineHeight": "22.4px",
         "textAlign": "start",
         "whiteSpace": "break-spaces",
-        "width": "403.25px",
+        "width": "392.438px",
         "height": "30.3906px"
       },
       "before": {

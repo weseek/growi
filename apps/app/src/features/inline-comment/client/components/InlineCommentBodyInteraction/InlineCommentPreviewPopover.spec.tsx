@@ -399,6 +399,34 @@ describe('InlineCommentPreviewPopover', () => {
     ).toHaveLength(2);
   });
 
+  // 2026-09-11: `replies` arrives in the server's `createdAt: 'desc'` fetch
+  // order (newest first) -- InlineCommentService.listByPageId() never
+  // reorders for display, display order is this component's own concern.
+  // Mirrors InlineCommentReplies.tsx's own `repliesFromOldest` reversal (user
+  // report: replies were rendering newest-first, oldest-last).
+  it('renders replies oldest-first even though the `replies` prop arrives newest-first (Req 2.1)', () => {
+    renderPopover({
+      replies: [
+        reply({
+          id: 'reply-newer',
+          comment: 'the newer reply',
+          createdAt: new Date('2026-01-02T00:00:00.000Z'),
+        }),
+        reply({
+          id: 'reply-older',
+          comment: 'the older reply',
+          createdAt: new Date('2026-01-01T00:00:00.000Z'),
+        }),
+      ],
+    });
+
+    const renderedReplies = screen.getAllByTestId(
+      'inline-comment-preview-popover-reply',
+    );
+    expect(renderedReplies[0]).toHaveTextContent('the older reply');
+    expect(renderedReplies[1]).toHaveTextContent('the newer reply');
+  });
+
   // 2026-09-11 その4: the reply composer is `MentionAwareCommentInput`, same
   // as every other comment input in this feature -- draft text, the empty/
   // whitespace-only submit guard, clearing on success, and error display on
@@ -667,12 +695,25 @@ describe('InlineCommentPreviewPopover', () => {
     renderPopover({
       id: 'comment42',
       creatorId: 'user1',
+      // Given in the server's own desc (newest-first) fetch order; the
+      // component reverses to oldest-first for display.
       replies: [
-        reply({ id: 'reply1', creatorId: 'user2', comment: 'the first reply' }),
-        reply({ id: 'reply2', creatorId: 'user2', comment: 'the other reply' }),
+        reply({
+          id: 'reply2',
+          creatorId: 'user2',
+          comment: 'the other reply',
+          createdAt: new Date('2026-01-02T00:00:00.000Z'),
+        }),
+        reply({
+          id: 'reply1',
+          creatorId: 'user2',
+          comment: 'the first reply',
+          createdAt: new Date('2026-01-01T00:00:00.000Z'),
+        }),
       ],
     });
 
+    // Displayed oldest-first, so `editButtons[0]` is still "the first reply".
     const editButtons = screen.getAllByTestId(
       'inline-comment-preview-popover-reply-edit-button',
     );

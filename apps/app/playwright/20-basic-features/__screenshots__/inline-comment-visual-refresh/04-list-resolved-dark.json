@@ -19,11 +19,11 @@
     "cardRoot": {
       "rect": {
         "x": 487,
-        "y": 325.765625,
+        "y": 313.15625,
         "width": 593,
         "height": 170,
         "right": 1080,
-        "bottom": 495.765625
+        "bottom": 483.15625
       },
       "overflow": {
         "scrollWidth": 593,
@@ -86,11 +86,11 @@
     "card": {
       "rect": {
         "x": 487,
-        "y": 325.765625,
+        "y": 313.15625,
         "width": 593,
         "height": 170,
         "right": 1080,
-        "bottom": 495.765625
+        "bottom": 483.15625
       },
       "overflow": {
         "scrollWidth": 591,
@@ -153,11 +153,11 @@
     "headerRow": {
       "rect": {
         "x": 504,
-        "y": 342.765625,
+        "y": 330.15625,
         "width": 559,
         "height": 32,
         "right": 1063,
-        "bottom": 374.765625
+        "bottom": 362.15625
       },
       "overflow": {
         "scrollWidth": 559,
@@ -220,17 +220,17 @@
     "avatar": {
       "rect": {
         "x": 504,
-        "y": 351.125,
-        "width": 19.1875,
-        "height": 19.1875,
-        "right": 523.1875,
-        "bottom": 370.3125
+        "y": 331.15625,
+        "width": 30,
+        "height": 30,
+        "right": 534,
+        "bottom": 361.15625
       },
       "overflow": {
-        "scrollWidth": 19,
-        "clientWidth": 19,
-        "scrollHeight": 19,
-        "clientHeight": 19
+        "scrollWidth": 30,
+        "clientWidth": 30,
+        "scrollHeight": 30,
+        "clientHeight": 30
       },
       "styles": {
         "display": "inline",
@@ -266,8 +266,8 @@
         "lineHeight": "24px",
         "textAlign": "start",
         "whiteSpace": "normal",
-        "width": "19.1875px",
-        "height": "19.1875px"
+        "width": "30px",
+        "height": "30px"
       },
       "before": {
         "content": "none",
@@ -286,12 +286,12 @@
     },
     "username": {
       "rect": {
-        "x": 531.1875,
-        "y": 348.265625,
+        "x": 542,
+        "y": 335.65625,
         "width": 107,
         "height": 21,
-        "right": 638.1875,
-        "bottom": 369.265625
+        "right": 649,
+        "bottom": 356.65625
       },
       "overflow": {
         "scrollWidth": 107,
@@ -353,12 +353,12 @@
     },
     "createdAt": {
       "rect": {
-        "x": 654.1875,
-        "y": 348.265625,
+        "x": 665,
+        "y": 335.65625,
         "width": 72,
         "height": 21,
-        "right": 726.1875,
-        "bottom": 369.265625
+        "right": 737,
+        "bottom": 356.65625
       },
       "overflow": {
         "scrollWidth": 72,
@@ -421,11 +421,11 @@
     "headerEnd": {
       "rect": {
         "x": 834.40625,
-        "y": 342.765625,
+        "y": 330.15625,
         "width": 228.59375,
         "height": 32,
         "right": 1063,
-        "bottom": 374.765625
+        "bottom": 362.15625
       },
       "overflow": {
         "scrollWidth": 229,
@@ -446,7 +446,7 @@
         "marginTop": "0px",
         "marginRight": "0px",
         "marginBottom": "0px",
-        "marginLeft": "108.219px",
+        "marginLeft": "97.4062px",
         "paddingTop": "0px",
         "paddingRight": "0px",
         "paddingBottom": "0px",
@@ -488,11 +488,11 @@
     "iconButtonContainer": {
       "rect": {
         "x": 834.40625,
-        "y": 342.765625,
+        "y": 330.15625,
         "width": 68,
         "height": 32,
         "right": 902.40625,
-        "bottom": 374.765625
+        "bottom": 362.15625
       },
       "overflow": {
         "scrollWidth": 68,
@@ -555,11 +555,11 @@
     "editIconButton": {
       "rect": {
         "x": 834.40625,
-        "y": 342.765625,
+        "y": 330.15625,
         "width": 32,
         "height": 32,
         "right": 866.40625,
-        "bottom": 374.765625
+        "bottom": 362.15625
       },
       "overflow": {
         "scrollWidth": 30,
@@ -622,11 +622,11 @@
     "deleteIconButton": {
       "rect": {
         "x": 870.40625,
-        "y": 342.765625,
+        "y": 330.15625,
         "width": 32,
         "height": 32,
         "right": 902.40625,
-        "bottom": 374.765625
+        "bottom": 362.15625
       },
       "overflow": {
         "scrollWidth": 30,
@@ -689,11 +689,11 @@
     "statusBadge": {
       "rect": {
         "x": 910.40625,
-        "y": 344.765625,
+        "y": 332.15625,
         "width": 77.59375,
         "height": 28,
         "right": 988,
-        "bottom": 372.765625
+        "bottom": 360.15625
       },
       "overflow": {
         "scrollWidth": 78,
@@ -756,11 +756,11 @@
     "resolveToggle": {
       "rect": {
         "x": 996,
-        "y": 343.265625,
+        "y": 330.65625,
         "width": 67,
         "height": 31,
         "right": 1063,
-        "bottom": 374.265625
+        "bottom": 361.65625
       },
       "overflow": {
         "scrollWidth": 65,
@@ -824,11 +824,11 @@
     "quote": {
       "rect": {
         "x": 504,
-        "y": 382.765625,
+        "y": 370.15625,
         "width": 559,
         "height": 37,
         "right": 1063,
-        "bottom": 419.765625
+        "bottom": 407.15625
       },
       "overflow": {
         "scrollWidth": 556,
@@ -891,11 +891,11 @@
     "body": {
       "rect": {
         "x": 504,
-        "y": 442.765625,
+        "y": 430.15625,
         "width": 559,
         "height": 21,
         "right": 1063,
-        "bottom": 463.765625
+        "bottom": 451.15625
       },
       "overflow": {
         "scrollWidth": 559,
@@ -958,17 +958,17 @@
     "replyFormAvatar": {
       "rect": {
         "x": 548,
-        "y": 771.125,
-        "width": 19.1875,
-        "height": 19.1875,
-        "right": 567.1875,
-        "bottom": 790.3125
+        "y": 754.15625,
+        "width": 30,
+        "height": 30,
+        "right": 578,
+        "bottom": 784.15625
       },
       "overflow": {
-        "scrollWidth": 19,
-        "clientWidth": 19,
-        "scrollHeight": 19,
-        "clientHeight": 19
+        "scrollWidth": 30,
+        "clientWidth": 30,
+        "scrollHeight": 30,
+        "clientHeight": 30
       },
       "styles": {
         "display": "inline",
@@ -1004,8 +1004,8 @@
         "lineHeight": "24px",
         "textAlign": "left",
         "whiteSpace": "normal",
-        "width": "19.1875px",
-        "height": "19.1875px"
+        "width": "30px",
+        "height": "30px"
       },
       "before": {
         "content": "none",

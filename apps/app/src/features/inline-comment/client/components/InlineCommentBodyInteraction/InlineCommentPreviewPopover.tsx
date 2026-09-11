@@ -96,6 +96,17 @@ export const InlineCommentPreviewPopover: FC<
   const currentUser = useCurrentUser();
   const isOwnComment = currentUser?._id === comment.creatorId;
 
+  // `comment.replies` arrives in the server's `createdAt: 'desc'` fetch order
+  // (newest first) -- InlineCommentService.listByPageId() never reorders for
+  // display. Reversed here to oldest-first (newest at the bottom), matching
+  // both InlineCommentReplies.tsx's own `repliesFromOldest` and a normal
+  // comment thread's reading order (2026-09-11, user report: replies were
+  // rendering newest-first, oldest-last).
+  const repliesFromOldest = useMemo(
+    () => [...comment.replies].reverse(),
+    [comment.replies],
+  );
+
   // A state-backed callback ref (not useRef): `usePopperPosition` takes the
   // popper element as an effect dependency, and the same node also serves as
   // the outside-click boundary below.
@@ -279,9 +290,9 @@ export const InlineCommentPreviewPopover: FC<
         {/* No `!isEditing` guard around the thread any more (design.md
             方針転換その2-3): each entry owns its own edit / delete state, so
             editing one leaves every sibling and the reply form displayed. */}
-        {comment.replies.length > 0 && (
+        {repliesFromOldest.length > 0 && (
           <div data-testid="inline-comment-preview-popover-replies">
-            {comment.replies.map((reply) => (
+            {repliesFromOldest.map((reply) => (
               <div
                 key={reply.id}
                 data-testid="inline-comment-preview-popover-reply"
