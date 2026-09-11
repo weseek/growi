@@ -222,7 +222,7 @@ export const InlineCommentPreviewPopover: FC<
                  not a click target. The origin is the only entry with one. */
               <blockquote
                 data-testid="inline-comment-preview-popover-quote"
-                className={`inline-comment-quote bg-body-tertiary rounded-end small text-body-secondary mt-3 mb-2 p-2 ${styles['inline-comment-preview-popover-quote-clamp']}`}
+                className={`inline-comment-quote bg-body-tertiary rounded-end small text-body-secondary mt-3 mb-0 p-2 ${styles['inline-comment-preview-popover-quote-clamp']}`}
               >
                 {comment.anchor.quote}
               </blockquote>
@@ -280,7 +280,7 @@ export const InlineCommentPreviewPopover: FC<
               <div
                 key={reply.id}
                 data-testid="inline-comment-preview-popover-reply"
-                className="mt-2"
+                className="mt-4"
               >
                 <InlineCommentPopoverEntry
                   id={reply.id}

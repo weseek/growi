@@ -40,6 +40,16 @@
   // `UserPicture`'s larger default and was the single odd size on screen.
   :global(.user-picture) { @extend %user-picture; }
 
+  :global(.wiki) {
+    p {
+      margin: 4px 0;
+    }
+    ul:not(.nav), ol:not(.nav) {
+      margin: 8px 0;
+      // padding-left: 20px;
+    }
+  }
+
   // Each entry's avatar, at the mockup's 30px. `UserPicture`'s own size
   // scale has no 30px step (lg 48 / md 24 / sm 18 / xs 14), so the size is
   // set from here; nested inside this block so it outranks the
