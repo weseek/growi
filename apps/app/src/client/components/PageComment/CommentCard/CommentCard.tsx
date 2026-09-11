@@ -80,7 +80,7 @@ export const CommentCard = (props: CommentCardProps): JSX.Element => {
     <div id={id} className={className}>
       <div className="page-comment-main bg-comment rounded mb-2">
         <div className="d-flex align-items-center">
-          <UserPicture user={creator} className="me-2" />
+          <UserPicture user={creator} size="md" className="me-2" />
           <div className="small fw-bold me-3">
             {/*
              * Username's prop type doesn't include `null` (only `IUserHasId

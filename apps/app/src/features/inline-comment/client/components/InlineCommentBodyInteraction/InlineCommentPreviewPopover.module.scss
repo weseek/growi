@@ -46,17 +46,6 @@
     }
   }
 
-  // Each entry's avatar, at the mockup's 30px. `UserPicture`'s own size
-  // scale has no 30px step (lg 48 / md 24 / sm 18 / xs 14), so the size is
-  // set from here; nested inside this block so it outranks the
-  // `%user-picture` extend above on specificity rather than on source order.
-  .inline-comment-preview-popover-author-picture {
-    :global(.user-picture) {
-      width: 30px;
-      height: 30px;
-    }
-  }
-
   // Same left-border accent as InlineCommentItem.module.scss's own
   // `.inline-comment-quote` rule (Requirement 1.7: unify the quote block
   // between the list item and the popover).
