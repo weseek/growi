@@ -301,7 +301,7 @@ export const InlineCommentPreviewPopover: FC<
           {/* Same left-accent idiom as InlineCommentItem.tsx's quote, but not a click target. */}
           <blockquote
             data-testid="inline-comment-preview-popover-quote"
-            className={`inline-comment-quote bg-body-tertiary rounded-end small text-body-secondary my-2 p-2 ${styles['inline-comment-preview-popover-quote-clamp']}`}
+            className={`inline-comment-quote bg-body-tertiary rounded-end small text-body-secondary mt-3 mb-2 p-2 ${styles['inline-comment-preview-popover-quote-clamp']}`}
           >
             {comment.anchor.quote}
           </blockquote>
@@ -396,40 +396,31 @@ export const InlineCommentPreviewPopover: FC<
             later addition here cannot be forgotten. */}
         {!isEditing && (
           <>
-            <hr className="my-2" />
-
             {comment.replies.length > 0 && (
-              <>
-                <div
-                  data-testid="inline-comment-preview-popover-replies"
-                  className="border-start ps-3"
-                >
-                  {comment.replies.map((reply) => (
-                    <div
-                      key={reply.id}
-                      data-testid="inline-comment-preview-popover-reply"
-                      className="mt-2"
+              <div data-testid="inline-comment-preview-popover-replies">
+                {comment.replies.map((reply) => (
+                  <div
+                    key={reply.id}
+                    data-testid="inline-comment-preview-popover-reply"
+                    className="mt-2"
+                  >
+                    <CommentCard
+                      id={reply.id}
+                      creator={reply.creatorId}
+                      createdAt={reply.createdAt}
                     >
-                      <CommentCard
-                        id={reply.id}
-                        creator={reply.creatorId}
-                        createdAt={reply.createdAt}
-                      >
-                        {rendererOptions != null ? (
-                          <RevisionRenderer
-                            rendererOptions={rendererOptions}
-                            markdown={reply.comment}
-                          />
-                        ) : (
-                          <span>{reply.comment}</span>
-                        )}
-                      </CommentCard>
-                    </div>
-                  ))}
-                </div>
-
-                <hr className="my-2" />
-              </>
+                      {rendererOptions != null ? (
+                        <RevisionRenderer
+                          rendererOptions={rendererOptions}
+                          markdown={reply.comment}
+                        />
+                      ) : (
+                        <span>{reply.comment}</span>
+                      )}
+                    </CommentCard>
+                  </div>
+                ))}
+              </div>
             )}
 
             <div className="inline-comment-preview-popover-reply-form d-flex align-items-center gap-2">

@@ -45,8 +45,8 @@
   // still a `CommentCard`. Removing them would strip the replies of the
   // shared comment box they are meant to keep.
   :global(.page-comment) {
-    :global(.bg-comment) { @extend %bg-comment; }
-    :global(.page-comment-main) { @extend %comment-section; }
+    // :global(.bg-comment) { @extend %bg-comment; }
+    // :global(.page-comment-main) { @extend %comment-section; }
   }
 
   // The origin comment's avatar, at the mockup's 30px. `UserPicture`'s own
@@ -89,13 +89,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   padding: 0;
-
-  :global(.material-symbols-outlined) {
-    font-size: 1rem;
-  }
 }
 
 // The 2-line clamp cannot be expressed with a Bootstrap utility class, so it
