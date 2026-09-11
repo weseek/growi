@@ -2,28 +2,43 @@ import { differenceInSeconds } from 'date-fns/differenceInSeconds';
 import { format } from 'date-fns/format';
 import { formatDistanceStrict } from 'date-fns/formatDistanceStrict';
 import { useTranslation } from 'next-i18next';
-import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import { getLocale } from '~/utils/locale-utils';
 
-const FormattedDistanceDate = (props) => {
+const ONE_MONTH_IN_SECONDS = 86400 * 30;
+
+type Props = {
+  id: string;
+  date: string | Date;
+  baseDate?: Date;
+  // the number(sec) from 'baseDate' to avoid format
+  differenceForAvoidingFormat?: number;
+  isShowTooltip?: boolean;
+};
+
+export const FormattedDistanceDate = (props: Props): JSX.Element => {
+  const {
+    id,
+    date: dateProp,
+    baseDate = new Date(),
+    differenceForAvoidingFormat = ONE_MONTH_IN_SECONDS,
+    isShowTooltip = true,
+  } = props;
+
   const { i18n } = useTranslation();
 
   // cast to date if string
-  const date =
-    typeof props.date === 'string' ? new Date(props.date) : props.date;
-
-  const baseDate = props.baseDate || new Date();
+  const date = typeof dateProp === 'string' ? new Date(dateProp) : dateProp;
 
   const dateFormatted = format(date, 'yyyy/MM/dd HH:mm');
 
   const diff = Math.abs(differenceInSeconds(date, baseDate));
-  if (diff > props.differenceForAvoidingFormat) {
+  if (diff > differenceForAvoidingFormat) {
     return <>{dateFormatted}</>;
   }
 
-  const elemId = `grw-fdd-${props.id}`;
+  const elemId = `grw-fdd-${id}`;
 
   return (
     <>
@@ -32,7 +47,7 @@ const FormattedDistanceDate = (props) => {
           locale: getLocale(i18n.language),
         })}
       </span>
-      {props.isShowTooltip && (
+      {isShowTooltip && (
         <UncontrolledTooltip placement="bottom" fade={false} target={elemId}>
           {dateFormatted}
         </UncontrolledTooltip>
@@ -40,19 +55,3 @@ const FormattedDistanceDate = (props) => {
     </>
   );
 };
-
-FormattedDistanceDate.propTypes = {
-  id: PropTypes.string.isRequired,
-  date: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)])
-    .isRequired,
-  baseDate: PropTypes.instanceOf(Date),
-  // the number(sec) from 'baseDate' to avoid format
-  differenceForAvoidingFormat: PropTypes.number,
-  isShowTooltip: PropTypes.bool,
-};
-FormattedDistanceDate.defaultProps = {
-  differenceForAvoidingFormat: 86400 * 3,
-  isShowTooltip: true,
-};
-
-export default FormattedDistanceDate;

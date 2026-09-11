@@ -14,7 +14,7 @@ import type { RendererOptions } from '~/interfaces/renderer-options';
 import RevisionRenderer from '../../../components/PageView/RevisionRenderer';
 import { Username } from '../../../components/User/Username';
 import type { ICommentHasId } from '../../../interfaces/comment';
-import FormattedDistanceDate from '../FormattedDistanceDate';
+import { FormattedDistanceDate } from '../FormattedDistanceDate';
 import { CommentControl } from './CommentControl';
 import { CommentEditor } from './CommentEditor';
 
