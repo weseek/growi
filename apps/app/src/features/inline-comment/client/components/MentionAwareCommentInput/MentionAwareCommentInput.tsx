@@ -50,6 +50,8 @@ type MentionAwareCommentInputProps = {
   onSubmitted?: () => void;
   /** An additional, caller-owned guard ANDed with this component's own "has non-empty text" check. */
   disabled?: boolean;
+  /** Focuses the editor once it becomes ready, so a freshly-opened form is immediately typeable. */
+  autoFocus?: boolean;
   /**
    * Reports the submit / mention-insert controls and whether submitting is
    * currently possible, so the caller can render those buttons wherever its
@@ -68,6 +70,7 @@ export const MentionAwareCommentInput = (
     onSubmit,
     onSubmitted,
     disabled,
+    autoFocus,
     onControlsChange,
   } = props;
 
@@ -141,8 +144,13 @@ export const MentionAwareCommentInput = (
     () => ({
       onChange: (value: string) => setCommentText(value),
       basicSetup: { lineNumbers: false, foldGutter: false }, // gutters are wasted space in this one-to-few-line input
+      // @uiw/react-codemirror re-checks this in its own `[autoFocus, view]`
+      // effect, so it still focuses once `view` becomes available even
+      // though CodeMirror's own initialization is asynchronous (see
+      // codemirror-editor.ts / its spec for that async-readiness contract).
+      autoFocus,
     }),
-    [],
+    [autoFocus],
   );
 
   const canSubmit = disabled !== true && commentText.trim() !== '';

@@ -124,6 +124,10 @@ export const InlineCommentForm = (
         <MentionAwareCommentInput
           editorKey={editorKey}
           disabled={!hasValidAnchor}
+          // The form appears already-focused-on-a-selection, so the user
+          // should be able to start typing immediately without an extra
+          // click (user request, 2026-09-11).
+          autoFocus
           onSubmit={(comment) =>
             create({ pageId, anchorOriginRevisionId, comment, anchor })
           }

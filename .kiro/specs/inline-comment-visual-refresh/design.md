@@ -57,6 +57,15 @@
 - **既存の入力欄消失防止ガードを、返信フォームにも波及させる必要があった。** ポップオーバーの外側クリック判定（`handlePointerDown`）は、`popperElement.contains(target)` だけを見ていたため、`MentionAwareCommentInput` のメンション自動補完ポップアップ（`document.body` に portal される、`InlineCommentForm.tsx` がすでに同じ理由で `.cm-tooltip-autocomplete` を除外している）をクリックすると、返信フォーム・編集モードのどちらでもポップオーバーごと閉じてしまう潜在バグがあった（編集モードでは todo 化されていなかった既存のスキマ）。同じガード（`.cm-tooltip-autocomplete` の除外）をポップオーバー全体の外側クリック判定に追加し、実ブラウザで「メンションピッカーボタンからの挿入」「`@` タイプ中の自動補完からの選択」の両方でポップオーバーが閉じないことを確認した。
 - **既知の未対応（今回は修正しない）**: 返信フォームは `MentionAwareCommentInput` 自身の二重送信ガードを持たない（クリック中の再入防止）。これは `InlineCommentForm.tsx`・起点/返信編集モードも同様に持っていない、この機能全体で共通の既存の隙間であり、今回の変更が新しく持ち込んだものではない。修正するなら `MentionAwareCommentInput` 自身に1箇所実装するのが筋が良いが、本amendmentのスコープ外として記録するに留める。
 
+### 2026-09-11 の方針転換 その5（返信フォームの枠線・自動フォーカス）
+
+ユーザーが直接コミット（`8ecc809d3d`）で、その4で箱型に変わった返信フォームに `border border-primary-subtle rounded p-2 gap-2` の枠線・余白と `align-items-start`（アバターは `ms-2` で位置調整）を追加した——編集モードのアクセント枠（`border border-primary rounded`）と対になる、フォーム全体を視覚的に区切る仕上げ。
+
+その直後、ユーザーから「`inline-comment-form` が出現したとき、すぐタイプできるように入力欄にフォーカスしていてほしい」という要望があった。
+
+- **`MentionAwareCommentInput` に `autoFocus?: boolean` プロパティを追加。** 内部で保持する `cmProps`（`@uiw/react-codemirror` に渡す）に素通しする。CodeMirrorの初期化は非同期（`view`/`state` は container アタッチ直後は未定義——`packages/editor`側の既存テストが検証済みの契約）だが、`@uiw/react-codemirror` 自身の `useEffect(() => { if (autoFocus && view) view.focus() }, [autoFocus, view])` が `view` の到着を待って発火するため、非同期初期化と正しく噛み合う。デフォルトは `undefined`（フォーカスしない）——起点コメント作成フォーム（`InlineCommentForm.tsx`）だけが `autoFocus` を明示的に渡す。編集モード・返信フォームには今回は付けない（ユーザーの要望は作成フォームに限定されていたため）。
+- **バグ修正（本amendmentの実装中に発覚）**: `8ecc809d3d` が返信フォームの `className` を複数行のプレーン文字列（改行区切り）に変更したことで、`InlineCommentPreviewPopover.spec.tsx` の `document.querySelector('.inline-comment-preview-popover-reply-form')` が突然 `null` を返すようになった。原因は本スペックの実装ではなく、この環境の単体テストが使う happy-dom というテスト用DOM実装自身の制限——`classList.contains()` は改行区切りのクラス属性も正しく解釈するが、`querySelector`/`querySelectorAll` によるCSSセレクタ照合は改行を区切り文字として認識しない（小さな再現テストで確認済み。実ブラウザのHTML仕様上は改行も空白として正しく扱われるため、本番挙動には影響しない）。`className` をこのファイルの他の箇所と同じ1行の文字列に整形し直すことで、見た目・クラス構成を変えずに解消した——ユーザーが加えた枠線・余白のスタイル自体は変更していない。
+
 ## Boundary Commitments
 
 ### This Spec Owns

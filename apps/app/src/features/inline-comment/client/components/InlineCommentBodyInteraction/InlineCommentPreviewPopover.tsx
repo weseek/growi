@@ -306,13 +306,7 @@ export const InlineCommentPreviewPopover: FC<
           </div>
         )}
 
-        <div
-          className="
-            inline-comment-preview-popover-reply-form
-            d-flex align-items-start
-            border border-primary-subtle rounded
-            p-2 gap-2"
-        >
+        <div className="inline-comment-preview-popover-reply-form d-flex align-items-start border border-primary-subtle rounded p-2 gap-2">
           <UserPicture user={currentUser} className="ms-2" noLink noTooltip />
           <MentionAwareCommentInput
             editorKey={replyEditorKey}
