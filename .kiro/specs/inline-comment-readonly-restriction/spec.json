@@ -1,0 +1,22 @@
+{
+  "feature_name": "inline-comment-readonly-restriction",
+  "created_at": "2026-09-11T14:54:00Z",
+  "updated_at": "2026-09-11T15:05:00Z",
+  "language": "ja",
+  "phase": "requirements-generated",
+  "approvals": {
+    "requirements": {
+      "generated": true,
+      "approved": true
+    },
+    "design": {
+      "generated": false,
+      "approved": false
+    },
+    "tasks": {
+      "generated": false,
+      "approved": false
+    }
+  },
+  "ready_for_implementation": false
+}
