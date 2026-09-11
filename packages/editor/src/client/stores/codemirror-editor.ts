@@ -78,6 +78,30 @@ export const useCodeMirrorEditorIsolated = (
     }
   }, [shouldUpdate, newData, setStoredData]);
 
+  // Reset the atom when the *publisher* (the hook instance that actually owns
+  // a `container`, e.g. CodeMirrorEditor) unmounts -- otherwise a remount
+  // with the same key (re-opening edit mode on the same comment after
+  // Cancel) sees the atom still holding the PREVIOUS, now-destroyed editor
+  // on its very first render. A consumer that applies its initial value only
+  // once (MentionAwareCommentInput) would spend that one chance on the dead
+  // editor and never retry once the real one re-publishes.
+  //
+  // Gated through a ref rather than the `container` value directly, for two
+  // reasons: `container` captured in an empty-dep effect would be stale, and
+  // the gate itself is required at all -- MentionAwareCommentInput calls this
+  // hook with no `container` (a pure reader sharing the publisher's key), and
+  // an ungated reset would let a reader wipe a still-live editor out from
+  // under the publisher on every one of ITS unmounts too.
+  const isPublisherRef = useRef(false);
+  isPublisherRef.current = container != null;
+  useEffect(() => {
+    return () => {
+      if (isPublisherRef.current) {
+        setStoredData(null);
+      }
+    };
+  }, [setStoredData]);
+
   return {
     data: key != null ? (storedData ?? undefined) : undefined,
   };

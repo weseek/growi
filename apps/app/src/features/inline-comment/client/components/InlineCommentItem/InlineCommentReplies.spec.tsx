@@ -465,7 +465,6 @@ describe('InlineCommentReplies', () => {
         'btn',
         'btn-link',
         'opacity-50',
-        'rounded-circle',
         'icon-button',
       );
       expect(deleteButton).toHaveClass(
@@ -473,9 +472,12 @@ describe('InlineCommentReplies', () => {
         'btn-link',
         'opacity-50',
         'text-danger',
-        'rounded-circle',
         'icon-button',
       );
+      // 32px squares, not circles: the same shape `InlineCommentItem.tsx`'s
+      // own icon buttons already took in be49248348 (design.md 方針転換その2-1).
+      expect(editButton).not.toHaveClass('rounded-circle');
+      expect(deleteButton).not.toHaveClass('rounded-circle');
       expect(
         editButton.querySelector('.material-symbols-outlined'),
       ).toHaveTextContent('edit');

@@ -132,7 +132,7 @@ const InlineCommentReplyItem: FC<InlineCommentReplyItemProps> = (
                   <button
                     type="button"
                     data-testid="inline-comment-reply-edit-button"
-                    className={`btn btn-link opacity-50 rounded-circle ${styles['icon-button']}`}
+                    className={`btn btn-link opacity-50 ${styles['icon-button']}`}
                     onClick={() => setIsEditing(true)}
                   >
                     <span className="material-symbols-outlined">edit</span>
@@ -140,7 +140,7 @@ const InlineCommentReplyItem: FC<InlineCommentReplyItemProps> = (
                   <button
                     type="button"
                     data-testid="inline-comment-reply-delete-button"
-                    className={`btn btn-link opacity-50 text-danger rounded-circle ${styles['icon-button']}`}
+                    className={`btn btn-link opacity-50 text-danger ${styles['icon-button']}`}
                     onClick={() => setIsDeleteConfirmOpen(true)}
                   >
                     <span className="material-symbols-outlined">delete</span>

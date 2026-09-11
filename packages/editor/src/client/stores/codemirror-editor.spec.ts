@@ -113,4 +113,39 @@ describe('useCodeMirrorEditorIsolated', () => {
 
     expect(result.current.data).toBeUndefined();
   });
+
+  it("does not hand a remounted publisher its predecessor's destroyed editor (re-opening edit mode after Cancel)", () => {
+    const firstEditor = buildEditor({
+      state: { doc: 'first' } as unknown as UseCodeMirrorEditor['state'],
+      view: { docView: {} } as unknown as UseCodeMirrorEditor['view'],
+    });
+    useCodeMirrorEditorMock.mockReturnValue(firstEditor);
+
+    const key = nextKey();
+    const container1 = document.createElement('div');
+    const first = renderHook(() =>
+      useCodeMirrorEditorIsolated(key, container1),
+    );
+    expect(first.result.current.data).toBe(firstEditor);
+
+    // Cancel -- the publisher (e.g. CodeMirrorEditor) unmounts, destroying
+    // its CodeMirror instance. The shared atom for this key must not still
+    // point at that now-dead editor afterward.
+    first.unmount();
+
+    // Re-open edit mode on the same comment: a NEW hook instance mounts with
+    // the SAME key, but its own CodeMirror view/state have not finished
+    // initializing yet (still incomplete on this first render) -- exactly
+    // the scenario a one-shot initial-value consumer (MentionAwareCommentInput)
+    // depends on seeing as "not ready" rather than as "the old editor."
+    const incomplete = buildEditor();
+    useCodeMirrorEditorMock.mockReturnValue(incomplete);
+    const container2 = document.createElement('div');
+    const second = renderHook(() =>
+      useCodeMirrorEditorIsolated(key, container2),
+    );
+
+    expect(second.result.current.data).toBeUndefined();
+    expect(second.result.current.data).not.toBe(firstEditor);
+  });
 });

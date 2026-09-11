@@ -26,7 +26,10 @@ import { mock } from 'vitest-mock-extended';
 
 import type { RendererOptions } from '~/interfaces/renderer-options';
 
-import type { InlineCommentWithReplies } from '../../../interfaces';
+import type {
+  InlineCommentReply,
+  InlineCommentWithReplies,
+} from '../../../interfaces';
 
 // ---------------------------------------------------------------------------
 // Module mocks
@@ -46,6 +49,12 @@ vi.mock('@popperjs/core', () => ({
 }));
 
 vi.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key: string) => key }),
+}));
+
+// `DeleteConfirmAlert` (reused for both the origin's and a reply's delete
+// confirmation) reads `next-i18next`, not `react-i18next`.
+vi.mock('next-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
@@ -197,18 +206,37 @@ const originComment = (
   ...overrides,
 });
 
+const reply = (
+  overrides: Partial<InlineCommentReply> = {},
+): InlineCommentReply => ({
+  id: 'reply1',
+  pageId: 'page1',
+  creatorId: 'user2',
+  creator: null,
+  comment: 'an existing reply',
+  replyToId: 'comment1',
+  createdAt: new Date('2026-01-02T00:00:00.000Z'),
+  updatedAt: new Date('2026-01-02T00:00:00.000Z'),
+  ...overrides,
+});
+
 const buildRange = (rect: DOMRect = buildRect()): Range =>
   mock<Range>({ getBoundingClientRect: vi.fn(() => rect) });
 
+type PopoverHandlers = {
+  createReply?: (parentId: string, comment: string) => Promise<unknown>;
+  onClose?: () => void;
+  resolve?: (id: string, resolved: boolean) => Promise<unknown>;
+  update?: (id: string, comment: string) => Promise<unknown>;
+  remove?: (id: string) => Promise<unknown>;
+  updateReply?: (id: string, comment: string) => Promise<unknown>;
+  removeReply?: (id: string) => Promise<unknown>;
+  onPointerEnter?: () => void;
+};
+
 const renderPopover = (
   overrides: Partial<InlineCommentWithReplies> = {},
-  handlers: {
-    createReply?: (parentId: string, comment: string) => Promise<unknown>;
-    onClose?: () => void;
-    resolve?: (id: string, resolved: boolean) => Promise<unknown>;
-    update?: (id: string, comment: string) => Promise<unknown>;
-    onPointerEnter?: () => void;
-  } = {},
+  handlers: PopoverHandlers = {},
   range: Range = buildRange(),
 ) =>
   render(
@@ -220,6 +248,9 @@ const renderPopover = (
       onClose={handlers.onClose ?? vi.fn()}
       resolve={handlers.resolve ?? vi.fn().mockResolvedValue(undefined)}
       update={handlers.update ?? vi.fn().mockResolvedValue(undefined)}
+      remove={handlers.remove ?? vi.fn().mockResolvedValue(undefined)}
+      updateReply={handlers.updateReply ?? vi.fn().mockResolvedValue(undefined)}
+      removeReply={handlers.removeReply ?? vi.fn().mockResolvedValue(undefined)}
       onPointerEnter={handlers.onPointerEnter ?? vi.fn()}
     />,
   );
@@ -283,26 +314,49 @@ describe('InlineCommentPreviewPopover', () => {
     expect(body.classList.contains('page-comment-body')).toBe(false);
   });
 
-  it('keeps rendering replies through the shared CommentCard box (design.md「Popover 再設計」: replies unchanged)', () => {
-    renderPopover({
-      replies: [
-        {
-          id: 'reply1',
-          pageId: 'page1',
-          creatorId: 'user2',
-          creator: null,
-          comment: 'an existing reply',
-          replyToId: 'comment1',
-          createdAt: new Date('2026-01-02T00:00:00.000Z'),
-          updatedAt: new Date('2026-01-02T00:00:00.000Z'),
-        },
-      ],
-    });
+  // 2026-09-11 その2 (design.md「Popover: 起点・返信の統合」): a reply is no
+  // longer a boxed `CommentCard` either -- origin and reply now share the
+  // same flat markup, so the only thing that still distinguishes them in the
+  // popover is the quote block the origin carries.
+  it('renders replies with the same flat markup as the origin, not a CommentCard box (design.md「Popover: 起点・返信の統合」)', () => {
+    renderPopover({ replies: [reply({ comment: 'an existing reply' })] });
 
-    const reply = screen.getByTestId('inline-comment-preview-popover-reply');
+    const replyElement = screen.getByTestId(
+      'inline-comment-preview-popover-reply',
+    );
+    expect(replyElement.querySelector('.page-comment')).toBeNull();
+    expect(replyElement.querySelector('.page-comment-main')).toBeNull();
+    expect(replyElement.querySelector('.bg-comment')).toBeNull();
+    expect(replyElement.querySelector('.page-comment-body')).toBeNull();
+
+    // Author, date and body are all still there.
+    const header = replyElement.querySelector(
+      '[data-testid="inline-comment-preview-popover-reply-header"]',
+    );
     expect(
-      reply.querySelector('.page-comment .page-comment-main.bg-comment'),
+      header?.querySelector('[data-testid="user-picture"]'),
     ).not.toBeNull();
+    expect(header?.querySelector('[data-testid="username"]')).not.toBeNull();
+    expect(
+      header?.querySelector('[data-testid="formatted-distance-date"]'),
+    ).not.toBeNull();
+    expect(
+      replyElement.querySelector(
+        '[data-testid="inline-comment-preview-popover-reply-body"]',
+      ),
+    ).toHaveTextContent('an existing reply');
+  });
+
+  it('gives a reply no quote block and no resolve toggle of its own', () => {
+    renderPopover({ replies: [reply()] });
+
+    const replyElement = screen.getByTestId(
+      'inline-comment-preview-popover-reply',
+    );
+    expect(replyElement.querySelector('.inline-comment-quote')).toBeNull();
+    expect(
+      screen.getAllByRole('button', { name: 'inline_comment.resolve' }),
+    ).toHaveLength(1);
   });
 
   it('gives the popover itself the mockup card treatment with semantic utility classes only (Req 2.1, 3.1)', () => {
@@ -319,29 +373,17 @@ describe('InlineCommentPreviewPopover', () => {
   it('shows the existing replies (Req 2.1)', () => {
     renderPopover({
       replies: [
-        {
-          id: 'reply1',
-          pageId: 'page1',
-          creatorId: 'user2',
-          creator: null,
-          comment: 'an existing reply',
-          replyToId: 'comment1',
-          createdAt: new Date('2026-01-02T00:00:00.000Z'),
-          updatedAt: new Date('2026-01-02T00:00:00.000Z'),
-        },
+        reply({ id: 'reply1', comment: 'an existing reply' }),
+        reply({ id: 'reply2', comment: 'a second reply' }),
       ],
     });
 
     const popover = screen.getByTestId('inline-comment-preview-popover');
     expect(popover).toHaveTextContent('an existing reply');
-
-    // The replies container gets a left border to visually group the
-    // thread's replies together (design.md: border-start ps-3 utility
-    // classes, no new SCSS rule).
-    const repliesContainer = screen.getByTestId(
-      'inline-comment-preview-popover-replies',
-    );
-    expect(repliesContainer).toHaveClass('border-start', 'ps-3');
+    expect(popover).toHaveTextContent('a second reply');
+    expect(
+      screen.getAllByTestId('inline-comment-preview-popover-reply'),
+    ).toHaveLength(2);
   });
 
   it('submits the typed text through createReply with the comment id (Req 2.3)', async () => {
@@ -588,58 +630,173 @@ describe('InlineCommentPreviewPopover', () => {
     ).toBeDisabled();
   });
 
-  it('replaces the reply thread and the reply form while editing, restoring both on cancel (Req 2.2)', async () => {
+  // 2026-09-11 その2, design.md 方針転換その2-3: editing the origin used to be
+  // guarded as `!isEditing && (<>replies + reply form</>)`, which made the
+  // whole thread vanish as soon as the origin was edited. Each entry now owns
+  // its own edit state, so only the edited body is replaced.
+  it('keeps the reply thread and the reply form on screen while the origin is being edited (design.md 方針転換その2-3)', async () => {
     currentUserRef.current = { _id: 'user1' };
     renderPopover({
       id: 'comment42',
       creatorId: 'user1',
-      replies: [
-        {
-          id: 'reply1',
-          pageId: 'page1',
-          creatorId: 'user2',
-          creator: null,
-          comment: 'a reply',
-          replyToId: 'comment42',
-          createdAt: new Date('2026-01-02T00:00:00.000Z'),
-          updatedAt: new Date('2026-01-02T00:00:00.000Z'),
-        },
-      ],
+      replies: [reply({ replyToId: 'comment42', comment: 'a reply' })],
     });
-
-    // Before editing, both are on screen.
-    expect(
-      screen.getByTestId('inline-comment-preview-popover-replies'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByPlaceholderText('inline_comment.reply_placeholder'),
-    ).toBeInTheDocument();
 
     await userEvent.click(
       screen.getByTestId('inline-comment-preview-popover-edit-button'),
     );
 
-    // Requirement 2.2's edit-mode artboard shows the header, the quote, the
-    // editor and its buttons -- and nothing else. Editing replaces what is
-    // below the quote wholesale, rather than pushing the editor in above a
-    // still-live reply thread and reply box.
+    // The origin is in edit mode...
     expect(
-      screen.queryByTestId('inline-comment-preview-popover-replies'),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByPlaceholderText('inline_comment.reply_placeholder'),
-    ).not.toBeInTheDocument();
-
-    await userEvent.click(
-      screen.getByTestId('inline-comment-preview-popover-edit-cancel-button'),
-    );
-
+      screen.getByTestId('inline-comment-preview-popover-edit-form'),
+    ).toBeInTheDocument();
+    // ...and the thread below it is untouched.
     expect(
       screen.getByTestId('inline-comment-preview-popover-replies'),
     ).toBeInTheDocument();
     expect(
+      screen.getByTestId('inline-comment-preview-popover-reply'),
+    ).toHaveTextContent('a reply');
+    expect(
       screen.getByPlaceholderText('inline_comment.reply_placeholder'),
     ).toBeInTheDocument();
+  });
+
+  it("editing a reply leaves the origin's body and the other replies displayed (design.md 方針転換その2-3)", async () => {
+    currentUserRef.current = { _id: 'user2' };
+    renderPopover({
+      id: 'comment42',
+      creatorId: 'user1',
+      replies: [
+        reply({ id: 'reply1', creatorId: 'user2', comment: 'the first reply' }),
+        reply({ id: 'reply2', creatorId: 'user2', comment: 'the other reply' }),
+      ],
+    });
+
+    const editButtons = screen.getAllByTestId(
+      'inline-comment-preview-popover-reply-edit-button',
+    );
+    expect(editButtons).toHaveLength(2);
+    await userEvent.click(editButtons[0]);
+
+    // Exactly one editor is open, and everything else still reads normally.
+    expect(
+      screen.getAllByTestId('mention-aware-comment-input-mock'),
+    ).toHaveLength(1);
+    expect(
+      screen.getByTestId('inline-comment-preview-popover-body'),
+    ).toHaveTextContent('the comment body');
+    expect(
+      screen.getByTestId('inline-comment-preview-popover'),
+    ).toHaveTextContent('the other reply');
+    expect(
+      screen.getByPlaceholderText('inline_comment.reply_placeholder'),
+    ).toBeInTheDocument();
+  });
+
+  it("shows a reply's edit/delete affordances only to that reply's own creator (Req 1.6, 2.6)", () => {
+    currentUserRef.current = { _id: 'user2' };
+    renderPopover({
+      creatorId: 'user1',
+      replies: [
+        reply({ id: 'reply1', creatorId: 'user2' }),
+        reply({ id: 'reply2', creatorId: 'someone-else' }),
+      ],
+    });
+
+    expect(
+      screen.getAllByTestId('inline-comment-preview-popover-reply-edit-button'),
+    ).toHaveLength(1);
+    expect(
+      screen.getAllByTestId(
+        'inline-comment-preview-popover-reply-delete-button',
+      ),
+    ).toHaveLength(1);
+  });
+
+  it("disables a reply's edit/delete controls under the read-only-user restriction (Req 1.6)", () => {
+    currentUserRef.current = { _id: 'user2' };
+    isDisabledRef.current = true;
+    renderPopover({ replies: [reply({ creatorId: 'user2' })] });
+
+    expect(
+      screen.getByTestId('inline-comment-preview-popover-reply-edit-button'),
+    ).toBeDisabled();
+    expect(
+      screen.getByTestId('inline-comment-preview-popover-reply-delete-button'),
+    ).toBeDisabled();
+  });
+
+  it("persists an edited reply through updateReply with that reply's id (Req 2.6)", async () => {
+    const updateReply = vi.fn().mockResolvedValue(undefined);
+    currentUserRef.current = { _id: 'user2' };
+    renderPopover(
+      { replies: [reply({ id: 'reply7', creatorId: 'user2' })] },
+      { updateReply },
+    );
+
+    await userEvent.click(
+      screen.getByTestId('inline-comment-preview-popover-reply-edit-button'),
+    );
+    expect(mentionAwareCommentInputProps.current?.initialValue).toBe(
+      'an existing reply',
+    );
+
+    await act(async () => {
+      await (
+        mentionAwareCommentInputProps.current?.onSubmit as (
+          text: string,
+        ) => Promise<unknown>
+      )('the edited reply');
+    });
+
+    expect(updateReply).toHaveBeenCalledWith('reply7', 'the edited reply');
+  });
+
+  it("deletes a reply through removeReply with that reply's id, after confirmation (Req 2.6)", async () => {
+    const removeReply = vi.fn().mockResolvedValue(undefined);
+    const onClose = vi.fn();
+    currentUserRef.current = { _id: 'user2' };
+    renderPopover(
+      { replies: [reply({ id: 'reply7', creatorId: 'user2' })] },
+      { removeReply, onClose },
+    );
+
+    await userEvent.click(
+      screen.getByTestId('inline-comment-preview-popover-reply-delete-button'),
+    );
+    expect(removeReply).not.toHaveBeenCalled();
+
+    await userEvent.click(
+      screen.getByTestId(
+        'inline-comment-preview-popover-reply-delete-confirm-button',
+      ),
+    );
+
+    expect(removeReply).toHaveBeenCalledWith('reply7');
+    // Deleting a reply is not a reason to close the popover -- the thread it
+    // belonged to is still there.
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it('does not delete a reply when the confirmation is cancelled (Req 2.6)', async () => {
+    const removeReply = vi.fn();
+    currentUserRef.current = { _id: 'user2' };
+    renderPopover(
+      { replies: [reply({ creatorId: 'user2' })] },
+      { removeReply },
+    );
+
+    await userEvent.click(
+      screen.getByTestId('inline-comment-preview-popover-reply-delete-button'),
+    );
+    await userEvent.click(
+      screen.getByTestId(
+        'inline-comment-preview-popover-reply-delete-cancel-button',
+      ),
+    );
+
+    expect(removeReply).not.toHaveBeenCalled();
   });
 
   it('places the close button as the last element of the header row, not absolutely positioned over the card corner', () => {
@@ -669,16 +826,76 @@ describe('InlineCommentPreviewPopover', () => {
     ).not.toBeNull();
   });
 
-  it('has no delete action anywhere in the rendered output (Boundary Context: delete is list-only)', () => {
+  // Requirement 2.6 retracts AC 2.4 ("no delete in the popover"): the origin
+  // comment is now deletable here too, so the popover and the list item offer
+  // the same set of actions.
+  it('deletes the origin comment through `remove` after confirmation, then closes the popover (Req 2.6)', async () => {
+    const remove = vi.fn().mockResolvedValue(undefined);
+    const onClose = vi.fn();
     currentUserRef.current = { _id: 'user1' };
+    renderPopover({ id: 'comment42', creatorId: 'user1' }, { remove, onClose });
+
+    await userEvent.click(
+      screen.getByTestId('inline-comment-preview-popover-delete-button'),
+    );
+    expect(remove).not.toHaveBeenCalled();
+
+    await userEvent.click(
+      screen.getByTestId(
+        'inline-comment-preview-popover-delete-confirm-button',
+      ),
+    );
+
+    expect(remove).toHaveBeenCalledWith('comment42');
+    // Nothing is left for the popover to show once its origin comment is
+    // gone, so it closes itself rather than waiting for the refetch to make
+    // the comment disappear from the caller's list.
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1));
+  });
+
+  it('keeps the popover open and shows the error when deleting the origin comment fails (Req 2.6)', async () => {
+    const remove = vi.fn().mockRejectedValue(new Error('permission denied'));
+    const onClose = vi.fn();
+    currentUserRef.current = { _id: 'user1' };
+    renderPopover({ creatorId: 'user1' }, { remove, onClose });
+
+    await userEvent.click(
+      screen.getByTestId('inline-comment-preview-popover-delete-button'),
+    );
+    await userEvent.click(
+      screen.getByTestId(
+        'inline-comment-preview-popover-delete-confirm-button',
+      ),
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('inline-comment-preview-popover-delete-error'),
+      ).toHaveTextContent('permission denied');
+    });
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it("hides the origin's delete affordance from a viewer who is not its creator", () => {
+    currentUserRef.current = { _id: 'someone-else' };
     renderPopover({ creatorId: 'user1' });
 
     expect(
-      screen.queryByRole('button', { name: /delete/i }),
+      screen.queryByTestId('inline-comment-preview-popover-delete-button'),
     ).not.toBeInTheDocument();
-    expect(
-      screen.queryByTestId('inline-comment-delete-button'),
-    ).not.toBeInTheDocument();
+  });
+
+  // design.md 方針転換その2-1: every icon button in the popover is a 32px
+  // square now, following the user's own `be49248348` / `6ef7593ce8`.
+  it('has no circular icon buttons left anywhere in the popover (design.md 方針転換その2-1)', () => {
+    currentUserRef.current = { _id: 'user1' };
+    renderPopover({
+      creatorId: 'user1',
+      replies: [reply({ creatorId: 'user1' })],
+    });
+
+    const popover = screen.getByTestId('inline-comment-preview-popover');
+    expect(popover.querySelectorAll('button.rounded-circle')).toHaveLength(0);
   });
 
   // 2026-09-11 design change (design.md「Popover 再設計」・不解決バッジの撤去):
@@ -703,6 +920,9 @@ describe('InlineCommentPreviewPopover', () => {
         onClose={vi.fn()}
         resolve={vi.fn().mockResolvedValue(undefined)}
         update={vi.fn().mockResolvedValue(undefined)}
+        remove={vi.fn().mockResolvedValue(undefined)}
+        updateReply={vi.fn().mockResolvedValue(undefined)}
+        removeReply={vi.fn().mockResolvedValue(undefined)}
         onPointerEnter={vi.fn()}
       />,
     );

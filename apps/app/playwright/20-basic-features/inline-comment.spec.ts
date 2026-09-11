@@ -4336,9 +4336,9 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
     firstReplyAvatar:
       '[data-testid="inline-comment-preview-popover-reply"] .user-picture',
     firstReplyUsername:
-      '[data-testid="inline-comment-preview-popover-reply"] .page-comment-main > .d-flex > .small',
+      '[data-testid="inline-comment-preview-popover-reply"] [data-testid="inline-comment-preview-popover-reply-header"] > .fw-semibold',
     firstReplyBody:
-      '[data-testid="inline-comment-preview-popover-reply"] .page-comment-body',
+      '[data-testid="inline-comment-preview-popover-reply"] [data-testid="inline-comment-preview-popover-reply-body"]',
     secondReply:
       '[data-testid="inline-comment-preview-popover-reply"]:nth-of-type(2)',
     closeButtonInHeader:
@@ -4495,15 +4495,16 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
     );
     await expect(editForm).toBeVisible();
     await expect(editForm.locator('.cm-content')).toBeVisible();
-    // KNOWN BUG (out of this spec's boundary -- MentionAwareCommentInput.tsx
-    // is Out of Boundary per design.md): `codeMirrorEditor.initDoc(initialValue)`
-    // does not populate `.cm-content` in a real browser -- confirmed empty
-    // after 16x500ms polling in manual investigation. This affects both this
-    // popover's edit form and the list item's edit form identically; it
-    // predates this visual-refresh spec (introduced in commit ced90db1db,
-    // ".kiro/specs/inline-comment-edit-delete"). Do NOT assert on the
-    // prefilled text here -- doing so makes this capture suite depend on a
-    // bug fix outside this task's scope. See tasks.md Implementation Notes.
+    // Formerly a known bug (`codeMirrorEditor.initDoc(initialValue)` never
+    // populated `.cm-content` in a real browser -- see tasks.md Implementation
+    // Notes) -- fixed 2026-09-11 in packages/editor's useCodeMirrorEditorIsolated
+    // (an invalid, view-less editor could reach the shared atom as the first
+    // published value, and MentionAwareCommentInput's one-shot initDoc call
+    // would silently no-op against it). Assert the restoration now that it's
+    // fixed, so a regression here fails loudly instead of being missed.
+    await expect(editForm.locator('.cm-content')).toContainText(
+      originCommentText,
+    );
     await waitForPopoverToSettle(popover);
 
     await popover.screenshot({
@@ -4566,10 +4567,11 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
     const editForm = item.locator('.inline-comment-edit-form');
     await expect(editForm).toBeVisible();
     await expect(editForm.locator('.cm-content')).toBeVisible();
-    // KNOWN BUG -- see the matching comment in the popover capture above:
-    // `.cm-content` does not actually receive `initialValue` in a real
-    // browser (confirmed via manual polling, not a timing flake). Out of
-    // this spec's boundary to fix; do not assert on the prefilled text here.
+    // See the matching comment in the popover capture above -- fixed
+    // 2026-09-11, asserted here too.
+    await expect(editForm.locator('.cm-content')).toContainText(
+      originCommentText,
+    );
     await card.hover();
 
     await card.screenshot({ path: path.join(evidenceDir, '02-list-edit.png') });
@@ -4750,10 +4752,10 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
     );
     await expect(editForm).toBeVisible();
     await expect(editForm.locator('.cm-content')).toBeVisible();
-    // Same KNOWN BUG as in the light-mode capture above: `.cm-content` never
-    // receives `initialValue` in a real browser, so this input renders empty
-    // and the Save button renders disabled. Pre-existing and unrelated to the
-    // color mode -- do NOT read it as a dark-mode defect.
+    // Same fix as the light-mode capture above -- asserted here too.
+    await expect(editForm.locator('.cm-content')).toContainText(
+      originCommentText,
+    );
     await waitForPopoverToSettle(popover);
 
     await popover.screenshot({
@@ -4813,6 +4815,10 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
     const editForm = item.locator('.inline-comment-edit-form');
     await expect(editForm).toBeVisible();
     await expect(editForm.locator('.cm-content')).toBeVisible();
+    // Same fix as the light-mode capture above -- asserted here too.
+    await expect(editForm.locator('.cm-content')).toContainText(
+      originCommentText,
+    );
     await card.hover();
 
     await card.screenshot({

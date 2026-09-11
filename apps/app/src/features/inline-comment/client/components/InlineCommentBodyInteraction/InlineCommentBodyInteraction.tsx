@@ -49,6 +49,12 @@ type InlineCommentBodyInteractionProps = {
   resolve: (id: string, resolved: boolean) => Promise<unknown>;
   /** Persists an edited origin-comment body; forwarded as-is to `InlineCommentPreviewPopover`. */
   update: (id: string, comment: string) => Promise<unknown>;
+  /** Deletes an origin comment with its whole thread; forwarded as-is to `InlineCommentPreviewPopover`. */
+  remove: (id: string) => Promise<unknown>;
+  /** Persists an edited reply body; forwarded as-is to `InlineCommentPreviewPopover`. */
+  updateReply: (id: string, comment: string) => Promise<unknown>;
+  /** Deletes a single reply; forwarded as-is to `InlineCommentPreviewPopover`. */
+  removeReply: (id: string) => Promise<unknown>;
   /** Undefined while renderer options are still loading; the popover falls back to plain text. */
   rendererOptions: RendererOptions | undefined;
 };
@@ -69,6 +75,9 @@ export const InlineCommentBodyInteraction: FC<
     createReply,
     resolve,
     update,
+    remove,
+    updateReply,
+    removeReply,
     rendererOptions,
   } = props;
 
@@ -234,6 +243,9 @@ export const InlineCommentBodyInteraction: FC<
       createReply={createReply}
       resolve={resolve}
       update={update}
+      remove={remove}
+      updateReply={updateReply}
+      removeReply={removeReply}
       onClose={handleClose}
       onPointerEnter={handlePointerEnterPopover}
     />

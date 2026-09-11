@@ -73,6 +73,10 @@ type PreviewPopoverProps = {
   rendererOptions: RendererOptions | undefined;
   createReply: (parentId: string, comment: string) => Promise<unknown>;
   resolve: (id: string, resolved: boolean) => Promise<unknown>;
+  update: (id: string, comment: string) => Promise<unknown>;
+  remove: (id: string) => Promise<unknown>;
+  updateReply: (id: string, comment: string) => Promise<unknown>;
+  removeReply: (id: string) => Promise<unknown>;
   onClose: () => void;
   onPointerEnter: () => void;
 };
@@ -145,6 +149,9 @@ const renderInteraction = (
     createReply: (parentId: string, comment: string) => Promise<unknown>;
     resolve: (id: string, resolved: boolean) => Promise<unknown>;
     update: (id: string, comment: string) => Promise<unknown>;
+    remove: (id: string) => Promise<unknown>;
+    updateReply: (id: string, comment: string) => Promise<unknown>;
+    removeReply: (id: string) => Promise<unknown>;
   }> = {},
 ) => {
   const container = document.createElement('div');
@@ -161,6 +168,13 @@ const renderInteraction = (
       }
       resolve={overrides.resolve ?? vi.fn().mockResolvedValue(undefined)}
       update={overrides.update ?? vi.fn().mockResolvedValue(undefined)}
+      remove={overrides.remove ?? vi.fn().mockResolvedValue(undefined)}
+      updateReply={
+        overrides.updateReply ?? vi.fn().mockResolvedValue(undefined)
+      }
+      removeReply={
+        overrides.removeReply ?? vi.fn().mockResolvedValue(undefined)
+      }
       rendererOptions={rendererOptions}
     />,
   );
@@ -231,6 +245,9 @@ describe('InlineCommentBodyInteraction', () => {
         createReply={vi.fn().mockResolvedValue(undefined)}
         resolve={vi.fn().mockResolvedValue(undefined)}
         update={vi.fn().mockResolvedValue(undefined)}
+        remove={vi.fn().mockResolvedValue(undefined)}
+        updateReply={vi.fn().mockResolvedValue(undefined)}
+        removeReply={vi.fn().mockResolvedValue(undefined)}
         rendererOptions={rendererOptions}
       />,
     );
@@ -274,6 +291,9 @@ describe('InlineCommentBodyInteraction', () => {
         createReply={vi.fn().mockResolvedValue(undefined)}
         resolve={vi.fn().mockResolvedValue(undefined)}
         update={vi.fn().mockResolvedValue(undefined)}
+        remove={vi.fn().mockResolvedValue(undefined)}
+        updateReply={vi.fn().mockResolvedValue(undefined)}
+        removeReply={vi.fn().mockResolvedValue(undefined)}
         rendererOptions={rendererOptions}
       />,
     );
@@ -306,6 +326,9 @@ describe('InlineCommentBodyInteraction', () => {
         createReply={vi.fn().mockResolvedValue(undefined)}
         resolve={vi.fn().mockResolvedValue(undefined)}
         update={vi.fn().mockResolvedValue(undefined)}
+        remove={vi.fn().mockResolvedValue(undefined)}
+        updateReply={vi.fn().mockResolvedValue(undefined)}
+        removeReply={vi.fn().mockResolvedValue(undefined)}
         rendererOptions={rendererOptions}
       />,
     );
@@ -356,6 +379,9 @@ describe('InlineCommentBodyInteraction', () => {
         createReply={vi.fn().mockResolvedValue(undefined)}
         resolve={vi.fn().mockResolvedValue(undefined)}
         update={vi.fn().mockResolvedValue(undefined)}
+        remove={vi.fn().mockResolvedValue(undefined)}
+        updateReply={vi.fn().mockResolvedValue(undefined)}
+        removeReply={vi.fn().mockResolvedValue(undefined)}
         rendererOptions={rendererOptions}
       />,
     );
@@ -395,6 +421,9 @@ describe('InlineCommentBodyInteraction', () => {
         createReply={vi.fn().mockResolvedValue(undefined)}
         resolve={vi.fn().mockResolvedValue(undefined)}
         update={vi.fn().mockResolvedValue(undefined)}
+        remove={vi.fn().mockResolvedValue(undefined)}
+        updateReply={vi.fn().mockResolvedValue(undefined)}
+        removeReply={vi.fn().mockResolvedValue(undefined)}
         rendererOptions={rendererOptions}
       />,
     );
@@ -455,6 +484,24 @@ describe('InlineCommentBodyInteraction', () => {
     );
   });
 
+  // Requirement 2.6: the popover deletes the origin comment and edits/deletes
+  // replies, so the operations it needs have to reach it from here.
+  it('forwards the origin-delete and reply edit/delete operations through to the popover (Req 2.6)', () => {
+    const remove = vi.fn().mockResolvedValue(undefined);
+    const updateReply = vi.fn().mockResolvedValue(undefined);
+    const removeReply = vi.fn().mockResolvedValue(undefined);
+    mockedUseHighlightHitTest.mockReturnValue({
+      commentId: 'comment1',
+      source: 'click',
+    });
+
+    renderInteraction({ remove, updateReply, removeReply });
+
+    expect(previewPopoverSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ remove, updateReply, removeReply }),
+    );
+  });
+
   it('threads the resolve prop through to the popover so it can be invoked from there', () => {
     const resolve = vi.fn().mockResolvedValue(undefined);
     mockedUseHighlightHitTest.mockReturnValue({
@@ -491,6 +538,9 @@ describe('InlineCommentBodyInteraction', () => {
           createReply={vi.fn().mockResolvedValue(undefined)}
           resolve={vi.fn().mockResolvedValue(undefined)}
           update={vi.fn().mockResolvedValue(undefined)}
+          remove={vi.fn().mockResolvedValue(undefined)}
+          updateReply={vi.fn().mockResolvedValue(undefined)}
+          removeReply={vi.fn().mockResolvedValue(undefined)}
           rendererOptions={rendererOptions}
         />,
       );
@@ -580,6 +630,9 @@ describe('InlineCommentBodyInteraction', () => {
           createReply={vi.fn().mockResolvedValue(undefined)}
           resolve={vi.fn().mockResolvedValue(undefined)}
           update={vi.fn().mockResolvedValue(undefined)}
+          remove={vi.fn().mockResolvedValue(undefined)}
+          updateReply={vi.fn().mockResolvedValue(undefined)}
+          removeReply={vi.fn().mockResolvedValue(undefined)}
           rendererOptions={rendererOptions}
         />,
       );
@@ -603,6 +656,9 @@ describe('InlineCommentBodyInteraction', () => {
           createReply={vi.fn().mockResolvedValue(undefined)}
           resolve={vi.fn().mockResolvedValue(undefined)}
           update={vi.fn().mockResolvedValue(undefined)}
+          remove={vi.fn().mockResolvedValue(undefined)}
+          updateReply={vi.fn().mockResolvedValue(undefined)}
+          removeReply={vi.fn().mockResolvedValue(undefined)}
           rendererOptions={rendererOptions}
         />,
       );
@@ -639,6 +695,9 @@ describe('InlineCommentBodyInteraction', () => {
           createReply={vi.fn().mockResolvedValue(undefined)}
           resolve={vi.fn().mockResolvedValue(undefined)}
           update={vi.fn().mockResolvedValue(undefined)}
+          remove={vi.fn().mockResolvedValue(undefined)}
+          updateReply={vi.fn().mockResolvedValue(undefined)}
+          removeReply={vi.fn().mockResolvedValue(undefined)}
           rendererOptions={rendererOptions}
         />,
       );
@@ -658,6 +717,9 @@ describe('InlineCommentBodyInteraction', () => {
           createReply={vi.fn().mockResolvedValue(undefined)}
           resolve={vi.fn().mockResolvedValue(undefined)}
           update={vi.fn().mockResolvedValue(undefined)}
+          remove={vi.fn().mockResolvedValue(undefined)}
+          updateReply={vi.fn().mockResolvedValue(undefined)}
+          removeReply={vi.fn().mockResolvedValue(undefined)}
           rendererOptions={rendererOptions}
         />,
       );

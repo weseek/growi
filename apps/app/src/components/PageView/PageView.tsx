@@ -401,6 +401,9 @@ const PageViewComponent = (props: Props): JSX.Element => {
                 createReply={createInlineCommentReplyText}
                 resolve={resolveInlineComment}
                 update={updateInlineComment}
+                remove={removeInlineComment}
+                updateReply={updateInlineCommentReply}
+                removeReply={removeInlineCommentReply}
                 rendererOptions={viewOptions}
               />
 
@@ -434,6 +437,9 @@ const PageViewComponent = (props: Props): JSX.Element => {
     createInlineCommentReplyText,
     resolveInlineComment,
     updateInlineComment,
+    removeInlineComment,
+    updateInlineCommentReply,
+    removeInlineCommentReply,
   ]);
 
   return (

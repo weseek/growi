@@ -173,6 +173,9 @@ type InlineCommentBodyInteractionProps = {
   resolvedRanges: ReadonlyMap<string, ResolvedRange>;
   inlineComments: InlineCommentWithReplies[];
   createReply: (parentId: string, comment: string) => Promise<unknown>;
+  remove: (id: string) => Promise<unknown>;
+  updateReply: (id: string, comment: string) => Promise<unknown>;
+  removeReply: (id: string) => Promise<unknown>;
 };
 const inlineCommentBodyInteractionSpy =
   vi.fn<(props: InlineCommentBodyInteractionProps) => void>();
@@ -310,10 +313,16 @@ describe('PageView', () => {
       const inlineComments = [buildInlineComment()];
       const resolveMock = vi.fn();
       const createReplyMock = vi.fn();
+      const removeMock = vi.fn();
+      const updateReplyMock = vi.fn();
+      const removeReplyMock = vi.fn();
       mockedUseSWRxInlineComments.mockReturnValue({
         data: inlineComments,
         resolve: resolveMock,
         createReply: createReplyMock,
+        remove: removeMock,
+        updateReply: updateReplyMock,
+        removeReply: removeReplyMock,
       } as unknown as ReturnType<typeof useSWRxInlineComments>);
       mockedUseCurrentPageData.mockReturnValue(buildPage());
 
@@ -345,6 +354,18 @@ describe('PageView', () => {
       expect(
         inlineCommentBodyInteractionSpy.mock.calls[0]?.[0]?.containerRef,
       ).toBe(selectionCaptureSpy.mock.calls[0]?.[0]?.containerRef);
+
+      // Requirement 2.6: the popover deletes the origin comment and
+      // edits/deletes replies, so those store operations have to reach
+      // InlineCommentBodyInteraction too -- the same ones the bottom-of-page
+      // list item already receives, not new ones.
+      expect(inlineCommentBodyInteractionSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          remove: removeMock,
+          updateReply: updateReplyMock,
+          removeReply: removeReplyMock,
+        }),
+      );
 
       // createReply is adapted the same way as inlineCommentsForComments'
       // own createReply (parentId, { comment }) shape (task 3.3).

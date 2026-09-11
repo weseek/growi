@@ -40,18 +40,9 @@
   // `UserPicture`'s larger default and was the single odd size on screen.
   :global(.user-picture) { @extend %user-picture; }
 
-  // These apply to the replies only: the origin comment stopped going
-  // through `CommentCard` in the 2026-09-11 redesign, while each reply is
-  // still a `CommentCard`. Removing them would strip the replies of the
-  // shared comment box they are meant to keep.
-  :global(.page-comment) {
-    // :global(.bg-comment) { @extend %bg-comment; }
-    // :global(.page-comment-main) { @extend %comment-section; }
-  }
-
-  // The origin comment's avatar, at the mockup's 30px. `UserPicture`'s own
-  // size scale has no 30px step (lg 48 / md 24 / sm 18 / xs 14), so the size
-  // is set from here; nested inside this block so it outranks the
+  // Each entry's avatar, at the mockup's 30px. `UserPicture`'s own size
+  // scale has no 30px step (lg 48 / md 24 / sm 18 / xs 14), so the size is
+  // set from here; nested inside this block so it outranks the
   // `%user-picture` extend above on specificity rather than on source order.
   .inline-comment-preview-popover-author-picture {
     :global(.user-picture) {
@@ -68,11 +59,12 @@
   }
 }
 
-// The reply form's send button. A circle needs an explicit, equal width and
-// height (`rounded-circle` alone only rounds whatever box the button already
-// has), and the pair is not expressible as Bootstrap utilities -- this
-// replaces the inline `style={{ width: '2rem', height: '2rem' }}` the button
-// used to carry (Requirement 3.3).
+// The reply form's send button: a 2rem square, matching the icon buttons
+// below now that the popover has dropped `rounded-circle` everywhere
+// (design.md 方針転換その2-1). The equal width/height pair is not
+// expressible as Bootstrap utilities -- this replaces the inline
+// `style={{ width: '2rem', height: '2rem' }}` the button used to carry
+// (Requirement 3.3).
 .inline-comment-preview-popover-send-button {
   flex-shrink: 0;
   width: 2rem;
@@ -80,11 +72,13 @@
 }
 
 // Same oversized-button fix as InlineCommentItem.module.scss's
-// `.icon-button` (checklist item 4): `btn btn-link p-2` alone renders a
-// 42px square, not the mockup's ~26px circle. Duplicated rather than
-// imported across the module boundary -- see the top of this file for why
-// this popover accepts a little duplication against InlineCommentItem's
-// module instead of sharing one.
+// `.icon-button` (checklist item 4): `btn btn-link p-2` alone renders a 42px
+// square. 32px with no rounding, matching the list item's own icon buttons
+// (design.md 方針転換その2-1). Shared by every entry's edit and delete
+// buttons -- `InlineCommentPopoverEntry.tsx` reads it from this same module,
+// so the hashed class name lines up. Duplicated rather than imported across
+// the module boundary against InlineCommentItem's module -- see the top of
+// this file for why this popover accepts that.
 .inline-comment-preview-popover-icon-button {
   display: inline-flex;
   align-items: center;
