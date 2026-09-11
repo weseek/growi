@@ -1,0 +1,17 @@
+// Same base/hover opacity as Bootstrap's own `.btn-close`
+// ($btn-close-opacity: .5 / $btn-close-hover-opacity: .75). Owned here
+// instead of the `opacity-50` utility class: Bootstrap has no utility for a
+// hover-driven opacity change on a plain (non-`.link-*`) element, and
+// `opacity-50` is `!important`, so a plain `:hover` rule split against it
+// would lose the cascade -- keeping both values in one place avoids that
+// race entirely (user request, 2026-09-11: match `.btn-close`'s hover
+// interaction on the inline-comment icon buttons too, InlineCommentItem.module.scss's
+// `.icon-button` and InlineCommentPreviewPopover.module.scss's
+// `.inline-comment-preview-popover-icon-button`).
+.icon-button {
+  opacity: 0.5;
+
+  &:hover {
+    opacity: 0.75;
+  }
+}

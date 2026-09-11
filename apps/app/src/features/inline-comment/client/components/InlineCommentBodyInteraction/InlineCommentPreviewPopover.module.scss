@@ -92,6 +92,20 @@
   width: 32px;
   height: 32px;
   padding: 0;
+  // Same base/hover opacity as Bootstrap's own `.btn-close`
+  // ($btn-close-opacity: .5 / $btn-close-hover-opacity: .75) -- see
+  // InlineCommentItem.module.scss's `.icon-button` for the full rationale
+  // (no generic Bootstrap utility for a hover-driven opacity change; owned
+  // here instead of split against the `opacity-50` utility's `!important` to
+  // avoid a specificity/importance race). These buttons stay always-visible
+  // (not hover-revealed like the list item's -- design.md「Popover
+  // 再設計」), so only the darken-on-hover interaction is new here, not a
+  // show/hide behavior (user request, 2026-09-11).
+  opacity: 0.5;
+
+  &:hover {
+    opacity: 0.75;
+  }
 }
 
 // The 2-line clamp cannot be expressed with a Bootstrap utility class, so it

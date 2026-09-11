@@ -170,7 +170,7 @@ export const InlineCommentPopoverEntry = (
                 <button
                   type="button"
                   data-testid={`${testIdPrefix}-edit-button`}
-                  className={`btn btn-link opacity-50 ${styles['inline-comment-preview-popover-icon-button']}`}
+                  className={`btn btn-link ${styles['inline-comment-preview-popover-icon-button']}`}
                   aria-label={t('Edit')}
                   onClick={() => setIsEditing(true)}
                 >
@@ -179,7 +179,7 @@ export const InlineCommentPopoverEntry = (
                 <button
                   type="button"
                   data-testid={`${testIdPrefix}-delete-button`}
-                  className={`btn btn-link text-danger opacity-50 ${styles['inline-comment-preview-popover-icon-button']}`}
+                  className={`btn btn-link text-danger ${styles['inline-comment-preview-popover-icon-button']}`}
                   aria-label={t('Delete')}
                   onClick={() => setIsDeleteConfirmOpen(true)}
                 >

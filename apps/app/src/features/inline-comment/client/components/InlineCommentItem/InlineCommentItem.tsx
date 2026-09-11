@@ -172,7 +172,7 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
                   <button
                     type="button"
                     data-testid="inline-comment-edit-button"
-                    className={`btn btn-link opacity-50 ${styles['icon-button']}`}
+                    className={`btn btn-link ${styles['icon-button']}`}
                     onClick={() => setIsEditing(true)}
                   >
                     <span className="material-symbols-outlined">edit</span>
@@ -180,7 +180,7 @@ export const InlineCommentItem: FC<InlineCommentItemProps> = (
                   <button
                     type="button"
                     data-testid="inline-comment-delete-button"
-                    className={`btn btn-link text-danger opacity-50 ${styles['icon-button']}`}
+                    className={`btn btn-link text-danger ${styles['icon-button']}`}
                     onClick={() => setIsDeleteConfirmOpen(true)}
                   >
                     <span className="material-symbols-outlined">delete</span>

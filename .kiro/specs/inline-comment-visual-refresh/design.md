@@ -66,6 +66,20 @@
 - **`MentionAwareCommentInput` に `autoFocus?: boolean` プロパティを追加。** 内部で保持する `cmProps`（`@uiw/react-codemirror` に渡す）に素通しする。CodeMirrorの初期化は非同期（`view`/`state` は container アタッチ直後は未定義——`packages/editor`側の既存テストが検証済みの契約）だが、`@uiw/react-codemirror` 自身の `useEffect(() => { if (autoFocus && view) view.focus() }, [autoFocus, view])` が `view` の到着を待って発火するため、非同期初期化と正しく噛み合う。デフォルトは `undefined`（フォーカスしない）——起点コメント作成フォーム（`InlineCommentForm.tsx`）だけが `autoFocus` を明示的に渡す。編集モード・返信フォームには今回は付けない（ユーザーの要望は作成フォームに限定されていたため）。
 - **バグ修正（本amendmentの実装中に発覚）**: `8ecc809d3d` が返信フォームの `className` を複数行のプレーン文字列（改行区切り）に変更したことで、`InlineCommentPreviewPopover.spec.tsx` の `document.querySelector('.inline-comment-preview-popover-reply-form')` が突然 `null` を返すようになった。原因は本スペックの実装ではなく、この環境の単体テストが使う happy-dom というテスト用DOM実装自身の制限——`classList.contains()` は改行区切りのクラス属性も正しく解釈するが、`querySelector`/`querySelectorAll` によるCSSセレクタ照合は改行を区切り文字として認識しない（小さな再現テストで確認済み。実ブラウザのHTML仕様上は改行も空白として正しく扱われるため、本番挙動には影響しない）。`className` をこのファイルの他の箇所と同じ1行の文字列に整形し直すことで、見た目・クラス構成を変えずに解消した——ユーザーが加えた枠線・余白のスタイル自体は変更していない。
 
+### 2026-09-11 の方針転換 その6（編集・削除アイコンのホバー挙動統一）
+
+ユーザーから2点の要望があった: (1) `.btn-close` の「ホバー時に opacity が濃くなる」インタラクションを、編集・削除アイコンボタンにも（ポップオーバー・通常コメントアイテム・インラインコメントアイテムのすべてで）持たせたい。(2) アイテムホバー時の編集・削除ボタンの「出現の仕方」が通常コメントアイテム・通常コメントreply・インラインコメントアイテムで違うので、通常コメントと同じ「個別に出現する」形に統一したい。
+
+調査の結果、通常コメントアイテムと通常コメントreplyは実はすでに同じ挙動だった——どちらも同じ `Comment.tsx`／`CommentControl.tsx` を経由し、各コメント（アイテムもreplyも）は独立した `Comment` インスタンスとしてそれぞれ自前の `.page-comment > .page-comment-main` を持つため、`.page-comment-main:hover > .page-comment-control` は自然に行単位で独立している。修正が必要だったのはインラインコメント側だけだった。
+
+- **本当のバグ**: `InlineCommentItem.module.scss` のホバー表示ルールが `&:hover .icon-button-container`（`&` は起点コメント＋返信スレッド全体を包む外側の `.inline-comment-item-styles`）になっていた。これだと、アイテム内のどこにマウスを乗せても（起点でも、どのreplyでも）すべての行の `.icon-button-container` が一斉に表示されてしまい、通常コメントの「行ごとに独立」という挙動と食い違っていた。トリガーを外側のラッパーではなく `:global(.page-comment-main):hover`（各 `CommentCard` インスタンス自身の箱——既存の `%comment-section` 共有プレースホルダーがすでに適用済み）に変更し、起点・各replyそれぞれの `.page-comment-main` に個別に届くようにした。`InlineCommentItem.module.scss` の1行のセレクタ変更のみ——`InlineCommentReplies.tsx` はこのモジュールのクラスを再利用しているだけなのでコード変更は不要（ドキュメントコメントのみ更新）。
+- **ホバー時のopacity変化**: Bootstrapには、`.link-*` 系ユーティリティに紐づく `.link-opacity-*-hover` 以外に、通常の要素に対する「ホバーで opacity が変わる」汎用ユーティリティが存在しない。また既存の `opacity-50` ユーティリティは `!important` 付きなので、素の `:hover` ルールで対抗しても勝てない。そこで `opacity: 0.5` ／ `&:hover { opacity: 0.75; }`（Bootstrap自身の `.btn-close` が使う `$btn-close-opacity`／`$btn-close-hover-opacity` と同じ値）を、各サーフェスの既存アイコンボタン用CSS Modulesクラスに直接追加し、`opacity-50` ユーティリティは呼び出し側からすべて削除した:
+  - `InlineCommentItem.module.scss` の `.icon-button`（`InlineCommentItem.tsx`・`InlineCommentReplies.tsx` 共有、一覧側）
+  - `InlineCommentPreviewPopover.module.scss` の `.inline-comment-preview-popover-icon-button`（`InlineCommentPopoverEntry.tsx` が使用。ポップオーバーのボタンは常時表示のまま——design.md「Popover 再設計」の判断は変えない。今回追加したのはホバーで濃くなる挙動だけで、表示・非表示の仕組みは変更していない）
+  - 新規 `CommentControl.module.scss`（通常コメント／replyはこれまでCSS Moduleを持っていなかった）を `CommentControl.tsx` の2つのボタンに適用
+- 削除した `opacity-50` クラスを直接検証していた古い単体テストのアサーション（`InlineCommentReplies.spec.tsx`）を1件更新した。
+- 実ブラウザで確認（確認用の使い捨てPlaywrightテストは確認後に削除）: `getComputedStyle` で測定したopacityが、通常コメントアイテム・インラインコメントアイテム・ポップオーバーそれぞれで、ホバー時に `0.5` から `0.75` に変わることを確認。インラインコメントの起点をホバーすると起点の編集・削除ボタンだけが現れ、replyのボタンは非表示のままであること、逆にreplyをホバーするとそのreplyのボタンだけが現れ起点のボタンは非表示のままであることも確認済み（行単位の独立表示の修正が効いている証拠）。
+
 ## Boundary Commitments
 
 ### This Spec Owns

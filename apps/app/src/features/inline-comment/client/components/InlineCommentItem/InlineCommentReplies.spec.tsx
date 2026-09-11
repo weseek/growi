@@ -461,16 +461,14 @@ describe('InlineCommentReplies', () => {
         'inline-comment-reply-delete-button',
       );
 
-      expect(editButton).toHaveClass(
-        'btn',
-        'btn-link',
-        'opacity-50',
-        'icon-button',
-      );
+      // opacity is owned entirely by the `.icon-button` CSS Modules class
+      // (base 0.5, hover 0.75, matching Bootstrap's own `.btn-close`) rather
+      // than the `opacity-50` utility class, so a plain `:hover` rule isn't
+      // fighting that utility's `!important` (2026-09-11, user request).
+      expect(editButton).toHaveClass('btn', 'btn-link', 'icon-button');
       expect(deleteButton).toHaveClass(
         'btn',
         'btn-link',
-        'opacity-50',
         'text-danger',
         'icon-button',
       );

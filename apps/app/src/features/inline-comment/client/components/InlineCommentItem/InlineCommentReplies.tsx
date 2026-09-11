@@ -10,17 +10,22 @@
  * `currentUser._id` to decide reply ownership, matching `InlineCommentItem`.
  *
  * Edit/delete icon buttons reuse `InlineCommentItem.module.scss`'s
- * `.icon-button-container` hover-visibility rule and `.icon-button` sizing
- * rule (imported here, not duplicated): `.icon-button-container` is
+ * `.icon-button-container` hover-visibility rule and `.icon-button` sizing/
+ * opacity rule (imported here, not duplicated): `.icon-button-container` is
  * `.inline-comment-item-styles .icon-button-container` with no `:global()`
  * wrapper, so it is a CSS-Modules-scoped selector, not a plain global class
  * name — matching it requires reading the class through `styles[...]` from
  * this exact module specifier so the compiled hash lines up with
  * `InlineCommentItem.tsx`'s. `InlineCommentReplyItem` always renders as a
  * descendant of that ancestor's root div (see `InlineCommentItem.tsx`), so
- * the `:hover` rule still reaches it. `.icon-button` is a top-level rule in
- * the same module (not nested under `.inline-comment-item-styles`), so it
- * applies regardless of ancestor.
+ * the compiled `.inline-comment-item-styles :global(.page-comment-main):hover
+ * .icon-button-container` rule still reaches it -- the trigger is each
+ * reply's OWN `.page-comment-main` (its `CommentCard`'s box), not the shared
+ * ancestor, so hovering one reply reveals only that reply's own buttons
+ * (2026-09-11, matching normal comments' per-row reveal -- see that rule's
+ * own comment in `InlineCommentItem.module.scss` for why). `.icon-button` is
+ * a top-level rule in the same module (not nested under
+ * `.inline-comment-item-styles`), so it applies regardless of ancestor.
  */
 
 import { type FC, type JSX, useMemo, useState } from 'react';
@@ -132,7 +137,7 @@ const InlineCommentReplyItem: FC<InlineCommentReplyItemProps> = (
                   <button
                     type="button"
                     data-testid="inline-comment-reply-edit-button"
-                    className={`btn btn-link opacity-50 ${styles['icon-button']}`}
+                    className={`btn btn-link ${styles['icon-button']}`}
                     onClick={() => setIsEditing(true)}
                   >
                     <span className="material-symbols-outlined">edit</span>
@@ -140,7 +145,7 @@ const InlineCommentReplyItem: FC<InlineCommentReplyItemProps> = (
                   <button
                     type="button"
                     data-testid="inline-comment-reply-delete-button"
-                    className={`btn btn-link opacity-50 text-danger ${styles['icon-button']}`}
+                    className={`btn btn-link text-danger ${styles['icon-button']}`}
                     onClick={() => setIsDeleteConfirmOpen(true)}
                   >
                     <span className="material-symbols-outlined">delete</span>

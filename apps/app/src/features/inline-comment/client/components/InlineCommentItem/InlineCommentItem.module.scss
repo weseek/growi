@@ -35,11 +35,25 @@
   // CommentControl.tsx's "parent :hover + child visibility" pattern.
   // `visibility` (not `display`) keeps the header row's layout stable while
   // the buttons are hidden.
+  //
+  // The hover trigger is `:global(.page-comment-main)` -- each `CommentCard`
+  // instance's own box (extended with `%comment-section` above) -- not `&`
+  // (this file's outer `.inline-comment-item-styles` wrapper, which contains
+  // the origin item AND every one of its replies). Scoping to the outer
+  // wrapper made hovering ANY row reveal EVERY row's buttons at once (the
+  // origin's and every reply's `.icon-button-container` together), unlike a
+  // normal comment/reply -- each is its own independent `Comment` instance
+  // with its own `.page-comment-main`, so hovering one never affects a
+  // sibling. Scoping to `.page-comment-main` here reaches the same
+  // per-instance box for both the origin (`InlineCommentItem.tsx`) and each
+  // reply (`InlineCommentReplies.tsx`'s `InlineCommentReplyItem`, itself a
+  // descendant of this wrapper -- see that file's own comment), matching
+  // normal comments' per-row reveal exactly (user request, 2026-09-11).
   .icon-button-container {
     visibility: hidden;
   }
 
-  &:hover .icon-button-container {
+  :global(.page-comment-main):hover .icon-button-container {
     visibility: visible;
   }
 }
@@ -61,6 +75,19 @@
   width: 32px;
   height: 32px;
   padding: 0;
+  // Same base/hover opacity as Bootstrap's own `.btn-close`
+  // ($btn-close-opacity: .5 / $btn-close-hover-opacity: .75) -- matched here
+  // rather than via the `opacity-50` utility class because Bootstrap has no
+  // utility for a *hover-driven* opacity change on a plain element (only
+  // `.link-opacity-*-hover`, which is scoped to `.link-*` color utilities
+  // these buttons don't use). Owned entirely here, not split against a
+  // `!important` utility class, so there is no specificity/importance race
+  // to win (user request, 2026-09-11).
+  opacity: 0.5;
+
+  &:hover {
+    opacity: 0.75;
+  }
 
   :global(.material-symbols-outlined) {
     // font-size: 0.8em;

@@ -2,6 +2,8 @@ import type { JSX } from 'react';
 
 import { NotAvailableIfReadOnlyUserNotAllowedToComment } from '../NotAvailableForReadOnlyUser';
 
+import styles from './CommentControl.module.scss';
+
 type CommentControlProps = {
   onClickEditBtn: () => void;
   onClickDeleteBtn: () => void;
@@ -18,7 +20,7 @@ export const CommentControl = (props: CommentControlProps): JSX.Element => {
           <button
             data-testid="comment-edit-button"
             type="button"
-            className="btn btn-link p-2 opacity-50"
+            className={`btn btn-link p-2 ${styles['icon-button']}`}
             onClick={onClickEditBtn}
           >
             <span className="material-symbols-outlined">edit</span>
@@ -26,7 +28,7 @@ export const CommentControl = (props: CommentControlProps): JSX.Element => {
           <button
             data-testid="comment-delete-button"
             type="button"
-            className="btn btn-link text-danger p-2 me-2 opacity-50"
+            className={`btn btn-link text-danger p-2 me-2 ${styles['icon-button']}`}
             onClick={onClickDeleteBtn}
           >
             <span className="material-symbols-outlined">delete</span>
