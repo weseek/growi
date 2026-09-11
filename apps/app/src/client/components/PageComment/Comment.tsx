@@ -184,22 +184,47 @@ export const Comment = (props: CommentProps): JSX.Element => {
           createdAt={comment.createdAt}
           rootClassName={rootClassName}
           headerEnd={
-            <span className="ms-2">
-              <Link
-                id={`page-comment-revision-${commentId}`}
-                href={urljoin(returnPathForURL(pagePath, pageId), revHref)}
-                className="page-comment-revision"
-                prefetch={false}
-              >
-                <span className="material-symbols-outlined">history</span>
-              </Link>
-              <UncontrolledTooltip
-                placement="bottom"
-                fade={false}
-                target={`page-comment-revision-${commentId}`}
-              >
-                {t('page_comment.display_the_page_when_posting_this_comment')}
-              </UncontrolledTooltip>
+            // 2026-09-11: pushed to the row's right edge with `ms-auto` and
+            // laid out in normal flex flow, matching InlineCommentItem.tsx's
+            // own headerEnd pattern -- previously `CommentControl` rendered
+            // in the `footer` slot but was pulled to the top-right corner via
+            // `position: absolute; top: 0; right: 0`, which (per the CSS
+            // spec) is anchored to the containing block's padding edge and so
+            // ignored `.page-comment-main`'s own `1em` padding, sitting flush
+            // against the card's border instead of inset like every other
+            // header-row item (user report: looked broken next to the inline
+            // comment item, which was already in normal flow). Moving it into
+            // the header row's own flex flow makes it respect that padding
+            // the same way the revision-history link already does.
+            <span className="ms-auto d-flex align-items-center gap-2">
+              <span>
+                <Link
+                  id={`page-comment-revision-${commentId}`}
+                  href={urljoin(returnPathForURL(pagePath, pageId), revHref)}
+                  className="page-comment-revision"
+                  prefetch={false}
+                >
+                  <span className="material-symbols-outlined">history</span>
+                </Link>
+                <UncontrolledTooltip
+                  placement="bottom"
+                  fade={false}
+                  target={`page-comment-revision-${commentId}`}
+                >
+                  {t('page_comment.display_the_page_when_posting_this_comment')}
+                </UncontrolledTooltip>
+              </span>
+              {/* The controls step aside while the confirmation stands in
+                  their place, so the delete request cannot be started twice
+                  -- the same composition InlineCommentItem uses. */}
+              {isCurrentUserEqualsToAuthor() &&
+                !isReadOnly &&
+                !isDeleteConfirmOpen && (
+                  <CommentControl
+                    onClickDeleteBtn={() => setIsDeleteConfirmOpen(true)}
+                    onClickEditBtn={() => setIsReEdit(true)}
+                  />
+                )}
             </span>
           }
           footer={
@@ -226,17 +251,6 @@ export const Comment = (props: CommentProps): JSX.Element => {
                   {deleteError}
                 </span>
               )}
-              {/* The controls step aside while the confirmation stands in
-                  their place, so the delete request cannot be started twice
-                  -- the same composition InlineCommentItem uses. */}
-              {isCurrentUserEqualsToAuthor() &&
-                !isReadOnly &&
-                !isDeleteConfirmOpen && (
-                  <CommentControl
-                    onClickDeleteBtn={() => setIsDeleteConfirmOpen(true)}
-                    onClickEditBtn={() => setIsReEdit(true)}
-                  />
-                )}
               {isDeleteConfirmOpen && (
                 <DeleteConfirmAlert
                   testIdPrefix="comment"
