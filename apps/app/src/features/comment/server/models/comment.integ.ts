@@ -99,6 +99,24 @@ describe('prisma.comments.countCommentByPageId (inline comment exclusion)', () =
     const count = await prisma.comments.countCommentByPageId(pageId.toString());
     expect(count).toBe(1);
   });
+
+  it('excludes isInline rows from findCommentsByPageId/findCommentsByRevisionId even if a caller-supplied `where` tries to override it (the `options` param type omits `where`, but is not enforced against a plain-JS caller)', async () => {
+    const overrideWhere = {
+      where: { pageId: pageId.toString() },
+    } as Parameters<typeof prisma.comments.findCommentsByPageId>[1];
+
+    const byPage = await prisma.comments.findCommentsByPageId(
+      pageId.toString(),
+      overrideWhere,
+    );
+    expect(byPage.some((c) => c.isInline)).toBe(false);
+
+    const byRevision = await prisma.comments.findCommentsByRevisionId(
+      revisionId.toString(),
+      overrideWhere,
+    );
+    expect(byRevision.some((c) => c.isInline)).toBe(false);
+  });
 });
 
 /**

@@ -84,14 +84,17 @@ export const extension = Prisma.defineExtension((client) => {
           const context =
             Prisma.getExtensionContext<typeof prisma.comments>(this);
           return context.findMany({
+            ...options,
             // Unconditional: this is the only guard that keeps inline
-            // comments out of the existing comment thread, regardless of share-link context.
+            // comments out of the existing comment thread, regardless of
+            // share-link context. Spread last so a caller cannot override it
+            // even if its `options` type (which omits `where`) is not
+            // enforced at the call site (e.g. a plain-JS caller).
             where: { pageId, isInline: { not: true } },
             orderBy: {
               createdAt: 'desc',
               ...options.orderBy,
             },
-            ...options,
           });
         },
 
@@ -102,13 +105,13 @@ export const extension = Prisma.defineExtension((client) => {
           const context =
             Prisma.getExtensionContext<typeof prisma.comments>(this);
           return context.findMany({
+            ...options,
             // Unconditional — see findCommentsByPageId above.
             where: { revisionId, isInline: { not: true } },
             orderBy: {
               createdAt: 'desc',
               ...options.orderBy,
             },
-            ...options,
           });
         },
 
