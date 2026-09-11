@@ -15,7 +15,7 @@ import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '../../../middlewares/exclude-read-only-user';
 import type { ApiV3Response } from '../interfaces/apiv3-response';
 
-const logger = loggerFactory('growi:routes:apiv3:page:unpublish-page');
+const logger = loggerFactory('growi:routes:apiv3:page:publish-page');
 
 type ReqParams = {
   pageId: string;
