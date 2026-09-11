@@ -339,14 +339,14 @@
       "rect": {
         "x": 654.1875,
         "y": 512.15625,
-        "width": 64,
+        "width": 72,
         "height": 21,
-        "right": 718.1875,
+        "right": 726.1875,
         "bottom": 533.15625
       },
       "overflow": {
-        "scrollWidth": 64,
-        "clientWidth": 64,
+        "scrollWidth": 72,
+        "clientWidth": 72,
         "scrollHeight": 21,
         "clientHeight": 21
       },
@@ -384,7 +384,7 @@
         "lineHeight": "21px",
         "textAlign": "start",
         "whiteSpace": "normal",
-        "width": "64px",
+        "width": "72px",
         "height": "21px"
       },
       "before": {
@@ -430,7 +430,7 @@
         "marginTop": "0px",
         "marginRight": "0px",
         "marginBottom": "0px",
-        "marginLeft": "178.219px",
+        "marginLeft": "170.219px",
         "paddingTop": "0px",
         "paddingRight": "0px",
         "paddingBottom": "0px",
@@ -487,7 +487,7 @@
       "styles": {
         "display": "flex",
         "position": "static",
-        "visibility": "visible",
+        "visibility": "hidden",
         "opacity": "1",
         "flexDirection": "row",
         "alignItems": "center",

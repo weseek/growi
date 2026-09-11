@@ -21,15 +21,15 @@
         "x": 410,
         "y": 323,
         "width": 576,
-        "height": 358,
+        "height": 376,
         "right": 986,
-        "bottom": 681
+        "bottom": 699
       },
       "overflow": {
         "scrollWidth": 574,
         "clientWidth": 574,
-        "scrollHeight": 356,
-        "clientHeight": 356
+        "scrollHeight": 374,
+        "clientHeight": 374
       },
       "styles": {
         "display": "flex",
@@ -66,7 +66,7 @@
         "textAlign": "start",
         "whiteSpace": "normal",
         "width": "576px",
-        "height": "358px"
+        "height": "376px"
       },
       "before": {
         "content": "none",
@@ -88,15 +88,15 @@
         "x": 411,
         "y": 324,
         "width": 574,
-        "height": 356,
+        "height": 374,
         "right": 985,
-        "bottom": 680
+        "bottom": 698
       },
       "overflow": {
         "scrollWidth": 574,
         "clientWidth": 574,
-        "scrollHeight": 356,
-        "clientHeight": 356
+        "scrollHeight": 374,
+        "clientHeight": 374
       },
       "styles": {
         "display": "block",
@@ -133,7 +133,7 @@
         "textAlign": "start",
         "whiteSpace": "normal",
         "width": "574px",
-        "height": "356px"
+        "height": "374px"
       },
       "before": {
         "content": "none",
@@ -489,14 +489,14 @@
       "rect": {
         "x": 580,
         "y": 345.5,
-        "width": 64,
+        "width": 72,
         "height": 21,
-        "right": 644,
+        "right": 652,
         "bottom": 366.5
       },
       "overflow": {
-        "scrollWidth": 64,
-        "clientWidth": 64,
+        "scrollWidth": 72,
+        "clientWidth": 72,
         "scrollHeight": 21,
         "clientHeight": 21
       },
@@ -534,7 +534,7 @@
         "lineHeight": "21px",
         "textAlign": "start",
         "whiteSpace": "normal",
-        "width": "64px",
+        "width": "72px",
         "height": "21px"
       },
       "before": {
@@ -580,7 +580,7 @@
         "marginTop": "0px",
         "marginRight": "0px",
         "marginBottom": "0px",
-        "marginLeft": "141px",
+        "marginLeft": "133px",
         "paddingTop": "0px",
         "paddingRight": "0px",
         "paddingBottom": "0px",
@@ -1362,15 +1362,15 @@
         "x": 427,
         "y": 632,
         "width": 542,
-        "height": 32,
+        "height": 50,
         "right": 969,
-        "bottom": 664
+        "bottom": 682
       },
       "overflow": {
-        "scrollWidth": 542,
-        "clientWidth": 542,
-        "scrollHeight": 32,
-        "clientHeight": 32
+        "scrollWidth": 540,
+        "clientWidth": 540,
+        "scrollHeight": 48,
+        "clientHeight": 48
       },
       "styles": {
         "display": "flex",
@@ -1378,7 +1378,7 @@
         "visibility": "visible",
         "opacity": "1",
         "flexDirection": "row",
-        "alignItems": "center",
+        "alignItems": "flex-start",
         "justifyContent": "normal",
         "columnGap": "8px",
         "rowGap": "8px",
@@ -1386,20 +1386,20 @@
         "marginRight": "0px",
         "marginBottom": "0px",
         "marginLeft": "0px",
-        "paddingTop": "0px",
-        "paddingRight": "0px",
-        "paddingBottom": "0px",
-        "paddingLeft": "0px",
-        "borderTopWidth": "0px",
-        "borderRightWidth": "0px",
-        "borderBottomWidth": "0px",
-        "borderLeftWidth": "0px",
-        "borderLeftColor": "rgb(230, 229, 227)",
-        "borderLeftStyle": "none",
-        "borderTopLeftRadius": "0px",
-        "borderTopRightRadius": "0px",
-        "borderBottomRightRadius": "0px",
-        "borderBottomLeftRadius": "0px",
+        "paddingTop": "8px",
+        "paddingRight": "8px",
+        "paddingBottom": "8px",
+        "paddingLeft": "8px",
+        "borderTopWidth": "1px",
+        "borderRightWidth": "1px",
+        "borderBottomWidth": "1px",
+        "borderLeftWidth": "1px",
+        "borderLeftColor": "rgb(0, 76, 106)",
+        "borderLeftStyle": "solid",
+        "borderTopLeftRadius": "6px",
+        "borderTopRightRadius": "6px",
+        "borderBottomRightRadius": "6px",
+        "borderBottomLeftRadius": "6px",
         "backgroundColor": "rgba(0, 0, 0, 0)",
         "color": "rgb(230, 229, 227)",
         "fontSize": "16px",
@@ -1407,7 +1407,7 @@
         "textAlign": "start",
         "whiteSpace": "normal",
         "width": "542px",
-        "height": "32px"
+        "height": "50px"
       },
       "before": {
         "content": "none",
@@ -1426,12 +1426,12 @@
     },
     "replyFormAvatar": {
       "rect": {
-        "x": 427,
-        "y": 640.359375,
+        "x": 444,
+        "y": 645.359375,
         "width": 19.1875,
         "height": 19.1875,
-        "right": 446.1875,
-        "bottom": 659.546875
+        "right": 463.1875,
+        "bottom": 664.546875
       },
       "overflow": {
         "scrollWidth": 19,
@@ -1452,7 +1452,7 @@
         "marginTop": "0px",
         "marginRight": "0px",
         "marginBottom": "0px",
-        "marginLeft": "0px",
+        "marginLeft": "8px",
         "paddingTop": "0px",
         "paddingRight": "0px",
         "paddingBottom": "0px",
@@ -1493,16 +1493,16 @@
     },
     "replyFormInput": {
       "rect": {
-        "x": 454.1875,
-        "y": 632.796875,
-        "width": 429.25,
+        "x": 471.1875,
+        "y": 641,
+        "width": 403.25,
         "height": 30.390625,
-        "right": 883.4375,
-        "bottom": 663.1875
+        "right": 874.4375,
+        "bottom": 671.390625
       },
       "overflow": {
-        "scrollWidth": 429,
-        "clientWidth": 429,
+        "scrollWidth": 403,
+        "clientWidth": 403,
         "scrollHeight": 30,
         "clientHeight": 30
       },
@@ -1540,7 +1540,7 @@
         "lineHeight": "22.4px",
         "textAlign": "start",
         "whiteSpace": "break-spaces",
-        "width": "429.25px",
+        "width": "403.25px",
         "height": "30.3906px"
       },
       "before": {
@@ -1560,12 +1560,12 @@
     },
     "replyFormMentionPicker": {
       "rect": {
-        "x": 891.4375,
-        "y": 632.5,
+        "x": 882.4375,
+        "y": 641.5,
         "width": 41.5625,
         "height": 31,
-        "right": 933,
-        "bottom": 663.5
+        "right": 924,
+        "bottom": 672.5
       },
       "overflow": {
         "scrollWidth": 40,
@@ -1627,12 +1627,12 @@
     },
     "replyFormSubmit": {
       "rect": {
-        "x": 937,
-        "y": 632,
+        "x": 928,
+        "y": 641,
         "width": 32,
         "height": 32,
-        "right": 969,
-        "bottom": 664
+        "right": 960,
+        "bottom": 673
       },
       "overflow": {
         "scrollWidth": 30,

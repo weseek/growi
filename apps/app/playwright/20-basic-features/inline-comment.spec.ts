@@ -2023,9 +2023,11 @@ test.describe('Inline comment - hover/click/tap on a saved body highlight opens 
 
     // Requirement 15, AC 15.5: the popover also offers an edit control for
     // the origin comment's own body (to its own author), in addition to its
-    // reply textarea -- covered by the "Edit flow" suite below, so this test
-    // only checks the reply textarea.
-    await expect(popover.locator('textarea')).toHaveCount(1);
+    // reply composer -- covered by the "Edit flow" suite below, so this test
+    // only checks the reply composer. 2026-09-11 その4: the composer is
+    // `MentionAwareCommentInput` (a CodeMirror `.cm-content` editor), not a
+    // plain `<textarea>`.
+    await expect(popover.locator('.cm-content')).toHaveCount(1);
 
     // Requirement 2.4 (hover case): moving the mouse to an unrelated part of
     // the body (not merely off-screen, so the pointer's target is still
@@ -2083,12 +2085,10 @@ test.describe('Inline comment - hover/click/tap on a saved body highlight opens 
     await expect(popover).toBeVisible();
 
     const replyText = 'a reply posted through the body popover';
-    // The popover's reply input is a deliberately plain textarea (design.md
-    // 決定2's "簡易な返信欄") -- not the mention-aware editor the bottom list
-    // uses -- so it is driven by its placeholder/aria-label rather than the
-    // shared `.cm-content` + `inline-comment-submit-button` idiom used
-    // elsewhere in this file.
-    await popover.getByPlaceholder('Write a reply...').fill(replyText);
+    // 2026-09-11 その4: the popover's reply composer is `MentionAwareCommentInput`
+    // (a CodeMirror `.cm-content` editor, same as everywhere else in this
+    // file), not the plain textarea it used to be -- driven the same way.
+    await popover.locator('.cm-content').fill(replyText);
     await popover.getByRole('button', { name: 'Commment' }).click();
 
     // The popover clears its draft and keeps itself open on a successful
@@ -2097,7 +2097,7 @@ test.describe('Inline comment - hover/click/tap on a saved body highlight opens 
     // source of truth `createReply` writes to either way (design.md 決定2:
     // this popover calls the exact same `createReply` prop `PageView.tsx`
     // wires into the bottom list).
-    await expect(popover.getByPlaceholder('Write a reply...')).toHaveValue('');
+    await expect(popover.locator('.cm-content')).not.toContainText(replyText);
 
     const item = page.getByTestId('inline-comment-item').first();
     const reply = item.getByTestId('inline-comment-reply').last();
@@ -3454,12 +3454,16 @@ test.describe('Inline comment - editing an origin comment (from the list and fro
     const item = page.getByTestId('inline-comment-item').first();
     await expect(item).toBeVisible();
 
-    // The edit/delete icons are `visibility: hidden` until the card is
-    // hovered (the hover-reveal pattern the visual refresh adopted from
-    // `CommentControl.tsx`), so the card has to be hovered before the icon
-    // is clickable at all -- a click without it times out on "element is
-    // not visible".
-    await item.hover();
+    // The edit/delete icons are `visibility: hidden` until the origin's own
+    // card is hovered (the hover-reveal pattern the visual refresh adopted
+    // from `CommentControl.tsx`, scoped per-row since 2026-09-11 方針転換
+    // その6), so the card has to be hovered before the icon is clickable at
+    // all -- a click without it times out on "element is not visible". This
+    // item carries a reply (from the previous test), so hovering the whole
+    // `item` would not reliably land on the origin's own box -- hover
+    // `.page-comment` (the origin's box specifically) instead.
+    const card = item.locator('.page-comment').first();
+    await card.hover();
     await item.getByTestId('inline-comment-edit-button').click();
     const editForm = item.locator('.inline-comment-edit-form');
     await expect(editForm).toBeVisible();
@@ -3677,8 +3681,15 @@ test.describe('Inline comment - deleting a reply removes only that reply; deleti
     const item = page.getByTestId('inline-comment-item').first();
     await expect(item).toBeVisible();
 
-    // Hover first -- hover-revealed icon, same as the edit case above.
-    await item.hover();
+    // Hover the origin's own `.page-comment` box, not the whole item --
+    // this item carries a reply thread (from the previous test in this
+    // serial group), so `item.hover()` would land its pointer somewhere
+    // across the combined origin+replies bounding box instead of on the
+    // origin's own row. The hover-reveal is now scoped per-row (2026-09-11
+    // 方針転換その6: unify with normal comments' per-row reveal), so it only
+    // fires for the box actually under the pointer.
+    const card = item.locator('.page-comment').first();
+    await card.hover();
     await item.getByTestId('inline-comment-delete-button').click();
     await expect(
       item.getByTestId('inline-comment-delete-confirm'),

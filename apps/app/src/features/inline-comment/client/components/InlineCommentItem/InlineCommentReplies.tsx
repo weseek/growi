@@ -35,6 +35,7 @@ import { useTranslation } from 'react-i18next';
 import { NotAvailableIfReadOnlyUserNotAllowedToComment } from '~/client/components/NotAvailableForReadOnlyUser';
 import { CommentCard } from '~/client/components/PageComment/CommentCard';
 import { CommentEditor } from '~/client/components/PageComment/CommentEditor';
+import { DeleteConfirmAlert } from '~/client/components/PageComment/DeleteConfirmAlert';
 import RevisionRenderer from '~/components/PageView/RevisionRenderer';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useCurrentUser } from '~/states/global';
@@ -174,28 +175,11 @@ const InlineCommentReplyItem: FC<InlineCommentReplyItemProps> = (
               </span>
             )}
             {isDeleteConfirmOpen && (
-              <div
-                data-testid="inline-comment-reply-delete-confirm"
-                className="d-flex align-items-center gap-2 mt-1"
-              >
-                <span>{t('page_comment.delete_comment')}</span>
-                <button
-                  type="button"
-                  data-testid="inline-comment-reply-delete-confirm-button"
-                  className="btn btn-sm btn-danger"
-                  onClick={handleDeleteConfirm}
-                >
-                  {t('Delete')}
-                </button>
-                <button
-                  type="button"
-                  data-testid="inline-comment-reply-delete-cancel-button"
-                  className="btn btn-sm btn-outline-secondary"
-                  onClick={() => setIsDeleteConfirmOpen(false)}
-                >
-                  {t('Cancel')}
-                </button>
-              </div>
+              <DeleteConfirmAlert
+                testIdPrefix="inline-comment-reply"
+                onCancel={() => setIsDeleteConfirmOpen(false)}
+                onConfirm={handleDeleteConfirm}
+              />
             )}
           </>
         }

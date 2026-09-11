@@ -80,6 +80,16 @@
 - 削除した `opacity-50` クラスを直接検証していた古い単体テストのアサーション（`InlineCommentReplies.spec.tsx`）を1件更新した。
 - 実ブラウザで確認（確認用の使い捨てPlaywrightテストは確認後に削除）: `getComputedStyle` で測定したopacityが、通常コメントアイテム・インラインコメントアイテム・ポップオーバーそれぞれで、ホバー時に `0.5` から `0.75` に変わることを確認。インラインコメントの起点をホバーすると起点の編集・削除ボタンだけが現れ、replyのボタンは非表示のままであること、逆にreplyをホバーするとそのreplyのボタンだけが現れ起点のボタンは非表示のままであることも確認済み（行単位の独立表示の修正が効いている証拠）。
 
+### 2026-09-11 の方針転換 その7（返信の削除確認UIの共通化・残っていた宿題）
+
+ユーザーから「`InlineCommentItem` の reply の delete alert がまだ共通化されていない」という指摘があった。round 1の「削除確認UIの共通化」で `InlineCommentItem.tsx`（起点）は `DeleteConfirmAlert` に移行済みだったが、`InlineCommentReplies.tsx`（返信）は独自の手書きマークアップのまま——tasks.mdのImplementation Notesに未対応と明記されていた宿題。
+
+- 手書きの `<div>`＋ボタン2つ（メッセージ→Delete→Cancelの順）を `<DeleteConfirmAlert testIdPrefix="inline-comment-reply" .../>` に置き換えた。`testIdPrefix` により既存のtestid（`inline-comment-reply-delete-confirm`等）はそのまま維持され、Playwrightスイート側の変更は不要だった。
+- **見た目への影響**: ボタンの並び順がDelete→Cancelから、`DeleteConfirmAlert`側のCancel→Delete（アプリ内の他の削除確認すべてと同じ順序）に変わる。
+- 単体テスト（`InlineCommentReplies.spec.tsx`）に、他の関連spec（`InlineCommentPreviewPopover.spec.tsx`等）と同じ `next-i18next` モックを追加し、`DeleteConfirmAlert` が出す無害だが煩雑な警告を解消した。
+- **この変更の回帰確認中に発見・修正したバグ**: その6のホバー個別化修正により、`inline-comment.spec.ts`の2箇所で `item.hover()`（起点＋返信スレッド全体を含む要素をホバー）が起点のアイコンを表示させることを期待していたテストが壊れていた——ホバーが行単位になったことで、結合されたバウンディングボックスの中心が必ずしも起点自身の `.page-comment-main` に当たるとは限らなくなったため。`item.locator('.page-comment').first()`（起点自身の箱）をホバーするよう修正し、視覚照合テストで既に使われていたパターンに揃えた。
+- **回帰確認中に見つけた別件（その4の取りこぼし、今回の変更とは無関係）**: `inline-comment.spec.ts` のポップオーバー系テストブロックに、その4でポップオーバーの返信フォームをプレーンな `<textarea>` から `MentionAwareCommentInput` に差し替えた後も更新されていなかったアサーションが3箇所残っていた（`popover.locator('textarea')`、`popover.getByPlaceholder('Write a reply...')`）。その4の回帰確認では別のdescribeブロックしか触れておらず見落とされていた。`.cm-content`（このファイル内の他のCodeMirror系入力と同じ慣用句）に付け替えて解消した。
+
 ## Boundary Commitments
 
 ### This Spec Owns

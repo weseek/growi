@@ -503,7 +503,7 @@
       "styles": {
         "display": "flex",
         "position": "static",
-        "visibility": "visible",
+        "visibility": "hidden",
         "opacity": "1",
         "flexDirection": "row",
         "alignItems": "center",

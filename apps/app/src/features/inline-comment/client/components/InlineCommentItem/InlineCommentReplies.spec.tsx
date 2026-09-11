@@ -74,6 +74,12 @@ vi.mock('react-i18next', () => ({
   }),
 }));
 
+// `DeleteConfirmAlert` (now shared with this file's delete confirmation, see
+// design.md「削除確認UIの共通化」) reads `next-i18next`, not `react-i18next`.
+vi.mock('next-i18next', () => ({
+  useTranslation: () => ({ t: (key: string) => key }),
+}));
+
 vi.mock('@growi/ui/dist/components', () => ({
   UserPicture: () => <span data-testid="user-picture" />,
 }));
