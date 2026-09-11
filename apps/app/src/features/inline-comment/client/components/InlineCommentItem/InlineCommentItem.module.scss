@@ -67,12 +67,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   padding: 0;
 
   :global(.material-symbols-outlined) {
-    font-size: 1rem;
+    // font-size: 0.8em;
   }
 }
 
@@ -91,12 +91,12 @@
   --bs-badge-padding-y: 0.5rem;
 
   &::before {
-    content: '';
     display: inline-block;
     width: 6px;
     height: 6px;
     margin-right: 0.25rem;
-    border-radius: 50%;
+    content: '';
     background-color: currentColor;
+    border-radius: 50%;
   }
 }
