@@ -45,7 +45,7 @@
   - _Boundary: InlineCommentPreviewPopover.tsx_
 
 - [ ] 3. 検証：既存機能への回帰がないことの確認
-- [ ] 3.1 通常コメント・編集削除4ルートが変更されていないことを確認する
+- [x] 3.1 通常コメント・編集削除4ルートが変更されていないことを確認する
   - 通常コメント機能（`apps/app/src/server/routes/comment.js`）と、編集・削除4ルート（`update.ts`／`update-reply.ts`／`delete.ts`／`delete-reply.ts`）にファイル差分が無いことを確認し、既存の結合テスト（`update.integ.ts`等）が変更なしに緑のままであることを確認する
   - 観測できる完了条件：`git diff`で対象ファイルの変更が無いこと、および既存結合テストスイートが全件成功することの両方を確認できる
   - _Requirements: 3.1, 3.2_
