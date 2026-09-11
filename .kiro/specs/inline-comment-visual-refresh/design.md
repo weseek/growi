@@ -19,9 +19,15 @@
 ### Non-Goals
 - 解決トグルの仕組み自体の変更（モックアップの「ピルをクリックしてトグル」案は不採用。現行の「バッジ＋別ボタン」を維持）
 - ポップオーバーへの削除操作の追加
-- 通常コメント（`Comment.tsx`／`CommentControl.tsx`／`DeleteCommentModal`）自体の変更
 - API・サービス・データモデルの変更
 - 新しい受け入れ基準・機能の追加
+
+### 2026-09-11 の方針転換（ユーザー判断・実機確認後）
+
+タスク4.4のGO判定後、実装結果をユーザーが実機で確認し、当初の設計判断2点を覆した。詳細は「Boundary Commitments」「Popover 再設計」を参照。
+
+1. **ポップオーバーは `CommentCard` を流用しない。** 起点コメント部分（アバター・投稿者名・日時・本文）を `CommentCard` のスロット注入方式ではなく、ポップオーバー独自のマークアップで作り直す。理由: `CommentCard`・共有スタイルの値をそのまま使うという当初の判断（「モックアップ忠実度の適用範囲」）が、ポップオーバーに関しては「モックアップと違いすぎる」という結果になった。ポップオーバーの不解決バッジも撤去する（モックアップ自体には残っているが、ユーザーが不要と判断）。配色は Popover.dc.html 自身の配色（`--paper`／`--surface`／`--surface-2`／`--ink`系トークン等）を可能な限り忠実に、Bootstrapの意味付きクラスで近似する。**一覧アイテム（`InlineCommentItem`）側はこの対象外** — `CommentCard` 流用はそのまま維持する。
+2. **削除確認UIを通常コメントとインラインコメントで共通化する。** 現行の通常コメント側の `DeleteCommentModal`（モーダル）を廃止し、インラインコメントで採用済みのインライン警告帯方式に統一する。共有コンポーネントとして抽出し、両方から使う。
 
 ## Boundary Commitments
 
@@ -30,14 +36,40 @@
 - `InlineCommentItem.module.scss`（既存）の拡張、および新規 `InlineCommentPreviewPopover.module.scss` の追加
 - 対応する `.spec.tsx` の、新しいマークアップ・クラス名に合わせたテスト更新
 - 実ブラウザでのスクリーンショット照合手順（Playwright）
+- （2026-09-11追加）`Comment.tsx`／`PageComment.tsx`／`ReplyComments.tsx` の削除確認まわりの変更（振る舞い自体は変えない。UIの方式だけをモーダルからインライン警告帯に変更する）
+- （2026-09-11追加）新規 `DeleteConfirmAlert.tsx`（+ `.module.scss`）— 通常コメント・インラインコメント共有の削除確認UI
+- （2026-09-11追加）`DeleteCommentModal.tsx`／`dynamic.tsx`／`index.ts` の削除
 
 ### Out of Boundary
 - `InlineCommentService`、apiv3ルート4本（`update.ts`／`update-reply.ts`／`delete.ts`／`delete-reply.ts`）、DTO — 一切変更しない
-- `CommentCard.tsx`、`NotAvailableForReadOnlyUser.tsx` — 既存のprops・振る舞いのまま利用する。中身は変更しない
+- `CommentCard.tsx`、`NotAvailableForReadOnlyUser.tsx` — 既存のprops・振る舞いのまま利用する。中身は変更しない（**ただし `InlineCommentPreviewPopover.tsx` はこのコンポーネント自体を利用しなくなる。返信部分は引き続き `CommentCard` を使うため、`CommentCard.tsx` 自体の変更禁止は維持**。詳細は「Popover 再設計」参照）
 - **`MentionAwareCommentInput.tsx`（2026-09-10 訂正: 変更禁止を解除）**: task 4.1（項目11・30）で判明した「保存ボタンが常にコンポーネント内部に描画され、呼び出し側が位置を変える手段を持たない」という制約により、要件2.2・2.4の「入力欄の下、キャンセルと並んで右揃え」が一覧アイテム・ポップオーバーのどちらでも実現不能だった。ユーザーの判断により、このファイルへの変更を許可する。採用する具体的な変更: 送信ボタンの描画を呼び出し側に完全に移す。コンポーネントは `onControlsChange?: (controls: { canSubmit: boolean; submit: () => void; insertMention: (username: string) => void }) => void` を新設し、`canSubmit`／`submit`／`insertMention` が変わるたびに通知する。コンポーネント自身はもう送信ボタン・メンションピッカーボタンを描画しない（boolean フラグによる分岐は導入しない — 全ての呼び出し元が同じ形でコントロールを受け取り、自分で描画する）。既存の呼び出し元（`InlineCommentForm.tsx`／`InlineCommentReplies.tsx`）は、これまでコンポーネント内部にあったのと同じ見た目・同じクラス構成のボタンを、`onControlsChange` で受け取った値を使って自分のJSX内（エディタのすぐ右、これまでと同じ位置）に描画し直す。`InlineCommentItem.tsx`／`InlineCommentPreviewPopover.tsx`の編集モードは、送信ボタンをキャンセルボタンと同じ行（入力欄の下、右揃え）に描画する。
-- `_comment-inheritance.scss`（`%bg-comment`／`%user-picture`／`%comment-section`）— 変更しない。これらのプレースホルダがすでに決めている値（投稿者アイコンの大きさ＝`1.2em`、カード左側の吹き出し風の飾り、カードの背景の濃さ）は、モックアップの値と異なっていても、そのまま採用する（下記「モックアップ忠実度の適用範囲」参照）
-- `Comment.tsx`／`CommentControl.tsx`／`DeleteCommentModal` — 参照のみ、変更しない
-- 一覧・ポップオーバー間での解決トグル・削除確認UIの共通コンポーネント化（`inline-comment-popover-refinement` の既存決定「解決トグルのマークアップを共有化しない」を維持する）
+- `_comment-inheritance.scss`（`%bg-comment`／`%user-picture`／`%comment-section`）— 変更しない。これらのプレースホルダがすでに決めている値（投稿者アイコンの大きさ＝`1.2em`、カード左側の吹き出し風の飾り、カードの背景の濃さ）は、モックアップの値と異なっていても、そのまま採用する（下記「モックアップ忠実度の適用範囲」参照）。**この方針は一覧アイテム（`InlineCommentItem`）にのみ適用される。ポップオーバーの起点コメント部分は「Popover 再設計」の対象**
+- **`Comment.tsx`／`CommentControl.tsx`／`DeleteCommentModal`（2026-09-11 訂正: 削除確認UIに限り変更を許可）**: ユーザー判断により、削除確認の振る舞いを通常コメントとインラインコメントで共通化する。詳細は「削除確認UIの共通化」参照。これ以外の変更（編集フロー、権限判定、リビジョンリンク等）は引き続き対象外
+- 一覧・ポップオーバー間での解決トグルUIの共通コンポーネント化（`inline-comment-popover-refinement` の既存決定「解決トグルのマークアップを共有化しない」を維持する。削除確認UIの共通化は別軸の決定であり、この既存決定と矛盾しない — 解決トグルは各コンポーネントが独自に持つマークアップのまま、削除確認だけを共有部品に切り出す）
+
+### Popover 再設計（2026-09-11、ユーザー判断）
+
+`InlineCommentPreviewPopover.tsx` の起点コメント部分（アバター・投稿者名・日時・本文の表示）を `CommentCard` のスロット注入方式から切り離し、ポップオーバー独自のマークアップで描画する。
+
+- **対象**: 起点コメントのヘッダー行・本文表示のみ。引用ブロック・返信スレッド・返信フォーム・編集モードは既存のまま（タスク3.1〜3.3の実装を維持）。**返信アイテムは引き続き `CommentCard` を使う**（`InlineCommentReplies.tsx` と同様の構成。返信の見た目を変える指示は出ていない）
+- **不解決バッジの撤去**: ヘッダー行から状態バッジ（`inline-comment-status` 相当）を削除する。解決トグルボタンは維持する（現行の「バッジ＋別ボタン」方針のうち、バッジだけをポップオーバーから外す）
+- **配色の目標**: Popover.dc.html 自身の配色トークン（`--paper: #f6f8fb`／`--surface: #ffffff`／`--surface-2: #eef1f6`／`--ink: #1b2433`／`--ink-dim: #5b6577`／`--ink-faint: #8994a6`／`--line: #dfe4ec` 等）を、GROWIのBootstrapテーマが提供する意味付きユーティリティクラスで可能な限り近似する。ハードコードされた16進色は使わない（要件3.1を維持）。具体的な近似（実装時に実際のBootstrapクラスの生成結果を確認しながら微調整してよい）:
+  - ポップオーバー本体の背景・枠線: `bg-body`／`border`（Bootstrapのニュートラルな表面色）
+  - アバター: 共有スタイル `%user-picture` は使わず、ポップオーバー独自のサイズ・配色（モックアップは30px、丸背景 `--accent-soft`+`--accent`のイニシャル表示だが、GROWIの実装は既存の `UserPicture`／`Username` コンポーネントの画像アバターを使うため、サイズのみモックアップに寄せて30pxとする。イニシャル表示への変更はしない — 既存の `UserPicture` の振る舞いを変えない）
+  - 投稿者名・日時: `fw-semibold`／`text-body-secondary`相当
+- **編集ボタン**: 既存のまま（アイコンボタン、Requirement 3.5準拠）
+- **CommentCard を使わなくなることの帰結**: `headerEnd`／`beforeBody`／`footer` スロットという構成そのものが無くなる。ヘッダー行・引用ブロック・本文・削除確認（該当しない）を、ポップオーバー自身のJSXで直接組み立て直す
+
+### 削除確認UIの共通化（2026-09-11、ユーザー判断）
+
+通常コメント（`Comment.tsx`、`ReplyComments.tsx` 経由の返信も同じ `Comment.tsx` を再利用）の削除確認を、現行の `DeleteCommentModal`（モーダル、`PageComment.tsx` がページ単位で1つだけ持つ共有状態）から、インラインコメントで採用済みの「インラインの警告帯（`alert alert-danger`）」方式に変更する。
+
+- **共有コンポーネントの新設**: `apps/app/src/client/components/PageComment/DeleteConfirmAlert.tsx`（+ 左罫用の `.module.scss`）を新設し、`InlineCommentItem.tsx` が現在持っている削除確認の警告帯マークアップ（`alert alert-danger d-flex align-items-center gap-2 mb-0 mt-1`、`warning` アイコン、メッセージ、キャンセル・削除ボタン）をこのファイルに抽出する。`testIdPrefix` のようなpropで呼び出し元ごとに `data-testid` を変えられるようにし、`InlineCommentItem.tsx` 側の既存の `data-testid`（`inline-comment-delete-confirm` 等）は変更しない
+- **`Comment.tsx` の変更**: 削除確認の状態（`isDeleteConfirmOpen`）を `PageComment.tsx` の共有state（`commentToBeDeleted`／`isDeleteConfirmModalShown`）からこのコンポーネント自身のローカルstateに変える（`InlineCommentItem.tsx` と同じ構成）。`CommentControl`の削除ボタンはこのローカルstateを開くだけにする。実際の削除API呼び出し（`apiPost('/comments.remove', ...)`）とその後の `mutate()`／`mutatePageInfo()` は `PageComment.tsx` から渡される非同期コールバック（例: `onDeleteConfirmed: (comment) => Promise<void>`）として残し、`Comment.tsx` はそれを呼び出してエラー時は自身のローカルエラー表示に反映する（`InlineCommentItem.tsx` の `handleDeleteConfirm` と同じパターン）
+- **`PageComment.tsx` の変更**: `commentToBeDeleted`／`isDeleteConfirmModalShown`／`DeleteCommentModalLazyLoaded` を除去し、代わりに `onDeleteConfirmed` コールバックを `Comment`／`ReplyComments` に渡す
+- **`DeleteCommentModal` の削除**: `DeleteCommentModal.tsx`／`dynamic.tsx`／`index.ts`（＋ `.module.scss` があれば）を削除する。他に参照しているファイルが無いことを確認してから削除する
+- **対象外**: 編集フロー（`CommentEditor`）、権限判定（`NotAvailableIfReadOnlyUserNotAllowedToComment`）、リビジョンリンクは変更しない
 
 ### モックアップ忠実度の適用範囲（Critical Issue 2 の解決）
 
