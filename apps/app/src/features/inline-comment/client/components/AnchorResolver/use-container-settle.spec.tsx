@@ -266,6 +266,33 @@ describe('useContainerSettle — settle firing condition', () => {
     unmount();
   });
 
+  // A same-length in-place text correction (e.g. fixing a typo) makes React
+  // update an existing Text node's `data` in place rather than adding/
+  // removing any element -- a MutationRecord of type "characterData", not
+  // "childList". Editing near a saved inline-comment anchor and returning to
+  // View without a full page reload relies on exactly this firing so
+  // useAnchorResolver re-resolves against the new text.
+  it("fires when an existing text node's data changes in place, with no element added or removed", async () => {
+    const paragraph = document.createElement('p');
+    const textNode = document.createTextNode('the original text');
+    paragraph.appendChild(textNode);
+    container.appendChild(paragraph);
+
+    const onSettle = vi.fn();
+    const { unmount } = mountSettled(onSettle);
+    expect(onSettle).toHaveBeenCalledTimes(1);
+    onSettle.mockClear();
+
+    // Same length, same node, same parent -- no childList/attribute mutation
+    // occurs, only characterData.
+    textNode.data = 'the corrected text';
+    await flushMutations();
+    runQueuedFrames();
+    expect(onSettle).toHaveBeenCalledTimes(1);
+
+    unmount();
+  });
+
   it('coalesces several changes within one frame into a single call', async () => {
     const onSettle = vi.fn();
     const { unmount } = mountSettled(onSettle);

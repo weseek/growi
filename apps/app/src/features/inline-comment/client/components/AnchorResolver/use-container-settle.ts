@@ -100,6 +100,17 @@ export const observeContainerSettle = (
     subtree: true,
     attributes: true,
     attributeFilter: [GROWI_IS_CONTENT_RENDERING_ATTR],
+    // A same-length in-place text correction (e.g. fixing a typo, editing a
+    // word) makes React update an existing Text node's `data` rather than
+    // replacing any element -- a `characterData` mutation, not a `childList`
+    // one. Without watching for it, editing near a saved inline-comment
+    // anchor and returning to View (no full page reload) never re-triggers
+    // `useAnchorResolver`, so the highlight can stay anchored to stale
+    // offsets or vanish outright, even though a fresh page load (which
+    // resolves once at mount regardless of this observer) gets it right.
+    // Confirmed via a live-page MutationObserver probe that ReactMarkdown
+    // really does emit a standalone `characterData` record for this case.
+    characterData: true,
   });
 
   const watchTimeoutId = window.setTimeout(() => {
