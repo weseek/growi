@@ -12,6 +12,7 @@ import type { PageModel } from '~/server/models/page';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
+import { excludeReadOnlyUser } from '../../../middlewares/exclude-read-only-user';
 import type { ApiV3Response } from '../interfaces/apiv3-response';
 
 const logger = loggerFactory('growi:routes:apiv3:page:unpublish-page');
@@ -39,6 +40,7 @@ export const publishPageHandlersFactory = (crowi: Crowi): RequestHandler[] => {
   return [
     accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true }),
     loginRequiredStrictly,
+    excludeReadOnlyUser,
     ...validator,
     apiV3FormValidator,
     async (req: Req, res: ApiV3Response) => {
