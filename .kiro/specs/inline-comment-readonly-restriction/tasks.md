@@ -58,7 +58,7 @@
   - _Depends: 1.1, 1.2, 1.3_
 
 - [ ] 4. inline-commentへの変更の折り込みと本specの削除
-  - _Depends: 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4, 3.1, 3.2_
+  - _Depends: 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 2.4, 3.1, 3.2_
 - [ ] 4.1 inline-commentのdesign.mdの記述を書き換える
   - design.md（Server節、`API Contract`直後の段落）とresearch.md（341〜345行）の「作成・解決トグルの既存3ルートにはこの制限が無いが、これは本スペックの対象外」という記述を、現在の事実（3ルートとも`excludeReadOnlyUserIfCommentNotAllowed`を通す）に書き換える。他specへの参照や経緯の説明は残さない
   - _Requirements: —（spec-lifecycle手続き）_

@@ -410,6 +410,18 @@ describe('InlineCommentReplies', () => {
         screen.getByTestId('inline-comment-reply-toggle-button'),
       ).toBeDisabled();
     });
+
+    it('keeps the reply toggle button enabled when read-only users are allowed to comment (Requirement 2.4)', () => {
+      isDisabledRef.current = false;
+      renderReplies();
+
+      expect(
+        screen.queryByTestId('not-available-for-read-only-user'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('inline-comment-reply-toggle-button'),
+      ).not.toBeDisabled();
+    });
   });
 
   describe('edit/delete on an already-posted reply (Requirement 18.1, 18.2, 18.5)', () => {
