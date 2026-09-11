@@ -1,6 +1,6 @@
 {
   "name": "@growi/app",
-  "version": "8.0.3-RC.0",
+  "version": "8.0.4-RC.0",
   "license": "MIT",
   "private": true,
   "type": "module",
@@ -54,6 +54,8 @@
     "lint:i18n": "node tools/i18n-audit/run-audit.ts",
     "lint": "run-p lint:**",
     "i18n:baseline:update": "node tools/i18n-audit/run-audit.ts --update-baseline",
+    "i18n:sync:push": "node tools/i18n-sync/push-source.ts",
+    "i18n:sync:pull": "node tools/i18n-sync/pull-translations.ts",
     "prelint:typecheck": "next typegen",
     "prelint:openapi:apiv3": "pnpm run openapi:generate-spec:apiv3",
     "prelint:openapi:apiv1": "pnpm run openapi:generate-spec:apiv1",

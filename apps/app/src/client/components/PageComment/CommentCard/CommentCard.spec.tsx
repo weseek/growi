@@ -39,7 +39,7 @@ vi.mock('~/components/User/Username', () => ({
 const formattedDistanceDateProps: { id?: string; date?: Date | string } = {};
 
 vi.mock('../../FormattedDistanceDate', () => ({
-  default: (props: { id?: string; date?: Date | string }) => {
+  FormattedDistanceDate: (props: { id?: string; date?: Date | string }) => {
     formattedDistanceDateProps.id = props.id;
     formattedDistanceDateProps.date = props.date;
     return <span data-testid="formatted-distance-date" />;

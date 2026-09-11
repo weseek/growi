@@ -6,7 +6,7 @@ import { UserPicture } from '@growi/ui/dist/components';
 
 import { Username } from '~/components/User/Username';
 
-import FormattedDistanceDate from '../../FormattedDistanceDate';
+import { FormattedDistanceDate } from '../../FormattedDistanceDate';
 
 export type CommentCardProps = {
   /** The id an anchor link points at (the normal comment passes comment._id) */

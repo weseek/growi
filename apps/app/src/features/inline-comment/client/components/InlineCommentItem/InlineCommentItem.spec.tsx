@@ -85,7 +85,7 @@ vi.mock('~/components/User/Username', () => ({
 }));
 
 vi.mock('~/client/components/FormattedDistanceDate', () => ({
-  default: () => <span data-testid="formatted-distance-date" />,
+  FormattedDistanceDate: () => <span data-testid="formatted-distance-date" />,
 }));
 
 vi.mock('./InlineCommentReplies', () => ({

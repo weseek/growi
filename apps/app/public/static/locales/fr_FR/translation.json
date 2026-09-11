@@ -520,6 +520,8 @@
     },
     "editor": {
       "title": "Raccourcis d'édition",
+      "Slash Command": "Commande slash",
+      "Slash Command Desc": "(Afficher le menu des commandes)",
       "Indent": "Indentation",
       "Outdent": "Retrait",
       "Save Page": "Sauvegarder la page",
@@ -691,6 +693,18 @@
     "number_of_list_to_display": "Afficher",
     "page_number_unit": "pages",
     "hit_number_unit": "trouvé",
+    "filter": "Filtres",
+    "search_option": "Options de recherche",
+    "filter_remove": "Supprimer",
+    "filter_clear": "Tout effacer",
+    "filter_author": "Auteur",
+    "filter_by_author": "Filtrer par auteur",
+    "filter_editor": "Éditeur",
+    "filter_by_editor": "Filtrer par éditeur",
+    "filter_tag": "Étiquette",
+    "filter_group": "Groupe",
+    "filter_group_select": "Sélectionner des groupes",
+    "filter_group_none": "Aucun groupe disponible",
     "sort_axis": {
       "relationScore": "Trier par pertinence",
       "createdAt": "Date de création",
@@ -1094,5 +1108,43 @@
     "searching": "Recherche en cours...",
     "noResults": "Aucune page trouvée",
     "candidatesLabel": "Pages suggérées"
+  },
+  "slash_command": {
+    "heading1": {
+      "label": "Titre 1",
+      "description": ""
+    },
+    "heading2": {
+      "label": "Titre 2",
+      "description": ""
+    },
+    "heading3": {
+      "label": "Titre 3",
+      "description": ""
+    },
+    "bulletList": {
+      "label": "Liste à puces",
+      "description": ""
+    },
+    "numberedList": {
+      "label": "Liste numérotée",
+      "description": ""
+    },
+    "taskList": {
+      "label": "Liste de tâches",
+      "description": ""
+    },
+    "quote": {
+      "label": "Citation",
+      "description": ""
+    },
+    "codeBlock": {
+      "label": "Bloc de code",
+      "description": ""
+    },
+    "table": {
+      "label": "Tableau",
+      "description": ""
+    }
   }
 }

@@ -131,7 +131,7 @@ vi.mock('~/client/components/NotAvailableForReadOnlyUser', () => ({
 }));
 
 vi.mock('~/client/components/FormattedDistanceDate', () => ({
-  default: () => <span data-testid="formatted-distance-date" />,
+  FormattedDistanceDate: () => <span data-testid="formatted-distance-date" />,
 }));
 
 /**

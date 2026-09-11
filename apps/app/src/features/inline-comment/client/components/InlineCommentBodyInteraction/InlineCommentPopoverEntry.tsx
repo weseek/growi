@@ -26,7 +26,7 @@ import type { IUserSerializedSecurely } from '@growi/core/dist/models/serializer
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'react-i18next';
 
-import FormattedDistanceDate from '~/client/components/FormattedDistanceDate';
+import { FormattedDistanceDate } from '~/client/components/FormattedDistanceDate';
 import { NotAvailableIfReadOnlyUserNotAllowedToComment } from '~/client/components/NotAvailableForReadOnlyUser';
 import { DeleteConfirmAlert } from '~/client/components/PageComment/DeleteConfirmAlert';
 import RevisionRenderer from '~/components/PageView/RevisionRenderer';
