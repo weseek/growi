@@ -306,8 +306,14 @@ export const InlineCommentPreviewPopover: FC<
           </div>
         )}
 
-        <div className="inline-comment-preview-popover-reply-form d-flex align-items-center gap-2">
-          <UserPicture user={currentUser} noLink noTooltip />
+        <div
+          className="
+            inline-comment-preview-popover-reply-form
+            d-flex align-items-start
+            border border-primary-subtle rounded
+            p-2 gap-2"
+        >
+          <UserPicture user={currentUser} className="ms-2" noLink noTooltip />
           <MentionAwareCommentInput
             editorKey={replyEditorKey}
             onSubmit={(text) => createReply(comment.id, text)}
