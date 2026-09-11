@@ -18,8 +18,8 @@
 
 ### Non-Goals
 - 解決トグルの仕組み自体の変更（モックアップの「ピルをクリックしてトグル」案は不採用。現行の「バッジ＋別ボタン」を維持。**ただし2026-09-11の判断により、ポップオーバーはバッジ自体を表示しない — Requirement 2.5参照。これは「トグルの仕組み」ではなく「バッジの表示有無」の変更であり、この非目標と矛盾しない**）
-- ポップオーバーへの削除操作の追加
-- API・サービス・データモデルの変更
+- ~~ポップオーバーへの削除操作の追加~~ **（2026-09-11 その2で撤回。Requirement 2.6参照）**
+- API・サービス・データモデルの変更（**ただし2026-09-11 その2で `packages/editor` の1関数に限り例外を認める。「MentionAwareCommentInput 編集時に既存本文が復元されないバグの修正」参照**）
 - 新しい受け入れ基準・機能の追加
 
 ### 2026-09-11 の方針転換（ユーザー判断・実機確認後）
@@ -28,6 +28,18 @@
 
 1. **ポップオーバーは `CommentCard` を流用しない。** 起点コメント部分（アバター・投稿者名・日時・本文）を `CommentCard` のスロット注入方式ではなく、ポップオーバー独自のマークアップで作り直す。理由: `CommentCard`・共有スタイルの値をそのまま使うという当初の判断（「モックアップ忠実度の適用範囲」）が、ポップオーバーに関しては「モックアップと違いすぎる」という結果になった。ポップオーバーの不解決バッジも撤去する（モックアップ自体には残っているが、ユーザーが不要と判断）。配色は Popover.dc.html 自身の配色（`--paper`／`--surface`／`--surface-2`／`--ink`系トークン等）を可能な限り忠実に、Bootstrapの意味付きクラスで近似する。**一覧アイテム（`InlineCommentItem`）側はこの対象外** — `CommentCard` 流用はそのまま維持する。
 2. **削除確認UIを通常コメントとインラインコメントで共通化する。** 現行の通常コメント側の `DeleteCommentModal`（モーダル）を廃止し、インラインコメントで採用済みのインライン警告帯方式に統一する。共有コンポーネントとして抽出し、両方から使う。
+
+### 2026-09-11 の方針転換 その2（ユーザーが実際に使ってみたフィードバック）
+
+`CommentCard` 流用中止・削除確認共通化を実装・GOした後、ユーザーが実際に機能を使い、さらに5点のフィードバックが来た。加えて、ユーザー自身が直接2コミット（`be49248348`／`6ef7593ce8`）でスタイルを簡素化済み——以降の実装はこの2コミットの方向性（枠線・インデント・`rounded-circle` を減らす）を踏襲する。
+
+1. **スタイルの簡素化を全箇所に揃える**: `be49248348` は `InlineCommentItem.tsx` の編集・削除アイコンから `rounded-circle` を外し32pxの角丸なしボタンにした。`6ef7593ce8` はポップオーバーの返信スレッドから枠線・インデント・区切り線を外し、返信の `%bg-comment`／`%comment-section` 流用も止めた（コメントアウトで無効化——本amendmentで正式に削除する）。しかし `InlineCommentReplies.tsx`（一覧の返信）と `InlineCommentPreviewPopover.tsx` の編集アイコン・送信ボタンにはまだ `rounded-circle` が残っており、不整合になっている。**ポップオーバー内のアイコンボタンはすべて `rounded-circle` を外して32pxの角丸なしに揃える。一覧側（`InlineCommentItem`／`InlineCommentReplies`）も同様に揃える**（一覧側はこのタスクの対象だが、`CommentCard` 流用自体はそのまま——見た目の細部だけの追随）。
+2. **ポップオーバーの日付表示**: 調査の結果、起点コメントはすでに `FormattedDistanceDate`（相対表示＋既定でホバーツールチップ）を使っており、返信も `CommentCard` 経由で同じコンポーネントを使っている。**コードは既に要求を満たしている**——ただし返信をポップオーバー内で `CommentCard` から切り離す（後述）ため、切り離し後も `FormattedDistanceDate` を直接使い続けることを明記する。
+3. **バグ修正: ポップオーバーで編集モードに入ると返信が全て消える。** 現状 `!isEditing && (<>...返信一覧...返信フォーム...</>)` という1つのガードが、起点コメントの編集状態と返信・返信フォームの表示を一緒くたにしている。**編集対象になった項目（起点コメントなら起点コメントの本文、返信なら該当返信の本文）だけをエディタに置き換え、他の項目・返信一覧・返信フォームは表示したまま**にする。「Popover: 起点・返信の統合」参照。
+4. **バグ修正: 編集モードの入力欄に既存の本文が復元されない。** タスク4.1で発見し「別タスクで直す」としていた既知の不具合（`MentionAwareCommentInput.tsx`の`initialValue`→`codeMirrorEditor.initDoc(initialValue)`が実ブラウザで効かない）を、今回スコープに含めて修正する。根本原因は `@growi/editor` パッケージの `packages/editor/src/client/stores/codemirror-editor.ts`（`useCodeMirrorEditorIsolated`）にある。「MentionAwareCommentInput 編集時に既存本文が復元されないバグの修正」参照
+5. **ポップオーバーで返信の編集・削除を可能にする。** 現状ポップオーバーの返信は読み取り専用（`CommentCard` に編集・削除の仕組みを渡していない）。一覧の返信（`InlineCommentReplies.tsx`）と同じ編集・削除機能を追加する。
+6. **起点コメントもポップオーバーから削除できるようにする。** Requirement 2.4（削除は一覧のみ）を撤回する（Requirement 2.6として新しい受け入れ基準を追記）。ユーザーの判断: 「インラインコメントとreplyとの仕様差をほぼ無くす」ため、起点コメントもポップオーバーから削除できるようにする。
+7. **ポップオーバー内で起点コメントと返信の仕様差をほぼ無くし、コードも共通化する。** 引用ブロックの有無を除き、見た目・編集・削除の挙動をほぼ同一にする。返信も `CommentCard` を使わず、起点コメントと同じフラットな独自マークアップにする（**この「`CommentCard` を使わない」方針はポップオーバー限定。一覧側〈`InlineCommentItem`／`InlineCommentReplies`〉は`CommentCard` 流用のまま**）。「Popover: 起点・返信の統合」参照。
 
 ## Boundary Commitments
 
@@ -39,6 +51,9 @@
 - （2026-09-11追加）`Comment.tsx`／`PageComment.tsx`／`ReplyComments.tsx` の削除確認まわりの変更（振る舞い自体は変えない。UIの方式だけをモーダルからインライン警告帯に変更する）
 - （2026-09-11追加）新規 `DeleteConfirmAlert.tsx`（+ `.module.scss`）— 通常コメント・インラインコメント共有の削除確認UI
 - （2026-09-11追加）`DeleteCommentModal.tsx`／`dynamic.tsx`／`index.ts` の削除
+- （2026-09-11 その2追加）新規 `InlineCommentPopoverEntry.tsx` — ポップオーバー内の起点・返信共有の表示コンポーネント
+- （2026-09-11 その2追加）`PageView.tsx`／`InlineCommentBodyInteraction.tsx` の `remove`／`updateReply`／`removeReply` 配線追加（既存のstore/API呼び出しの使い回し。新規ロジックなし）
+- （2026-09-11 その2追加）`packages/editor/src/client/stores/codemirror-editor.ts` の `shouldUpdate` 修正（1関数のみ）
 
 ### Out of Boundary
 - `InlineCommentService`、apiv3ルート4本（`update.ts`／`update-reply.ts`／`delete.ts`／`delete-reply.ts`）、DTO — 一切変更しない
@@ -52,7 +67,7 @@
 
 `InlineCommentPreviewPopover.tsx` の起点コメント部分（アバター・投稿者名・日時・本文の表示）を `CommentCard` のスロット注入方式から切り離し、ポップオーバー独自のマークアップで描画する。
 
-- **対象**: 起点コメントのヘッダー行・本文表示のみ。引用ブロック・返信スレッド・返信フォーム・編集モードは既存のまま（タスク3.1〜3.3の実装を維持）。**返信アイテムは引き続き `CommentCard` を使う**（`InlineCommentReplies.tsx` と同様の構成。返信の見た目を変える指示は出ていない）
+- **対象**: 起点コメントのヘッダー行・本文表示のみ。引用ブロック・返信フォーム・編集モードは既存のまま（タスク3.1〜3.3の実装を維持）。~~返信アイテムは引き続き `CommentCard` を使う~~ **（2026-09-11 その2で撤回。返信も `CommentCard` を使わずフラットな独自マークアップにする。「Popover: 起点・返信の統合」参照）**
 - **不解決バッジの撤去**: ヘッダー行から状態バッジ（`inline-comment-status` 相当）を削除する。解決トグルボタンは維持する（現行の「バッジ＋別ボタン」方針のうち、バッジだけをポップオーバーから外す）
 - **配色の目標**: Popover.dc.html 自身の配色トークン（`--paper: #f6f8fb`／`--surface: #ffffff`／`--surface-2: #eef1f6`／`--ink: #1b2433`／`--ink-dim: #5b6577`／`--ink-faint: #8994a6`／`--line: #dfe4ec` 等）を、GROWIのBootstrapテーマが提供する意味付きユーティリティクラスで可能な限り近似する。ハードコードされた16進色は使わない（要件3.1を維持）。具体的な近似（実装時に実際のBootstrapクラスの生成結果を確認しながら微調整してよい）:
   - ポップオーバー本体の背景・枠線: `bg-body`／`border`（Bootstrapのニュートラルな表面色）
@@ -71,6 +86,49 @@
 - **`DeleteCommentModal` の削除**: `DeleteCommentModal.tsx`／`dynamic.tsx`／`index.ts`（＋ `.module.scss` があれば）を削除する。他に参照しているファイルが無いことを確認してから削除する
 - **対象外**: 編集フロー（`CommentEditor`）、権限判定（`NotAvailableIfReadOnlyUserNotAllowedToComment`）、リビジョンリンクは変更しない
 
+### Popover: 起点・返信の統合（2026-09-11 その2、ユーザー判断）
+
+ポップオーバー内の起点コメントと返信の見た目・編集・削除の挙動をほぼ同一にし、コードも共有する。
+
+**新設: `InlineCommentPopoverEntry.tsx`**（`InlineCommentBodyInteraction/` 配下）— ポップオーバー内の「1件のコメント表示」を担う共有コンポーネント。起点コメント・各返信の両方がこれを使う。
+
+- Props（概略）: `id`／`creator`／`createdAt`／`commentText`／`rendererOptions`／`isOwn: boolean`／`editorKeyPrefix: string`／`onUpdate: (text: string) => Promise<unknown>`／`onRemove: () => Promise<unknown>`／`beforeBody?: ReactNode`（引用ブロック。起点のみ渡す）／`headerExtra?: ReactNode`（解決トグル＋閉じるボタン。起点のみ渡す）／`testIdPrefix: string`
+- 内部で持つstate: `isEditing`／`isDeleteConfirmOpen`／`editError`／`deleteError`（すべてこのコンポーネントのインスタンスごとのローカルstate——`InlineCommentReplyItem` と同じ設計）
+- 描画するもの: アバター（`UserPicture`、30px）／投稿者名（`Username`）／日時（`FormattedDistanceDate`、id・date をそのまま渡す。ツールチップは既定で有効）／`headerExtra`／編集・削除アイコンボタン（`isOwn && !isEditing && !isDeleteConfirmOpen` のときのみ、`NotAvailableIfReadOnlyUserNotAllowedToComment` で保護、方針転換その2-1により `rounded-circle` は付けない）／`beforeBody`／本文（`isEditing` なら `MentionAwareCommentInput` ＋Cancel/Save、そうでなければ `RevisionRenderer`）／`isDeleteConfirmOpen` なら `DeleteConfirmAlert`（`testIdPrefix` をそのまま渡す）
+- **バグ修正の実現方法**: `isEditing`／`isDeleteConfirmOpen` がこのコンポーネントのインスタンスにローカルであるため、ある1件を編集中でも他の項目（起点・他の返信・返信フォーム）は普通に表示され続ける。`InlineCommentPreviewPopover.tsx` 側は、もう「`!isEditing` で返信一覧・返信フォームをまるごと隠す」という1つのガードを持たない——返信一覧・返信フォームは常に表示し、編集中の項目だけがその場でエディタに置き換わる
+
+`InlineCommentPreviewPopover.tsx` の変更:
+- 起点コメント: `<InlineCommentPopoverEntry ... beforeBody={引用ブロック} headerExtra={解決トグル+閉じるボタン} onUpdate={update} onRemove={remove} testIdPrefix="inline-comment-preview-popover" />`
+- 各返信: `<InlineCommentPopoverEntry ... onUpdate={(text) => updateReply(reply.id, text)} onRemove={() => removeReply(reply.id)} testIdPrefix="inline-comment-preview-popover-reply" />`（`beforeBody`／`headerExtra` は渡さない）
+- 返信一覧・返信フォームは常時表示（`!isEditing` ガードを撤去）
+
+**新しいprop配線（Requirement 2.6: 起点コメントもポップオーバーから削除できる）**:
+`remove`／`updateReply`／`removeReply` を `PageView.tsx` → `InlineCommentBodyInteraction.tsx` → `InlineCommentPreviewPopover.tsx` へ新規に配線する。`PageView.tsx` はすでに `removeInlineComment`／`updateInlineCommentReply`／`removeInlineCommentReply` を持っている（`InlineCommentItem.tsx` 側に既に渡している値の使い回し）ため、新しいstore・API呼び出しは不要——配線を通すだけ。
+
+**削除確認**: `DeleteConfirmAlert` を `testIdPrefix` 違いでそのまま使う（新規コンポーネントは不要）。
+
+### MentionAwareCommentInput 編集時に既存本文が復元されないバグの修正（2026-09-11 その2、ユーザー判断でスコープに追加）
+
+**根本原因**（実測ではなく静的解析で特定。実装者は実機で必ず確認すること）: `packages/editor/src/client/stores/codemirror-editor.ts` の `useCodeMirrorEditorIsolated` 内、`shouldUpdate` の判定:
+```ts
+const shouldUpdate =
+  key != null &&
+  container != null &&
+  (currentData == null || (isValid(newData) && !isDeepEquals(currentData, newData)));
+```
+`currentData == null`（そのフックインスタンスからの最初の発行）のときは `isValid(newData)` のチェックを素通りする。`CodeMirrorEditor.tsx` は `containerRef.current` をレンダー中に読んでいる（`useRef` はrefが着いても再レンダーを起こさない）ため、コンテナが着いた直後の再レンダーではCodeMirrorの `view`/`state` がまだ非同期に初期化される前で、`newData` が無効（`view === undefined`）なことがある。にもかかわらずこの無効な `newData` が「最初の発行」としてそのまま共有atomに入ってしまう。`MentionAwareCommentInput.tsx` の初期値適用エフェクトは `codeMirrorEditor` が非nullになった時点で一度だけ `initDoc` を呼び、呼んだかどうかに関わらず `hasAppliedInitialValueRef.current = true` にして二度と呼ばない設計のため、この無効なエディタに対して空振りした`initDoc`呼び出しがその一度きりのチャンスを消費してしまい、その後atomが本当に有効なエディタへ更新されても、もう`initDoc`は呼ばれない。
+
+**修正**: `isValid(newData)` のチェックを「最初の発行」でも省略しない。
+```ts
+const shouldUpdate =
+  key != null &&
+  container != null &&
+  isValid(newData) &&
+  (currentData == null || !isDeepEquals(currentData, newData));
+```
+この関数1つだけの変更で、`@growi/editor` を使う全ての呼び出し元（ページ本文エディタ含む）に影響する。影響範囲が広いため、実装者は変更後に少なくとも: (1) インラインコメントの編集モードで既存本文が実際に復元されることを実ブラウザで確認、(2) 新規コメント作成フォーム（`MentionAwareCommentInput` の他の呼び出し元）が壊れていないこと、(3) ページ本文エディタ（`CodeMirrorEditor` の他の消費者）が壊れていないことを確認する。
+
+**Boundary**: `packages/editor/src/client/stores/codemirror-editor.ts` はこのAmendmentに限り変更を許可する（唯一の例外。他の `packages/editor` ファイルは対象外）。
 ### モックアップ忠実度の適用範囲（Critical Issue 2 の解決）
 
 `InlineCommentItem`／`InlineCommentReplies`／`InlineCommentPreviewPopover` がこの機能のために新しく持ち込む・作り直す要素——状態バッジ、引用ブロック、編集・削除アイコンボタン、削除確認帯、編集モードの入力欄、返信フォーム——は、モックアップに忠実にする。
