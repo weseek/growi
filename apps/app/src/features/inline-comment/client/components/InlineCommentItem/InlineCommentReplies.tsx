@@ -41,9 +41,6 @@ import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useCurrentUser } from '~/states/global';
 
 import type { InlineCommentReply } from '../../../interfaces';
-import { MentionPickerButton } from '../InlineCommentForm/MentionPickerButton';
-import { MentionAwareCommentInput } from '../MentionAwareCommentInput/MentionAwareCommentInput';
-import { useCommentInputControls } from '../MentionAwareCommentInput/use-comment-input-controls';
 
 import styles from './InlineCommentItem.module.scss';
 
@@ -60,6 +57,8 @@ type InlineCommentRepliesProps = {
 
 type InlineCommentReplyItemProps = {
   reply: InlineCommentReply;
+  pageId: string;
+  revisionId: string;
   rendererOptions: RendererOptions | undefined;
   updateReply: (id: string, comment: string) => Promise<unknown>;
   removeReply: (id: string) => Promise<unknown>;
@@ -69,37 +68,23 @@ type InlineCommentReplyItemProps = {
 const InlineCommentReplyItem: FC<InlineCommentReplyItemProps> = (
   props,
 ): JSX.Element => {
-  const { reply, rendererOptions, updateReply, removeReply, isOwnReply } =
-    props;
+  const {
+    reply,
+    pageId,
+    revisionId,
+    rendererOptions,
+    updateReply,
+    removeReply,
+    isOwnReply,
+  } = props;
   const { t } = useTranslation();
 
   const [isEditing, setIsEditing] = useState(false);
-  const [editError, setEditError] = useState<string>();
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [deleteError, setDeleteError] = useState<string>();
 
-  const { canSubmit, submit, insertMention, onControlsChange } =
-    useCommentInputControls();
-
-  const handleEditSubmit = async (text: string): Promise<void> => {
-    try {
-      await updateReply(reply.id, text);
-      setEditError(undefined);
-      setIsEditing(false);
-    } catch (err) {
-      setEditError(
-        err instanceof Error
-          ? err.message
-          : 'An unknown error occurred when updating the reply',
-      );
-      // Rethrow so MentionAwareCommentInput keeps the text instead of clearing it.
-      throw err;
-    }
-  };
-
   const handleEditCancel = (): void => {
     setIsEditing(false);
-    setEditError(undefined);
   };
 
   const handleDeleteConfirm = async (): Promise<void> => {
@@ -158,14 +143,6 @@ const InlineCommentReplyItem: FC<InlineCommentReplyItemProps> = (
         }
         footer={
           <>
-            {editError != null && (
-              <span
-                className="text-danger d-block"
-                data-testid="inline-comment-reply-edit-error"
-              >
-                {editError}
-              </span>
-            )}
             {deleteError != null && (
               <span
                 className="text-danger d-block"
@@ -185,47 +162,20 @@ const InlineCommentReplyItem: FC<InlineCommentReplyItemProps> = (
         }
       >
         {isEditing ? (
-          <div className="inline-comment-edit-form">
-            {/* The reply edit mode's layout is unchanged: the submit button
-                stays inline to the right of the editor. The input component
-                no longer renders it, so the flex row that used to live
-                inside it is reproduced here. */}
-            <div className="d-flex align-items-start gap-2">
-              <MentionAwareCommentInput
-                editorKey={`inline_comment_edit_${reply.id}`}
-                initialValue={reply.comment}
-                onSubmit={handleEditSubmit}
-                onControlsChange={onControlsChange}
-              />
-              <div className="d-flex align-items-center gap-1">
-                <MentionPickerButton onInsert={insertMention} />
-                <button
-                  type="button"
-                  className="btn btn-primary btn-sm p-0 d-inline-flex align-items-center justify-content-center"
-                  style={{ width: '2rem', height: '2rem' }}
-                  data-testid="inline-comment-submit-button"
-                  disabled={!canSubmit}
-                  onClick={submit}
-                  aria-label={t('page_comment.comment')}
-                >
-                  <span
-                    className="material-symbols-outlined fs-6"
-                    aria-hidden="true"
-                  >
-                    send
-                  </span>
-                </button>
-              </div>
-            </div>
-            <button
-              type="button"
-              data-testid="inline-comment-reply-edit-cancel-button"
-              className="btn btn-sm btn-outline-secondary mt-1"
-              onClick={handleEditCancel}
-            >
-              {t('Cancel')}
-            </button>
-          </div>
+          // 2026-09-11: same `CommentEditor` the origin comment's own edit
+          // mode now uses (see `InlineCommentItem.tsx`), which is itself the
+          // same component the normal comment's re-edit uses -- unifying all
+          // three editing experiences. `onSubmit` overrides the default
+          // post/update path to route through this reply's own `updateReply`.
+          <CommentEditor
+            pageId={pageId}
+            currentCommentId={reply.id}
+            commentBody={reply.comment}
+            revisionId={revisionId}
+            onCanceled={handleEditCancel}
+            onCommented={() => setIsEditing(false)}
+            onSubmit={(text) => updateReply(reply.id, text)}
+          />
         ) : rendererOptions != null ? (
           <RevisionRenderer
             rendererOptions={rendererOptions}
@@ -268,6 +218,8 @@ export const InlineCommentReplies: FC<InlineCommentRepliesProps> = (
         <InlineCommentReplyItem
           key={reply.id}
           reply={reply}
+          pageId={pageId}
+          revisionId={revisionId}
           rendererOptions={rendererOptions}
           updateReply={updateReply}
           removeReply={removeReply}

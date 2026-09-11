@@ -489,14 +489,14 @@
       "rect": {
         "x": 580,
         "y": 345.5,
-        "width": 72,
+        "width": 64,
         "height": 21,
-        "right": 652,
+        "right": 644,
         "bottom": 366.5
       },
       "overflow": {
-        "scrollWidth": 72,
-        "clientWidth": 72,
+        "scrollWidth": 64,
+        "clientWidth": 64,
         "scrollHeight": 21,
         "clientHeight": 21
       },
@@ -534,7 +534,7 @@
         "lineHeight": "21px",
         "textAlign": "start",
         "whiteSpace": "normal",
-        "width": "72px",
+        "width": "64px",
         "height": "21px"
       },
       "before": {
@@ -580,7 +580,7 @@
         "marginTop": "0px",
         "marginRight": "0px",
         "marginBottom": "0px",
-        "marginLeft": "133px",
+        "marginLeft": "141px",
         "paddingTop": "0px",
         "paddingRight": "0px",
         "paddingBottom": "0px",

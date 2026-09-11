@@ -90,7 +90,27 @@
 - **この変更の回帰確認中に発見・修正したバグ**: その6のホバー個別化修正により、`inline-comment.spec.ts`の2箇所で `item.hover()`（起点＋返信スレッド全体を含む要素をホバー）が起点のアイコンを表示させることを期待していたテストが壊れていた——ホバーが行単位になったことで、結合されたバウンディングボックスの中心が必ずしも起点自身の `.page-comment-main` に当たるとは限らなくなったため。`item.locator('.page-comment').first()`（起点自身の箱）をホバーするよう修正し、視覚照合テストで既に使われていたパターンに揃えた。
 - **回帰確認中に見つけた別件（その4の取りこぼし、今回の変更とは無関係）**: `inline-comment.spec.ts` のポップオーバー系テストブロックに、その4でポップオーバーの返信フォームをプレーンな `<textarea>` から `MentionAwareCommentInput` に差し替えた後も更新されていなかったアサーションが3箇所残っていた（`popover.locator('textarea')`、`popover.getByPlaceholder('Write a reply...')`）。その4の回帰確認では別のdescribeブロックしか触れておらず見落とされていた。`.cm-content`（このファイル内の他のCodeMirror系入力と同じ慣用句）に付け替えて解消した。
 
-## Boundary Commitments
+### 2026-09-11 の方針転換 その8（本文の同一長編集後、ハイライトが復元されない不具合）
+
+ユーザーから、インラインコメントを付けた範囲の近くをエディタで少し修正して保存し、リロードせずに閲覧モードへ戻るとハイライトが外れる、しかしブラウザをリロードすると（軽微な修正であれば）ハイライトが戻る、という報告があった。本スペック自体の対象（見た目の刷新）の範囲外だが、実際に使ってみて見つかった不具合として、これまでの回と同じ扱いで同じ回に調査・修正した。
+
+原因は `AnchorResolver/use-container-settle.ts` の `observeContainerSettle`——`useAnchorResolver` が「いつ引用文をDOMに対して再照合すべきか」を知るための仕組み——が、監視対象のコンテナを `{ childList: true, subtree: true, attributes: true, attributeFilter: [...] }` で observe しており、`characterData: true` が抜けていたこと。タイプミスの修正など「文字数が変わらない範囲内の本文修正」は、Reactが既存のテキストノードの `data` をその場で書き換えるだけで、要素の追加・削除を伴わない——つまり `characterData` 型の `MutationRecord` になり `childList` 型にはならない。そのため監視が発火せず、`useAnchorResolver` が再照合されないままだった。ブラウザリロードでは `useAnchorResolver` がマウント時に必ず一度同期的に解決するため（この監視の仕組みとは無関係に）問題が表面化しない——これが「リロードでは直る」の理由。
+
+- 実際のReactMarkdownがこの種の編集で本当に単独の `characterData` レコードを発生させることを、実ページに独自の `characterData` 対応MutationObserverを仕込んだ使い捨てPlaywrightテストで確認済み（DOM APIの引数だけの机上確認ではない）。また `childList`/`attributes` のみのobserverがテキストノードのみの変更を検知できないことを、happy-domでの最小再現テストでも確認した（仕様どおりの挙動で、テスト環境固有のクセではない）。
+- 修正: `observer.observe(...)` の呼び出しに `characterData: true` を1行追加。`scheduleSettle`/`fireIfSettled` 側はすでにコンテナ全体を汎用的に再評価する作りのため、他のロジック変更は不要だった。
+- 回帰テストを `use-container-settle.spec.tsx` に追加し、mutation check（タグ付き `git stash` で修正を一時的に戻し、新テストがREDになることを確認→復元してGREENを確認→stashエントリを削除）済み。
+- 元のユーザーシナリオ（保存済み引用文の近くをエディタで編集→リロードなしで戻る）を再現するエンドツーエンドの再確認は行っていない——ユニットレベルの修正がまさに `useContainerSettle` の責務そのものであり十分に確定的であること、また引用文そのものを編集する精密なシナリオをPlaywrightでスクリプト化しようとすると `matchQuote` 自体のあいまい一致の許容範囲という別の複雑さにぶつかること（同じ長さの単語1つの置き換えでも、ファジーマッチの許容範囲を超えて不一致になることがある——これは本修正とは無関係な、想定通りの挙動）から、これ以上は追わなかった。
+
+### 2026-09-11 の方針転換 その9（編集アイコンのopacity調査・一覧側の編集モードを通常コメントのCommentEditorに統一）
+
+ユーザーから「InlineCommentItem の edit/delete ボタンの opacity が通常コメントより薄く見える」との指摘があった。実ページで `getComputedStyle` を使い、通常コメントとインラインコメントの編集・削除ボタン（opacity・color・アイコンの色・祖先要素すべてのopacity）を比較したところ、すべて完全に一致していた（`opacity: 0.5`・ホバーで`0.75`、色も同じ）。コード変更は行わず——round 3の削除確認アラートのときと同様、古いビルドを見ていた可能性を報告した。
+
+続けて、一覧側（`InlineCommentItem.tsx` の起点コメント編集・`InlineCommentReplies.tsx` の reply 編集）のエディタを、通常コメントの再編集（`Comment.tsx`）が使っているのと同じ `CommentEditor` に揃えたいという要望があった。**ポップオーバー側の編集モード（`MentionAwareCommentInput` ベース、コンパクトなアクセント枠）は対象外**——ユーザーから明示的に確認を取った上で実施。
+
+- 両ファイルとも、`MentionAwareCommentInput` ＋ 手組みの `MentionPickerButton`/Cancel/Save 行を、`CommentEditor` の呼び出し1つに置き換えた。永続化は `onSubmit` オーバーライドで差し替える——`InlineCommentReplies.tsx` の返信作成フォームがすでに使っている手法と同じ（`CommentEditor.tsx` の `postCommentHandler` を読み、`onSubmit` が指定されていれば `currentCommentId` の有無に関わらず必ずそちらが優先されることを確認済み）。
+- `InlineCommentReplies.tsx` の `InlineCommentReplyItemProps` に `pageId`/`revisionId` を追加（`MentionAwareCommentInput` は不要だったが `CommentEditor` の必須propのため）——`InlineCommentReplies` 自身が返信作成フォーム向けにすでに保持している値をそのまま渡すだけで足りた。
+- **見た目・挙動への影響（このamendmentの新しい意図ではなく、`CommentEditor` をそのまま流用した結果として自然に生じるもの）**: コンパクトなアクセント枠のボックスから、`CommentEditor` のフル機能UI（ツールバー・添付ファイル・プレビュータブ、編集中でも常に「Add a comment」と表示される`CommentEditor`自体の既存の仕様——今回新たに持ち込んだものではなくそのまま踏襲）に変わる。明示的なメンションピッカーボタンはなくなるが、メンション機能自体は同じCodeMirror拡張で引き続き動作する（「@」を打てば候補が出る）。
+
 
 ### This Spec Owns
 - `InlineCommentItem.tsx`／`InlineCommentReplies.tsx`／`InlineCommentPreviewPopover.tsx` のJSXマークアップとクラス名

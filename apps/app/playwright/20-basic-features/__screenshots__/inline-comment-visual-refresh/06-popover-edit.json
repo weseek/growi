@@ -1380,14 +1380,14 @@
         "borderRightWidth": "0px",
         "borderBottomWidth": "0px",
         "borderLeftWidth": "0px",
-        "borderLeftColor": "rgb(64, 60, 57)",
+        "borderLeftColor": "rgb(36, 41, 46)",
         "borderLeftStyle": "none",
         "borderTopLeftRadius": "0px",
         "borderTopRightRadius": "0px",
         "borderBottomRightRadius": "0px",
         "borderBottomLeftRadius": "0px",
         "backgroundColor": "rgba(0, 0, 0, 0)",
-        "color": "rgb(64, 60, 57)",
+        "color": "rgb(36, 41, 46)",
         "fontSize": "16px",
         "lineHeight": "22.4px",
         "textAlign": "start",
@@ -1407,7 +1407,7 @@
         "borderRightWidth": "0px",
         "borderLeftWidth": "0px",
         "borderTopLeftRadius": "0px",
-        "borderTopColor": "rgb(64, 60, 57)"
+        "borderTopColor": "rgb(36, 41, 46)"
       }
     },
     "replyFormMentionPicker": {

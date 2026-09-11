@@ -3,11 +3,11 @@
     "cardRoot": {
       "rect": {
         "x": 487,
-        "y": 490.15625,
+        "y": 454.15625,
         "width": 593,
         "height": 170,
         "right": 1080,
-        "bottom": 660.15625
+        "bottom": 624.15625
       },
       "overflow": {
         "scrollWidth": 593,
@@ -70,11 +70,11 @@
     "card": {
       "rect": {
         "x": 487,
-        "y": 490.15625,
+        "y": 454.15625,
         "width": 593,
         "height": 170,
         "right": 1080,
-        "bottom": 660.15625
+        "bottom": 624.15625
       },
       "overflow": {
         "scrollWidth": 591,
@@ -137,11 +137,11 @@
     "headerRow": {
       "rect": {
         "x": 504,
-        "y": 507.15625,
+        "y": 471.15625,
         "width": 559,
         "height": 32,
         "right": 1063,
-        "bottom": 539.15625
+        "bottom": 503.15625
       },
       "overflow": {
         "scrollWidth": 559,
@@ -204,11 +204,11 @@
     "avatar": {
       "rect": {
         "x": 504,
-        "y": 515.515625,
+        "y": 479.515625,
         "width": 19.1875,
         "height": 19.1875,
         "right": 523.1875,
-        "bottom": 534.703125
+        "bottom": 498.703125
       },
       "overflow": {
         "scrollWidth": 19,
@@ -271,11 +271,11 @@
     "username": {
       "rect": {
         "x": 531.1875,
-        "y": 512.65625,
+        "y": 476.65625,
         "width": 107,
         "height": 21,
         "right": 638.1875,
-        "bottom": 533.65625
+        "bottom": 497.65625
       },
       "overflow": {
         "scrollWidth": 107,
@@ -338,15 +338,15 @@
     "createdAt": {
       "rect": {
         "x": 654.1875,
-        "y": 512.65625,
-        "width": 72,
+        "y": 476.65625,
+        "width": 64,
         "height": 21,
-        "right": 726.1875,
-        "bottom": 533.65625
+        "right": 718.1875,
+        "bottom": 497.65625
       },
       "overflow": {
-        "scrollWidth": 72,
-        "clientWidth": 72,
+        "scrollWidth": 64,
+        "clientWidth": 64,
         "scrollHeight": 21,
         "clientHeight": 21
       },
@@ -384,7 +384,7 @@
         "lineHeight": "21px",
         "textAlign": "start",
         "whiteSpace": "normal",
-        "width": "72px",
+        "width": "64px",
         "height": "21px"
       },
       "before": {
@@ -405,11 +405,11 @@
     "headerEnd": {
       "rect": {
         "x": 834.40625,
-        "y": 507.15625,
+        "y": 471.15625,
         "width": 228.59375,
         "height": 32,
         "right": 1063,
-        "bottom": 539.15625
+        "bottom": 503.15625
       },
       "overflow": {
         "scrollWidth": 229,
@@ -430,7 +430,7 @@
         "marginTop": "0px",
         "marginRight": "0px",
         "marginBottom": "0px",
-        "marginLeft": "108.219px",
+        "marginLeft": "116.219px",
         "paddingTop": "0px",
         "paddingRight": "0px",
         "paddingBottom": "0px",
@@ -472,11 +472,11 @@
     "iconButtonContainer": {
       "rect": {
         "x": 834.40625,
-        "y": 507.15625,
+        "y": 471.15625,
         "width": 68,
         "height": 32,
         "right": 902.40625,
-        "bottom": 539.15625
+        "bottom": 503.15625
       },
       "overflow": {
         "scrollWidth": 68,
@@ -539,11 +539,11 @@
     "editIconButton": {
       "rect": {
         "x": 834.40625,
-        "y": 507.15625,
+        "y": 471.15625,
         "width": 32,
         "height": 32,
         "right": 866.40625,
-        "bottom": 539.15625
+        "bottom": 503.15625
       },
       "overflow": {
         "scrollWidth": 30,
@@ -606,11 +606,11 @@
     "deleteIconButton": {
       "rect": {
         "x": 870.40625,
-        "y": 507.15625,
+        "y": 471.15625,
         "width": 32,
         "height": 32,
         "right": 902.40625,
-        "bottom": 539.15625
+        "bottom": 503.15625
       },
       "overflow": {
         "scrollWidth": 30,
@@ -673,11 +673,11 @@
     "statusBadge": {
       "rect": {
         "x": 910.40625,
-        "y": 509.15625,
+        "y": 473.15625,
         "width": 77.59375,
         "height": 28,
         "right": 988,
-        "bottom": 537.15625
+        "bottom": 501.15625
       },
       "overflow": {
         "scrollWidth": 78,
@@ -740,11 +740,11 @@
     "resolveToggle": {
       "rect": {
         "x": 996,
-        "y": 507.65625,
+        "y": 471.65625,
         "width": 67,
         "height": 31,
         "right": 1063,
-        "bottom": 538.65625
+        "bottom": 502.65625
       },
       "overflow": {
         "scrollWidth": 65,
@@ -808,11 +808,11 @@
     "quote": {
       "rect": {
         "x": 504,
-        "y": 547.15625,
+        "y": 511.15625,
         "width": 559,
         "height": 37,
         "right": 1063,
-        "bottom": 584.15625
+        "bottom": 548.15625
       },
       "overflow": {
         "scrollWidth": 556,
@@ -875,11 +875,11 @@
     "body": {
       "rect": {
         "x": 504,
-        "y": 607.15625,
+        "y": 571.15625,
         "width": 559,
         "height": 21,
         "right": 1063,
-        "bottom": 628.15625
+        "bottom": 592.15625
       },
       "overflow": {
         "scrollWidth": 559,
@@ -942,11 +942,11 @@
     "replyFormAvatar": {
       "rect": {
         "x": 548,
-        "y": 935.515625,
+        "y": 899.515625,
         "width": 19.1875,
         "height": 19.1875,
         "right": 567.1875,
-        "bottom": 954.703125
+        "bottom": 918.703125
       },
       "overflow": {
         "scrollWidth": 19,

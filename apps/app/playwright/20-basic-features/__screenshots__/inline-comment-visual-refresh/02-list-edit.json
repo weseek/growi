@@ -3,17 +3,17 @@
     "cardRoot": {
       "rect": {
         "x": 487,
-        "y": 490.15625,
+        "y": 454.15625,
         "width": 593,
-        "height": 223.78125,
+        "height": 570,
         "right": 1080,
-        "bottom": 713.9375
+        "bottom": 1024.15625
       },
       "overflow": {
         "scrollWidth": 593,
         "clientWidth": 593,
-        "scrollHeight": 224,
-        "clientHeight": 224
+        "scrollHeight": 570,
+        "clientHeight": 570
       },
       "styles": {
         "display": "block",
@@ -50,7 +50,7 @@
         "textAlign": "start",
         "whiteSpace": "normal",
         "width": "593px",
-        "height": "223.781px"
+        "height": "570px"
       },
       "before": {
         "content": "none",
@@ -70,17 +70,17 @@
     "card": {
       "rect": {
         "x": 487,
-        "y": 490.15625,
+        "y": 454.15625,
         "width": 593,
-        "height": 223.78125,
+        "height": 570,
         "right": 1080,
-        "bottom": 713.9375
+        "bottom": 1024.15625
       },
       "overflow": {
         "scrollWidth": 591,
         "clientWidth": 591,
-        "scrollHeight": 222,
-        "clientHeight": 222
+        "scrollHeight": 568,
+        "clientHeight": 568
       },
       "styles": {
         "display": "block",
@@ -117,7 +117,7 @@
         "textAlign": "start",
         "whiteSpace": "normal",
         "width": "593px",
-        "height": "223.781px"
+        "height": "570px"
       },
       "before": {
         "content": "\"\"",
@@ -137,11 +137,11 @@
     "headerRow": {
       "rect": {
         "x": 504,
-        "y": 507.15625,
+        "y": 471.15625,
         "width": 559,
         "height": 31,
         "right": 1063,
-        "bottom": 538.15625
+        "bottom": 502.15625
       },
       "overflow": {
         "scrollWidth": 559,
@@ -204,11 +204,11 @@
     "avatar": {
       "rect": {
         "x": 504,
-        "y": 515.015625,
+        "y": 479.015625,
         "width": 19.1875,
         "height": 19.1875,
         "right": 523.1875,
-        "bottom": 534.203125
+        "bottom": 498.203125
       },
       "overflow": {
         "scrollWidth": 19,
@@ -271,11 +271,11 @@
     "username": {
       "rect": {
         "x": 531.1875,
-        "y": 512.15625,
+        "y": 476.15625,
         "width": 107,
         "height": 21,
         "right": 638.1875,
-        "bottom": 533.15625
+        "bottom": 497.15625
       },
       "overflow": {
         "scrollWidth": 107,
@@ -338,15 +338,15 @@
     "createdAt": {
       "rect": {
         "x": 654.1875,
-        "y": 512.15625,
-        "width": 72,
+        "y": 476.15625,
+        "width": 64,
         "height": 21,
-        "right": 726.1875,
-        "bottom": 533.15625
+        "right": 718.1875,
+        "bottom": 497.15625
       },
       "overflow": {
-        "scrollWidth": 72,
-        "clientWidth": 72,
+        "scrollWidth": 64,
+        "clientWidth": 64,
         "scrollHeight": 21,
         "clientHeight": 21
       },
@@ -384,7 +384,7 @@
         "lineHeight": "21px",
         "textAlign": "start",
         "whiteSpace": "normal",
-        "width": "72px",
+        "width": "64px",
         "height": "21px"
       },
       "before": {
@@ -405,11 +405,11 @@
     "headerEnd": {
       "rect": {
         "x": 896.40625,
-        "y": 507.15625,
+        "y": 471.15625,
         "width": 166.59375,
         "height": 31,
         "right": 1063,
-        "bottom": 538.15625
+        "bottom": 502.15625
       },
       "overflow": {
         "scrollWidth": 167,
@@ -430,7 +430,7 @@
         "marginTop": "0px",
         "marginRight": "0px",
         "marginBottom": "0px",
-        "marginLeft": "170.219px",
+        "marginLeft": "178.219px",
         "paddingTop": "0px",
         "paddingRight": "0px",
         "paddingBottom": "0px",
@@ -472,11 +472,11 @@
     "iconButtonContainer": {
       "rect": {
         "x": 995,
-        "y": 738.9375,
+        "y": 1049.15625,
         "width": 68,
         "height": 32,
         "right": 1063,
-        "bottom": 770.9375
+        "bottom": 1081.15625
       },
       "overflow": {
         "scrollWidth": 68,
@@ -541,11 +541,11 @@
     "statusBadge": {
       "rect": {
         "x": 896.40625,
-        "y": 508.65625,
+        "y": 472.65625,
         "width": 90.59375,
         "height": 28,
         "right": 987,
-        "bottom": 536.65625
+        "bottom": 500.65625
       },
       "overflow": {
         "scrollWidth": 91,
@@ -608,11 +608,11 @@
     "resolveToggle": {
       "rect": {
         "x": 995,
-        "y": 507.15625,
+        "y": 471.15625,
         "width": 68,
         "height": 31,
         "right": 1063,
-        "bottom": 538.15625
+        "bottom": 502.15625
       },
       "overflow": {
         "scrollWidth": 66,
@@ -676,11 +676,11 @@
     "quote": {
       "rect": {
         "x": 504,
-        "y": 546.15625,
+        "y": 510.15625,
         "width": 559,
         "height": 37,
         "right": 1063,
-        "bottom": 583.15625
+        "bottom": 547.15625
       },
       "overflow": {
         "scrollWidth": 556,
@@ -743,17 +743,17 @@
     "body": {
       "rect": {
         "x": 504,
-        "y": 591.15625,
+        "y": 555.15625,
         "width": 559,
-        "height": 105.78125,
+        "height": 452,
         "right": 1063,
-        "bottom": 696.9375
+        "bottom": 1007.15625
       },
       "overflow": {
         "scrollWidth": 559,
         "clientWidth": 559,
-        "scrollHeight": 106,
-        "clientHeight": 106
+        "scrollHeight": 452,
+        "clientHeight": 452
       },
       "styles": {
         "display": "block",
@@ -790,7 +790,7 @@
         "textAlign": "start",
         "whiteSpace": "normal",
         "width": "559px",
-        "height": "105.781px"
+        "height": "452px"
       },
       "before": {
         "content": "none",
@@ -810,11 +810,11 @@
     "replyFormAvatar": {
       "rect": {
         "x": 548,
-        "y": 989.296875,
+        "y": 1299.515625,
         "width": 19.1875,
         "height": 19.1875,
         "right": 567.1875,
-        "bottom": 1008.484375
+        "bottom": 1318.703125
       },
       "overflow": {
         "scrollWidth": 19,
@@ -877,21 +877,21 @@
     "editForm": {
       "rect": {
         "x": 504,
-        "y": 591.15625,
+        "y": 555.15625,
         "width": 559,
-        "height": 105.78125,
+        "height": 452,
         "right": 1063,
-        "bottom": 696.9375
+        "bottom": 1007.15625
       },
       "overflow": {
-        "scrollWidth": 557,
-        "clientWidth": 557,
-        "scrollHeight": 104,
-        "clientHeight": 104
+        "scrollWidth": 559,
+        "clientWidth": 559,
+        "scrollHeight": 452,
+        "clientHeight": 452
       },
       "styles": {
         "display": "block",
-        "position": "static",
+        "position": "relative",
         "visibility": "visible",
         "opacity": "1",
         "flexDirection": "row",
@@ -903,20 +903,20 @@
         "marginRight": "0px",
         "marginBottom": "0px",
         "marginLeft": "0px",
-        "paddingTop": "8px",
-        "paddingRight": "8px",
-        "paddingBottom": "8px",
-        "paddingLeft": "8px",
-        "borderTopWidth": "1px",
-        "borderRightWidth": "1px",
-        "borderBottomWidth": "1px",
-        "borderLeftWidth": "1px",
-        "borderLeftColor": "rgb(0, 126, 176)",
-        "borderLeftStyle": "solid",
-        "borderTopLeftRadius": "6px",
-        "borderTopRightRadius": "6px",
-        "borderBottomRightRadius": "6px",
-        "borderBottomLeftRadius": "6px",
+        "paddingTop": "0px",
+        "paddingRight": "0px",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "borderTopWidth": "0px",
+        "borderRightWidth": "0px",
+        "borderBottomWidth": "0px",
+        "borderLeftWidth": "0px",
+        "borderLeftColor": "rgb(64, 60, 57)",
+        "borderLeftStyle": "none",
+        "borderTopLeftRadius": "0px",
+        "borderTopRightRadius": "0px",
+        "borderBottomRightRadius": "0px",
+        "borderBottomLeftRadius": "0px",
         "backgroundColor": "rgba(0, 0, 0, 0)",
         "color": "rgb(64, 60, 57)",
         "fontSize": "16px",
@@ -924,7 +924,7 @@
         "textAlign": "start",
         "whiteSpace": "normal",
         "width": "559px",
-        "height": "105.781px"
+        "height": "452px"
       },
       "before": {
         "content": "none",
@@ -943,21 +943,21 @@
     },
     "editCancelButton": {
       "rect": {
-        "x": 920,
-        "y": 656.9375,
-        "width": 61,
-        "height": 31,
-        "right": 981,
-        "bottom": 687.9375
+        "x": 850,
+        "y": 952.15625,
+        "width": 73,
+        "height": 38,
+        "right": 923,
+        "bottom": 990.15625
       },
       "overflow": {
-        "scrollWidth": 59,
-        "clientWidth": 59,
-        "scrollHeight": 29,
-        "clientHeight": 29
+        "scrollWidth": 71,
+        "clientWidth": 71,
+        "scrollHeight": 36,
+        "clientHeight": 36
       },
       "styles": {
-        "display": "block",
+        "display": "inline-block",
         "position": "static",
         "visibility": "visible",
         "opacity": "1",
@@ -970,28 +970,28 @@
         "marginRight": "0px",
         "marginBottom": "0px",
         "marginLeft": "0px",
-        "paddingTop": "4px",
-        "paddingRight": "8px",
-        "paddingBottom": "4px",
-        "paddingLeft": "8px",
+        "paddingTop": "6px",
+        "paddingRight": "12px",
+        "paddingBottom": "6px",
+        "paddingLeft": "12px",
         "borderTopWidth": "1px",
         "borderRightWidth": "1px",
         "borderBottomWidth": "1px",
         "borderLeftWidth": "1px",
-        "borderLeftColor": "rgb(118, 115, 113)",
+        "borderLeftColor": "rgb(214, 213, 212)",
         "borderLeftStyle": "solid",
-        "borderTopLeftRadius": "4px",
-        "borderTopRightRadius": "4px",
-        "borderBottomRightRadius": "4px",
-        "borderBottomLeftRadius": "4px",
-        "backgroundColor": "rgb(241, 241, 241)",
+        "borderTopLeftRadius": "6px",
+        "borderTopRightRadius": "6px",
+        "borderBottomRightRadius": "6px",
+        "borderBottomLeftRadius": "6px",
+        "backgroundColor": "rgb(255, 255, 255)",
         "color": "rgb(118, 115, 113)",
-        "fontSize": "14px",
-        "lineHeight": "21px",
+        "fontSize": "16px",
+        "lineHeight": "24px",
         "textAlign": "center",
         "whiteSpace": "normal",
-        "width": "61px",
-        "height": "31px"
+        "width": "73px",
+        "height": "38px"
       },
       "before": {
         "content": "none",
@@ -1010,21 +1010,21 @@
     },
     "editSubmitButton": {
       "rect": {
-        "x": 989,
-        "y": 656.9375,
-        "width": 65,
-        "height": 31,
-        "right": 1054,
-        "bottom": 687.9375
+        "x": 931,
+        "y": 952.15625,
+        "width": 107,
+        "height": 38,
+        "right": 1038,
+        "bottom": 990.15625
       },
       "overflow": {
-        "scrollWidth": 63,
-        "clientWidth": 63,
-        "scrollHeight": 29,
-        "clientHeight": 29
+        "scrollWidth": 105,
+        "clientWidth": 105,
+        "scrollHeight": 36,
+        "clientHeight": 36
       },
       "styles": {
-        "display": "block",
+        "display": "inline-block",
         "position": "static",
         "visibility": "visible",
         "opacity": "1",
@@ -1037,28 +1037,28 @@
         "marginRight": "0px",
         "marginBottom": "0px",
         "marginLeft": "0px",
-        "paddingTop": "4px",
-        "paddingRight": "8px",
-        "paddingBottom": "4px",
-        "paddingLeft": "8px",
+        "paddingTop": "6px",
+        "paddingRight": "12px",
+        "paddingBottom": "6px",
+        "paddingLeft": "12px",
         "borderTopWidth": "1px",
         "borderRightWidth": "1px",
         "borderBottomWidth": "1px",
         "borderLeftWidth": "1px",
         "borderLeftColor": "rgb(0, 126, 176)",
         "borderLeftStyle": "solid",
-        "borderTopLeftRadius": "4px",
-        "borderTopRightRadius": "4px",
-        "borderBottomRightRadius": "4px",
-        "borderBottomLeftRadius": "4px",
+        "borderTopLeftRadius": "6px",
+        "borderTopRightRadius": "6px",
+        "borderBottomRightRadius": "6px",
+        "borderBottomLeftRadius": "6px",
         "backgroundColor": "rgb(0, 126, 176)",
         "color": "rgb(255, 255, 255)",
-        "fontSize": "14px",
-        "lineHeight": "21px",
+        "fontSize": "16px",
+        "lineHeight": "24px",
         "textAlign": "center",
         "whiteSpace": "normal",
-        "width": "65px",
-        "height": "31px"
+        "width": "107px",
+        "height": "38px"
       },
       "before": {
         "content": "none",

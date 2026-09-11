@@ -3465,17 +3465,18 @@ test.describe('Inline comment - editing an origin comment (from the list and fro
     const card = item.locator('.page-comment').first();
     await card.hover();
     await item.getByTestId('inline-comment-edit-button').click();
-    const editForm = item.locator('.inline-comment-edit-form');
-    await expect(editForm).toBeVisible();
-    await editForm
+    // 2026-09-11: origin editing now uses the literal same `CommentEditor`
+    // the normal comment's own re-edit uses (matching the user's request to
+    // unify the two editing experiences), so the edit surface is no longer a
+    // bare `.inline-comment-edit-form` wrapper -- it is `CommentEditor`'s own
+    // full UI (toolbar, preview tab, `comment-submit-button`).
+    await expect(item.locator('.cm-content')).toBeVisible();
+    await item
       .locator('.cm-content')
       .fill('an origin comment edited from the list');
-    // The list item's edit mode renders its own Save button beside Cancel
-    // below the input, so it has its own test id -- the editor component no
-    // longer renders the inline `inline-comment-submit-button`.
-    await editForm.getByTestId('inline-comment-edit-save-button').click();
+    await item.getByTestId('comment-submit-button').first().click();
 
-    await expect(editForm).not.toBeVisible();
+    await expect(item.locator('.cm-content')).not.toBeVisible();
     await expect(item).toContainText('an origin comment edited from the list');
 
     await page.reload();
@@ -3549,11 +3550,13 @@ test.describe('Inline comment - editing an origin comment (from the list and fro
     // origin comment's edit click above).
     await reply.hover();
     await reply.getByTestId('inline-comment-reply-edit-button').click();
-    const editForm = reply.locator('.inline-comment-edit-form');
-    await expect(editForm).toBeVisible();
-    await editForm.locator('.cm-content').fill('a reply edited from the list');
-    await editForm.getByTestId('inline-comment-submit-button').click();
-    await expect(editForm).not.toBeVisible();
+    // 2026-09-11: reply editing now uses the literal same `CommentEditor` the
+    // origin comment's edit mode and the normal comment's re-edit both use
+    // (see the origin-edit test above).
+    await expect(reply.locator('.cm-content')).toBeVisible();
+    await reply.locator('.cm-content').fill('a reply edited from the list');
+    await reply.getByTestId('comment-submit-button').first().click();
+    await expect(reply.locator('.cm-content')).not.toBeVisible();
     await expect(reply).toContainText('a reply edited from the list');
 
     await page.reload();
@@ -4304,9 +4307,17 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
     quote: '.inline-comment-quote',
     body: ':scope > .page-comment > .page-comment-main > .page-comment-body',
     replyFormAvatar: '.inline-comment-reply-form .user-picture',
-    editForm: '.inline-comment-edit-form',
-    editCancelButton: '[data-testid="inline-comment-edit-cancel-button"]',
-    editSubmitButton: '[data-testid="inline-comment-edit-save-button"]',
+    // 2026-09-11: origin/reply editing now uses the literal same
+    // `CommentEditor` the normal comment's re-edit uses (no more
+    // `.inline-comment-edit-form` wrapper or dedicated Save/Cancel testids)
+    // -- `.comment-form` is `CommentEditorLayout`'s own plain (non-CSS-Module)
+    // wrapper class, and the Cancel button has no testid of its own, so it is
+    // matched by its own plain Bootstrap classes (the desktop row's `d-none
+    // d-sm-block` copy is first in DOM order and visible at this capture's
+    // desktop viewport).
+    editForm: '.comment-form',
+    editCancelButton: '.btn-outline-neutral-secondary',
+    editSubmitButton: '[data-testid="comment-submit-button"]',
     deleteConfirm: '[data-testid="inline-comment-delete-confirm"]',
     deleteConfirmIcon:
       '[data-testid="inline-comment-delete-confirm"] .material-symbols-outlined',
@@ -4582,7 +4593,11 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
 
     // --- State 2: edit mode ---
     await editButton.click();
-    const editForm = item.locator('.inline-comment-edit-form');
+    // 2026-09-11: origin editing now uses the literal same `CommentEditor`
+    // the normal comment's own re-edit uses -- `.comment-form` is
+    // `CommentEditorLayout`'s own plain wrapper class (no more
+    // `.inline-comment-edit-form`).
+    const editForm = item.locator('.comment-form');
     await expect(editForm).toBeVisible();
     await expect(editForm.locator('.cm-content')).toBeVisible();
     // See the matching comment in the popover capture above -- fixed
@@ -4601,7 +4616,7 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
       ),
     });
 
-    await item.getByTestId('inline-comment-edit-cancel-button').click();
+    await item.locator('.btn-outline-neutral-secondary').first().click();
     await expect(editForm).not.toBeVisible();
 
     // --- State 3: delete confirmation (cancelled again right afterwards --
@@ -4830,7 +4845,11 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
 
     // --- State 2: edit mode ---
     await editButton.click();
-    const editForm = item.locator('.inline-comment-edit-form');
+    // 2026-09-11: origin editing now uses the literal same `CommentEditor`
+    // the normal comment's own re-edit uses -- `.comment-form` is
+    // `CommentEditorLayout`'s own plain wrapper class (no more
+    // `.inline-comment-edit-form`).
+    const editForm = item.locator('.comment-form');
     await expect(editForm).toBeVisible();
     await expect(editForm.locator('.cm-content')).toBeVisible();
     // Same fix as the light-mode capture above -- asserted here too.
@@ -4851,7 +4870,7 @@ test.describe('Inline comment - visual refresh: mockup cross-check captures (spe
       ),
     });
 
-    await item.getByTestId('inline-comment-edit-cancel-button').click();
+    await item.locator('.btn-outline-neutral-secondary').first().click();
     await expect(editForm).not.toBeVisible();
 
     // --- State 3: delete confirmation (cancelled again right afterwards) ---

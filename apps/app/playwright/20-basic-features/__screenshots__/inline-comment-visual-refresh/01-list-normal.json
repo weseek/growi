@@ -339,14 +339,14 @@
       "rect": {
         "x": 654.1875,
         "y": 512.65625,
-        "width": 72,
+        "width": 64,
         "height": 21,
-        "right": 726.1875,
+        "right": 718.1875,
         "bottom": 533.65625
       },
       "overflow": {
-        "scrollWidth": 72,
-        "clientWidth": 72,
+        "scrollWidth": 64,
+        "clientWidth": 64,
         "scrollHeight": 21,
         "clientHeight": 21
       },
@@ -384,7 +384,7 @@
         "lineHeight": "21px",
         "textAlign": "start",
         "whiteSpace": "normal",
-        "width": "72px",
+        "width": "64px",
         "height": "21px"
       },
       "before": {
@@ -430,7 +430,7 @@
         "marginTop": "0px",
         "marginRight": "0px",
         "marginBottom": "0px",
-        "marginLeft": "94.2188px",
+        "marginLeft": "102.219px",
         "paddingTop": "0px",
         "paddingRight": "0px",
         "paddingBottom": "0px",

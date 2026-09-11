@@ -14,7 +14,6 @@
  * this task must rule out.
  */
 
-import { useEffect } from 'react';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -115,53 +114,22 @@ vi.mock('~/client/components/NotAvailableForReadOnlyUser', () => ({
   },
 }));
 
-const mentionAwareCommentInputProps = vi.hoisted(
+// 2026-09-11: the origin comment's edit mode now uses the literal same
+// `CommentEditor` the normal comment's own re-edit uses (`Comment.tsx`),
+// unifying the two editing experiences per the user's request -- no longer
+// `MentionAwareCommentInput`. `CommentEditor`'s own internal behavior
+// (toolbar, submit/cancel rendering, canSubmit gating) is covered by its own
+// spec; mocked at the boundary here so this file only proves the wiring this
+// component owns: which props reach `CommentEditor`, and how its
+// `onSubmit`/`onCanceled`/`onCommented` callbacks are handled.
+const commentEditorProps = vi.hoisted(
   () => ({ current: undefined }) as { current?: Record<string, unknown> },
 );
-/**
- * The input no longer renders a submit control itself — it hands
- * `{ canSubmit, submit, insertMention }` outward through `onControlsChange`
- * and the caller renders the Save button. The mock reproduces that handshake
- * so the item's own Save button can be exercised; `canSubmit` is settable
- * per test.
- */
-const commentInputControls = vi.hoisted(() => ({
-  canSubmit: true,
-  submit: vi.fn(),
-  insertMention: vi.fn(),
-}));
-vi.mock('../MentionAwareCommentInput/MentionAwareCommentInput', () => ({
-  MentionAwareCommentInput: (props: Record<string, unknown>) => {
-    mentionAwareCommentInputProps.current = props;
-    const onControlsChange = props.onControlsChange as
-      | ((controls: unknown) => void)
-      | undefined;
-    // From an effect, not during render: calling the parent's state setter
-    // while the child renders is what would make this contract loop.
-    useEffect(() => {
-      onControlsChange?.({
-        canSubmit: commentInputControls.canSubmit,
-        submit: commentInputControls.submit,
-        insertMention: commentInputControls.insertMention,
-      });
-    }, [onControlsChange]);
-    return <div data-testid="mention-aware-comment-input-mock" />;
+vi.mock('~/client/components/PageComment/CommentEditor', () => ({
+  CommentEditor: (props: Record<string, unknown>) => {
+    commentEditorProps.current = props;
+    return <div data-testid="inline-comment-editor-mock" />;
   },
-}));
-
-// MentionPickerButton has its own spec (dropdown + candidate fetch); mocked
-// at the boundary here so this file only proves where the item places it and
-// that selecting a candidate reaches the input's insertMention control.
-vi.mock('../InlineCommentForm/MentionPickerButton', () => ({
-  MentionPickerButton: (props: { onInsert: (username: string) => void }) => (
-    <button
-      type="button"
-      data-testid="mention-picker-button-mock"
-      onClick={() => props.onInsert('alice')}
-    >
-      @
-    </button>
-  ),
 }));
 
 import { InlineCommentItem } from './InlineCommentItem';
@@ -244,10 +212,7 @@ describe('InlineCommentItem', () => {
   beforeEach(() => {
     currentUserRef.current = undefined;
     isDisabledRef.current = false;
-    mentionAwareCommentInputProps.current = undefined;
-    commentInputControls.canSubmit = true;
-    commentInputControls.submit.mockReset();
-    commentInputControls.insertMention.mockReset();
+    commentEditorProps.current = undefined;
   });
 
   describe('the shared comment box (Req 13.3 / 13.4)', () => {
@@ -603,127 +568,64 @@ describe('InlineCommentItem', () => {
       expect(screen.getByTestId('inline-comment-delete-button')).toBeDisabled();
     });
 
-    it('switches to MentionAwareCommentInput with the current text as initialValue and a comment-specific editorKey when the edit button is clicked', async () => {
+    // 2026-09-11: origin-comment editing now uses the literal same
+    // `CommentEditor` the normal comment's own re-edit uses (unifying with
+    // `Comment.tsx` and with the list's reply editing,
+    // `InlineCommentReplies.tsx`) -- no longer `MentionAwareCommentInput`.
+    // `CommentEditor`'s own internal behavior (toolbar, submit/cancel button
+    // rendering, canSubmit gating) is covered by its own spec; these tests
+    // only prove the wiring this component owns: which props reach
+    // `CommentEditor`, and how its `onSubmit`/`onCanceled`/`onCommented`
+    // callbacks are handled here.
+    it('switches to CommentEditor with the current text as commentBody and a comment-specific currentCommentId when the edit button is clicked', async () => {
       currentUserRef.current = { _id: 'user1' };
       renderItem({
         id: 'comment42',
         creatorId: 'user1',
         comment: 'the original text',
+        pageId: 'page1',
+        anchorOriginRevisionId: 'revision1',
       });
 
       await userEvent.click(screen.getByTestId('inline-comment-edit-button'));
 
       expect(
-        screen.getByTestId('mention-aware-comment-input-mock'),
+        screen.getByTestId('inline-comment-editor-mock'),
       ).toBeInTheDocument();
-      expect(mentionAwareCommentInputProps.current?.initialValue).toBe(
-        'the original text',
-      );
-      expect(mentionAwareCommentInputProps.current?.editorKey).toBe(
-        'inline_comment_edit_comment42',
-      );
+      expect(commentEditorProps.current?.pageId).toBe('page1');
+      expect(commentEditorProps.current?.revisionId).toBe('revision1');
+      expect(commentEditorProps.current?.currentCommentId).toBe('comment42');
+      expect(commentEditorProps.current?.commentBody).toBe('the original text');
+      expect(commentEditorProps.current?.onSubmit).toBeInstanceOf(Function);
+      expect(commentEditorProps.current?.onCommented).toBeInstanceOf(Function);
+      expect(commentEditorProps.current?.onCanceled).toBeInstanceOf(Function);
     });
 
-    it('calls update(id, text) when the edit form is submitted, and leaves edit mode', async () => {
+    it('calls update(id, text) via the onSubmit override, and leaves edit mode when onCommented fires', async () => {
       const update = vi.fn().mockResolvedValue(undefined);
       currentUserRef.current = { _id: 'user1' };
       renderItem({ id: 'comment42', creatorId: 'user1' }, { update });
 
       await userEvent.click(screen.getByTestId('inline-comment-edit-button'));
-      await act(async () => {
-        await (
-          mentionAwareCommentInputProps.current?.onSubmit as (
-            text: string,
-          ) => Promise<unknown>
-        )('the edited text');
-      });
+      await (
+        commentEditorProps.current?.onSubmit as (
+          text: string,
+        ) => Promise<unknown>
+      )('the edited text');
 
       expect(update).toHaveBeenCalledWith('comment42', 'the edited text');
-      await waitFor(() => {
-        expect(
-          screen.queryByTestId('mention-aware-comment-input-mock'),
-        ).not.toBeInTheDocument();
+
+      // The mock does not call onCommented on its own (unlike the real
+      // CommentEditor's postCommentHandler) -- simulate that signal.
+      act(() => {
+        (commentEditorProps.current?.onCommented as () => void)();
       });
-    });
-
-    // Checklist item 11 (Requirement 1.4 / 2.2's edit-mode artboard): Cancel
-    // and Save sit together in one right-aligned row below the input. Save
-    // used to be the input component's own inline icon button, which no
-    // caller could reposition.
-    it('places Cancel and Save together in one right-aligned row below the input, Cancel first (checklist item 11)', async () => {
-      currentUserRef.current = { _id: 'user1' };
-      renderItem({ id: 'comment42', creatorId: 'user1' });
-
-      await userEvent.click(screen.getByTestId('inline-comment-edit-button'));
-
-      const cancelButton = screen.getByTestId(
-        'inline-comment-edit-cancel-button',
-      );
-      const saveButton = screen.getByTestId('inline-comment-edit-save-button');
-      const actionsRow = cancelButton.parentElement;
-
-      expect(saveButton.parentElement).toBe(actionsRow);
-      expect(actionsRow).toHaveClass('d-flex', 'justify-content-end', 'gap-2');
-      // Cancel precedes Save in document order.
       expect(
-        cancelButton.compareDocumentPosition(saveButton) &
-          Node.DOCUMENT_POSITION_FOLLOWING,
-      ).toBeTruthy();
-      // The row is a sibling *below* the input, not next to it.
-      const input = screen.getByTestId('mention-aware-comment-input-mock');
-      expect(
-        input.compareDocumentPosition(actionsRow as Node) &
-          Node.DOCUMENT_POSITION_FOLLOWING,
-      ).toBeTruthy();
-      expect(saveButton).toHaveClass('btn', 'btn-sm', 'btn-primary');
+        screen.queryByTestId('inline-comment-editor-mock'),
+      ).not.toBeInTheDocument();
     });
 
-    it('puts the mention picker in that same row, to the left of Cancel and Save', async () => {
-      currentUserRef.current = { _id: 'user1' };
-      renderItem({ id: 'comment42', creatorId: 'user1' });
-
-      await userEvent.click(screen.getByTestId('inline-comment-edit-button'));
-
-      const picker = screen.getByTestId('mention-picker-button-mock');
-      const cancelButton = screen.getByTestId(
-        'inline-comment-edit-cancel-button',
-      );
-      const actionsRow = cancelButton.parentElement as HTMLElement;
-      expect(actionsRow.contains(picker)).toBe(true);
-      expect(
-        picker.compareDocumentPosition(cancelButton) &
-          Node.DOCUMENT_POSITION_FOLLOWING,
-      ).toBeTruthy();
-
-      await userEvent.click(picker);
-      expect(commentInputControls.insertMention).toHaveBeenCalledWith('alice');
-    });
-
-    it("invokes the input's submit control when Save is clicked", async () => {
-      currentUserRef.current = { _id: 'user1' };
-      renderItem({ id: 'comment42', creatorId: 'user1' });
-
-      await userEvent.click(screen.getByTestId('inline-comment-edit-button'));
-      await userEvent.click(
-        screen.getByTestId('inline-comment-edit-save-button'),
-      );
-
-      expect(commentInputControls.submit).toHaveBeenCalledTimes(1);
-    });
-
-    it('disables Save while the input reports it cannot submit (empty text)', async () => {
-      commentInputControls.canSubmit = false;
-      currentUserRef.current = { _id: 'user1' };
-      renderItem({ id: 'comment42', creatorId: 'user1' });
-
-      await userEvent.click(screen.getByTestId('inline-comment-edit-button'));
-
-      expect(
-        screen.getByTestId('inline-comment-edit-save-button'),
-      ).toBeDisabled();
-    });
-
-    it('does NOT call update when the edit is canceled, and reverts to the read-only display', async () => {
+    it("does NOT call update when the editor's onCanceled fires, and reverts to the read-only display", async () => {
       const update = vi.fn().mockResolvedValue(undefined);
       currentUserRef.current = { _id: 'user1' };
       renderItem(
@@ -733,16 +635,16 @@ describe('InlineCommentItem', () => {
 
       await userEvent.click(screen.getByTestId('inline-comment-edit-button'));
       expect(
-        screen.getByTestId('mention-aware-comment-input-mock'),
+        screen.getByTestId('inline-comment-editor-mock'),
       ).toBeInTheDocument();
 
-      await userEvent.click(
-        screen.getByTestId('inline-comment-edit-cancel-button'),
-      );
+      act(() => {
+        (commentEditorProps.current?.onCanceled as () => void)();
+      });
 
       expect(update).not.toHaveBeenCalled();
       expect(
-        screen.queryByTestId('mention-aware-comment-input-mock'),
+        screen.queryByTestId('inline-comment-editor-mock'),
       ).not.toBeInTheDocument();
       expect(screen.getByTestId('inline-comment-item')).toHaveTextContent(
         'unchanged text',
