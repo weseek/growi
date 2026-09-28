@@ -3,29 +3,15 @@ import { mock } from 'vitest-mock-extended';
 
 import type Crowi from '~/server/crowi';
 import { configManager } from '~/server/service/config-manager';
+import { prisma } from '~/utils/prisma';
 
 import {
   PageBulkExportFormat,
   PageBulkExportJobStatus,
 } from '../../interfaces/page-bulk-export';
-import PageBulkExportJob from '../models/page-bulk-export-job';
 import instanciatePageBulkExportJobCleanUpCronService, {
   pageBulkExportJobCleanUpCronService,
 } from './page-bulk-export-job-clean-up-cron';
-
-// TODO: use actual user model after ~/server/models/user.js becomes importable in vitest
-// ref: https://github.com/vitest-dev/vitest/issues/846
-const userSchema = new mongoose.Schema(
-  {
-    name: { type: String },
-    username: { type: String, required: true, unique: true },
-    email: { type: String, unique: true, sparse: true },
-  },
-  {
-    timestamps: true,
-  },
-);
-const User = mongoose.model('User', userSchema);
 
 vi.mock('./page-bulk-export-job-cron', () => {
   return {
@@ -36,6 +22,8 @@ vi.mock('./page-bulk-export-job-cron', () => {
   };
 });
 
+const newObjectIdString = () => new mongoose.Types.ObjectId().toString();
+
 describe('PageBulkExportJobCleanUpCronService', () => {
   const removeAttachmentMock = vi.fn(() => Promise.resolve());
   const crowi = mock<Crowi>({
@@ -43,82 +31,77 @@ describe('PageBulkExportJobCleanUpCronService', () => {
       removeAttachment: removeAttachmentMock,
     },
   });
-  let user: mongoose.HydratedDocument<
-    mongoose.InferSchemaType<typeof userSchema>
-  >;
+  const userId = newObjectIdString();
 
   beforeAll(async () => {
     await configManager.loadConfigs();
-    user = await User.create({
-      name: 'Example for PageBulkExportJobCleanUpCronService Test',
-      username: 'page bulk export job cleanup cron test user',
-      email: 'bulkExportCleanUpCronTestUser@example.com',
-    });
     instanciatePageBulkExportJobCleanUpCronService(crowi);
   });
 
   beforeEach(async () => {
-    await PageBulkExportJob.deleteMany();
+    await prisma.pagebulkexportjobs.deleteMany();
     removeAttachmentMock.mockClear();
   });
 
   describe('deleteExpiredExportJobs', () => {
     // arrange
-    const jobId1 = new mongoose.Types.ObjectId();
-    const jobId2 = new mongoose.Types.ObjectId();
-    const jobId3 = new mongoose.Types.ObjectId();
-    const jobId4 = new mongoose.Types.ObjectId();
+    const jobId1 = newObjectIdString();
+    const jobId2 = newObjectIdString();
+    const jobId3 = newObjectIdString();
+    const jobId4 = newObjectIdString();
     beforeEach(async () => {
       await configManager.updateConfig(
         'app:bulkExportJobExpirationSeconds',
         86400,
       ); // 1 day
 
-      await PageBulkExportJob.insertMany([
-        {
-          _id: jobId1,
-          user,
-          page: new mongoose.Types.ObjectId(),
-          format: PageBulkExportFormat.md,
-          status: PageBulkExportJobStatus.initializing,
-          createdAt: new Date(Date.now()),
-        },
-        {
-          _id: jobId2,
-          user,
-          page: new mongoose.Types.ObjectId(),
-          format: PageBulkExportFormat.md,
-          status: PageBulkExportJobStatus.exporting,
-          createdAt: new Date(Date.now() - 86400 * 1000 - 1),
-        },
-        {
-          _id: jobId3,
-          user,
-          page: new mongoose.Types.ObjectId(),
-          format: PageBulkExportFormat.md,
-          status: PageBulkExportJobStatus.uploading,
-          createdAt: new Date(Date.now() - 86400 * 1000 - 2),
-        },
-        {
-          _id: jobId4,
-          user,
-          page: new mongoose.Types.ObjectId(),
-          format: PageBulkExportFormat.md,
-          status: PageBulkExportJobStatus.failed,
-        },
-      ]);
+      await prisma.pagebulkexportjobs.createMany({
+        data: [
+          {
+            id: jobId1,
+            userId,
+            pageId: newObjectIdString(),
+            format: PageBulkExportFormat.md,
+            status: PageBulkExportJobStatus.initializing,
+            createdAt: new Date(Date.now()),
+          },
+          {
+            id: jobId2,
+            userId,
+            pageId: newObjectIdString(),
+            format: PageBulkExportFormat.md,
+            status: PageBulkExportJobStatus.exporting,
+            createdAt: new Date(Date.now() - 86400 * 1000 - 1),
+          },
+          {
+            id: jobId3,
+            userId,
+            pageId: newObjectIdString(),
+            format: PageBulkExportFormat.md,
+            status: PageBulkExportJobStatus.uploading,
+            createdAt: new Date(Date.now() - 86400 * 1000 - 2),
+          },
+          {
+            id: jobId4,
+            userId,
+            pageId: newObjectIdString(),
+            format: PageBulkExportFormat.md,
+            status: PageBulkExportJobStatus.failed,
+          },
+        ],
+      });
     });
 
     test('should delete expired jobs', async () => {
-      expect(await PageBulkExportJob.find()).toHaveLength(4);
+      expect(await prisma.pagebulkexportjobs.findMany()).toHaveLength(4);
 
       // act
       await pageBulkExportJobCleanUpCronService?.deleteExpiredExportJobs();
-      const jobs = await PageBulkExportJob.find();
+      const jobs = await prisma.pagebulkexportjobs.findMany();
 
       // assert
       expect(jobs).toHaveLength(2);
-      expect(jobs.map((job) => job._id).sort()).toStrictEqual(
+      expect(jobs.map((job) => job.id).sort()).toStrictEqual(
         [jobId1, jobId4].sort(),
       );
     });
@@ -126,60 +109,62 @@ describe('PageBulkExportJobCleanUpCronService', () => {
 
   describe('deleteDownloadExpiredExportJobs', () => {
     // arrange
-    const jobId1 = new mongoose.Types.ObjectId();
-    const jobId2 = new mongoose.Types.ObjectId();
-    const jobId3 = new mongoose.Types.ObjectId();
-    const jobId4 = new mongoose.Types.ObjectId();
+    const jobId1 = newObjectIdString();
+    const jobId2 = newObjectIdString();
+    const jobId3 = newObjectIdString();
+    const jobId4 = newObjectIdString();
     beforeEach(async () => {
       await configManager.updateConfig(
         'app:bulkExportDownloadExpirationSeconds',
         86400,
       ); // 1 day
 
-      await PageBulkExportJob.insertMany([
-        {
-          _id: jobId1,
-          user,
-          page: new mongoose.Types.ObjectId(),
-          format: PageBulkExportFormat.md,
-          status: PageBulkExportJobStatus.completed,
-          completedAt: new Date(Date.now()),
-        },
-        {
-          _id: jobId2,
-          user,
-          page: new mongoose.Types.ObjectId(),
-          format: PageBulkExportFormat.md,
-          status: PageBulkExportJobStatus.completed,
-          completedAt: new Date(Date.now() - 86400 * 1000 - 1),
-        },
-        {
-          _id: jobId3,
-          user,
-          page: new mongoose.Types.ObjectId(),
-          format: PageBulkExportFormat.md,
-          status: PageBulkExportJobStatus.initializing,
-        },
-        {
-          _id: jobId4,
-          user,
-          page: new mongoose.Types.ObjectId(),
-          format: PageBulkExportFormat.md,
-          status: PageBulkExportJobStatus.failed,
-        },
-      ]);
+      await prisma.pagebulkexportjobs.createMany({
+        data: [
+          {
+            id: jobId1,
+            userId,
+            pageId: newObjectIdString(),
+            format: PageBulkExportFormat.md,
+            status: PageBulkExportJobStatus.completed,
+            completedAt: new Date(Date.now()),
+          },
+          {
+            id: jobId2,
+            userId,
+            pageId: newObjectIdString(),
+            format: PageBulkExportFormat.md,
+            status: PageBulkExportJobStatus.completed,
+            completedAt: new Date(Date.now() - 86400 * 1000 - 1),
+          },
+          {
+            id: jobId3,
+            userId,
+            pageId: newObjectIdString(),
+            format: PageBulkExportFormat.md,
+            status: PageBulkExportJobStatus.initializing,
+          },
+          {
+            id: jobId4,
+            userId,
+            pageId: newObjectIdString(),
+            format: PageBulkExportFormat.md,
+            status: PageBulkExportJobStatus.failed,
+          },
+        ],
+      });
     });
 
     test('should delete download expired jobs', async () => {
-      expect(await PageBulkExportJob.find()).toHaveLength(4);
+      expect(await prisma.pagebulkexportjobs.findMany()).toHaveLength(4);
 
       // act
       await pageBulkExportJobCleanUpCronService?.deleteDownloadExpiredExportJobs();
-      const jobs = await PageBulkExportJob.find();
+      const jobs = await prisma.pagebulkexportjobs.findMany();
 
       // assert
       expect(jobs).toHaveLength(3);
-      expect(jobs.map((job) => job._id).sort()).toStrictEqual(
+      expect(jobs.map((job) => job.id).sort()).toStrictEqual(
         [jobId1, jobId3, jobId4].sort(),
       );
     });
@@ -192,8 +177,8 @@ describe('PageBulkExportJobCleanUpCronService', () => {
   // loser of the race throws "Attachment not found", which silently drops its
   // job record out of the deleteMany() set.
   describe('deleteDownloadExpiredExportJobs (shared attachment)', () => {
-    const sharedAttachmentId = new mongoose.Types.ObjectId();
-    const otherAttachmentId = new mongoose.Types.ObjectId();
+    const sharedAttachmentId = newObjectIdString();
+    const otherAttachmentId = newObjectIdString();
 
     beforeEach(async () => {
       await configManager.updateConfig(
@@ -206,24 +191,26 @@ describe('PageBulkExportJobCleanUpCronService', () => {
       // arrange: two expired jobs pointing at the same attachment (the
       // duplicate-reuse path produces this shape)
       const expiredAt = new Date(Date.now() - 86400 * 1000 - 1);
-      await PageBulkExportJob.insertMany([
-        {
-          user,
-          page: new mongoose.Types.ObjectId(),
-          format: PageBulkExportFormat.md,
-          status: PageBulkExportJobStatus.completed,
-          completedAt: expiredAt,
-          attachment: sharedAttachmentId,
-        },
-        {
-          user,
-          page: new mongoose.Types.ObjectId(),
-          format: PageBulkExportFormat.md,
-          status: PageBulkExportJobStatus.completed,
-          completedAt: expiredAt,
-          attachment: sharedAttachmentId,
-        },
-      ]);
+      await prisma.pagebulkexportjobs.createMany({
+        data: [
+          {
+            userId,
+            pageId: newObjectIdString(),
+            format: PageBulkExportFormat.md,
+            status: PageBulkExportJobStatus.completed,
+            completedAt: expiredAt,
+            attachmentId: sharedAttachmentId,
+          },
+          {
+            userId,
+            pageId: newObjectIdString(),
+            format: PageBulkExportFormat.md,
+            status: PageBulkExportJobStatus.completed,
+            completedAt: expiredAt,
+            attachmentId: sharedAttachmentId,
+          },
+        ],
+      });
 
       // act
       await pageBulkExportJobCleanUpCronService?.deleteDownloadExpiredExportJobs();
@@ -232,30 +219,32 @@ describe('PageBulkExportJobCleanUpCronService', () => {
       // both job records are gone (no zombie left behind)
       expect(removeAttachmentMock).toHaveBeenCalledTimes(1);
       expect(removeAttachmentMock).toHaveBeenCalledWith(sharedAttachmentId);
-      expect(await PageBulkExportJob.find()).toHaveLength(0);
+      expect(await prisma.pagebulkexportjobs.findMany()).toHaveLength(0);
     });
 
     test('should still remove distinct attachments once each when expired jobs reference different attachments', async () => {
       // arrange: ensure the dedup does not over-merge across distinct attachments
       const expiredAt = new Date(Date.now() - 86400 * 1000 - 1);
-      await PageBulkExportJob.insertMany([
-        {
-          user,
-          page: new mongoose.Types.ObjectId(),
-          format: PageBulkExportFormat.md,
-          status: PageBulkExportJobStatus.completed,
-          completedAt: expiredAt,
-          attachment: sharedAttachmentId,
-        },
-        {
-          user,
-          page: new mongoose.Types.ObjectId(),
-          format: PageBulkExportFormat.md,
-          status: PageBulkExportJobStatus.completed,
-          completedAt: expiredAt,
-          attachment: otherAttachmentId,
-        },
-      ]);
+      await prisma.pagebulkexportjobs.createMany({
+        data: [
+          {
+            userId,
+            pageId: newObjectIdString(),
+            format: PageBulkExportFormat.md,
+            status: PageBulkExportJobStatus.completed,
+            completedAt: expiredAt,
+            attachmentId: sharedAttachmentId,
+          },
+          {
+            userId,
+            pageId: newObjectIdString(),
+            format: PageBulkExportFormat.md,
+            status: PageBulkExportJobStatus.completed,
+            completedAt: expiredAt,
+            attachmentId: otherAttachmentId,
+          },
+        ],
+      });
 
       // act
       await pageBulkExportJobCleanUpCronService?.deleteDownloadExpiredExportJobs();
@@ -264,55 +253,57 @@ describe('PageBulkExportJobCleanUpCronService', () => {
       expect(removeAttachmentMock).toHaveBeenCalledTimes(2);
       expect(removeAttachmentMock).toHaveBeenCalledWith(sharedAttachmentId);
       expect(removeAttachmentMock).toHaveBeenCalledWith(otherAttachmentId);
-      expect(await PageBulkExportJob.find()).toHaveLength(0);
+      expect(await prisma.pagebulkexportjobs.findMany()).toHaveLength(0);
     });
 
     test('should not call removeAttachment when an unexpired sibling job still references the attachment', async () => {
       // arrange: one expired + one unexpired sharing the same attachment.
       // The unexpired sibling protects the attachment from deletion.
-      await PageBulkExportJob.insertMany([
-        {
-          user,
-          page: new mongoose.Types.ObjectId(),
-          format: PageBulkExportFormat.md,
-          status: PageBulkExportJobStatus.completed,
-          completedAt: new Date(Date.now() - 86400 * 1000 - 1),
-          attachment: sharedAttachmentId,
-        },
-        {
-          user,
-          page: new mongoose.Types.ObjectId(),
-          format: PageBulkExportFormat.md,
-          status: PageBulkExportJobStatus.completed,
-          completedAt: new Date(Date.now()),
-          attachment: sharedAttachmentId,
-        },
-      ]);
+      await prisma.pagebulkexportjobs.createMany({
+        data: [
+          {
+            userId,
+            pageId: newObjectIdString(),
+            format: PageBulkExportFormat.md,
+            status: PageBulkExportJobStatus.completed,
+            completedAt: new Date(Date.now() - 86400 * 1000 - 1),
+            attachmentId: sharedAttachmentId,
+          },
+          {
+            userId,
+            pageId: newObjectIdString(),
+            format: PageBulkExportFormat.md,
+            status: PageBulkExportJobStatus.completed,
+            completedAt: new Date(Date.now()),
+            attachmentId: sharedAttachmentId,
+          },
+        ],
+      });
 
       // act
       await pageBulkExportJobCleanUpCronService?.deleteDownloadExpiredExportJobs();
 
       // assert: attachment retained, only the expired job is gone
       expect(removeAttachmentMock).not.toHaveBeenCalled();
-      const remaining = await PageBulkExportJob.find();
+      const remaining = await prisma.pagebulkexportjobs.findMany();
       expect(remaining).toHaveLength(1);
-      expect(remaining[0].attachment?.toString()).toBe(
-        sharedAttachmentId.toString(),
-      );
+      expect(remaining[0].attachmentId).toBe(sharedAttachmentId);
     });
 
     test('should delete an expired job whose removeAttachment resolves as a no-op (zombie with dangling attachment ref)', async () => {
       // arrange: simulate the real removeAttachment idempotent contract — when
       // the attachment metadata doc is already gone, the call resolves without
       // throwing. The job record must still be deleteMany()-d.
-      const zombieAttachmentId = new mongoose.Types.ObjectId();
-      await PageBulkExportJob.create({
-        user,
-        page: new mongoose.Types.ObjectId(),
-        format: PageBulkExportFormat.md,
-        status: PageBulkExportJobStatus.completed,
-        completedAt: new Date(Date.now() - 86400 * 1000 - 1),
-        attachment: zombieAttachmentId,
+      const zombieAttachmentId = newObjectIdString();
+      await prisma.pagebulkexportjobs.create({
+        data: {
+          userId,
+          pageId: newObjectIdString(),
+          format: PageBulkExportFormat.md,
+          status: PageBulkExportJobStatus.completed,
+          completedAt: new Date(Date.now() - 86400 * 1000 - 1),
+          attachmentId: zombieAttachmentId,
+        },
       });
 
       // act
@@ -321,51 +312,53 @@ describe('PageBulkExportJobCleanUpCronService', () => {
       // assert
       expect(removeAttachmentMock).toHaveBeenCalledTimes(1);
       expect(removeAttachmentMock).toHaveBeenCalledWith(zombieAttachmentId);
-      expect(await PageBulkExportJob.find()).toHaveLength(0);
+      expect(await prisma.pagebulkexportjobs.findMany()).toHaveLength(0);
     });
   });
 
   describe('deleteFailedExportJobs', () => {
     // arrange
-    const jobId1 = new mongoose.Types.ObjectId();
-    const jobId2 = new mongoose.Types.ObjectId();
-    const jobId3 = new mongoose.Types.ObjectId();
+    const jobId1 = newObjectIdString();
+    const jobId2 = newObjectIdString();
+    const jobId3 = newObjectIdString();
     beforeEach(async () => {
-      await PageBulkExportJob.insertMany([
-        {
-          _id: jobId1,
-          user,
-          page: new mongoose.Types.ObjectId(),
-          format: PageBulkExportFormat.md,
-          status: PageBulkExportJobStatus.failed,
-        },
-        {
-          _id: jobId2,
-          user,
-          page: new mongoose.Types.ObjectId(),
-          format: PageBulkExportFormat.md,
-          status: PageBulkExportJobStatus.initializing,
-        },
-        {
-          _id: jobId3,
-          user,
-          page: new mongoose.Types.ObjectId(),
-          format: PageBulkExportFormat.md,
-          status: PageBulkExportJobStatus.failed,
-        },
-      ]);
+      await prisma.pagebulkexportjobs.createMany({
+        data: [
+          {
+            id: jobId1,
+            userId,
+            pageId: newObjectIdString(),
+            format: PageBulkExportFormat.md,
+            status: PageBulkExportJobStatus.failed,
+          },
+          {
+            id: jobId2,
+            userId,
+            pageId: newObjectIdString(),
+            format: PageBulkExportFormat.md,
+            status: PageBulkExportJobStatus.initializing,
+          },
+          {
+            id: jobId3,
+            userId,
+            pageId: newObjectIdString(),
+            format: PageBulkExportFormat.md,
+            status: PageBulkExportJobStatus.failed,
+          },
+        ],
+      });
     });
 
     test('should delete failed export jobs', async () => {
-      expect(await PageBulkExportJob.find()).toHaveLength(3);
+      expect(await prisma.pagebulkexportjobs.findMany()).toHaveLength(3);
 
       // act
       await pageBulkExportJobCleanUpCronService?.deleteFailedExportJobs();
-      const jobs = await PageBulkExportJob.find();
+      const jobs = await prisma.pagebulkexportjobs.findMany();
 
       // assert
       expect(jobs).toHaveLength(1);
-      expect(jobs.map((job) => job._id)).toStrictEqual([jobId2]);
+      expect(jobs.map((job) => job.id)).toStrictEqual([jobId2]);
     });
   });
 });
