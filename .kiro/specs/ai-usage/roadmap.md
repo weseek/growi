@@ -31,6 +31,16 @@ Hosted で原価を守るため、GROWI.cloud は組織に属する複数の Gro
 4. **設定名の違い。** 設計書 §6.3 項 8 の `app:growiAppIdForGrowiCloud` は、実際には `app:growiAppIdForCloud`（env 名は `GROWI_APP_ID_FOR_GROWI_CLOUD`）。
 5. **「消費量を読み取る API」には前例がない。** 設計書はストレージオプションを手本にしているが、ストレージの仕組みは逆向きである。GROWI.cloud が上限値を `FILE_UPLOAD_TOTAL_LIMIT` として注入し、GROWI 本体がアップロードのたびに自分で合計を出して判定する（`file-uploader.ts` の `checkLimit()`）。使用量を外から読める API は、転送キーで認証される G2G の growi-info だけである。そのため、今回の公開 API の認証方式は前例に倣えず、新しく決める必要があった（D6 で決定）。
 6. **「カタログが古い」という理由で止めると、二度と復旧しない。** カタログの自動リフレッシュ（起動時と毎日 04:00）は、`app:aiEnabled` が true のときしか動かない（`model-catalog-refresh-jobs.ts`）。GROWI.cloud が `catalog_stale` を理由に `AI_ENABLED=false` を注入すると、Pod が再起動したあとはリフレッシュが動かず、カタログがいつまでも新しくならない（D8 で対応）。
+7. **カタログの「鮮度」は、取得日時で測る必要がある。** 設計書 §6.4-h の `catalog.generatedAt` を同梱カタログの生成日時と読むと、毎日リフレッシュしている健全な Hosted の app でも、リリースから数日たてば一斉に「古い」と判定されてしまう。リフレッシュしても、その日時は動かないためである。リフレッシュ済みカタログは、models.dev から取得した日時を `fetchedAt` としてすでに持っている（`refreshed-model-catalog.ts`。サーバーの時計の値）。鮮度は「実効カタログの中身を最後に取得した日時」とし、リフレッシュ済みなら `fetchedAt`、同梱なら `_generatedAt` を返す（`ai-usage-metering` の要件 4.2）。新しいフィールドを足す必要はない。
+
+## Amend target（完了済み spec の約束を変える部分）
+
+この umbrella の一部は、完了済みの spec が決めた約束を変える。spec-lifecycle のルールに従い、該当する sub-spec は最後のタスクで、変えた内容を対象の spec へ書き戻す。sub-spec 自体は新しい機能なので、削除はしない。
+
+- **`ai-provider-model-picker`**（`ai-usage-metering` が変える）
+  - 要件 9.2・9.3・9.6「起動時・定期のリフレッシュは AI 機能が有効なときだけ動く」: GROWI.cloud の停止理由が「カタログが古い」のときは、AI が無効でも動くようにする（D8、`ai-usage-metering` の要件 6）。「既定構成の GROWI は外部と通信しない」という約束は変えない。
+  - 前提「カタログは provider から `{id, name}` の配列への対応」: 単価（cost）を加える（`ai-usage-metering` の要件 1）。要件 7.1「モデル一覧の応答には id と name だけを返す」は変えない（単価は応答に出さない）。
+- `aiReadyGuard` の振る舞いを変える場合（停止理由を届ける経路、未決 2）は、`ai-usage-growi-cloud` の設計で対象 spec を特定して、ここに追記する。
 
 ## 決定事項
 
@@ -107,3 +117,6 @@ sub-spec の要件・設計で決める。結論が出たら決定事項へ移�
 1. **中断・エラー時の使用量を記録できるか。** クライアントが途中で切断した場合や、ストリームの途中でエラーになった場合でも、プロバイダ側では課金される。`ai-usage-metering` の要件 2.6 は「それまでに報告された使用量を記録する」としたが、今の実装はストリームを最後まで読んでから `stream.usage` を読むので、実現できるかを設計で確かめる。
 2. **停止理由を届ける経路。** `aiReadyGuard` の外に、停止中でも読める経路をどう設けるか（前提の訂正 3）。`ai-usage-growi-cloud` で決める。
 3. **キャッシュ内訳の実際の値。** 各プロバイダで `cachedInputTokens` と `cacheCreationInputTokens` に実際に値が入るか（前提の訂正 2）。`ai-usage-metering` の設計で確かめる。
+4. **スレッドタイトル生成の使用量を取れるか。** タイトル生成は Mastra Memory の内部で動くので、使用量を外から取れないかもしれない。取れない場合は、`generateTitle` を切って自前でタイトルを生成する案を検討する。`ai-usage-metering` の設計で確かめる。
+5. **公開 API が 1 回で受け付ける開始時刻の数の上限。** 認証なしの API なので、開始時刻を大量に渡されると、最大 90 日分の記録の集計がその数だけ走る。上限を何個にするか（GROWI.cloud が使うのは時間と月次の 2 つの見込み）。
+6. **メンテナンスモード中の公開 API。** `/_api/v3` はメンテナンスモード中は応答しない。設計書の GROWI.cloud 側の下書きは、組織内の 1 つの app でも応答しないと、その組織の判定をまるごと見送る。そのため、1 つの app がメンテナンスモードに入ると、その組織の停止・再開の判定が止まる。公開 API をメンテナンスモード中も応答させるか。
