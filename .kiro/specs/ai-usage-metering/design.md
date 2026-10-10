@@ -70,7 +70,7 @@
 
 ## Amend target
 
-この spec は、完了済みの spec `ai-provider-model-picker` の約束を変える。spec-lifecycle のルールに従い、最後のタスクで変えた内容を書き戻す。この spec 自体は新しい機能なので、削除はしない（umbrella の roadmap の Amend target と同じ）。
+この spec は、完了済みの spec `ai-provider-model-picker` と `ai-provider-multi-vendor` の約束を変える。spec-lifecycle のルールに従い、最後のタスクで変えた内容を書き戻す。この spec 自体は新しい機能なので、削除はしない（umbrella の roadmap の Amend target と同じ）。
 
 | 対象 | 今の約束 | 変更後 |
 |---|---|---|
@@ -79,6 +79,7 @@
 | 要件 9.6 | 起動時・定期のリフレッシュは、AI が有効なときだけ動く | 停止理由が `catalog_stale` のときも動く。「既定構成の GROWI は外部と通信しない」という約束は変えない（停止理由は既定で未設定） |
 | Data Contracts「`provider → {id,name}[]`」 | カタログの要素は id と name だけ | 要素に省略可能な `pricing` を足す。要件 7.1（モデル一覧の応答は id と name だけ）は変えず、応答では `pricing` を取り除く |
 | Revalidation Triggers「同梱カタログの形の変更」 | — | この変更そのものが該当する。同梱カタログを再生成する |
+| `ai-provider-multi-vendor` の設計「AI の env 固定グループの固定対象」 | `app:aiEnabled`・`ai:providers`・`ai:providerApiKeys` の 3 つ | `ai:usageBaseModel` と `ai:disabledReason` を足して 5 つにする。モデルの設定（`ai:allowedModels`）を外す方針は変えない。同じ spec の再検証が必要になる条件（固定対象の変更）に当たる |
 
 ## Architecture
 
@@ -693,7 +694,7 @@ declare function buildAiUsageReport(
 - 入口の検査: 入力の検証より前に、次の 2 つを確かめる。どちらかに当てはまれば集計しない。
   - `req.originalUrl` のパス部分（`?` より前）が `/_api/v3/ai-usage` と完全に一致しない → 404。
   - メソッドが `GET` でない → 405（`Allow: GET` を付ける）。Express は GET の処理を HEAD でも呼ぶ。一方、回数制限は設定の `method` にリクエストのメソッドが含まれるかで既定値を選び（`consume-points.ts`）、枠もメソッドごとに分ける。そのため、HEAD は 1 分 500 回の別の枠になる。
-Express はパスの大文字・小文字の違い、末尾のスラッシュ、途中の二重スラッシュ（`/_API/V3/AI-Usage`、`/_api/v3/ai-usage/`、`/_api/v3//ai-usage`）を同じルートに届ける。一方、回数制限は `req.path` の文字列そのままで設定を探し、枠も分ける（`features/rate-limiter/middleware/factory.ts`）。そのため、書き方を変えると既定値（1 分 2,500 回）の別の枠になり、制限をすり抜けられる。この検査で、集計に届くのは回数制限が掛かる形（正しいパスへの GET）だけになる（4.10）。回数制限の側で `req.path` をそろえる直し方は、全エンドポイントの振る舞いを変えるので採らない。
+  - パスを確かめる理由: Express はパスの大文字・小文字の違い、末尾のスラッシュ、途中の二重スラッシュ（`/_API/V3/AI-Usage`、`/_api/v3/ai-usage/`、`/_api/v3//ai-usage`）を同じルートに届ける。一方、回数制限は `req.path` の文字列そのままで設定を探し、枠も分ける（`features/rate-limiter/middleware/factory.ts`）。そのため、書き方を変えると既定値（1 分 2,500 回）の別の枠になり、制限をすり抜けられる。この検査で、集計に届くのは回数制限が掛かる形（正しいパスへの GET）だけになる（4.10）。回数制限の側で `req.path` をそろえる直し方は、全エンドポイントの振る舞いを変えるので採らない。
 - 何度問い合わせられても、セッションは 1 件しか作らない。healthcheck と同じく、`genid` でこのパスに固定のセッション ID を返す。`avoid-session-routes.js` でセッションを飛ばす形は採らない。後ろの csurf と `passport.session()` が `req.session` を必要とし、ないとエラーになる（csurf の `misconfigured csrf`）ためである。rate-limit の既定値は IP ごとに 1 分 5 回（`MAX_REQUESTS_TIER_1`、`usersPerIpProspection: 1`）。超えたら既存の仕組みが 429 を返す（4.10）。値は env（`API_RATE_LIMIT_*`）で変えられる。
 - 応答に `Cache-Control: no-store` を付ける。
 
