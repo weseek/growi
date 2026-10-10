@@ -778,7 +778,7 @@ declare function fromLanguageModelUsage(usage: LanguageModelV3Usage): TokenUsage
 - `growi-agent.ts`: `model: async ({ requestContext }) => meterModelForRequest(requestContext, 'chat', await resolveMastraModel(key))`。`meterModelForRequest`（`meter-model-for-request.ts`）は、`requestContext` に集計器があればその `add` を、なければ `recordAiUsage` で 1 回ごとに書く関数を `onCall` にして `withUsageMetering` で包む（2.10）。
 - `suggest-path-agent.ts`: 同上（`'suggest-path'`）。モデルキーは `requestContext.get('modelKey')`、なければ既定のモデル。
 - `memory/index.ts`: `generateTitle: { model: async ({ requestContext }) => withUsageMetering(await resolveMastraModel(requestContext.get('modelKey')), (usage) => void recordAiUsage({ …, feature: 'thread-title', calls: [usage] })) }`。チャットの集計器は使わない。
-- ユーザー ID は `requestContext.get('user')._id` から取る。
+- ユーザー ID は `requestContext.get('user')._id` から取る。読むのは、包む時点ではなく `onCall` の中（記録する直前）にする。ユーザーがなければエラーログだけ残して、その 1 回は記録しない。Mastra は 1 回の stream・generate の中でモデル関数を何度も呼び、`requestContext` が渡されないと空の文脈を使う作りなので、包む時点で例外を出すと LLM の呼び出しごと失敗してしまう（2.8）。
 
 **呼び出し側（post-message・agentic-engine）**
 
@@ -855,7 +855,7 @@ declare function fromLanguageModelUsage(usage: LanguageModelV3Usage): TokenUsage
 
 - `ai-usage-log.integ.ts`: `createdAt` に 90 日の TTL インデックスができる（2.9）。開始時刻ごとの合計と、倍率が不明な記録の生トークン数の合計が正しい。`null` の記録を倍率の合計に含めない（4.1、4.9）。
 - `ai-usage.integ.ts`（ルート、DB と Express を使う）: メンテナンスモードを ON にしても 200 を返す（4.11）、AI が無効でも 200 を返す（4.6）、認証なしで 200 を返す（4.4）、上限を超えると 429 になる（4.10）、パスの書き方を変えたリクエスト（大文字・小文字、末尾のスラッシュ、二重スラッシュ）は 404 になって集計を呼ばない（4.10）、GET 以外（HEAD など）は 405 になって集計を呼ばない（4.10）、正しいパスへの Cookie なしのリクエストを何度送ってもセッションは 1 件のままである（4.10。本物の `express-init` のミドルウェアの並び、つまりセッション・csurf・passport を通して確かめる）、リフレッシュ後にカタログの取得日時が変わる（4.2、6.3）。
-- `with-usage-metering.spec.ts`: 実物の Mastra の `Agent` と `Memory`、`MockLanguageModelV3` を使い、stream・generate・タイトル生成で使用量が渡ること、2 ステップ目がエラーのときに 1 ステップ目の使用量が渡ることを確かめる（2.1〜2.3、2.6）。さらに、1 つの `Agent` に別々のユーザーの 2 つのリクエストを同時に流し、それぞれの使用量がそれぞれの集計器にだけ入ることを確かめる（本番では `growiAgent` を全リクエストで共有し、ユーザー単位の上限はこの区別に頼るため）。
+- `with-usage-metering.spec.ts`: 実物の Mastra の `Agent` と `Memory`、`MockLanguageModelV3` を使い、stream・generate・タイトル生成で使用量が渡ること、2 ステップ目がエラーのときに 1 ステップ目の使用量が渡ることを確かめる（2.1〜2.3、2.6）。さらに、1 つの `Agent` に別々のユーザーの 2 つのリクエストを同時に流し、それぞれの使用量がそれぞれの集計器にだけ入ることを確かめる（本番では `growiAgent` を全リクエストで共有し、ユーザー単位の上限はこの区別に頼るため）。 suggest-path の実際の呼び方（`structuredOutput` 付きの generate）でも使用量が渡ること、`requestContext` にユーザーがないときも LLM の呼び出しが失敗しないこと（2.8）も確かめる。
 - `non-transferable-collections.integ.ts`（既存）: `aiusagelogs` の分類漏れで失敗しない。
 
 ### Import Boundary Tests
