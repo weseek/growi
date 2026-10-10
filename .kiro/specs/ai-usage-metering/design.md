@@ -58,7 +58,7 @@
   - `@mastra/*`・`@ai-sdk/*`・`ai` は**静的に import してはいけない**。公開 API の import の範囲を軽く保つためである。
 - `features/mastra` から `features/ai-usage` への依存は、次に限る: 集計器（`createUsageMeter`）、`recordAiUsage`、`readAiDisabledReason`、停止理由の定数、型。
 - `features/mastra/server/services/usage-metering/` は `ai`（`wrapLanguageModel`）に依存してよい。このディレクトリは、遅延読み込みされる AI スタックの中からしか読まれない。
-- 依存の向き: `features/ai-usage/interfaces` → `features/ai-usage/server/{models, services}` → `features/ai-usage/server/routes`。`features/mastra` の AI スタックは `features/ai-usage/server/services` を使うが、その逆向きの依存は作らない。
+- 依存の向き: `features/ai-usage/interfaces` → `features/ai-usage/server/{models, services}` → `features/ai-usage/server/routes`。`models/ai-usage-log.ts` は `~/utils/prisma` の値を import しない（型だけ）。`utils/prisma.ts` から読まれるため、値を import すると循環する。`features/mastra` の AI スタックは `features/ai-usage/server/services` を使うが、その逆向きの依存は作らない。
 
 ### Revalidation Triggers
 
@@ -202,12 +202,12 @@ apps/app/src/features/mastra/server/services/usage-metering/
 - `apps/app/src/features/mastra/server/routes/post-message.ts` — 集計器を作って `requestContext` に置き、応答が終わったら（成功・失敗とも）閉じる。
 - `apps/app/src/features/ai-tools/suggest-path/server/services/engines/agentic-engine.ts` — モデルキーを 1 回だけ決めて `requestContext` に置く。集計器を作り、`generate` が終わったら（成功・失敗・時間切れとも）閉じる。
 - `apps/app/prisma/schema.prisma` — `model aiusagelogs` を足す。
-- `apps/app/src/utils/prisma.ts` — `ai-usage-log` の Prisma 拡張を登録する（これで Mongoose のスキーマも起動時に読まれ、TTL インデックスが作られる）。
+- `apps/app/src/utils/prisma.ts` — `ai-usage-log` の Prisma 拡張を登録する（これで Mongoose のスキーマも起動時に読まれ、TTL インデックスが作られる）。import はモデルのファイル `~/features/ai-usage/server/models/ai-usage-log` を直接指す（`refreshed-model-catalog` と同じ）。`features/ai-usage/server` の入口（`index.ts`）を経由すると、ルートとサービスまで読み込み、`effective-model-catalog.ts` → `~/utils/prisma` と循環するためである。
 - `apps/app/src/server/routes/apiv3/index.js` — `routerForAdmin.use('/ai-usage', …)` を healthcheck の隣に足す。
 - `apps/app/src/server/routes/avoid-session-routes.js` — `/^\/_api\/v3\/ai-usage$/` を足す。
 - `apps/app/src/features/rate-limiter/config/index.ts` — `'/_api/v3/ai-usage'` の既定値を足す。
 - `apps/app/src/server/service/config-manager/config-definition.ts` — `ai:usageBaseModel` と `ai:disabledReason` を足し、`env:useOnlyEnvVars:ai` の固定対象に加える。
-- `apps/app/src/server/crowi/index.ts` — サーバーの準備ができた後に、基準モデルの設定の検証を呼ぶ。
+- `apps/app/src/server/crowi/index.ts` — `asyncAfterExpressServerReady` の中で、基準モデルの設定の検証を動的 import で読み込んで呼ぶ（同じ場所のリフレッシュジョブと同じ書き方）。`crowi/index.ts` は依存の中心なので、静的 import を増やさない（`apps/app/.claude/rules/esm-authoring.md`）。
 - `apps/app/src/server/service/import/non-transferable-collections.ts` — `aiusagelogs` を、G2G で移さないコレクションに加える。
 - `apps/app/bin/openapi/generate-spec-apiv3.sh` — `src/features/ai-usage/server/routes/apiv3/*.ts` を生成の対象に足す。
 - `apps/app/tools/authz-matrix/baselines/route-middleware.json` — 新しいルートの行を、生成用のツールで作り直す。
@@ -472,7 +472,8 @@ declare function createJitteredRefreshScheduler(params: {
 
 **Implementation Notes**
 
-- Validation: 既存の「AI が無効なら予定しない」テスト 2 件は、「停止理由がないとき」の条件に直して残す。待ち時間は `Math.random` を固定して確かめる（`news-cron-service.spec.ts` の前例）。打ち切りは、待っている間に次の契機を起こして、前の取得がすぐ動くことで確かめる。
+- Validation: 既存の「AI が無効なら予定しない」テスト 2 件は、「停止理由がないとき」の条件に直して残す。
+- Risks（未決）: 新しいリリースに上げると、同梱カタログの方が新しいと判定され、実効カタログの取得日時がリリース時の生成日時に戻る。リリースから 3 日以上たってから Hosted の app を上げると、上げた直後から「カタログが古い」と判定され、停止 → 停止中の起動時リフレッシュ → 再開と、組織ごとに 2 回再起動が起きうる。対策（起動時に同梱カタログが保存済みカタログより新しいと判定されたら、0〜5 分ずらしてリフレッシュする）を採るかは、ユーザーの判断待ち。待ち時間は `Math.random` を固定して確かめる（`news-cron-service.spec.ts` の前例）。打ち切りは、待っている間に次の契機を起こして、前の取得がすぐ動くことで確かめる。
 
 ### ai-usage（計算と設定）
 
@@ -835,7 +836,7 @@ declare function fromLanguageModelUsage(usage: LanguageModelV3Usage): TokenUsage
 
 - `ai-usage-log.integ.ts`: `createdAt` に 90 日の TTL インデックスができる（2.9）。開始時刻ごとの合計と、倍率が不明な記録の生トークン数の合計が正しい。`null` の記録を倍率の合計に含めない（4.1、4.9）。
 - `ai-usage.integ.ts`（ルート、DB と Express を使う）: メンテナンスモードを ON にしても 200 を返す（4.11）、AI が無効でも 200 を返す（4.6）、認証なしで 200 を返す（4.4）、上限を超えると 429 になる（4.10）、リフレッシュ後にカタログの取得日時が変わる（4.2、6.3）。
-- `with-usage-metering.spec.ts`: 実物の Mastra の `Agent` と `Memory`、`MockLanguageModelV3` を使い、stream・generate・タイトル生成で使用量が渡ること、2 ステップ目がエラーのときに 1 ステップ目の使用量が渡ることを確かめる（2.1〜2.3、2.6）。
+- `with-usage-metering.spec.ts`: 実物の Mastra の `Agent` と `Memory`、`MockLanguageModelV3` を使い、stream・generate・タイトル生成で使用量が渡ること、2 ステップ目がエラーのときに 1 ステップ目の使用量が渡ることを確かめる（2.1〜2.3、2.6）。さらに、1 つの `Agent` に別々のユーザーの 2 つのリクエストを同時に流し、それぞれの使用量がそれぞれの集計器にだけ入ることを確かめる（本番では `growiAgent` を全リクエストで共有し、ユーザー単位の上限はこの区別に頼るため）。
 - `non-transferable-collections.integ.ts`（既存）: `aiusagelogs` の分類漏れで失敗しない。
 
 ### Import Boundary Tests
