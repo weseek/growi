@@ -47,7 +47,7 @@
 - `catalog_stale` 以外の停止理由のコードの意味づけ。この spec は値をそのまま読めるようにするだけで、`catalog_stale` 以外には反応しない。
 - ユーザー単位の集計と、そのためのインデックス（`ai-usage-fair-use`）
 - 起動時以外のタイミングで基準モデルの設定を検証し直すこと
-- 公開 API への外部からのアクセスを ingress で遮断すること（GROWI.cloud の運用）
+- 公開 API を外部から呼べないようにすること（GROWI.cloud の運用）
 
 ### Allowed Dependencies
 
@@ -867,7 +867,7 @@ declare function fromLanguageModelUsage(usage: LanguageModelV3Usage): TokenUsage
 
 - 公開 API は認証なしで、この GrowiApp 全体の合計とカタログの日時だけを返す。ユーザーの情報、ドル建ての値、単価、契約の情報は返さない（umbrella の D6）。
 - セッションを作らないので、Cookie のないリクエストを大量に受けても、セッションのコレクションは増えない。
-- 回数制限は IP ごとである。GROWI.cloud は ingress でこの API への外部からのアクセスを遮断し、クラスタ内から問い合わせる。回数制限は、セルフホストと、遮断が漏れたときの備えとして残す。遮断の規則の注意点は `ai-usage-growi-cloud` に引き継ぐ（research.md の Risks）。
+- 回数制限は IP ごとである。GROWI.cloud はこの API を外部から呼べないようにする（問い合わせの経路は GROWI.cloud が決める）。回数制限は、セルフホストと、遮断が漏れたときの備えとして残す。遮断の規則の注意点は `ai-usage-growi-cloud` に引き継ぐ（research.md の Risks）。
 - ブラウザから別のオリジンで呼ぶと、既存の `CertifyOrigin` が 400 を返す。サーバー間の呼び出し（`Origin` ヘッダーなし）は通る。
 
 ## Performance & Scalability
