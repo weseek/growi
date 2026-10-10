@@ -79,6 +79,7 @@
 | 要件 9.6 | 起動時・定期のリフレッシュは、AI が有効なときだけ動く | 停止理由が `catalog_stale` のときも動く。「既定構成の GROWI は外部と通信しない」という約束は変えない（停止理由は既定で未設定） |
 | Data Contracts「`provider → {id,name}[]`」 | カタログの要素は id と name だけ | 要素に省略可能な `pricing` を足す。要件 7.1（モデル一覧の応答は id と name だけ）は変えず、応答では `pricing` を取り除く |
 | Revalidation Triggers「同梱カタログの形の変更」 | — | この変更そのものが該当する。同梱カタログを再生成する |
+| 導入・対象範囲・リフレッシュの経路の記述（要件の説明文、設計の概要・対象範囲・リフレッシュの節・図・部品表・設定表） | 「AI が有効なときだけ」「起動時のリフレッシュは既定で OFF」「定期リフレッシュは時刻どおり」 | 上の 9.2・9.3・9.6 の変更後の振る舞いに合わせて書き直す |
 | `ai-provider-multi-vendor` の設計「AI の env 固定グループの固定対象」 | `app:aiEnabled`・`ai:providers`・`ai:providerApiKeys` の 3 つ | `ai:usageBaseModel` と `ai:disabledReason` を足して 5 つにする。モデルの設定（`ai:allowedModels`）を外す方針は変えない。同じ spec の再検証が必要になる条件（固定対象の変更）に当たる |
 
 ## Architecture
@@ -211,7 +212,7 @@ apps/app/src/features/mastra/server/services/usage-metering/
 - `apps/app/src/server/crowi/index.ts` — `asyncAfterExpressServerReady` の中で、基準モデルの設定の検証を動的 import で読み込んで呼ぶ（同じ場所のリフレッシュジョブと同じ書き方）。`crowi/index.ts` は依存の中心なので、静的 import を増やさない（`apps/app/.claude/rules/esm-authoring.md`）。
 - `apps/app/src/server/service/import/non-transferable-collections.ts` — `aiusagelogs` を、G2G で移さないコレクションに加える。
 - `apps/app/bin/openapi/generate-spec-apiv3.sh` — `src/features/ai-usage/server/routes/apiv3/*.ts` を生成の対象に足す。
-- `apps/app/tools/authz-matrix/baselines/route-middleware.json` — 新しいルートの行を、生成用のツールで作り直す。
+- `apps/app/tools/authz-matrix/baselines/route-middleware.json` — 生成用のツールで出力した中から、新しいルートの行だけを書き足す（ファイル全体は生成し直さない。参考の記録で、生成し直すと無関係な行まで変わるため）。
 
 ## System Flows
 
