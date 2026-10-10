@@ -74,7 +74,7 @@
 
 | 対象 | 今の約束 | 変更後 |
 |---|---|---|
-| 要件 9.2 | 起動時のリフレッシュは、AI が有効で、かつ設定が ON のときだけ動く | 加えて、次の 2 つのときは、設定にかかわらず 0〜5 分ずらして 1 回動く。(a) AI が無効で停止理由が `catalog_stale` のとき。(b) リフレッシュが許されていて、定期リフレッシュのスケジュールが設定されていて、起動時に使われるカタログが同梱カタログのとき。(b) により、AI を有効にしてスケジュールを設定しているセルフホストの GROWI も、リリースに上げて起動したときと、AI を有効にして初めて起動したときに 1 回取りに行く |
+| 要件 9.2 | 起動時のリフレッシュは、AI が有効で、かつ設定が ON のときだけ動く。設定は既定で OFF | 設定の既定値を ON にする。AI が無効で停止理由が `catalog_stale` のときも、設定が ON なら動く。AI を有効にしたセルフホストの GROWI も、起動するたびに 1 回取りに行く。止めたいときは設定を OFF にする |
 | 要件 9.3 | 定期リフレッシュは、AI が有効なときに、スケジュールどおり動く | AI が有効なとき、または停止理由が `catalog_stale` のときに動く。取得はスケジュールの時刻から 0〜1 時間ずらす |
 | 要件 9.6 | 起動時・定期のリフレッシュは、AI が有効なときだけ動く | 停止理由が `catalog_stale` のときも動く。「既定構成の GROWI は外部と通信しない」という約束は変えない（停止理由は既定で未設定） |
 | Data Contracts「`provider → {id,name}[]`」 | カタログの要素は id と name だけ | 要素に省略可能な `pricing` を足す。要件 7.1（モデル一覧の応答は id と name だけ）は変えず、応答では `pricing` を取り除く |
@@ -193,7 +193,7 @@ apps/app/src/features/mastra/server/services/usage-metering/
 - `apps/app/src/features/mastra/server/services/ai-sdk-modules/effective-model-catalog.ts` — `resolveEffectiveCatalog()` と `findCatalogEntry()` を足す。`getEffectiveModelPicker()` をその上に載せ替える。
 - `apps/app/resource/model-catalog-data.json` — `pnpm vendor:models` で、単価付きの同梱カタログに再生成する。
 - `apps/app/src/features/mastra/server/routes/admin-ai-settings/get-available-models.ts` — 応答の要素を `{ id, name }` に詰め直す。
-- `apps/app/src/features/mastra/server/services/model-catalog-refresh-jobs.ts` — リフレッシュを動かす条件に停止理由を加える。定期リフレッシュに待ち時間を入れ、停止中の起動時リフレッシュを足す。
+- `apps/app/src/features/mastra/server/services/model-catalog-refresh-jobs.ts` — リフレッシュを動かす条件に停止理由を加える。定期リフレッシュに待ち時間を入れる。
 - `apps/app/src/features/mastra/server/services/mastra-modules/types/request-context.ts` — `MastraRequestContextShape` に `usageMeter?: UsageMeter` を足す。
 - `apps/app/src/features/mastra/server/services/mastra-modules/agents/growi-agent.ts` — `model` 関数で、解決したモデルを `withUsageMetering` で包む。
 - `apps/app/src/features/mastra/server/services/mastra-modules/agents/suggest-path/suggest-path-agent.ts` — 同上。モデルキーを `requestContext` から読む（なければ既定のモデル）。
@@ -206,7 +206,7 @@ apps/app/src/features/mastra/server/services/usage-metering/
 - `apps/app/src/server/routes/apiv3/index.js` — `routerForAdmin.use('/ai-usage', …)` を healthcheck の隣に足す。
 - `apps/app/src/server/crowi/index.ts`（セッションの設定）— `genid` が healthcheck のパスにだけ固定のセッション ID を返している処理を、固定 ID を使うパスの一覧（healthcheck と `/_api/v3/ai-usage`。パスごとに別の ID）を引く形にする。
 - `apps/app/src/features/rate-limiter/config/index.ts` — `'/_api/v3/ai-usage'` の既定値を足す。
-- `apps/app/src/server/service/config-manager/config-definition.ts` — `ai:usageBaseModel` と `ai:disabledReason` を足し、`env:useOnlyEnvVars:ai` の固定対象に加える。
+- `apps/app/src/server/service/config-manager/config-definition.ts` — `ai:usageBaseModel` と `ai:disabledReason` を足し、`env:useOnlyEnvVars:ai` の固定対象に加える。`ai:modelCatalogRefreshOnStartup` の既定値を `true` にする（6.7）。
 - `apps/app/src/server/crowi/index.ts` — `asyncAfterExpressServerReady` の中で、基準モデルの設定の検証を動的 import で読み込んで呼ぶ（同じ場所のリフレッシュジョブと同じ書き方）。`crowi/index.ts` は依存の中心なので、静的 import を増やさない（`apps/app/.claude/rules/esm-authoring.md`）。
 - `apps/app/src/server/service/import/non-transferable-collections.ts` — `aiusagelogs` を、G2G で移さないコレクションに加える。
 - `apps/app/bin/openapi/generate-spec-apiv3.sh` — `src/features/ai-usage/server/routes/apiv3/*.ts` を生成の対象に足す。
@@ -250,13 +250,9 @@ sequenceDiagram
 stateDiagram-v2
     [*] --> Boot
     Boot --> NoRefresh: AI disabled and reason is not catalog_stale
-    Boot --> StartupCheck: AI enabled
-    Boot --> StaleRecovery: AI disabled and reason is catalog_stale
-    StartupCheck --> Scheduled: startup setting ON, fetch now
-    StartupCheck --> BundledRecovery: setting OFF, schedule set, effective catalog is bundled
-    StartupCheck --> Scheduled: otherwise, no startup fetch
-    StaleRecovery --> Scheduled: refresh after 0 to 5 minutes
-    BundledRecovery --> Scheduled: refresh after 0 to 5 minutes
+    Boot --> StartupFetch: AI enabled, or reason is catalog_stale, and startup setting ON (default)
+    Boot --> Scheduled: AI enabled, or reason is catalog_stale, and startup setting OFF
+    StartupFetch --> Scheduled: fetch now, success or failure
     Scheduled --> Waiting: cron tick
     Waiting --> Fetching: random delay up to 1 hour ends
     Waiting --> Fetching: next cron tick cuts the delay short
@@ -265,9 +261,7 @@ stateDiagram-v2
 ```
 
 - 条件は起動時に 1 回だけ判定する。GROWI.cloud が停止・再開するときは env を注入して Pod を作り直すので、起動中に条件が変わることはない。
-- AI が有効なときの起動時リフレッシュ（設定が ON のとき）は、今までどおり待たずに取得する。
-- 起動時に取得するのは多くても 1 回である。図の `StartupCheck` は上から順に判定し、最初に当てはまったものだけを行う。
-- 停止中（`StaleRecovery`）は、使われるカタログの種類を見ずに取得する。定期リフレッシュは同じ条件で予定するので、停止中の app も `Scheduled` に進む。
+- 起動時のリフレッシュは待たずにすぐ取得する。起動の時刻は GROWI ごとにばらばらなので、ずらす必要がない。
 - 管理画面からの手動リフレッシュは、待たずにすぐ取得する（今までどおり）。
 
 ## Requirements Traceability
@@ -318,8 +312,7 @@ stateDiagram-v2
 | 6.4 | 定期リフレッシュを遅らせる | RefreshJobs | `JitteredRefreshScheduler` | 同上 |
 | 6.5 | 次の契機を越えない | RefreshJobs | 待ちの打ち切り | 同上 |
 | 6.6 | 手動は遅らせない | 既存の手動リフレッシュ（変更しない） | — | — |
-| 6.7 | 停止中の起動時リフレッシュ | RefreshJobs | `triggerModelCatalogRefreshOnStartupIfEnabled` | 同上 |
-| 6.8 | 同梱カタログで起動したときのリフレッシュ | RefreshJobs、ResolveEffectiveCatalog | `triggerModelCatalogRefreshOnStartupIfEnabled`、`EffectiveCatalog.source` | 同上 |
+| 6.7 | 起動時のリフレッシュ（既定で ON） | RefreshJobs、ConfigDefinition | `triggerModelCatalogRefreshOnStartupIfEnabled`、`ai:modelCatalogRefreshOnStartup` | 同上 |
 
 ## Components and Interfaces
 
@@ -328,7 +321,7 @@ stateDiagram-v2
 | BuildModelCatalog | カタログ | models.dev の単価を取り込み、保存・読み込みの形を決める | 1.1〜1.4、1.6 | models.dev（P0） | Service |
 | ResolveEffectiveCatalog | カタログ | 採用したカタログ、その種類、取得日時を返す | 4.2、6.3、3.1 | Prisma の保存済みカタログ（P0） | Service |
 | GetAvailableModels | カタログ（既存のルート） | モデル一覧の応答から単価を取り除く | 1.5 | ResolveEffectiveCatalog（P0） | API |
-| RefreshJobs | カタログ | リフレッシュを動かす条件と、取得時刻のずらし方 | 6.1〜6.8 | AiDisabledReason（P0）、`refreshModelCatalog`（P0）、ResolveEffectiveCatalog（P1） | Batch |
+| RefreshJobs | カタログ | リフレッシュを動かす条件と、取得時刻のずらし方 | 6.1〜6.7 | AiDisabledReason（P0）、`refreshModelCatalog`（P0） | Batch |
 | TokenUsage | ai-usage | 使用量の型と足し算 | 2.5 | なし | Service |
 | EstimateCallCost | ai-usage | 呼び出し 1 回の推定費用 | 3.2、3.3、3.4、3.7 | なし | Service |
 | UsageBaseModel | ai-usage | 基準モデルの設定を読む、起動時に検証する | 5.1、5.3、5.4 | configManager（P0）、ResolveEffectiveCatalog（P1） | Service |
@@ -445,20 +438,13 @@ declare function findCatalogEntry(
 | Field | Detail |
 |---|---|
 | Intent | リフレッシュを動かす条件と、取得時刻のずらし方を決める |
-| Requirements | 6.1、6.2、6.4、6.5、6.6、6.7、6.8 |
+| Requirements | 6.1、6.2、6.4、6.5、6.6、6.7 |
 
 **Responsibilities & Constraints**
 
 - 動かす条件: `isAiEnabled()`、または停止理由が `catalog_stale`。どちらでもなければ、定期・起動時のどちらのリフレッシュも予定しない（6.2）。
 - 定期リフレッシュ: 契機のたびに 0〜1 時間（`MAX_SCHEDULED_REFRESH_DELAY_MS`）のランダムな時間だけ待ってから取得する。待っている間に次の契機が来たら、前の待ちを打ち切ってすぐ取得させ、新しい契機はまた待ち始める（6.5）。
-- 起動時リフレッシュ: 次の順に判定し、最初に当てはまった 1 つだけを行う。
-  1. リフレッシュが許されていない → 何もしない（6.2）。
-  2. AI が有効で、起動時リフレッシュの設定が ON → 今までどおり待たずに取得する。
-  3. AI が無効で、停止理由が `catalog_stale` → 設定にかかわらず 0〜5 分（`MAX_STARTUP_REFRESH_DELAY_MS`）待ってから取得する（6.7）。
-  4. 定期リフレッシュのスケジュールが設定されていて、`resolveEffectiveCatalog()` の `source` が `bundled` → 0〜5 分待ってから取得する（6.8）。保存済みのカタログがない場合と、同梱カタログの方が新しい場合の両方がこれに当たる。
-  5. それ以外 → 何もしない。
-- 4 のスケジュールの条件は、外部と通信させたくない環境の止め方（スケジュールを空にする）を守るためである。AI を有効にしていても、スケジュールを空にした GROWI はリリースに上げても取りに行かない。
-- 4 の判定でカタログを読むのは、起動後に呼ばれる非同期の処理の中である（モジュールの読み込み時には読まない）。読み込みに失敗したときは `resolveEffectiveCatalog` が `bundled` を返すので、取得に進む。取得はもともと失敗しても害がない。
+- 起動時リフレッシュ: リフレッシュが許されていて、`ai:modelCatalogRefreshOnStartup` が ON（既定）なら、待たずにすぐ取得する（6.7）。今の関数の「AI が有効」の判定を、動かす条件（`isCatalogRefreshAllowed()`）に置き換えるだけである。
 - 手動リフレッシュのルートは変更しない（6.6）。
 - 取得の失敗は、今までどおりログに残し、保存済みのカタログを使い続ける。
 
@@ -467,7 +453,7 @@ declare function findCatalogEntry(
 ##### Batch / Job Contract
 
 - Trigger: 起動時（`setupCron` と `asyncAfterExpressServerReady` からの呼び出し）と、`ai:modelCatalogRefreshCronSchedule` の契機
-- Input / validation: なし（条件は起動時に 1 回判定する。6.8 の判定では、保存済みのカタログを 1 回読む）
+- Input / validation: なし（条件は起動時に 1 回判定する）
 - Output / destination: `refreshModelCatalog()` によるリフレッシュ済みカタログの保存（既存）
 - Idempotency & recovery: 保存は 1 件の上書きなので、取得が重なっても壊れない。失敗したら次の契機で再試行する。
 
@@ -488,7 +474,7 @@ declare function createJitteredRefreshScheduler(params: {
 
 - Validation: 既存の「AI が無効なら予定しない」テスト 2 件は、「停止理由がないとき」の条件に直して残す。
 - Validation: 待ち時間は `Math.random` を固定して確かめる（`news-cron-service.spec.ts` の前例）。打ち切りは、待っている間に次の契機を起こして、前の取得がすぐ動くことで確かめる。
-- Risks: リリースに上げた直後、0〜5 分の待ちが終わって取得し終えるまでは、公開 API がリリース時の生成日時を返す。この間に GROWI.cloud が問い合わせると「カタログが古い」と判定しうる。GROWI.cloud 側で、再起動の直後の 1 回の判定だけで止めないようにしてもらう（`ai-usage-growi-cloud` の未決）。
+- Risks: 起動してから取得し終えるまでの数秒間は、公開 API が古い取得日時を返しうる。この間に GROWI.cloud が問い合わせると「カタログが古い」と判定しうるので、再起動の直後の 1 回の判定だけで止めないよう、GROWI.cloud 側に頼んである（`ai-usage-growi-cloud` の未決）。
 
 ### ai-usage（計算と設定）
 
@@ -848,7 +834,7 @@ declare function fromLanguageModelUsage(usage: LanguageModelV3Usage): TokenUsage
 - `build-model-catalog.spec.ts`: 4 つの単価と段階（`context` だけ）を取り込む（1.1、1.6）、単価が一部欠けた・まったくないモデルも選択肢に残る（1.3）、単価の部分が壊れた保存済みの要素と単価のない古い要素を受け入れる（1.4）。
 - `usage-meter.spec.ts`: 複数の呼び出しが 1 件の記録になる（2.1、2.2）、`failed` で閉じても集めた分を記録する（2.6）、0 件で `failed` なら警告ログを出す（2.7）、閉じた後の呼び出しを 1 件ずつ記録する（2.10）。
 - `record-ai-usage.spec.ts`: 基準モデルの出力単価で割った倍率を記録する（3.1）、基準モデルが未指定・カタログにない・単価が不明または 0 なら倍率を `null` にする（3.4）、呼び出しのうち 1 回でも費用が出せなければ全体を `null` にする、保存に失敗しても例外を出さずエラーログを残す（2.8）。
-- `model-catalog-refresh-jobs.spec.ts`: 動かす条件の組み合わせ（AI 有効、停止理由 `catalog_stale`、それ以外）（6.1、6.2）、定期リフレッシュが待ってから取得する（6.4）、待ちの途中で次の契機が来ると前の取得がすぐ動く（6.5）、停止中の起動時リフレッシュが設定 OFF でも待ってから動く（6.7）、使われるカタログが同梱のとき（保存済みがない場合と、同梱の方が新しい場合の両方）に待ってから動く（6.8）、スケジュールが空なら同梱でも取りに行かない（6.8）、設定 ON や `catalog_stale` のときに重ねて取得しない（6.8）。
+- `model-catalog-refresh-jobs.spec.ts`: 動かす条件の組み合わせ（AI 有効、停止理由 `catalog_stale`、それ以外）（6.1、6.2）、定期リフレッシュが待ってから取得する（6.4）、待ちの途中で次の契機が来ると前の取得がすぐ動く（6.5）、AI が有効なときと停止理由が `catalog_stale` のときに、設定が既定のままなら起動時にすぐ取得する（6.7）、設定を OFF にすると起動時に取得しない（6.7）、停止理由がないときは起動時にも取得しない（6.2）。
 - `ai-usage.spec.ts`（ルート）: `since` の形式・未来・90 日より前・個数の誤りで 400 になり、集計を呼ばない（4.8）。応答にユーザー ID や推定費用が含まれない（4.5）。
 
 ### Integration Tests
