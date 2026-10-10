@@ -75,10 +75,10 @@
   - `/_api/v3` のうち、`routerForAdmin` は `unavailableWhenMaintenanceModeForApi` より前に載っている。healthcheck はここにあり、メンテナンスモード中も応答する。`router`（`/mastra` や `/ai-tools` を含む）はメンテナンスモード中は 503 を返す。
   - `/mastra` と `/ai-tools` には、ルーター全体に `aiReadyGuard`（AI が無効なら 501）が付いている。
   - rate-limit はアプリ全体に掛かっていて、`/_api/v3` より前に動く。エンドポイントごとの既定値は `features/rate-limiter/config/index.ts` の `defaultConfig` に書き、env で上書きできる。キーは、ログインしていなければ IP。上限を超えると 429 を返す。
-  - Cookie のないリクエストは、そのたびにセッションを 1 件書き込む（`saveUninitialized: true`）。`avoid-session-routes.js` に載せたパスはセッションを作らない。
+  - Cookie のないリクエストは、そのたびにセッションを 1 件書き込む（`saveUninitialized: true`）。healthcheck は、`genid` で固定のセッション ID を返すことで、問い合わせが何回来てもセッションを 1 件に抑えている（`crowi/index.ts`）。`avoid-session-routes.js` でセッションを飛ばすと、後ろの csurf と `passport.session()` が `req.session` を必要とするのでエラーになる（今のリストの `/api-docs/` はどのルートにも当たっていない）。
   - `no-eager-ai-imports.spec.ts` は `apiv3/index.js` から静的な import をたどり、`@mastra/*`・`@ai-sdk/*`・`ai` などを見つけたら失敗する。
   - OpenAPI の生成対象は glob で列挙されていて、新しい機能ディレクトリのルートは足さないと載らない。
-- **Implications**: `routerForAdmin` に載せ、rate-limit の既定値とセッション回避を足す。メンテナンスモード中の応答は、ミドルウェアの一覧（`route-middleware.json`）では確かめられないので、専用のテストを書く。
+- **Implications**: `routerForAdmin` に載せ、rate-limit の既定値と、固定のセッション ID を足す。メンテナンスモード中の応答は、ミドルウェアの一覧（`route-middleware.json`）では確かめられないので、専用のテストを書く。
 
 ### 定期リフレッシュの時刻をずらす方法
 
@@ -120,12 +120,12 @@
 - **Selected Approach**: `ModelCatalogEntry` に `pricing?` を足す。中身の 4 項目と段階はすべて省略可能にする。読み込み時の検証では、単価の部分が壊れていてもその要素だけ単価を「不明」として扱い、カタログ全体は捨てない。モデル一覧の応答は `{id, name}` に詰め直す。
 - **Rationale**: 古いカタログ（単価なし）と新しいカタログが混ざっても動き続けるようにするため。
 
-### Decision: 公開 API は `routerForAdmin` に置き、rate-limit とセッション回避を足す
+### Decision: 公開 API は `routerForAdmin` に置き、rate-limit と固定のセッション ID を足す
 
 - **Context**: 要件 4.4・4.6・4.7・4.10・4.11。
-- **Selected Approach**: `GET /_api/v3/ai-usage` を `routerForAdmin` に載せる（healthcheck と同じ）。rate-limit の既定値は IP ごとに 1 分 5 回。セッションを作らない。開始時刻は 1〜10 個に制限する。集計は、いちばん古い開始時刻から 1 回だけ記録を読み、開始時刻ごとの合計を同時に出す。
+- **Selected Approach**: `GET /_api/v3/ai-usage` を `routerForAdmin` に載せる（healthcheck と同じ）。rate-limit の既定値は IP ごとに 1 分 5 回。セッションは固定の ID で 1 件に抑える。正しいパスへの GET 以外は、集計の前に 404 か 405 で断る。開始時刻は 1〜10 個に制限する。集計は、いちばん古い開始時刻から 1 回だけ記録を読み、開始時刻ごとの合計を同時に出す。
 - **Rationale**: GROWI.cloud の問い合わせは 5 分に 1 回の見込みなので、1 分 5 回で足りる。
-- **入口の検査**: Express はパスの大文字・小文字の違いや余分なスラッシュを同じルートに届けるが、回数制限は `req.path` の文字列そのままで設定を探し、枠を分ける。書き方を変えると制限をすり抜けられるので、ルートの入口で正しい書き方以外を 404 にする（Express 4.21 で実測）。
+- **入口の検査**: Express はパスの大文字・小文字の違いや余分なスラッシュを同じルートに届けるが、回数制限は `req.path` の文字列そのままで設定を探し、枠を分ける。書き方を変えると制限をすり抜けられるので、ルートの入口で正しい書き方以外を 404 にする（Express 4.21 で実測）。メソッドも同じで、Express は GET の処理を HEAD でも呼ぶが、回数制限は HEAD を別の枠（既定値）で数える。そのため GET 以外は 405 にする。
 - **Trade-offs**: IP ごとの制限なので、ingress の後ろでは外部からのリクエストがすべて同じ IP に見える。GROWI.cloud では外部からのアクセスを遮断するので問題にならない。下の「Risks」を参照。
 
 ### Decision: 停止理由と基準モデルは env だけから読む
