@@ -204,7 +204,7 @@ apps/app/src/features/mastra/server/services/usage-metering/
 - `apps/app/prisma/schema.prisma` — `model aiusagelogs` を足す。
 - `apps/app/src/utils/prisma.ts` — `ai-usage-log` の Prisma 拡張を登録する（これで Mongoose のスキーマも起動時に読まれ、TTL インデックスが作られる）。import はモデルのファイル `~/features/ai-usage/server/models/ai-usage-log` を直接指す（`refreshed-model-catalog` と同じ）。`features/ai-usage/server` の入口（`index.ts`）を経由すると、ルートとサービスまで読み込み、`effective-model-catalog.ts` → `~/utils/prisma` と循環するためである。
 - `apps/app/src/server/routes/apiv3/index.js` — `routerForAdmin.use('/ai-usage', …)` を healthcheck の隣に足す。
-- `apps/app/src/server/routes/avoid-session-routes.js` — `/^\/_api\/v3\/ai-usage$/` を足す。
+- `apps/app/src/server/routes/avoid-session-routes.js` — `/^\/_api\/v3\/ai-usage$/i` を足す（大文字・小文字の違いも対象にする。正しい書き方以外は下の入口の検査で 404 になる）。
 - `apps/app/src/features/rate-limiter/config/index.ts` — `'/_api/v3/ai-usage'` の既定値を足す。
 - `apps/app/src/server/service/config-manager/config-definition.ts` — `ai:usageBaseModel` と `ai:disabledReason` を足し、`env:useOnlyEnvVars:ai` の固定対象に加える。
 - `apps/app/src/server/crowi/index.ts` — `asyncAfterExpressServerReady` の中で、基準モデルの設定の検証を動的 import で読み込んで呼ぶ（同じ場所のリフレッシュジョブと同じ書き方）。`crowi/index.ts` は依存の中心なので、静的 import を増やさない（`apps/app/.claude/rules/esm-authoring.md`）。
@@ -576,7 +576,7 @@ declare const AI_DISABLED_REASON_CATALOG_STALE: 'catalog_stale';
 
 - 実効カタログを 1 回読み、使ったモデルと基準モデルの単価を引く。
 - 呼び出しごとに `estimateCallCostUsd` で推定費用を出して合計する。1 回でも `null` があれば、推定費用と重み付き消費量の両方を `null` にする（一部だけの合計を記録しない）。
-- 重み付き消費量 = 推定費用の合計 ÷（基準モデルの基本の出力単価 ÷ 1,000,000）。基準モデルが未指定、基準モデルがカタログにない、またはその出力単価が分からないときは `null`。
+- 重み付き消費量 = 推定費用の合計 ÷（基準モデルの基本の出力単価 ÷ 1,000,000）。基準モデルが未指定、基準モデルがカタログにない、またはその出力単価が分からないか 0 のときは `null`（0 で割らない）。
 - 生のトークン数は `sumTokenUsage` の結果をそのまま記録する。
 - 失敗（カタログの読み込み、DB への書き込み）は例外にせず、エラーログに残す（2.8）。
 
@@ -704,6 +704,7 @@ declare function buildAiUsageReport(
 - `routerForAdmin` に載せる。このルーターは、メンテナンスモードの判定（`unavailableWhenMaintenanceModeForApi`）より前にある（4.11）。`aiReadyGuard` も通らない（4.6）。
 - 認証を求めない。`accessTokenParser` も `loginRequired` も付けない（4.4）。
 - このモジュールから静的にたどれる範囲に `@mastra/*`・`@ai-sdk/*`・`ai` を入れない（4.7）。
+- 入口の検査: 入力の検証より前に、`req.originalUrl` のパス部分（`?` より前）が `/_api/v3/ai-usage` と完全に一致するかを確かめ、一致しなければ 404 を返して集計しない。Express はパスの大文字・小文字の違い、末尾のスラッシュ、途中の二重スラッシュ（`/_API/V3/AI-Usage`、`/_api/v3/ai-usage/`、`/_api/v3//ai-usage`）を同じルートに届ける。一方、回数制限は `req.path` の文字列そのままで設定を探し、枠も分ける（`features/rate-limiter/middleware/factory.ts`）。そのため、書き方を変えると既定値（1 分 2,500 回）の別の枠になり、制限をすり抜けられる。この検査で、集計に届くのは回数制限が掛かる書き方だけになる（4.10）。回数制限の側で `req.path` をそろえる直し方は、全エンドポイントの振る舞いを変えるので採らない。
 - セッションを作らない（`avoid-session-routes.js`）。rate-limit の既定値は IP ごとに 1 分 5 回（`MAX_REQUESTS_TIER_1`、`usersPerIpProspection: 1`）。超えたら既存の仕組みが 429 を返す（4.10）。値は env（`API_RATE_LIMIT_*`）で変えられる。
 - 応答に `Cache-Control: no-store` を付ける。
 
@@ -843,14 +844,14 @@ declare function fromLanguageModelUsage(usage: LanguageModelV3Usage): TokenUsage
 - `estimate-call-cost.spec.ts`: キャッシュ読み取り・書き込みの単価の使い分け（3.2）、キャッシュの単価がないときに入力単価を使う（3.3）、入力または出力の単価がなければ `null`（3.4）、入力が境目を超えたときに段階の単価を使い、段階の中で欠けた項目を基本の単価で補わない（3.7）、推論トークンを費用に足さない。
 - `build-model-catalog.spec.ts`: 4 つの単価と段階（`context` だけ）を取り込む（1.1、1.6）、単価が一部欠けた・まったくないモデルも選択肢に残る（1.3）、単価の部分が壊れた保存済みの要素と単価のない古い要素を受け入れる（1.4）。
 - `usage-meter.spec.ts`: 複数の呼び出しが 1 件の記録になる（2.1、2.2）、`failed` で閉じても集めた分を記録する（2.6）、0 件で `failed` なら警告ログを出す（2.7）、閉じた後の呼び出しを 1 件ずつ記録する（2.10）。
-- `record-ai-usage.spec.ts`: 基準モデルの出力単価で割った倍率を記録する（3.1）、基準モデルが未指定・カタログにない・単価が不明なら倍率を `null` にする（3.4）、呼び出しのうち 1 回でも費用が出せなければ全体を `null` にする、保存に失敗しても例外を出さずエラーログを残す（2.8）。
+- `record-ai-usage.spec.ts`: 基準モデルの出力単価で割った倍率を記録する（3.1）、基準モデルが未指定・カタログにない・単価が不明または 0 なら倍率を `null` にする（3.4）、呼び出しのうち 1 回でも費用が出せなければ全体を `null` にする、保存に失敗しても例外を出さずエラーログを残す（2.8）。
 - `model-catalog-refresh-jobs.spec.ts`: 動かす条件の組み合わせ（AI 有効、停止理由 `catalog_stale`、それ以外）（6.1、6.2）、定期リフレッシュが待ってから取得する（6.4）、待ちの途中で次の契機が来ると前の取得がすぐ動く（6.5）、停止中の起動時リフレッシュが設定 OFF でも待ってから動く（6.7）、使われるカタログが同梱のとき（保存済みがない場合と、同梱の方が新しい場合の両方）に待ってから動く（6.8）、スケジュールが空なら同梱でも取りに行かない（6.8）、設定 ON や `catalog_stale` のときに重ねて取得しない（6.8）。
 - `ai-usage.spec.ts`（ルート）: `since` の形式・未来・90 日より前・個数の誤りで 400 になり、集計を呼ばない（4.8）。応答にユーザー ID や推定費用が含まれない（4.5）。
 
 ### Integration Tests
 
 - `ai-usage-log.integ.ts`: `createdAt` に 90 日の TTL インデックスができる（2.9）。開始時刻ごとの合計と、倍率が不明な記録の生トークン数の合計が正しい。`null` の記録を倍率の合計に含めない（4.1、4.9）。
-- `ai-usage.integ.ts`（ルート、DB と Express を使う）: メンテナンスモードを ON にしても 200 を返す（4.11）、AI が無効でも 200 を返す（4.6）、認証なしで 200 を返す（4.4）、上限を超えると 429 になる（4.10）、リフレッシュ後にカタログの取得日時が変わる（4.2、6.3）。
+- `ai-usage.integ.ts`（ルート、DB と Express を使う）: メンテナンスモードを ON にしても 200 を返す（4.11）、AI が無効でも 200 を返す（4.6）、認証なしで 200 を返す（4.4）、上限を超えると 429 になる（4.10）、パスの書き方を変えたリクエスト（大文字・小文字、末尾のスラッシュ、二重スラッシュ）は 404 になって集計を呼ばない（4.10）、正しいパスへの Cookie なしのリクエストでセッションが書き込まれない（4.10）、リフレッシュ後にカタログの取得日時が変わる（4.2、6.3）。
 - `with-usage-metering.spec.ts`: 実物の Mastra の `Agent` と `Memory`、`MockLanguageModelV3` を使い、stream・generate・タイトル生成で使用量が渡ること、2 ステップ目がエラーのときに 1 ステップ目の使用量が渡ることを確かめる（2.1〜2.3、2.6）。さらに、1 つの `Agent` に別々のユーザーの 2 つのリクエストを同時に流し、それぞれの使用量がそれぞれの集計器にだけ入ることを確かめる（本番では `growiAgent` を全リクエストで共有し、ユーザー単位の上限はこの区別に頼るため）。
 - `non-transferable-collections.integ.ts`（既存）: `aiusagelogs` の分類漏れで失敗しない。
 
@@ -866,7 +867,7 @@ declare function fromLanguageModelUsage(usage: LanguageModelV3Usage): TokenUsage
 ## Security Considerations
 
 - 公開 API は認証なしで、この GrowiApp 全体の合計とカタログの日時だけを返す。ユーザーの情報、ドル建ての値、単価、契約の情報は返さない（umbrella の D6）。
-- セッションを作らないので、Cookie のないリクエストを大量に受けても、セッションのコレクションは増えない。
+- 正しいパスへのリクエストはセッションを作らないので、Cookie のないリクエストを大量に受けても、セッションのコレクションは増えない。書き方を変えたパスは 404 になる。そのときはセッションが作られうるが、存在しない URL へのリクエストと同じ扱いであり、この API に固有の問題ではない。
 - 回数制限は IP ごとである。GROWI.cloud はこの API を外部から呼べないようにする（問い合わせの経路は GROWI.cloud が決める）。回数制限は、セルフホストと、遮断が漏れたときの備えとして残す。遮断の規則の注意点は `ai-usage-growi-cloud` に引き継ぐ（research.md の Risks）。
 - ブラウザから別のオリジンで呼ぶと、既存の `CertifyOrigin` が 400 を返す。サーバー間の呼び出し（`Origin` ヘッダーなし）は通る。
 
