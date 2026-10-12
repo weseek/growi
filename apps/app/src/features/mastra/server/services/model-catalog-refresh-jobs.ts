@@ -1,3 +1,7 @@
+import {
+  AI_DISABLED_REASON_CATALOG_STALE,
+  readAiDisabledReason,
+} from '~/features/ai-usage/server';
 import { configManager } from '~/server/service/config-manager';
 import CronService from '~/server/service/cron';
 import loggerFactory from '~/utils/logger';
@@ -10,9 +14,17 @@ const logger = loggerFactory(
 );
 
 /**
+ * The refresh runs while AI is enabled, and also while AI is disabled for the
+ * stale-catalog reason (so the catalog can recover). Any other disabled state
+ * must not communicate externally.
+ */
+export const isCatalogRefreshAllowed = (): boolean =>
+  isAiEnabled() || readAiDisabledReason() === AI_DISABLED_REASON_CATALOG_STALE;
+
+/**
  * Periodic model-catalog refresh (Req 9.3). Instantiated and started ONLY when
- * the opt-in schedule config is set (see startModelCatalogRefreshCronIfEnabled)
- * — the default configuration never communicates externally (Req 9.6).
+ * the refresh is allowed and the schedule config is non-empty (see
+ * startModelCatalogRefreshCronIfEnabled).
  */
 class ModelCatalogRefreshCronService extends CronService {
   override getCronSchedule(): string {
@@ -31,19 +43,16 @@ class ModelCatalogRefreshCronService extends CronService {
 }
 
 /**
- * Start the periodic refresh cron IFF the AI feature is enabled AND
- * `ai:modelCatalogRefreshCronSchedule` is set (opt-in, Req 9.3/9.6). Called from
- * Crowi#setupCron at boot. An invalid schedule expression is logged and skipped
- * — it must never break the boot sequence (Req 9.4).
+ * Start the periodic refresh cron IFF the refresh is allowed
+ * (isCatalogRefreshAllowed) AND `ai:modelCatalogRefreshCronSchedule` is set.
+ * Called from Crowi#setupCron at boot. An invalid schedule expression is logged
+ * and skipped — it must never break the boot sequence (Req 9.4).
  *
- * The schedule now defaults to a daily expression, so the AI-enabled gate is
- * what preserves the zero-external-communication default: with `app:aiEnabled`
- * off (the GROWI default) no refresh is ever scheduled. Once an admin turns AI
- * on, the catalog auto-refreshes on the default schedule; setting the env var to
- * an empty string opts back out (e.g. air-gapped AI deployments).
+ * The schedule defaults to a daily expression; setting the env var to an empty
+ * string opts out (e.g. air-gapped AI deployments).
  */
 export const startModelCatalogRefreshCronIfEnabled = (): void => {
-  if (!isAiEnabled()) {
+  if (!isCatalogRefreshAllowed()) {
     return;
   }
 
@@ -70,14 +79,13 @@ export const startModelCatalogRefreshCronIfEnabled = (): void => {
 };
 
 /**
- * Fire a one-shot catalog refresh after the server is up IFF the AI feature is
- * enabled AND `ai:modelCatalogRefreshOnStartup` is true (opt-in, Req 9.2/9.6;
- * intended for baked-image deployments such as growi-docker-compose).
- * Fire-and-forget: the boot sequence is never blocked, and a failure only logs a
+ * Fire a one-shot catalog refresh after the server is up IFF the refresh is
+ * allowed (isCatalogRefreshAllowed) AND `ai:modelCatalogRefreshOnStartup` is
+ * true (the default). Fire-and-forget: the boot sequence is never blocked, and a failure only logs a
  * warning — the bundled/last-good catalog stays in effect (Req 9.4).
  */
 export const triggerModelCatalogRefreshOnStartupIfEnabled = (): void => {
-  if (!isAiEnabled()) {
+  if (!isCatalogRefreshAllowed()) {
     return;
   }
 

@@ -311,7 +311,7 @@ export const CONFIG_KEYS = [
   'ai:providerOptions:suggestPathAgent',
   'ai:usageBaseModel',
   'ai:disabledReason',
-  // Opt-in refresh paths for the vendored model catalog (both default OFF)
+  // Refresh paths for the vendored model catalog (startup refresh defaults ON)
   'ai:modelCatalogRefreshOnStartup',
   'ai:modelCatalogRefreshCronSchedule',
 
@@ -1383,17 +1383,17 @@ export const CONFIG_DEFINITIONS = {
   // Refresh paths for the vendored model catalog (Req 9). These are deployment
   // options (env-driven), not admin-form settings, so they are intentionally NOT
   // part of the env:useOnlyEnvVars:ai target keys. The refresh jobs run ONLY when
-  // the AI feature itself is enabled (app:aiEnabled) — since that defaults OFF, a
-  // default GROWI install still performs zero external communication (the bundled
-  // catalog is the baseline; air-gapped installs are unaffected).
+  // the AI feature is enabled (app:aiEnabled) or ai:disabledReason is
+  // catalog_stale, so a default (AI-off) install still performs zero external
+  // communication.
   'ai:modelCatalogRefreshOnStartup': defineConfig<boolean>({
     envVarName: 'AI_MODEL_CATALOG_REFRESH_ON_STARTUP',
-    defaultValue: false,
+    defaultValue: true,
   }),
   // node-cron schedule expression. Defaults to a daily refresh so that once an
   // admin enables AI the catalog stays fresh automatically; set the env var to an
-  // empty string to opt back out (e.g. air-gapped AI deployments). Gated by
-  // app:aiEnabled, so this default never fires in a default (AI-off) install.
+  // empty string to opt back out (e.g. air-gapped AI deployments). Gated like
+  // the startup refresh, so this default never fires in a default (AI-off) install.
   'ai:modelCatalogRefreshCronSchedule': defineConfig<string>({
     envVarName: 'AI_MODEL_CATALOG_REFRESH_CRON_SCHEDULE',
     defaultValue: '0 4 * * *',

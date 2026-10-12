@@ -169,7 +169,7 @@
   - _Depends: 5.1, 5.2_
 
 - [ ] 6. カタログリフレッシュの契機を変える
-- [ ] 6.1 (P) 停止理由に応じてリフレッシュを動かし、起動時のリフレッシュを既定で ON にする
+- [x] 6.1 (P) 停止理由に応じてリフレッシュを動かし、起動時のリフレッシュを既定で ON にする
   - リフレッシュを動かす条件を「AI が有効、または停止理由が『カタログが古い』」にする。それ以外の AI 無効では、定期・起動時のどちらも外部と通信しない。
   - 起動時のリフレッシュの設定の既定値を ON にし、条件を満たしていれば起動時に待たずにすぐ取得する。設定を OFF にすれば取得しない。
   - 設定の定義のテストにある「起動時のリフレッシュの既定値は false のまま」というテストは、期待値を true に変える（`ai-provider-model-picker` の約束を変える一部で、8 で書き戻す）。リフレッシュのジョブのテストにある「AI が無効なら予定しない」2 件は、「停止理由がないとき」の条件に書き直して残す。
@@ -225,3 +225,4 @@
 - 5.3: クライアントが切断しても `execute` は `abortSignal` なしで最後まで読むので、全呼び出しが completed で記録される。
 - 5.4: 実際の Mastra は中断された `generate` を拒否せず出力なしで返すので、エンジンは `controller.signal.aborted` で failed を決めている（outcome は記録に保存されず、0 件のときの警告だけを変える）。構造化出力は `structuredOutput.model` を指定したときだけ別モデルが動く（今は指定なしで、1 ステップ 1 回の報告）。将来指定するなら、その別モデルは包まれず使用量が記録されない。
 - 5.5: タイトル生成は `meterModelPerCall`（チャットの集計器を読まず、呼び出しごとに `thread-title` で 1 件記録する）で包む。設定は `mastra-modules/memory/title-generation.ts` に分けてある（`memory/index.ts` は import しただけで Mongo に繋ぐためテストから読めない）。design の Memory の項とファイル一覧（`title-generation.ts`、`meterModelPerCall`）は 8 で実態に合わせる。
+- 6.1: `isCatalogRefreshAllowed()`（同期）は `isAiEnabled() || readAiDisabledReason() === catalog_stale`。ジョブのモジュールは ai-usage の入口を静的に import する（ジョブ自体は `crowi/index.ts` から `await import()` でしか読まれず、入口はすでにルート経由で起動時に読まれている）。**8 の取りこぼし注意:** `ai-provider-multi-vendor/research.md` の L271 付近に「opt-in・既定 OFF」の記述が残っているので、8 の見直しの対象に含める。

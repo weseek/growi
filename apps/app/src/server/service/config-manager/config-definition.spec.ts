@@ -325,13 +325,13 @@ describe('config-definition multi-provider ai keys', () => {
     // Picker-owned catalog refresh keys share the ai:* prefix but are out of
     // this spec's boundary — guard them against an accidental ai:* sweep.
     describe('model catalog refresh keys (picker-owned, preserved)', () => {
-      it('keeps ai:modelCatalogRefreshOnStartup unchanged', () => {
+      it('defaults ai:modelCatalogRefreshOnStartup to ON', () => {
         expect(
           CONFIG_DEFINITIONS['ai:modelCatalogRefreshOnStartup'].envVarName,
         ).toBe('AI_MODEL_CATALOG_REFRESH_ON_STARTUP');
         expect(
           CONFIG_DEFINITIONS['ai:modelCatalogRefreshOnStartup'].defaultValue,
-        ).toBe(false);
+        ).toBe(true);
       });
 
       it('keeps ai:modelCatalogRefreshCronSchedule unchanged', () => {
