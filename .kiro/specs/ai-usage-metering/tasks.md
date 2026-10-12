@@ -115,7 +115,7 @@
   - 完了の状態: 結合テストで、メンテナンスモード中・AI が無効なとき・認証なしのどれでも 200 を返すこと、リフレッシュ後にカタログの取得日時が変わることが確かめられる。OpenAPI の生成が通り、認可の一覧の記録に新しいルートの行がある。サーバーの起動時に基準モデルの検証が呼ばれる。
   - _Requirements: 4.4, 4.6, 4.11, 4.2, 6.3, 5.4_
 
-- [ ] 4.5 公開 API の回数制限とセッションを設定する
+- [x] 4.5 公開 API の回数制限とセッションを設定する
   - 回数制限の既定値に、この API を同じ送信元から 1 分 5 回までとする設定を足す。超えたら既存の仕組みが 429 を返す。
   - 固定 ID を使うパスの一覧と、ID を選ぶ処理を、テストからも呼べる関数として切り出す。結合テストは既存の前例と同じく Crowi を模擬してミドルウェアの並びを組み、セッションの ID を作る処理には切り出した本物の関数を入れる（模擬の関数に差し替えると、固定 ID を選ぶ処理を確かめられない）。
   - 4.4 の結合テストが通り続けるように、テストのケースごとに回数制限の記録を消す（または送信元をケースごとに変える）。
@@ -219,3 +219,4 @@
 - 3.4: `recordAiUsage` は呼び出し 0 件なら何も書かず、形式の壊れた modelKey のときも書かずにエラーログだけ残す（設計に書かれていない扱い）。3.5 の集計器と 5 章では、検証済みのモデルキーだけを渡す。
 - 4.3: ルートのモジュールは `setup(): Router` を export する（入口で分かりやすい名前に付け替える）。OpenAPI のタグ `AiUsage` を `definition-apiv3.cjs` の x-tagGroups「Public API」に足す（4.4）。`lint:route-guard` は `src/server/routes` しか見ないので、`node tools/lint/route-top-level-guard.cjs src/features/ai-usage/server/routes` も実行する。
 - 4.4: 起動時の `warnIfUsageBaseModelInvalid` は設計の「await import」ではなく、待たずに呼んで `.catch` で警告に残す形にした（`asyncAfterExpressServerReady` は呼び出し側で await されないため）。入口は `aiUsageLogPrismaExtension` も出すが、`utils/prisma.ts` はモデルのファイルを直接読むので誰も使っていない。worktree では `pnpm run pre:styles-bulk-export` で `bulk-export.generated.ts`（gitignore 対象）を生成すると typecheck が通る。
+- 4.5: 書き方を変えたパス（大文字小文字・末尾スラッシュ）は 404 だが Cookie なしだと 1 回ごとにセッションを作り、書き方ごとに別の回数制限の枠になる（設計 L861 が受け入れ済み）。回数制限は req.ip で数えるので、TRUST_PROXY の設定次第で枠を他人に使い切られる／すり抜けられる（`ai-usage-growi-cloud` に引き継ぐ）。既存の不具合: `config-generator.ts` は `API_RATE_LIMIT_*_USERS_PER_IP` 未設定だと倍率が NaN になる（この spec の範囲外）。

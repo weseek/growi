@@ -9,7 +9,6 @@ import type { Express } from 'express';
 import expressFactory from 'express';
 import expressSession from 'express-session';
 import mongoose from 'mongoose';
-import uidSafe from 'uid-safe';
 
 import instantiateAuditLogBulkExportJobCleanUpCronService from '~/features/audit-log-bulk-export/server/service/audit-log-bulk-export-job-clean-up-cron';
 import instantiateAuditLogBulkExportJobCronService from '~/features/audit-log-bulk-export/server/service/audit-log-bulk-export-job-cron';
@@ -75,6 +74,7 @@ import { UserNotificationService } from '../service/user-notification';
 import { initializeYjsService } from '../service/yjs';
 import { getMongoUri, mongoOptions } from '../util/mongoose-utils';
 import { setup as setupExpressInit } from './express-init';
+import { createSessionIdGenerator, FIXED_SESSION_ID_PATHS } from './session-id';
 import type { ModelsMapDependentOnCrowi } from './setup-models';
 import { setupModelsDependentOnCrowi } from './setup-models';
 
@@ -401,11 +401,6 @@ class Crowi {
       this.env.REDIS_URI ||
       this.env.REDIS_URL ||
       null;
-    const uid = uidSafe.sync;
-
-    // generate pre-defined uid for healthcheck
-    const healthcheckUid = uid(24);
-
     const sessionConfig: SessionConfig = {
       rolling: true,
       secret: this.env.SECRET_TOKEN || 'this is default session secret',
@@ -414,13 +409,7 @@ class Crowi {
       cookie: {
         maxAge: sessionMaxAge,
       },
-      genid(req) {
-        // return pre-defined uid when healthcheck
-        if (req.path === '/_api/v3/healthcheck') {
-          return healthcheckUid;
-        }
-        return uid(24);
-      },
+      genid: createSessionIdGenerator(FIXED_SESSION_ID_PATHS),
     };
 
     if (this.env.SESSION_NAME) {
