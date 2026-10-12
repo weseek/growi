@@ -37,13 +37,6 @@ Hosted で原価を守るため、GROWI.cloud は組織に属する複数の Gro
 
 この umbrella の一部は、完了済みの spec が決めた約束を変える。spec-lifecycle のルールに従い、該当する sub-spec は最後のタスクで、変えた内容を対象の spec へ書き戻す。sub-spec 自体は新しい機能なので、削除はしない。
 
-- **`ai-provider-model-picker`**（`ai-usage-metering` が変える）
-  - 要件 9.2・9.3・9.6「起動時・定期のリフレッシュは AI 機能が有効なときだけ動く」: GROWI.cloud の停止理由が「カタログが古い」のときは、AI が無効でも動くようにする（D8、`ai-usage-metering` の要件 6）。「既定構成の GROWI は外部と通信しない」という約束は変えない。
-  - 要件 9.3「指定されたスケジュールでカタログ更新を試行する」: スケジュール時刻になってから、GROWI ごとに異なる時間だけ遅らせて取得する（D11、`ai-usage-metering` の要件 6.4〜6.6）。
-  - 要件 9.2「起動時のリフレッシュは設定が ON のときだけ動く（既定は OFF）」: 既定を ON にする。停止理由が「カタログが古い」のときも動く（D13、`ai-usage-metering` の要件 6.7）。
-  - 前提「カタログは provider から `{id, name}` の配列への対応」: 単価（cost）を加える（`ai-usage-metering` の要件 1）。要件 7.1「モデル一覧の応答には id と name だけを返す」は変えない（単価は応答に出さない）。
-- **`ai-provider-multi-vendor`**（`ai-usage-metering` が変える）
-  - 設計「AI の env 固定グループの固定対象」: 基準モデルと停止理由の設定を加える（D2、`ai-usage-metering` の要件 5.3）。モデルの設定を外す方針は変えない。
 - `aiReadyGuard` の振る舞いを変える場合（停止理由を届ける経路、未決 2）は、`ai-usage-growi-cloud` の設計で対象 spec を特定して、ここに追記する。
 
 ## 決定事項

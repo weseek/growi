@@ -183,7 +183,7 @@ apps/app/src/features/ai-usage/
 apps/app/src/features/mastra/server/services/usage-metering/
 ├── index.ts                        # 外へ出す入口
 ├── with-usage-metering.ts          # wrapLanguageModel で包み、呼び出しごとの使用量を渡す
-├── meter-model-for-request.ts      # requestContext の集計器（なければ 1 回ごとの記録）につないで包む
+├── meter-model-for-request.ts      # requestContext の集計器（なければ 1 回ごとの記録）につないで包む（meterModelForRequest）、呼び出しごとに 1 件ずつ記録するよう包む（meterModelPerCall）
 └── from-language-model-usage.ts    # AI SDK v3 の使用量を TokenUsage に変換する純粋関数
 ```
 
@@ -199,8 +199,9 @@ apps/app/src/features/mastra/server/services/usage-metering/
 - `apps/app/src/features/mastra/server/services/mastra-modules/types/request-context.ts` — `MastraRequestContextShape` に `usageMeter?: UsageMeter` を足す。
 - `apps/app/src/features/mastra/server/services/mastra-modules/agents/growi-agent.ts` — `model` 関数で、解決したモデルを `withUsageMetering` で包む。
 - `apps/app/src/features/mastra/server/services/mastra-modules/agents/suggest-path/suggest-path-agent.ts` — 同上。モデルキーを `requestContext` から読む（なければ既定のモデル）。
-- `apps/app/src/features/mastra/server/services/mastra-modules/agents/suggest-path/request-context.ts` — suggest-path のリクエスト文脈の型に `modelKey?` と `usageMeter?` を足す。
-- `apps/app/src/features/mastra/server/services/mastra-modules/memory/index.ts` — `generateTitle: true` を `generateTitle: { model }` に替え、タイトル用に包んだモデルを返す。
+- `apps/app/src/features/mastra/server/services/mastra-modules/agents/suggest-path/request-context.ts` — suggest-path のリクエスト文脈の型は、共通の型 `MastraRequestContextShape` を交差型で受け継ぐので、`modelKey?` と `usageMeter?` はそこから受け継ぐ（suggest-path の型には足さない）。型の説明（JSDoc）を、チャット専用でない書き方に直す。
+- `apps/app/src/features/mastra/server/services/mastra-modules/memory/index.ts` — `generateTitle: true` を `generateTitle: titleGeneration` に替える。
+- `apps/app/src/features/mastra/server/services/mastra-modules/memory/title-generation.ts`（新規）— `titleGeneration`（`{ model }`）を置き、タイトル用に包んだモデルを返す。`memory/index.ts` は import しただけで MongoDB に接続するのでテストから読めず、設定をこのファイルに分ける。
 - `apps/app/src/features/mastra/server/routes/post-message.ts` — 集計器を作って `requestContext` に置き、応答が終わったら（成功・失敗とも）閉じる。
 - `apps/app/src/features/ai-tools/suggest-path/server/services/engines/agentic-engine.ts` — モデルキーを 1 回だけ決めて `requestContext` に置く。集計器を作り、`generate` が終わったら（成功・失敗・時間切れとも）閉じる。
 - `apps/app/prisma/schema.prisma` — `model aiusagelogs` を足す。
@@ -209,7 +210,7 @@ apps/app/src/features/mastra/server/services/usage-metering/
 - `apps/app/src/server/crowi/index.ts`（セッションの設定）— `genid` が healthcheck のパスにだけ固定のセッション ID を返している処理を、固定 ID を使うパスの一覧（healthcheck と `/_api/v3/ai-usage`。パスごとに別の ID）を引く形にする。
 - `apps/app/src/features/rate-limiter/config/index.ts` — `'/_api/v3/ai-usage'` の既定値を足す。
 - `apps/app/src/server/service/config-manager/config-definition.ts` — `ai:usageBaseModel` と `ai:disabledReason` を足し、`env:useOnlyEnvVars:ai` の固定対象に加える。`ai:modelCatalogRefreshOnStartup` の既定値を `true` にする（6.7）。
-- `apps/app/src/server/crowi/index.ts` — `asyncAfterExpressServerReady` の中で、基準モデルの設定の検証を動的 import で読み込んで呼ぶ（同じ場所のリフレッシュジョブと同じ書き方）。`crowi/index.ts` は依存の中心なので、静的 import を増やさない（`apps/app/.claude/rules/esm-authoring.md`）。
+- `apps/app/src/server/crowi/index.ts` — `asyncAfterExpressServerReady` の中で、基準モデルの設定の検証を動的 import で読み込んで呼ぶ。完了は待たず、失敗は `.catch` で警告ログに残す（`asyncAfterExpressServerReady` は呼び出し側で await されないため、検証の遅れや失敗が後続の処理を止めないようにする）。`crowi/index.ts` は依存の中心なので、静的 import を増やさない（`apps/app/.claude/rules/esm-authoring.md`）。
 - `apps/app/src/server/service/import/non-transferable-collections.ts` — `aiusagelogs` を、G2G で移さないコレクションに加える。
 - `apps/app/bin/openapi/generate-spec-apiv3.sh` — `src/features/ai-usage/server/routes/apiv3/*.ts` を生成の対象に足す。
 - `apps/app/tools/authz-matrix/baselines/route-middleware.json` — 生成用のツールで出力した中から、新しいルートの行だけを書き足す（ファイル全体は生成し直さない。参考の記録で、生成し直すと無関係な行まで変わるため）。
@@ -226,7 +227,7 @@ sequenceDiagram
     participant Wrapped as wrapped model
     participant Provider as LLM provider
     participant Recorder as record ai usage
-    participant Title as title model
+    participant TitleModel as title model
     Route->>Meter: create for user chat modelKey
     Route->>Agent: stream with requestContext
     loop each step up to 10
@@ -238,8 +239,8 @@ sequenceDiagram
     Route->>Route: pipe stream to client until end or error
     Route->>Meter: close with outcome
     Meter->>Recorder: one entry with all calls
-    Agent->>Title: generate title once per thread
-    Title->>Recorder: one entry for thread title
+    Agent->>TitleModel: generate title once per thread
+    TitleModel->>Recorder: one entry for thread title
 ```
 
 - 集計器を閉じるのは、ストリームを最後まで読み終えたとき、または途中で例外になったときである（`finally`）。記録の書き込みは待たない。応答の速さに影響させないためである。
@@ -765,7 +766,7 @@ declare function fromLanguageModelUsage(usage: LanguageModelV3Usage): TokenUsage
 
 - `growi-agent.ts`: `model: async ({ requestContext }) => meterModelForRequest(requestContext, 'chat', await resolveMastraModel(key))`。`meterModelForRequest`（`meter-model-for-request.ts`）は、`requestContext` に集計器があればその `add` を、なければ `recordAiUsage` で 1 回ごとに書く関数を `onCall` にして `withUsageMetering` で包む（2.10）。
 - `suggest-path-agent.ts`: 同上（`'suggest-path'`）。モデルキーは `requestContext.get('modelKey')`、なければ既定のモデル。
-- `memory/index.ts`: `generateTitle: { model: async ({ requestContext }) => withUsageMetering(await resolveMastraModel(requestContext.get('modelKey')), (usage) => void recordAiUsage({ …, feature: 'thread-title', calls: [usage] })) }`。チャットの集計器は使わない。
+- `memory/title-generation.ts`: `titleGeneration = { model: async ({ requestContext }) => meterModelPerCall(requestContext, 'thread-title', await resolveMastraModel(requestContext.get('modelKey'))) }`。`meterModelPerCall` は、チャットの集計器を読まずに、呼び出しごとに `recordAiUsage` で 1 件ずつ書く。`memory/index.ts` はこれを `generateTitle` に渡す。
 - ユーザー ID は `requestContext.get('user')._id` から取る。読むのは、包む時点ではなく `onCall` の中（記録する直前）にする。ユーザーがなければエラーログだけ残して、その 1 回は記録しない。Mastra は 1 回の stream・generate の中でモデル関数を何度も呼び、`requestContext` が渡されないと空の文脈を使う作りなので、包む時点で例外を出すと LLM の呼び出しごと失敗してしまう（2.8）。
 
 **呼び出し側（post-message・agentic-engine）**
