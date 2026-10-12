@@ -12,9 +12,10 @@ import {
 import type { prisma } from '~/utils/prisma';
 
 import type { AiUsageFeature } from '../../interfaces/ai-usage-feature';
+import { AI_USAGE_RETENTION_DAYS } from '../../interfaces/ai-usage-retention';
 import type { TokenUsage } from '../services/token-usage';
 
-const TTL_90_DAYS_IN_SECONDS = 90 * 24 * 60 * 60;
+const RETENTION_IN_SECONDS = AI_USAGE_RETENTION_DAYS * 24 * 60 * 60;
 
 export type AiUsageLogInput = {
   readonly userId: string;
@@ -110,7 +111,7 @@ const schema = new Schema({
   baseModelKey: { type: String, default: null },
   createdAt: { type: Date, required: true, default: Date.now },
 });
-schema.index({ createdAt: 1 }, { expireAfterSeconds: TTL_90_DAYS_IN_SECONDS });
+schema.index({ createdAt: 1 }, { expireAfterSeconds: RETENTION_IN_SECONDS });
 
 getOrCreateModel('AiUsageLog', schema);
 

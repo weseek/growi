@@ -98,7 +98,7 @@ describe('startModelCatalogRefreshCronIfEnabled (Req 9.3, 9.6)', () => {
     expect(scheduledTask.start).toHaveBeenCalledTimes(1);
   });
 
-  it('does NOT schedule anything when the cron config is unset (opt-in default)', () => {
+  it('does NOT schedule anything when the cron config is unset', () => {
     setConfig({ 'ai:modelCatalogRefreshCronSchedule': undefined });
 
     startModelCatalogRefreshCronIfEnabled();

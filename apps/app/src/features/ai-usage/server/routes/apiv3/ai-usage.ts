@@ -8,6 +8,7 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
+import { AI_USAGE_RETENTION_DAYS } from '../../../interfaces/ai-usage-retention';
 import { buildAiUsageReport } from '../../services/build-ai-usage-report';
 
 const logger = loggerFactory('growi:features:ai-usage:routes:apiv3');
@@ -17,7 +18,6 @@ const ALLOWED_METHOD = 'GET';
 
 const MIN_SINCE_COUNT = 1;
 const MAX_SINCE_COUNT = 10;
-const MAX_SINCE_AGE_DAYS = 90;
 const DAY_MS = 86_400_000;
 
 // ISO 8601 date-time with a mandatory timezone designator (Z or ±HH:MM).
@@ -60,8 +60,10 @@ const assertValidSinces = (raw: unknown): true => {
     if (date.getTime() > now) {
       throw new Error('must not be in the future');
     }
-    if (date.getTime() < now - MAX_SINCE_AGE_DAYS * DAY_MS) {
-      throw new Error(`must not be more than ${MAX_SINCE_AGE_DAYS} days ago`);
+    if (date.getTime() < now - AI_USAGE_RETENTION_DAYS * DAY_MS) {
+      throw new Error(
+        `must not be more than ${AI_USAGE_RETENTION_DAYS} days ago`,
+      );
     }
   }
   return true;

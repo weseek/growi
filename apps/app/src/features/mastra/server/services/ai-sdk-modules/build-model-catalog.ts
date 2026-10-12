@@ -10,7 +10,7 @@ import {
 
 // ─── models.dev source (single source of truth for every ingest path) ────────
 // Consumed by BOTH catalog acquisition paths — the release-pre-step ingest
-// script (bin/vendor-model-catalog.ts) and the opt-in runtime refresh service
+// script (bin/vendor-model-catalog.ts) and the runtime refresh service
 // (refresh-model-catalog.ts, Req 9). The URL is a build-time constant: callers
 // can never point the ingest at another host (Req 9.7).
 
