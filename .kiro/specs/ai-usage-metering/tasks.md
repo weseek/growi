@@ -107,7 +107,7 @@
   - 完了の状態: 入力の誤りの各パターンで 400 になり集計が呼ばれないこと、正しくない書き方のパスで 404・GET 以外で 405 になること、応答にユーザー ID や推定費用が含まれないことを確かめるテストが通る。
   - _Requirements: 4.4, 4.5, 4.8_
 
-- [ ] 4.4 公開 API をサーバーに組み込む
+- [x] 4.4 公開 API をサーバーに組み込む
   - 公開 API を、メンテナンスモードの判定より前にあるルーター（healthcheck と同じ）に載せる。AI の準備の検査も通さない。
   - 機能の入口に、外へ出すものだけを置く: Prisma 拡張、ルーター、集計器、1 回ごとに記録する処理、停止理由を読む処理と停止理由の定数、起動時の検証、型。AI の呼び出し側（5 章）とリフレッシュ（6 章）はこの入口から読む。
   - サーバーの起動処理から、基準モデルの検証（3.6）を動的 import で読み込んで呼ぶ（起動処理に静的な import を増やさない）。
@@ -218,3 +218,4 @@
 - 1.3: `findCatalogEntry` は壊れた更新済みカタログの要素で例外を出し得る（`resolveEffectiveCatalog` だけが例外を出さない）。3.4 で呼ぶときは try/catch で囲む。
 - 3.4: `recordAiUsage` は呼び出し 0 件なら何も書かず、形式の壊れた modelKey のときも書かずにエラーログだけ残す（設計に書かれていない扱い）。3.5 の集計器と 5 章では、検証済みのモデルキーだけを渡す。
 - 4.3: ルートのモジュールは `setup(): Router` を export する（入口で分かりやすい名前に付け替える）。OpenAPI のタグ `AiUsage` を `definition-apiv3.cjs` の x-tagGroups「Public API」に足す（4.4）。`lint:route-guard` は `src/server/routes` しか見ないので、`node tools/lint/route-top-level-guard.cjs src/features/ai-usage/server/routes` も実行する。
+- 4.4: 起動時の `warnIfUsageBaseModelInvalid` は設計の「await import」ではなく、待たずに呼んで `.catch` で警告に残す形にした（`asyncAfterExpressServerReady` は呼び出し側で await されないため）。入口は `aiUsageLogPrismaExtension` も出すが、`utils/prisma.ts` はモデルのファイルを直接読むので誰も使っていない。worktree では `pnpm run pre:styles-bulk-export` で `bulk-export.generated.ts`（gitignore 対象）を生成すると typecheck が通る。

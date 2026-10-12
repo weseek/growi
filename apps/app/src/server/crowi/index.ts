@@ -328,6 +328,13 @@ class Crowi {
    * Execute functions that should be run after the express server is ready.
    */
   async asyncAfterExpressServerReady(): Promise<void> {
+    // Fire-and-forget so a slow or failed check never delays the steps below.
+    import('~/features/ai-usage/server')
+      .then(({ warnIfUsageBaseModelInvalid }) => warnIfUsageBaseModelInvalid())
+      .catch((err) => {
+        logger.warn('Failed to validate ai:usageBaseModel at startup', err);
+      });
+
     if (this.pageOperationService != null) {
       await this.pageOperationService.afterExpressServerReady();
     }
