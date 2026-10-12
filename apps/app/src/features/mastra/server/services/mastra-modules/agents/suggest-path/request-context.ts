@@ -43,8 +43,7 @@ export type ChildListingBudget = {
  * (`MastraRequestContextShape`), so shared tools (getPageContentTool,
  * fullTextSearchTool) keep reading `user` / `searchService` as before
  * (Requirement 1.5). `modelKey` and `usageMeter` come from the shared
- * shape: the suggest-path engine sets them for usage metering the same way
- * the chat handler does.
+ * shape; the agentic engine sets both for every proposal.
  */
 export type SuggestPathRequestContextShape = MastraRequestContextShape & {
   searchBudget: SearchBudget;

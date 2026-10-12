@@ -151,7 +151,7 @@
   - _Boundary: GrowiAgent, post-message_
   - _Depends: 5.2_
 
-- [ ] 5.4 (P) suggest-path の提案 1 回分を 1 件として記録する
+- [x] 5.4 (P) suggest-path の提案 1 回分を 1 件として記録する
   - suggest-path のエージェントのモデルを 5.2 の仕組みで包み、モデルキーはリクエストの文脈から読む（なければ既定のモデル）。
   - 提案の処理で、既定のモデルキーを 1 回だけ決め、リクエストの文脈とプロバイダの指定の両方に同じキーを使う。集計器を作り、成功なら成功、例外・時間切れなら失敗として閉じる。
   - 実際の呼び方（構造化出力付きの generate）でも使用量が渡ることを確かめる。
@@ -223,3 +223,4 @@
 - 5.1: `withUsageMetering(model, onCall)` は v3 モデルだけ包み、それ以外は同じ参照を返して警告する。`onCall` の結果は待たない（非同期の記録関数を渡してよい）。Mastra の再試行では、失敗した試行は何も渡さず、成功した再試行がそれぞれ 1 回分として渡る。`finish` の前に失敗した呼び出しは報告されない（前のステップ分は渡済み）。
 - 5.2: `meterModelForRequest(requestContext, feature, model)` は `Pick<RequestContext<MastraRequestContextShape>, "get">` を受ける（suggest-path の文脈は完全な型に代入できないため）。`usage-metering/index.ts` はまだ `meterModelForRequest` を出していない → 5.3 で足す。`modelKey` と `usageMeter` は共通の型 `MastraRequestContextShape` にあり suggest-path は交差型で受け継ぐ。5.4 で suggest-path が `modelKey` を置くときに、共通の型と suggest-path の型の JSDoc（チャット専用の書き方）を一般的な書き方に直す。design L202 の文言は 8 で実態に合わせる。
 - 5.3: 5.5 が入るまで、Mastra の `generateTitle: true` はエージェントのモデル関数を同じ requestContext で呼ぶため、タイトル生成の使用量が `feature: chat` の別の 1 件として記録される（集計器を閉じた後に届く呼び出しの経路）。**5.3 と 5.5 は同じ PR で出す。** 5.5 には、チャットの記録がステップ分の呼び出し数ちょうど・タイトルの記録が `thread-title` になる回帰テストを入れる。クライアントが切断しても `execute` は `abortSignal` なしで最後まで読むので、全呼び出しが completed で記録される。
+- 5.4: 実際の Mastra は中断された `generate` を拒否せず出力なしで返すので、エンジンは `controller.signal.aborted` で failed を決めている（outcome は記録に保存されず、0 件のときの警告だけを変える）。構造化出力は `structuredOutput.model` を指定したときだけ別モデルが動く（今は指定なしで、1 ステップ 1 回の報告）。将来指定するなら、その別モデルは包まれず使用量が記録されない。
