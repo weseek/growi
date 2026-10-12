@@ -143,7 +143,7 @@
   - 完了の状態: 1 つのエージェントに別々のユーザーの 2 つのリクエストを同時に流しても、使用量がそれぞれの集計器にだけ入ること、文脈にユーザーがなくても LLM の呼び出しが成功することを確かめるテストが通る。
   - _Requirements: 2.1, 2.2, 2.8, 2.10_
 
-- [ ] 5.3 (P) チャットの応答 1 回分を 1 件として記録する
+- [x] 5.3 (P) チャットの応答 1 回分を 1 件として記録する
   - チャットのエージェントのモデルを、5.2 の仕組みで包む。
   - チャットの送信処理で、使うモデルを決めた直後に集計器を作ってリクエストの文脈に置く。ストリームを最後まで読めたら成功として閉じ、途中の例外・stream 自体の失敗・終わりの理由がエラーのときは失敗として閉じる。
   - 完了の状態: ツール呼び出しを挟んだ複数ステップのチャットが 1 件の記録になること、途中でエラーになってもそれまでの分が記録されることを確かめるテストが通る。
@@ -222,3 +222,4 @@
 - 4.5: 書き方を変えたパス（大文字小文字・末尾スラッシュ）は 404 だが Cookie なしだと 1 回ごとにセッションを作り、書き方ごとに別の回数制限の枠になる（設計 L861 が受け入れ済み）。回数制限は req.ip で数えるので、TRUST_PROXY の設定次第で枠を他人に使い切られる／すり抜けられる（`ai-usage-growi-cloud` に引き継ぐ）。既存の不具合: `config-generator.ts` は `API_RATE_LIMIT_*_USERS_PER_IP` 未設定だと倍率が NaN になる（この spec の範囲外）。
 - 5.1: `withUsageMetering(model, onCall)` は v3 モデルだけ包み、それ以外は同じ参照を返して警告する。`onCall` の結果は待たない（非同期の記録関数を渡してよい）。Mastra の再試行では、失敗した試行は何も渡さず、成功した再試行がそれぞれ 1 回分として渡る。`finish` の前に失敗した呼び出しは報告されない（前のステップ分は渡済み）。
 - 5.2: `meterModelForRequest(requestContext, feature, model)` は `Pick<RequestContext<MastraRequestContextShape>, "get">` を受ける（suggest-path の文脈は完全な型に代入できないため）。`usage-metering/index.ts` はまだ `meterModelForRequest` を出していない → 5.3 で足す。`modelKey` と `usageMeter` は共通の型 `MastraRequestContextShape` にあり suggest-path は交差型で受け継ぐ。5.4 で suggest-path が `modelKey` を置くときに、共通の型と suggest-path の型の JSDoc（チャット専用の書き方）を一般的な書き方に直す。design L202 の文言は 8 で実態に合わせる。
+- 5.3: 5.5 が入るまで、Mastra の `generateTitle: true` はエージェントのモデル関数を同じ requestContext で呼ぶため、タイトル生成の使用量が `feature: chat` の別の 1 件として記録される（集計器を閉じた後に届く呼び出しの経路）。**5.3 と 5.5 は同じ PR で出す。** 5.5 には、チャットの記録がステップ分の呼び出し数ちょうど・タイトルの記録が `thread-title` になる回帰テストを入れる。クライアントが切断しても `execute` は `abortSignal` なしで最後まで読むので、全呼び出しが completed で記録される。
