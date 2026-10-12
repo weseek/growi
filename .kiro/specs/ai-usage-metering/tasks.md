@@ -30,7 +30,7 @@
   - _Boundary: GetAvailableModels_
   - _Depends: 1.1_
 
-- [ ] 2. 基準モデルと停止理由を env から受け取れるようにする
+- [x] 2. 基準モデルと停止理由を env から受け取れるようにする
   - 基準モデル（`AI_USAGE_BASE_MODEL`、形式は既存のモデルキーと同じ `provider/modelId`）と停止理由（`AI_DISABLED_REASON`）の設定を定義し、AI の env 固定のグループに加える。
   - どちらも env の値だけを読む（DB の値は使わない）。基準モデルの形式が不正なら「指定なし」として返す。
   - 停止理由「カタログが古い」のコード `catalog_stale` を定数として用意する。
