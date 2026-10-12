@@ -160,7 +160,7 @@
   - _Boundary: SuggestPathAgent, agentic-engine_
   - _Depends: 5.2_
 
-- [ ] 5.5 (P) スレッドタイトルの生成 1 回を 1 件として記録する
+- [x] 5.5 (P) スレッドタイトルの生成 1 回を 1 件として記録する
   - メモリのタイトル生成に、包んだモデルを返す関数を渡す（自動生成をやめずにモデルだけ指定する）。チャットの集計器は使わず、1 回の生成を 1 件として記録する。
   - ユーザーは 5.2 と同じく記録する直前に読む。いなければエラーログだけ残し、タイトル生成を失敗させない（タイトル生成は応答の後に非同期で動く）。
   - 完了の状態: 実物のメモリを使うテストで、タイトル生成の使用量が機能「タイトル生成」の 1 件として記録されることが確かめられる。
@@ -222,5 +222,6 @@
 - 4.5: 書き方を変えたパス（大文字小文字・末尾スラッシュ）は 404 だが Cookie なしだと 1 回ごとにセッションを作り、書き方ごとに別の回数制限の枠になる（設計 L861 が受け入れ済み）。回数制限は req.ip で数えるので、TRUST_PROXY の設定次第で枠を他人に使い切られる／すり抜けられる（`ai-usage-growi-cloud` に引き継ぐ）。既存の不具合: `config-generator.ts` は `API_RATE_LIMIT_*_USERS_PER_IP` 未設定だと倍率が NaN になる（この spec の範囲外）。
 - 5.1: `withUsageMetering(model, onCall)` は v3 モデルだけ包み、それ以外は同じ参照を返して警告する。`onCall` の結果は待たない（非同期の記録関数を渡してよい）。Mastra の再試行では、失敗した試行は何も渡さず、成功した再試行がそれぞれ 1 回分として渡る。`finish` の前に失敗した呼び出しは報告されない（前のステップ分は渡済み）。
 - 5.2: `meterModelForRequest(requestContext, feature, model)` は `Pick<RequestContext<MastraRequestContextShape>, "get">` を受ける（suggest-path の文脈は完全な型に代入できないため）。`usage-metering/index.ts` はまだ `meterModelForRequest` を出していない → 5.3 で足す。`modelKey` と `usageMeter` は共通の型 `MastraRequestContextShape` にあり suggest-path は交差型で受け継ぐ。5.4 で suggest-path が `modelKey` を置くときに、共通の型と suggest-path の型の JSDoc（チャット専用の書き方）を一般的な書き方に直す。design L202 の文言は 8 で実態に合わせる。
-- 5.3: 5.5 が入るまで、Mastra の `generateTitle: true` はエージェントのモデル関数を同じ requestContext で呼ぶため、タイトル生成の使用量が `feature: chat` の別の 1 件として記録される（集計器を閉じた後に届く呼び出しの経路）。**5.3 と 5.5 は同じ PR で出す。** 5.5 には、チャットの記録がステップ分の呼び出し数ちょうど・タイトルの記録が `thread-title` になる回帰テストを入れる。クライアントが切断しても `execute` は `abortSignal` なしで最後まで読むので、全呼び出しが completed で記録される。
+- 5.3: クライアントが切断しても `execute` は `abortSignal` なしで最後まで読むので、全呼び出しが completed で記録される。
 - 5.4: 実際の Mastra は中断された `generate` を拒否せず出力なしで返すので、エンジンは `controller.signal.aborted` で failed を決めている（outcome は記録に保存されず、0 件のときの警告だけを変える）。構造化出力は `structuredOutput.model` を指定したときだけ別モデルが動く（今は指定なしで、1 ステップ 1 回の報告）。将来指定するなら、その別モデルは包まれず使用量が記録されない。
+- 5.5: タイトル生成は `meterModelPerCall`（チャットの集計器を読まず、呼び出しごとに `thread-title` で 1 件記録する）で包む。設定は `mastra-modules/memory/title-generation.ts` に分けてある（`memory/index.ts` は import しただけで Mongo に繋ぐためテストから読めない）。design の Memory の項とファイル一覧（`title-generation.ts`、`meterModelPerCall`）は 8 で実態に合わせる。

@@ -35,6 +35,17 @@ const recordEachCall =
   };
 
 /**
+ * Wrap a (possibly cached) model so that each call is recorded on its own,
+ * whether or not the request context holds a usage meter.
+ */
+export const meterModelPerCall = (
+  requestContext: UsageContext,
+  feature: AiUsageFeature,
+  model: MastraModelConfig,
+): MastraModelConfig =>
+  withUsageMetering(model, recordEachCall(requestContext, feature));
+
+/**
  * Wrap a (possibly cached) model for one request. Usage goes to the request's
  * usage meter when there is one, otherwise each call is recorded on its own.
  * The given model is left as-is, so the cache keeps holding the unwrapped one.
@@ -45,9 +56,8 @@ export const meterModelForRequest = (
   model: MastraModelConfig,
 ): MastraModelConfig => {
   const usageMeter = requestContext.get('usageMeter');
-  const onCall: OnCall =
-    usageMeter != null
-      ? (usage) => usageMeter.add(usage)
-      : recordEachCall(requestContext, feature);
-  return withUsageMetering(model, onCall);
+  if (usageMeter == null) {
+    return meterModelPerCall(requestContext, feature, model);
+  }
+  return withUsageMetering(model, (usage) => usageMeter.add(usage));
 };

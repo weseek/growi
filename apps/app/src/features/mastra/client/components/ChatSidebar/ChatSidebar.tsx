@@ -196,7 +196,7 @@ export const ChatSidebar = (): JSX.Element => {
     // Refresh the thread list after the assistant finishes streaming.
     //
     // The thread itself is persisted by the time the stream closes, but
-    // Mastra's auto-generated title (configured via `generateTitle: true`
+    // Mastra's auto-generated title (configured via `generateTitle`
     // on the Memory) is written asynchronously and may land slightly later.
     //
     // This is an intentional design choice of Mastra. See:

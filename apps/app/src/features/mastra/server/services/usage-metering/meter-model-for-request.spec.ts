@@ -6,7 +6,7 @@ import { MockLanguageModelV3, simulateReadableStream } from 'ai/test';
 import { mock } from 'vitest-mock-extended';
 import { z } from 'zod';
 
-import type { UsageMeter } from '~/features/ai-usage/server';
+import type { AiUsageFeature, UsageMeter } from '~/features/ai-usage/server';
 
 import type { MastraRequestContextShape } from '../mastra-modules/types/request-context';
 import type { LanguageModelV3Usage } from './from-language-model-usage';
@@ -27,7 +27,10 @@ vi.mock('~/utils/logger', () => ({
   }),
 }));
 
-import { meterModelForRequest } from './meter-model-for-request';
+import {
+  meterModelForRequest,
+  meterModelPerCall,
+} from './meter-model-for-request';
 
 type StreamPart =
   Awaited<
@@ -113,7 +116,11 @@ const echoTool = createTool({
   execute: async () => ({ ok: true }),
 });
 
-const createAgent = (model: MockLanguageModelV3) =>
+const createAgent = (
+  model: MockLanguageModelV3,
+  meter: typeof meterModelForRequest = meterModelForRequest,
+  feature: AiUsageFeature = 'chat',
+) =>
   new Agent({
     id: 'metered-agent',
     name: 'metered-agent',
@@ -122,7 +129,7 @@ const createAgent = (model: MockLanguageModelV3) =>
       requestContext,
     }: {
       requestContext: RequestContext<MastraRequestContextShape>;
-    }) => meterModelForRequest(requestContext, 'chat', model),
+    }) => meter(requestContext, feature, model),
     tools: { echo: echoTool },
   });
 
@@ -314,5 +321,49 @@ describe('meterModelForRequest', () => {
     await stream.pipeTo(new WritableStream());
 
     expect(meter.add).not.toHaveBeenCalled();
+  });
+});
+
+describe('meterModelPerCall', () => {
+  beforeEach(() => {
+    recordAiUsage.mockReset();
+    recordAiUsage.mockResolvedValue(undefined);
+  });
+
+  it('records each call on its own and leaves the request usage meter untouched', async () => {
+    const meter = mock<UsageMeter>();
+    const requestContext = createContext({
+      user: userWithId('alice'),
+      modelKey: 'openai/gpt-4o',
+      usageMeter: meter,
+    });
+    const agent = createAgent(
+      createSharedModel(),
+      meterModelPerCall,
+      'thread-title',
+    );
+
+    const text = await runRequest(agent, 'from-alice', requestContext);
+
+    expect(text).toBe('done');
+    expect(meter.add).not.toHaveBeenCalled();
+    expect(recordAiUsage.mock.calls).toEqual([
+      [
+        {
+          userId: 'alice',
+          feature: 'thread-title',
+          modelKey: 'openai/gpt-4o',
+          calls: [expect.objectContaining({ inputTokens: 1000 })],
+        },
+      ],
+      [
+        {
+          userId: 'alice',
+          feature: 'thread-title',
+          modelKey: 'openai/gpt-4o',
+          calls: [expect.objectContaining({ inputTokens: 1001 })],
+        },
+      ],
+    ]);
   });
 });
