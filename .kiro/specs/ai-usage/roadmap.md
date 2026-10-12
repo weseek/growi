@@ -116,7 +116,7 @@ Hosted で原価を守るため、GROWI.cloud は組織に属する複数の Gro
 
 ## Specs (dependency order)
 
-- [ ] ai-usage-metering -- 計測の中核。カタログへの cost 取り込み、使用量の記録（D3 の 3 か所）、消費量・カタログ鮮度の公開 API。Dependencies: none。Status: 2026-10-10 requirements 承認済み、design 生成済み（承認待ち）
+- [ ] ai-usage-metering -- 計測の中核。カタログへの cost 取り込み、使用量の記録（D3 の 3 か所）、消費量・カタログ鮮度の公開 API。Dependencies: none。Status: 2026-10-12 requirements・design・tasks 承認済み（実装待ち）
 - [ ] ai-usage-growi-cloud -- GROWI.cloud 連携。停止理由の表示、ゲージ API の呼び出しと表示。Dependencies: ai-usage-metering（基準モデルの env と使用量の公開 API）。Status: 未着手
 - [ ] ai-usage-fair-use -- ユーザー単位の時間／月次上限（管理画面で設定、超えたら 429）。Dependencies: ai-usage-metering（使用量ログ）。Status: 未着手
 
