@@ -108,3 +108,115 @@ describe('prisma.aiusagelogs.createLog', () => {
     }
   });
 });
+
+describe('prisma.aiusagelogs.sumUsageSince', () => {
+  const userId = new Types.ObjectId().toString();
+
+  // Far-future times keep other files' records (written at "now") out of
+  // every window, since the collection is shared across test files.
+  const at = (iso: string) => new Date(`3000-01-${iso}Z`);
+
+  const insertRecordAt = (
+    createdAt: Date,
+    fields: {
+      inputTokens: number;
+      outputTokens: number;
+      weightedUnits: number | null;
+    },
+  ) =>
+    mongoose.connection.collection('aiusagelogs').insertOne({
+      userId: new Types.ObjectId(userId),
+      feature: 'chat',
+      provider: 'openai',
+      modelId: 'gpt-4.1',
+      callCount: 1,
+      reasoningTokens: null,
+      cacheReadTokens: null,
+      cacheWriteTokens: null,
+      estimatedCostUsd: null,
+      baseModelKey: null,
+      ...fields,
+      createdAt,
+    });
+
+  afterEach(async () => {
+    await prisma.aiusagelogs.deleteMany({ where: { userId } });
+  });
+
+  it('returns, per start time, the sums over records created at or after it', async () => {
+    await insertRecordAt(at('01T00:00:00'), {
+      inputTokens: 1,
+      outputTokens: 1,
+      weightedUnits: 1000,
+    });
+    await insertRecordAt(at('10T00:00:00'), {
+      inputTokens: 100,
+      outputTokens: 20,
+      weightedUnits: 1.5,
+    });
+    await insertRecordAt(at('20T00:00:00'), {
+      inputTokens: 300,
+      outputTokens: 40,
+      weightedUnits: 2.25,
+    });
+    await insertRecordAt(at('20T00:00:00'), {
+      inputTokens: 7,
+      outputTokens: 3,
+      weightedUnits: null,
+    });
+
+    const sums = await prisma.aiusagelogs.sumUsageSince([
+      at('20T00:00:00'),
+      at('05T00:00:00'),
+    ]);
+
+    expect(sums).toEqual([
+      { since: at('20T00:00:00'), weightedUnits: 2.25, unweightedTokens: 10 },
+      { since: at('05T00:00:00'), weightedUnits: 3.75, unweightedTokens: 10 },
+    ]);
+  });
+
+  it('counts unknown-multiplier records only in the raw token sum', async () => {
+    await insertRecordAt(at('10T00:00:00'), {
+      inputTokens: 500,
+      outputTokens: 60,
+      weightedUnits: null,
+    });
+    await insertRecordAt(at('11T00:00:00'), {
+      inputTokens: 40,
+      outputTokens: 2,
+      weightedUnits: null,
+    });
+    await insertRecordAt(at('12T00:00:00'), {
+      inputTokens: 900,
+      outputTokens: 900,
+      weightedUnits: 4,
+    });
+
+    const [sum] = await prisma.aiusagelogs.sumUsageSince([at('10T00:00:00')]);
+
+    expect(sum).toEqual({
+      since: at('10T00:00:00'),
+      weightedUnits: 4,
+      unweightedTokens: 602,
+    });
+  });
+
+  it('returns zero sums for every start time when no record falls in any window', async () => {
+    await insertRecordAt(at('01T00:00:00'), {
+      inputTokens: 10,
+      outputTokens: 10,
+      weightedUnits: 1,
+    });
+
+    const sums = await prisma.aiusagelogs.sumUsageSince([
+      at('15T00:00:00'),
+      at('02T00:00:00'),
+    ]);
+
+    expect(sums).toEqual([
+      { since: at('15T00:00:00'), weightedUnits: 0, unweightedTokens: 0 },
+      { since: at('02T00:00:00'), weightedUnits: 0, unweightedTokens: 0 },
+    ]);
+  });
+});
