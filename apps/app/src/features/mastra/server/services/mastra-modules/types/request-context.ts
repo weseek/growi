@@ -1,5 +1,6 @@
 import type { IUserHasId } from '@growi/core';
 
+import type { UsageMeter } from '~/features/ai-usage/server';
 import type SearchService from '~/server/service/search';
 
 /**
@@ -27,9 +28,15 @@ import type SearchService from '~/server/service/search';
  *   an idempotent defense-in-depth re-validation rather than the first rounding
  *   pass. It stays optional only for the type's sake; the handler always sets a
  *   concrete resolved key when AI is configured.
+ *
+ * Notes on `usageMeter`:
+ * - The request-scoped usage collector that the caller creates and closes
+ *   around one response. When it is absent, `meterModelForRequest` records
+ *   each model call on its own instead.
  */
 export type MastraRequestContextShape = {
   user: IUserHasId;
   searchService: SearchService;
   modelKey?: string;
+  usageMeter?: UsageMeter;
 };

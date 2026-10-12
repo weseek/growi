@@ -136,7 +136,7 @@
   - 完了の状態: 実物の Mastra のエージェントとメモリ、模擬モデルを使うテストで、stream・generate・2 ステップ目がエラーのとき（1 ステップ目の分が渡る）に使用量が渡ることが確かめられる。
   - _Requirements: 2.1, 2.2, 2.5, 2.6, 2.8_
 
-- [ ] 5.2 リクエストの集計器につないでモデルを包む
+- [x] 5.2 リクエストの集計器につないでモデルを包む
   - リクエストの文脈に集計器があればそこへ、なければ 1 回ごとに記録する処理へ使用量を渡す形で、モデルを包む。チャットと suggest-path のリクエストの文脈の型に、集計器（suggest-path はモデルキーも）を足す。
   - ユーザーは包む時点ではなく記録する直前に文脈から読む。ユーザーがなければエラーログだけ残し、LLM の呼び出しは失敗させない。
   - 包む処理はモデルのキャッシュの後に、リクエストごとに行う。キャッシュには包む前のモデルを置く。
@@ -221,3 +221,4 @@
 - 4.4: 起動時の `warnIfUsageBaseModelInvalid` は設計の「await import」ではなく、待たずに呼んで `.catch` で警告に残す形にした（`asyncAfterExpressServerReady` は呼び出し側で await されないため）。入口は `aiUsageLogPrismaExtension` も出すが、`utils/prisma.ts` はモデルのファイルを直接読むので誰も使っていない。worktree では `pnpm run pre:styles-bulk-export` で `bulk-export.generated.ts`（gitignore 対象）を生成すると typecheck が通る。
 - 4.5: 書き方を変えたパス（大文字小文字・末尾スラッシュ）は 404 だが Cookie なしだと 1 回ごとにセッションを作り、書き方ごとに別の回数制限の枠になる（設計 L861 が受け入れ済み）。回数制限は req.ip で数えるので、TRUST_PROXY の設定次第で枠を他人に使い切られる／すり抜けられる（`ai-usage-growi-cloud` に引き継ぐ）。既存の不具合: `config-generator.ts` は `API_RATE_LIMIT_*_USERS_PER_IP` 未設定だと倍率が NaN になる（この spec の範囲外）。
 - 5.1: `withUsageMetering(model, onCall)` は v3 モデルだけ包み、それ以外は同じ参照を返して警告する。`onCall` の結果は待たない（非同期の記録関数を渡してよい）。Mastra の再試行では、失敗した試行は何も渡さず、成功した再試行がそれぞれ 1 回分として渡る。`finish` の前に失敗した呼び出しは報告されない（前のステップ分は渡済み）。
+- 5.2: `meterModelForRequest(requestContext, feature, model)` は `Pick<RequestContext<MastraRequestContextShape>, "get">` を受ける（suggest-path の文脈は完全な型に代入できないため）。`usage-metering/index.ts` はまだ `meterModelForRequest` を出していない → 5.3 で足す。`modelKey` と `usageMeter` は共通の型 `MastraRequestContextShape` にあり suggest-path は交差型で受け継ぐ。5.4 で suggest-path が `modelKey` を置くときに、共通の型と suggest-path の型の JSDoc（チャット専用の書き方）を一般的な書き方に直す。design L202 の文言は 8 で実態に合わせる。
