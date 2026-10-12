@@ -197,7 +197,7 @@
   - 完了の状態: 確かめた結果を umbrella の roadmap の未決に書いている。キーが用意できなかったプロバイダは「未確認」と書けば完了とする。
   - _Requirements: 2.4, 2.5_
 
-- [ ] 7.3 lint・テスト・ビルドをすべて通す
+- [x] 7.3 lint・テスト・ビルドをすべて通す
   - アプリの lint（型検査、Biome、ルートの検査を含む）、テスト、ビルドを実行する。
   - 完了の状態: lint・テスト・ビルドがすべて通る。
 
@@ -227,3 +227,4 @@
 - 5.5: タイトル生成は `meterModelPerCall`（チャットの集計器を読まず、呼び出しごとに `thread-title` で 1 件記録する）で包む。設定は `mastra-modules/memory/title-generation.ts` に分けてある（`memory/index.ts` は import しただけで Mongo に繋ぐためテストから読めない）。design の Memory の項とファイル一覧（`title-generation.ts`、`meterModelPerCall`）は 8 で実態に合わせる。
 - 6.1: `isCatalogRefreshAllowed()`（同期）は `isAiEnabled() || readAiDisabledReason() === catalog_stale`。ジョブのモジュールは ai-usage の入口を静的に import する（ジョブ自体は `crowi/index.ts` から `await import()` でしか読まれず、入口はすでにルート経由で起動時に読まれている）。**8 の取りこぼし注意:** `ai-provider-multi-vendor/research.md` の L271 付近に「opt-in・既定 OFF」の記述が残っているので、8 の見直しの対象に含める。
 - 6.2: `randomSleep(maxMs, signal?)`（共有ユーティリティ）に任意の `signal` を足した（中断するとタイマーを消して resolve、reject しない）。node-cron / CronService は実行の重なりを止めないので、次の契機が前の待ちを打ち切る動きが実際に起きる。手動リフレッシュ（管理画面のルート）は `refreshModelCatalog` を直接呼ぶので待たない。
+- 7.3: `pnpm run lint`（終了コード 0）、`pnpm run test`（apps/app 全体: 7286 件通過）、`pnpm run build`（終了コード 0）。全体テストで 3 ファイルが落ちたが、`construct-convert-map.integ.ts` は今回 Mongoose モデルが 1 つ増えた（`AiUsageLog`）ため期待値 33→34 に直した。他は生成物の未作成（`pre:styles-components` / `pre:styles-commons` / vault-manager の dist）で、生成後に通る。`growi-vault/__tests__/clone-e2e.integ.ts` の 4 件は `repository not found` で落ちる既存の失敗（変更前のコミットでも同じ）。
