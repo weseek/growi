@@ -1,13 +1,16 @@
 // --- Mock boundary ---------------------------------------------------------
 //
-// The jobs module wires two opt-in triggers around refreshModelCatalog:
-//   - isAiEnabled        : mocked — the AI-feature gate that fronts BOTH
-//     triggers (a refresh only runs when the AI feature itself is enabled)
-//   - configManager      : mocked — drives the opt-in guards (Req 9.6)
+// The jobs module wires two triggers around refreshModelCatalog:
+//   - isAiEnabled / readAiDisabledReason : mocked — the gate that fronts BOTH
+//     triggers (a refresh runs when AI is enabled or the disabled reason is
+//     catalog_stale)
+//   - configManager      : mocked — drives the startup-refresh option
 //   - node-cron          : mocked — asserts whether/what gets scheduled and
 //     lets the test fire the tick callback deterministically
 //   - refreshModelCatalog: mocked — the refresh behavior itself is covered by
 //     refresh-model-catalog.spec.ts; here only the trigger contract matters
+//   - Math.random + fake timers : pinned per test in the jitter block, so the
+//     random wait of a periodic tick is deterministic
 const { isAiEnabled } = vi.hoisted(() => ({ isAiEnabled: vi.fn() }));
 vi.mock('./is-ai-enabled', () => ({ isAiEnabled }));
 
@@ -54,6 +57,11 @@ beforeEach(() => {
   // AI enabled is the common case; the AI-off gate is asserted explicitly below.
   isAiEnabled.mockReturnValue(true);
   readAiDisabledReason.mockReturnValue(undefined);
+});
+
+afterEach(() => {
+  vi.useRealTimers();
+  vi.restoreAllMocks();
 });
 
 const disableAi = (reason: string | undefined): void => {
@@ -116,18 +124,17 @@ describe('startModelCatalogRefreshCronIfEnabled (Req 9.3, 9.6)', () => {
     expect(scheduledTask.start).toHaveBeenCalledTimes(1);
   });
 
-  it('runs the refresh when the scheduled tick fires', async () => {
+  it('does not throw when the scheduled fetch fails (no unhandled rejection)', async () => {
+    vi.useFakeTimers();
+    vi.spyOn(Math, 'random').mockReturnValue(0);
     setConfig({ 'ai:modelCatalogRefreshCronSchedule': '0 4 * * *' });
-    refreshModelCatalog.mockResolvedValue({
-      counts: {},
-      fetchedAt: new Date(),
-    });
+    refreshModelCatalog.mockRejectedValue(new Error('offline'));
 
     startModelCatalogRefreshCronIfEnabled();
-
-    // Fire the captured tick callback (what node-cron would invoke).
     const tick = cronScheduleMock.mock.calls[0][1] as () => Promise<void>;
-    await tick();
+    const ticking = tick();
+    await vi.advanceTimersByTimeAsync(1);
+    await ticking;
 
     expect(refreshModelCatalog).toHaveBeenCalledTimes(1);
   });
@@ -219,5 +226,67 @@ describe('triggerModelCatalogRefreshOnStartupIfEnabled (Req 9.2, 9.6)', () => {
     // (an unhandled rejection would fail this test via vitest's process hooks).
     rejectRefresh(new Error('offline'));
     await new Promise((resolve) => setImmediate(resolve));
+  });
+});
+
+describe('periodic refresh jitter (Req 6.4, 6.5)', () => {
+  const HALF_HOUR_MS = 30 * 60 * 1000;
+
+  const startAndGetTick = (): (() => Promise<void>) => {
+    setConfig({ 'ai:modelCatalogRefreshCronSchedule': '0 4 * * *' });
+    refreshModelCatalog.mockResolvedValue({
+      counts: {},
+      fetchedAt: new Date(),
+    });
+    startModelCatalogRefreshCronIfEnabled();
+    return cronScheduleMock.mock.calls[0][1] as () => Promise<void>;
+  };
+
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
+  });
+
+  it('waits the random delay before fetching on a cron tick (Req 6.4)', async () => {
+    const tick = startAndGetTick();
+
+    const ticking = tick();
+    await vi.advanceTimersByTimeAsync(HALF_HOUR_MS - 1);
+    expect(refreshModelCatalog).not.toHaveBeenCalled();
+
+    await vi.advanceTimersByTimeAsync(1);
+    await ticking;
+    expect(refreshModelCatalog).toHaveBeenCalledTimes(1);
+  });
+
+  it('fetches the previous tick immediately when the next tick arrives, and the new tick waits again (Req 6.5)', async () => {
+    const tick = startAndGetTick();
+
+    const first = tick();
+    await vi.advanceTimersByTimeAsync(10 * 60 * 1000);
+    expect(refreshModelCatalog).not.toHaveBeenCalled();
+
+    const second = tick();
+    await first;
+    expect(refreshModelCatalog).toHaveBeenCalledTimes(1);
+
+    await vi.advanceTimersByTimeAsync(HALF_HOUR_MS - 1);
+    expect(refreshModelCatalog).toHaveBeenCalledTimes(1);
+
+    await vi.advanceTimersByTimeAsync(1);
+    await second;
+    expect(refreshModelCatalog).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not wait for the startup refresh (Req 6.7)', () => {
+    setConfig({ 'ai:modelCatalogRefreshOnStartup': true });
+    refreshModelCatalog.mockResolvedValue({
+      counts: {},
+      fetchedAt: new Date(),
+    });
+
+    triggerModelCatalogRefreshOnStartupIfEnabled();
+
+    expect(refreshModelCatalog).toHaveBeenCalledTimes(1);
   });
 });

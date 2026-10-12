@@ -178,7 +178,7 @@
   - _Boundary: RefreshJobs, ConfigDefinition_
   - _Depends: 2, 4.4_
 
-- [ ] 6.2 定期リフレッシュの取得時刻を GROWI ごとにずらす
+- [x] 6.2 定期リフレッシュの取得時刻を GROWI ごとにずらす
   - 定期リフレッシュの契機ごとに、0〜1 時間のランダムな時間だけ待ってから取得する。待っている間に次の契機が来たら、前の待ちを打ち切ってすぐ取得させ、新しい契機はまた待ち始める。
   - 管理画面からの手動リフレッシュは待たずに取得する（変更しない）。
   - 完了の状態: 乱数を固定したテストで、待ってから取得すること、次の契機で前の取得がすぐ動くこと、手動リフレッシュが待たないことが確かめられる。
@@ -226,3 +226,4 @@
 - 5.4: 実際の Mastra は中断された `generate` を拒否せず出力なしで返すので、エンジンは `controller.signal.aborted` で failed を決めている（outcome は記録に保存されず、0 件のときの警告だけを変える）。構造化出力は `structuredOutput.model` を指定したときだけ別モデルが動く（今は指定なしで、1 ステップ 1 回の報告）。将来指定するなら、その別モデルは包まれず使用量が記録されない。
 - 5.5: タイトル生成は `meterModelPerCall`（チャットの集計器を読まず、呼び出しごとに `thread-title` で 1 件記録する）で包む。設定は `mastra-modules/memory/title-generation.ts` に分けてある（`memory/index.ts` は import しただけで Mongo に繋ぐためテストから読めない）。design の Memory の項とファイル一覧（`title-generation.ts`、`meterModelPerCall`）は 8 で実態に合わせる。
 - 6.1: `isCatalogRefreshAllowed()`（同期）は `isAiEnabled() || readAiDisabledReason() === catalog_stale`。ジョブのモジュールは ai-usage の入口を静的に import する（ジョブ自体は `crowi/index.ts` から `await import()` でしか読まれず、入口はすでにルート経由で起動時に読まれている）。**8 の取りこぼし注意:** `ai-provider-multi-vendor/research.md` の L271 付近に「opt-in・既定 OFF」の記述が残っているので、8 の見直しの対象に含める。
+- 6.2: `randomSleep(maxMs, signal?)`（共有ユーティリティ）に任意の `signal` を足した（中断するとタイマーを消して resolve、reject しない）。node-cron / CronService は実行の重なりを止めないので、次の契機が前の待ちを打ち切る動きが実際に起きる。手動リフレッシュ（管理画面のルート）は `refreshModelCatalog` を直接呼ぶので待たない。
