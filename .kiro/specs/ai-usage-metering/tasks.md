@@ -100,7 +100,7 @@
   - _Depends: 1.3_
   - _Requirements: 4.1, 4.2, 4.3, 4.5, 3.6_
 
-- [ ] 4.3 公開 API のルートを作る
+- [x] 4.3 公開 API のルートを作る
   - 認証なしの GET を受ける。入力の検証より前に、パスが正しい書き方と完全に一致しなければ 404、メソッドが GET でなければ 405（許すメソッドを応答に添える）を返し、集計しない。
   - 開始時刻は 1〜10 個で、タイムゾーン付きの ISO 8601 とする。1 個なら文字列、2 個以上なら配列で届くので両方を受ける。形式の誤り・現在より後・90 日より前・個数の誤りは 400 にし、集計しない。
   - 応答をキャッシュさせない指定を付ける。このルートから静的にたどれる範囲に AI のパッケージを入れない。
@@ -217,3 +217,4 @@
 ## Implementation Notes
 - 1.3: `findCatalogEntry` は壊れた更新済みカタログの要素で例外を出し得る（`resolveEffectiveCatalog` だけが例外を出さない）。3.4 で呼ぶときは try/catch で囲む。
 - 3.4: `recordAiUsage` は呼び出し 0 件なら何も書かず、形式の壊れた modelKey のときも書かずにエラーログだけ残す（設計に書かれていない扱い）。3.5 の集計器と 5 章では、検証済みのモデルキーだけを渡す。
+- 4.3: ルートのモジュールは `setup(): Router` を export する（入口で分かりやすい名前に付け替える）。OpenAPI のタグ `AiUsage` を `definition-apiv3.cjs` の x-tagGroups「Public API」に足す（4.4）。`lint:route-guard` は `src/server/routes` しか見ないので、`node tools/lint/route-top-level-guard.cjs src/features/ai-usage/server/routes` も実行する。
