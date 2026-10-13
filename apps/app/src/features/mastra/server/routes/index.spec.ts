@@ -166,11 +166,11 @@ describe('mastra routes factory (lazy handler loading)', () => {
       ['get-models', () => request(app).get('/_api/v3/mastra/models')],
       ['summarize-message', () => request(app).post('/_api/v3/mastra/summary')],
     ];
-    for (const [route, send] of cases) {
-      const res = await send();
+    const responses = await Promise.all(cases.map(([, send]) => send()));
+    responses.forEach((res, i) => {
       expect(res.status).toBe(200);
-      expect(res.body).toEqual({ route });
-    }
+      expect(res.body).toEqual({ route: cases[i][0] });
+    });
   });
 
   it('keeps rejecting with 501 when AI is toggled back off (guard re-evaluated per request)', async () => {

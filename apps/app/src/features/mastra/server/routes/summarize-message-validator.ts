@@ -6,7 +6,8 @@ import { MAX_MODEL_KEY_LENGTH } from '~/features/mastra/interfaces/model-key';
 export const MAX_PAGE_PATH_LENGTH = 4096;
 
 // An empty string carries no page reference, so it must count as absent too.
-const isAbsent = (value: unknown): boolean => value == null || value === '';
+export const isAbsent = (value: unknown): value is null | undefined | '' =>
+  value == null || value === '';
 
 export const buildSummarizeMessageValidator = (): ValidationChain[] => [
   // Kept as its own chain, without `.optional()`: in express-validator v6,

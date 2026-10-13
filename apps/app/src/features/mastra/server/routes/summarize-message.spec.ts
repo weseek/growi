@@ -51,6 +51,7 @@ const mocks = vi.hoisted(() => ({
   recordFailsafeAttempt: vi.fn(),
   responseClosed: vi.fn(),
   currentUser: undefined as unknown,
+  activityBegun: true,
   // pageId -> body, read by the populateDataToShowRevision mock
   bodiesByPageId: new Map<string, string>(),
 }));
@@ -72,7 +73,9 @@ vi.mock('~/server/middlewares/add-activity', () => ({
   generateAddActivityMiddleware:
     () => (_req: Request, res: Response, next: NextFunction) => {
       mocks.addActivity();
-      res.locals.activity = { _id: 'activity-id' };
+      if (mocks.activityBegun) {
+        res.locals.activity = { _id: 'activity-id' };
+      }
       next();
     },
 }));
@@ -375,6 +378,7 @@ describe('POST /summary (summarize-message handler)', () => {
     vi.clearAllMocks();
     mocks.takeActivityContext.mockReturnValue(activityContext);
     mocks.currentUser = viewer;
+    mocks.activityBegun = true;
     streamCalls = [];
     threads = [];
 
@@ -388,6 +392,10 @@ describe('POST /summary (summarize-message handler)', () => {
         };
         threads = [...threads, thread];
         return Promise.resolve(thread);
+      }),
+      deleteThread: vi.fn((threadId: string) => {
+        threads = threads.filter((thread) => thread.id !== threadId);
+        return Promise.resolve();
       }),
     });
 
@@ -613,6 +621,52 @@ describe('POST /summary (summarize-message handler)', () => {
       );
     });
 
+    it('sends a single error chunk when the stream promises reject after an error chunk', async () => {
+      const providerError = new Error('provider failed');
+      mocks.stream.mockResolvedValueOnce({
+        ...buildStreamResult(
+          [
+            { type: 'start' },
+            { type: 'error', errorText: 'model test-model was not found.' },
+          ],
+          'error',
+        ),
+        get usage() {
+          return Promise.reject(providerError);
+        },
+        get finishReason() {
+          return Promise.reject(providerError);
+        },
+      });
+
+      const response = await request(app)
+        .post('/summary')
+        .send({ pageId: shortPage._id.toString() })
+        .expect(200);
+
+      const errorChunks = parseSse(response.text).filter(
+        (chunk) => chunk.type === 'error',
+      );
+      expect(errorChunks).toHaveLength(1);
+      expect(mocks.recordFailsafeAttempt).toHaveBeenCalledTimes(1);
+    });
+
+    it('still streams the summary when activity tracking failed to begin', async () => {
+      mocks.activityBegun = false;
+
+      const response = await request(app)
+        .post('/summary')
+        .send({ pageId: shortPage._id.toString() })
+        .expect(200);
+
+      const text = parseSse(response.text)
+        .filter((chunk) => chunk.type === 'text-delta')
+        .map((chunk) => chunk.delta)
+        .join('');
+      expect(text).toBe(FINAL_TEXT);
+      expect(mocks.emitActivity).not.toHaveBeenCalled();
+    });
+
     it('records an UNSETTLED attempt when the stream throws after it has started', async () => {
       mocks.stream.mockResolvedValueOnce({
         ...buildStreamResult([{ type: 'start' }], 'stop'),
@@ -745,16 +799,106 @@ describe('POST /summary (summarize-message handler)', () => {
         await reachedGetMemory;
         clientRequest.destroy();
         await responseClosed;
-        await vi.waitFor(() => expect(streamCalls).toHaveLength(1));
         for (let i = 0; i < 5; i++) {
-          // biome-ignore lint/performance/noAwaitInLoops: lets the handler drain the finished stream
+          // biome-ignore lint/performance/noAwaitInLoops: lets the handler run past getMemory
           await new Promise(setImmediate);
         }
       } finally {
         server.close();
       }
 
-      expect(streamCalls[0].options.abortSignal.aborted).toBe(true);
+      expect(mocks.stream).not.toHaveBeenCalled();
+      expect(threads).toHaveLength(0);
+      expect(mocks.incrementCount).not.toHaveBeenCalled();
+      expect(mocks.emitActivity).not.toHaveBeenCalled();
+    });
+
+    it('discards the new thread without starting the agent when the client leaves during thread creation', async () => {
+      let markReached: () => void = () => {};
+      const reachedCreateThread = new Promise<void>((resolve) => {
+        markReached = resolve;
+      });
+      let markClosed: () => void = () => {};
+      const responseClosed = new Promise<void>((resolve) => {
+        markClosed = resolve;
+      });
+      mocks.responseClosed.mockImplementationOnce(() => markClosed());
+      const createThread = vi
+        .mocked(memory.createThread)
+        .getMockImplementation();
+      vi.mocked(memory.createThread).mockImplementationOnce(async (args) => {
+        markReached();
+        await responseClosed;
+        // biome-ignore lint/style/noNonNullAssertion: set in beforeEach
+        return createThread!(args);
+      });
+
+      const server = app.listen(0);
+      try {
+        const clientRequest = openSummaryRequest(server);
+        await reachedCreateThread;
+        clientRequest.destroy();
+        await responseClosed;
+        for (let i = 0; i < 5; i++) {
+          // biome-ignore lint/performance/noAwaitInLoops: lets the handler run past createThread
+          await new Promise(setImmediate);
+        }
+      } finally {
+        server.close();
+      }
+
+      expect(mocks.stream).not.toHaveBeenCalled();
+      expect(threads).toHaveLength(0);
+    });
+
+    it('neither counts nor emits when the client leaves while the stream result settles', async () => {
+      let markClosed: () => void = () => {};
+      const responseClosed = new Promise<void>((resolve) => {
+        markClosed = resolve;
+      });
+      mocks.responseClosed.mockImplementationOnce(() => markClosed());
+      let markSettled: () => void = () => {};
+      const settled = new Promise<void>((resolve) => {
+        markSettled = resolve;
+      });
+      mocks.stream.mockResolvedValueOnce({
+        ...buildStreamResult(
+          [
+            { type: 'start' },
+            { type: 'text-start', id: 'text-1' },
+            { type: 'text-delta', id: 'text-1', delta: FINAL_TEXT },
+            { type: 'text-end', id: 'text-1' },
+            { type: 'finish' },
+          ],
+          'stop',
+        ),
+        // Resolves only after the client has gone.
+        finishReason: responseClosed.then(() => {
+          markSettled();
+          return 'stop';
+        }),
+      });
+
+      const server = app.listen(0);
+      try {
+        const clientRequest = openSummaryRequest(server);
+        await new Promise<void>((resolve) => {
+          clientRequest.on('response', (response) => {
+            response.once('data', () => {
+              clientRequest.destroy();
+              resolve();
+            });
+          });
+        });
+        await settled;
+        for (let i = 0; i < 5; i++) {
+          // biome-ignore lint/performance/noAwaitInLoops: lets the handler finish after the promises settle
+          await new Promise(setImmediate);
+        }
+      } finally {
+        server.close();
+      }
+
       expect(mocks.incrementCount).not.toHaveBeenCalled();
       expect(mocks.emitActivity).not.toHaveBeenCalled();
     });
@@ -859,6 +1003,17 @@ describe('POST /summary (summarize-message handler)', () => {
       expect(response.text).not.toContain('RAW_PROVIDER_RESPONSE_BODY');
       expect(response.text).not.toContain('provider.example.com');
       expect(mocks.incrementCount).not.toHaveBeenCalled();
+    });
+
+    it('leaves no empty thread behind when the agent fails to start', async () => {
+      mocks.stream.mockRejectedValueOnce(new Error('boom'));
+
+      await request(app)
+        .post('/summary')
+        .send({ pageId: shortPage._id.toString() })
+        .expect(500);
+
+      expect(threads).toHaveLength(0);
     });
 
     it('does not increment the counter when the stream ends with an error chunk', async () => {

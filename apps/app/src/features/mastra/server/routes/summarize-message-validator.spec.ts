@@ -1,5 +1,4 @@
-import type { Request } from 'express';
-import { validationResult } from 'express-validator';
+import { type ValidationChain, validationResult } from 'express-validator';
 
 import { MAX_MODEL_KEY_LENGTH } from '~/features/mastra/interfaces/model-key';
 
@@ -13,14 +12,15 @@ import {
 // inspecting validationResult, NOT by introspecting the chain's internal structure.
 // Mirrors post-message.spec.ts / admin-ai-settings/put-ai-settings.spec.ts.
 
-const buildRequest = (body: Record<string, unknown>): Request =>
-  ({
-    body,
-    cookies: {},
-    headers: {},
-    params: {},
-    query: {},
-  }) as unknown as Request;
+type ValidatorRequest = Parameters<ValidationChain['run']>[0];
+
+const buildRequest = (body: Record<string, unknown>): ValidatorRequest => ({
+  body,
+  cookies: {},
+  headers: {},
+  params: {},
+  query: {},
+});
 
 const runValidators = async (
   body: Record<string, unknown>,

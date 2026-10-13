@@ -2,6 +2,7 @@ import type { IUserHasId } from '@growi/core';
 import { getIdStringForRef, SCOPE } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { toAISdkStream } from '@mastra/ai-sdk';
+import type { MastraMemory } from '@mastra/core/memory';
 import { RequestContext } from '@mastra/core/request-context';
 import { createUIMessageStream, pipeUIMessageStreamToResponse } from 'ai';
 import type { Request, RequestHandler } from 'express';
@@ -29,7 +30,10 @@ import { getOrCreateThread } from '../services/get-or-create-thread';
 import { mastra } from '../services/mastra-modules';
 import type { SummarizeRequestContextShape } from '../services/mastra-modules/agents/summarize/request-context';
 import { resolveChatErrorMessage } from './chat-error-message';
-import { buildSummarizeMessageValidator } from './summarize-message-validator';
+import {
+  buildSummarizeMessageValidator,
+  isAbsent,
+} from './summarize-message-validator';
 
 const logger = loggerFactory('growi:routes:apiv3:mastra:summarize-message');
 
@@ -57,10 +61,10 @@ const findPageForViewer = (
   user: IUserHasId,
 ): Promise<HydratedDocument<PageDocument> | null> => {
   const Page = mongoose.model<PageDocument, PageModel>('Page');
-  if (pageId != null && pageId !== '') {
+  if (!isAbsent(pageId)) {
     return Page.findByIdAndViewer(pageId, user);
   }
-  if (pagePath != null && pagePath !== '') {
+  if (!isAbsent(pagePath)) {
     return Page.findByPathAndViewer(pagePath, user, null, true);
   }
   return Promise.resolve(null);
@@ -81,10 +85,23 @@ const buildSummarizeRequest = (
 // A failure inside the 200 stream is not a failure to the fail-safe
 // finalizer — see rules/activity-recording.md. take() yields the context at
 // most once, so repeated calls record at most one row.
-const recordUnsettledAttempt = (activityId: string): void => {
+const recordUnsettledAttempt = (activityId: string | undefined): void => {
+  if (activityId == null) return;
   const context = pendingActivityContext.take(activityId);
   if (context != null) {
     void recordFailsafeAttempt(activityId, context);
+  }
+};
+
+// Only for a run that never started (design.md "SummarizeMessageRoute").
+const discardThread = async (
+  memory: MastraMemory,
+  threadId: string,
+): Promise<void> => {
+  try {
+    await memory.deleteThread(threadId);
+  } catch (error) {
+    logger.error(error);
   }
 };
 
@@ -104,6 +121,8 @@ export const summarizeMessageHandlersFactory: SummarizeMessageHandlersFactory =
       apiV3FormValidator,
       async (req: Req, res: ApiV3Response) => {
         const { modelKey } = req.body;
+        // Undefined when addActivity failed to begin tracking.
+        const activityId: string | undefined = res.locals.activity?._id;
 
         try {
           const page = await findPageForViewer(req.body, req.user);
@@ -133,12 +152,22 @@ export const summarizeMessageHandlersFactory: SummarizeMessageHandlersFactory =
             );
           }
 
+          // 'close' may already have fired during the awaits above; the
+          // fail-safe finalizer has recorded that attempt.
+          if (res.destroyed) {
+            return;
+          }
+
           // No threadId: getOrCreateThread mints a fresh one, so a summary
           // always starts a new conversation.
           const thread = await getOrCreateThread({
             memory,
             resourceId: req.user._id.toString(),
           });
+          if (res.destroyed) {
+            await discardThread(memory, thread.id);
+            return;
+          }
 
           const effectiveModelKey = resolveEffectiveModelKey(modelKey);
 
@@ -160,28 +189,30 @@ export const summarizeMessageHandlersFactory: SummarizeMessageHandlersFactory =
               abortController.abort();
             }
           });
-          // 'close' may already have fired during the awaits above.
-          if (res.destroyed) {
-            abortController.abort();
-          }
 
-          const stream = await summarizeAgent.stream(
-            buildSummarizeRequest(
-              page._id.toString(),
-              page.path,
-              req.user.lang,
-            ),
-            {
-              requestContext,
-              maxSteps: MAX_STEPS,
-              memory: {
-                thread: thread.id,
-                resource: thread.resourceId,
+          let stream: Awaited<ReturnType<typeof summarizeAgent.stream>>;
+          try {
+            stream = await summarizeAgent.stream(
+              buildSummarizeRequest(
+                page._id.toString(),
+                page.path,
+                req.user.lang,
+              ),
+              {
+                requestContext,
+                maxSteps: MAX_STEPS,
+                memory: {
+                  thread: thread.id,
+                  resource: thread.resourceId,
+                },
+                providerOptions: getProviderOptionsForModel(effectiveModelKey),
+                abortSignal: abortController.signal,
               },
-              providerOptions: getProviderOptionsForModel(effectiveModelKey),
-              abortSignal: abortController.signal,
-            },
-          );
+            );
+          } catch (error) {
+            await discardThread(memory, thread.id);
+            throw error;
+          }
 
           // Same sanitize points as post-message.ts: the toAISdkStream hook
           // covers error chunks, the createUIMessageStream hook covers
@@ -191,7 +222,6 @@ export const summarizeMessageHandlersFactory: SummarizeMessageHandlersFactory =
             return resolveChatErrorMessage(error);
           };
 
-          const activityId = res.locals.activity._id;
           const uiMessageStream = createUIMessageStream({
             onError: (error) => {
               recordUnsettledAttempt(activityId);
@@ -230,10 +260,15 @@ export const summarizeMessageHandlersFactory: SummarizeMessageHandlersFactory =
                 writer.write(value);
               }
 
-              // res.destroyed also covers a disconnect before the close
-              // listener above was registered; the fail-safe finalizer has
-              // recorded that attempt.
+              // The fail-safe finalizer has recorded that attempt.
               if (res.destroyed) {
+                return;
+              }
+
+              // The client already got the error chunk; awaiting the stream's
+              // promises here could reject and send it a second one.
+              if (hasErrorChunk) {
+                recordUnsettledAttempt(activityId);
                 return;
               }
 
@@ -242,6 +277,11 @@ export const summarizeMessageHandlersFactory: SummarizeMessageHandlersFactory =
                 stream.finishReason,
                 stream.steps,
               ]);
+
+              // The client may have left while the promises above settled.
+              if (res.destroyed) {
+                return;
+              }
 
               const messageMetadata: CustomUIMessageMetadata = { finishReason };
               writer.write({ type: 'message-metadata', messageMetadata });
@@ -259,12 +299,16 @@ export const summarizeMessageHandlersFactory: SummarizeMessageHandlersFactory =
 
               // 'tool-calls' (maxSteps exhausted) and 'length' (truncated)
               // end without a complete summary.
-              if (hasErrorChunk || finishReason !== 'stop' || !hasText) {
+              if (finishReason !== 'stop' || !hasText) {
                 recordUnsettledAttempt(activityId);
                 return;
               }
 
               incrementAiSummarizeGeneratedCount();
+              // Without an activityId the listener would settle a bare row.
+              if (activityId == null) {
+                return;
+              }
               // Emitted inside execute, i.e. before the response finishes —
               // see rules/activity-recording.md.
               crowi.events.activity.emit('update', activityId, {
