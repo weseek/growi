@@ -150,10 +150,10 @@ export class InAppNotificationService {
           offset,
           populate: [
             { path: 'user' },
-            {
-              path: 'target',
-              populate: [{ path: 'attachment', strictPopulate: false }],
-            },
+            // target.attachment is populated via prisma by the /list route after
+            // toObject(): mongoose casts a prisma row assigned to a ref path
+            // back to an ObjectId, dropping `downloadPathProxied`.
+            { path: 'target' },
             { path: 'activities', populate: { path: 'user' } },
           ],
         },

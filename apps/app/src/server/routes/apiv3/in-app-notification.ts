@@ -9,6 +9,7 @@ import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import loginRequiredFactory from '~/server/middlewares/login-required';
+import { prisma } from '~/utils/prisma';
 
 import type { IInAppNotification } from '../../../interfaces/in-app-notification';
 import type { ApiV3Response } from './interfaces/apiv3-response';
@@ -179,6 +180,34 @@ export const setup = (crowi: Crowi): Router => {
           .filter((user) => user != null)
           .filter((user, i, self) => self.indexOf(user) === i);
 
+      // TODO: populate target.attachment in the notification query itself
+      // once InAppNotification is migrated to prisma. Read through prisma so
+      // it carries the computed `downloadPathProxied`.
+      const hasAttachmentRef = (
+        target: unknown,
+      ): target is { attachment: NonNullable<unknown> } =>
+        target != null &&
+        typeof target === 'object' &&
+        'attachment' in target &&
+        target.attachment != null;
+      const attachmentIds = [
+        ...new Set<string>(
+          paginationResult.docs
+            .map(({ target }) => target)
+            .filter(hasAttachmentRef)
+            .map(({ attachment }) => String(attachment)),
+        ),
+      ];
+      const attachments =
+        attachmentIds.length === 0
+          ? []
+          : await prisma.attachments.findMany({
+              where: { id: { in: attachmentIds } },
+            });
+      const attachmentsById = new Map(
+        attachments.map((attachment) => [attachment.id, attachment]),
+      );
+
       const serializedDocs: Array<IInAppNotification> =
         paginationResult.docs.map((doc) => {
           if (doc.user != null && doc.user instanceof User) {
@@ -193,6 +222,21 @@ export const setup = (crowi: Crowi): Router => {
           });
 
           docObj.actionUsers = serializedActionUsers;
+          if (hasAttachmentRef(docObj.target)) {
+            const attachment = attachmentsById.get(
+              String(docObj.target.attachment),
+            );
+            docObj.target = {
+              ...docObj.target,
+              attachment: attachment
+                ? {
+                    ...attachment,
+                    creator: attachment.creatorId,
+                    page: attachment.pageId,
+                  }
+                : null,
+            };
+          }
           return docObj;
         });
 
