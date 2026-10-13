@@ -13,16 +13,12 @@ import { FilterXSS } from 'xss';
 
 const logger = loggerFactory('growi:remark-attachment-refs:routes:refs');
 
-// `g` / `y` make RegExp#test stateful via lastIndex, which skips matches when
-// one instance filters many strings; MongoDB `$regex` never honored them either.
-const STATEFUL_FLAGS = /[gy]/g;
-
 function generateRegexp(expression: string): RegExp {
   // https://regex101.com/r/uOrwqt/2
   const matches = expression.match(/^\/(.+)\/(.*)?$/);
 
   return matches != null
-    ? new RegExp(matches[1], matches[2]?.replace(STATEFUL_FLAGS, ''))
+    ? new RegExp(matches[1], matches[2])
     : new RegExp(expression);
 }
 
@@ -261,25 +257,36 @@ export const routesFactory = (crowi): Router => {
 
       logger.debug('retrieve attachments for pages:', pageIds);
 
+      // Two queries on purpose:
+      // 1. findRaw: Prisma's typed filters cannot express an arbitrary regex,
+      //    so the filter is sent raw. This also keeps evaluation in MongoDB,
+      //    whose PCRE match limit bounds catastrophic backtracking; filtering
+      //    in-process with V8 has no such limit and would block the event loop.
+      //    findRaw returns bare documents (no `include`, no computed fields),
+      //    so only the matching ids are taken from it.
+      // 2. findMany: re-fetch those ids through the extended client to get
+      //    `creator` and the computed fields that serializeAttachmentSecurely needs.
+      const matchedRows = (await prisma.attachments.findRaw({
+        filter: {
+          page: { $in: pageIds.map((id: string) => ({ $oid: id })) },
+          ...(regex != null && {
+            originalName: {
+              $regex: regex.source,
+              // MongoDB rejects JS flags it has no equivalent for (g, y, d, v)
+              $options: regex.flags.replace(/[^imsu]/g, ''),
+            },
+          }),
+        },
+        options: { projection: { _id: 1 } },
+      })) as unknown as { _id: { $oid: string } }[];
+
       const attachments = await prisma.attachments.findMany({
-        where: { pageId: { in: pageIds } },
+        where: { id: { in: matchedRows.map((row) => row._id.$oid) } },
         include: { creator: true },
       });
 
-      // regex filtering happens in-process: Prisma's Mongo connector has no
-      // arbitrary-RegExp filter (only contains/startsWith/mode:'insensitive'),
-      // and `findRaw` would drop the `creator` include and computed fields.
-      const filteredAttachments =
-        regex != null
-          ? attachments.filter(
-              (attachment) =>
-                attachment.originalName != null &&
-                regex.test(attachment.originalName),
-            )
-          : attachments;
-
       res.status(200).send({
-        attachments: filteredAttachments.map((attachment) =>
+        attachments: attachments.map((attachment) =>
           serializeAttachmentSecurely({
             ...attachment,
             page: attachment.pageId,
