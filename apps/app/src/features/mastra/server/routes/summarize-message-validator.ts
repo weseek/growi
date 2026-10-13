@@ -31,8 +31,10 @@ export const buildSummarizeMessageValidator = (): ValidationChain[] => [
     .isMongoId()
     .withMessage('pageId must be a valid MongoDB ObjectId'),
 
+  // nullable: a null pagePath is absent to the cross-field check and the
+  // handler alike.
   body('pagePath')
-    .optional()
+    .optional({ nullable: true })
     .isString()
     .withMessage('pagePath must be a string')
     .isLength({ max: MAX_PAGE_PATH_LENGTH })

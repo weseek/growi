@@ -679,7 +679,7 @@ export const limitedGetPageContentTool: Tool; // used only by summarizeAgent
 既存の `post-message.ts` と同じ方針を踏襲する: ストリーミング開始前のエラーは `apiv3Err` で返し、ストリーミング開始後のエラーはストリームのエラーチャンクとして安全なメッセージのみを転送する（プロバイダ由来の一行メッセージのみ、スタックトレースやレスポンス本体は転送しない）。
 
 ### Error Categories and Responses
-- **User Errors (4xx)**: `pageId`／`pagePath` がいずれも欠落 → 400（`summarize-message-validator.ts`）。ページ不存在／閲覧権限なし → **ルート層の `Page.findByIdAndViewer` が `null` を返した時点で、ストリームを開始せず `not_found_or_forbidden`（403/404 のいずれか一方に統一）で短絡する。不存在と権限なしで応答を区別しないため、ページの存在有無は明らかにならない**（ストリーム開始後に `getPageContentTool` が `not_found_or_forbidden` を返し得るのは、ゲート通過後にページが削除・権限変更された競合ケースに限られ、通常フローでは到達しない）。永続化リクエストで `body`／`sourceRevisionId`／`capturedAt` が不正 → 400。永続化対象のページが不存在／権限なし → `not_found_or_forbidden`（本文取得と同じ非開示応答）。
+- **User Errors (4xx)**: `pageId`／`pagePath` がいずれも欠落 → 400（`summarize-message-validator.ts`）。ページ不存在／閲覧権限なし → **ルート層の `Page.findByIdAndViewer` が `null` を返した時点で、ストリームを開始せず `not_found_or_forbidden`（403/404 のいずれか一方に統一）で短絡する。不存在と権限なしで応答を区別しないため、ページの存在有無は明らかにならない**（ストリーム開始後に `getPageContentTool` が `not_found_or_forbidden` を返し得るのは、ゲート通過後にページが削除・権限変更された競合ケースに限られ、通常フローでは到達しない）。revision を持たないページも要約する本文がないため同じ応答で短絡する。永続化リクエストで `body`／`sourceRevisionId`／`capturedAt` が不正 → 400。永続化対象のページが不存在／権限なし → `not_found_or_forbidden`（本文取得と同じ非開示応答）。
 - **System Errors (5xx)**: AI未設定・無効 → 501（`aiReadyGuard`、既存）。モデル呼び出し失敗・ストリーム構築失敗 → 500、詳細はサーバログのみに記録。永続化の書き込み失敗 → 500、詳細はサーバログのみに記録。削除（ローカル非表示）はサーバ通信を伴わないため、サーバ側エラーは発生し得ない。
 
 ### Monitoring

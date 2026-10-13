@@ -83,6 +83,19 @@ describe('buildSummarizeMessageValidator', () => {
       expect(hasErrors).toBe(false);
     });
 
+    it('accepts a null pagePath alongside a valid pageId', async () => {
+      const { hasErrors } = await runValidators({
+        pageId: VALID_PAGE_ID,
+        pagePath: null,
+      });
+      expect(hasErrors).toBe(false);
+    });
+
+    it('rejects a null pagePath without a pageId', async () => {
+      const { failedFields } = await runValidators({ pagePath: null });
+      expect(failedFields).toContain('pageId');
+    });
+
     it('accepts both pageId and pagePath specified', async () => {
       const { hasErrors } = await runValidators({
         pageId: VALID_PAGE_ID,

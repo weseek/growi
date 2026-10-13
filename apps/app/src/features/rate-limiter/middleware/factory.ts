@@ -23,8 +23,15 @@ const logger = loggerFactory('growi:middleware:api-rate-limit');
 // Express routing ignores case and a trailing slash by default, so the limiter
 // must too: otherwise `/Login/` reaches the same handler as `/login` while
 // falling back to the default limit and a separate counter.
-const normalizeEndpoint = (path: string): string =>
-  path.toLowerCase().replace(/\/+$/, '') || '/';
+// Trimmed by a loop: `/\/+$/` backtracks quadratically on a long run of slashes
+// followed by another character.
+const normalizeEndpoint = (path: string): string => {
+  let end = path.length;
+  while (end > 0 && path.charCodeAt(end - 1) === 0x2f) {
+    end--;
+  }
+  return path.slice(0, end).toLowerCase() || '/';
+};
 
 // generate ApiRateLimitConfig for api rate limiter
 const apiRateLimitConfig = generateApiRateLimitConfig();

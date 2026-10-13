@@ -84,8 +84,7 @@ describe('middlewareFactory', () => {
     }
   });
 
-  // Each summary is an LLM call over up to ~2000 page lines, so the route is
-  // held to the tightest tier (design.md "SummarizeMessageRoute").
+  // Tightest tier: see ai-summarize research.md 7.10.
   it('limits AI summary generation to 5 POSTs per window', async () => {
     const configs = await configsUsedFor('/_api/v3/mastra/summary', 'POST');
 

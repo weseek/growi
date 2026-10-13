@@ -44,7 +44,7 @@ const MAX_STEPS = 15;
 
 type ReqBody = {
   pageId?: string;
-  pagePath?: string;
+  pagePath?: string | null;
   modelKey?: string;
 };
 
@@ -83,8 +83,8 @@ const buildSummarizeRequest = (
 };
 
 // A failure inside the 200 stream is not a failure to the fail-safe
-// finalizer — see rules/activity-recording.md. take() yields the context at
-// most once, so repeated calls record at most one row.
+// finalizer — see design.md "SummarizeMessageRoute". take() yields the
+// context at most once, so repeated calls record at most one row.
 const recordUnsettledAttempt = (activityId: string | undefined): void => {
   if (activityId == null) return;
   const context = pendingActivityContext.take(activityId);
@@ -126,7 +126,9 @@ export const summarizeMessageHandlersFactory: SummarizeMessageHandlersFactory =
 
         try {
           const page = await findPageForViewer(req.body, req.user);
-          if (page == null) {
+          // A page without a revision has nothing to summarize and no
+          // sourceRevisionId to report.
+          if (page?.revision == null) {
             // Uniform 404 for "not found" and "forbidden" — see
             // rules/page-write-action-403-404.md.
             return res.apiv3Err(
@@ -139,8 +141,7 @@ export const summarizeMessageHandlersFactory: SummarizeMessageHandlersFactory =
           }
 
           // Unpopulated query: page.revision is the ObjectId itself.
-          const sourceRevisionId =
-            page.revision != null ? getIdStringForRef(page.revision) : '';
+          const sourceRevisionId = getIdStringForRef(page.revision);
           const capturedAt = new Date().toISOString();
 
           const summarizeAgent = mastra.getAgent('summarizeAgent');

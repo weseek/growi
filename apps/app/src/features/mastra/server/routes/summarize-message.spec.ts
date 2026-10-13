@@ -151,7 +151,7 @@ const { ObjectId } = mongoose.Types;
 type FakePage = {
   _id: mongoose.Types.ObjectId;
   path: string;
-  revision: mongoose.Types.ObjectId;
+  revision: mongoose.Types.ObjectId | null;
   body: string;
   // null = public
   viewableOnlyBy: string | null;
@@ -175,7 +175,7 @@ const buildPage = (
   path: string,
   body: string,
   viewableOnlyBy: string | null = null,
-): FakePage => ({
+): FakePage & { revision: mongoose.Types.ObjectId } => ({
   _id: new ObjectId(),
   path,
   revision: new ObjectId(),
@@ -195,7 +195,11 @@ const ownerOnlyPage = buildPage(
   'private body',
   otherUser._id.toString(),
 );
-const pages = [shortPage, longPage, ownerOnlyPage];
+const revisionlessPage: FakePage = {
+  ...buildPage('/summarize/revisionless', ''),
+  revision: null,
+};
+const pages = [shortPage, longPage, ownerOnlyPage, revisionlessPage];
 
 const isViewable = (page: FakePage, user: IUserHasId): boolean =>
   page.viewableOnlyBy == null || page.viewableOnlyBy === user._id.toString();
@@ -976,6 +980,17 @@ describe('POST /summary (summarize-message handler)', () => {
       expect(mocks.stream).not.toHaveBeenCalled();
       expect(threads).toHaveLength(0);
       expect(mocks.incrementCount).not.toHaveBeenCalled();
+    });
+
+    it('short-circuits with 404 before starting the stream when the page has no revision', async () => {
+      const response = await request(app)
+        .post('/summary')
+        .send({ pageId: revisionlessPage._id.toString() })
+        .expect(404);
+
+      expect(response.body.errors[0].code).toBe('not_found_or_forbidden');
+      expect(mocks.stream).not.toHaveBeenCalled();
+      expect(threads).toHaveLength(0);
     });
   });
 
