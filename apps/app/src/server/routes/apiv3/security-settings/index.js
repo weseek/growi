@@ -25,6 +25,7 @@ import {
 import { checkSetupStrategiesHasAdmin } from './checkSetupStrategiesHasAdmin';
 import {
   handleGetPasswordHashMigrationStatus,
+  handleGetPasswordHashUnmigratedUsers,
   handlePasswordHashCleanup,
 } from './password-hash';
 import { handleSamlUpdate, samlAuthValidator } from './saml';
@@ -1798,6 +1799,28 @@ export const setup = (crowi) => {
     loginRequiredStrictly,
     adminRequired,
     handleGetPasswordHashMigrationStatus,
+  );
+
+  /**
+   * @swagger
+   *
+   *  /security-setting/password-hash/unmigrated-users:
+   *    get:
+   *      tags: [SecuritySetting]
+   *      security:
+   *        - cookieAuth: []
+   *      summary: /security-setting/password-hash/unmigrated-users
+   *      description: List the users that still hold an old-format credential
+   *      responses:
+   *        200:
+   *          description: a page of unmigrated users, newest login first
+   */
+  router.get(
+    '/password-hash/unmigrated-users',
+    accessTokenParser([SCOPE.READ.ADMIN.SECURITY]),
+    loginRequiredStrictly,
+    adminRequired,
+    handleGetPasswordHashUnmigratedUsers,
   );
 
   /**

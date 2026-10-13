@@ -105,13 +105,24 @@ describe('PasswordHashMigration', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('reports completion and offers nothing once no legacy hash remains', () => {
+  it('removes itself entirely once no old-format data is left anywhere', () => {
+    // A one-off migration leaves nothing worth a permanent panel, so the whole
+    // section goes rather than sitting there saying "done" forever.
     mockStatus(buildStatus({ upgradedOnly: 7, both: 0 }));
 
-    render(<PasswordHashMigration />);
+    const { container } = render(<PasswordHashMigration />);
 
-    expect(cleanupButton()).toBeDisabled();
-    expect(screen.getByText(`${K}.already_completed`)).toBeInTheDocument();
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it('stays hidden while the status is still loading', () => {
+    // Otherwise a section that is about to disappear flashes on every page load
+    // of an instance that has already finished.
+    mockStatus(undefined);
+
+    const { container } = render(<PasswordHashMigration />);
+
+    expect(container).toBeEmptyDOMElement();
   });
 
   it('does not claim completion when nobody has migrated yet', () => {
@@ -122,9 +133,6 @@ describe('PasswordHashMigration', () => {
 
     render(<PasswordHashMigration />);
 
-    expect(
-      screen.queryByText(`${K}.already_completed`),
-    ).not.toBeInTheDocument();
     expect(screen.getByText(`${K}.blocked`)).toBeInTheDocument();
     expect(cleanupButton()).toBeDisabled();
   });
@@ -143,9 +151,6 @@ describe('PasswordHashMigration', () => {
     render(<PasswordHashMigration />);
 
     expect(screen.getByText(`${K}.nothing_to_remove`)).toBeInTheDocument();
-    expect(
-      screen.queryByText(`${K}.already_completed`),
-    ).not.toBeInTheDocument();
     expect(cleanupButton()).toBeDisabled();
   });
 

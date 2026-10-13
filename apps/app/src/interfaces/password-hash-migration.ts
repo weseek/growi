@@ -43,3 +43,26 @@ export interface IResPasswordHashCleanup {
   /** number of documents the legacy `password` field was removed from. */
   unset: number;
 }
+
+/** One row of the unmigrated-user list. */
+export interface IPasswordHashUnmigratedUser {
+  _id: string;
+  username: string;
+  email: string | null;
+  /** ISO string, or null when the user has never logged in. */
+  lastLoginAt: string | null;
+  /** UserStatus numeric code, so the client can mark non-active rows. */
+  status: number;
+  /**
+   * Whether the user has any external account. A hint, not a verdict: holding one
+   * does not prove the user never signs in with their local password.
+   */
+  hasExternalAccount: boolean;
+}
+
+export interface IPasswordHashUnmigratedUserList {
+  users: IPasswordHashUnmigratedUser[];
+  totalCount: number;
+  page: number;
+  limit: number;
+}

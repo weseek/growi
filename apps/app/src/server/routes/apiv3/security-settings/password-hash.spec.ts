@@ -14,9 +14,10 @@ import { mockDeep } from 'vitest-mock-extended';
 import type { IPasswordHashFormatDistribution } from '~/interfaces/password-hash-migration';
 import type Crowi from '~/server/crowi';
 
-const { countMock, cleanupMock } = vi.hoisted(() => ({
+const { countMock, cleanupMock, listMock } = vi.hoisted(() => ({
   countMock: vi.fn(),
   cleanupMock: vi.fn(),
+  listMock: vi.fn(),
 }));
 
 vi.mock('mongoose', () => ({
@@ -27,6 +28,9 @@ vi.mock('~/server/service/password-hash-format-distribution', () => ({
 }));
 vi.mock('~/server/service/password-hash-cleanup', () => ({
   runPasswordHashCleanup: cleanupMock,
+}));
+vi.mock('~/server/service/password-hash-unmigrated-users', () => ({
+  listPasswordHashUnmigratedUsers: listMock,
 }));
 vi.mock('~/utils/logger', () => ({
   default: () => ({
@@ -39,6 +43,7 @@ vi.mock('~/utils/logger', () => ({
 
 import {
   handleGetPasswordHashMigrationStatus,
+  handleGetPasswordHashUnmigratedUsers,
   handlePasswordHashCleanup,
 } from './password-hash';
 
@@ -244,5 +249,77 @@ describe('handlePasswordHashCleanup', () => {
     expect(apiv3).not.toHaveBeenCalled();
     expect(apiv3Err).toHaveBeenCalledTimes(1);
     expect(emit).not.toHaveBeenCalled();
+  });
+});
+
+describe('handleGetPasswordHashUnmigratedUsers', () => {
+  const emptyPage = { users: [], totalCount: 0, page: 1, limit: 20 };
+
+  // biome-ignore lint/suspicious/noExplicitAny: mocked express request
+  const reqWithQuery = (query: Record<string, unknown>) => ({ query }) as any;
+
+  it('defaults to the first page when no paging is asked for', async () => {
+    listMock.mockResolvedValue(emptyPage);
+    const { res, apiv3 } = buildRes();
+
+    await handleGetPasswordHashUnmigratedUsers(
+      reqWithQuery({}),
+      res as Response as never,
+    );
+
+    expect(listMock.mock.calls[0][2]).toEqual({ page: 1, limit: 20 });
+    expect(apiv3).toHaveBeenCalledWith(emptyPage);
+  });
+
+  it('passes a requested page through', async () => {
+    listMock.mockResolvedValue(emptyPage);
+    const { res } = buildRes();
+
+    await handleGetPasswordHashUnmigratedUsers(
+      reqWithQuery({ page: '3', limit: '50' }),
+      res as Response as never,
+    );
+
+    expect(listMock.mock.calls[0][2]).toEqual({ page: 3, limit: 50 });
+  });
+
+  it('clamps an oversized limit instead of failing the request', async () => {
+    // An out-of-range limit is a caller mistake worth absorbing — an administrator
+    // should not get an error page because a query string was wrong.
+    listMock.mockResolvedValue(emptyPage);
+    const { res, apiv3Err } = buildRes();
+
+    await handleGetPasswordHashUnmigratedUsers(
+      reqWithQuery({ limit: '100000' }),
+      res as Response as never,
+    );
+
+    expect(listMock.mock.calls[0][2].limit).toBe(100);
+    expect(apiv3Err).not.toHaveBeenCalled();
+  });
+
+  it('falls back to the defaults for values that are not positive integers', async () => {
+    listMock.mockResolvedValue(emptyPage);
+    const { res } = buildRes();
+
+    await handleGetPasswordHashUnmigratedUsers(
+      reqWithQuery({ page: '0', limit: 'abc' }),
+      res as Response as never,
+    );
+
+    expect(listMock.mock.calls[0][2]).toEqual({ page: 1, limit: 20 });
+  });
+
+  it('answers with an error instead of throwing when the listing fails', async () => {
+    listMock.mockRejectedValue(new Error('db down'));
+    const { res, apiv3, apiv3Err } = buildRes();
+
+    await handleGetPasswordHashUnmigratedUsers(
+      reqWithQuery({}),
+      res as Response as never,
+    );
+
+    expect(apiv3).not.toHaveBeenCalled();
+    expect(apiv3Err).toHaveBeenCalledTimes(1);
   });
 });

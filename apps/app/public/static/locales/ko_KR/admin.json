@@ -248,7 +248,6 @@
       "meaning_upgraded_only": "새 방식만 가지고 있으며 이전 형식의 데이터는 없습니다.",
       "meaning_no_password": "외부 인증 전용, 미활성화 또는 삭제된 사용자입니다. 이 마이그레이션의 영향을 받지 않습니다.",
       "cleanup_target": "삭제 대상",
-      "already_completed": "이전 형식의 데이터가 모두 삭제되었습니다. 강화가 완료되었습니다.",
       "ready_to_cleanup": "이전 형식의 데이터를 삭제할 수 있습니다. 실행하면 강화가 완료됩니다.",
       "nothing_to_remove": "삭제할 대상이 없습니다. 다만 마이그레이션되지 않은 사용자가 남아 있어 강화는 아직 완료되지 않았습니다.",
       "blocked": "마이그레이션되지 않은 활성 사용자가 {{count}}명 있습니다. 모두 한 번씩 로그인할 때까지 실행할 수 없습니다.",
@@ -260,7 +259,17 @@
       "cleanup_confirm_downgrade_warning": "실행 후에는 마이그레이션된 사용자가 기존 비밀번호로 이전 버전에 로그인할 수 없습니다. 이전 버전으로 되돌리려면 모든 사용자가 비밀번호를 다시 설정해야 합니다.",
       "cleanup_consent": "다운그레이드 시 모든 사용자가 비밀번호를 다시 설정해야 한다는 점을 이해했습니다",
       "cleanup_execute": "삭제",
-      "cleanup_succeeded": "{{count}}명의 사용자에게서 이전 형식의 데이터를 삭제했습니다."
+      "cleanup_succeeded": "{{count}}명의 사용자에게서 이전 형식의 데이터를 삭제했습니다.",
+      "list_toggle": "마이그레이션되지 않은 사용자 보기({{count}}명)",
+      "list_hint": "최근에 로그인했는데도 마이그레이션되지 않은 사용자는 로컬 비밀번호로 로그인하지 않고 있을 가능성이 높습니다. 로그인을 독려해도 해소되지 않으며 비밀번호 재설정이 필요합니다.",
+      "list_load_failed": "사용자 목록을 불러오지 못했습니다.",
+      "list_column_username": "사용자 이름",
+      "list_column_email": "이메일",
+      "list_column_last_login": "마지막 로그인",
+      "list_column_external_account": "외부 계정",
+      "list_never_logged_in": "없음",
+      "list_has_external_account": "있음",
+      "list_non_active": "비활성"
     }
   },
   "notification_settings": {

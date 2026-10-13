@@ -10,6 +10,7 @@ import type {
 import type Crowi from '~/server/crowi';
 import { runPasswordHashCleanup } from '~/server/service/password-hash-cleanup';
 import { countPasswordHashFormatDistribution } from '~/server/service/password-hash-format-distribution';
+import { listPasswordHashUnmigratedUsers } from '~/server/service/password-hash-unmigrated-users';
 import loggerFactory from '~/utils/logger';
 
 import type { ApiV3Response } from '../interfaces/apiv3-response';
@@ -37,6 +38,16 @@ const logger = loggerFactory(
  */
 
 const usersCollection = () => mongoose.connection.collection('users');
+const externalAccountsCollection = () =>
+  mongoose.connection.collection('externalaccounts');
+
+const DEFAULT_LIMIT = 20;
+const MAX_LIMIT = 100;
+
+const parsePositiveInt = (raw: unknown, fallback: number): number => {
+  const value = Number(raw);
+  return Number.isInteger(value) && value > 0 ? value : fallback;
+};
 
 /**
  * GET the format distribution so the admin can see whether the cleanup is runnable.
@@ -124,4 +135,42 @@ export const handlePasswordHashCleanup = (crowi: Crowi) => {
       );
     }
   };
+};
+
+/**
+ * List the users who still hold an old-format credential.
+ *
+ * Separate from the status endpoint because it is paged and much heavier: the
+ * status is read on every render of the section, this only when the administrator
+ * actually wants to see who is left.
+ */
+export const handleGetPasswordHashUnmigratedUsers = async (
+  req: CrowiRequest,
+  res: ApiV3Response,
+): Promise<void> => {
+  try {
+    const page = parsePositiveInt(req.query.page, 1);
+    // Clamp rather than reject: an out-of-range limit is a caller mistake worth
+    // absorbing, not worth failing an administrator's page load over.
+    const limit = Math.min(
+      parsePositiveInt(req.query.limit, DEFAULT_LIMIT),
+      MAX_LIMIT,
+    );
+
+    const result = await listPasswordHashUnmigratedUsers(
+      usersCollection(),
+      externalAccountsCollection(),
+      { page, limit },
+    );
+
+    res.apiv3(result);
+  } catch (err) {
+    logger.error(err);
+    res.apiv3Err(
+      new ErrorV3(
+        'Failed to list the users that have not migrated yet',
+        'password-hash-unmigrated-users-failed',
+      ),
+    );
+  }
 };

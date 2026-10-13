@@ -248,7 +248,6 @@
       "meaning_upgraded_only": "Ne possède que le nouveau schéma ; aucune donnée à l'ancien format ne subsiste.",
       "meaning_no_password": "Authentification externe uniquement, non encore activé ou supprimé. Non concerné par cette migration.",
       "cleanup_target": "À supprimer",
-      "already_completed": "Toutes les données à l'ancien format ont été supprimées. Le renforcement est terminé.",
       "ready_to_cleanup": "Les données à l'ancien format peuvent être supprimées. Cette opération achève le renforcement.",
       "nothing_to_remove": "Il n'y a rien à supprimer. Le renforcement n'est cependant pas terminé, car certains utilisateurs n'ont pas migré.",
       "blocked": "{{count}} utilisateur(s) actif(s) n'ont pas encore migré. L'opération est impossible tant qu'ils ne se sont pas tous connectés une fois.",
@@ -260,7 +259,17 @@
       "cleanup_confirm_downgrade_warning": "Après cette opération, les utilisateurs migrés ne pourront plus se connecter à une version antérieure avec leur mot de passe actuel. Revenir à une version antérieure obligerait chaque utilisateur à définir un nouveau mot de passe.",
       "cleanup_consent": "Je comprends que rétrograder obligera chaque utilisateur à définir un nouveau mot de passe",
       "cleanup_execute": "Supprimer",
-      "cleanup_succeeded": "Données à l'ancien format supprimées pour {{count}} utilisateur(s)."
+      "cleanup_succeeded": "Données à l'ancien format supprimées pour {{count}} utilisateur(s).",
+      "list_toggle": "Afficher les utilisateurs non migrés ({{count}})",
+      "list_hint": "Un utilisateur connecté récemment mais toujours non migré n'utilise probablement pas son mot de passe local ; lui demander de se connecter ne changera rien — son mot de passe doit être réinitialisé.",
+      "list_load_failed": "Échec du chargement de la liste des utilisateurs.",
+      "list_column_username": "Nom d'utilisateur",
+      "list_column_email": "E-mail",
+      "list_column_last_login": "Dernière connexion",
+      "list_column_external_account": "Compte externe",
+      "list_never_logged_in": "Jamais",
+      "list_has_external_account": "Oui",
+      "list_non_active": "Non actif"
     }
   },
   "notification_settings": {

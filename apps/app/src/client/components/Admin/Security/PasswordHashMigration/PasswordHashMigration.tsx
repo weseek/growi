@@ -12,6 +12,7 @@ import {
 } from '~/stores/admin/password-hash-migration';
 
 import { CleanupConfirmModal } from './CleanupConfirmModal';
+import { UnmigratedUserList } from './UnmigratedUserList';
 
 const DistributionTable = (props: {
   distribution: IPasswordHashFormatDistribution;
@@ -83,7 +84,7 @@ const DistributionTable = (props: {
 const StatusBanner = (props: {
   status: IResPasswordHashMigrationStatus;
 }): JSX.Element => {
-  const { distribution, isCleanupRunnable, isCleanupCompleted } = props.status;
+  const { distribution, isCleanupRunnable } = props.status;
   const { t } = useTranslation('admin');
 
   if (!isCleanupRunnable) {
@@ -92,15 +93,6 @@ const StatusBanner = (props: {
         {t('security_settings.password_hash_migration.blocked', {
           count: distribution.legacyOnlyActive,
         })}
-      </div>
-    );
-  }
-
-  if (isCleanupCompleted) {
-    return (
-      <div className="alert alert-success">
-        <span className="material-symbols-outlined me-1">check_circle</span>
-        {t('security_settings.password_hash_migration.already_completed')}
       </div>
     );
   }
@@ -157,6 +149,14 @@ export const PasswordHashMigration = (): JSX.Element => {
     }
   }, [mutate, t]);
 
+  // Nothing to show once no old-format credential is left anywhere: this is a
+  // one-off migration, so a permanently "done" panel is just clutter. Render
+  // nothing while the status is still loading too, rather than flashing a section
+  // that is about to disappear on the (eventually normal) completed instance.
+  if (isLoading || (data != null && data.isCleanupCompleted)) {
+    return <></>;
+  }
+
   return (
     <>
       <h3 className="border-bottom mt-5">
@@ -166,16 +166,6 @@ export const PasswordHashMigration = (): JSX.Element => {
       <p className="mt-3">
         {t('security_settings.password_hash_migration.description')}
       </p>
-
-      {isLoading && (
-        <div className="text-muted">
-          <span
-            className="spinner-border spinner-border-sm me-1"
-            role="status"
-          />
-          {t('security_settings.password_hash_migration.loading')}
-        </div>
-      )}
 
       {error != null && (
         <div className="alert alert-danger">
@@ -204,6 +194,8 @@ export const PasswordHashMigration = (): JSX.Element => {
               })}
             </p>
           )}
+
+          <UnmigratedUserList totalCount={data.distribution.legacyOnly} />
 
           <button
             type="button"
