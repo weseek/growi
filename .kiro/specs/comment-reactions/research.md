@@ -4,7 +4,7 @@
 - **Feature**: `comment-reactions`
 - **Discovery Scope**: Extension（既存のコメント機能・監査ログ・G2G 移行・絵文字基盤への統合。認可と情報露出に関わるため、light discovery に加えて認可・データ移行の経路は個別に深掘りした）
 - **Key Findings**:
-  - コメントの取得は `GET /_api/v3/comments`（`comment` スペック）に一本化され、共有リンク閲覧者にもインラインコメントを返す。その応答（`ICommentListItem`）の項目追加は `comment` スペックの Revalidation Trigger なので、リアクションは別エンドポイントで読む。
+  - コメントの取得は `GET /_api/v3/comments`（`comment` スペック）に一本化され、共有リンク閲覧者にもインラインコメントを返す。リアクションはこの応答の各コメントに載せ、コメント単体の取得 API と書き込みの応答でも同じ形で返す（コメントの API 全体の一貫性を優先）。`ICommentListItem` の項目追加は `comment` スペックの契約の変更なので、`spec-lifecycle.md` に従って `comment` スペックへ書き戻す。
   - 新しいコレクションを G2G 移行で正しく運ぶには、**Mongoose スキーマを起動時に登録することが必須**。エクスポートは JSON 文字列化され、インポート時の ObjectId への型変換は Mongoose スキーマがあるときにしか行われない。一意インデックスの作成も Mongoose が持つ（`.claude/rules/model.md`）。
   - emoji-mart 5.6.0 のピッカーは、肌の色付きの絵文字を `shortcodes: ':+1::skin-tone-3:'`、`skin: 3` で返す。Slack のリアクション名 `+1::skin-tone-3` と同じ段階番号（2〜6）なので、変換は区切り文字の付け替えだけで済む。
 
@@ -17,7 +17,10 @@
   - 認可の連鎖は `accessTokenParser([SCOPE.READ.FEATURES.PAGE])` → validators → `apiV3FormValidator` → `certifySharedPage` → `loginRequiredFactory(crowi, true)`（ゲスト可）→ handler。handler では、`req.isSharedPage === true` か、`findPageAndMetaDataByViewer(...).meta` が not-found でないことを確認する。失敗したら 404 `notfound_or_forbidden` を返す。
   - 共有リンク経由では `revisionId` を無視し、インラインコメントも返す（comment 要件 3.3）。画面側は、共有リンクの画面と検索結果のプレビューでインラインコメントを描画しない（comment 要件 6.5）。
   - `comment` スペックの Revalidation Triggers には「`ICommentListItem` の項目の追加」「取得フックのキー `['/comments', pageId, shareLinkId]` の変更」が含まれる。
-- **Implications**: リアクションは専用の GET を新設し、`list.ts` と同じ標準ミドルウェアと閲覧判定の部品で組む。comment スペックの契約には触れない。
+  - コメント単体を取得する API は無い。
+  - `certifySharedPage` は、`pageId`（query または body）と `shareLinkId` の組で共有リンクを検証する。`pageId` が無い要求は検証しない。`pageId` と `page_id` が食い違う要求も検証しない（IDOR の防止）。
+  - 画面は、共有の取得フック `useSWRxCommentList` から、`useSWRxPageComment`（`isInline` で絞る）と `useSWRxInlineComments`（`groupInlineComments` で組み直す）を派生させている。`groupInlineComments` は必要な項目だけを明示的に写すので、`ICommentListItem` に足した項目はインラインコメントの型（`InlineCommentWithReplies`、`InlineCommentReply`）には現れない。
+- **Implications**: リアクションは `ICommentListItem` に載せる。単体取得 API は、`certifySharedPage` のために `pageId` を必須にし、コメントがそのページのものかを確かめる。画面は、インラインコメントの型を変えずに、共有の一覧のキャッシュから `id` でリアクションを読む。
 
 ### 監査ログ（Activity）の記録方式
 - **Context**: 要件 9（追加・解除の記録、状態を変えない要求や拒否された要求は記録しない、通知しない）。
@@ -80,21 +83,27 @@
 
 | Option | Description | Strengths | Risks / Limitations | Notes |
 |--------|-------------|-----------|---------------------|-------|
-| (a) コメント一覧 API に相乗り | `ICommentListItem` にリアクションの集計を足す | 取得が1回で済む | `comment` スペックの契約変更（MCP・SDK・外部利用者に波及）。amend の書き戻しが要る | 不採用 |
-| (b) 専用の読み取り API | `GET /_api/v3/comment-reactions` を新設 | comment スペックの契約に触れない。リアクションだけ再取得できる | 取得が2回になる。認可をコメント一覧と揃え続ける必要がある | **採用**。認可の一致は統合テストで守る |
+| (a) コメントの API に載せる | 一覧の各件に `reactions` を足し、単体取得 API を新設し、PUT の応答でもコメントを返す | 取得が1回で済む。コメントを返す応答がすべて同じ形になる。リアクションの読み取りの範囲がコメントと構造的に一致する | `comment` スペックの契約変更（項目の追加、単体取得 API）。書き戻しが要る。リアクションの不具合がコメントの取得に波及しうる | **採用** |
+| (b) 専用の読み取り API | `GET /_api/v3/comment-reactions` を新設 | comment スペックの契約に触れない | 取得が2回になる。認可の判定が2か所に並び、一致をテストで守り続ける必要がある。コメントの API と形が揃わない | 不採用 |
 | 埋め込み（`comments.reactions`） | コメントのドキュメントに配列で持つ | 取得が単純 | 同時更新の一意性、Mongoose と Prisma の両方の変更、既存処理への波及 | discovery で不採用済み（brief.md） |
 
 ## Design Decisions
 
-### Decision: リアクションの読み取りは専用エンドポイントにする
-- **Context**: 要件 1、6.1。comment スペックの Revalidation Trigger。
+### Decision: リアクションはコメントの API に載せる（専用の取得 API は作らない）
+- **Context**: 要件 1、6.1。コメントに関する API 全体の一貫性。
 - **Alternatives Considered**:
-  1. `GET /_api/v3/comments` の応答に含める
-  2. 専用の `GET /_api/v3/comment-reactions?pageId=` を新設する
-- **Selected Approach**: 2。ページ単位でまとめて返す。認可は `list.ts` と同じ部品（`certifySharedPage`、`loginRequiredFactory(crowi, true)`、`findPageAndMetaDataByViewer`）で組む。
-- **Rationale**: 既存スペックの契約を変えずに済み、amend の扱いも要らない。追加・解除の後に、リアクションだけを再取得できる。
-- **Trade-offs**: ページ表示時の要求が1本増える。認可の判定が2か所に並ぶ。
-- **Follow-up**: 「コメント一覧が返す相手にだけリアクションも返す」ことを、同じ条件の組（閲覧権限あり／なし、共有リンク正／誤、ゲスト閲覧可／不可）で両方の API に当てる統合テストで守る。
+  1. 専用の `GET /_api/v3/comment-reactions?pageId=` を新設し、コメントの API とは別に読む
+  2. コメント一覧 API の各コメントに `reactions` を載せ、コメント単体の取得 API を新設し、書き込みの応答でも同じ形のコメントを返す
+- **Selected Approach**: 2。コメントを返す3つの応答（`GET /comments` の各件、`GET /comments/:id`、`PUT /comments/:id/reactions` の `comment`）を、同じ `ICommentListItem` にする。書き込みは `comments` のサブリソース `/comments/:id/reactions` にする。
+- **Rationale**:
+  - API の利用者（画面、MCP、外部スクリプト）が、どの応答でも同じ型でコメントとリアクションを扱える。リアクションはコメントに従属するデータなので、コメントの一部として現れるのが自然である。
+  - リアクションの読み取りの範囲が、コメントの読み取りの範囲と構造的に一致する（同じ応答に載る）。専用 API のように、認可の判定を2か所で揃え続ける必要が無い（要件 6.1）。
+  - ページ表示時の取得が1回で済む。書き込みの応答で、対象のコメントを最新の状態で返せるので、クライアントは一覧全体を再取得しなくてよい。
+- **Trade-offs**:
+  - `comment` スペックの契約（応答の項目、単体取得 API）を変えるので、`spec-lifecycle.md` に従った書き戻しが要る（design.md の「Amend Target」）。
+  - リアクションの不具合がコメントの取得に波及しうる。取り込みの失敗は `reactions: null` に閉じ込める（要件 6.5）。
+  - `comment` の取得が、リアクションのローダーに依存する。依存の向きを一方向に保つため、ローダーは利用者の整形関数を引数で受け取り、`comment` の実行時のコードを import しない。
+- **Follow-up**: 書き戻しは tasks.md の最終タスクにする。MCP・SDK が `reactions` を使うかは、それぞれの側で決める。
 
 ### Decision: 絵文字キーは名前空間の接頭辞付きの文字列にする
 - **Context**: 要件 4.5、4.6、将来のカスタム絵文字。
@@ -137,17 +146,20 @@
 - **Trade-offs**: 監査ログの詳細度が Small の環境では、既存のコメント操作と同じく記録されない。要件 9.1 は、監査ログの記録が有効な範囲での記録と解釈する（Open Questions に記載）。
 - **Follow-up**: snapshot に variant を足すことは、`activity-log-snapshot` の方針（action で絞り込む判別可能ユニオン）に沿った拡張として扱う。
 
-### Decision: 追加・解除の後はリアクションを再取得する（楽観的更新はしない）
+### Decision: 書き込みの応答で対象のコメントを返し、キャッシュの1件を置き換える（楽観的更新はしない）
 - **Context**: 要件 2.9、2.10。
-- **Selected Approach**: 書き込みの応答は `{ changed: boolean }` だけにする。成功したら、そのページのリアクションを再取得する。要求中はチップと「＋」を押せなくする。失敗したら `toastError` を出し、表示は取得済みのまま（操作前の状態）にする。
-- **Rationale**: 他の利用者の操作も反映した最新の状態を、単一の取得経路から得られる。ロールバックの処理が要らない（単純化）。
-- **Trade-offs**: 押してから反映されるまで、往復1回分の遅れがある。
+- **Alternatives Considered**:
+  1. 書き込みの応答は `{ changed }` だけにして、一覧全体を再取得する
+  2. 書き込みの応答に、対象のコメント（`ICommentListItem`、最新のリアクションを含む）を載せ、一覧のキャッシュの1件を置き換える
+- **Selected Approach**: 2。応答は `{ changed, comment }`。クライアントは `mutate(updater, { revalidate: false })` で該当の1件だけを置き換える。要求中はチップと「＋」を押せなくする。失敗したら `toastError` を出し、キャッシュは変えない（操作前の状態のまま）。
+- **Rationale**: 応答のコメントは書き込みの後にデータベースから読み直すので、他の利用者のリアクションも含めた最新の状態になる。一覧全体の再取得が要らない。ロールバックの処理も要らない（楽観的更新をしない）。
+- **Trade-offs**: 押してから反映されるまで、往復1回分の遅れがある。同じページの他のコメントの変化は、次の再取得まで反映されない（従来の SWR の再検証の範囲）。
 
 ### Decision: 追加と解除は1つの PUT（`isReacted`）で明示する
 - **Context**: 要件 2.7、2.8（反転型にしない）。
 - **Alternatives Considered**:
   1. `PUT`（追加）と `DELETE`（解除、クエリで `emoji` を渡す）に分ける
-  2. 1つの `PUT` の JSON body に `{ commentId, emoji, isReacted }` を載せる
+  2. 1つの `PUT` の JSON body に `{ emoji, isReacted }` を載せる（対象のコメントはパスの `/comments/:id/reactions` で示す）
 - **Selected Approach**: 2。
 - **Rationale**: `apiv3Delete` はパラメータをクエリで送る。クエリでは `unicode:+1` の `+` が、手で書いた要求（curl、SDK）で空白に化けて 400 になる。JSON body なら符号化の問題が無い。ページの「いいね」（`PUT /_api/v3/page/likes` の `{ pageId, bool }`）とも揃う。
 - **Trade-offs**: REST の動詞と操作が1対1にならない。
@@ -161,11 +173,13 @@
 ## Synthesis Outcomes
 - **Generalization**: 通常コメントとインラインコメント（返信を含む）は `commentId` で同じに扱えるので、データモデル、API、表示部品を1つにする。絵文字キーは判別ユニオンのパーサーとして作り、カスタム絵文字は variant の追加で受け入れる（実装は v1 では `unicode` だけ）。
 - **Build vs. Adopt**: ピッカーは emoji-mart（採用済みの依存）を使う。検証と表示のデータは `@growi/emoji-mart-data` を広げる。一意性はデータベースの一意インデックスに任せる。認可と監査ログは既存のミドルウェアを使う。
-- **Simplification**: 書き込みの応答に集計を返さず、再取得で一本化した。楽観的更新を入れない。種類数の上限の競合は厳密にしない。ユーザーごとの既定の肌の色は emoji-mart の localStorage に任せ、サーバーには持たない（要件の Out of scope に合う）。
+- **Simplification**: リアクションの取得経路をコメントの取得に一本化した（専用の取得 API、専用の SWR キー、認可の一致を守るテストが要らない）。書き込みの応答の1件でキャッシュを置き換え、楽観的更新を入れない。種類数の上限の競合は厳密にしない。ユーザーごとの既定の肌の色は emoji-mart の localStorage に任せ、サーバーには持たない（要件の Out of scope に合う）。
 
 ## Risks & Mitigations
 - emoji-mart の id と Slack のショートコードが一部の絵文字で一致しない可能性がある — 要件 4.6 は「1対1に対応づけられる」ことを求めるが、v1 では Slack と連携しない。名前の対応表の検証は、Slack 連携のスペックで行う（Revalidation Trigger に記載）。
-- 認可の判定がコメント一覧と食い違う — 両方の API に同じ条件の組を当てる統合テストで守る。
+- リアクションの不具合がコメントの取得に波及する — 取り込みの失敗は `reactions: null` にしてコメントは返す。集計は1回の `findMany`（一意インデックスの先頭の `comment` を使う）に限る。
+- 単体取得 API で、共有リンクの検証と取得の対象がずれる（IDOR） — `pageId` を必須にし、コメントがその `pageId` のものかを確かめる。別ページのコメント ID を統合テストで確かめる。
+- `comment` スペックへの書き戻しが漏れ、契約の持ち主が2つに分かれる — tasks.md の最終タスクにし、書き戻した後は `comment` スペックだけが契約を持つ。
 - `removeWithReplies` で、返信の ID を集めてから削除するまでの間に返信が増えると、その返信のリアクションが残りうる — 起こりにくい競合で、残っても表示されない（コメントが無い）。完全削除のときは pageId で一括削除するので残らない。
 - `@growi/emoji-mart-data` の出力形の変更が、本文のレンダラーとエディタの自動補完に影響する — 型を非空タプルにして `skins[0]` を保ち、既存の利用者のテストを通す。
 
@@ -175,3 +189,4 @@
 - [Slack Help: Use emoji and reactions](https://slack.com/intl/en-gb/help/articles/202931348-Use-emoji-and-reactions) — 並び順の記述が無いことの確認
 - `.claude/rules/model.md`、`apps/app/.claude/rules/activity-recording.md`、`apps/app/.claude/rules/page-write-action-403-404.md` — 本設計が従うリポジトリの規約
 - `.kiro/specs/comment/design.md` — コメント一覧 API の契約と Revalidation Triggers
+- `.claude/rules/spec-lifecycle.md` — 完了済みのスペックの契約を変える部分の書き戻しの手順
