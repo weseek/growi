@@ -14,9 +14,9 @@ import { PageLinkService } from './page-link-service';
 // settles, and which of them are extracted, how often, and how many per tick.
 const mocks = vi.hoisted(() => ({
   handlePageUpsertById: vi.fn(),
-  // The listener attaches .catch(), so this must resolve rather than return undefined. Set once
-  // here because the workspace's `clearMocks` is mockClear (calls only); a switch to mockReset
-  // would drop it, and every delete case would throw from inside the listener.
+  // The real handler never rejects, so the mock resolves too. Set once here because the
+  // workspace's `clearMocks` is mockClear (calls only); a switch to mockReset would drop it and
+  // make `handlePagesDelete` return undefined instead of a promise.
   handlePagesDelete: vi.fn().mockResolvedValue(undefined),
   loggerError: vi.fn(),
 }));
