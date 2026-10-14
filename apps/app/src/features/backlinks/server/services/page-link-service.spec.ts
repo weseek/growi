@@ -97,7 +97,7 @@ describe('PageLinkService (live extraction queue)', () => {
   };
 
   const save = (
-    event: 'create' | 'update',
+    event: 'create' | 'update' | 'revert',
     pageId: Types.ObjectId,
     emitter: EventEmitter = pageEvent,
   ): void => {
@@ -110,6 +110,7 @@ describe('PageLinkService (live extraction queue)', () => {
   it.each([
     'create',
     'update',
+    'revert',
   ] as const)('defers a %s event to the drain tick and upserts the page once', async (event) => {
     const pageId = new Types.ObjectId();
 

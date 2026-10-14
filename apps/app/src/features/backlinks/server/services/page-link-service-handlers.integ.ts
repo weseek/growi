@@ -419,5 +419,46 @@ describe('handlePageUpsertById (integration)', () => {
         { toPath: '/a', toPageId: aId.toString() },
       ]);
     });
+
+    describe('restoring a trashed page', () => {
+      it('re-indexes a restored page from its current body, replacing rows left stale while it was trashed', async () => {
+        const aId = new Types.ObjectId();
+        const bId = new Types.ObjectId();
+        idByPath.set('/a', aId);
+        idByPath.set('/b', bId);
+
+        const pageId = await createPage('/trashed-with-rows', '[a](/a)');
+        await handlePageUpsertById(pageId.toString(), siteUrl);
+
+        await setRevision(pageId, '[b](/b)');
+        await Page.updateOne(
+          { _id: pageId },
+          {
+            $set: {
+              path: `/trash${PREFIX}/trashed-with-rows`,
+              status: 'deleted',
+            },
+          },
+        );
+        await reconcileDeletedPages([pageId]);
+
+        expect(await outboundRowsOf(pageId)).toEqual([
+          { toPath: '/a', toPageId: aId.toString() },
+        ]);
+
+        await Page.updateOne(
+          { _id: pageId },
+          {
+            $set: { path: `${PREFIX}/trashed-with-rows`, status: 'published' },
+          },
+        );
+
+        await handlePageUpsertById(pageId.toString(), siteUrl);
+
+        expect(await outboundRowsOf(pageId)).toEqual([
+          { toPath: '/b', toPageId: bId.toString() },
+        ]);
+      });
+    });
   });
 });
