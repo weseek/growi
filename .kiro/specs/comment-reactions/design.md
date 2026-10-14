@@ -61,7 +61,7 @@
 - インラインコメントの型（`InlineCommentWithReplies`、`InlineCommentReply`）と `groupInlineComments`。リアクションは、これらの型を経由せずにコメント一覧のキャッシュから読む
 - 共有リンクの有効性の判定と、共有リンク閲覧者を読み取り専用とする方針（`share-link-comments`）
 - 共有リンクの画面と検索結果のプレビューでインラインコメントを出さない方針（`comment` 要件 6.5、`inline-comment` 要件 6）
-- snapshot の判別可能ユニオンという仕組み自体（`activity-log-snapshot`）。本スペックは variant を1つ足すだけ
+- snapshot の判別可能ユニオンという仕組み自体（`activity-log-snapshot`）。本スペックは variant を1つ足し、snapshot を保存する2つの関数（`createByParameters` の `snapshotData`、`buildSnapshotUpdateEnvelope`）に `emoji` を写す1行を足すだけ
 - 監査ログ画面の表示（`activity-log-snapshot-viewer`）
 - エディタの `EmojiButton` と絵文字の自動補完
 - GROWI MCP サーバーと SDK（別リポジトリ）。`reactions` を使うかどうかは、それぞれの側で決める
@@ -253,7 +253,8 @@ packages/editor/src/client/components/EmojiPicker/
 - `apps/app/src/features/comment/server/models/comment.ts` — `removeWithReplies` で、返信の ID を集めてから、配列形式のトランザクションの**先頭**で `commentreactions.deleteMany({ commentId: { in: [本体, ...返信] } })` を実行し、そのあとに既存の返信の削除、本体の削除を続ける（子から親の順）。変えるのは Prisma 拡張の部分だけで、同じファイルの Mongoose スキーマには触れない。
 - `apps/app/src/features/inline-comment/server/service/inline-comment-service.ts` — `deleteReply` を、`commentreactions.deleteMany({ commentId })` → 返信の削除、の順の配列形式のトランザクションにする（起点の削除は `removeWithReplies` でカバーされる）。
 - `apps/app/src/server/service/page/delete-completely-operation.ts` — 既存のコメント削除の配列形式のトランザクションの**先頭**に `commentreactions.deleteMany({ pageId: { in: pageIdStrings } })` を追加する（リアクション → 返信 → コメントの順）。
-- `apps/app/src/interfaces/activity.ts` — `ACTION_COMMENT_REACTION_ADD` / `ACTION_COMMENT_REACTION_REMOVE` を `SupportedAction` と `MediumActionGroup` に追加。`CommentReactionSnapshot` を定義して `ISnapshot` に追加。
+- `apps/app/src/interfaces/activity.ts` — `ACTION_COMMENT_REACTION_ADD` / `ACTION_COMMENT_REACTION_REMOVE` を `SupportedAction` と `MediumActionGroup` に追加。`CommentReactionSnapshot` を定義して `ISnapshot` に追加。保存口が全 variant の項目を型安全に読めるよう、全 variant の項目を任意で持つ型（例: `SnapshotFields`）を定義する。
+- `apps/app/src/server/models/activity.ts` — `createByParameters` の `snapshotData` と `buildSnapshotUpdateEnvelope` に `emoji` を足す。両者が読む型を `AttachmentRemoveSnapshot` から `SnapshotFields` に広げる。Mongoose の `snapshotSchema` には足さない（「Activity 定義の拡張」を参照）。
 - `apps/app/src/server/service/import/non-transferable-collections.ts` — `TRANSFERABLE_COLLECTIONS` に `'commentreactions'` を追加。
 - `apps/app/src/server/service/import/overwrite-params/index.ts` — `generateOverwriteParams` に `case 'commentreactions'` を追加し、`comment-reactions.ts` の params を返す。
 - `apps/app/src/client/components/PageComment/Comment.tsx` — `CommentCard` の `footer` に `CommentReactionBar` を追加（`isReadOnly` を渡す）。
@@ -363,7 +364,7 @@ graph TB
 | 8.2 | インラインコメントとその返信の削除 | removeWithReplies, deleteReply | 同上 | — |
 | 8.3 | ページの完全削除 | deleteCompletelyOperation | `deleteMany({ pageId: { in } })` | — |
 | 8.4 | ごみ箱から戻したら元どおり | （変更なし） | ごみ箱の経路はリアクションに触れない | — |
-| 9.1, 9.2 | 追加・解除を監査ログに記録 | update route | `COMMENT_REACTION_ADD` / `_REMOVE`、`CommentReactionSnapshot` | 追加・解除 |
+| 9.1, 9.2 | 追加・解除を監査ログに記録 | update route, activity model の保存口 | `COMMENT_REACTION_ADD` / `_REMOVE`、`CommentReactionSnapshot`、`createByParameters` の `snapshotData` | 追加・解除 |
 | 9.3 | 既存のコメント操作と同じ分類 | activity.ts | `/^COMMENT_/` のカテゴリ、`MediumActionGroup` | — |
 | 9.4 | 状態不変・拒否は記録しない | update route | `changed` が true のときだけ emit | 追加・解除 |
 | 9.5 | 通知しない | activity.ts | `EssentialActionGroup` に入れない | — |
@@ -385,7 +386,7 @@ graph TB
 | comment の取得の拡張 | Comment / service, route | 一覧・単体の応答にリアクションを載せる、単体取得 API | 2.9, 6.1, 6.5 | loadReactionChips（P0）、認可ミドルウェア（P0） | API, Service |
 | update route | Reaction / route | 追加・解除の API と認可、監査ログ、最新のコメントの返却 | 2.1, 2.2, 2.9, 4.2, 4.4, 5.1–5.7, 7.2, 9.1–9.4 | Service（P0）、getCommentListItem（P0）、activityEvent（P0） | API |
 | 削除経路の拡張 | 既存 | コメント・ページの削除に伴う削除 | 8.1–8.4 | Prisma（P0） | — |
-| Activity 定義の拡張 | 既存 interfaces | action と snapshot の variant | 9.1–9.5 | activity-log-snapshot の方針（P1） | — |
+| Activity 定義の拡張 | 既存 interfaces, activity model | action と snapshot の variant、snapshot の保存口への `emoji` の追加 | 9.1–9.5 | activity-log-snapshot の方針（P1）、`createByParameters`（P0） | — |
 | useCommentReactions | Client / hook | 一覧のキャッシュから読み、PUT の応答で1件を置き換える | 1.1, 2.1, 2.2, 2.9, 2.10, 6.5 | useSWRxCommentList（P0）、apiv3-client（P0） | State |
 | useCanReactToComments | Client / hook | 画面上のリアクション可否 | 5.4–5.7, 6.2 | context フック（P0） | State |
 | CommentReactionBar | Client / UI | 1コメント分のチップ列と「＋」 | 1.1–1.8, 2.3, 3.1, 3.7, 6.2, 6.3, 6.5 | hooks（P0） | — |
@@ -741,7 +742,17 @@ type UpdateCommentReactionResponse = {
 #### Activity 定義の拡張
 - `ACTION_COMMENT_REACTION_ADD = 'COMMENT_REACTION_ADD'`、`ACTION_COMMENT_REACTION_REMOVE = 'COMMENT_REACTION_REMOVE'` を `SupportedAction` と `MediumActionGroup` に追加する（Large は継承）。`/^COMMENT_/` によって、監査ログの「コメント」カテゴリに自動で入る（要件 9.3）。
 - `EssentialActionGroup` には入れない。通知の生成対象にならない（要件 9.5）。`ActivityLogActions`（最近のアクティビティ）とコントリビューショングラフにも入れない。
-- snapshot: `CommentReactionSnapshot = DefaultSnapshot & { emoji: string }` を定義して `ISnapshot` に加える。Prisma の `ActivitiesSnapshot` に `emoji String?` を追加する。Mongoose の `snapshotSchema`（`username` だけを持つ）には足さない。activity の書き込みは Prisma（`createByParameters` / `updateByParameters`）で行われ、添付ファイルの snapshot の項目（`originalName` など）も Prisma 側だけに足されている前例に合わせる。G2G のインポートでは、`activities.snapshot` は型変換をせずにそのまま入る（`construct-convert-map.ts` の特別扱い）ので、`emoji` も保たれる。`emoji` には `ReactionKey` の文字列を入れる。
+- snapshot: `CommentReactionSnapshot = DefaultSnapshot & { emoji: string }` を定義して `ISnapshot` に加える。`emoji` には `ReactionKey` の文字列を入れる。
+- **snapshot が保存されるまでの経路**（実コードで確認）: route の `activityEvent.emit('update', id, { ..., snapshot: { username, emoji } })` → `ActivityService` の `update` リスナー → `settleActivityRecord`（`service/activity/settle-activity-record.ts`。受け取った snapshot を展開して `username` を補い、そのまま渡す）→ `prisma.activities.createByParameters`（`server/models/activity.ts`）。
+  - `createByParameters` は、渡された snapshot をそのまま保存しない。`snapshotData` で `id`、`username`、`originalName`、`pagePath`、`pageId`、`fileSize` だけを取り出して組み立て直す。`updateByParameters` が使う `buildSnapshotUpdateEnvelope` も同じく、決まった項目だけを `{ update: { ... } }` に詰める。そのため、Prisma の `ActivitiesSnapshot` に `emoji` を足すだけでは、**`emoji` は黙って捨てられて保存されない**。
+  - 両者は、受け取った snapshot を `AttachmentRemoveSnapshot`（添付ファイルの variant）の型として読んでいる。`CommentReactionSnapshot` もこの型に代入できてしまう（余分な項目があっても代入できる）ので、型の検査では `emoji` の取りこぼしに気づけない。
+- **変更**（`activity-log-snapshot` の「永続層は全 variant を許す superset」の方針に沿う）:
+  1. Prisma の `ActivitiesSnapshot` に `emoji String?` を足す。
+  2. `interfaces/activity.ts` に、全 variant の項目を任意で持つ型 `SnapshotFields`（`Partial<AttachmentSnapshot & CommentReactionSnapshot>` 相当）を定義する。
+  3. `createByParameters` の `snapshotData` と `buildSnapshotUpdateEnvelope` が読む型を `AttachmentRemoveSnapshot` から `SnapshotFields` に広げ、どちらにも `emoji: snap.emoji` を足す。2つの保存口を揃えるのは、今の経路は `createByParameters` だけでも、`updateByParameters` で snapshot を渡す経路が加わったときに同じ取りこぼしを起こさないため。
+- **Mongoose の `snapshotSchema` には足さない**（前の判断のまま）。activity の書き込みは上記の Prisma の経路だけで行われる。読み取りも、監査ログの一覧は Prisma（`fetch-activity-list.ts` の `prisma.activities.paginate`）で、Mongoose を使う Elasticsearch への同期（`search-delegator/elasticsearch.ts`）は `select('snapshot.username').lean()` で `username` しか読まない。Mongoose のスキーマは `emoji` の保存にも読み取りにも関わらない。添付ファイルの snapshot の項目（`originalName` など）も、Prisma 側（composite と2つの保存口）だけに足されている。
+- G2G のインポートでは、`activities.snapshot` は型変換をせずにそのまま入る（`construct-convert-map.ts` の特別扱い）ので、`emoji` も保たれる。
+- `ISnapshot` の形を変えるので、`activity-log-snapshot` の Revalidation Trigger（`ISnapshot` ユニオンの shape 変更）に当たる。監査ログ画面の snapshot の表示（`activity-log-snapshot-viewer`）で、`emoji` を含む snapshot が表示を壊さないことを確かめる。
 
 ### Client
 
@@ -865,7 +876,7 @@ type CommentReactionBarProps = {
 ### Integration Tests
 - PUT: 追加（`isReacted: true`）・解除（`isReacted: false`）の成功と、応答の `comment.reactions` が最新であること（他の利用者の行も含む）。同じ要求の2回目が `changed: false` で行が増減しないこと。同時の二重追加で行が1つになること（統合テストの DB には migration でインデックスが作られている前提）。上限で新しい絵文字が 409 になり、既存の絵文字は追加できること。自分のコメントにも付けられること（要件 2.1〜2.9、7.1〜7.3）。
 - PUT の認可: 未ログインの拒否、閲覧権限の無いページのコメントと存在しないコメントが同じ 404 であること、閲覧専用ユーザーが設定で拒否／許可されること（要件 5.1〜5.5）。
-- 監査ログ: 追加・解除で `COMMENT_REACTION_ADD` / `_REMOVE` の行が、操作者・対象・`snapshot.emoji` 付きで1件残ること。`changed: false` と拒否では、追加・解除の行が残らないこと。応答が即座に終わっても操作者が残ること（`activity-recording.md` の drift テスト）。通知が作られないこと（要件 9.1〜9.5）。
+- 監査ログ: 追加・解除で `COMMENT_REACTION_ADD` / `_REMOVE` の行が、操作者・対象・`snapshot.emoji` 付きで1件残ること。**確かめ方**: 本物の route（`PUT /comments/:id/reactions`）を通し、emit → `settleActivityRecord` → `createByParameters` の経路を実際に動かしたあと、メソッドや応答の返り値ではなく、**DB から読み直して**確かめる（`prisma.activities.findFirst({ where: { action, event: commentId } })` で新しく取得するか、`mongoose.connection.collection('activities')` から生の文書を読む）。`snapshot.emoji` が送った `ReactionKey` と一致し、`snapshot.username` も残っていることを確認する（`emoji` の取りこぼしは返り値では見えず、保存された文書でしか分からないため）。`changed: false` と拒否では、追加・解除の行が残らないこと。応答が即座に終わっても操作者が残ること（`activity-recording.md` の drift テスト）。通知が作られないこと（要件 9.1〜9.5）。
 - 一覧（`list.integ.ts` の拡張）: 各コメントに `reactions` が載ること（リアクションの無いコメントは `[]`）。`reactedByMe` が要求者で変わること。共有リンク経由で、インラインコメントのリアクションも返ること。リアクションの取り込みを失敗させたとき、コメントが返り `reactions` が `null` になること。旧 API `comments.get` の応答に `reactions` が無いこと（要件 6.1、6.2、6.5）。
 - `canViewCommentsOfPage`: 取り出す前の `list.ts` と同じ条件の組（閲覧権限あり／なし、共有リンク正／誤／別ページ、ゲスト閲覧可／不可、アクセストークン）で、同じ結果になること（挙動を変えない取り出しの確認）。
 - 単体（`get.integ.ts`）: 一覧の該当する1件と同じ内容を返すこと。閲覧権限の無いページ、存在しないコメント、他のページのコメント（`pageId` の不一致）が同じ 404 であること。有効な共有リンクで、そのページのコメントを返し、別のページのコメント ID は 404 であること。ゲスト閲覧の可否で一覧と同じ結果になること。
@@ -878,6 +889,7 @@ type CommentReactionBarProps = {
 - 利用者の文書が無いリアクション（本物の DB に、存在しない `userId` のリアクションを直接入れる）: `GET /_api/v3/comments` が 200 を返し、そのページのほかのリアクションも含めて `reactions` が `null` にならないこと。該当するチップの `count` にその利用者が含まれ、`users` に ID 文字列で現れること。同じページのコメントの投稿者の文書が無いときの `creator`（ID 文字列）と同じ形であること（要件 1.9、1.10、6.4）。
 - `commentreactions` に Prisma のリレーションが宣言されていないことを前提にした回帰テスト: リアクションの付いた利用者の文書を Prisma（`prisma.users.deleteMany`）で消しても、リアクションが原因の P2014 にならないこと（ただし `comments.creator` など既存のリレーションが残る利用者は対象外にする）。
 - G2G: `non-transferable-collections.integ.ts` が `commentreactions`（Prisma のモデルから検出される）を含めて通ること。エクスポート形式（JSON 文字列化）のデータを `convertDocuments` と `generateOverwriteParams('commentreactions', ...)` で変換して書き込んだとき、`comment` / `page` / `user` が ObjectId、`createdAt` が Date になり、`loadReactionChips` で取得できること（要件 10.1、10.2）。
+- activity model の保存口: `createByParameters` に `snapshot: { username, emoji }` を渡したとき、および `updateByParameters` に `snapshot: { emoji }` を渡したときに、DB から読み直した文書の `snapshot.emoji` が渡した値であること。添付ファイルの項目（`originalName` など）と `username` の保存が変わらないこと（既存の `activity` の統合テストの回帰）。
 - index migration（`<YYYYMMDDHHmmss>-add-indexes-to-commentreactions.integ.ts`）: `up` で2つのインデックスが、Prisma の `map` と同じ名前・キーで作られること。重複した文書があるとき、最も古い1件が残り、一意インデックスが作られること。2回実行しても失敗しないこと。`down` でインデックスが消えること（コレクションが無くても失敗しないこと）。
 
 ### E2E/UI Tests

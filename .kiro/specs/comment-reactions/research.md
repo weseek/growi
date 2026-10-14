@@ -32,7 +32,9 @@
   - `activities` には自由に使える項目が無い。action ごとの付随データは `snapshot`（action で絞り込む判別可能ユニオン `ISnapshot`。`activity-log-snapshot` スペックの方針）に置く。
   - 監査ログの絞り込みのカテゴリは `/^COMMENT_/` の正規表現で作られる（`activity.ts` 714 行目付近）。`ACTION_COMMENT_*` は `MediumActionGroup` に属し、`LargeActionGroup` は Medium を継承する。
   - 監査ログの action 名の表示ラベルは `public/static/locales/*/admin.json` にある（`"COMMENT_CREATE": "Create comment"` など）。
-- **Implications**: 正規の `addActivity` ＋ `activityEvent.emit` を使い、状態が変わったときだけ emit する。絵文字は snapshot の新しい variant に入れる。
+  - **snapshot の保存の経路**: route の emit → `ActivityService` の `update` リスナー → `settleActivityRecord`（`service/activity/settle-activity-record.ts`。snapshot を展開し、`username` を補ってそのまま渡す）→ `prisma.activities.createByParameters`。`createByParameters` は、渡された snapshot をそのまま保存せず、`snapshotData` で `id`、`username`、`originalName`、`pagePath`、`pageId`、`fileSize` だけを取り出して組み立て直す。`updateByParameters` の `buildSnapshotUpdateEnvelope` も、同じ項目だけを `{ update }` に詰める。どちらも、受け取った snapshot を `AttachmentRemoveSnapshot` の型として読むので、別の variant の項目を取りこぼしても型の検査では気づけない。
+  - 監査ログの一覧は Prisma（`fetch-activity-list.ts` の `prisma.activities.paginate`）で読む。Mongoose を使う Elasticsearch への同期（`search-delegator/elasticsearch.ts`）は `select('snapshot.username').lean()` で `username` しか読まない。
+- **Implications**: 正規の `addActivity` ＋ `activityEvent.emit` を使い、状態が変わったときだけ emit する。絵文字は snapshot の新しい variant に入れる。Prisma の composite に `emoji` を足すだけでは保存されないので、`createByParameters` の `snapshotData` と `buildSnapshotUpdateEnvelope` にも `emoji` を足し、両者が読む型を全 variant の項目を持つ型に広げる。Mongoose の `snapshotSchema` は、保存にも読み取りにも関わらないので足さない。確かめは、本物の route を通したあと DB から読み直して行う（返り値では取りこぼしが見えない）。
 
 ### 新しいコレクション、インデックス、G2G 移行
 - **Context**: 一意制約 `(comment, user, emoji)`（要件 2.4）と G2G 移行（要件 10）。
@@ -221,7 +223,7 @@
 - **Selected Approach**: 2。新しい action `COMMENT_REACTION_ADD` / `COMMENT_REACTION_REMOVE` は `MediumActionGroup` に入れる（Large は継承）。`EssentialActionGroup`（通知）と `ActivityLogActions`（最近のアクティビティ）には入れない。絵文字は snapshot の新しい variant `CommentReactionSnapshot = { username?, emoji }` に入れる。
 - **Rationale**: リポジトリの正規の規約で、監査ログの詳細度の設定にも従う。既存のコメント操作（Medium）と同じ扱いになり、`/^COMMENT_/` のカテゴリにも自動で入る（要件 9.3）。状態を変えない要求は emit しないので記録されない。拒否は `ACTION_UNSETTLED` として残るが、追加・解除としては記録されない（要件 9.4）。
 - **Trade-offs**: 監査ログの詳細度が Small の環境では、既存のコメント操作と同じく記録されない。要件 9.1 は、監査ログの記録が有効な範囲での記録と解釈する（Open Questions に記載）。
-- **Follow-up**: snapshot に variant を足すことは、`activity-log-snapshot` の方針（action で絞り込む判別可能ユニオン）に沿った拡張として扱う。
+- **Follow-up**: snapshot に variant を足すことは、`activity-log-snapshot` の方針（action で絞り込む判別可能ユニオン、永続層は全 variant の superset）に沿った拡張として扱う。そのために、保存口（`createByParameters` の `snapshotData`、`buildSnapshotUpdateEnvelope`）にも `emoji` を足す。`ISnapshot` の形が変わるので、`activity-log-snapshot` の Revalidation Trigger に当たり、監査ログ画面の snapshot の表示で確かめる。保存の確認は、route を通したあと DB から読み直して `snapshot.emoji` を見る統合テストで行う。
 
 ### Decision: 書き込みの応答で対象のコメントを返し、キャッシュの1件を置き換える（楽観的更新はしない）
 - **Context**: 要件 2.9、2.10。
@@ -262,6 +264,7 @@
 - `removeWithReplies` で、返信の ID を集めてから削除するまでの間に返信が増えると、その返信のリアクションが残りうる — 起こりにくい競合で、残っても表示されない（コメントが無い）。完全削除のときは pageId で一括削除するので残らない。
 - migration と Prisma の宣言でインデックスの名前・キーがずれる — `map` の名前を migration のインデックス名と一致させ、migration の統合テストでインデックスの名前とキーを確かめる。
 - 参照項目を増やしたのに `overwrite-params` を更新し忘れ、G2G で文字列のまま入る — G2G の統合テストで、変換後の文書を `loadReactionChips` で取得できることを確かめる。
+- `snapshot.emoji` が保存口で黙って捨てられる（Prisma の composite に足しただけでは保存されない） — `createByParameters` と `buildSnapshotUpdateEnvelope` の両方に足し、本物の route を通したあと DB から読み直す統合テストで確かめる。
 - `@growi/emoji-mart-data` の出力形の変更が、本文のレンダラーとエディタの自動補完に影響する — 型を非空タプルにして `skins[0]` を保ち、既存の利用者のテストを通す。
 
 ## References
