@@ -70,7 +70,7 @@
 ### Allowed Dependencies
 モジュール単位の依存は、次の層の順で左（番号の小さい側）にだけ向ける。循環は作らない。
 
-1. **リアクションの中核**（`features/comment-reaction/` の `interfaces`、`utils`、`server/models`、`server/service`）: Prisma（`commentreactions`）、`@growi/emoji-mart-data`、`comment` の型 `ICommentCreatorSummary`（型だけ）に依存してよい。`comment` の実行時のコードは import しない。利用者の整形は、関数を引数で受け取る
+1. **リアクションの中核**（`features/comment-reaction/` の `interfaces`、`utils`、`server/models`、`server/service`）: Prisma（`commentreactions`、`users` の読み取り）、`@growi/emoji-mart-data`、`comment` の型 `ICommentCreatorSummary`（型だけ）に依存してよい。`comment` の実行時のコードは import しない。利用者の整形は、関数を引数で受け取る
 2. **コメントの取得**（`features/comment/server/` の service、serializers、`list.ts`、新設の `get.ts`）: 1 のローダー `loadReactionChips` と型 `ReactionChip` に依存してよい
 3. **リアクションの書き込みの route**（`features/comment-reaction/server/routes/update.ts`）: 1 と、2 の `getCommentListItem`（応答のコメントを作るため）に依存してよい
 4. **クライアント**: `comment-reaction` の client は、`comment` の client の `useSWRxCommentList` に依存してよい。コメントの表示部品（`client/components/PageComment/`、`features/inline-comment/client/`）は、`comment-reaction` の client の部品に依存してよい。逆向きは禁止
@@ -91,8 +91,9 @@
 - `ICommentCreatorSummary` の項目の変更（リアクションした利用者の情報も同じ規則に従う。要件 6.4）
 - emoji-mart のバージョン更新（ショートコードの変化で、保存済みのキーが解決できなくなる）
 - コメント一覧の取得フックのキー `['/comments', pageId, shareLinkId]` の変更（PUT の応答でキャッシュを書き換える前提が崩れる）
-- `commentreactions` に `comments` / `pages` へのリレーションを宣言すること、またはコメントを削除する経路の追加（どちらも、削除の順番を誤ると P2014 でコメントが削除できなくなる。「削除経路の拡張」を参照）
-- Prisma で `users` を物理削除する経路の追加（`commentreactions.user` の必須のリレーションにより、リアクションの付いた利用者の削除が P2014 で失敗する）
+- コメントを削除する経路の追加（リアクションの削除を足し忘れると、表示されない孤立したリアクションが残る。「削除経路の拡張」を参照）
+- `commentreactions` に Prisma のリレーション（`users`、`comments`、`pages` のどれでも）を宣言すること（読み取りの `include` が孤立した行で失敗する、または親の削除が P2014 で止まる。「削除経路の拡張」を参照）
+- 利用者を物理削除する経路の追加、またはインポート・G2G での `users` の扱いの変更（利用者の文書が無いリアクションが増える。本スペックは ID 文字列で表示して人数に数えるので壊れないが、表示の想定を見直す）
 - `commentreactions` のインデックスのキー・名前の変更（migration と Prisma の `@@unique` / `@@index` の `map` を一致させ続ける必要がある）、または参照項目（`comment` / `page` / `user`）の追加・改名（G2G の `overwrite-params` の更新が要る）
 
 ## Architecture
@@ -242,12 +243,12 @@ packages/editor/src/client/components/EmojiPicker/
 ### Modified Files
 **comment スペックの契約に当たる変更（書き戻しの対象）**
 - `apps/app/src/features/comment/interfaces/comment-list.ts` — `ICommentListItem` に `reactions: ReactionChip[] | null` を追加。単体取得の要求・応答の型（`GetCommentRequestQuery`、`GetCommentResponseBody`）を追加。
-- `apps/app/src/features/comment/server/serializers/to-comment-list-item.ts` — `toCommentListItem` が、行と、そのコメントのチップ（または `null`）を受け取って `reactions` を詰める。`toCreatorSummary` を export する（挙動は変えない）。`toLegacyCommentListItem`（旧 API 用）は `reactions` を持たない形のまま。
+- `apps/app/src/features/comment/server/serializers/to-comment-list-item.ts` — `toCommentListItem` が、行と、そのコメントのチップ（または `null`）を受け取って `reactions` を詰める。`toCreatorSummary` を export し、引数の型を表示に使う4項目（`ReactionUserRow` と同じ形）に絞る（挙動は変えない。リアクションの利用者は `users.findMany` の `select` で4項目だけを取るため）。`toLegacyCommentListItem`（旧 API 用）は `reactions` を持たない形のまま。
 - `apps/app/src/features/comment/server/routes/list.ts` — 一覧の取得のあと、`loadReactionChips` でリアクションを取り込む。閲覧判定は `can-view-comments-of-page.ts` に移す（挙動は変えない）。`@swagger` の `CommentListItem` に `reactions` を追加。
 - `apps/app/src/server/routes/apiv3/index.js` — `/comments` の router に `GET /:id`（comment）と `PUT /:id/reactions`（comment-reaction）を登録。
 
 **本スペックの機能に当たる変更**
-- `apps/app/prisma/schema.prisma` — `model commentreactions` を追加。リレーションは `users` への1本だけを宣言し、`users` に逆向きのリレーション項目を追加する（データベースは変わらない）。`comments` と `pages` へのリレーションは宣言しない（`commentId` と `pageId` はスカラーの項目だけ。「削除経路の拡張」を参照）。`type ActivitiesSnapshot` に `emoji String?` を追加。
+- `apps/app/prisma/schema.prisma` — `model commentreactions` を追加。Prisma のリレーションは1本も宣言しない（`commentId`、`pageId`、`userId` はスカラーの項目だけ）。`users`、`comments`、`pages` の Prisma モデルには何も足さない（理由は「削除経路の拡張」を参照）。`type ActivitiesSnapshot` に `emoji String?` を追加。
 - `apps/app/src/utils/prisma.ts` — `CommentReactionExtension` を `$extends` の連鎖に追加。
 - `apps/app/src/features/comment/server/models/comment.ts` — `removeWithReplies` で、返信の ID を集めてから、配列形式のトランザクションの**先頭**で `commentreactions.deleteMany({ commentId: { in: [本体, ...返信] } })` を実行し、そのあとに既存の返信の削除、本体の削除を続ける（子から親の順）。変えるのは Prisma 拡張の部分だけで、同じファイルの Mongoose スキーマには触れない。
 - `apps/app/src/features/inline-comment/server/service/inline-comment-service.ts` — `deleteReply` を、`commentreactions.deleteMany({ commentId })` → 返信の削除、の順の配列形式のトランザクションにする（起点の削除は `removeWithReplies` でカバーされる）。
@@ -459,7 +460,7 @@ declare function resolveReactionGlyph(key: ReactionKey): string | null;
 | Requirements | 2.4, 2.5 |
 
 **Responsibilities & Constraints**
-- Prisma モデル: 項目は「Physical Data Model」のとおり。リレーションは `users` への1本だけを宣言する。`comments` と `pages` へのリレーションは宣言しない（理由は「削除経路の拡張」を参照）。`@@unique([commentId, userId, emoji], map: "comment_1_user_1_emoji_1")`、`@@index([pageId], map: "page_1")` を宣言する。宣言は型と `findUnique` のためで、実際のインデックスは migration が作る（Prisma は作らない）。`map` の名前は migration のインデックス名と一致させる。
+- Prisma モデル: 項目は「Physical Data Model」のとおり。Prisma のリレーションは1本も宣言しない（理由は「削除経路の拡張」を参照）。`@@unique([commentId, userId, emoji], map: "comment_1_user_1_emoji_1")`、`@@index([pageId], map: "page_1")` を宣言する。宣言は型と `findUnique` のためで、実際のインデックスは migration が作る（Prisma は作らない）。`map` の名前は migration のインデックス名と一致させる。
 - Prisma 拡張: `result.commentreactions._id` / `__v` を `id` / `v` から計算する（`.claude/rules/model.md`）。`setupIndependentModels` には登録しない（Mongoose のモデルが無いため）。
 - Mongoose のスキーマ・モデルは作らない。コレクションは、migration の `createIndex`（コレクションが無ければ作る）か、最初の書き込みで作られる。
 
@@ -564,9 +565,12 @@ interface CommentReactionService {
 - チップは `emoji` ごとに作る（肌の色が違えば別のチップ。要件 1.3）。
 - チップの並びは、そのチップに残っている行のうち最小の `createdAt` の昇順（要件 1.6）。チップ内の利用者も `createdAt` の昇順。
 - `count` は行数（利用者のレコードが無い行も数える。要件 1.9）。
-- 利用者は、引数で受け取った整形関数（`comment` の `toCreatorSummary`、4項目）で整形する。レコードが無ければ `userId` の文字列にする（コメントの投稿者と同じ規則。要件 1.10、6.4）。退会者のレコードは残る（`statusDelete` は `username` などを書き換えるだけ）ので、投稿者と同じく書き換え後の値で表示される。
+- 利用者は、引数で受け取った整形関数（`comment` の `toCreatorSummary`、4項目）で整形する。利用者の文書が無ければ `userId` の文字列にする。これは、コメントの投稿者が `comments.creator`（任意のリレーション）の `include` で `null` になったときに `creatorId` の文字列を返す規則と同じ（要件 1.10、6.4）。管理画面からの退会（`statusDelete`）では文書が残り、`username` などが書き換わるだけなので、投稿者と同じく書き換え後の値で表示される。
 - `reactedByMe` は、`viewerId` と一致する行があるとき true。ゲストは常に false。
-- `loadReactionChips` は `commentreactions.findMany({ where: { commentId: { in: commentIds } }, include: { user: true }, orderBy: { createdAt: 'asc' } })` を1回だけ行い、`summarizeReactions` に渡す。結果には、リアクションの無いコメントも空配列で含める。
+- `loadReactionChips` は、次の2回の取得を行い、`summarizeReactions` に渡す。結果には、リアクションの無いコメントも空配列で含める。
+  1. `commentreactions.findMany({ where: { commentId: { in: commentIds } }, orderBy: { createdAt: 'asc' } })`（`include` は使わない）
+  2. 1 の `userId` の重複を除いたものについて、`users.findMany({ where: { id: { in: userIds } }, select: { id, username, name, imageUrlCached } })`
+  - リレーションの `include` を使わないのは、必須のリレーションの `include` は、参照先の文書が1件でも無いとクエリ全体が `Inconsistent query result: Field user is required to return data, got null instead.` で失敗するため（「削除経路の拡張」の決めたこと 3）。2 の結果に無い `userId` は、利用者の文書が無いものとして扱う。
 - 整形関数を引数で受け取るのは、リアクションの中核が `comment` の実行時のコードを import しないため（依存の向きを一方向に保つ）。
 
 **Contracts**: Service [x]
@@ -582,16 +586,20 @@ type ReactionChip = {
   readonly users: readonly ReactionUser[];
 };
 
+/** The four public fields selected from `users`; see loadReactionChips. */
+type ReactionUserRow = Pick<users, 'id' | 'username' | 'name' | 'imageUrlCached'>;
+
 type FormatReactionUser = (user: ReactionUserRow) => ICommentCreatorSummary;
 
 declare function summarizeReactions(
-  rows: readonly CommentReactionRow[],     // Prisma row with `user` included
+  rows: readonly CommentReactionRow[],                  // plain commentreactions rows (no include)
+  usersById: ReadonlyMap<string, ReactionUserRow>,      // users that still exist; a missing id renders as the id string
   viewerId: string | null,
   formatUser: FormatReactionUser,
 ): ReadonlyMap<string, readonly ReactionChip[]>;   // key: commentId; chips ordered per 1.6
 
 declare function loadReactionChips(
-  deps: { readonly prisma: Pick<PrismaClient, 'commentreactions'> },
+  deps: { readonly prisma: Pick<PrismaClient, 'commentreactions' | 'users'> },
   input: {
     readonly commentIds: readonly string[];
     readonly viewerId: string | null;
@@ -649,7 +657,7 @@ declare function canViewCommentsOfPage(
 ): Promise<boolean>;
 
 declare function getCommentListItem(
-  deps: { readonly prisma: Pick<PrismaClient, 'comments' | 'commentreactions'> },
+  deps: { readonly prisma: Pick<PrismaClient, 'comments' | 'commentreactions' | 'users'> },
   input: { readonly commentId: string; readonly pageId: string; readonly viewerId: string | null },
 ): Promise<ICommentListItem | null>;   // null when the comment does not exist on that page
 ```
@@ -705,7 +713,7 @@ type UpdateCommentReactionResponse = {
 #### 削除経路の拡張
 
 **前提（Prisma の参照の検査と P2014）**
-- MongoDB には外部キーが無いので、Prisma が Prisma Client の操作のたびに参照の整合を検査する（`relationMode = "prisma"` のエミュレーション）。必須のリレーション（子の外部キーが必須）を `onDelete: NoAction` で宣言していると、子が残った状態で親を削除したときに P2014（「必須のリレーションに違反する」）で失敗する。
+- MongoDB には外部キーが無いので、Prisma が Prisma Client の操作のたびに参照の整合を検査する（`relationMode = "prisma"` のエミュレーション）。`onDelete: NoAction` のリレーションを宣言していると、子が残った状態で親を削除したときに P2014（「必須のリレーションに違反する」）で失敗する。必須のリレーションだけでなく、任意のリレーションでも同じになる（決めたこと 3 の実測を参照）。
 - この挙動はリポジトリで実際に確認されている。`comments` の返信の削除は、起点より先に返信を消す順にしてある（`removeWithReplies`、`deleteCompletelyOperation`）。`delete-completely-operation.ts` と `comment.integ.ts` のコメントには、親（`pages`）を子（`revisions` など）と同時または先に消すと P2014 が再現する、と記録されている。
 - 配列形式の `$transaction([...])` は、書いた順に実行される。途中で1つでも失敗すると、全体が取り消される。リアクションの削除をコメントの削除の後に書くと、リアクションが1件でも付いたコメントは削除できなくなる（コメントの削除そのものが失敗する）。
 
@@ -715,7 +723,14 @@ type UpdateCommentReactionResponse = {
    - 宣言しなければ、Prisma はリアクションを理由に `comments` の削除を止めない。将来、別のスペックがコメントを削除する経路を足したとき、リアクションの削除を忘れても、コメントの削除自体は失敗しない（残るのは表示されない孤立したリアクションで、利用者がコメントを消せなくなるより害が小さい）。
    - `comments` の Prisma モデル（`comment` スペックが持つ）に、逆向きのリレーション項目を足さずに済む。
 2. **削除の順番は、どの経路でも「リアクション → 返信 → コメント」（子から親）にする。** リレーションを宣言しないので必須ではないが、既存の返信の削除の順番と揃え、将来リレーションが宣言されても壊れないようにする。親子を `Promise.all` で同時に消すことはしない。
-3. **`commentreactions` から `users` へのリレーションだけは宣言する**（`include: { user }` で、リアクションした利用者の4項目を1回の取得で得るため）。必須のリレーション（`userId` は必須）で、`onDelete: NoAction`（`comments.creator` などの既存の宣言に合わせる）。利用者は削除されると `statusDelete` で状態を変えるだけで、Prisma で文書を消す経路は無いことを確認済み。そのため、この宣言で P2014 は起きない。Prisma で利用者を物理削除する経路が加わる場合は、Revalidation Triggers に従って見直す。
+3. **`commentreactions` から `users` へのリレーションも宣言しない。** 利用者の4項目は、`users.findMany({ where: { id: { in } } })` で別に取得する（`loadReactionChips`）。理由は次のとおり（いずれも、生成済みの Prisma Client で、使い捨ての DB に対して実際に確かめた）。
+   - **必須のリレーションを `include` すると、参照先の文書が1件でも無いと、クエリ全体が失敗する。** `bookmarks.user`（必須）で確かめたところ、`findMany({ include: { user: true } })` は `PrismaClientUnknownRequestError: Inconsistent query result: Field user is required to return data, got null instead.` で失敗した（`select` で項目を絞っても同じ）。リアクションの一覧はコメントの一覧に載るので、利用者の文書が無いリアクションが1件あるだけで、そのページのリアクションがすべて読めなくなる（`reactions: null`）。要件 1.9、1.10（退会・削除された利用者も人数に数え、投稿者と同じ規則で表示する）を満たせない。
+   - **任意のリレーション（`users?`）にすれば `include` は失敗しない**（`comments.creator` で確かめたところ、`creator` が `null`、`creatorId` は残った）が、`userId` も任意（`String?`）にする必要があり、本来必須の項目の型が弱くなる。
+   - **`onDelete: NoAction` のリレーションは、必須でも任意でも、Prisma で親を削除するときに P2014 で止める。** `bookmarks.user`（必須）でも `comments.creator`（任意）でも、子が残った状態の `prisma.users.deleteMany` は P2014 で失敗した。リレーションを宣言すると、将来 Prisma で利用者を物理削除する経路を作ったときに、リアクションの付いた利用者が削除できなくなる。
+   - **利用者の文書が無いリアクションは、実際に起こりうる。** アプリの本番コードには、利用者の文書を物理削除する経路は見つからなかった（管理画面の削除は `statusDelete` で文書を残す。`User.deleteMany` や `prisma.users.delete*` はテストにしか無い）。しかし、次の経路で、リアクションだけがあって利用者の文書が無い状態になりうる。
+     - インポート・G2G: コレクションを選んで取り込めるので、`commentreactions` と `users` が揃わずに入りうる。`import.ts` の `pruneOrphanedShareLinks` は、`sharelinks` と `pages` について同じ種類の問題（必須のリレーションが「参照先が無い」を表せない）を記録している。
+     - DB の直接操作や、将来の物理削除の機能。
+   - **利用者の取得を分けても、取得は1回増えるだけ**で、行数は「そのページでリアクションした利用者の数」で上限がある。
 
 **各経路の変更（いずれも配列形式の `$transaction` の中で、書いた順に実行される）**
 - `removeWithReplies(commentId)`: トランザクションの前に、返信の ID を `findMany({ where: { replyToId: commentId }, select: { id } })` で集める。そのうえで、`[commentreactions.deleteMany({ where: { commentId: { in: [commentId, ...replyIds] } } }), comments.deleteMany({ where: { replyToId: commentId } }), comments.delete({ where: { id: commentId } })]` の順にする（既存の2つの前に、リアクションの削除を1つ足す）。通常コメントの削除（要件 8.1）とインラインコメントの起点の削除（要件 8.2）をカバーする。
@@ -810,12 +825,12 @@ type CommentReactionBarProps = {
 | v | `__v` | Int（default 0） | |
 | commentId | `comment` | ObjectId | スカラーの項目だけ。Prisma のリレーションは宣言しない |
 | pageId | `page` | ObjectId | 完全削除の一括削除用。Prisma のリレーションは宣言しない |
-| userId | `user` | ObjectId | `users` への必須のリレーション（`onDelete: NoAction`、`onUpdate: NoAction`） |
+| userId | `user` | ObjectId | スカラーの項目だけ（必須）。Prisma のリレーションは宣言しない。利用者の情報は `users` から別に取得する |
 | emoji | `emoji` | String | `ReactionKey`（例: `unicode:+1::skin-tone-3`） |
 | createdAt | `createdAt` | DateTime | 並び順（要件 1.6） |
 
 - インデックス: `@@unique([commentId, userId, emoji], map: "comment_1_user_1_emoji_1")`（コメント ID を先頭にするので、`commentId: { in: [...] }` の取得にも使える）、`@@index([pageId], map: "page_1")`。実体は migration script が作る（Prisma の宣言は型と `findUnique` のため）。
-- 参照の整合: データベースの外部キーは無い。`comments` とのリレーションを宣言しないので、Prisma もコメントとの整合を検査しない。コメントとリアクションの整合は、削除経路で、リアクションを先に消すこと（要件 8）で保つ。
+- 参照の整合: データベースの外部キーは無く、Prisma のリレーションも宣言しないので、Prisma も整合を検査しない。コメントとリアクションの整合は、削除経路でリアクションを先に消すこと（要件 8）で保つ。利用者の文書が無いリアクションは、壊れたデータとして扱わず、ID 文字列の利用者として表示し、人数に数える（要件 1.9、1.10）。
 
 ### Data Contracts & Integration
 - コメントを返す3つの応答（`GET /comments` の各件、`GET /comments/:id`、`PUT /comments/:id/reactions` の `comment`）は、同じ `ICommentListItem`（`reactions` を含む）を返す。利用者は、どの応答でも同じ型でコメントとリアクションを扱える。
@@ -860,6 +875,8 @@ type CommentReactionBarProps = {
   - 複数の利用者・複数の絵文字のリアクションが付いた状態でも同じであること。
   - トランザクションの途中で失敗したとき、先に実行したリアクションの削除も取り消されること。例えば、コメントの文書が無いのにリアクションだけが残っている ID で `removeWithReplies` を呼ぶと、最後の `comments.delete` が失敗し（P2025）、リアクションは削除されずに残ること。
   - 利用者のレコードが存在しないリアクション（`userId` の文書が無い）があっても、`loadReactionChips` が失敗せず、ID 文字列として数えること（要件 1.9、1.10）。
+- 利用者の文書が無いリアクション（本物の DB に、存在しない `userId` のリアクションを直接入れる）: `GET /_api/v3/comments` が 200 を返し、そのページのほかのリアクションも含めて `reactions` が `null` にならないこと。該当するチップの `count` にその利用者が含まれ、`users` に ID 文字列で現れること。同じページのコメントの投稿者の文書が無いときの `creator`（ID 文字列）と同じ形であること（要件 1.9、1.10、6.4）。
+- `commentreactions` に Prisma のリレーションが宣言されていないことを前提にした回帰テスト: リアクションの付いた利用者の文書を Prisma（`prisma.users.deleteMany`）で消しても、リアクションが原因の P2014 にならないこと（ただし `comments.creator` など既存のリレーションが残る利用者は対象外にする）。
 - G2G: `non-transferable-collections.integ.ts` が `commentreactions`（Prisma のモデルから検出される）を含めて通ること。エクスポート形式（JSON 文字列化）のデータを `convertDocuments` と `generateOverwriteParams('commentreactions', ...)` で変換して書き込んだとき、`comment` / `page` / `user` が ObjectId、`createdAt` が Date になり、`loadReactionChips` で取得できること（要件 10.1、10.2）。
 - index migration（`<YYYYMMDDHHmmss>-add-indexes-to-commentreactions.integ.ts`）: `up` で2つのインデックスが、Prisma の `map` と同じ名前・キーで作られること。重複した文書があるとき、最も古い1件が残り、一意インデックスが作られること。2回実行しても失敗しないこと。`down` でインデックスが消えること（コレクションが無くても失敗しないこと）。
 
@@ -878,7 +895,7 @@ type CommentReactionBarProps = {
 - 入力の ID は `isString().bail().isMongoId()` で検査し、qs が作る配列・オブジェクト（`pageId[$ne]=` など）を Prisma に渡さない。
 
 ## Performance & Scalability
-- 一覧の取得に、`commentreactions.findMany({ where: { commentId: { in: commentIds } } })`（一意インデックスの先頭の `comment` を使う）が1回加わる。行数は「コメント数 × 種類数（最大 20）× 利用者数」で上限がある。
+- 一覧の取得に、`commentreactions.findMany({ where: { commentId: { in: commentIds } } })`（一意インデックスの先頭の `comment` を使う）と、リアクションした利用者の `users.findMany({ where: { id: { in } } })`（`_id` のインデックス）の2回が加わる。行数は、前者が「コメント数 × 種類数（最大 20）× 利用者数」、後者が「そのページでリアクションした利用者の数」で上限がある。
 - 追加・解除のたびの一覧全体の再取得はしない（応答の1件でキャッシュを置き換える）。
 - ピッカーと emoji-mart のデータは、初めて「＋」を押したときに読み込む。ページ表示時のバンドルに入るのは `@growi/emoji-mart-data` の増分（数十 KB の見込み）だけで、これは本文のレンダラーが既に読み込んでいるデータの拡張になる。
 - 追加の API の流量制限は設けない。既定の流量制限（利用者ごとに 1 分 500 回）が適用される。

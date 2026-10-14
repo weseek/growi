@@ -69,8 +69,22 @@
   - リポジトリでの実測: `delete-completely-operation.ts` と `comment.integ.ts` のコメントに、必須のリレーション（`onDelete: NoAction`）の親（`pages`）を、子（`revisions`、`comments` など）と同時または先に Prisma で消すと P2014 が出る、と記録されている（同時に実行すると確実に再現し、順に実行すると出ない）。`comments` の返信の削除も、起点より先に返信を消す順にしてある（`removeWithReplies`、`deleteCompletelyOperation`）。
   - 配列形式の `$transaction` は書いた順に実行され、どれか1つが失敗すると全体が取り消される。
   - `comments` の Prisma モデルのリレーションは、すべて `onDelete: NoAction`。
-  - 利用者の削除は `statusDelete`（状態と名前などを書き換えるだけ）で、Prisma（や Mongoose）で `users` の文書を物理削除する経路は無い。
-- **Implications**: `commentreactions` には、読み取りに不要な `comments` / `pages` へのリレーションを宣言しない。削除の順番は、どの経路でも子から親（リアクション → 返信 → コメント）にする。`users` へのリレーションは、物理削除が無いので宣言しても P2014 は起きない。確認は、本物の DB で削除経路を通す統合テストで行う（モックでは参照の検査が走らない）。
+  - 利用者の扱いは、次の「利用者の文書が無いリアクションと Prisma のリレーション」を参照。
+- **Implications**: `commentreactions` には、読み取りに不要な `comments` / `pages` へのリレーションを宣言しない。削除の順番は、どの経路でも子から親（リアクション → 返信 → コメント）にする。`users` へのリレーションも宣言しない（次の節）。確認は、本物の DB で削除経路を通す統合テストで行う（モックでは参照の検査が走らない）。
+
+### 利用者の文書が無いリアクションと Prisma のリレーション
+- **Context**: 要件 1.9、1.10（退会・削除された利用者のリアクションも人数に数え、押した人の一覧ではコメントの投稿者と同じ規則で表示する）。GROWI では利用者のデータが削除されることがありうる。
+- **Sources Consulted**: `apps/app/prisma/schema.prisma`（`bookmarks.user`、`comments.creator`）、`server/routes/apiv3/users.js`（`/users/:id/remove`）、`server/models/user/index.js`（`statusDelete`）、`server/service/import/import.ts`（`pruneOrphanedShareLinks`）、`.claude/skills/mongoose-to-prisma/SKILL.md`（Step 2 の Relation optionality）、`features/comment/server/serializers/to-comment-list-item.ts`、使い捨ての DB での実測
+- **Findings**:
+  - **実測（生成済みの Prisma Client、Prisma 6.19、使い捨ての DB `growi_scratch_*` を作って消した）**:
+    - 必須のリレーション `bookmarks.user` で、参照先の利用者が無い文書を `findMany({ include: { user: true } })` すると、クエリ全体が `PrismaClientUnknownRequestError: Inconsistent query result: Field user is required to return data, got null instead.` で失敗した。`include: { user: { select: { id: true } } }` でも同じ。
+    - 任意のリレーション `comments.creator` では、`include: { creator: true }` は失敗せず、`creator: null`、`creatorId` はそのまま返った。
+    - 子が残った状態の `prisma.users.deleteMany` は、必須の `bookmarks.user` でも任意の `comments.creator` でも、P2014（`The change you are trying to make would violate the required relation ...`）で失敗した。`onDelete: NoAction` のリレーションは、必須か任意かにかかわらず、Prisma での親の削除を止める。
+  - **利用者の文書を物理削除するアプリの経路**: 本番コードには見つからなかった。管理画面の削除（`/users/:id/remove`）は `statusDelete` で、文書を残して `status`、`username`、`name`、`email` などを書き換える。`User.deleteMany` や `prisma.users.delete*` はテストにしか無い。
+  - **それでも利用者の文書が無いリアクションは起こりうる**: インポート・G2G はコレクションを選んで取り込めるので、`commentreactions` と `users` が揃わずに入りうる。`import.ts` の `pruneOrphanedShareLinks` は、必須のリレーション（`sharelinks.relatedPage`）が「参照先が無い」を表せず、インポートで実際にその状態が生まれることを記録している。ほかに、DB の直接操作、将来の物理削除の機能がある。
+  - `mongoose-to-prisma` スキルの方針: 参照先の削除の経路が不確かなら任意のリレーションにする（必須を誤ると読み取りが 500 になり、任意を誤ってもヌルの確認が1つ増えるだけ）。
+  - コメントの投稿者の規則: `comments.creator` は任意のリレーションで、`include` が `null` のときは `creatorId` の文字列を返す（`toCommentListItem`）。
+- **Implications**: `commentreactions` から `users` への必須のリレーションを `include` すると、利用者の文書が無いリアクションが1件あるだけで、そのページのリアクションがすべて読めなくなり、要件 1.9、1.10 を満たせない。リレーションを宣言せず、利用者は別に取得して、見つからない ID は文字列として表示する。
 
 ### 閲覧専用ユーザー、ゲスト、共有リンクの判定（クライアント）
 - **Sources Consulted**: `states/context.ts`、`client/components/NotAvailableForReadOnlyUser.tsx`、`NotAvailableForGuest.tsx`、`components/PageView/PageView.tsx`、`ShareLinkPageView.tsx`、`features/search/.../SearchResultContent.tsx`
@@ -139,12 +153,12 @@
 - **Follow-up**: `comments` の既存の Mongoose スキーマの退役は、本スペックの範囲外とする。
 
 ### Decision: `commentreactions` は `comments` へのリレーションを宣言せず、削除は子から親の順にする
-- **Context**: 要件 8。Prisma の参照のエミュレーションで、必須のリレーション（`onDelete: NoAction`）の子が残ったまま親を消すと P2014 になる。配列形式の `$transaction` は書いた順に実行されるので、コメントの削除の後にリアクションの削除を書くと、リアクションの付いたコメントが削除できなくなり、トランザクション全体が取り消される。
+- **Context**: 要件 8。Prisma の参照のエミュレーションで、`onDelete: NoAction` のリレーション（必須でも任意でも。「利用者の文書が無いリアクションと Prisma のリレーション」の実測）の子が残ったまま親を消すと P2014 になる。配列形式の `$transaction` は書いた順に実行されるので、コメントの削除の後にリアクションの削除を書くと、リアクションの付いたコメントが削除できなくなり、トランザクション全体が取り消される。
 - **Alternatives Considered**:
   1. `comments` へのリレーションを `onDelete: NoAction` で宣言し、すべての削除経路でリアクションを先に消す
   2. `comments` へのリレーションを `onDelete: Cascade` で宣言し、コメントの削除に合わせて Prisma にリアクションを消させる
   3. `comments` へのリレーションを宣言せず（スカラーの `commentId` だけ）、すべての削除経路でリアクションを先に消す
-- **Selected Approach**: 3。`pages` へのリレーションも宣言しない。`users` へのリレーションだけを宣言する（`onDelete: NoAction`）。
+- **Selected Approach**: 3。`pages` へのリレーションも宣言しない。`users` へのリレーションも宣言しない（次の Decision）。
 - **Rationale**:
   - 本スペックの読み取りは `commentId` で引くだけで、リアクションからコメントをたどらない。リレーションを宣言しても読み取りの得は無い。
   - 1 は、将来の削除経路でリアクションの削除を忘れたり順番を誤ったりすると、コメント自体が削除できなくなる（P2014 で失敗し、トランザクションも取り消される）。3 なら、忘れても残るのは表示されない孤立したリアクションで、利用者への影響が小さい。
@@ -153,6 +167,20 @@
   - 順番を子から親に揃えるのは、既存の返信の削除と同じ形にし、将来リレーションが宣言されても壊れないようにするため。
 - **Trade-offs**: Prisma の型から、リアクションとコメントの関係が読み取れない。削除の漏れは P2014 で気づけず、孤立したリアクションとして残る（統合テストと Revalidation Triggers で補う）。
 - **Follow-up**: 実装時に、本物の DB で、起点と返信の両方にリアクションの付いたコメントを各削除経路で消し、P2014 が出ないこととリアクションが残らないことを統合テストで確かめる。
+
+### Decision: `commentreactions` は `users` へのリレーションも宣言せず、利用者は別に取得する
+- **Context**: 要件 1.9、1.10、6.4。利用者の文書が無いリアクションは、インポート・G2G、DB の直接操作、将来の物理削除で起こりうる。
+- **Alternatives Considered**:
+  1. `users` への必須のリレーション（`userId String`、`user users`）を宣言し、`include: { user }` で取得する
+  2. `users` への任意のリレーション（`userId String?`、`user users?`）を宣言し、`include: { user }` で取得する（`comments.creator` と同じ形）
+  3. リレーションを宣言せず、`users.findMany({ where: { id: { in: userIds } }, select: 4項目 })` で別に取得する
+- **Selected Approach**: 3。
+- **Rationale**:
+  - 1 は、利用者の文書が1件でも無いと `include` のクエリ全体が失敗する（実測）。リアクションの一覧がそのページごと読めなくなり、要件 1.9、1.10 を満たせない。
+  - 2 は読み取りでは失敗しないが、本来必須の `userId` を型の上で任意にする必要がある。また、`onDelete: NoAction` のリレーションは任意でも Prisma での利用者の削除を P2014 で止める（実測）。
+  - 3 は、利用者の文書が無くても読み取りが失敗せず、利用者の削除も止めない。`comments`・`pages` へのリレーションを宣言しない判断とも揃い、`commentreactions` は Prisma のリレーションを1本も持たない。見つからない `userId` は文字列で返すので、`toCommentListItem` の投稿者の規則（オブジェクト、または ID 文字列）と同じ形になる。
+- **Trade-offs**: 一覧の取得が1回増える（行数は、そのページでリアクションした利用者の数で上限がある）。Prisma の型から、リアクションと利用者の関係が読み取れない。
+- **Follow-up**: 本物の DB に、存在しない `userId` のリアクションを入れて、コメント一覧 API が 200 を返し、その利用者が ID 文字列で人数に数えられることを統合テストで確かめる。
 
 ### Decision: 絵文字キーは名前空間の接頭辞付きの文字列にする
 - **Context**: 要件 4.5、4.6、将来のカスタム絵文字。
@@ -229,6 +257,7 @@
 - リアクションの不具合がコメントの取得に波及する — 取り込みの失敗は `reactions: null` にしてコメントは返す。集計は1回の `findMany`（一意インデックスの先頭の `comment` を使う）に限る。
 - 単体取得 API で、共有リンクの検証と取得の対象がずれる（IDOR） — `pageId` を必須にし、コメントがその `pageId` のものかを確かめる。別ページのコメント ID を統合テストで確かめる。
 - `comment` スペックへの書き戻しが漏れ、契約の持ち主が2つに分かれる — tasks.md の最終タスクにし、書き戻した後は `comment` スペックだけが契約を持つ。
+- 利用者の文書が無いリアクションで、リアクションの読み取りがページごと失敗する — `users` へのリレーションを宣言せず、利用者を別に取得して、見つからない ID は文字列で表示する。存在しない `userId` のリアクションを入れた統合テストで確かめる。
 - コメントの削除経路でリアクションを後に消す（または同時に消す）と P2014 になる、あるいは将来 `comments` へのリレーションが宣言されて同じことが起きる — `comments` へのリレーションを宣言せず、どの経路でもリアクションを先に消す。本物の DB で削除経路を通す統合テストで確かめる。
 - `removeWithReplies` で、返信の ID を集めてから削除するまでの間に返信が増えると、その返信のリアクションが残りうる — 起こりにくい競合で、残っても表示されない（コメントが無い）。完全削除のときは pageId で一括削除するので残らない。
 - migration と Prisma の宣言でインデックスの名前・キーがずれる — `map` の名前を migration のインデックス名と一致させ、migration の統合テストでインデックスの名前とキーを確かめる。
