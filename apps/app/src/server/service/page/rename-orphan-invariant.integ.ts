@@ -10,6 +10,7 @@ import { getInstance } from '^/test/setup/crowi';
 
 import type Crowi from '~/server/crowi';
 import type { PageDocument, PageModel } from '~/server/models/page';
+import loggerFactory from '~/utils/logger';
 
 describe('a failed rename must not orphan the page (#9755)', () => {
   let crowi: Crowi;
@@ -118,11 +119,13 @@ describe('a failed rename must not orphan the page (#9755)', () => {
         const [, update] = args;
         const query = originalFindByIdAndUpdate.apply(this, args);
         if (update?.$set?.path !== newPath) return query;
-        const failed = applied
-          ? query.then(() => Promise.reject(fault))
-          : Promise.reject(fault);
-        // the caller only awaits the result, so a thenable can stand in for the Query
-        return failed as unknown as typeof query;
+        // Both stay real Queries, so callers may still chain .exec() / .lean():
+        // `transform` throws after the write ran, `error` rejects before it runs.
+        return applied
+          ? query.transform(() => {
+              throw fault;
+            })
+          : query.error(fault);
       });
     try {
       const err = await rename(page, newPath);
@@ -158,7 +161,7 @@ describe('a failed rename must not orphan the page (#9755)', () => {
     });
   });
 
-  it('leaves the page on the tree when the destination parent is a trashed page', async () => {
+  it('leaves the page on the tree after renaming it under a trashed page, whether or not the rename succeeds', async () => {
     await create(base, 'base body');
     const victim = await create(`${base}/deleted-later`, 'body');
     const target = await create(`${base}/target`, 'body');
@@ -271,6 +274,112 @@ describe('a failed rename must not orphan the page (#9755)', () => {
       `${base}/target/not-yet-existing`,
     ]);
     expect(await snapshotTree()).toEqual(before);
+  });
+
+  it('surfaces the original error and names the leftover empty pages when removing them also fails', async () => {
+    await create(base, 'base body');
+    const target = await create(`${base}/target`, 'body');
+
+    const linkFault = new Error(
+      'simulated failure while linking the new ancestors',
+    );
+    const cleanupFault = new Error(
+      'simulated failure while removing the new ancestors',
+    );
+    let failedDeletes = 0;
+    const bulkWriteSpy = vi
+      .spyOn(Page, 'bulkWrite')
+      .mockRejectedValueOnce(linkFault);
+    // every delete fails, so the test holds wherever the cleanup lives
+    const deleteManySpy = vi
+      .spyOn(Page, 'deleteMany')
+      .mockImplementation(() => {
+        failedDeletes += 1;
+        throw cleanupFault;
+      });
+    const errorSpy = vi.spyOn(loggerFactory('growi:services:page'), 'error');
+    let err: Error | null;
+    // read before mockRestore, which discards the recorded calls
+    let logged = '';
+    try {
+      err = await rename(target, `${base}/target/not-yet-existing/moved`);
+      logged = errorSpy.mock.calls
+        .map((args) => args.map(String).join(' '))
+        .join('\n');
+    } finally {
+      bulkWriteSpy.mockRestore();
+      deleteManySpy.mockRestore();
+      errorSpy.mockRestore();
+    }
+
+    // otherwise the cleanup never failed and the assertions below prove nothing
+    expect(failedDeletes).toBeGreaterThan(0);
+    expect(err).toBe(linkFault);
+    // the rollback still ran past the failed cleanup
+    expect(await findPathAndParentPath(target._id)).toEqual({
+      path: `${base}/target`,
+      parentPath: base,
+    });
+    // the log is the only way left to find the empty pages that could not be removed
+    const leftovers = await Page.find({
+      path: new RegExp(`^${base}/`),
+      isEmpty: true,
+    });
+    expect(leftovers).toHaveLength(2);
+    for (const leftover of leftovers) {
+      expect(logged).toContain(leftover._id.toString());
+    }
+  });
+
+  it('leaves a page that was moved elsewhere in the meantime, and the new ancestors, alone when the rename fails', async () => {
+    await create(base, 'base body');
+    const target = await create(`${base}/target`, 'body');
+    const elsewhere = await create(`${base}/elsewhere`, 'body');
+    const newPath = `${base}/target/not-yet-existing/moved`;
+
+    // Another writer reattaches the page right after the rename detaches it,
+    // which is what the rollback's `parent: null` condition guards against.
+    const originalTakeOffFromTree = Page.takeOffFromTree;
+    const takeOffSpy = vi
+      .spyOn(Page, 'takeOffFromTree')
+      .mockImplementation(async function (this: PageModel, ...args) {
+        const detached = await originalTakeOffFromTree.apply(this, args);
+        await Page.updateOne(
+          { _id: target._id },
+          { $set: { parent: elsewhere._id } },
+        );
+        return detached;
+      });
+    const warnSpy = vi.spyOn(loggerFactory('growi:services:page'), 'warn');
+    let result: Awaited<ReturnType<typeof renameWithFailingFinalWrite>>;
+    // read before mockRestore, which discards the recorded calls
+    let warnings: string[] = [];
+    try {
+      result = await renameWithFailingFinalWrite(target, newPath, {
+        applied: false,
+      });
+      warnings = warnSpy.mock.calls.map(([message]) => String(message));
+    } finally {
+      takeOffSpy.mockRestore();
+      warnSpy.mockRestore();
+    }
+
+    expect(result.err).toBe(result.fault);
+    // (a) the rollback did not overwrite the other writer's change
+    expect((await Page.findById(target._id))?.parent?.toString()).toBe(
+      elsewhere._id.toString(),
+    );
+    // (b) the empty pages the rename inserted are kept, not deleted
+    const empties = await Page.find({
+      path: new RegExp(`^${base}/`),
+      isEmpty: true,
+    });
+    expect(empties.map((p) => p.path).sort()).toEqual([
+      `${base}/target`,
+      `${base}/target/not-yet-existing`,
+    ]);
+    // (c) the skipped rollback is reported
+    expect(warnings).toContainEqual(expect.stringContaining(`${base}/target`));
   });
 
   it('keeps the new ancestors when renaming to under itself commits but its acknowledgement is lost', async () => {
