@@ -70,7 +70,7 @@
 ### Allowed Dependencies
 モジュール単位の依存は、次の層の順で左（番号の小さい側）にだけ向ける。循環は作らない。
 
-1. **リアクションの中核**（`features/comment-reaction/` の `interfaces`、`utils`、`server/models`、`server/service`）: Prisma（`commentreactions`、`users` の読み取り）、`@growi/emoji-mart-data`、`comment` の型 `ICommentCreatorSummary`（型だけ）に依存してよい。`comment` の実行時のコードは import しない。利用者の整形は、関数を引数で受け取る
+1. **リアクションの中核**（`features/comment-reaction/` の `interfaces`、`utils`、`server/models`、`server/service`）: Prisma（`commentreactions`、`users` の読み取り）、`@growi/emoji-mart-data` に依存してよい。`comment` のコードは、型も含めて import しない（リアクションした利用者の4項目の型 `ReactionUserSummary` は自前で定義する）。利用者の整形は、関数を引数で受け取る
 2. **コメントの取得**（`features/comment/server/` の service、serializers、`list.ts`、新設の `get.ts`）: 1 のローダー `loadReactionChips` と型 `ReactionChip` に依存してよい
 3. **リアクションの書き込みの route**（`features/comment-reaction/server/routes/update.ts`）: 1 と、2 の `getCommentListItem`（応答のコメントを作るため）に依存してよい
 4. **クライアント**: `comment-reaction` の client は、`comment` の client の `useSWRxCommentList` に依存してよい。コメントの表示部品（`client/components/PageComment/`、`features/inline-comment/client/`）は、`comment-reaction` の client の部品に依存してよい。逆向きは禁止
@@ -88,7 +88,7 @@
 - `comment` スペックのコメント取得の認可の変更（リアクションの読み取りの範囲も同時に変わる）
 - コメントの削除の経路の追加・変更（新しい経路でリアクションの削除が漏れる）
 - `@growi/emoji-mart-data` の出力形の変更（本文のレンダラー、エディタの自動補完、本スペックの検証が共有している）
-- `ICommentCreatorSummary` の項目の変更（リアクションした利用者の情報も同じ規則に従う。要件 6.4）
+- `ICommentCreatorSummary` の項目の変更（リアクションした利用者の情報も同じ規則に従う。要件 6.4）。`ReactionUserSummary` は同じ4項目を自前で持つので、両方を揃えて変える。項目が減ると `comment` 側で `toCreatorSummary` を `formatUser` に渡すところが型エラーになるが、項目が増えても型エラーにはならないので、見落とさないように注意する
 - emoji-mart のバージョン更新（ショートコードの変化で、保存済みのキーが解決できなくなる）
 - コメント一覧の取得フックのキー `['/comments', pageId, shareLinkId]` の変更（PUT の応答でキャッシュを書き換える前提が崩れる）
 - コメントを削除する経路の追加（リアクションの削除を足し忘れると、表示されない孤立したリアクションが残る。「削除経路の拡張」を参照）
@@ -163,7 +163,7 @@ graph TB
 
 | Layer | Choice / Version | Role in Feature | Notes |
 |-------|------------------|-----------------|-------|
-| Frontend | React（Next.js Pages Router）、SWR、reactstrap | リアクションバー、チップ、利用者一覧のツールチップ | 既存のスタック |
+| Frontend | React（Next.js Pages Router）、SWR、reactstrap | リアクションバー、チップ、利用者一覧の Popover | 既存のスタック |
 | Frontend | emoji-mart 5.6.0、@emoji-mart/react 1.1.1、@emoji-mart/data 1.2.1（`packages/editor` 内） | 絵文字ピッカー（肌の色の選択） | 新しい依存は無い。`packages/editor` の既存の依存を使う |
 | Shared | `@growi/emoji-mart-data`（workspace） | 絵文字の存在・肌の色対応・別名・グリフの解決 | 出力を拡張する |
 | Backend | Express apiv3、express-validator | コメントの読み取り（一覧・単体）とリアクションの書き込み | 既存のスタック |
@@ -177,7 +177,7 @@ apps/app/src/features/comment-reaction/
 ├── interfaces/
 │   ├── index.ts                     # 公開する型と定数の barrel
 │   ├── reaction-key.ts              # ReactionKey、ParsedReactionKey、SkinTone の型
-│   ├── reaction-chip.ts             # ReactionChip、ReactionUser
+│   ├── reaction-chip.ts             # ReactionChip、ReactionUser、ReactionUserSummary
 │   ├── api.ts                       # PUT の要求・応答の型
 │   └── limits.ts                    # MAX_REACTION_KINDS_PER_COMMENT
 ├── utils/
@@ -206,13 +206,17 @@ apps/app/src/features/comment-reaction/
     │   ├── use-comment-reactions.spec.tsx
     │   ├── use-can-react-to-comments.ts      # 画面上でリアクションできるかの判定
     │   └── use-can-react-to-comments.spec.ts
+    ├── utils/
+    │   ├── classify-reaction-update-failure.ts      # PUT の失敗 → 利用者に示す失敗の種類（純粋関数）
+    │   └── classify-reaction-update-failure.spec.ts
     └── components/
         ├── index.ts                 # 公開: CommentReactionBar だけ
         └── CommentReactionBar/
             ├── CommentReactionBar.tsx       # 1コメント分のチップ列と「＋」
             ├── CommentReactionBar.spec.tsx
             ├── CommentReactionBar.module.scss
-            ├── ReactionChip.tsx             # 絵文字・人数・自分の強調・押下、利用者一覧のツールチップ
+            ├── ReactionChip.tsx             # 絵文字の部分（追加・解除）と人数の部分（利用者一覧を開く）、自分の強調
+            ├── ReactionUsersPopover.tsx     # 人数の部分から開く、リアクションした利用者の一覧
             └── AddReactionButton.tsx        # 「＋」とピッカーの開閉、上限時の無効化
 
 apps/app/src/features/comment/server/
@@ -243,7 +247,7 @@ packages/editor/src/client/components/EmojiPicker/
 ### Modified Files
 **comment スペックの契約に当たる変更（書き戻しの対象）**
 - `apps/app/src/features/comment/interfaces/comment-list.ts` — `ICommentListItem` に `reactions: ReactionChip[] | null` を追加。単体取得の要求・応答の型（`GetCommentRequestQuery`、`GetCommentResponseBody`）を追加。
-- `apps/app/src/features/comment/server/serializers/to-comment-list-item.ts` — `toCommentListItem` が、行と、そのコメントのチップ（または `null`）を受け取って `reactions` を詰める。`toCreatorSummary` を export し、引数の型を表示に使う4項目（`ReactionUserRow` と同じ形）に絞る（挙動は変えない。リアクションの利用者は `users.findMany` の `select` で4項目だけを取るため）。`toLegacyCommentListItem`（旧 API 用）は `reactions` を持たない形のまま。
+- `apps/app/src/features/comment/server/serializers/to-comment-list-item.ts` — `toCommentListItem` が、行と、そのコメントのチップ（または `null`）を受け取って `reactions` を詰める（共通の `createCommentListItemMapper` の結果に `reactions` を足す）。`toCreatorSummary` を export し、引数の型を `Pick<CreatorRow, '_id' | 'username' | 'name' | 'imageUrlCached'>` に絞る（挙動は変えない。リアクションの利用者は `users.findMany` の `select` で必要な項目だけを取るため）。共通の型 `CommentListItemWith<TCreator>` は `Omit<ICommentListItem, 'creator' | 'reactions'>` にして、`toLegacyCommentListItem`（旧 API 用）の型と応答に `reactions` が入らないようにする（`comment` 要件 5.1）。
 - `apps/app/src/features/comment/server/routes/list.ts` — 一覧の取得のあと、`loadReactionChips` でリアクションを取り込む。閲覧判定は `can-view-comments-of-page.ts` に移す（挙動は変えない）。`@swagger` の `CommentListItem` に `reactions` を追加。
 - `apps/app/src/server/routes/apiv3/index.js` — `/comments` の router に `GET /:id`（comment）と `PUT /:id/reactions`（comment-reaction）を登録。
 
@@ -303,7 +307,8 @@ sequenceDiagram
 - emit は `res.apiv3()` より前に行う（`activity-recording.md` Rule 1）。`changed: false` のときは emit しない（要件 9.4）。
 - 一意インデックスの重複エラー（同時の二重追加）は `changed: false` として扱う（要件 2.7）。
 - 上限で拒否したときは 409 を返し、コメントは読み直さない。
-- 応答のコメントは、書き込みのあとにデータベースから読み直したもので、他の利用者のリアクションも含む最新の状態である（要件 2.9）。クライアントは、一覧のキャッシュの該当する1件だけを置き換え、一覧全体は再取得しない。
+- 書き込みのあとの読み直しでコメントが無かった（書き込みと読み直しの間に削除された）ときは、emit せずに 404 `notfound_or_forbidden` を返す（「update route」を参照）。
+- 応答のコメントは、書き込みのあとにデータベースから読み直したもので、他の利用者のリアクションも含む最新の状態である（要件 2.9）。成功したときは、クライアントは一覧のキャッシュの該当する1件だけを置き換え、一覧全体は再取得しない。失敗したとき（エラーの応答、通信の失敗）と、応答の `reactions` が `null` のときは、1件の置き換えをせず、一覧を取り直す（「useCommentReactions」の「失敗時の扱い」を参照）。
 
 ### コメントの読み取り（一覧・単体）とリアクションの取り込み
 
@@ -330,7 +335,7 @@ graph TB
 |-------------|---------|------------|------------|-------|
 | 1.1, 1.2, 1.3 | 絵文字ごとのチップ、人数、肌の色ごとに別チップ | summarizeReactions, ReactionChip | `ReactionChip.emoji` / `count` | — |
 | 1.4 | 自分のリアクションの区別 | summarizeReactions, ReactionChip | `ReactionChip.reactedByMe`、`aria-pressed` | — |
-| 1.5, 1.10 | リアクションした利用者の表示、退会者は投稿者と同じ規則 | summarizeReactions, ReactionChip | `ReactionUser`（`ICommentCreatorSummary` または ID 文字列） | — |
+| 1.5, 1.10 | リアクションした利用者の表示、退会者は投稿者と同じ規則 | summarizeReactions, ReactionChip, ReactionUsersPopover | `ReactionUser`（`ReactionUserSummary` または ID 文字列）、人数の部分のクリック・タップで開く Popover | — |
 | 1.6 | 最初に付いた順 | summarizeReactions | チップの並び（残っている行の最小 `createdAt` の昇順） | — |
 | 1.7 | リアクションが無ければチップなし | CommentReactionBar | `reactions: []` | — |
 | 1.8 | 末尾のコメント欄とインラインコメントの両方 | CommentReactionBar の差し込み先 | `CommentCard.footer` | — |
@@ -340,7 +345,7 @@ graph TB
 | 2.6 | 自分のコメントにも付けられる | CommentReactionService | 投稿者の判定をしない | — |
 | 2.7, 2.8 | 古い画面からの重複要求は成功扱い | CommentReactionService | `{ changed: false }` | 追加・解除 |
 | 2.9 | 完了後に最新の状態を表示 | update route, getCommentListItem, useCommentReactions | PUT の応答の `comment`、キャッシュの1件の置き換え | 追加・解除 |
-| 2.10 | 失敗の表示と操作前の状態 | useCommentReactions, CommentReactionBar | `toastError`、楽観的更新なし | — |
+| 2.10 | 失敗の表示と操作前の状態 | useCommentReactions, classifyReactionUpdateFailure | 楽観的更新なし（失敗してもキャッシュを変えない）、失敗の種類ごとの `toastError`、一覧の取り直し | 追加・解除 |
 | 3.1, 3.2 | 「＋」でピッカーを開く | AddReactionButton, EmojiPicker | `EmojiPickerProps` | — |
 | 3.3, 3.4 | 新規はチップ追加、既存は追加と同じ扱い | AddReactionButton, reaction-key | `fromPickerSelection` → PUT | 追加・解除 |
 | 3.5 | 肌の色の選択 | EmojiPicker | emoji-mart の `skin` / `skinTonePosition` | — |
@@ -355,11 +360,11 @@ graph TB
 | 5.4, 5.5 | 閲覧専用ユーザーはコメント設定に連動 | update route, useCanReactToComments | `excludeReadOnlyUserIfCommentNotAllowed`、`useIsCommentActionBlockedForReadOnlyUser` | — |
 | 5.6, 5.7 | 共有リンク・ゲストは手段なし | useCanReactToComments, update route | `loginRequiredStrictly`、「＋」非表示、チップは非活性 | — |
 | 6.1 | コメントを読める相手と同じ範囲で返す | comment の list / get route, loadReactionChips | `ICommentListItem.reactions` | 読み取り |
-| 6.2 | ゲスト・共有リンクにも読み取り専用で表示 | CommentReactionBar | `canReact = false` | — |
+| 6.2 | ゲスト・共有リンクにも読み取り専用で表示 | CommentReactionBar, ReactionChip, ReactionUsersPopover | `canReact = false`（絵文字の部分は押せない。人数の部分から利用者一覧を開ける） | — |
 | 6.3 | 共有リンク画面・検索プレビューでインラインのリアクションを出さない | 差し込み先の選定 | インラインコメントの部品が描画されない画面には出ない | — |
-| 6.4 | 利用者情報は4項目 | summarizeReactions | `toCreatorSummary` を引数で渡す | — |
+| 6.4 | 利用者情報は4項目 | summarizeReactions, loadReactionChips | `ReactionUserSummary`、`toCreatorSummary` を引数で渡す | — |
 | 6.5 | 取得失敗はコメント表示を妨げない | comment の list / get route, CommentReactionBar | `reactions: null`、バーを描画しない | 読み取り |
-| 7.1, 7.2, 7.3 | 種類数の上限 20、超えたら拒否、既存チップは可 | CommentReactionService, AddReactionButton | 409 `reaction-kind-limit-exceeded`、`MAX_REACTION_KINDS_PER_COMMENT` | 追加・解除 |
+| 7.1, 7.2, 7.3 | 種類数の上限 20、超えたら拒否、既存チップは可 | CommentReactionService, AddReactionButton, useCommentReactions | 409 `reaction-kind-limit-exceeded`、`MAX_REACTION_KINDS_PER_COMMENT`、`comment_reaction.kind_limit_reached` | 追加・解除 |
 | 8.1 | 通常コメントの削除でリアクションも削除 | removeWithReplies | `commentreactions.deleteMany` | — |
 | 8.2 | インラインコメントとその返信の削除 | removeWithReplies, deleteReply | 同上 | — |
 | 8.3 | ページの完全削除 | deleteCompletelyOperation | `deleteMany({ pageId: { in } })` | — |
@@ -393,10 +398,12 @@ graph TB
 | update route | Reaction / route | 追加・解除の API と認可、監査ログ、最新のコメントの返却 | 2.1, 2.2, 2.9, 4.2, 4.4, 5.1–5.7, 7.2, 9.1–9.4, 11.3 | Service（P0）、getCommentListItem（P0）、activityEvent（P0） | API |
 | 削除経路の拡張 | 既存 | コメント・ページの削除に伴う削除 | 8.1–8.4 | Prisma（P0） | — |
 | Activity 定義の拡張 | 既存 interfaces, activity model | action と snapshot の variant、snapshot の保存口への `emoji` の追加 | 9.1–9.5 | activity-log-snapshot の方針（P1）、`createByParameters`（P0） | — |
-| useCommentReactions | Client / hook | 一覧のキャッシュから読み、PUT の応答で1件を置き換える | 1.1, 2.1, 2.2, 2.9, 2.10, 6.5 | useSWRxCommentList（P0）、apiv3-client（P0） | State |
+| useCommentReactions | Client / hook | 一覧のキャッシュから読み、PUT の応答で1件を置き換える。失敗時はエラーを示して一覧を取り直す | 1.1, 2.1, 2.2, 2.9, 2.10, 6.5, 7.2 | useSWRxCommentList（P0）、apiv3-client（P0）、classifyReactionUpdateFailure（P0） | State |
+| classifyReactionUpdateFailure | Client / utils | PUT の失敗を、利用者に示す種類に分ける（純粋関数） | 2.10, 7.2 | — | Service |
 | useCanReactToComments | Client / hook | 画面上のリアクション可否 | 5.4–5.7, 6.2 | context フック（P0） | State |
 | CommentReactionBar | Client / UI | 1コメント分のチップ列と「＋」 | 1.1–1.8, 2.3, 3.1, 3.7, 6.2, 6.3, 6.5 | hooks（P0） | — |
-| ReactionChip | Client / UI | チップの表示と押下、利用者一覧 | 1.2, 1.4, 1.5, 1.10, 2.1, 2.2 | reaction-key（P0） | — |
+| ReactionChip | Client / UI | チップの表示、絵文字の部分の押下（追加・解除）、人数の部分の押下（利用者一覧） | 1.2, 1.4, 1.5, 1.10, 2.1, 2.2, 6.2 | reaction-key（P0）、ReactionUsersPopover（P0） | — |
+| ReactionUsersPopover | Client / UI | リアクションした利用者の一覧 | 1.5, 1.10, 6.2 | reactstrap `Popover`（P0） | — |
 | AddReactionButton | Client / UI | 「＋」とピッカー、上限時の無効化 | 3.1–3.6, 7.2 | EmojiPicker（P0） | — |
 | EmojiPicker | editor package / UI | 遅延読み込みのピッカー | 3.2, 3.5, 3.6 | emoji-mart（P0） | — |
 
@@ -572,11 +579,11 @@ interface CommentReactionService {
 - チップは `emoji` ごとに作る（肌の色が違えば別のチップ。要件 1.3）。
 - チップの並びは、そのチップに残っている行のうち最小の `createdAt` の昇順（要件 1.6）。チップ内の利用者も `createdAt` の昇順。
 - `count` は行数（利用者のレコードが無い行も数える。要件 1.9）。
-- 利用者は、引数で受け取った整形関数（`comment` の `toCreatorSummary`、4項目）で整形する。利用者の文書が無ければ `userId` の文字列にする。これは、コメントの投稿者が `comments.creator`（任意のリレーション）の `include` で `null` になったときに `creatorId` の文字列を返す規則と同じ（要件 1.10、6.4）。管理画面からの退会（`statusDelete`）では文書が残り、`username` などが書き換わるだけなので、投稿者と同じく書き換え後の値で表示される。
+- 利用者は、引数で受け取った整形関数（`comment` の `toCreatorSummary`、4項目）で整形し、`ReactionUserSummary` にする。`ReactionUserSummary` は `ICommentCreatorSummary` と同じ形を、`comment` の型を import せずに自前で定義したもの。`comment` 側で `toCreatorSummary` を `formatUser` に渡すところで、両者の形が合っているかを型で検査する。利用者の文書が無ければ `userId` の文字列にする。これは、コメントの投稿者が `comments.creator`（任意のリレーション）の `include` で `null` になったときに `creatorId` の文字列を返す規則と同じ（要件 1.10、6.4）。管理画面からの退会（`statusDelete`）では文書が残り、`username` などが書き換わるだけなので、投稿者と同じく書き換え後の値で表示される。
 - `reactedByMe` は、`viewerId` と一致する行があるとき true。ゲストは常に false。
 - `loadReactionChips` は、次の2回の取得を行い、`summarizeReactions` に渡す。結果には、リアクションの無いコメントも空配列で含める。
   1. `commentreactions.findMany({ where: { commentId: { in: commentIds } }, orderBy: { createdAt: 'asc' } })`（`include` は使わない）
-  2. 1 の `userId` の重複を除いたものについて、`users.findMany({ where: { id: { in: userIds } }, select: { id, username, name, imageUrlCached } })`
+  2. 1 の `userId` の重複を除いたものについて、`users.findMany({ where: { id: { in: userIds } }, select: { id: true, _id: true, username: true, name: true, imageUrlCached: true } })`。`_id` は Prisma 拡張の計算項目（`server/models/user/index.prisma.ts`）で、`select` を明示すると、選ばない限り結果に入らない。`toCreatorSummary` は `_id` を読むので、`_id` を必ず選ぶ（選ばないと、利用者の `_id` が `undefined` になる）。`id` は `usersById` のキーに使う
   - リレーションの `include` を使わないのは、必須のリレーションの `include` は、参照先の文書が1件でも無いとクエリ全体が `Inconsistent query result: Field user is required to return data, got null instead.` で失敗するため（「削除経路の拡張」の決めたこと 3）。2 の結果に無い `userId` は、利用者の文書が無いものとして扱う。
 - 整形関数を引数で受け取るのは、リアクションの中核が `comment` の実行時のコードを import しないため（依存の向きを一方向に保つ）。
 
@@ -584,7 +591,10 @@ interface CommentReactionService {
 
 ##### Service Interface
 ```typescript
-type ReactionUser = ICommentCreatorSummary | string;
+/** Same shape as comment's ICommentCreatorSummary, defined here so the reaction core imports nothing from comment. */
+type ReactionUserSummary = Pick<users, 'username' | 'name' | 'imageUrlCached'> & { _id: string };
+
+type ReactionUser = ReactionUserSummary | string;
 
 type ReactionChip = {
   readonly emoji: ReactionKey;
@@ -593,10 +603,10 @@ type ReactionChip = {
   readonly users: readonly ReactionUser[];
 };
 
-/** The four public fields selected from `users`; see loadReactionChips. */
-type ReactionUserRow = Pick<users, 'id' | 'username' | 'name' | 'imageUrlCached'>;
+/** The fields selected from `users` (computed `_id` included); see loadReactionChips. */
+type ReactionUserRow = Pick<users, 'id' | 'username' | 'name' | 'imageUrlCached'> & { _id: string };
 
-type FormatReactionUser = (user: ReactionUserRow) => ICommentCreatorSummary;
+type FormatReactionUser = (user: ReactionUserRow) => ReactionUserSummary;
 
 declare function summarizeReactions(
   rows: readonly CommentReactionRow[],                  // plain commentreactions rows (no include)
@@ -628,7 +638,7 @@ declare function loadReactionChips(
 - 単体（`get.ts`）: `pageId` を必須にする。`certifySharedPage` が `pageId` と `shareLinkId` の組で共有リンクを検証するため、また、共有リンクの検証と取得の ID を分けないため。コメントは `getCommentListItem` で、`id` と `pageId` の両方が一致するものだけを取る。無ければ 404 `notfound_or_forbidden`（他のページのコメント ID を、共有リンクで読ませない）。共有リンク経由でも、インラインコメントを含めて返す（一覧と同じ範囲。`comment` 要件 3.3）。`revisionId` は受け付けない（版による絞り込みは一覧だけの機能）。
 - `getCommentListItem({ prisma }, { commentId, pageId, viewerId })`: `prisma.comments.findFirst({ where: { id: commentId, pageId }, include: { creator: true } })` → `loadReactionChips` → `toCommentListItem`。単体の route と、本スペックの PUT の route が共有する。
 - リアクションの取り込みに失敗したとき（`loadReactionChips` が例外を投げたとき）は、ログを残し、対象のコメントの `reactions` を `null` にして応答する（要件 6.5）。コメント自体の取得の失敗は、従来どおり 500。
-- 旧式の `GET /_api/comments.get` は変えない（`toLegacyCommentListItem` は `reactions` を持たない）。
+- 旧式の `GET /_api/comments.get` は変えない。`toLegacyCommentListItem` の型は `Omit<ICommentListItem, 'creator' | 'reactions'>` をもとにするので、`reactions` は型にも応答にも現れない。
 
 **Contracts**: API [x] / Service [x]
 
@@ -684,13 +694,15 @@ declare function getCommentListItem(
 - 対象の解決: `prisma.comments.findUnique({ where: { id }, select: { id, pageId } })` で存在を確認し、続けて `findPageAndMetaDataByViewer` で閲覧判定をする。どちらで失敗しても、同じ 404 `notfound_or_forbidden` を返す（要件 5.3、`page-write-action-403-404.md`）。
 - 監査ログ: `changed` が true のときだけ、`res.apiv3()` の前に `activityEvent.emit('update', res.locals.activity._id, { action, target: pageId, targetModel: MODEL_PAGE, event: commentId, eventModel: MODEL_COMMENT, snapshot: { username, emoji } })` を呼ぶ。
 - 応答のコメントは `getCommentListItem({ commentId, pageId, viewerId: req.user._id })` で作る。書き込みの後に読み直すので、他の利用者のリアクションも含めた最新の状態になる（要件 2.9）。読み直しの `await` は emit より前に済ませ、emit と `res.apiv3()` の間に `await` を挟まない（Rule 1）。
+- 読み直しが `null`（対象の解決のあと、書き込みか読み直しまでの間にコメントが削除された）のときは、emit せずに 404 `notfound_or_forbidden` を返す。利用者から見ると対象がもう無いので、対象の解決で見つからなかったときと同じ応答にそろえる。追加・解除としては記録せず（要件 9.4 の「拒否」と同じ扱い）、`addActivity` の finalizer が `ACTION_UNSETTLED` を残す。コメントの削除そのものは `COMMENT_REMOVE` で記録される。
+- 読み直しでリアクションの取り込みだけが失敗した（`comment.reactions` が `null`）ときは、書き込みは成功しているので、200 と `changed` の値をそのまま返す。クライアントはこの `comment` で置き換えず、一覧を取り直す（「useCommentReactions」を参照）。
 
 **Contracts**: API [x]
 
 ##### API Contract
 | Method | Endpoint | Request | Response | Errors |
 |--------|----------|---------|----------|--------|
-| PUT | /_api/v3/comments/:id/reactions | path: `id`。body（JSON）: `{ emoji, isReacted }` | `UpdateCommentReactionResponse` | 400 `validation_failed`（閲覧専用ユーザー）/ `invalid-reaction-emoji`、401/403、404 `notfound_or_forbidden`、409 `reaction-kind-limit-exceeded`（`isReacted: true` のときだけ）、500 `comment-reaction-update-failed` |
+| PUT | /_api/v3/comments/:id/reactions | path: `id`。body（JSON）: `{ emoji, isReacted }` | `UpdateCommentReactionResponse` | 400 `validation_failed`（閲覧専用ユーザー、入力の形式不正）/ `invalid-reaction-emoji`、401/403、404 `notfound_or_forbidden`（コメントが無い、ページを読めない、読み直しの時点でコメントが削除されていた）、409 `reaction-kind-limit-exceeded`（`isReacted: true` のときだけ）、500 `comment-reaction-update-failed` |
 
 ```typescript
 /** isReacted: true = add, false = remove (explicit, never a toggle; see requirement 2.7, 2.8). */
@@ -708,7 +720,7 @@ type UpdateCommentReactionResponse = {
 - Validation: `id` は `isMongoId()`。`emoji` は `isString()` と長さの上限（64 文字）のあと、handler で `normalizeReactionKey` を通す。`isReacted` は `isBoolean({ strict: true })`。
 - 追加と解除を1つの PUT の body にまとめるのは、ページの「いいね」（`PUT /_api/v3/page/likes` の `{ pageId, bool }`）と揃えるためと、`emoji` をクエリに載せないため（`unicode:+1` の `+` は、クエリでは手で書いた要求で空白に化ける）。
 - Idempotency: 同じ PUT を何度送っても結果の状態は同じで、2回目以降は `changed: false`（要件 2.7、2.8）。
-- 409 のときは応答に `comment` を含めない（エラーの応答）。クライアントは表示を変えない。
+- エラーの応答（4xx / 5xx）には `comment` を含めない。クライアントの扱いは「useCommentReactions」の「失敗時の扱い」に従う。
 - OpenAPI: `@swagger` を付ける。応答の `comment` は `CommentListItem` を参照する。
 
 **Implementation Notes**
@@ -766,8 +778,8 @@ type UpdateCommentReactionResponse = {
 
 | Field | Detail |
 |-------|--------|
-| Intent | コメント一覧のキャッシュから1コメント分のチップを読み、追加・解除の応答でキャッシュの1件を置き換える |
-| Requirements | 1.1, 2.1, 2.2, 2.9, 2.10, 6.5 |
+| Intent | コメント一覧のキャッシュから1コメント分のチップを読み、追加・解除の応答でキャッシュの1件を置き換える。失敗したらエラーを示し、一覧を取り直す |
+| Requirements | 1.1, 2.1, 2.2, 2.9, 2.10, 6.5, 7.2 |
 
 **Contracts**: State [x]
 
@@ -777,15 +789,34 @@ type UseCommentReactions = {
   /** undefined while loading; null when the server could not load reactions. */
   readonly chips: readonly ReactionChip[] | null | undefined;
   readonly isUpdating: boolean;
+  /** Never rejects: failures are shown to the user and followed by a refetch of the comment list. */
   readonly setReaction: (emoji: ReactionKey, isReacted: boolean) => Promise<void>;
 };
 
 declare function useCommentReactions(pageId: string, commentId: string): UseCommentReactions;
 ```
 - State model: 読み取りは `useSWRxCommentList(pageId)` の `data` から `id === commentId` の1件の `reactions` を取り出す。新しい取得は増やさない。末尾のコメント欄とインラインコメント（`groupInlineComments` の型を経由しない）が、同じキャッシュから読む。
-- Persistence & consistency: `setReaction` は `apiv3Put('/comments/:id/reactions', { emoji, isReacted })` を呼ぶ。成功したら、`mutate(updater, { revalidate: false })` で、一覧の `id === commentId` の1件を、応答の `comment` に置き換える（要件 2.9）。失敗したら例外を投げ、キャッシュは変更しない（要件 2.10）。楽観的更新はしない。
-- Concurrency strategy: 要求中は `isUpdating` を true にし、部品はチップと「＋」の押下を無効にする。
+- Persistence & consistency: `setReaction` は `apiv3Put('/comments/:id/reactions', { emoji, isReacted })` を呼ぶ。楽観的更新はしない（要求の前にキャッシュを書き換えない）。
+  - 成功して、応答の `comment.reactions` が `null` でないとき: `mutate(updater, { revalidate: false })` で、一覧の `id === commentId` の1件を、応答の `comment` に置き換える（要件 2.9）。
+  - 成功したが、応答の `comment.reactions` が `null`（サーバーで読み直しのときにリアクションだけ取り込めなかった）のとき: 1件の置き換えはせず、`mutate()` で一覧を取り直す。置き換えると、バー（「＋」を含む）が消えたまま戻らなくなるため。エラーは表示しない（書き込みは成功している）。
+  - 失敗したとき: 下の「失敗時の扱い」に従う。
+- Concurrency strategy: 要求中（一覧の取り直しを待つ間を含む）は `isUpdating` を true にし、部品はチップと「＋」の押下を無効にする。
 - 置き換える1件は、一覧のほかの項目（本文、解決状態など）も最新になる。インラインコメントの表示は、置き換えた後の一覧を `groupInlineComments` で組み直したものになる。
+
+##### 失敗時の扱い
+失敗（エラーの応答、通信の失敗）では、どの種類でも次の順に扱う。
+1. キャッシュは変更しない。楽観的更新をしていないので、戻す処理も要らない。この時点の表示は操作前の状態のまま（要件 2.10）。
+2. `classifyReactionUpdateFailure` で失敗の種類を決め、種類ごとの文言で `toastError` を出す。トーストは、チップから押したときもピッカーから選んだときも、このフックが出す（呼び出し元の部品では出さない）。
+3. `mutate()` で一覧を取り直し、他の利用者の操作やコメントの削除を含めた最新の状態にそろえる。取り直しも失敗したときは、SWR が前のデータを保つので、表示は操作前の状態のまま残る。
+
+| 失敗の種類（`ReactionUpdateFailureKind`） | 判定（apiv3-client が投げる `ErrorV3` の `code`） | 主な原因 | 文言 | 取り直しの後の表示 |
+|---|---|---|---|---|
+| `kind-limit-exceeded` | `reaction-kind-limit-exceeded`（409） | 他の利用者が新しい絵文字を付けて、上限に達していた | `comment_reaction.kind_limit_reached`（要件 7.2） | チップが上限まで並び、「＋」が無効になる |
+| `comment-unavailable` | `notfound_or_forbidden`（404） | コメントが削除された（書き込みの前でも、読み直しの前でも）、ページが完全に削除された、閲覧権限を失った | `comment_reaction.comment_unavailable` | 削除されたコメントは一覧から消える。ページ自体を読めなくなったときは、一覧の取得もエラーになり、SWR が前のデータを保つ |
+| `failed` | 上記以外のすべて | 権限エラー（セッション切れの 401/403。`loginRequired` は本文の無い 403 を返すので `code` を持たない）、閲覧専用ユーザーへの設定変更（400 `validation_failed`）、不正な絵文字（400 `invalid-reaction-emoji`。画面からは通常起きない）、500、通信の失敗 | `comment_reaction.update_failed` | 最新の一覧（変化が無ければ操作前と同じ） |
+
+- 権限エラーを専用の文言に分けないのは、`code` で確実に見分けられないため（本文の無い 403、`validation_failed` は入力の形式不正と共用）。権限の変化そのもの（ログアウト、閲覧専用の設定）は、一覧ではなく context のフックが持つ状態なので、取り直しでは「＋」の表示は変わらない。次にページを読み込んだときにそろう。
+- `classifyReactionUpdateFailure(errors: unknown): ReactionUpdateFailureKind` は純粋関数で、apiv3-client が投げる値（`ErrorV3` の配列、または配列でない値）を受け取り、知らない形のときは `failed` を返す。
 
 #### useCanReactToComments
 
@@ -821,10 +852,15 @@ type CommentReactionBarProps = {
 - `CommentCard` の `footer` は `.page-comment-main` の中にあり、`pointer-events` が有効なのでクリックできる。
 
 **Implementation Notes（ReactionChip / AddReactionButton / EmojiPicker）**
-- ReactionChip: `button` 要素で、`aria-pressed={reactedByMe}`、`aria-label` に絵文字名と人数を入れる。`canReact` が false なら押しても何もしない。グリフは `resolveReactionGlyph`。解決できない（絵文字データの更新で消えた）ときは `:<shortcode>:` の文字列を出す。利用者一覧は reactstrap の `UncontrolledTooltip`（hover / focus）で、表示名（無ければ `username`、ID 文字列ならそのまま）を並べる。チップの DOM id は `useId()` で作る（コメントごとに繰り返されるため）。
-- AddReactionButton: `canReact` のときだけ描画する（要件 3.1、5.4、5.6、5.7）。チップの数が `MAX_REACTION_KINDS_PER_COMMENT` 以上なら無効化し、ツールチップで上限に達したことを示す。サーバーの 409 を受けた場合も `toastError` で同じ文言を出す（要件 7.2）。ピッカーの `onSelect` は `fromPickerSelection` でキーにし、`setReaction(key, true)` を呼ぶ（要件 3.3、3.4）。閉じたら何もしない（要件 3.6）。
+- ReactionChip: 1つのチップを、見た目は1つの枠のまま、押せる部分を2つに分ける（要件 1.5。マウスでもタッチ端末でも同じ操作で、追加・解除と利用者の確認を区別できるようにする）。
+  - **絵文字の部分**: `canReact` が true のときは `button` 要素で、押すと追加・解除する（要件 2.1、2.2）。`aria-pressed={reactedByMe}`、`aria-label` に絵文字名を入れる。`canReact` が false のときは押せない要素（`span`）にする。グリフは `resolveReactionGlyph`。解決できない（絵文字データの更新で消えた）ときは `:<shortcode>:` の文字列を出す。
+  - **人数の部分**: `canReact` によらず、常に `button` 要素にする。押す（クリック・タップ）と `ReactionUsersPopover` を開き、もう一度押すか外側を押すと閉じる。追加・解除の API は呼ばない。`aria-label` に人数（「N 人がリアクション」）を入れ、`aria-haspopup="dialog"` と `aria-expanded` を付ける。ゲスト・共有リンク閲覧者も、この部分から利用者一覧を見られる（要件 6.2）。
+  - 2つの部分は枠の中で区切り線で分け、タッチ端末で押し分けられるよう、それぞれの押せる範囲を十分な大きさにする（具体的な寸法は実装で決める）。
+  - Popover の対象の DOM id は `useId()` で作る（コメントごとに繰り返されるため）。
+- ReactionUsersPopover: reactstrap の `Popover`（`trigger="legacy"`。クリック・タップで開き、外側のクリック・タップで閉じる）で、チップの `users` を `createdAt` の昇順のまま並べる。表示名は、`name` があれば `name`、無ければ `username`、ID 文字列ならそのまま（要件 1.10）。人数が多いときは、高さの上限を決めて中をスクロールさせる。
+- AddReactionButton: `canReact` のときだけ描画する（要件 3.1、5.4、5.6、5.7）。チップの数が `MAX_REACTION_KINDS_PER_COMMENT` 以上なら無効化し、ツールチップで上限に達したことを示す。サーバーの 409 を受けた場合は、`useCommentReactions` が同じ文言のトーストを出して一覧を取り直す（要件 7.2）。ピッカーの `onSelect` は `fromPickerSelection` でキーにし、`setReaction(key, true)` を呼ぶ（要件 3.3、3.4）。閉じたら何もしない（要件 3.6）。
 - EmojiPicker（`packages/editor`）: props は `{ isOpen: boolean; onSelect: (selection: { id: string; skin?: number }) => void; onClose: () => void; theme?: 'light' | 'dark' | 'auto' }`。初めて開いたときに `@emoji-mart/react` と `@emoji-mart/data` を動的 import する（ページ表示時の読み込みを増やさない）。`@emoji-mart/data` の既定の export は `sets/15/native.json` で、`@growi/emoji-mart-data` の抽出元（サーバーの検証の根拠）と同じデータなので、ピッカーで選べる絵文字はすべてサーバーの検証を通る。reactstrap の `Modal`（中央寄せ）で表示し、スマートフォンでも使える。`skinTonePosition` を有効にする（要件 3.5）。
-- 文言: `comment_reaction.add_reaction`、`comment_reaction.reacted_by`、`comment_reaction.kind_limit_reached`、`comment_reaction.update_failed` を5言語に追加する。
+- 文言: `comment_reaction.add_reaction`、`comment_reaction.reacted_by`、`comment_reaction.reacted_count`、`comment_reaction.kind_limit_reached`、`comment_reaction.comment_unavailable`、`comment_reaction.update_failed` を5言語に追加する。
 
 ## Data Models
 
@@ -851,7 +887,7 @@ type CommentReactionBarProps = {
 
 ### Data Contracts & Integration
 - コメントを返す3つの応答（`GET /comments` の各件、`GET /comments/:id`、`PUT /comments/:id/reactions` の `comment`）は、同じ `ICommentListItem`（`reactions` を含む）を返す。利用者は、どの応答でも同じ型でコメントとリアクションを扱える。
-- `ReactionChip` の型は `features/comment-reaction/interfaces` に置き、`ICommentListItem` はそれを型として参照する（`comment` → `comment-reaction` の型の依存）。
+- `ReactionChip` の型は `features/comment-reaction/interfaces` に置き、`ICommentListItem` はそれを型として参照する（`comment` → `comment-reaction` の型の依存）。逆向きの依存は、型も含めて無い（リアクションした利用者の型は `ReactionUserSummary` を自前で持つ）。
 - G2G: ID は付け替えずに保持される。エクスポートで文字列になった `comment` / `page` / `user` は、インポート時に `overwrite-params/comment-reactions.ts` で ObjectId に戻る。`_id` と `createdAt` は、既定の変換（`keepOriginal`）で ObjectId と Date に戻る（要件 10.2）。
 
 ## Error Handling
@@ -862,7 +898,8 @@ type CommentReactionBarProps = {
 - 読み取りでのリアクションの取り込みの失敗: コメントは返し、`reactions: null` にしてログを残す（要件 6.5）。
 - 予期しない失敗: 500 で、内部の詳細を含まないコード（`comment-get-failed` / `comment-reaction-update-failed`）を返し、サーバーには logger で記録する。
 - 状態を変えない要求（既に付いている、既に外れている）はエラーにしない（要件 2.7、2.8）。
-- クライアント: 書き込みの失敗は `toastError`（409 は上限の文言、それ以外は `comment_reaction.update_failed`）。キャッシュは変えないので、表示は操作前のまま（要件 2.10）。
+- 書き込みの後の読み直しでコメントが無かったときは 404 `notfound_or_forbidden`（emit しない）。読み直しでリアクションだけ取り込めなかったときは、書き込みは成功として 200 を返す（`comment.reactions` は `null`）。
+- クライアント: 書き込みが失敗しても、キャッシュは変えない（要件 2.10）。失敗の種類（上限、コメントが無い・読めない、それ以外）ごとの文言で `toastError` を出し、一覧を取り直して最新の状態にそろえる（「useCommentReactions」の「失敗時の扱い」）。
 
 ### Monitoring
 - `loggerFactory('growi:features:comment-reaction:...')` で、500 の原因とリアクションの取り込みの失敗を記録する。監査ログの `ACTION_UNSETTLED` に、認証済みの失敗した試みが残る。
@@ -872,15 +909,16 @@ type CommentReactionBarProps = {
 ### Unit Tests
 - `reaction-key`: 別名の正規化（`thumbsup` → `unicode:+1`）、肌の色 2〜6 の受け付けと 1・7 の拒否、肌の色に非対応の絵文字への肌の色の拒否、存在しない絵文字、`unicode` 以外の名前空間、`fromPickerSelection`（`skin` 1 または未指定は肌の色なし）、`toSlackReactionName`、`resolveReactionGlyph` が `skins[n-1]` を返すこと（要件 3.3、4.1〜4.6）。
 - `summarizeReactions`: 肌の色違いが別のチップになること、チップの並びが残っている行の最小 `createdAt` の昇順であること（最初の人が外したら並びが変わる場合を含む）、`reactedByMe`、レコードの無い利用者が ID 文字列で人数に含まれること、利用者が渡した整形関数の結果（4項目）であること（要件 1.1〜1.6、1.9、1.10、6.4）。
-- `toCommentListItem`: `reactions` に渡したチップ（`[]` と `null` を含む）がそのまま入ること、`toLegacyCommentListItem` に `reactions` が無いこと。
-- `useCommentReactions`: 一覧のキャッシュから該当コメントのチップを読むこと、PUT の成功で該当する1件だけが置き換わり再取得しないこと、失敗でキャッシュが変わらず例外になること（要件 2.9、2.10）。
+- `toCommentListItem`: `reactions` に渡したチップ（`[]` と `null` を含む）がそのまま入ること、`toLegacyCommentListItem` の結果に `reactions` のキーが無いこと。
+- `useCommentReactions`: 一覧のキャッシュから該当コメントのチップを読むこと。PUT の成功で該当する1件だけが置き換わり、再取得しないこと。成功でも応答の `reactions` が `null` なら、置き換えずに一覧を取り直し、エラーを出さないこと。失敗（409、404、それ以外）では、取り直しの前にキャッシュが変わらないこと、種類ごとの文言でトーストが出ること、一覧が取り直されること、`setReaction` が reject しないこと。取り直しも失敗したとき、表示が操作前のまま残ること（要件 2.9、2.10、6.5、7.2）。
+- `classifyReactionUpdateFailure`: `reaction-kind-limit-exceeded` → `kind-limit-exceeded`、`notfound_or_forbidden` → `comment-unavailable`、`validation_failed`・`invalid-reaction-emoji`・`code` の無いエラー・配列でない値・通信の失敗 → `failed` になること。
 - `useCanReactToComments`: ゲスト、共有リンク、閲覧専用（許可あり／なし）、`isReadOnly`、ごみ箱のページの組み合わせ（要件 5.4〜5.7、6.2）。
-- `CommentReactionBar`: チップと人数の表示、自分のチップの `aria-pressed`、`canReact` が false のとき「＋」が無くチップを押しても API を呼ばないこと、上限で「＋」が無効になること、チップが無く読み取り専用なら何も描画しないこと、`chips` が `null` なら何も描画しないこと（要件 1.1〜1.7、3.1、6.5、7.2）。
+- `CommentReactionBar`: チップと人数の表示、自分のチップの `aria-pressed`、絵文字の部分を押すと API が呼ばれること、人数の部分を押すと利用者一覧（表示名、`username`、ID 文字列）が開き API は呼ばれないこと、`canReact` が false のとき「＋」が無く、絵文字の部分を押しても API を呼ばず、人数の部分からは利用者一覧が開くこと、上限で「＋」が無効になること、チップが無く読み取り専用なら何も描画しないこと、`chips` が `null` なら何も描画しないこと（要件 1.1〜1.7、1.10、3.1、6.2、6.5、7.2）。
 - `overwrite-params/comment-reactions`: 24 桁の16進文字列が ObjectId になること、不正な値はそのまま返ること、`generateOverwriteParams('commentreactions', ...)` がこの params を返すこと（要件 10.2）。
 - `@growi/emoji-mart-data`: 既存の `skins[0]` の値が拡張前と一致すること、肌の色対応の絵文字が6件の `skins` を持つこと、`aliases` の存在。`@emoji-mart/data` の既定の export のすべての id（と肌の色）が `normalizeReactionKey` を通ること（ピッカーとサーバーの検証のずれの検出）。
 
 ### Integration Tests
-- PUT: 追加（`isReacted: true`）・解除（`isReacted: false`）の成功と、応答の `comment.reactions` が最新であること（他の利用者の行も含む）。同じ要求の2回目が `changed: false` で行が増減しないこと。同時の二重追加で行が1つになること（統合テストの DB には migration でインデックスが作られている前提）。上限で新しい絵文字が 409 になり、既存の絵文字は追加できること。自分のコメントにも付けられること（要件 2.1〜2.9、7.1〜7.3）。
+- PUT: 追加（`isReacted: true`）・解除（`isReacted: false`）の成功と、応答の `comment.reactions` が最新であること（他の利用者の行も含む）。同じ要求の2回目が `changed: false` で行が増減しないこと。同時の二重追加で行が1つになること（統合テストの DB には migration でインデックスが作られている前提）。上限で新しい絵文字が 409 になり、既存の絵文字は追加できること。自分のコメントにも付けられること。読み直しが `null` になる場合（読み直しの関数を差し替えて再現する）に、404 `notfound_or_forbidden` を返し、追加・解除の監査ログが残らないこと。読み直しでリアクションの取り込みだけが失敗する場合に、200 で `comment.reactions` が `null` になること（要件 2.1〜2.9、7.1〜7.3、9.4）。
 - PUT の認可: 未ログインの拒否、閲覧権限の無いページのコメントと存在しないコメントが同じ 404 であること、閲覧専用ユーザーが設定で拒否／許可されること（要件 5.1〜5.5）。
 - 監査ログ: 追加・解除で `COMMENT_REACTION_ADD` / `_REMOVE` の行が、操作者・対象・`snapshot.emoji` 付きで1件残ること。**確かめ方**: 本物の route（`PUT /comments/:id/reactions`）を通し、emit → `settleActivityRecord` → `createByParameters` の経路を実際に動かしたあと、メソッドや応答の返り値ではなく、**DB から読み直して**確かめる（`prisma.activities.findFirst({ where: { action, event: commentId } })` で新しく取得するか、`mongoose.connection.collection('activities')` から生の文書を読む）。`snapshot.emoji` が送った `ReactionKey` と一致し、`snapshot.username` も残っていることを確認する（`emoji` の取りこぼしは返り値では見えず、保存された文書でしか分からないため）。`changed: false` と拒否では、追加・解除の行が残らないこと。応答が即座に終わっても操作者が残ること（`activity-recording.md` の drift テスト）。通知が作られないこと（要件 9.1〜9.5）。
 - 一覧（`list.integ.ts` の拡張）: 各コメントに `reactions` が載ること（リアクションの無いコメントは `[]`）。`reactedByMe` が要求者で変わること。共有リンク経由で、インラインコメントのリアクションも返ること。リアクションの取り込みを失敗させたとき、コメントが返り `reactions` が `null` になること。旧 API `comments.get` の応答に `reactions` が無いこと（要件 6.1、6.2、6.5）。
@@ -892,6 +930,7 @@ type CommentReactionBarProps = {
   - 複数の利用者・複数の絵文字のリアクションが付いた状態でも同じであること。
   - トランザクションの途中で失敗したとき、先に実行したリアクションの削除も取り消されること。例えば、コメントの文書が無いのにリアクションだけが残っている ID で `removeWithReplies` を呼ぶと、最後の `comments.delete` が失敗し（P2025）、リアクションは削除されずに残ること。
   - 利用者のレコードが存在しないリアクション（`userId` の文書が無い）があっても、`loadReactionChips` が失敗せず、ID 文字列として数えること（要件 1.9、1.10）。
+- `loadReactionChips`（本物の DB と、拡張を適用した Prisma Client）: 存在する利用者の `users` の要素が、`_id`（利用者の ID と一致し、`undefined` でない）、`username`、`name`、`imageUrlCached` の4項目だけを持つこと（要件 6.4、11.4）。モックでは計算項目 `_id` の有無が再現できないので、本物の DB で確かめる。
 - 利用者の文書が無いリアクション（本物の DB に、存在しない `userId` のリアクションを直接入れる）: `GET /_api/v3/comments` が 200 を返し、そのページのほかのリアクションも含めて `reactions` が `null` にならないこと。該当するチップの `count` にその利用者が含まれ、`users` に ID 文字列で現れること。同じページのコメントの投稿者の文書が無いときの `creator`（ID 文字列）と同じ形であること（要件 1.9、1.10、6.4）。
 - `commentreactions` に Prisma のリレーションが宣言されていないことを前提にした回帰テスト: リアクションの付いた利用者の文書を Prisma（`prisma.users.deleteMany`）で消しても、リアクションが原因の P2014 にならないこと（ただし `comments.creator` など既存のリレーションが残る利用者は対象外にする）。
 - G2G: `non-transferable-collections.integ.ts` が `commentreactions`（Prisma のモデルから検出される）を含めて通ること。エクスポート形式（JSON 文字列化）のデータを `convertDocuments` と `generateOverwriteParams('commentreactions', ...)` で変換して書き込んだとき、`comment` / `page` / `user` が ObjectId、`createdAt` が Date になり、`loadReactionChips` で取得できること（要件 10.1、10.2）。
@@ -903,6 +942,7 @@ type CommentReactionBarProps = {
 - ピッカーで肌の色を変えて同じ絵文字を付けると、別のチップになること（要件 1.3、3.5）。
 - インラインコメントの返信にリアクションを付けられ、本文のポップオーバーと末尾の一覧の両方に反映されること（要件 1.8、3.7）。
 - 共有リンクの画面で、通常コメントのチップは見えるが「＋」が無く、インラインコメントのリアクションは出ないこと（要件 5.6、6.2、6.3）。
+- スマートフォンの画面幅とタッチ操作で、チップの人数の部分をタップすると利用者一覧が開き、リアクションが変わらないこと。絵文字の部分をタップすると追加・解除されること（要件 1.5、2.1、2.2）。
 
 ## Security Considerations
 - 書き込みは、ログイン、閲覧専用ユーザーの設定、対象コメントのページの閲覧権限の3段で守る。コメント ID だけを知っている利用者が、閲覧権限の無いページのコメントにリアクションすることを防ぐ。
@@ -926,9 +966,19 @@ type CommentReactionBarProps = {
 - 最終タスクで `comment` スペックへ書き戻す（「Amend Target」を参照）。
 
 ## Open Questions / Risks
-- **監査ログの詳細度との関係**: 新しい action は `MediumActionGroup` に入れるので、監査ログの詳細度が Small の環境では、既存のコメント操作と同じく記録されない。要件 9.1 は「監査ログの記録が有効な範囲で記録する」と解釈した。常に記録すべきなら、要件 9 の改訂が必要になる。
+- **要件 9.1、9.2 と監査ログの記録の設定（未決。レビュアーに確認する）**: 本設計は新しい action を、既存のコメントの操作（`COMMENT_CREATE` / `UPDATE` / `REMOVE`）と同じ `MediumActionGroup` に入れている。一方で、監査ログの設定の既定は `AUDIT_LOG_ENABLED=false`（無効）と `AUDIT_LOG_ACTION_GROUP_SIZE=SMALL` である。無効のときに記録されるのは `EssentialActionGroup`（通知に使う action）だけで、Small のときに記録されるのはログイン、ページの作成・削除などに限られる。そのため本設計のままでは、既定の設定でも、監査ログを有効にして詳細度を Small にした環境でも、リアクションの追加・解除は記録されず、要件 9.1、9.2（「記録する」）を満たさない。次のどちらにするかを決める。
+  - **(a) `SmallActionGroup` にも入れ、監査ログが有効なら常に記録する**（要件は変えない）
+    - 監査ログが有効な環境では、詳細度にかかわらず記録される。ただし、監査ログが無効（既定）の環境では記録されない。無効でも記録するには `EssentialActionGroup` に入れるしかないが、それは通知の対象になるので要件 9.5 に反する。そのため (a) でも、要件 9.1 は「監査ログが有効な環境で」という限定が付いた満たし方になる。
+    - Small は、ログインやページの作成・削除のような重要な操作だけを集めたグループである。そこにリアクションだけが入ると、コメントの投稿・編集・削除（Medium）より軽い操作のほうが多く記録される、という逆転が起きる。監査ログ画面での分類（要件 9.3、`/^COMMENT_/` のカテゴリ）には影響しない。
+    - リアクションは頻度の高い操作なので、Small の環境で `activities` の件数と、その保存・Elasticsearch への同期の量が増える。運用者は `AUDIT_LOG_EXCLUDE_ACTIONS` で外せる。
+    - 設計の変更は、`interfaces/activity.ts` で入れるグループを変えることだけ。
+  - **(b) 要件 9.1、9.2 を、監査ログの記録の設定に従う形に改める**（設計は変えない）
+    - 例: 「監査ログの記録の設定（有効・無効、詳細度、追加・除外する action）に従い、既存のコメントの操作と同じ条件で記録する」。承認済みの requirements.md の改訂と、再承認が要る。
+    - 既存のコメントの操作と扱いがそろう（要件 9.3 の「既存のコメントの操作と同じ分類」とも整合する）。
+    - 既定の設定と Small の環境では記録されない。記録したい環境は、詳細度を Medium 以上にするか、`AUDIT_LOG_ADDITIONAL_ACTIONS` に `COMMENT_REACTION_ADD,COMMENT_REACTION_REMOVE` を足せば、リアクションだけを記録できる。
+  - どちらの案でも、要件 9.4（状態を変えない要求・拒否は記録しない）と 9.5（通知しない。`EssentialActionGroup` に入れない）は変わらない。
 - **種類数の上限の厳密さ**: 同時に別々の新しい絵文字が追加されると、上限を超えうる（research.md の Decision）。
-- **タッチ端末でのリアクションした利用者の確認（要件 1.5）**: 利用者一覧はチップのツールチップ（hover / focus）で出すが、タッチ端末ではチップのタップが追加・解除になる。そのため、リアクションできる利用者がタッチ端末で一覧だけを見る手段が無い（リアクションできない利用者は、タップでツールチップを出せる）。v1 の既知の制約とする。必要なら、長押しや別のボタンで一覧を開く手段を後から足す。
+- **チップの押し間違い（要件 1.5、2.1、2.2）**: 利用者一覧は人数の部分を押して開き、追加・解除は絵文字の部分を押して行う。そのため、マウスでもタッチ端末でも、リアクションできる利用者もできない利用者も、同じ操作で一覧を見られる。一方で、小さなチップの中に押せる部分が2つ並ぶので、タッチ端末では隣の部分を押し間違えうる（一覧を見ようとして、リアクションを外してしまう）。区切り線と押せる範囲の大きさで減らし、E2E で確かめる。押し間違えても、もう一度押せば元に戻せる。マウスで押さずに一覧を見る手段（hover で出すツールチップ）は、v1 では足さない。
 - **コメントの取得とリアクションの結合**: リアクションがコメントの応答に載るので、リアクションの不具合がコメントの表示に波及しうる。取り込みの失敗は `reactions: null` に閉じ込めるが、集計の性能劣化はコメント一覧の応答時間に直接効く。
 - **応答の要求者依存**: `reactedByMe` は要求者ごとに変わるので、コメント一覧の応答も要求者ごとになる。もともと閲覧権限で要求者ごとの応答なので、新たな制約は生まない。
 - **Slack 名との対応**: emoji-mart の id と Slack のショートコードが一部ずれる可能性がある。v1 では Slack と連携しないため実害はないが、Slack 連携のスペックで対応表を検証する。

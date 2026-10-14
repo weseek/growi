@@ -222,7 +222,7 @@
   2. 正規の `addActivity` ＋ `activityEvent.emit`
 - **Selected Approach**: 2。新しい action `COMMENT_REACTION_ADD` / `COMMENT_REACTION_REMOVE` は `MediumActionGroup` に入れる（Large は継承）。`EssentialActionGroup`（通知）と `ActivityLogActions`（最近のアクティビティ）には入れない。絵文字は snapshot の新しい variant `CommentReactionSnapshot = { username?, emoji }` に入れる。
 - **Rationale**: リポジトリの正規の規約で、監査ログの詳細度の設定にも従う。既存のコメント操作（Medium）と同じ扱いになり、`/^COMMENT_/` のカテゴリにも自動で入る（要件 9.3）。状態を変えない要求は emit しないので記録されない。拒否は `ACTION_UNSETTLED` として残るが、追加・解除としては記録されない（要件 9.4）。
-- **Trade-offs**: 監査ログの詳細度が Small の環境では、既存のコメント操作と同じく記録されない。要件 9.1 は、監査ログの記録が有効な範囲での記録と解釈する（Open Questions に記載）。
+- **Trade-offs**: 監査ログが無効（既定）の環境と、詳細度が Small の環境では、既存のコメント操作と同じく記録されない。要件 9.1、9.2 との関係は未決で、design.md の Open Questions に「(a) Small にも入れる」「(b) 要件を記録の設定に従う形に改める」の2案として整理している。
 - **Follow-up**: snapshot に variant を足すことは、`activity-log-snapshot` の方針（action で絞り込む判別可能ユニオン、永続層は全 variant の superset）に沿った拡張として扱う。そのために、保存口（`createByParameters` の `snapshotData`、`buildSnapshotUpdateEnvelope`）にも `emoji` を足す。`ISnapshot` の形が変わるので、`activity-log-snapshot` の Revalidation Trigger に当たり、監査ログ画面の snapshot の表示で確かめる。保存の確認は、route を通したあと DB から読み直して `snapshot.emoji` を見る統合テストで行う。
 
 ### Decision: 書き込みの応答で対象のコメントを返し、キャッシュの1件を置き換える（楽観的更新はしない）
@@ -230,9 +230,12 @@
 - **Alternatives Considered**:
   1. 書き込みの応答は `{ changed }` だけにして、一覧全体を再取得する
   2. 書き込みの応答に、対象のコメント（`ICommentListItem`、最新のリアクションを含む）を載せ、一覧のキャッシュの1件を置き換える
-- **Selected Approach**: 2。応答は `{ changed, comment }`。クライアントは `mutate(updater, { revalidate: false })` で該当の1件だけを置き換える。要求中はチップと「＋」を押せなくする。失敗したら `toastError` を出し、キャッシュは変えない（操作前の状態のまま）。
+- **Selected Approach**: 2。応答は `{ changed, comment }`。クライアントは `mutate(updater, { revalidate: false })` で該当の1件だけを置き換える。要求中はチップと「＋」を押せなくする。失敗したら、キャッシュは変えずに、失敗の種類（上限、コメントが無い・読めない、それ以外）ごとの文言で `toastError` を出し、一覧を取り直す。成功でも応答の `reactions` が `null` なら、置き換えずに一覧を取り直す。
 - **Rationale**: 応答のコメントは書き込みの後にデータベースから読み直すので、他の利用者のリアクションも含めた最新の状態になる。一覧全体の再取得が要らない。ロールバックの処理も要らない（楽観的更新をしない）。
 - **Trade-offs**: 押してから反映されるまで、往復1回分の遅れがある。同じページの他のコメントの変化は、次の再取得まで反映されない（従来の SWR の再検証の範囲）。
+- **失敗時に一覧を取り直す理由**: 失敗の多くは、画面のキャッシュがサーバーの状態から遅れていることで起きる。409 は他の利用者が付けた絵文字で上限に達したとき、404 はコメントが削除されたときで、どちらもキャッシュに無い変化が原因である。キャッシュを変えないだけでは、利用者には上限未満のチップや消えたはずのコメントが見えたままになり、同じ操作を繰り返して同じ失敗を受ける。取り直しは失敗のときだけで、成功の経路の「一覧全体を再取得しない」は保つ。
+- **`reactions: null` の応答で置き換えない理由**: バーは `reactions` が `null` のとき何も描画しない（要件 6.5）。書き込みの応答でそれを1件に入れると、「＋」も消え、次の再検証まで操作できなくなる。
+- **読み直しが `null` のときは 404 で、記録しない**: 対象の解決のあとにコメントが削除された場合、利用者から見ると対象はもう無いので、解決で見つからなかったときと同じ 404 にそろえる。監査ログの追加・解除としては残さず（拒否と同じ扱い）、削除は `COMMENT_REMOVE` で追える。emit と 4xx の応答を同じ要求で組み合わせると、`addActivity` の finalizer が残す `ACTION_UNSETTLED` との関係が分かりにくくなることも避けられる。
 
 ### Decision: 追加と解除は1つの PUT（`isReacted`）で明示する
 - **Context**: 要件 2.7、2.8（反転型にしない）。
