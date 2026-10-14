@@ -42,7 +42,8 @@
 ## Boundary Commitments
 
 ### This Spec Owns
-- `commentreactions` コレクション（Prisma モデルと Mongoose スキーマ）と、その一意性の不変条件 `(commentId, userId, emoji)`
+- `commentreactions` コレクション（Prisma モデルのみ。Mongoose のモデル・スキーマは持たない）と、その一意性の不変条件 `(commentId, userId, emoji)`
+- `commentreactions` のインデックスを作る migration script（`src/migrations/`）と、G2G 移行・インポートでの参照項目の型変換（`overwrite-params/comment-reactions.ts`）
 - リアクションキーの形式（`unicode:<shortcode>[::skin-tone-<2..6>]`）と、その検証・正規化・グリフ解決（`reaction-key` モジュール）
 - リアクションの集計の規則（チップの単位、並び順、人数、`reactedByMe`、利用者の整形）と、その結果の型 `ReactionChip`
 - `PUT /_api/v3/comments/:id/reactions` の契約（入力、応答、認可、エラー）
@@ -64,6 +65,7 @@
 - 監査ログ画面の表示（`activity-log-snapshot-viewer`）
 - エディタの `EmojiButton` と絵文字の自動補完
 - GROWI MCP サーバーと SDK（別リポジトリ）。`reactions` を使うかどうかは、それぞれの側で決める
+- `comments` の既存の Mongoose スキーマ（`features/comment/server/models/comment.ts`。インデックス作成と G2G のインポートの型変換に使われている）の退役。本スペックはそれに触れず、手も足さない
 
 ### Allowed Dependencies
 モジュール単位の依存は、次の層の順で左（番号の小さい側）にだけ向ける。循環は作らない。
@@ -74,6 +76,7 @@
 4. **クライアント**: `comment-reaction` の client は、`comment` の client の `useSWRxCommentList` に依存してよい。コメントの表示部品（`client/components/PageComment/`、`features/inline-comment/client/`）は、`comment-reaction` の client の部品に依存してよい。逆向きは禁止
 
 その他:
+- `comments` と `commentreactions` の読み書きは Prisma だけで行う。本スペックは、Mongoose のモデル・スキーマを新しく作らず、既存の Mongoose スキーマ（`comments`、`activities`）にも項目を足さない。Mongoose が担っていた操作のうち必要なもの（インデックスの作成、インポート時の ObjectId への型変換）は、migration script と import の `overwrite-params` で補う
 - サーバーの認可は、既存の部品（`accessTokenParser`、`certifySharedPage`、`loginRequiredFactory`、`excludeReadOnlyUserIfCommentNotAllowed`、`generateAddActivityMiddleware`、`apiV3FormValidator`、`findPageAndMetaDataByViewer`）だけで組む。並行実装しない
 - 削除の経路（`removeWithReplies`、`deleteReply`、`deleteCompletelyOperation`）は、Prisma の `commentreactions` だけを直接使う。`comment-reaction` のコードは import しない
 - クライアントは、`states/context.ts` のフック、`useIsCommentActionBlockedForReadOnlyUser`、`useIsTrashPage`、`apiv3-client`、`toastr`、reactstrap、`@growi/editor/dist/client/components/EmojiPicker` を使ってよい
@@ -88,6 +91,7 @@
 - `ICommentCreatorSummary` の項目の変更（リアクションした利用者の情報も同じ規則に従う。要件 6.4）
 - emoji-mart のバージョン更新（ショートコードの変化で、保存済みのキーが解決できなくなる）
 - コメント一覧の取得フックのキー `['/comments', pageId, shareLinkId]` の変更（PUT の応答でキャッシュを書き換える前提が崩れる）
+- `commentreactions` のインデックスのキー・名前の変更（migration と Prisma の `@@unique` / `@@index` の `map` を一致させ続ける必要がある）、または参照項目（`comment` / `page` / `user`）の追加・改名（G2G の `overwrite-params` の更新が要る）
 
 ## Architecture
 
@@ -97,7 +101,8 @@
 - `certifySharedPage` は、`pageId`（query または body）と `shareLinkId` の組で共有リンクを検証する。`pageId` が無い要求は検証しない。
 - 書き込みは、通常コメントが apiv1（`server/routes/comment.js`）、インラインコメントが apiv3（`features/inline-comment/server/routes/`）。
 - 表示は共通の外枠 `CommentCard`（slot: `headerEnd` / `beforeBody` / `children` / `footer`）。
-- 新しいコレクションは、移行期間中は Mongoose スキーマがインデックスを作り、Prisma 拡張が読み書きする（`.claude/rules/model.md`）。
+- Mongoose は退役予定で、本スペックは Mongoose 側の実装を足さない。Mongoose スキーマを持たない Prisma だけのコレクションは、Prisma がインデックスを作らない（`prisma db push` はデプロイで実行されない）ので、一意インデックスは migration script で作る。前例は `src/migrations/20260619120000-add-unique-key-index-to-auditlog-es-sync-collections.js`。migration（migrate-mongo）は、本番ではサーバーの起動前（`preserver`、Docker の entrypoint）に、統合テストではテンプレート DB の作成時に実行される。
+- G2G 移行とファイルからのインポートは、どちらも `ImportService.convertDocuments` で文書を変換する。Mongoose のモデルがあるコレクションは、そのスキーマで各項目を型変換する。モデルが無いコレクションは、`_id` を ObjectId に、ISO 形式の文字列を Date に戻すだけで、ほかの ObjectId の参照項目は文字列のまま入る（エクスポートは JSON 文字列化するため）。ただし、コレクションごとの `overwrite-params`（`generateOverwriteParams`）は、モデルの有無にかかわらず G2G とファイルインポートの両方で適用される。`flushAndInsert` は `deleteMany({})` で空にするので、インデックスは残る。
 
 ### Architecture Pattern & Boundary Map
 
@@ -147,7 +152,7 @@ graph TB
 **Architecture Integration**:
 - 選んだ形: リアクションは、コメントの API の一部として読み書きする。読み取りは `comment` の取得（一覧・単体）がリアクションの集計を取り込み、書き込みは `comments` の下のサブリソース `/comments/:id/reactions` にする。3つの応答（一覧の1件、単体、PUT）は同じ `ICommentListItem` の形を返す。
 - 境界: リアクションのデータ・規則・集計・書き込みは `comment-reaction` が持つ。コメントの形と取得の認可は `comment` が持つ。`comment` は集計の関数を呼ぶだけで、リアクションの規則を知らない。
-- 守る既存のパターン: apiv3 の route handler factory、404 一様応答、`addActivity` の正規の順序、Mongoose によるインデックス作成と Prisma 拡張の併用、共有の取得フックからの派生。
+- 守る既存のパターン: apiv3 の route handler factory、404 一様応答、`addActivity` の正規の順序、Prisma だけのコレクションのインデックスを migration で作る前例（`auditlog_es_sync_status`）、コレクションごとの import の `overwrite-params`、共有の取得フックからの派生。
 - 新しい部品の理由: 単体取得 API は、一覧と同じ形でコメント1件を読む手段で、PUT の応答と同じ組み立て（`getCommentListItem`）を共有する。`reaction-key` を独立させるのは、サーバーの検証とクライアントの表示・変換で同じ規則を使うため。
 - Steering との整合: Feature-Based Architecture、server/client の分離、Jotai/SWR の使い分け、named export、テストの co-location、executor は作業対象を引数で受け取る（ローダーは利用者の整形関数を引数で受け取る）。
 
@@ -159,7 +164,7 @@ graph TB
 | Frontend | emoji-mart 5.6.0、@emoji-mart/react 1.1.1、@emoji-mart/data 1.2.1（`packages/editor` 内） | 絵文字ピッカー（肌の色の選択） | 新しい依存は無い。`packages/editor` の既存の依存を使う |
 | Shared | `@growi/emoji-mart-data`（workspace） | 絵文字の存在・肌の色対応・別名・グリフの解決 | 出力を拡張する |
 | Backend | Express apiv3、express-validator | コメントの読み取り（一覧・単体）とリアクションの書き込み | 既存のスタック |
-| Data | MongoDB、Prisma（mongodb プロバイダ）、Mongoose | `commentreactions` の永続化（Prisma で読み書き、Mongoose でインデックス作成とインポート時の型変換） | 新しいコレクション |
+| Data | MongoDB、Prisma（mongodb プロバイダ）、migrate-mongo | `commentreactions` の永続化（Prisma で読み書き）、インデックスの作成（migration script） | 新しいコレクション。Mongoose は使わない |
 
 ## File Structure Plan
 
@@ -177,10 +182,10 @@ apps/app/src/features/comment-reaction/
 │   ├── reaction-key.ts              # parse / normalize / toSlackName / fromPickerSelection / resolveGlyph（純粋関数、サーバーとクライアントで共有）
 │   └── reaction-key.spec.ts
 ├── server/
-│   ├── index.ts                     # models の re-export（setup-models から読み込む）と、comment から使うローダーの export
+│   ├── index.ts                     # comment から使うローダーの export
 │   ├── models/
 │   │   ├── index.ts
-│   │   ├── comment-reaction.ts      # Mongoose スキーマ（一意インデックス、ObjectId 参照）＋ Prisma 拡張（_id / __v）
+│   │   ├── comment-reaction.ts      # Prisma 拡張（_id / __v）だけ。Mongoose のスキーマ・モデルは作らない
 │   │   └── comment-reaction.integ.ts
 │   ├── service/
 │   │   ├── comment-reaction-service.ts       # addReaction / removeReaction（上限、冪等）
@@ -218,6 +223,14 @@ apps/app/src/features/comment/server/
     ├── can-view-comments-of-page.ts       # 新設: list.ts の閲覧判定（共有リンク or 閲覧権限）を取り出し、一覧と単体で共有
     └── can-view-comments-of-page.integ.ts
 
+apps/app/src/migrations/
+├── <YYYYMMDDHHmmss>-add-indexes-to-commentreactions.js     # 新設: 一意インデックスと page インデックスを作る（前例: 20260619120000-add-unique-key-index-to-auditlog-es-sync-collections.js）
+└── <YYYYMMDDHHmmss>-add-indexes-to-commentreactions.integ.ts
+
+apps/app/src/server/service/import/overwrite-params/
+├── comment-reactions.ts             # 新設: インポート時に comment / page / user を ObjectId に戻す
+└── comment-reactions.spec.ts
+
 packages/editor/src/client/components/EmojiPicker/
 ├── EmojiPicker.tsx                  # 遅延読み込みの emoji-mart ピッカー（肌の色の選択あり）。エディタに依存しない
 ├── EmojiPicker.spec.tsx
@@ -234,13 +247,12 @@ packages/editor/src/client/components/EmojiPicker/
 **本スペックの機能に当たる変更**
 - `apps/app/prisma/schema.prisma` — `model commentreactions` を追加。`users` と `comments` に逆向きのリレーション項目を追加（データベースは変わらない）。`type ActivitiesSnapshot` に `emoji String?` を追加。
 - `apps/app/src/utils/prisma.ts` — `CommentReactionExtension` を `$extends` の連鎖に追加。
-- `apps/app/src/server/crowi/setup-models.ts` — `setupIndependentModels` に `import('~/features/comment-reaction/server/models')` を追加（インデックス作成とインポート時の型変換のため）。
-- `apps/app/src/features/comment/server/models/comment.ts` — `removeWithReplies` で、返信の ID を集めてから、同じトランザクションで `commentreactions.deleteMany({ commentId: { in: [本体, ...返信] } })` を実行する。
+- `apps/app/src/features/comment/server/models/comment.ts` — `removeWithReplies` で、返信の ID を集めてから、同じトランザクションで `commentreactions.deleteMany({ commentId: { in: [本体, ...返信] } })` を実行する。変えるのは Prisma 拡張の部分だけで、同じファイルの Mongoose スキーマには触れない。
 - `apps/app/src/features/inline-comment/server/service/inline-comment-service.ts` — `deleteReply` を、返信の削除と `commentreactions.deleteMany({ commentId })` のトランザクションにする（起点の削除は `removeWithReplies` でカバーされる）。
 - `apps/app/src/server/service/page/delete-completely-operation.ts` — 既存のコメント削除のトランザクションに `commentreactions.deleteMany({ pageId: { in: pageIdStrings } })` を追加。
 - `apps/app/src/interfaces/activity.ts` — `ACTION_COMMENT_REACTION_ADD` / `ACTION_COMMENT_REACTION_REMOVE` を `SupportedAction` と `MediumActionGroup` に追加。`CommentReactionSnapshot` を定義して `ISnapshot` に追加。
-- `apps/app/src/server/models/activity.ts` — Mongoose の `snapshotSchema` に `emoji` を追加。
 - `apps/app/src/server/service/import/non-transferable-collections.ts` — `TRANSFERABLE_COLLECTIONS` に `'commentreactions'` を追加。
+- `apps/app/src/server/service/import/overwrite-params/index.ts` — `generateOverwriteParams` に `case 'commentreactions'` を追加し、`comment-reactions.ts` の params を返す。
 - `apps/app/src/client/components/PageComment/Comment.tsx` — `CommentCard` の `footer` に `CommentReactionBar` を追加（`isReadOnly` を渡す）。
 - `apps/app/src/features/inline-comment/client/components/InlineCommentItem/InlineCommentItem.tsx`、`InlineCommentReplies.tsx`、`InlineCommentBodyInteraction/InlineCommentPopoverEntry.tsx` — `footer` に `CommentReactionBar` を追加。`CollapsedInlineCommentItem` には追加しない（折りたたみ表示では本文も出さないため）。
 - `apps/app/public/static/locales/{en_US,fr_FR,ja_JP,ko_KR,zh_CN}/translation.json` — `comment_reaction.*` の文言を追加。
@@ -320,7 +332,7 @@ graph TB
 | 1.8 | 末尾のコメント欄とインラインコメントの両方 | CommentReactionBar の差し込み先 | `CommentCard.footer` | — |
 | 1.9 | 退会・削除された利用者も人数に数える | summarizeReactions | `count` は行数 | — |
 | 2.1, 2.2, 2.3 | チップの押下で追加・解除、0 で非表示 | ReactionChip, useCommentReactions, update route | `PUT /comments/:id/reactions` | 追加・解除 |
-| 2.4, 2.5 | 同一絵文字は1つ、異なる絵文字は複数 | commentreactions model | 一意インデックス `(comment, user, emoji)` | — |
+| 2.4, 2.5 | 同一絵文字は1つ、異なる絵文字は複数 | commentreactions model, index migration | 一意インデックス `(comment, user, emoji)`（migration で作成） | — |
 | 2.6 | 自分のコメントにも付けられる | CommentReactionService | 投稿者の判定をしない | — |
 | 2.7, 2.8 | 古い画面からの重複要求は成功扱い | CommentReactionService | `{ changed: false }` | 追加・解除 |
 | 2.9 | 完了後に最新の状態を表示 | update route, getCommentListItem, useCommentReactions | PUT の応答の `comment`、キャッシュの1件の置き換え | 追加・解除 |
@@ -352,7 +364,7 @@ graph TB
 | 9.3 | 既存のコメント操作と同じ分類 | activity.ts | `/^COMMENT_/` のカテゴリ、`MediumActionGroup` | — |
 | 9.4 | 状態不変・拒否は記録しない | update route | `changed` が true のときだけ emit | 追加・解除 |
 | 9.5 | 通知しない | activity.ts | `EssentialActionGroup` に入れない | — |
-| 10.1, 10.2 | G2G で移す、同じ対応で表示 | commentreactions model, non-transferable-collections | `TRANSFERABLE_COLLECTIONS`、Mongoose スキーマによる ObjectId の型変換 | — |
+| 10.1, 10.2 | G2G で移す、同じ対応で表示 | import overwrite params, non-transferable-collections, index migration | `TRANSFERABLE_COLLECTIONS`、`overwrite-params` による ObjectId の型変換、移行先のインデックスは移行先の migration で作成済み | — |
 
 コメント単体の取得 API（`GET /_api/v3/comments/:id`）は、本スペックの requirements.md の要件には対応しない。`comment` スペックの契約として書き戻し、`comment` の requirements.md の新しい要件に対応づける（「Amend Target」を参照）。
 
@@ -361,7 +373,9 @@ graph TB
 | Component | Domain/Layer | Intent | Req Coverage | Key Dependencies (P0/P1) | Contracts |
 |-----------|--------------|--------|--------------|--------------------------|-----------|
 | reaction-key | Reaction core / utils | キーの検証・正規化・変換・グリフ解決 | 3.3, 4.1–4.6 | `@growi/emoji-mart-data`（P0） | Service |
-| commentreactions model | Reaction core / data | 永続化、一意性、インデックス、Prisma 拡張 | 2.4, 2.5, 10.1, 10.2 | Prisma（P0）、Mongoose（P0） | State |
+| commentreactions model | Reaction core / data | 永続化と Prisma 拡張（Prisma のみ） | 2.4, 2.5 | Prisma（P0） | State |
+| index migration | Migration | 一意インデックスと page インデックスの作成 | 2.4, 2.5, 10.2 | migrate-mongo（P0） | Batch |
+| import overwrite params | Import（既存の仕組み） | G2G・インポートでの参照項目の ObjectId への型変換 | 10.1, 10.2 | ImportService（P0） | Batch |
 | CommentReactionService | Reaction core / service | 追加・解除の業務規則（冪等、上限） | 2.4–2.8, 7.1–7.3 | model（P0）、reaction-key（P0） | Service |
 | summarizeReactions | Reaction core / service | 行 → チップの集計（純粋関数） | 1.1–1.6, 1.9, 1.10, 6.4 | — | Service |
 | loadReactionChips | Reaction core / service | コメント ID 群のチップを読む（comment の取得が呼ぶ） | 1.1–1.6, 1.9, 6.1 | model（P0）、summarizeReactions（P0） | Service |
@@ -439,20 +453,67 @@ declare function resolveReactionGlyph(key: ReactionKey): string | null;
 
 | Field | Detail |
 |-------|--------|
-| Intent | `commentreactions` の永続化と一意性、インデックス作成、インポート時の型変換の根拠 |
-| Requirements | 2.4, 2.5, 10.1, 10.2 |
+| Intent | `commentreactions` の永続化（Prisma のみ） |
+| Requirements | 2.4, 2.5 |
 
 **Responsibilities & Constraints**
-- Mongoose スキーマ: `comment`・`page`・`user` は `ObjectId`、`emoji` は `String`（必須）、`timestamps: { createdAt: true, updatedAt: false }`。インデックスは `{ comment: 1, user: 1, emoji: 1 }`（unique、名前 `comment_1_user_1_emoji_1`）と `{ page: 1 }`（`page_1`）。`getOrCreateModel('CommentReaction', schema)`。
-- Prisma 拡張: `result.commentreactions._id` / `__v` を `id` / `v` から計算する（`.claude/rules/model.md`）。
-- 起動時に `setupIndependentModels` から読み込まれる（インデックス作成と G2G のインポートでの ObjectId の型変換に必要）。
+- Prisma モデル: 項目は「Physical Data Model」のとおり。`@@unique([commentId, userId, emoji], map: "comment_1_user_1_emoji_1")`、`@@index([pageId], map: "page_1")` を宣言する。宣言は型と `findUnique` のためで、実際のインデックスは migration が作る（Prisma は作らない）。`map` の名前は migration のインデックス名と一致させる。
+- Prisma 拡張: `result.commentreactions._id` / `__v` を `id` / `v` から計算する（`.claude/rules/model.md`）。`setupIndependentModels` には登録しない（Mongoose のモデルが無いため）。
+- Mongoose のスキーマ・モデルは作らない。コレクションは、migration の `createIndex`（コレクションが無ければ作る）か、最初の書き込みで作られる。
 
 **Contracts**: State [x]
 
 ##### State Management
 - State model: 1行 = 1人の利用者が1つのコメントに付けた1つの絵文字。更新はしない（追加と削除だけ）。
-- Persistence & consistency: 一意性はデータベースの一意インデックスが保証する。
+- Persistence & consistency: 一意性は、migration が作る一意インデックスが保証する。migration はサーバーの起動前に実行されるので、サーバーが書き込む時点でインデックスは存在する。
 - Concurrency strategy: 同時の二重追加は、一意インデックスの重複エラーで片方が失敗し、サービスが `changed: false` に読み替える。
+
+#### index migration
+
+| Field | Detail |
+|-------|--------|
+| Intent | `commentreactions` の一意インデックスと `page` インデックスを作る migrate-mongo の migration script |
+| Requirements | 2.4, 2.5, 10.2 |
+
+**Responsibilities & Constraints**
+- `src/migrations/20260619120000-add-unique-key-index-to-auditlog-es-sync-collections.js` と同じ形にする（`mongoose.connect(getMongoUri(), mongoOptions)` で接続し、`mongoose.connection.collection('commentreactions')` に対して操作する。Mongoose のモデルは使わない）。
+- `up`:
+  1. 重複の除去: `(comment, user, emoji)` が同じ文書が複数あれば、`_id` が最も古い1件を残して消す（残す文書の `createdAt` がチップの並び順の根拠なので、古いほうを残す）。通常は空のコレクションで何もしないが、migration より前に書き込まれた環境（開発環境など）でも一意インデックスの作成が失敗しないようにする。
+  2. `createIndex({ comment: 1, user: 1, emoji: 1 }, { unique: true, name: 'comment_1_user_1_emoji_1' })`
+  3. `createIndex({ page: 1 }, { name: 'page_1' })`
+  - `createIndex` は、コレクションが無ければ作り、同じインデックスがあれば何もしないので、何度実行しても安全。
+- `down`: 2つのインデックスを、コレクションとインデックスがあるときだけ消す（前例の `dropIndexIfExists` と同じ）。
+- 実行のタイミング: 本番はサーバーの起動前（`preserver` の `pnpm run migrate`、Docker の entrypoint）。統合テストはテンプレート DB の作成時。どちらでも、サーバーやテストが書き込む前にインデックスがある。
+- `prisma/migrate.ts`（umzug）も存在するが、`prisma/migrations/` に前例が無いので使わない。
+
+**Contracts**: Batch [x]
+
+##### Batch / Job Contract
+- Trigger: migrate-mongo の `up`（デプロイ時、テストのテンプレート DB 作成時）。
+- Input / validation: `commentreactions` コレクション（無くてもよい）。
+- Output / destination: 2つのインデックス。名前は Prisma の `map` と一致させる。
+- Idempotency & recovery: 何度実行しても同じ結果。`down` で元に戻せる。
+
+#### import overwrite params（comment-reactions）
+
+| Field | Detail |
+|-------|--------|
+| Intent | G2G 移行とファイルからのインポートで、`commentreactions` の参照項目を ObjectId に戻す |
+| Requirements | 10.1, 10.2 |
+
+**Responsibilities & Constraints**
+- Mongoose のモデルが無いコレクションは、`convertDocuments` が `_id` と日付しか型変換しない。そのまま入ると `comment` / `page` / `user` が文字列になり、Prisma の `@db.ObjectId` の検索（`commentId: { in: [...] }` など）に一致しなくなる。
+- `overwrite-params/comment-reactions.ts` は `{ comment, page, user }` のそれぞれに、文字列を `new Types.ObjectId(value)` に変える関数を返す（既存の `overwrite-params/pages.ts` / `revisions.ts` と同じく、mongoose パッケージの `Types` を使う。モデルは使わない）。値が ObjectId として不正なら、そのまま返す（`keepOriginal` と同じ扱い）。
+- `generateOverwriteParams` に `case 'commentreactions'` を足す。この関数は、ファイルからのインポート（`import-settings-builder.ts`）と G2G（`g2g-transfer.ts`）の両方から呼ばれるので、どちらの経路でも型変換される。
+- 一意キーの衝突の検出（`detect-unique-conflicts.ts`）には加えない。対象は環境をまたいで自然キーが衝突しうるコレクションだけで、ObjectId で決まる一意キーは対象外。
+
+**Contracts**: Batch [x]
+
+##### Batch / Job Contract
+- Trigger: `ImportService.convertDocuments` が `commentreactions` の各文書を変換するとき。
+- Input / validation: エクスポートされた JSON の文書（参照項目は 24 桁の16進文字列）。
+- Output / destination: 参照項目が ObjectId になった文書。
+- Idempotency & recovery: 既に ObjectId の値もそのまま ObjectId になる。
 
 #### CommentReactionService
 
@@ -648,7 +709,7 @@ type UpdateCommentReactionResponse = {
 #### Activity 定義の拡張
 - `ACTION_COMMENT_REACTION_ADD = 'COMMENT_REACTION_ADD'`、`ACTION_COMMENT_REACTION_REMOVE = 'COMMENT_REACTION_REMOVE'` を `SupportedAction` と `MediumActionGroup` に追加する（Large は継承）。`/^COMMENT_/` によって、監査ログの「コメント」カテゴリに自動で入る（要件 9.3）。
 - `EssentialActionGroup` には入れない。通知の生成対象にならない（要件 9.5）。`ActivityLogActions`（最近のアクティビティ）とコントリビューショングラフにも入れない。
-- snapshot: `CommentReactionSnapshot = DefaultSnapshot & { emoji: string }` を定義して `ISnapshot` に加える。Prisma の `ActivitiesSnapshot` と Mongoose の `snapshotSchema` に `emoji` を追加する。`emoji` には `ReactionKey` の文字列を入れる。
+- snapshot: `CommentReactionSnapshot = DefaultSnapshot & { emoji: string }` を定義して `ISnapshot` に加える。Prisma の `ActivitiesSnapshot` に `emoji String?` を追加する。Mongoose の `snapshotSchema`（`username` だけを持つ）には足さない。activity の書き込みは Prisma（`createByParameters` / `updateByParameters`）で行われ、添付ファイルの snapshot の項目（`originalName` など）も Prisma 側だけに足されている前例に合わせる。G2G のインポートでは、`activities.snapshot` は型変換をせずにそのまま入る（`construct-convert-map.ts` の特別扱い）ので、`emoji` も保たれる。`emoji` には `ReactionKey` の文字列を入れる。
 
 ### Client
 
@@ -736,13 +797,13 @@ type CommentReactionBarProps = {
 | emoji | `emoji` | String | `ReactionKey`（例: `unicode:+1::skin-tone-3`） |
 | createdAt | `createdAt` | DateTime | 並び順（要件 1.6） |
 
-- インデックス: `@@unique([commentId, userId, emoji], map: "comment_1_user_1_emoji_1")`（コメント ID を先頭にするので、`commentId: { in: [...] }` の取得にも使える）、`@@index([pageId], map: "page_1")`。実体は Mongoose スキーマが作る。
+- インデックス: `@@unique([commentId, userId, emoji], map: "comment_1_user_1_emoji_1")`（コメント ID を先頭にするので、`commentId: { in: [...] }` の取得にも使える）、`@@index([pageId], map: "page_1")`。実体は migration script が作る（Prisma の宣言は型と `findUnique` のため）。
 - 参照の整合: データベースの外部キーは無い。削除経路での `deleteMany`（要件 8）で整合を保つ。
 
 ### Data Contracts & Integration
 - コメントを返す3つの応答（`GET /comments` の各件、`GET /comments/:id`、`PUT /comments/:id/reactions` の `comment`）は、同じ `ICommentListItem`（`reactions` を含む）を返す。利用者は、どの応答でも同じ型でコメントとリアクションを扱える。
 - `ReactionChip` の型は `features/comment-reaction/interfaces` に置き、`ICommentListItem` はそれを型として参照する（`comment` → `comment-reaction` の型の依存）。
-- G2G: ID は付け替えずに保持される。エクスポートで文字列になった `comment` / `page` / `user` は、インポート時に Mongoose スキーマで ObjectId に戻る（要件 10.2）。
+- G2G: ID は付け替えずに保持される。エクスポートで文字列になった `comment` / `page` / `user` は、インポート時に `overwrite-params/comment-reactions.ts` で ObjectId に戻る。`_id` と `createdAt` は、既定の変換（`keepOriginal`）で ObjectId と Date に戻る（要件 10.2）。
 
 ## Error Handling
 
@@ -766,17 +827,19 @@ type CommentReactionBarProps = {
 - `useCommentReactions`: 一覧のキャッシュから該当コメントのチップを読むこと、PUT の成功で該当する1件だけが置き換わり再取得しないこと、失敗でキャッシュが変わらず例外になること（要件 2.9、2.10）。
 - `useCanReactToComments`: ゲスト、共有リンク、閲覧専用（許可あり／なし）、`isReadOnly`、ごみ箱のページの組み合わせ（要件 5.4〜5.7、6.2）。
 - `CommentReactionBar`: チップと人数の表示、自分のチップの `aria-pressed`、`canReact` が false のとき「＋」が無くチップを押しても API を呼ばないこと、上限で「＋」が無効になること、チップが無く読み取り専用なら何も描画しないこと、`chips` が `null` なら何も描画しないこと（要件 1.1〜1.7、3.1、6.5、7.2）。
+- `overwrite-params/comment-reactions`: 24 桁の16進文字列が ObjectId になること、不正な値はそのまま返ること、`generateOverwriteParams('commentreactions', ...)` がこの params を返すこと（要件 10.2）。
 - `@growi/emoji-mart-data`: 既存の `skins[0]` の値が拡張前と一致すること、肌の色対応の絵文字が6件の `skins` を持つこと、`aliases` の存在。`@emoji-mart/data` の既定の export のすべての id（と肌の色）が `normalizeReactionKey` を通ること（ピッカーとサーバーの検証のずれの検出）。
 
 ### Integration Tests
-- PUT: 追加（`isReacted: true`）・解除（`isReacted: false`）の成功と、応答の `comment.reactions` が最新であること（他の利用者の行も含む）。同じ要求の2回目が `changed: false` で行が増減しないこと。同時の二重追加で行が1つになること。上限で新しい絵文字が 409 になり、既存の絵文字は追加できること。自分のコメントにも付けられること（要件 2.1〜2.9、7.1〜7.3）。
+- PUT: 追加（`isReacted: true`）・解除（`isReacted: false`）の成功と、応答の `comment.reactions` が最新であること（他の利用者の行も含む）。同じ要求の2回目が `changed: false` で行が増減しないこと。同時の二重追加で行が1つになること（統合テストの DB には migration でインデックスが作られている前提）。上限で新しい絵文字が 409 になり、既存の絵文字は追加できること。自分のコメントにも付けられること（要件 2.1〜2.9、7.1〜7.3）。
 - PUT の認可: 未ログインの拒否、閲覧権限の無いページのコメントと存在しないコメントが同じ 404 であること、閲覧専用ユーザーが設定で拒否／許可されること（要件 5.1〜5.5）。
 - 監査ログ: 追加・解除で `COMMENT_REACTION_ADD` / `_REMOVE` の行が、操作者・対象・`snapshot.emoji` 付きで1件残ること。`changed: false` と拒否では、追加・解除の行が残らないこと。応答が即座に終わっても操作者が残ること（`activity-recording.md` の drift テスト）。通知が作られないこと（要件 9.1〜9.5）。
 - 一覧（`list.integ.ts` の拡張）: 各コメントに `reactions` が載ること（リアクションの無いコメントは `[]`）。`reactedByMe` が要求者で変わること。共有リンク経由で、インラインコメントのリアクションも返ること。リアクションの取り込みを失敗させたとき、コメントが返り `reactions` が `null` になること。旧 API `comments.get` の応答に `reactions` が無いこと（要件 6.1、6.2、6.5）。
 - `canViewCommentsOfPage`: 取り出す前の `list.ts` と同じ条件の組（閲覧権限あり／なし、共有リンク正／誤／別ページ、ゲスト閲覧可／不可、アクセストークン）で、同じ結果になること（挙動を変えない取り出しの確認）。
 - 単体（`get.integ.ts`）: 一覧の該当する1件と同じ内容を返すこと。閲覧権限の無いページ、存在しないコメント、他のページのコメント（`pageId` の不一致）が同じ 404 であること。有効な共有リンクで、そのページのコメントを返し、別のページのコメント ID は 404 であること。ゲスト閲覧の可否で一覧と同じ結果になること。
 - 削除の連鎖: 通常コメントの削除（返信を含む）、インラインコメントの起点の削除・返信の削除、ページの完全削除でリアクションが消えること。ごみ箱への移動と復元でリアクションが残ること（要件 8.1〜8.4）。
-- G2G: `non-transferable-collections.integ.ts` が `commentreactions` を含めて通ること。エクスポート形式（JSON 文字列化）のデータをインポートしたとき、`comment` / `page` / `user` が ObjectId になり、Prisma の検索で取得できること（要件 10.1、10.2）。
+- G2G: `non-transferable-collections.integ.ts` が `commentreactions`（Prisma のモデルから検出される）を含めて通ること。エクスポート形式（JSON 文字列化）のデータを `convertDocuments` と `generateOverwriteParams('commentreactions', ...)` で変換して書き込んだとき、`comment` / `page` / `user` が ObjectId、`createdAt` が Date になり、`loadReactionChips` で取得できること（要件 10.1、10.2）。
+- index migration（`<YYYYMMDDHHmmss>-add-indexes-to-commentreactions.integ.ts`）: `up` で2つのインデックスが、Prisma の `map` と同じ名前・キーで作られること。重複した文書があるとき、最も古い1件が残り、一意インデックスが作られること。2回実行しても失敗しないこと。`down` でインデックスが消えること（コレクションが無くても失敗しないこと）。
 
 ### E2E/UI Tests
 - 通常コメントに「＋」から 👍 を付け、チップの人数が 1 になり、もう一度押すと消えること（要件 2.1〜2.3、3.3）。
@@ -799,7 +862,7 @@ type CommentReactionBarProps = {
 - 追加の API の流量制限は設けない。既定の流量制限（利用者ごとに 1 分 500 回）が適用される。
 
 ## Migration Strategy
-- データの移行は無い（新しいコレクション）。コレクションとインデックスは、起動時に Mongoose が作る。
+- データの移行は無い（新しいコレクション）。インデックスは migration script（`<YYYYMMDDHHmmss>-add-indexes-to-commentreactions.js`）が作る。タイムスタンプは実装時に決め、既存の最新の migration より後にする。
 - `ICommentListItem.reactions` の追加は、項目の追加だけなので、既存の API 利用者（MCP、SDK、外部スクリプト）と後方互換である。
 - `ActivitiesSnapshot` への `emoji` の追加は任意項目なので、既存の activity に影響しない。
 - `@growi/emoji-mart-data` の出力形の変更は、型を非空タプルにして `skins[0]` を保つことで、既存の利用者（本文のレンダラー、エディタの自動補完）と互換にする。

@@ -5,7 +5,7 @@
 - **Discovery Scope**: Extension（既存のコメント機能・監査ログ・G2G 移行・絵文字基盤への統合。認可と情報露出に関わるため、light discovery に加えて認可・データ移行の経路は個別に深掘りした）
 - **Key Findings**:
   - コメントの取得は `GET /_api/v3/comments`（`comment` スペック）に一本化され、共有リンク閲覧者にもインラインコメントを返す。リアクションはこの応答の各コメントに載せ、コメント単体の取得 API と書き込みの応答でも同じ形で返す（コメントの API 全体の一貫性を優先）。`ICommentListItem` の項目追加は `comment` スペックの契約の変更なので、`spec-lifecycle.md` に従って `comment` スペックへ書き戻す。
-  - 新しいコレクションを G2G 移行で正しく運ぶには、**Mongoose スキーマを起動時に登録することが必須**。エクスポートは JSON 文字列化され、インポート時の ObjectId への型変換は Mongoose スキーマがあるときにしか行われない。一意インデックスの作成も Mongoose が持つ（`.claude/rules/model.md`）。
+  - Mongoose は退役予定なので、`commentreactions` は Mongoose を持たない Prisma だけのコレクションにする。Mongoose が担っていた2つの操作は、別の既存の仕組みで補える。一意インデックスの作成は migration script（前例: `20260619120000-add-unique-key-index-to-auditlog-es-sync-collections.js`）。G2G・インポートでの参照項目の ObjectId への型変換は、コレクションごとの `overwrite-params`（モデルの有無にかかわらず、G2G とファイルインポートの両方で適用される）。
   - emoji-mart 5.6.0 のピッカーは、肌の色付きの絵文字を `shortcodes: ':+1::skin-tone-3:'`、`skin: 3` で返す。Slack のリアクション名 `+1::skin-tone-3` と同じ段階番号（2〜6）なので、変換は区切り文字の付け替えだけで済む。
 
 ## Research Log
@@ -38,13 +38,18 @@
 - **Context**: 一意制約 `(comment, user, emoji)`（要件 2.4）と G2G 移行（要件 10）。
 - **Sources Consulted**: `.claude/rules/model.md`、`apps/app/src/server/models/bookmark.ts`、`features/news/server/models/news-read-status.ts`、`server/service/import/{non-transferable-collections,construct-convert-map,overwrite-function,get-model-from-collection-name,detect-unique-conflicts}.ts`、`server/service/export.ts`、`server/crowi/setup-models.ts`、`utils/prisma.ts`
 - **Findings**:
-  - Mongoose スキーマは、移行が終わるまでコレクションとインデックスの作成を担う。`bookmarks` と `newsreadstatuses` は、Mongoose スキーマの `schema.index(..., { unique: true })` で一意インデックスを作っている。
-  - Prisma だけで作られた `auditlog_es_sync_status` などは `@unique` を宣言しているが、インデックスを作る仕組みが無い。そのため、一意性はデータベースで保証されていない（反面教師）。
-  - エクスポートは `collection.find()` を JSON 文字列化する。インポートの `keepOriginal` は、Mongoose スキーマがあるときだけ `schema.path(prop).cast()` で ObjectId に戻す。スキーマが無いと、`_id` 以外の参照項目は文字列のまま入り、Prisma の `@db.ObjectId` の検索に一致しなくなる。
+  - 既存のコレクション（`bookmarks`、`newsreadstatuses` など）は、Mongoose スキーマの `schema.index(..., { unique: true })` で一意インデックスを作っている（`.claude/rules/model.md` の移行期間中の方針）。
+  - Prisma は MongoDB のインデックスを作らない（デプロイで `prisma db push` は実行されない）。Mongoose スキーマを持たない Prisma だけのコレクション（`auditlog_es_sync_status`、`changestream_resume_tokens`）は、一意インデックスを migration script で作っている（`src/migrations/20260619120000-add-unique-key-index-to-auditlog-es-sync-collections.js`）。この script は、`mongoose.connection.collection(name)` に対して、重複を消してから `createIndex(..., { unique: true })` する。モデルは使わない。`down` は、コレクションとインデックスがあるときだけ消す。
+  - migration（migrate-mongo）は、本番ではサーバーの起動前に実行される（`package.json` の `preserver` が `pnpm run migrate`、Docker の `docker-entrypoint.ts` も migrate-mongo の `up`）。統合テストでは、テンプレート DB を作るときに一度だけ実行され、各ワーカーの DB はそのインデックスを引き継ぐ（`test/setup/mongo/template-db.ts`）。
+  - `prisma/migrate.ts`（umzug、Prisma をコンテキストにした migration）もあるが、`prisma/migrations/` は空で前例が無い。
+  - エクスポートは `collection.find()` を JSON 文字列化する。インポートの `convertDocuments` は、Mongoose のモデルがあるコレクションでは `keepOriginal` がスキーマで各項目を型変換する。モデルが無いと、`_id` を ObjectId に、ISO 形式の文字列を Date に戻すだけで、ほかの参照項目は文字列のまま入り、Prisma の `@db.ObjectId` の検索に一致しなくなる。
+  - `construct-convert-map.ts` の `SPECIAL_CONVERT_FUNCTIONS` は、`mongoose.modelNames()` を回して変換表を作るときにしか使われないので、モデルの無いコレクションには効かない。一方、`overwrite-params`（`generateOverwriteParams(collectionName, ...)`）は、モデルの有無にかかわらず `convertDocuments` の最後に適用され、ファイルからのインポート（`import-settings-builder.ts`）と G2G（`g2g-transfer.ts`）の両方から呼ばれる。
+  - `flushAndInsert` は `collection.deleteMany({})` で空にする（コレクションを drop しない）ので、migration で作ったインデックスは G2G の後も残る。
+  - activity の書き込みは Prisma（`createByParameters` / `updateByParameters`）で行われる。Mongoose の `snapshotSchema` は `username` だけを持ち、添付ファイルの snapshot の項目（`originalName`、`pagePath`、`pageId`、`fileSize`）は Prisma の `ActivitiesSnapshot` だけに足されている。G2G のインポートでは `activities.snapshot` は型変換されない（`SPECIAL_CONVERT_FUNCTIONS` の特別扱い）。
   - `non-transferable-collections.integ.ts` は、データベース・Mongoose・Prisma に現れるコレクションが `TRANSFERABLE_COLLECTIONS` と `NON_TRANSFERABLE_COLLECTIONS` のどちらかにあることを検査する。
   - `detect-unique-conflicts.ts` の対象は、自然キー（username など）が環境をまたいで衝突しうる4コレクションだけ。ObjectId で決まる一意キーは対象外。
   - G2G の ID は付け替えずに保持する（`construct-convert-map.ts` の既定は `keepOriginal`）。
-- **Implications**: Prisma モデルに加えて Mongoose スキーマ（ObjectId の参照、一意インデックス、`getOrCreateModel`）を作り、`setupIndependentModels` で起動時に読み込む。`TRANSFERABLE_COLLECTIONS` に登録する。`detect-unique-conflicts` と `overwrite-params` は不要。
+- **Implications**: `commentreactions` は Prisma のモデルだけにし、インデックスは migration script で、インポート時の型変換は `overwrite-params/comment-reactions.ts` で補う。`TRANSFERABLE_COLLECTIONS` に登録する（drift テストは Prisma のモデルからもコレクションを拾う）。`detect-unique-conflicts` は不要。snapshot の `emoji` は Prisma の `ActivitiesSnapshot` だけに足す。
 
 ### 削除の経路
 - **Context**: 要件 8。
@@ -104,6 +109,23 @@
   - リアクションの不具合がコメントの取得に波及しうる。取り込みの失敗は `reactions: null` に閉じ込める（要件 6.5）。
   - `comment` の取得が、リアクションのローダーに依存する。依存の向きを一方向に保つため、ローダーは利用者の整形関数を引数で受け取り、`comment` の実行時のコードを import しない。
 - **Follow-up**: 書き戻しは tasks.md の最終タスクにする。MCP・SDK が `reactions` を使うかは、それぞれの側で決める。
+
+### Decision: `commentreactions` は Prisma だけで扱い、Mongoose 側の実装を足さない
+- **Context**: Mongoose は退役予定。一意制約（要件 2.4）と G2G 移行（要件 10）には、これまで Mongoose スキーマが担っていた「インデックスの作成」と「インポート時の ObjectId への型変換」が要る。
+- **Alternatives Considered**:
+  1. Mongoose スキーマを作り、インデックスの作成と型変換を任せる（`.claude/rules/model.md` の移行期間中の方針、`bookmarks` などの前例）
+  2. Prisma だけにし、インデックスは migration script で、型変換は `construct-convert-map.ts` の `SPECIAL_CONVERT_FUNCTIONS` で補う
+  3. Prisma だけにし、インデックスは migration script で、型変換はコレクションごとの `overwrite-params` で補う
+  4. 3 のインデックスの作成を、umzug（`prisma/migrate.ts`）の migration で行う
+- **Selected Approach**: 3。
+- **Rationale**:
+  - 1 は、退役予定の Mongoose に新しい実装を足すことになる。
+  - 2 は、`SPECIAL_CONVERT_FUNCTIONS` が Mongoose のモデルのあるコレクションにしか適用されないので、効かない。
+  - 3 の migration script は、Mongoose を持たない Prisma だけのコレクションに一意インデックスを作る既存の前例（`auditlog_es_sync_status`）と同じ形で、サーバーの起動前と統合テストのテンプレート DB の作成時に実行される。`overwrite-params` は、モデルの有無にかかわらず G2G とファイルインポートの両方で適用される、コレクションごとの既存の拡張点である。
+  - 4 は、`prisma/migrations/` に前例が無い。
+  - `.claude/rules/model.md` は、移行期間中は Mongoose がインデックスの作成を持つとしている。ただし、これは既存のモデルを Prisma に移すときの方針で、Mongoose を持たない新しいコレクションには、上記の migration の前例がある。
+- **Trade-offs**: インデックスの定義が、migration と Prisma の `@@unique` / `@@index` の2か所に現れる（`map` の名前で一致させ、migration の統合テストで確かめる）。参照項目を増やすときは、`overwrite-params` も更新する必要がある。
+- **Follow-up**: `comments` の既存の Mongoose スキーマの退役は、本スペックの範囲外とする。
 
 ### Decision: 絵文字キーは名前空間の接頭辞付きの文字列にする
 - **Context**: 要件 4.5、4.6、将来のカスタム絵文字。
@@ -172,7 +194,7 @@
 
 ## Synthesis Outcomes
 - **Generalization**: 通常コメントとインラインコメント（返信を含む）は `commentId` で同じに扱えるので、データモデル、API、表示部品を1つにする。絵文字キーは判別ユニオンのパーサーとして作り、カスタム絵文字は variant の追加で受け入れる（実装は v1 では `unicode` だけ）。
-- **Build vs. Adopt**: ピッカーは emoji-mart（採用済みの依存）を使う。検証と表示のデータは `@growi/emoji-mart-data` を広げる。一意性はデータベースの一意インデックスに任せる。認可と監査ログは既存のミドルウェアを使う。
+- **Build vs. Adopt**: ピッカーは emoji-mart（採用済みの依存）を使う。検証と表示のデータは `@growi/emoji-mart-data` を広げる。一意性はデータベースの一意インデックスに任せ、インデックスは既存の migration の仕組みで作る。G2G・インポートの型変換は、既存の `overwrite-params` の拡張点を使う。認可と監査ログは既存のミドルウェアを使う。
 - **Simplification**: リアクションの取得経路をコメントの取得に一本化した（専用の取得 API、専用の SWR キー、認可の一致を守るテストが要らない）。書き込みの応答の1件でキャッシュを置き換え、楽観的更新を入れない。種類数の上限の競合は厳密にしない。ユーザーごとの既定の肌の色は emoji-mart の localStorage に任せ、サーバーには持たない（要件の Out of scope に合う）。
 
 ## Risks & Mitigations
@@ -181,6 +203,8 @@
 - 単体取得 API で、共有リンクの検証と取得の対象がずれる（IDOR） — `pageId` を必須にし、コメントがその `pageId` のものかを確かめる。別ページのコメント ID を統合テストで確かめる。
 - `comment` スペックへの書き戻しが漏れ、契約の持ち主が2つに分かれる — tasks.md の最終タスクにし、書き戻した後は `comment` スペックだけが契約を持つ。
 - `removeWithReplies` で、返信の ID を集めてから削除するまでの間に返信が増えると、その返信のリアクションが残りうる — 起こりにくい競合で、残っても表示されない（コメントが無い）。完全削除のときは pageId で一括削除するので残らない。
+- migration と Prisma の宣言でインデックスの名前・キーがずれる — `map` の名前を migration のインデックス名と一致させ、migration の統合テストでインデックスの名前とキーを確かめる。
+- 参照項目を増やしたのに `overwrite-params` を更新し忘れ、G2G で文字列のまま入る — G2G の統合テストで、変換後の文書を `loadReactionChips` で取得できることを確かめる。
 - `@growi/emoji-mart-data` の出力形の変更が、本文のレンダラーとエディタの自動補完に影響する — 型を非空タプルにして `skins[0]` を保ち、既存の利用者のテストを通す。
 
 ## References
@@ -190,3 +214,4 @@
 - `.claude/rules/model.md`、`apps/app/.claude/rules/activity-recording.md`、`apps/app/.claude/rules/page-write-action-403-404.md` — 本設計が従うリポジトリの規約
 - `.kiro/specs/comment/design.md` — コメント一覧 API の契約と Revalidation Triggers
 - `.claude/rules/spec-lifecycle.md` — 完了済みのスペックの契約を変える部分の書き戻しの手順
+- `apps/app/src/migrations/20260619120000-add-unique-key-index-to-auditlog-es-sync-collections.js` — Mongoose を持たない Prisma だけのコレクションに一意インデックスを作る前例
