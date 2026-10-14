@@ -125,7 +125,6 @@ describe('POST /summary — settles PAGE_AI_SUMMARIZE with its operator (drift g
     vi.spyOn(
       mongoose.model<PageDocument, PageModel>('Page'),
       'findByIdAndViewer',
-      // WHY: settle serializes the emitted target, which a mock<T>() proxy breaks
     ).mockResolvedValue(page as unknown as HydratedDocument<PageDocument>);
 
     const memory = {

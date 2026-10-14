@@ -45,11 +45,13 @@ const mocks = vi.hoisted(() => ({
   getAgent: vi.fn(),
   stream: vi.fn(),
   incrementCount: vi.fn(),
+  resolveEffectiveModelKey: vi.fn(),
   addActivity: vi.fn(),
   emitActivity: vi.fn(),
   takeActivityContext: vi.fn(),
   recordFailsafeAttempt: vi.fn(),
   responseClosed: vi.fn(),
+  logger: { warn: vi.fn(), error: vi.fn(), debug: vi.fn(), info: vi.fn() },
   currentUser: undefined as unknown,
   activityBegun: true,
   // pageId -> body, read by the populateDataToShowRevision mock
@@ -111,7 +113,7 @@ vi.mock('@mastra/ai-sdk', () => ({
 }));
 
 vi.mock('../services/ai-sdk-modules/llm-providers/effective-model-key', () => ({
-  resolveEffectiveModelKey: () => 'openai/test-model',
+  resolveEffectiveModelKey: mocks.resolveEffectiveModelKey,
 }));
 vi.mock('../services/ai-sdk-modules/resolve-provider-options', () => ({
   getProviderOptionsForModel: () => ({}),
@@ -136,12 +138,7 @@ vi.mock('~/server/models/obsolete-page', () => ({
 }));
 
 vi.mock('~/utils/logger', () => ({
-  default: () => ({
-    warn: vi.fn(),
-    error: vi.fn(),
-    debug: vi.fn(),
-    info: vi.fn(),
-  }),
+  default: () => mocks.logger,
 }));
 
 // --- Fixtures --------------------------------------------------------------
@@ -381,6 +378,7 @@ describe('POST /summary (summarize-message handler)', () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     mocks.takeActivityContext.mockReturnValue(activityContext);
+    mocks.resolveEffectiveModelKey.mockReturnValue('openai/test-model');
     mocks.currentUser = viewer;
     mocks.activityBegun = true;
     streamCalls = [];
@@ -815,6 +813,44 @@ describe('POST /summary (summarize-message handler)', () => {
       expect(mocks.recordFailsafeAttempt).not.toHaveBeenCalled();
     });
 
+    it('treats a disconnect while the agent is starting as a disconnect, not an error', async () => {
+      let markReached: () => void = () => {};
+      const reachedStream = new Promise<void>((resolve) => {
+        markReached = resolve;
+      });
+      let markRejected: () => void = () => {};
+      const rejected = new Promise<void>((resolve) => {
+        markRejected = resolve;
+      });
+      mocks.stream.mockImplementationOnce(
+        (_prompt: unknown, { abortSignal }: StreamOptions) =>
+          new Promise((_resolve, reject) => {
+            abortSignal.addEventListener('abort', () => {
+              reject(new Error('aborted'));
+              markRejected();
+            });
+            markReached();
+          }),
+      );
+
+      const server = app.listen(0);
+      try {
+        const clientRequest = openSummaryRequest(server);
+        await reachedStream;
+        clientRequest.destroy();
+        await rejected;
+        for (let i = 0; i < 5; i++) {
+          // biome-ignore lint/performance/noAwaitInLoops: lets the handler run past the rejected stream()
+          await new Promise(setImmediate);
+        }
+      } finally {
+        server.close();
+      }
+
+      expect(mocks.logger.error).not.toHaveBeenCalled();
+      expect(threads).toHaveLength(0);
+    });
+
     it('neither counts nor emits when the client left before the stream began', async () => {
       let markReached: () => void = () => {};
       const reachedGetMemory = new Promise<void>((resolve) => {
@@ -1065,6 +1101,20 @@ describe('POST /summary (summarize-message handler)', () => {
         .send({ pageId: shortPage._id.toString() })
         .expect(500);
 
+      expect(threads).toHaveLength(0);
+    });
+
+    it('leaves no empty thread behind when no model is available', async () => {
+      mocks.resolveEffectiveModelKey.mockImplementationOnce(() => {
+        throw new Error('No available AI model to resolve');
+      });
+
+      await request(app)
+        .post('/summary')
+        .send({ pageId: shortPage._id.toString() })
+        .expect(500);
+
+      expect(mocks.stream).not.toHaveBeenCalled();
       expect(threads).toHaveLength(0);
     });
 

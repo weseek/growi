@@ -153,6 +153,10 @@ export const summarizeMessageHandlersFactory: SummarizeMessageHandlersFactory =
             );
           }
 
+          // Resolved before the thread exists: it throws when no model is
+          // available, and the thread would otherwise be left behind.
+          const effectiveModelKey = resolveEffectiveModelKey(modelKey);
+
           // 'close' may already have fired during the awaits above; the
           // fail-safe finalizer has recorded that attempt.
           if (res.destroyed) {
@@ -169,8 +173,6 @@ export const summarizeMessageHandlersFactory: SummarizeMessageHandlersFactory =
             await discardThread(memory, thread.id);
             return;
           }
-
-          const effectiveModelKey = resolveEffectiveModelKey(modelKey);
 
           // Built per request so concurrent summaries never share a budget.
           const requestContext =
@@ -335,6 +337,11 @@ export const summarizeMessageHandlersFactory: SummarizeMessageHandlersFactory =
             },
           });
         } catch (error) {
+          // A disconnect aborts stream(); the fail-safe finalizer has
+          // recorded that attempt.
+          if (res.destroyed) {
+            return;
+          }
           logger.error(error);
           if (!res.headersSent) {
             return res.apiv3Err(
