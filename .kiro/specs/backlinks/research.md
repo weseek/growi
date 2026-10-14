@@ -320,6 +320,11 @@
   333 KiB). Options considered: skip-and-record (a gap that is visible but still missing until the
   page's next save), truncate (loses the links after the cutoff, silently — rejected), parse
   off-thread (the real fix, deferred with `worker_threads`).
+- **Pacing alternative (settle in B3.2)**: a cron tick with a time budget (as designed) versus a
+  self-paced loop that works for a slice and sleeps for a multiple of it. The sleep-based form
+  gives an exact duty and short, evenly spaced bursts, and sidesteps node-cron's 1 s cadence floor
+  and dropped ticks; it costs the reuse of the `CronService` scaffolding and requires moving the
+  marker save, write and lease renewal off the tick boundary. Neither shape bounds one large page.
 - **Trade-offs**: backlinks are incomplete for pre-existing pages until the job finishes
   (acceptable per 4.2 — completeness only required *after* completion; new edits index instantly).
   In-process means the parse still shares the one JS thread; the duty cycle bounds but cannot

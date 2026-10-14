@@ -826,6 +826,18 @@ useSWRxBacklinks(pageId: string | null): SWRResponse<IBacklinkResponse, IErrorV3
   count on the job document, so the gap is visible rather than silent) is undecided. The
   save-time listener has the same single-page exposure, so whether the cap is shared with it is
   part of that decision. Off-thread parsing is the alternative and stays deferred.
+- **Alternative pacing — sleep proportional to work (open — settle in B3.2)**: instead of a cron
+  tick that spends a budget and then idles until the next tick, the job works for a slice (≈50 ms)
+  and then `await`s a timer of a multiple of the work (≈150 ms for 25% duty). One mechanism then
+  replaces both the tick budget and the zero-length yield: the duty is exact by construction, the
+  load is spread as short bursts instead of one burst per second, and the cron cadence is needed
+  only to start the job. It also removes the dropped-tick behavior and the 1 s cron floor. Costs:
+  it departs from the `CronService` / page-bulk-export pattern this design otherwise reuses (a
+  custom timer loop); the per-chunk work (page-link writes, progress marker, lease renewal) must
+  move from "per tick" to a per-N-pages or per-interval step, trading more DB writes against more
+  pages redone after a crash; and it still cannot bound a single large page, so the body-size cap
+  above applies either way. The overlap flag is needed in both shapes if anything can start a
+  second loop.
 - **No overlapping ticks.** node-cron 3.0.3 does not await the tick callback and has no
   no-overlap option, so a tick awaiting a slow DB write can overlap the next one on the same
   progress marker. An **in-process `isRunning` flag**, reset in `finally`, makes an overlapping tick
