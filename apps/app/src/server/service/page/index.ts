@@ -1062,7 +1062,17 @@ class PageService implements IPageService {
     try {
       await Page.bulkWrite(operations);
     } catch (err) {
-      await Page.deleteMany({ _id: { $in: insertedPageIds } });
+      try {
+        await Page.deleteMany({ _id: { $in: insertedPageIds } });
+      } catch (cleanupErr) {
+        // Propagate the original error, not this one. The caller never receives
+        // these ids when we throw, so log them to allow manual removal.
+        logger.error(
+          'Failed to delete the empty pages inserted before the failed bulkWrite. ' +
+            `Orphaned empty page ids: ${insertedPageIds.join(', ')}`,
+          cleanupErr,
+        );
+      }
       throw err;
     }
 
