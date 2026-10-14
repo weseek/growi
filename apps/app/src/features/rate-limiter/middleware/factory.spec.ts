@@ -4,6 +4,16 @@ import { mock } from 'vitest-mock-extended';
 
 const consumePoints = vi.hoisted(() => vi.fn());
 
+// Read once when ./factory is imported, so it must be set before that import.
+const MIXED_CASE_REGEXP_MAX_REQUESTS = vi.hoisted(() => {
+  vi.stubEnv(
+    'API_RATE_LIMIT_999_MIXED_CASE_ENDPOINT_WITH_REGEXP',
+    '/_api/Mixed-Case/.*',
+  );
+  vi.stubEnv('API_RATE_LIMIT_999_MIXED_CASE_MAX_REQUESTS', '3');
+  return 3;
+});
+
 vi.mock('./consume-points', () => ({ consumePoints }));
 
 import {
@@ -61,6 +71,10 @@ const configsUsedFor = async (
   (await consumeCallsFor(path, method)).map(({ config }) => config);
 
 describe('middlewareFactory', () => {
+  afterAll(() => {
+    vi.unstubAllEnvs();
+  });
+
   it('limits the username-suggestion endpoint more tightly than the global default', async () => {
     const configs = await configsUsedFor('/_api/v3/users/usernames');
 
@@ -142,13 +156,11 @@ describe('middlewareFactory', () => {
     }
   });
 
-  it('matches a RegExp config key case-insensitively', async () => {
-    const configs = await configsUsedFor(
-      '/Attachment/507f1f77bcf86cd799439011',
-    );
+  it('matches a mixed-case RegExp config key case-insensitively', async () => {
+    const configs = await configsUsedFor('/_api/Mixed-Case/foo');
 
     for (const config of configs) {
-      expect(config?.maxRequests).toBeLessThan(DEFAULT_MAX_REQUESTS);
+      expect(config?.maxRequests).toBe(MIXED_CASE_REGEXP_MAX_REQUESTS);
     }
   });
 

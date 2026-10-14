@@ -247,6 +247,8 @@ export const summarizeMessageHandlersFactory: SummarizeMessageHandlersFactory =
               }).getReader();
 
               let hasErrorChunk = false;
+              // Tracks the current step only: preamble text from an earlier
+              // tool-calling step is not a summary.
               let hasText = false;
               while (true) {
                 // biome-ignore lint/performance/noAwaitInLoops: necessary to read stream sequentially
@@ -254,6 +256,9 @@ export const summarizeMessageHandlersFactory: SummarizeMessageHandlersFactory =
                 if (done) break;
                 if (value.type === 'error') {
                   hasErrorChunk = true;
+                }
+                if (value.type === 'start-step') {
+                  hasText = false;
                 }
                 if (value.type === 'text-delta' && value.delta.trim() !== '') {
                   hasText = true;

@@ -625,6 +625,43 @@ describe('POST /summary (summarize-message handler)', () => {
       );
     });
 
+    it('treats a stop whose final step has no text as a failed attempt, even after earlier-step text', async () => {
+      mocks.stream.mockResolvedValueOnce(
+        buildStreamResult(
+          [
+            { type: 'start' },
+            { type: 'start-step' },
+            { type: 'text-start', id: 'text-1' },
+            { type: 'text-delta', id: 'text-1', delta: 'Reading the page.' },
+            { type: 'text-end', id: 'text-1' },
+            {
+              type: 'tool-input-available',
+              toolCallId: 'call-0',
+              toolName: 'getPageContentTool',
+              input: {},
+            },
+            { type: 'finish-step' },
+            { type: 'start-step' },
+            { type: 'finish-step' },
+            { type: 'finish' },
+          ],
+          'stop',
+        ),
+      );
+
+      await request(app)
+        .post('/summary')
+        .send({ pageId: shortPage._id.toString() })
+        .expect(200);
+
+      expect(mocks.incrementCount).not.toHaveBeenCalled();
+      expect(mocks.emitActivity).not.toHaveBeenCalled();
+      expect(mocks.recordFailsafeAttempt).toHaveBeenCalledWith(
+        'activity-id',
+        activityContext,
+      );
+    });
+
     it('sends a single error chunk when the stream promises reject after an error chunk', async () => {
       const providerError = new Error('provider failed');
       mocks.stream.mockResolvedValueOnce({

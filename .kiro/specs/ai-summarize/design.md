@@ -417,7 +417,7 @@ sequenceDiagram
     4. `totalLines` は**カバレッジ判定の参考値**として用いる（`getPageContentTool` の応答に常に含まれる）。「あと何行残っているか」の見積り、および要約が全文に基づくか一部に基づくかの自己判断の材料とする。打ち切り条件そのものは (3) の3条件で判定し、`totalLines` の値で代替しない。**`content` が `undefined` のときは行数を加算しない**（加算量0。初回のアウトラインのみ取得や失敗応答の場合）。
   - **(b) 打ち切り時の明示**: `limitedGetPageContentTool` から `limit_exceeded` を受け取ったら読み取りを止め、要約が部分的な内容に基づくものである旨を明示する。
   - **(c) 出力形式**: リード文1文＋主要ポイント3〜5個の箇条書きで出力する。
-  - **(d) 応答言語**: ユーザーの入力言語で応答する。
+  - **(d) 応答言語**: リクエストで指定されたロケールの言語で応答する。指定がなければページ本文の言語で応答する。
 - `growi-agent.ts` のinstructionsとは完全に独立したファイルとし、共有しない。
 - `suggestPathAgent` と同様、`resolveMastraModel` によるモデル解決を用いる。`modelKey` はリクエストから渡された場合のみ考慮し（`post-message.ts` と同じ `resolveEffectiveModelKey` による丸め込みを再利用）、省略時はデフォルトモデルを使う。
 - `suggestPathAgent` と異なり `memory` を接続する。要約後の追質問がスレッド履歴を必要とするため（1.4）。
