@@ -61,6 +61,17 @@
   - ごみ箱への移動と復元では、コメントに触れない。
 - **Implications**: 3つの経路（`removeWithReplies`、`deleteReply`、`deleteCompletelyOperation`）に、Prisma の `commentreactions.deleteMany` を同じトランザクションの中で足す。ごみ箱の経路には何もしない（要件 8.4 は自然に満たされる）。
 
+### Prisma の参照の検査（P2014）と削除の順番
+- **Context**: 要件 8。コメントの削除経路に、リアクションの削除を足す。
+- **Sources Consulted**: `apps/app/prisma/schema.prisma`（`comments` のリレーション）、`src/server/service/page/delete-completely-operation.ts`、`src/server/routes/comment.integ.ts`、`features/comment/server/models/comment.ts`（`removeWithReplies`）、[Prisma: Relation mode](https://www.prisma.io/docs/orm/prisma-schema/data-model/relations/relation-mode)、[Prisma: Referential actions](https://www.prisma.io/docs/orm/prisma-schema/data-model/relations/referential-actions)
+- **Findings**:
+  - MongoDB の relation mode は `prisma` で、参照の整合は Prisma Client のクエリのときに Prisma がエミュレートする（生のクエリには効かない）。MongoDB では `Cascade`、`Restrict`、`NoAction`、`SetNull` が使える。エミュレーションは追加のクエリを伴う。`NoAction` が具体的にどう振る舞うかは、公式ドキュメントでは詳しく書かれていない。
+  - リポジトリでの実測: `delete-completely-operation.ts` と `comment.integ.ts` のコメントに、必須のリレーション（`onDelete: NoAction`）の親（`pages`）を、子（`revisions`、`comments` など）と同時または先に Prisma で消すと P2014 が出る、と記録されている（同時に実行すると確実に再現し、順に実行すると出ない）。`comments` の返信の削除も、起点より先に返信を消す順にしてある（`removeWithReplies`、`deleteCompletelyOperation`）。
+  - 配列形式の `$transaction` は書いた順に実行され、どれか1つが失敗すると全体が取り消される。
+  - `comments` の Prisma モデルのリレーションは、すべて `onDelete: NoAction`。
+  - 利用者の削除は `statusDelete`（状態と名前などを書き換えるだけ）で、Prisma（や Mongoose）で `users` の文書を物理削除する経路は無い。
+- **Implications**: `commentreactions` には、読み取りに不要な `comments` / `pages` へのリレーションを宣言しない。削除の順番は、どの経路でも子から親（リアクション → 返信 → コメント）にする。`users` へのリレーションは、物理削除が無いので宣言しても P2014 は起きない。確認は、本物の DB で削除経路を通す統合テストで行う（モックでは参照の検査が走らない）。
+
 ### 閲覧専用ユーザー、ゲスト、共有リンクの判定（クライアント）
 - **Sources Consulted**: `states/context.ts`、`client/components/NotAvailableForReadOnlyUser.tsx`、`NotAvailableForGuest.tsx`、`components/PageView/PageView.tsx`、`ShareLinkPageView.tsx`、`features/search/.../SearchResultContent.tsx`
 - **Findings**:
@@ -126,6 +137,22 @@
   - `.claude/rules/model.md` は、移行期間中は Mongoose がインデックスの作成を持つとしている。ただし、これは既存のモデルを Prisma に移すときの方針で、Mongoose を持たない新しいコレクションには、上記の migration の前例がある。
 - **Trade-offs**: インデックスの定義が、migration と Prisma の `@@unique` / `@@index` の2か所に現れる（`map` の名前で一致させ、migration の統合テストで確かめる）。参照項目を増やすときは、`overwrite-params` も更新する必要がある。
 - **Follow-up**: `comments` の既存の Mongoose スキーマの退役は、本スペックの範囲外とする。
+
+### Decision: `commentreactions` は `comments` へのリレーションを宣言せず、削除は子から親の順にする
+- **Context**: 要件 8。Prisma の参照のエミュレーションで、必須のリレーション（`onDelete: NoAction`）の子が残ったまま親を消すと P2014 になる。配列形式の `$transaction` は書いた順に実行されるので、コメントの削除の後にリアクションの削除を書くと、リアクションの付いたコメントが削除できなくなり、トランザクション全体が取り消される。
+- **Alternatives Considered**:
+  1. `comments` へのリレーションを `onDelete: NoAction` で宣言し、すべての削除経路でリアクションを先に消す
+  2. `comments` へのリレーションを `onDelete: Cascade` で宣言し、コメントの削除に合わせて Prisma にリアクションを消させる
+  3. `comments` へのリレーションを宣言せず（スカラーの `commentId` だけ）、すべての削除経路でリアクションを先に消す
+- **Selected Approach**: 3。`pages` へのリレーションも宣言しない。`users` へのリレーションだけを宣言する（`onDelete: NoAction`）。
+- **Rationale**:
+  - 本スペックの読み取りは `commentId` で引くだけで、リアクションからコメントをたどらない。リレーションを宣言しても読み取りの得は無い。
+  - 1 は、将来の削除経路でリアクションの削除を忘れたり順番を誤ったりすると、コメント自体が削除できなくなる（P2014 で失敗し、トランザクションも取り消される）。3 なら、忘れても残るのは表示されない孤立したリアクションで、利用者への影響が小さい。
+  - 2 は、エミュレーションが `deleteMany` やトランザクションの中でどう振る舞うかが公式ドキュメントで明らかでなく、暗黙の追加クエリになる。削除が `removeWithReplies` などに明示されているほうが、読んで追える。
+  - 1・2 は、`comment` スペックが持つ `comments` の Prisma モデルに逆向きのリレーション項目を足す必要がある。3 は不要。
+  - 順番を子から親に揃えるのは、既存の返信の削除と同じ形にし、将来リレーションが宣言されても壊れないようにするため。
+- **Trade-offs**: Prisma の型から、リアクションとコメントの関係が読み取れない。削除の漏れは P2014 で気づけず、孤立したリアクションとして残る（統合テストと Revalidation Triggers で補う）。
+- **Follow-up**: 実装時に、本物の DB で、起点と返信の両方にリアクションの付いたコメントを各削除経路で消し、P2014 が出ないこととリアクションが残らないことを統合テストで確かめる。
 
 ### Decision: 絵文字キーは名前空間の接頭辞付きの文字列にする
 - **Context**: 要件 4.5、4.6、将来のカスタム絵文字。
@@ -202,6 +229,7 @@
 - リアクションの不具合がコメントの取得に波及する — 取り込みの失敗は `reactions: null` にしてコメントは返す。集計は1回の `findMany`（一意インデックスの先頭の `comment` を使う）に限る。
 - 単体取得 API で、共有リンクの検証と取得の対象がずれる（IDOR） — `pageId` を必須にし、コメントがその `pageId` のものかを確かめる。別ページのコメント ID を統合テストで確かめる。
 - `comment` スペックへの書き戻しが漏れ、契約の持ち主が2つに分かれる — tasks.md の最終タスクにし、書き戻した後は `comment` スペックだけが契約を持つ。
+- コメントの削除経路でリアクションを後に消す（または同時に消す）と P2014 になる、あるいは将来 `comments` へのリレーションが宣言されて同じことが起きる — `comments` へのリレーションを宣言せず、どの経路でもリアクションを先に消す。本物の DB で削除経路を通す統合テストで確かめる。
 - `removeWithReplies` で、返信の ID を集めてから削除するまでの間に返信が増えると、その返信のリアクションが残りうる — 起こりにくい競合で、残っても表示されない（コメントが無い）。完全削除のときは pageId で一括削除するので残らない。
 - migration と Prisma の宣言でインデックスの名前・キーがずれる — `map` の名前を migration のインデックス名と一致させ、migration の統合テストでインデックスの名前とキーを確かめる。
 - 参照項目を増やしたのに `overwrite-params` を更新し忘れ、G2G で文字列のまま入る — G2G の統合テストで、変換後の文書を `loadReactionChips` で取得できることを確かめる。
