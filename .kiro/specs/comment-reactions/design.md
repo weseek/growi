@@ -369,8 +369,14 @@ graph TB
 | 9.4 | 状態不変・拒否は記録しない | update route | `changed` が true のときだけ emit | 追加・解除 |
 | 9.5 | 通知しない | activity.ts | `EssentialActionGroup` に入れない | — |
 | 10.1, 10.2 | G2G で移す、同じ対応で表示 | import overwrite params, non-transferable-collections, index migration | `TRANSFERABLE_COLLECTIONS`、`overwrite-params` による ObjectId の型変換、移行先のインデックスは移行先の migration で作成済み | — |
+| 11.1 | 一覧の各コメントにリアクションを含める | comment の取得の拡張（`list.ts`）, loadReactionChips | `ICommentListItem.reactions` | 読み取り |
+| 11.2 | 1件の取得でも一覧の1件と同じ形で含める | comment の取得の拡張（`get.ts`、`getCommentListItem`） | `GET /comments/:id` の `comment` | 読み取り |
+| 11.3 | 追加・解除の応答で最新のコメントを返す | update route, getCommentListItem | `UpdateCommentReactionResponse.comment` | 追加・解除 |
+| 11.4 | 絵文字・人数・利用者・自分のリアクションを返す | summarizeReactions | `ReactionChip`（`emoji` / `count` / `users` / `reactedByMe`） | — |
+| 11.5 | リアクション無しと取得失敗を区別できる | comment の取得の拡張 | `reactions: []` と `reactions: null` | 読み取り |
+| 11.6 | アクセストークンでも読める範囲で返す | comment の取得の拡張 | `accessTokenParser([SCOPE.READ.FEATURES.PAGE])`、`viewerId` はトークンの利用者 | 読み取り |
 
-コメント単体の取得 API（`GET /_api/v3/comments/:id`）は、本スペックの requirements.md の要件には対応しない。`comment` スペックの契約として書き戻し、`comment` の requirements.md の新しい要件に対応づける（「Amend Target」を参照）。
+要件 11 は、API の利用者から見た動き（コメントと一緒にリアクションを読めること）として本スペックが持つ。それを実現するコメント一覧 API の応答の項目と、コメント単体の取得 API（`GET /_api/v3/comments/:id`）そのものの契約は、`comment` スペックに書き戻し、`comment` の requirements.md の新しい受け入れ条件・要件に対応づける（「Amend Target」を参照）。
 
 ## Components and Interfaces
 
@@ -381,10 +387,10 @@ graph TB
 | index migration | Migration | 一意インデックスと page インデックスの作成 | 2.4, 2.5, 10.2 | migrate-mongo（P0） | Batch |
 | import overwrite params | Import（既存の仕組み） | G2G・インポートでの参照項目の ObjectId への型変換 | 10.1, 10.2 | ImportService（P0） | Batch |
 | CommentReactionService | Reaction core / service | 追加・解除の業務規則（冪等、上限） | 2.4–2.8, 7.1–7.3 | model（P0）、reaction-key（P0） | Service |
-| summarizeReactions | Reaction core / service | 行 → チップの集計（純粋関数） | 1.1–1.6, 1.9, 1.10, 6.4 | — | Service |
-| loadReactionChips | Reaction core / service | コメント ID 群のチップを読む（comment の取得が呼ぶ） | 1.1–1.6, 1.9, 6.1 | model（P0）、summarizeReactions（P0） | Service |
-| comment の取得の拡張 | Comment / service, route | 一覧・単体の応答にリアクションを載せる、単体取得 API | 2.9, 6.1, 6.5 | loadReactionChips（P0）、認可ミドルウェア（P0） | API, Service |
-| update route | Reaction / route | 追加・解除の API と認可、監査ログ、最新のコメントの返却 | 2.1, 2.2, 2.9, 4.2, 4.4, 5.1–5.7, 7.2, 9.1–9.4 | Service（P0）、getCommentListItem（P0）、activityEvent（P0） | API |
+| summarizeReactions | Reaction core / service | 行 → チップの集計（純粋関数） | 1.1–1.6, 1.9, 1.10, 6.4, 11.4 | — | Service |
+| loadReactionChips | Reaction core / service | コメント ID 群のチップを読む（comment の取得が呼ぶ） | 1.1–1.6, 1.9, 6.1, 11.1 | model（P0）、summarizeReactions（P0） | Service |
+| comment の取得の拡張 | Comment / service, route | 一覧・単体の応答にリアクションを載せる、単体取得 API | 2.9, 6.1, 6.5, 11.1, 11.2, 11.5, 11.6 | loadReactionChips（P0）、認可ミドルウェア（P0） | API, Service |
+| update route | Reaction / route | 追加・解除の API と認可、監査ログ、最新のコメントの返却 | 2.1, 2.2, 2.9, 4.2, 4.4, 5.1–5.7, 7.2, 9.1–9.4, 11.3 | Service（P0）、getCommentListItem（P0）、activityEvent（P0） | API |
 | 削除経路の拡張 | 既存 | コメント・ページの削除に伴う削除 | 8.1–8.4 | Prisma（P0） | — |
 | Activity 定義の拡張 | 既存 interfaces, activity model | action と snapshot の variant、snapshot の保存口への `emoji` の追加 | 9.1–9.5 | activity-log-snapshot の方針（P1）、`createByParameters`（P0） | — |
 | useCommentReactions | Client / hook | 一覧のキャッシュから読み、PUT の応答で1件を置き換える | 1.1, 2.1, 2.2, 2.9, 2.10, 6.5 | useSWRxCommentList（P0）、apiv3-client（P0） | State |
@@ -560,7 +566,7 @@ interface CommentReactionService {
 | Field | Detail |
 |-------|--------|
 | Intent | `commentreactions` の行を、コメントごとのチップの配列に集計する（純粋関数）／指定したコメント群のチップを読む |
-| Requirements | 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.9, 1.10, 6.1, 6.4 |
+| Requirements | 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.9, 1.10, 6.1, 6.4, 11.4 |
 
 **Responsibilities & Constraints**
 - チップは `emoji` ごとに作る（肌の色が違えば別のチップ。要件 1.3）。
@@ -614,7 +620,7 @@ declare function loadReactionChips(
 | Field | Detail |
 |-------|--------|
 | Intent | 一覧・単体の応答の各コメントにリアクションを載せる。コメント単体の取得 API を新設する |
-| Requirements | 2.9, 6.1, 6.5 |
+| Requirements | 2.9, 6.1, 6.5, 11.1, 11.2, 11.5, 11.6 |
 
 **Responsibilities & Constraints**
 - `canViewCommentsOfPage(deps, { req, pageId })`: `list.ts` の閲覧判定（`req.isSharedPage === true`、または `findPageAndMetaDataByViewer` の結果が not-found でない）を取り出した関数。一覧と単体で共有する。挙動は変えない。
@@ -671,7 +677,7 @@ declare function getCommentListItem(
 | Field | Detail |
 |-------|--------|
 | Intent | `PUT /_api/v3/comments/:id/reactions`。追加・解除と認可、監査ログ、最新のコメントの返却 |
-| Requirements | 2.1, 2.2, 2.9, 4.2, 4.4, 5.1–5.7, 7.2, 9.1–9.4 |
+| Requirements | 2.1, 2.2, 2.9, 4.2, 4.4, 5.1–5.7, 7.2, 9.1–9.4, 11.3 |
 
 **Responsibilities & Constraints**
 - 順序は `accessTokenParser([SCOPE.WRITE.FEATURES.PAGE], { acceptLegacy: true })` → `loginRequiredFactory(crowi, false)` → `excludeReadOnlyUserIfCommentNotAllowed` → `addActivity` → validators → `apiV3FormValidator` → handler（`activity-recording.md` Rule 2）。`certifySharedPage` は通さない。
