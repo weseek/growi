@@ -315,7 +315,11 @@
   without changing the job; *admin trigger* — already deferred above.
 - **Open questions (settle in B3.2)**: write ordering between the live listener and the backfill on
   the same page (can a stale backfill read overwrite fresher rows?); whether the backfill's pacing
-  reuses the listener's measured-time mechanism as-is.
+  reuses the listener's measured-time mechanism as-is; whether to cap the body size parsed, since
+  the budget and slice checks run between pages and cannot bound one large page (~1.1 s at
+  333 KiB). Options considered: skip-and-record (a gap that is visible but still missing until the
+  page's next save), truncate (loses the links after the cutoff, silently — rejected), parse
+  off-thread (the real fix, deferred with `worker_threads`).
 - **Trade-offs**: backlinks are incomplete for pre-existing pages until the job finishes
   (acceptable per 4.2 — completeness only required *after* completion; new edits index instantly).
   In-process means the parse still shares the one JS thread; the duty cycle bounds but cannot

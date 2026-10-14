@@ -474,9 +474,10 @@ admin-triggered start was deferred as a one-line future change. Independent of B
     loop between pages once a slice limit is exceeded; renew the lease on every chunk; guard
     against overlapping ticks with an in-process `isRunning` flag reset in `finally`; skip
     immediately once the job document is complete
-  - Settle two open questions and record them in design.md: write ordering against the live
-    listener on the same page (can a stale backfill write overwrite fresher rows?), and whether the
-    pacing reuses the B2.2 listener's mechanism as-is
+  - Settle three open questions and record them in design.md: write ordering against the live
+    listener on the same page (can a stale backfill write overwrite fresher rows?), whether the
+    pacing reuses the B2.2 listener's mechanism as-is, and whether to cap the body size parsed (at
+    what size, and how skipped pages are recorded) since one large page overshoots the budget
   - Done when running the job over a seeded dataset (including pages linked by permalink and by
     same-wiki absolute URL) populates rows equivalent to the live path, a re-run/resume adds no
     duplicates, no tick overlaps a still-running one, and progress is emitted on the admin channel

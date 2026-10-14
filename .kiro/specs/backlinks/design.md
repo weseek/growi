@@ -817,6 +817,15 @@ useSWRxBacklinks(pageId: string | null): SWRResponse<IBacklinkResponse, IErrorV3
   slice limit** (tens of ms), then continues with the next page. Nothing is skipped; the check is
   made between pages, so the worst stall is the slice limit plus the slowest single page.
   The test is event-loop delay (max / p99), not duty cycle.
+- **Single-page overshoot (open — settle in B3.2)**: neither the tick budget nor the slice limit can
+  interrupt a parse, so one large body overshoots both (measured on the B2.2 pipeline: ~88 ms at
+  32.6 KiB, ~1.1 s at 333 KiB — a single stall longer than the whole 250 ms budget, and near-100%
+  duty for that stretch because node-cron drops the tick that falls due meanwhile). Only a
+  **body-size cap** checked before parsing bounds a single page's stall. Whether to cap, at what
+  size (to be chosen from the performance run), and how skipped pages are recorded (log plus a
+  count on the job document, so the gap is visible rather than silent) is undecided. The
+  save-time listener has the same single-page exposure, so whether the cap is shared with it is
+  part of that decision. Off-thread parsing is the alternative and stays deferred.
 - **No overlapping ticks.** node-cron 3.0.3 does not await the tick callback and has no
   no-overlap option, so a tick awaiting a slow DB write can overlap the next one on the same
   progress marker. An **in-process `isRunning` flag**, reset in `finally`, makes an overlapping tick
