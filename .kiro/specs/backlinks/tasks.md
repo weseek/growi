@@ -694,9 +694,11 @@ the restored page's status. Independent of B3/B4.
     changes (removed/nulled), and a `syncDescendantsDelete` payload larger than `BULK_REINDEX_SIZE`
     reaches `reconcileDeletedPages` as several calls of at most `BULK_REINDEX_SIZE` ids each
   - **How the criterion is met.** The three handlers collapsed into one `handlePagesDelete`, which
-    chunks the payload and reconciles one chunk at a time; a failed chunk is logged and the rest
-    still settle. Its own contract — no call above `BULK_REINDEX_SIZE`, every id exactly once, a
-    failed chunk being logged without stopping the rest — is asserted in `page-link-service-handlers.spec.ts`. The
+    chunks the payload and reconciles one chunk at a time; a failed chunk is retried (up to
+    `MAX_RETRY_ATTEMPTS` attempts in total, `RETRY_BACKOFF_MS` apart) and only then logged, and the
+    rest still settle. Its own contract — no call above `BULK_REINDEX_SIZE`, every id exactly once,
+    a failed chunk handed to `reconcileDeletedPages` again, the backoff honored, and a chunk that
+    fails every attempt logged once without stopping the rest — is asserted in `page-link-service-handlers.spec.ts`. The
     row changes are asserted one layer down, against real rows, in
     `page-link-service-handlers.integ.ts` and `page-link.integ.ts`; the gone/trashed decision in
     `page-link-sync.spec.ts`; the queue side in `page-link-upsert-queue.spec.ts`

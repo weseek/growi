@@ -91,7 +91,8 @@ export const handlePageUpsertById = async (
 };
 
 /**
- * Try to reconcile deleted pages, retries MAX_RETRY_ATTEMPS times if it fails.
+ * Tries to reconcile deleted pages up to `tryCount` times in total (so `tryCount - 1` retries),
+ * resting `RETRY_BACKOFF_MS` between attempts.
  */
 const tryReconcileDeletedPages = async (
   chunk: Types.ObjectId[],
@@ -119,7 +120,8 @@ const tryReconcileDeletedPages = async (
 /**
  * Reconciles deleted pages in chunks of `BULK_REINDEX_SIZE`, the batch size `removeLinksForPages`
  * requires. Group deletion hands `syncDescendantsDelete` every affected page at once, so a
- * payload is not bounded on its own. A failed chunk is retried and logged after failing after allowed attempts.
+ * payload is not bounded on its own. A failed chunk is attempted up to `MAX_RETRY_ATTEMPTS` times in
+ * total and logged if every attempt fails; the remaining chunks are still processed.
  *
  * @param pageIds - Page IDs of pages that have been deleted.
  */
