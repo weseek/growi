@@ -6,7 +6,7 @@
 検索履歴には、打ち間違えたキーワードや、人に見られたくないキーワードも残る。ユーザーが不要な履歴を消せないと、履歴一覧が使いにくくなるうえ、プライバシーの面でも不安が残る。
 
 ## Current State
-- search-history-persistence が、ユーザーごとの検索履歴のデータ契約（履歴 1 件の ID・キーワード・最終検索日時）と、記録・一覧取得 API を提供する。
+- search-history-persistence が、ユーザーごとの検索履歴のデータ契約（履歴 1 件の ID・キーワード・最終検索日時）と、検索履歴の API（`/_api/v3/search-history`。一覧は `GET`、記録は `POST`）を提供する。
 - search-history-recall が、検索モーダルのドロップダウンに履歴一覧を表示し、選択で再検索できるようにする。
 - 履歴を削除する手段は無い。
 
@@ -17,14 +17,14 @@
 - 本人以外の履歴は削除できない。存在しない ID や他ユーザーの ID を指定した削除は拒否され、他ユーザーの履歴は変わらない。
 
 ## Approach
-サーバ保存＋クライアントからの明示記録（アンブレラ roadmap の Approach Decision を参照）の上に、削除 API と削除 UI を足す。
-- apiv3 に、本人の履歴を 1 件だけ消す削除エンドポイントを追加する。ログイン必須で、ID とユーザーの両方で絞り込む。
+サーバ保存＋クライアントからの明示記録（アンブレラ roadmap の Approach Decision を参照）の上に、削除の操作と削除 UI を足す。
+- persistence で作る検索履歴の API（`/_api/v3/search-history`）に、本人の履歴を 1 件だけ消す削除の操作（`DELETE /:id`）を足す。ログイン必須で、ID とユーザーの両方で絞り込む。URL と応答の形は persistence と同じく既存の apiv3（`/_api/v3/bookmark-folder` の `DELETE /:id` など）に合わせる（アンブレラ roadmap の [Boundary Strategy](../search-history/roadmap.md#boundary-strategy) を参照）。ただし、存在しない ID と他人の ID を前例のように 404 と 403 に分けず、同じ応答で扱う（Constraints を参照）。
 - recall が描く履歴項目に削除ボタンを追加する。Downshift の項目選択とはイベントを分離する。
 - 削除後は SWR のキャッシュを更新し、一覧に即時反映する。
 
 ## Scope
 - **In**:
-  - apiv3 の削除エンドポイントと、そのバリデーション・認可（本人の履歴のみ）
+  - 検索履歴の API への削除の操作（`DELETE /:id`）と、そのバリデーション・認可（本人の履歴のみ）
   - 履歴項目への削除操作（ボタン、アクセシブルなラベル、キーボードでの操作可否）
   - 削除後の一覧の即時反映と、失敗時の扱い
   - 文言の i18n（名前空間を明示）
@@ -35,7 +35,7 @@
   - 削除の取り消し（Undo）
 
 ## Boundary Candidates
-- サーバの削除 API（認可を含む）
+- 検索履歴の API への削除の操作（認可を含む）
 - 履歴項目への削除操作の追加と、項目選択とのイベント分離
 - 削除後のクライアントキャッシュの更新
 
@@ -44,7 +44,7 @@
 - 記録点・重複・上限のルール（persistence が所有）
 
 ## Upstream / Downstream
-- **Upstream**: search-history-persistence（データ契約・ID・認可の前提）、search-history-recall（履歴一覧の表示と項目コンポーネント、SWR フック）、apiv3 ルーティングと `loginRequired` / `accessTokenParser`
+- **Upstream**: search-history-persistence（データ契約・ID・認可の前提、検索履歴の API の窓口）、search-history-recall（履歴一覧の表示と項目コンポーネント、SWR フック）、apiv3 ルーティングと `loginRequired` / `accessTokenParser`
 - **Downstream**: なし（将来の一括削除・全消去は別スコープ）
 
 ## Existing Spec Touchpoints

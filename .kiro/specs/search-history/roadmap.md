@@ -31,6 +31,7 @@ GROWI の検索モーダル（`features/search/client/components/SearchModal.tsx
 - **Why this split**: チケット（#191670 / #191671 / #191672）とユーザーから見える価値の単位が一致する縦切り。保存はサーバのデータ契約（モデル・記録 API・一覧取得 API）と記録点の配線を一手に持ち、再検索と削除はその契約の上に UI と操作を足す形にする。
 - **Shared seams to watch**:
   - **履歴のデータ契約**（`search-history-persistence` が所有）: 1 件の形（ID・キーワード・最終検索日時）、同一キーワードの重複時の扱い（最新へ繰り上げるか）、保持件数の上限、一覧の並び順。再検索・削除はこの契約を前提にする。
+  - **検索履歴の API**（窓口は `search-history-persistence` が所有）: `/_api/v3/search-history` の 1 つの窓口にまとめ、操作の種類で分ける（一覧は `GET`、記録は `POST`、削除は `DELETE /:id`）。persistence が一覧と記録を作り、delete はこの窓口に削除の操作を足す。記録（`POST`）の応答は一覧の 1 件と同じ形にする。URL と応答の形は、ユーザー本人のデータを一覧・追加・削除する既存の apiv3 に合わせる。最も近い前例は `/_api/v3/bookmark-folder`（作成は `POST /`、削除は `DELETE /:id`、応答は `res.apiv3({ <名前>: ... })` で名前付きのキーに包む）。ただし一覧は本人の分だけを返すので、`bookmark-folder` の `GET /list/:userId` のように URL にユーザー ID は含めない。
   - **記録点**（`search-history-persistence` が所有）: 「検索を実行した」とみなす箇所。`SearchModal` の送信処理（`onSearchOverride` 経由の `/_search` 上からの検索を含む）と、`SearchMethodMenuItem` の選択（`router.push` で `searchHandler` を経由しない）の両方を漏らさないこと。再検索（recall）もこの記録点を通して履歴を最新に繰り上げる。
   - **Downshift の項目モデル**（`search-history-recall` が所有）: 現状の `DownshiftItem = { url: string }` は URL 遷移のみを表す。履歴項目は「その文字列で検索を実行する」アクションで、URL 遷移で済ませると記録点を迂回する。項目モデルの拡張は recall が行い、delete はその上に削除操作を載せる。
   - **履歴一覧の表示**（`search-history-recall` が所有）: delete は recall が描く履歴一覧の各項目に削除操作を追加する。削除操作のクリック・キー操作が項目選択（再検索）と衝突しないこと。
@@ -38,4 +39,4 @@ GROWI の検索モーダル（`features/search/client/components/SearchModal.tsx
 ## Specs (dependency order)
 - [ ] search-history-persistence -- 検索実行時に入力キーワードをログインユーザーの検索履歴として保存する（#191670）。履歴モデル・記録 API・一覧取得 API と、クライアント側の記録点の配線を所有。Dependencies: none
 - [ ] search-history-recall -- 検索ボックス（検索モーダル）に過去の検索履歴を表示し、選んで再検索できるようにする（#191671）。履歴一覧の表示と Downshift 項目モデルの拡張を所有。Dependencies: search-history-persistence
-- [ ] search-history-delete -- 検索履歴の一覧から不要な履歴を 1 件ずつ削除できるようにする（#191672）。削除 API と、履歴一覧項目への削除操作の追加を所有。Dependencies: search-history-recall（履歴一覧の表示）、search-history-persistence（データ契約）
+- [ ] search-history-delete -- 検索履歴の一覧から不要な履歴を 1 件ずつ削除できるようにする（#191672）。persistence が作る検索履歴の API への削除の操作（`DELETE /:id`）の追加と、履歴一覧項目への削除操作の追加を所有。Dependencies: search-history-recall（履歴一覧の表示）、search-history-persistence（データ契約）

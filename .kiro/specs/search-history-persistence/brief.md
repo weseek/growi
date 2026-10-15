@@ -26,6 +26,9 @@ GROWI のユーザーは同じキーワードで繰り返し検索すること�
 サーバ保存＋クライアントからの明示記録（アンブレラ roadmap の Approach Decision を参照）。
 - `features/search/server/` を新設し、ユーザーごとの検索履歴モデル（ユーザー・キーワード・最終検索日時）を置く。
 - apiv3 に記録（POST）と一覧取得（GET）のエンドポイントを追加する。どちらもログイン必須で、本人の履歴のみを扱う。
+  - 検索履歴の API は `/_api/v3/search-history` の 1 つの窓口にまとめ、操作の種類で分ける（一覧は `GET`、記録は `POST`）。削除（`DELETE /:id`）は search-history-delete がこの窓口に足す。
+  - 記録（`POST`）の応答は、一覧の 1 件と同じ形にする。
+  - URL と応答の形は、ユーザー本人のデータを一覧・追加・削除する既存の apiv3 に合わせる。最も近い前例は `/_api/v3/bookmark-folder`（作成は `POST /`、削除は `DELETE /:id`、応答は `res.apiv3({ <名前>: ... })` で名前付きのキーに包む）。一覧は本人の分だけを返すので、`bookmark-folder` の `GET /list/:userId` のように URL にユーザー ID は含めない（アンブレラ roadmap の [Boundary Strategy](../search-history/roadmap.md#boundary-strategy) を参照）。
   - 一覧取得 API を recall ではなく persistence が持つのは、保存側が履歴のデータの形（モデル・型・重複/上限・並び順）とそれを読み書きする API をまとめて持ち、recall と delete はその上に画面と操作を足す、という分割にしているため（アンブレラ roadmap の [Boundary Strategy](../search-history/roadmap.md#boundary-strategy) を参照）。
 - クライアントは「検索を実行した」時点で記録 API を呼ぶ。記録の失敗は検索そのものを妨げない（遷移を待たせず、エラーはログに留める）。
 

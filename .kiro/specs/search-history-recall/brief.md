@@ -9,7 +9,7 @@ search-history-persistence で検索キーワードが保存されるように�
 - 検索モーダル（`apps/app/src/features/search/client/components/SearchModal.tsx`）は Downshift で、入力欄（`SearchForm`）の下のメニューに `SearchMethodMenuItem` と `SearchResultMenuItem` を並べ、その下に `SearchHelp` を常に表示している。
 - 入力が空のとき、メニューには固定の「検索方法」項目が 1 つ出るだけで、`SearchResultMenuItem` は何も出さない。
 - Downshift の項目型は `DownshiftItem = { url: string }`（`features/search/client/interfaces/downshift.ts`）で、選択すると `router.push(item.url)` する。URL 遷移以外の項目は存在しない。
-- 前提となる履歴の一覧取得 API と記録関数は search-history-persistence が提供する。
+- 前提となる履歴の一覧取得 API（`GET /_api/v3/search-history`）と記録関数は search-history-persistence が提供する。
 
 ## Desired Outcome
 - ログインユーザーが検索モーダルを開き、入力が空の状態のとき、自分の過去の検索履歴が新しい順にドロップダウンに表示される。
@@ -44,7 +44,7 @@ search-history-persistence で検索キーワードが保存されるように�
 
 ## Out of Boundary
 - 履歴の保存ルール（重複・上限・並び順の決定）
-- 削除 UI と削除 API
+- 削除 UI と、persistence が作る検索履歴の API への削除の操作（`DELETE /:id`。search-history-delete が足す）
 - 検索演算子の解釈
 
 ## Upstream / Downstream
