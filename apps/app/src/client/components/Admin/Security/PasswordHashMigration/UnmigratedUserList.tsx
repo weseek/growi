@@ -86,7 +86,9 @@ export const UnmigratedUserList = (props: {
         className="btn btn-outline-secondary btn-sm"
         onClick={() => setOpen(!isOpen)}
       >
-        <span className="material-symbols-outlined me-1">
+        {/* Hidden from the accessible name: the ligature text would otherwise be
+            read out as part of the label ("expand_more Show unmigrated users"). */}
+        <span className="material-symbols-outlined me-1" aria-hidden="true">
           {isOpen ? 'expand_less' : 'expand_more'}
         </span>
         {t(`${K}.list_toggle`, { count: totalCount })}
