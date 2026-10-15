@@ -374,6 +374,7 @@ graph TB
 | 9.4 | 状態不変・拒否は記録しない | update route | `changed` が true のときだけ emit | 追加・解除 |
 | 9.5 | 通知しない | activity.ts | `EssentialActionGroup` に入れない | — |
 | 10.1, 10.2 | G2G で移す、同じ対応で表示 | import overwrite params, non-transferable-collections, index migration | `TRANSFERABLE_COLLECTIONS`、`overwrite-params` による ObjectId の型変換、移行先のインデックスは移行先の migration で作成済み | — |
+| 10.3 | アーカイブファイルからのインポートで取り込む | import overwrite params, index migration | `import-settings-builder.ts` から呼ばれる `generateOverwriteParams('commentreactions', ...)` による ObjectId の型変換、`flushAndInsert` はインデックスを残す（インポート先のインデックスは migration で作成済み） | — |
 | 11.1 | 一覧の各コメントにリアクションを含める | comment の取得の拡張（`list.ts`）, loadReactionChips | `ICommentListItem.reactions` | 読み取り |
 | 11.2 | 1件の取得でも一覧の1件と同じ形で含める | comment の取得の拡張（`get.ts`、`getCommentListItem`） | `GET /comments/:id` の `comment` | 読み取り |
 | 11.3 | 追加・解除の応答で最新のコメントを返す | update route, getCommentListItem | `UpdateCommentReactionResponse.comment` | 追加・解除 |
