@@ -63,12 +63,18 @@ GROWI のユーザーは同じキーワードで繰り返し検索すること�
   - 検索履歴のモデルとインデックス（ユーザー単位の取得・重複判定に必要なもの）と、共有インターフェース（履歴 1 件の型）
   - 記録ロジック: トリム、空キーワードの除外、同一キーワードの重複時の扱い、保持件数の上限
   - 検索履歴の API（一覧 `GET`・記録 `POST`・削除 `DELETE /:id`）と、そのバリデーション・認可（本人の履歴のみ）
-  - クライアント側の記録点の配線（Enter 送信〈`onSearchOverride` 経路を含む〉、`SearchMethodMenuItem` の選択、履歴からの再検索）
+  - クライアント側の記録点の配線（Enter 送信〈`onSearchOverride` 経路を含む。ただし `/_private-legacy-pages` は除く〉、`SearchMethodMenuItem` の選択、履歴からの再検索）
   - 検索モーダルのドロップダウンへの履歴セクション（空入力時の表示、表示件数、0 件・ゲスト時の非表示）と、履歴取得の SWR フック
   - Downshift 項目モデルの拡張と、既存項目とのインデックス管理（`highlightedIndex` の整合）
   - 履歴項目の削除操作（ボタン、アクセシブルなラベル、キーボードでの操作可否）、削除後の一覧の即時反映と失敗時の扱い
   - 文言の i18n（名前空間を明示）
+  - g2g リストへの登録（`TRANSFERABLE_COLLECTIONS`）と、インポート時の `userId` の ObjectId への変換（`overwrite-params/`）
+  - ユーザー削除 API（`apps/app/src/server/routes/apiv3/users.js`）での、そのユーザーの履歴の削除
 - **Out**:
+  - 次の 3 つの経路での履歴の記録（いずれも記録しない）:
+    - `/_private-legacy-pages` での検索: この画面も `SearchControl` → `SearchModalTriggerinput` から同じ検索モーダルを開き、開くときに `onSearchOverride` を渡している（`PrivateLegacyPages.tsx`）。`onSearchOverride` の経路を一律に記録すると、この画面での検索も記録されてしまう。この画面だけを除く方法は設計で考える。
+    - タグのクリック: `TagCloudBox`・`TagList`・`RecentChanges` のタグをクリックすると、検索モーダルを通らずに `/_search?q=tag:…` へ移動する。
+    - 検索結果のページへの直接移動: モーダルでキーワードを入力し、その下に出る検索結果（`SearchResultMenuItem`）のページを選んで移動したとき。
   - ゲスト（未ログイン）ユーザーの履歴
   - 履歴の一括削除・全消去、削除の取り消し（Undo）
   - 他ユーザー・管理者からの履歴の閲覧
@@ -81,7 +87,7 @@ GROWI のユーザーは同じキーワードで繰り返し検索すること�
 spec は 1 本だが、設計・タスク分けでは次の切れ目を意識する。要件とタスクはチケット（保存・再検索・削除）ごとにグループ化し、各グループを PR の単位にできるようにする。
 - **履歴のデータ契約**: 1 件の形（ID・キーワード・最終検索日時）、同一キーワードの重複時の扱い（最新へ繰り上げるか）、保持件数の上限、一覧の並び順。
 - **サーバ API**: 上記「検索履歴の API」の窓口と認可。
-- **記録点**: 「検索を実行した」とみなす箇所。`SearchModal` の送信処理（`onSearchOverride` 経由を含む）と `SearchMethodMenuItem` の選択（`searchHandler` を経由しない）の両方を漏らさないこと。履歴からの再検索もここを通す。
+- **記録点**: 「検索を実行した」とみなす箇所。`SearchModal` の送信処理（`onSearchOverride` 経由を含む）と `SearchMethodMenuItem` の選択（`searchHandler` を経由しない）の両方を漏らさないこと。履歴からの再検索もここを通す。ただし `onSearchOverride` 経由であっても、`/_private-legacy-pages` での検索は記録しない。
 - **Downshift の項目モデルと履歴一覧の表示**: 履歴項目は「その文字列で検索を実行する」アクション。各項目には削除操作が載る。
 - **削除操作と項目選択のイベント分離**。
 
@@ -90,7 +96,7 @@ spec は 1 本だが、設計・タスク分けでは次の切れ目を意識す
 - `/_search` のフィルタパネル・チップ・ソート操作の挙動
 
 ## Upstream / Downstream
-- **Upstream**: 検索モーダル（`SearchModal` / `SearchForm` / `SearchMenuItem` 系 / `SearchMethodMenuItem` / `SearchHelp`）、Downshift、`states/search/keyword-manager.ts`、apiv3 ルーティングと `loginRequired` / `accessTokenParser`、Mongoose（インデックス作成）
+- **Upstream**: 検索モーダル（`SearchModal` / `SearchForm` / `SearchMenuItem` 系 / `SearchMethodMenuItem` / `SearchHelp`）、Downshift、`states/search/keyword-manager.ts`、apiv3 ルーティングと `loginRequired` / `accessTokenParser`、Prisma（`schema.prisma`）と migrate-mongo の migration（インデックス作成）
 - **Downstream**: なし（将来の一括削除・全消去、入力中の履歴絞り込みは別スコープ）
 
 ## Existing Spec Touchpoints
@@ -106,9 +112,14 @@ spec は 1 本だが、設計・タスク分けでは次の切れ目を意識す
   - `.claude/rules/model.md` は、移行期間中は Mongoose がインデックスの作成を持つとしている。しかし、これは既存の Mongoose モデルを Prisma に移すときの方針である。Mongoose を持たない新しいコレクションには上記の migration の前例があり、`comment-reactions` spec（`commentreactions` コレクション）も同じ方式を採っている。
   - umzug の Prisma migration（`prisma/migrate.ts`、`prisma/migrations/`）は前例が無いので使わない。
 - 新規コレクションを、エクスポート／インポートや GROWI 間移行（g2g）の対象にするかを決める（既存の扱いは `apps/app/src/server/service/import/non-transferable-collections.ts`）。
-  - **要件で決定済み**: エクスポート／インポート、g2g のどちらの対象にもしない。
+  - **要件で決定済み**: エクスポート、g2g のどちらの対象にもする。両者は別々の仕組みなので、分けて扱う。
+  - **g2g**: `apps/app/src/server/service/import/non-transferable-collections.ts` の `TRANSFERABLE_COLLECTIONS` に検索履歴のコレクションを登録する。このファイルには、新しいコレクションがどちらのリストにも入っていないと失敗するテスト（`non-transferable-collections.integ.ts`）があり、登録を忘れると CI が落ちる。
+  - **エクスポート**: 管理画面のエクスポートには、`apps/app/src/stores/admin/export.ts` の `IGNORED_COLLECTION_NAMES` に入っていないコレクションがすべて表示される。何もしなければエクスポートの対象になるので、このリストには追加しない。
+  - **インポート時の型の変換**: Mongoose のモデルが無いコレクションをインポートすると、`_id` と日付以外の参照項目（今回は `userId`）が文字列のまま入る。`comment-reactions` spec と同じく、`apps/app/src/server/service/import/overwrite-params/` にこのコレクション用の変換を足して、`userId` を ObjectId に戻す。
 - ユーザー削除時に、そのユーザーの履歴を消すかを決める。
   - **要件で決定済み**: ユーザーを削除済みの状態にした時点で、そのユーザーの履歴を消す。一時停止では消さない。
+  - **処理を入れる場所**: 管理画面のユーザー削除 API（`apps/app/src/server/routes/apiv3/users.js` で `user.statusDelete()` を呼んでいる箇所）。テスト以外で `statusDelete()` を呼んでいるのはここだけ。直後に `prisma.externalaccounts.deleteMany` を実行しているので、同じ形で検索履歴も消す。
+- 検索履歴 API の操作（記録・削除）は activity（監査ログ）に記録しない。GET 以外の apiv3 は `addActivity` で記録するのが基本（`apps/app/.claude/rules/activity-recording.md`）だが、ユーザーが検索したこと自体は、検索 API（`GET /_api/search`、`apps/app/src/server/routes/search.ts`）がすでに `ACTION_SEARCH_PAGE` として activity に記録しているため、履歴側では重複して記録しない。実装時に上の rule に従って `addActivity` を足さないこと。
 - 検索は `loginRequired`（ゲスト許可）配下で、ゲスト閲覧が有効な環境では未ログインでも検索できる。履歴の記録・表示・削除はログインユーザーに限る。
 - 履歴はユーザー本人だけが読み書き・削除できる。他ユーザーの履歴の存在有無が、レスポンスの違いから推測できないようにする（存在しない ID と他人の ID を同じ応答で扱う）。
 - 既存の `SearchMethodMenuItem` / `SearchResultMenuItem` の挙動（項目の並び、`highlightedIndex` の起点）を壊さないこと。
@@ -116,7 +127,8 @@ spec は 1 本だが、設計・タスク分けでは次の切れ目を意識す
 - UI 文言は名前空間を明示する（`commons` など。既存の `SearchMethodMenuItem` は `commons` を使用）。
 - TypeScript strict、Biome、Vitest（テスト co-located）。
 - 要件フェーズで決める未決事項:
-  - 保存: 保持件数の上限値、同一キーワード再実行時の扱い（最新へ繰り上げる想定）、大文字小文字・前後空白の同一視、キーワード長の上限、完全一致（`"..."` で囲む）を選んだときに引用符を履歴に残すか（`SearchMethodMenuItem` には「全体を検索」「子ページを検索（`prefix:` を付与）」「完全一致」の 3 種があり、どれを選んでも入力文字列そのものを保存する想定）
+  - 検索履歴 API に使うアクセストークンのスコープ: 本 brief は API の形を `bookmark-folder` に合わせる方針で、`bookmark-folder` は `accessTokenParser([SCOPE.READ.FEATURES.BOOKMARK])` のように機能ごとの専用スコープを使う。しかし `packages/core/src/interfaces/scope.ts` の `SCOPE_SEED_USER` には、検索履歴に合うスコープが無い。新しいスコープを作る場合は、npm に公開している `@growi/core` を変更することになり、changeset とアクセストークン画面の文言の追加も必要。既存のスコープを使う場合は、どれを使うかを決める必要がある。
+  - 保存: 保持件数の上限値、同一キーワード再実行時の扱い（最新へ繰り上げる想定）、大文字小文字・前後空白の同一視、キーワード長の上限、完全一致（`"..."` で囲む）を選んだときに引用符を履歴に残すか（`SearchMethodMenuItem` には「全体を検索」「子ページを検索（`prefix:` を付与）」「完全一致」の 3 種がある）
     - **要件で決定済み**: 保持件数の上限は 50 件。
     - **要件で決定済み**: 同一キーワードかどうかは、前後の空白を除いた文字列の完全一致で判定する（大文字小文字は区別する）。同一キーワードを再実行したときは、その履歴を最新に繰り上げる。
     - **要件で決定済み**: 200 文字を超えるキーワードは保存しない。
