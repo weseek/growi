@@ -98,7 +98,13 @@ spec は 1 本だが、設計・タスク分けでは次の切れ目を意識す
 - **Adjacent**: `search-filters`（同じ検索ボックスを使う別機能）
 
 ## Constraints
-- 新規コレクションのインデックスは Mongoose スキーマで作成する（`.claude/rules/model.md`）。データアクセスを Mongoose と Prisma のどちらで書くかは設計で決める。Prisma を使う場合は `schema.prisma` への宣言も要る。
+- 新規コレクションは Mongoose を持たない Prisma だけのコレクションにする。Mongoose のスキーマ・モデルは作らず（Mongoose は退役予定）、データアクセスは Prisma のみで行う。モデルは `apps/app/prisma/schema.prisma` に宣言する。
+- **インデックスの作成**: Prisma は MongoDB のインデックスを作らない（デプロイで `prisma db push` は実行されない）。そのため、ユーザー単位の取得・重複判定に必要なインデックスは migrate-mongo の migration script（`apps/app/src/migrations/`）で作る。
+  - 前例: Mongoose を持たない Prisma だけのコレクション（`auditlog_es_sync_status`、`changestream_resume_tokens`）の一意インデックスを作る `20260619120000-add-unique-key-index-to-auditlog-es-sync-collections.js`。モデルは使わず、`mongoose.connection.collection(name)` に対して `createIndex` する。一意インデックスの場合は、先に重複を消す。`down` は、コレクションとインデックスがあるときだけ消す。
+  - migration は、本番ではサーバーの起動前に実行される（`preserver` → `pnpm run migrate`）。統合テストでは、テンプレート DB の作成時に一度だけ実行される（`test/setup/mongo/template-db.ts`）。
+  - インデックス名は、`schema.prisma` の `@@unique` / `@@index` の `map` と一致させる。
+  - `.claude/rules/model.md` は、移行期間中は Mongoose がインデックスの作成を持つとしている。しかし、これは既存の Mongoose モデルを Prisma に移すときの方針である。Mongoose を持たない新しいコレクションには上記の migration の前例があり、`comment-reactions` spec（`commentreactions` コレクション）も同じ方式を採っている。
+  - umzug の Prisma migration（`prisma/migrate.ts`、`prisma/migrations/`）は前例が無いので使わない。
 - 新規コレクションを、エクスポート／インポートや GROWI 間移行（g2g）の対象にするかを決める（既存の扱いは `apps/app/src/server/service/import/non-transferable-collections.ts`）。
   - **要件で決定済み**: エクスポート／インポート、g2g のどちらの対象にもしない。
 - ユーザー削除時に、そのユーザーの履歴を消すかを決める。
