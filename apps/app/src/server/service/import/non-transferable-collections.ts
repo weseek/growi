@@ -90,6 +90,7 @@ export const TRANSFERABLE_COLLECTIONS: ReadonlySet<string> = new Set([
   'attachments',
   'bookmarkfolders',
   'bookmarks',
+  'commentreactions',
   'comments',
   'configs',
   'contributions',
