@@ -314,6 +314,62 @@ describe('PageBulkExportJobCleanUpCronService', () => {
       expect(removeAttachmentMock).toHaveBeenCalledWith(zombieAttachmentId);
       expect(await prisma.pagebulkexportjobs.findMany()).toHaveLength(0);
     });
+
+    test('should keep the job record for retry when removeAttachment fails', async () => {
+      // arrange
+      const jobId = newObjectIdString();
+      await prisma.pagebulkexportjobs.create({
+        data: {
+          id: jobId,
+          userId,
+          pageId: newObjectIdString(),
+          format: PageBulkExportFormat.md,
+          status: PageBulkExportJobStatus.completed,
+          completedAt: new Date(Date.now() - 86400 * 1000 - 1),
+          attachmentId: sharedAttachmentId,
+        },
+      });
+      removeAttachmentMock.mockRejectedValueOnce(new Error('file store down'));
+
+      // act
+      await pageBulkExportJobCleanUpCronService?.deleteDownloadExpiredExportJobs();
+
+      // assert: the job survives so the next cron execution retries the removal
+      const remaining = await prisma.pagebulkexportjobs.findMany();
+      expect(remaining.map((job) => job.id)).toEqual([jobId]);
+    });
+
+    test('should allow deleting an attachment that an export job references', async () => {
+      // arrange: a real attachment row referenced by a job
+      const attachment = await prisma.attachments.create({
+        data: {
+          fileFormat: 'application/zip',
+          fileName: 'export.zip',
+          originalName: 'export.zip',
+          attachmentType: 'BULK_EXPORT',
+          fileSize: 1,
+        },
+      });
+      const job = await prisma.pagebulkexportjobs.create({
+        data: {
+          userId,
+          pageId: newObjectIdString(),
+          format: PageBulkExportFormat.md,
+          status: PageBulkExportJobStatus.completed,
+          completedAt: new Date(),
+          attachmentId: attachment.id,
+        },
+      });
+
+      // act
+      await prisma.attachments.delete({ where: { id: attachment.id } });
+
+      // assert: the job row survives with its reference cleared
+      const after = await prisma.pagebulkexportjobs.findUnique({
+        where: { id: job.id },
+      });
+      expect(after?.attachmentId).toBeNull();
+    });
   });
 
   describe('deleteFailedExportJobs', () => {
