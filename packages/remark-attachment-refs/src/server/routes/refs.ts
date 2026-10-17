@@ -22,6 +22,20 @@ function generateRegexp(expression: string): RegExp {
     : new RegExp(expression);
 }
 
+// MongoDB rejects a JS-valid pattern that PCRE2 cannot parse (error code 51091);
+// Prisma reports it as P2010 with the server message in meta.message.
+function isInvalidRegexError(err: unknown): boolean {
+  const { code, meta } = err as {
+    code?: unknown;
+    meta?: { message?: unknown };
+  };
+  return (
+    code === 'P2010' &&
+    typeof meta?.message === 'string' &&
+    meta.message.includes('Error code 51091')
+  );
+}
+
 /**
  * add depth condition that limit fetched pages
  *
@@ -266,19 +280,30 @@ export const routesFactory = (crowi): Router => {
       //    so only the matching ids are taken from it.
       // 2. findMany: re-fetch those ids through the extended client to get
       //    `creator` and the computed fields that serializeAttachmentSecurely needs.
-      const matchedRows = (await prisma.attachments.findRaw({
-        filter: {
-          page: { $in: pageIds.map((id: string) => ({ $oid: id })) },
-          ...(regex != null && {
-            originalName: {
-              $regex: regex.source,
-              // MongoDB rejects JS flags it has no equivalent for (g, y, d, v)
-              $options: regex.flags.replace(/[^imsu]/g, ''),
-            },
-          }),
-        },
-        options: { projection: { _id: 1 } },
-      })) as unknown as { _id: { $oid: string } }[];
+      let matchedRows: { _id: { $oid: string } }[];
+      try {
+        matchedRows = (await prisma.attachments.findRaw({
+          filter: {
+            page: { $in: pageIds.map((id: string) => ({ $oid: id })) },
+            ...(regex != null && {
+              originalName: {
+                $regex: regex.source,
+                // MongoDB rejects JS flags it has no equivalent for (g, y, d, v)
+                $options: regex.flags.replace(/[^imsu]/g, ''),
+              },
+            }),
+          },
+          options: { projection: { _id: 1 } },
+        })) as unknown as { _id: { $oid: string } }[];
+      } catch (err) {
+        if (isInvalidRegexError(err)) {
+          return res
+            .status(400)
+            .send("the 'regex' option is invalid as RegExp.");
+        }
+        logger.error('Failed to query attachments:', err);
+        return res.status(500).send('Failed to retrieve attachments.');
+      }
 
       const attachments = await prisma.attachments.findMany({
         where: { id: { in: matchedRows.map((row) => row._id.$oid) } },
