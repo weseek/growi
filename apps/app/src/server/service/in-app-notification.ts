@@ -1,5 +1,6 @@
 import type { HasObjectId, IPage, IPageHasId, IUser } from '@growi/core';
 import { SubscriptionStatusType } from '@growi/core';
+import { toLegacyAttachmentShape } from '@growi/core/dist/models/serializers';
 import { subDays } from 'date-fns/subDays';
 import type { FilterQuery, Types, UpdateQuery } from 'mongoose';
 
@@ -214,13 +215,7 @@ export class InAppNotificationService {
         ...notification,
         target: {
           ...target,
-          attachment: attachment
-            ? {
-                ...attachment,
-                creator: attachment.creatorId,
-                page: attachment.pageId,
-              }
-            : null,
+          attachment: attachment ? toLegacyAttachmentShape(attachment) : null,
         },
       };
     });

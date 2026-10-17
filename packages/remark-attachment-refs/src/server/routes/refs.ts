@@ -1,7 +1,10 @@
 import type { IPage, IUser } from '@growi/core/dist/interfaces';
 import { SCOPE } from '@growi/core/dist/interfaces';
 import type { AccessTokenParser } from '@growi/core/dist/interfaces/server';
-import { serializeAttachmentSecurely } from '@growi/core/dist/models/serializers';
+import {
+  serializeAttachmentSecurely,
+  toLegacyAttachmentShape,
+} from '@growi/core/dist/models/serializers';
 import { OptionParser } from '@growi/core/dist/remark-plugins';
 import { objectIdUtils } from '@growi/core/dist/utils';
 import { loggerFactory } from '@growi/logger';
@@ -182,17 +185,9 @@ export const routesFactory = (crowi): Router => {
       }
 
       res.status(200).send({
-        attachment: serializeAttachmentSecurely({
-          ...attachment,
-          page: attachment.pageId,
-          creator:
-            attachment.creator != null
-              ? {
-                  ...attachment.creator,
-                  imageAttachment: attachment.creator.imageAttachmentId,
-                }
-              : attachment.creator,
-        }),
+        attachment: serializeAttachmentSecurely(
+          toLegacyAttachmentShape(attachment),
+        ),
       });
     },
   );
@@ -312,17 +307,7 @@ export const routesFactory = (crowi): Router => {
 
       res.status(200).send({
         attachments: attachments.map((attachment) =>
-          serializeAttachmentSecurely({
-            ...attachment,
-            page: attachment.pageId,
-            creator:
-              attachment.creator != null
-                ? {
-                    ...attachment.creator,
-                    imageAttachment: attachment.creator.imageAttachmentId,
-                  }
-                : attachment.creator,
-          }),
+          serializeAttachmentSecurely(toLegacyAttachmentShape(attachment)),
         ),
       });
     },

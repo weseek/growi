@@ -1,6 +1,9 @@
 import { SCOPE } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
-import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
+import {
+  serializeUserSecurely,
+  toLegacyAttachmentShape,
+} from '@growi/core/dist/models/serializers';
 import express from 'express';
 import multer from 'multer';
 import autoReap from 'multer-autoreap';
@@ -26,6 +29,19 @@ import { resolveAccessibleAttachment } from '../../service/attachment/resolve-ac
 const logger = loggerFactory('growi:routes:apiv3:attachment');
 
 const router = express.Router();
+
+// Keep `creator: null` (deleted user) as null, as the Mongoose-era response did;
+// serializeAttachmentSecurely would drop the key.
+const serializeWithNullableCreator = (attachment) => {
+  const legacy = toLegacyAttachmentShape(attachment);
+  return {
+    ...legacy,
+    creator:
+      legacy.creator != null
+        ? serializeUserSecurely(legacy.creator)
+        : legacy.creator,
+  };
+};
 
 import { body, param, query } from 'express-validator';
 
@@ -253,19 +269,7 @@ export const setup = (crowi) => {
           include: { creator: true },
         });
 
-        const docs = paginateResult.docs.map((doc) => {
-          return {
-            ...doc,
-            page: doc.pageId,
-            creator:
-              doc.creator != null
-                ? serializeUserSecurely({
-                    ...doc.creator,
-                    imageAttachment: doc.creator.imageAttachmentId,
-                  })
-                : doc.creator,
-          };
-        });
+        const docs = paginateResult.docs.map(serializeWithNullableCreator);
 
         return res.apiv3({ paginateResult: { ...paginateResult, docs } });
       } catch (err) {
@@ -425,11 +429,7 @@ export const setup = (crowi) => {
         const result = {
           page: serializePageSecurely(page),
           revision: serializeRevisionSecurely(page.revision),
-          attachment: {
-            ...attachment,
-            page: attachment.pageId,
-            creator: attachment.creatorId,
-          },
+          attachment: toLegacyAttachmentShape(attachment),
         };
 
         // The page is already loaded in this route; pass page.path directly
@@ -511,17 +511,7 @@ export const setup = (crowi) => {
 
         const { attachment } = result;
 
-        const serializedAttachment = {
-          ...attachment,
-          page: attachment.pageId,
-          creator:
-            attachment.creator != null
-              ? serializeUserSecurely({
-                  ...attachment.creator,
-                  imageAttachment: attachment.creator.imageAttachmentId,
-                })
-              : attachment.creator,
-        };
+        const serializedAttachment = serializeWithNullableCreator(attachment);
 
         return res.apiv3({ attachment: serializedAttachment });
       } catch (err) {

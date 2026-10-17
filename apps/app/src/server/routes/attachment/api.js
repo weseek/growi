@@ -1,3 +1,4 @@
+import { toLegacyAttachmentShape } from '@growi/core/dist/models/serializers';
 import { objectIdUtils } from '@growi/core/dist/utils';
 
 import { MODEL_ATTACHMENT, SupportedAction } from '~/interfaces/activity';
@@ -270,11 +271,7 @@ export const routesFactory = (crowi) => {
     }
 
     const result = {
-      attachment: {
-        ...attachment,
-        creator: attachment.creatorId,
-        page: attachment.pageId,
-      },
+      attachment: toLegacyAttachmentShape(attachment),
     };
 
     return res.json(ApiResponse.success(result));

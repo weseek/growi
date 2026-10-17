@@ -89,6 +89,7 @@ vi.mock('@growi/core', () => ({
 
 vi.mock('@growi/core/dist/models/serializers', () => ({
   serializeAttachmentSecurely: (attachment) => attachment,
+  toLegacyAttachmentShape: (attachment) => attachment,
 }));
 
 vi.mock('@growi/core/dist/remark-plugins', () => ({

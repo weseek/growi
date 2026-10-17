@@ -1,6 +1,7 @@
 import { GrowiPluginType } from '@growi/core';
 import { SCOPE } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
+import { toLegacyAttachmentShape } from '@growi/core/dist/models/serializers';
 import express from 'express';
 import { body } from 'express-validator';
 import multer from 'multer';
@@ -1239,11 +1240,7 @@ export const setup = (crowi) => {
         );
       }
       return res.apiv3({
-        attachment: {
-          ...attachment,
-          creator: attachment.creatorId,
-          page: attachment.pageId,
-        },
+        attachment: toLegacyAttachmentShape(attachment),
       });
     },
   );
