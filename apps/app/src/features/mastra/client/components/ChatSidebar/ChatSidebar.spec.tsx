@@ -223,6 +223,15 @@ vi.mock('next/router', () => ({
   useRouter: () => ({ push: vi.fn() }),
 }));
 
+// Breakpoint state driving the resizable container: controllable so a test can
+// render the sidebar below the sm breakpoint (full width, no resize handle).
+const { deviceState } = vi.hoisted(() => ({
+  deviceState: { isLargerThanSm: true },
+}));
+vi.mock('~/states/ui/device', () => ({
+  useDeviceLargerThanSm: () => [deviceState.isLargerThanSm, vi.fn()] as const,
+}));
+
 /** Locate the live EditorView mounted inside PageMentionInput. */
 const getView = (container: HTMLElement): EditorView => {
   const dom = container.querySelector<HTMLElement>('.cm-editor');
@@ -273,6 +282,7 @@ const submitViaEvent = async (container: HTMLElement): Promise<void> => {
 };
 
 beforeEach(() => {
+  deviceState.isLargerThanSm = true;
   sidebarStatus.current = { isOpened: true, openSeq: 0 };
   sendMessage.mockClear();
   regenerate.mockClear();
@@ -687,5 +697,37 @@ describe('ChatSidebar — empty input is not submittable', () => {
     await submitViaEvent(container);
 
     expect(sendMessage).not.toHaveBeenCalled();
+  });
+});
+
+describe('ChatSidebar — resizable width', () => {
+  const queryHandle = () =>
+    screen.queryByRole('button', { name: 'Resize sidebar' });
+
+  it('renders the panel at the stored width with a resize handle', () => {
+    const { container } = render(<ChatSidebar />);
+
+    // default width from the (un-hydrated) width atom
+    const area = container.querySelector<HTMLElement>('.overflow-hidden');
+    expect(area?.style.width).toBe('500px');
+    expect(queryHandle()).not.toBeNull();
+  });
+
+  it('keeps the resize handle reachable: the fixed root does not clip overflow and hosts the handle', () => {
+    const { container } = render(<ChatSidebar />);
+    const root = container.firstElementChild;
+
+    expect(root?.classList.contains('position-fixed')).toBe(true);
+    expect(root?.classList.contains('overflow-hidden')).toBe(false);
+    expect(root?.contains(queryHandle())).toBe(true);
+  });
+
+  it('renders full width without a resize handle below the sm breakpoint', () => {
+    deviceState.isLargerThanSm = false;
+    const { container } = render(<ChatSidebar />);
+
+    const area = container.querySelector<HTMLElement>('.overflow-hidden');
+    expect(area?.style.width).toBe('');
+    expect(queryHandle()).toBeNull();
   });
 });
