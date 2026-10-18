@@ -1,14 +1,28 @@
 // @vitest-environment happy-dom
 
 import type { ReactNode } from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { Provider } from 'jotai';
+import { useHydrateAtoms } from 'jotai/utils';
 
 import { scheduleToPut } from '~/client/services/user-ui-settings';
+import {
+  aiChatSidebarWidthAtom,
+  CHAT_SIDEBAR_WIDTH_DEFAULT,
+} from '~/features/mastra/states/chat-sidebar-width';
 
 import { ChatSidebarResizableContainer } from './ChatSidebarResizableContainer';
 
 const VIEWPORT_WIDTH = 1280;
+
+// happy-dom performs no layout, so the viewport width the component reads has
+// to be pinned explicitly (and can be changed per test).
+const setViewportWidth = (width: number) => {
+  Object.defineProperty(document.documentElement, 'clientWidth', {
+    configurable: true,
+    value: width,
+  });
+};
 
 const { deviceState } = vi.hoisted(() => ({
   deviceState: { isLargerThanSm: true },
@@ -21,23 +35,34 @@ vi.mock('~/client/services/user-ui-settings', () => ({
   scheduleToPut: vi.fn(),
 }));
 
-beforeAll(() => {
-  Object.defineProperty(document.documentElement, 'clientWidth', {
-    configurable: true,
-    value: VIEWPORT_WIDTH,
-  });
-});
-
 beforeEach(() => {
   vi.clearAllMocks();
   deviceState.isLargerThanSm = true;
+  setViewportWidth(VIEWPORT_WIDTH);
 });
 
-const wrapper = ({ children }: { children: ReactNode }) => (
-  <Provider>{children}</Provider>
-);
+// Seeds the stored width the way the page hydration does
+const HydrateStoredWidth = ({
+  storedWidth,
+  children,
+}: {
+  storedWidth?: number;
+  children: ReactNode;
+}) => {
+  useHydrateAtoms([
+    [aiChatSidebarWidthAtom, storedWidth ?? CHAT_SIDEBAR_WIDTH_DEFAULT],
+  ]);
+  return <>{children}</>;
+};
 
-const renderContainer = () => {
+const renderContainer = (storedWidth?: number) => {
+  const wrapper = ({ children }: { children: ReactNode }) => (
+    <Provider>
+      <HydrateStoredWidth storedWidth={storedWidth}>
+        {children}
+      </HydrateStoredWidth>
+    </Provider>
+  );
   return render(
     <ChatSidebarResizableContainer>
       <div>content</div>
@@ -90,18 +115,40 @@ describe('ChatSidebarResizableContainer', () => {
       expect(scheduleToPut).toHaveBeenCalledWith({ aiChatSidebarWidth: 640 });
     });
 
-    it('does not grow beyond the viewport-based maximum', () => {
+    it('does not grow beyond the viewport-based maximum while dragging', () => {
+      setViewportWidth(1000);
       renderContainer();
       const handle = queryHandle();
       if (handle == null) throw new Error('handle not rendered');
 
-      fireEvent.mouseDown(handle, { clientX: VIEWPORT_WIDTH - 500 });
+      fireEvent.mouseDown(handle, { clientX: 500 });
       fireEvent.mouseMove(document, { clientX: 0 });
       fireEvent.mouseUp(document, { clientX: 0 });
 
-      // min(960, 1280 - 320) = 960
-      expect(getResizableArea().style.width).toBe('960px');
-      expect(scheduleToPut).toHaveBeenCalledWith({ aiChatSidebarWidth: 960 });
+      // min(960, 1000 - 320) = 680
+      expect(getResizableArea().style.width).toBe('680px');
+      expect(scheduleToPut).toHaveBeenCalledWith({ aiChatSidebarWidth: 680 });
+    });
+
+    it('renders a stored width wider than the viewport allows at the viewport maximum', () => {
+      setViewportWidth(1000);
+      renderContainer(900);
+
+      // min(960, 1000 - 320) = 680; the stored value is not rewritten
+      expect(getResizableArea().style.width).toBe('680px');
+      expect(scheduleToPut).not.toHaveBeenCalled();
+    });
+
+    it('follows the viewport maximum when the window is resized', () => {
+      renderContainer(900);
+      expect(getResizableArea().style.width).toBe('900px');
+
+      setViewportWidth(1000);
+      act(() => {
+        fireEvent(window, new Event('resize'));
+      });
+
+      expect(getResizableArea().style.width).toBe('680px');
     });
   });
 

@@ -35,7 +35,7 @@ export const validatorForPutUserUISettings = [
     .isLength({ max: MAX_MODEL_KEY_LENGTH }),
   // Format only: the usable range depends on the viewport, so the client
   // clamps the value (see the ai-chat-sidebar-resize spec's research.md).
-  body('settings.aiChatSidebarWidth').optional().isInt({ min: 1 }),
+  body('settings.aiChatSidebarWidth').optional().isInt({ min: 1 }).toInt(),
 ];
 
 export const setup = (): Router => {

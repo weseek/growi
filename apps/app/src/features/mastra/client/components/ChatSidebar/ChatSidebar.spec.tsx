@@ -704,6 +704,15 @@ describe('ChatSidebar — resizable width', () => {
   const queryHandle = () =>
     screen.queryByRole('button', { name: 'Resize sidebar' });
 
+  // happy-dom performs no layout; pin a desktop viewport so the viewport-based
+  // upper bound does not cap the default width.
+  beforeAll(() => {
+    Object.defineProperty(document.documentElement, 'clientWidth', {
+      configurable: true,
+      value: 1280,
+    });
+  });
+
   it('renders the panel at the stored width with a resize handle', () => {
     const { container } = render(<ChatSidebar />);
 

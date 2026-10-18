@@ -2,12 +2,12 @@ import { type JSX, memo, useCallback, useRef } from 'react';
 
 import { computeWidthFromPointer, isCollapseGesture } from './compute-width';
 import type { ResizableAreaProps } from './props';
+import { getViewportWidth } from './viewport';
 
 import styles from './ResizableArea.module.scss';
 
-// Excludes the vertical scrollbar, matching where a right-anchored fixed
-// element actually ends.
-const getViewportWidth = (): number => document.documentElement.clientWidth;
+// Mouse events only fire in a browser, so the viewport is always known here
+const getViewportWidthForDrag = (): number => getViewportWidth() ?? 0;
 
 export const ResizableArea = memo((props: ResizableAreaProps): JSX.Element => {
   const {
@@ -34,7 +34,7 @@ export const ResizableArea = memo((props: ResizableAreaProps): JSX.Element => {
       const newWidth = computeWidthFromPointer({
         anchor,
         pointerX: event.clientX,
-        viewportWidth: getViewportWidth(),
+        viewportWidth: getViewportWidthForDrag(),
         minWidth,
         maxWidth,
       });
@@ -52,7 +52,7 @@ export const ResizableArea = memo((props: ResizableAreaProps): JSX.Element => {
         isCollapseGesture({
           anchor,
           pointerX: event.clientX,
-          viewportWidth: getViewportWidth(),
+          viewportWidth: getViewportWidthForDrag(),
           minWidth,
         });
 

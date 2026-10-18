@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 
 import { scheduleToPut } from '~/client/services/user-ui-settings';
@@ -45,12 +44,6 @@ const aiChatSidebarWidthAtomExt = atom(
 
 export const useChatSidebarWidth = (): [number, (width: number) => void] => {
   const width = useAtomValue(aiChatSidebarWidthAtomExt);
-  const setAtom = useSetAtom(aiChatSidebarWidthAtomExt);
-  const setWidth = useCallback(
-    (newWidth: number) => {
-      setAtom(newWidth);
-    },
-    [setAtom],
-  );
+  const setWidth = useSetAtom(aiChatSidebarWidthAtomExt);
   return [width, setWidth];
 };
