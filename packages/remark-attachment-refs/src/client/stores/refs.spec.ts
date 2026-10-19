@@ -1,6 +1,8 @@
 // tests for assuring axios request succeeds in version change
 
 import type { Server } from 'node:http';
+import { version as prismaClientVersion } from '@prisma/client/package.json';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { renderHook, waitFor } from '@testing-library/react';
 import axios from 'axios';
 import express from 'express';
@@ -33,6 +35,9 @@ const mockAttachment = {
 // beforeEach after vi.restoreAllMocks() clears vi.fn() implementations.
 const mockFindFirstAttachment = vi.fn().mockResolvedValue(mockAttachment);
 const mockFindManyAttachments = vi.fn().mockResolvedValue([mockAttachment]);
+const mockFindRawAttachments = vi
+  .fn()
+  .mockResolvedValue([{ _id: { $oid: mockAttachment._id } }]);
 
 vi.mock('mongoose', async (importOriginal) => {
   const actual = await importOriginal<typeof import('mongoose')>();
@@ -150,6 +155,7 @@ describe('useSWRxRef and useSWRxRefs integration tests', () => {
         attachments: {
           findFirst: mockFindFirstAttachment,
           findMany: mockFindManyAttachments,
+          findRaw: mockFindRawAttachments,
         },
       },
     };
@@ -177,6 +183,9 @@ describe('useSWRxRef and useSWRxRefs integration tests', () => {
   beforeEach(() => {
     mockFindFirstAttachment.mockResolvedValue(mockAttachment);
     mockFindManyAttachments.mockResolvedValue([mockAttachment]);
+    mockFindRawAttachments.mockResolvedValue([
+      { _id: { $oid: mockAttachment._id } },
+    ]);
   });
 
   afterEach(() => {
@@ -282,18 +291,7 @@ describe('useSWRxRef and useSWRxRefs integration tests', () => {
     it.each([
       '/png/g',
       '/png/y',
-    ])('returns every attachment whose originalName matches the regex option %s', async (regex) => {
-      const withName = (originalName: string | null) => ({
-        ...mockAttachment,
-        originalName,
-      });
-      mockFindManyAttachments.mockResolvedValueOnce([
-        withName('a.png'),
-        withName('b.png'),
-        withName('c.jpg'),
-        withName('d.png'),
-        withName(null),
-      ]);
+    ])('sends the regex option %s to MongoDB with flags MongoDB supports', async (regex) => {
       const axiosGetSpy = setupAxiosSpy();
 
       const { result } = renderHook(() =>
@@ -304,11 +302,71 @@ describe('useSWRxRef and useSWRxRefs integration tests', () => {
         timeout: 5000,
       });
 
-      expect(
-        result.current.data?.map((attachment) => attachment.originalName),
-      ).toEqual(['a.png', 'b.png', 'd.png']);
+      expect(mockFindRawAttachments).toHaveBeenCalledWith(
+        expect.objectContaining({
+          filter: expect.objectContaining({
+            originalName: { $regex: 'png', $options: '' },
+          }),
+        }),
+      );
 
       axiosGetSpy.mockRestore();
+    });
+
+    describe('when findRaw fails', () => {
+      const fetchRefs = (): Promise<Response> => {
+        const url = new URL('/_api/attachment-refs/refs', TEST_SERVER_URL);
+        url.searchParams.set('pagePath', '/test-page');
+        url.searchParams.set('options', JSON.stringify({ regex: '/png/' }));
+        return fetch(url);
+      };
+
+      it('responds 400 for an invalid-regex error from MongoDB (Prisma P2010 / code 51091)', async () => {
+        mockFindRawAttachments.mockRejectedValueOnce(
+          new PrismaClientKnownRequestError('raw query failed', {
+            code: 'P2010',
+            clientVersion: prismaClientVersion,
+            meta: {
+              message: 'Error code 51091: Regular expression is invalid',
+            },
+          }),
+        );
+
+        const res = await fetchRefs();
+
+        expect(res.status).toBe(400);
+      });
+
+      it.each([
+        {
+          name: 'a P2010 error that is not an invalid-regex error',
+          error: new PrismaClientKnownRequestError('raw query failed', {
+            code: 'P2010',
+            clientVersion: prismaClientVersion,
+            meta: { message: 'Error code 1: other' },
+          }),
+        },
+        {
+          name: 'a different Prisma error code',
+          error: new PrismaClientKnownRequestError('raw query failed', {
+            code: 'P2025',
+            clientVersion: prismaClientVersion,
+            meta: {
+              message: 'Error code 51091: Regular expression is invalid',
+            },
+          }),
+        },
+        {
+          name: 'a non-Prisma error',
+          error: new Error('connection lost'),
+        },
+      ])('responds 500 for $name', async ({ error }) => {
+        mockFindRawAttachments.mockRejectedValueOnce(error);
+
+        const res = await fetchRefs();
+
+        expect(res.status).toBe(500);
+      });
     });
   });
 });
