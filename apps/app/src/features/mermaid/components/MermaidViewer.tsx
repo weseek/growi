@@ -34,6 +34,10 @@ export const MermaidViewer = React.memo(
       container.setAttribute(GROWI_IS_CONTENT_RENDERING_ATTR, 'true');
       const renderDiagram = async (): Promise<void> => {
         try {
+          // `mermaid.run` generates SVG IDs from `Date.now()`, so rendering multiple diagrams can produce duplicate IDs.
+          // Instead, use `mermaid.render` with a unique ID.
+          // ID generation logic: https://github.com/mermaid-js/mermaid/blob/5b241bbb97f81d37df8a84da523dfa53ac13bfd1/packages/mermaid/src/utils.ts#L755-L764
+          // Related issue: https://github.com/mermaid-js/mermaid/issues/4650
           const { svg } = await mermaid.render(
             `mermaid-${uuidV7()}`,
             prepareMermaidSource(value, isDarkMode),
