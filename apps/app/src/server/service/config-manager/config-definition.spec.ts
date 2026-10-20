@@ -407,6 +407,7 @@ describe('config-definition multi-provider ai keys', () => {
         'gcs:bucket',
         'gcs:uploadNamespace',
         'gcs:referenceFileWithRelayMode',
+        'gcs:lifetimeSecForTemporaryUrl',
       ]);
     });
   });
