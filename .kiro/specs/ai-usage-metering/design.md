@@ -854,7 +854,7 @@ declare function fromLanguageModelUsage(usage: LanguageModelV3Usage): TokenUsage
 
 ### Manual Verification
 
-- 実際の OpenAI・Anthropic・Google のキーで、キャッシュが効く長さのチャットを 2 回送り、記録の `cacheReadTokens`（Anthropic は `cacheWriteTokens` も）に値が入ることを確かめる（umbrella の未決 3）。
+- 実際の OpenAI・Anthropic・Google のキーで、キャッシュが効く長さのチャットを 2 回送り、記録の `cacheReadTokens`（Anthropic は `cacheWriteTokens` も）に値が入ることを確かめる（umbrella の未決 2。実際の結果もそちらに書いてある）。
 
 ## Security Considerations
 
