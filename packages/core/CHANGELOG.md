@@ -1,5 +1,11 @@
 # @growi/core
 
+## 3.1.0
+
+### Minor Changes
+
+- [#11961](https://github.com/growilabs/growi/pull/11961) [`e50350f`](https://github.com/growilabs/growi/commit/e50350fc349e14ff6f8984d753676e62bac73920) Thanks [@mizozobu](https://github.com/mizozobu)! - Add `toLegacyAttachmentShape` and `toLegacyUserShape` to `@growi/core/dist/models/serializers`. They restore the Mongoose-era field names on Prisma rows.
+
 ## 3.0.1
 
 ### Patch Changes
