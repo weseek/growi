@@ -73,7 +73,20 @@ describe('getProviderOptionsForModel', () => {
       openai: { reasoningEffort: 'high' },
     });
     expect(getProviderOptionsForModel('anthropic/shared-id')).toEqual({
-      anthropic: { thinking: { type: 'enabled', budgetTokens: 12000 } },
+      anthropic: {
+        thinking: { type: 'enabled', budgetTokens: 12000 },
+        cacheControl: { type: 'ephemeral' },
+      },
+    });
+  });
+
+  it('enables Anthropic prompt caching for an anthropic entry that declares no providerOptions', () => {
+    setAllowedModels([
+      { provider: 'anthropic', modelId: 'claude-sonnet-4-5', isDefault: true },
+    ]);
+
+    expect(getProviderOptionsForModel('anthropic/claude-sonnet-4-5')).toEqual({
+      anthropic: { cacheControl: { type: 'ephemeral' } },
     });
   });
 

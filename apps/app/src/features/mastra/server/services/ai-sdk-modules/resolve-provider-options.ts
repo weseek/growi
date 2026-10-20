@@ -2,6 +2,7 @@ import type { ModelProviderOptions } from '~/features/mastra/interfaces/allowed-
 import { parseModelKey } from '~/features/mastra/interfaces/model-key';
 
 import { getAllowedModels } from './llm-providers/config';
+import { withAnthropicCacheControl } from './with-anthropic-cache-control';
 
 // Look up the provider options for an ALREADY-RESOLVED effective modelKey. The
 // caller resolves the effective modelKey exactly once (resolveEffectiveModelKey —
@@ -28,9 +29,12 @@ export const getProviderOptionsForModel = (
     return {};
   }
 
-  return (
-    getAllowedModels().find(
-      (m) => m.provider === parsed.provider && m.modelId === parsed.modelId,
-    )?.providerOptions ?? {}
+  const entry = getAllowedModels().find(
+    (m) => m.provider === parsed.provider && m.modelId === parsed.modelId,
   );
+  if (entry == null) {
+    return {};
+  }
+
+  return withAnthropicCacheControl(entry.provider, entry.providerOptions ?? {});
 };
