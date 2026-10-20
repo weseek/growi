@@ -287,6 +287,27 @@
   full plugin chain. Central estimate ~5 ms/page. Full-speed totals (also = blocking-downtime if
   it ran at boot): ~1 min/10k, ~10 min/100k, ~50 min/500k, ~1.7 h/1M. Online throttled =
   full-speed ÷ duty cycle (e.g. 25% ⇒ ×4); ×~4 again if pages average ~15 KB.
+- **Parse cost is linear in body size** (measured locally through the real
+  `extractInternalLinkPaths` on synthetic bodies, median of 3 after warm-up, one machine; the
+  benchmark script is not kept). Per KiB: text ≈1.5 ms, table-dense bodies ≈2.5 ms (many 10×4,
+  50×6 or 300-row tables, or one giant table), log/code blocks ≈0.4 ms, a draw.io block ≈0.2 ms
+  (stored inline as a ```` ```drawio ```` fence and parsed as a single `code` node; attachments add
+  only a short reference), a mixed page ≈0.9 ms. Reaching ~100 / 250 / 500 / 1000 ms takes about
+  70 / 190 / 350 / 700 KiB of text (≈13k / 35k / 64k / 129k words) and about 45 / 105 / 210 /
+  400 KiB of tables (≈600 / 1,500 / 2,800 / 5,000 rows; the 1 s point is extrapolated from 864 ms
+  at 336 KiB). Reference pages: a typical 600-word page
+  5 ms, a 7,000-word document 48 ms, a 1,000-row table 217 ms, a runbook with a table and code
+  33 ms. The 87 ms per 60 KB anchor above agrees with the text rate.
+- **Parser pin — `micromark-extension-gfm-table` ≥ 2.1.2**: up to 2.1.1 the GFM parse is quadratic
+  in table cells (400 ten-row tables, 202 KiB: 10.7 s against 232 ms with plain remark-parse; one
+  1,000-row table 1.6 s; 800 ten-row tables 44 s). `EditMap.add` scanned the whole edit list on
+  every edit (about 90% of parse time in a CPU profile); 2.1.2 indexes edits by position and
+  parses 405 KiB / 8,000 rows in 1.2 s. A workspace override pins it because remark-gfm reaches the
+  package through `micromark-extension-gfm`, which only asks for ^2.0.0. Not chosen: an extraction
+  pipeline without the table construct (plain remark-parse plus the autolink-literal extension) —
+  about 2.5× faster than 2.1.2 on table-dense bodies (0.55 s against 1.4 s at 422 KiB) and the same
+  links on a 1,200-link fixture, but it differs from the renderer where GFM splits cells
+  (`[a | b](/x)`, `|` in a link destination) and gives up a single source of link forms.
 - **Scale assumption (customer data)**: largest wiki 45k pages, most under 3k, a few at 8k–20k.
   Estimated at 25% duty (unmeasured): ~1.5 min for 3k pages, 4–8 min for 8k–20k, ~18 min for 45k
   (~70 min if pages average 15 KB). This covers only the customers we can see; self-hosted
@@ -317,9 +338,13 @@
   the same page (can a stale backfill read overwrite fresher rows?); whether the backfill's pacing
   reuses the listener's measured-time mechanism as-is; whether to cap the body size parsed, since
   the budget and slice checks run between pages and cannot bound one large page (~1.1 s at
-  333 KiB). Options considered: skip-and-record (a gap that is visible but still missing until the
-  page's next save), truncate (loses the links after the cutoff, silently — rejected), parse
-  off-thread (the real fix, deferred with `worker_threads`).
+  333 KiB on the B2.2 pipeline; about 400 KiB of table-dense text reaches 1 s on the current one).
+  Parse time is linear in size, so a size cap bounds the stall. Options considered: skip-and-record
+  (a gap that is visible but still missing until the page's next save), truncate (loses the links
+  after the cutoff, silently — rejected), parse off-thread (the real fix, deferred with
+  `worker_threads`). A table-aware guard (count of table-row lines) and skipping pages that contain
+  tables were considered unnecessary once the parser pin removed the quadratic cost, and skipping
+  them would silently lose link-bearing tables.
 - **Pacing alternative (settle in B3.2)**: a cron tick with a time budget (as designed) versus a
   self-paced loop that works for a slice and sleeps for a multiple of it. The sleep-based form
   gives an exact duty and short, evenly spaced bursts, and sidesteps node-cron's 1 s cadence floor

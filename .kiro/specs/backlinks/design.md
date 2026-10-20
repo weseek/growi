@@ -824,12 +824,17 @@ useSWRxBacklinks(pageId: string | null): SWRResponse<IBacklinkResponse, IErrorV3
 - **Single-page overshoot (open — settle in B3.2)**: neither the tick budget nor the slice limit can
   interrupt a parse, so one large body overshoots both (measured on the B2.2 pipeline: ~88 ms at
   32.6 KiB, ~1.1 s at 333 KiB — a single stall longer than the whole 250 ms budget, and near-100%
-  duty for that stretch because node-cron drops the tick that falls due meanwhile). Only a
-  **body-size cap** checked before parsing bounds a single page's stall. Whether to cap, at what
-  size (to be chosen from the performance run), and how skipped pages are recorded (log plus a
-  count on the job document, so the gap is visible rather than silent) is undecided. The
-  save-time listener has the same single-page exposure, so whether the cap is shared with it is
-  part of that decision. Off-thread parsing is the alternative and stays deferred.
+  duty for that stretch because node-cron drops the tick that falls due meanwhile). Only a check
+  made **before parsing** bounds a single page's stall, and body size is that check: parse time is
+  linear in size (≈1.5 ms/KiB for text, ≈2.5 ms/KiB for table-dense bodies, ≈0.4 ms/KiB for code
+  and draw.io blocks), so 1 s is about 700 KiB of text or about 400 KiB of tables (see research.md). The
+  linearity depends on `micromark-extension-gfm-table` ≥ 2.1.2, pinned by a workspace override;
+  earlier versions are quadratic in table cells and a size cap would not bound them. Whether to
+  cap, at what size (to be chosen from the performance run, which must include table-heavy
+  bodies), and how skipped pages are recorded (log plus a count on the job document, so the gap
+  is visible rather than silent) is undecided. The save-time listener has the same single-page
+  exposure, so whether the cap is shared with it is part of that decision. Off-thread parsing is
+  the alternative and stays deferred.
 - **Alternative pacing — sleep proportional to work (open — settle in B3.2)**: instead of a cron
   tick that spends a budget and then idles until the next tick, the job works for a slice (≈50 ms)
   and then `await`s a timer of a multiple of the work (≈150 ms for 25% duty). One mechanism then
