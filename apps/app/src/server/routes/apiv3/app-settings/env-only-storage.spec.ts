@@ -1,3 +1,4 @@
+import type { RawConfigData } from '@growi/core/dist/interfaces';
 import type { NextFunction, Request, Response } from 'express';
 import express from 'express';
 import request from 'supertest';
@@ -6,6 +7,10 @@ import { mock } from 'vitest-mock-extended';
 import type Crowi from '~/server/crowi';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import { configManager } from '~/server/service/config-manager';
+import type {
+  ConfigKey,
+  ConfigValues,
+} from '~/server/service/config-manager/config-definition';
 import { ConfigLoader } from '~/server/service/config-manager/config-loader';
 import type { S2sMessagingService } from '~/server/service/s2s-messaging/base';
 
@@ -108,7 +113,9 @@ describe.each(cases)('$provider settings API', ({
       `${provider === 'aws' ? 'S3' : flag}_REFERENCE_FILE_WITH_RELAY_MODE`,
       'true',
     );
-    vi.spyOn(ConfigLoader.prototype, 'loadFromDB').mockResolvedValue({});
+    vi.spyOn(ConfigLoader.prototype, 'loadFromDB').mockResolvedValue(
+      mock<RawConfigData<ConfigKey, ConfigValues>>(),
+    );
     await configManager.loadConfigs();
   };
 
