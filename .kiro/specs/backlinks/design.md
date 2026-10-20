@@ -107,6 +107,9 @@ Re-check this feature if any of the following change:
   (would force consumers of the read API to revalidate).
 - The page-bulk-export job pattern / `CronService` base, or the backfill job's claim/progress
   contract (affects backfill resumability and multi-instance safety).
+- The `PageLinkBackfillJob` document's operator-facing fields (`startRequested`, `status`, `phase`,
+  counts, `completedAt`, `lastError`) or its collection name: GROWI.cloud infra scripts write and
+  poll them directly, so a rename breaks their wave procedure.
 - `isPermalink` / `removeHeadingSlash` semantics, or GROWI's permalink convention (`/{pageId}`).
 - The `app:siteUrl` config key, or `NextLink`'s own-host rule (`isExternalLink`: compares
   `baseUrl.host !== hrefUrl.host`) that link extraction mirrors for absolute URLs.
@@ -805,8 +808,9 @@ useSWRxBacklinks(pageId: string | null): SWRResponse<IBacklinkResponse, IErrorV3
   processes a bounded **chunk** of pages, persists progress, then idles until the next tick.
 - **Throttle = a duty cycle over measured time, not a page count.** Because the job shares the
   single JS thread, bounding the time it holds the thread is the only lever on contention with live
-  traffic. Each tick has a **time budget** (≈250 ms of extraction work; default ≈10–25% duty,
-  operator-tunable) and stops taking pages once it is spent, as the save-time listener does (B2.2).
+  traffic. Each tick has a **time budget** (≈250 ms of extraction work; the duty is set per phase,
+  25% for recent pages and 10% for older ones, operator-tunable — see the Delivery decision) and
+  stops taking pages once it is spent, as the save-time listener does (B2.2).
   A page-denominated chunk is not a throttle: extraction cost spans ~700× across bodies, and
   node-cron polls at a 1 s minimum cadence and drops a tick that falls due while the previous one is
   still running (`recoverMissedExecutions: false`), so a chunk that outlasts the interval leaves
@@ -842,8 +846,21 @@ useSWRxBacklinks(pageId: string | null): SWRResponse<IBacklinkResponse, IErrorV3
   no-overlap option, so a tick awaiting a slow DB write can overlap the next one on the same
   progress marker. An **in-process `isRunning` flag**, reset in `finally`, makes an overlapping tick
   return immediately.
-- **Resumable**: a `PageLinkBackfillJob` document stores a progress marker — the **last `_id`
-  processed, walking pages in `_id` order** — so a restart continues rather than restarting (4.3).
+- **Two phases, recent pages first**: the job walks the pages twice, each a separate pass in `_id`
+  order. Phase `recent` takes pages with `updatedAt >= recentCutoff`, phase `older` takes the rest;
+  the job is complete only when `older` finishes, so coverage stays full (4.1) and old pages simply
+  fill in later. `recentCutoff` (now minus the recent window, default 365 days) is **computed once
+  at the job's first claim and stored on the job document** — computing it at document creation
+  would age it by however long a cloud app waits for its start flag, and a cutoff that floated with
+  "now" would move pages between the two sets across restarts. A page edited during the backfill is indexed by
+  the live listener, so landing in either set at the time it is reached is harmless (idempotent).
+  The filter is applied while scanning in `_id` order, so skipped pages never have their bodies
+  read. `Page` already has a single-field `updatedAt` index; B3.2 confirms with `explain` that
+  neither phase's `updatedAt` + `_id` scan degrades into a slow query, and adds no new index
+  unless that measurement shows a need.
+- **Resumable**: a `PageLinkBackfillJob` document stores the current `phase` and a progress marker —
+  the **last `_id` processed in that phase, walking pages in `_id` order** — so a restart continues
+  rather than restarting (4.3). The marker resets when the phase advances.
   The marker is saved **after** the chunk's page-link writes: delivery is at-least-once, a crash
   redoes at most one chunk, and the idempotent upsert on `{fromPage,toPath}` makes that safe. Saving
   it before the writes would silently skip the chunk after a crash.
@@ -870,10 +887,13 @@ useSWRxBacklinks(pageId: string | null): SWRResponse<IBacklinkResponse, IErrorV3
 **Contracts**: Batch [x] / State [x]
 
 ##### Batch / Job Contract
-- Trigger: **auto-started from `crowi` setup after boot** (throttled). Skips immediately if the job
-  document is marked complete. (Admin-triggered start deferred — see Delivery decision below.)
+- Trigger: the cron is registered from `crowi` setup on every deployment and **re-evaluates the start
+  rule below on every tick**; it runs (throttled) only while the rule allows it. Skips immediately
+  if the job document is marked complete. (Admin-triggered start deferred — see Delivery decision
+  below.)
 - Input per chunk: a cursor page-batch (`Page.find(...).cursor({ batch_size })` +
-  `createBatchStream`) in `_id` order, starting after the progress marker; body via
+  `createBatchStream`) in `_id` order, restricted to the current phase's `updatedAt` range and
+  starting after the progress marker; body via
   `Revision.findById(page.revision).body`. The chunk ends when the tick's time budget is spent.
 - Per page: `extractInternalLinkPaths(body, page.path, siteUrl)` → resolve each path via the in-memory
   map (or, for a permalink path, via the id-existence set) → batched upserts. **`pagelinks` is a
@@ -885,11 +905,62 @@ useSWRxBacklinks(pageId: string | null): SWRResponse<IBacklinkResponse, IErrorV3
 - Progress/observability: emit count/total over the existing admin Socket.IO channel (as the
   Elasticsearch reindex does).
 
-**Delivery decision (resolved): auto-start, throttled.**
-- The backfill **auto-starts** from `crowi` setup after boot, bounded by a conservative default duty
-  cycle (operator-tunable), and guarantees completion with no admin action. An admin-triggered start
-  (operator picks an off-peak window / raises the duty cycle) was considered but **deferred**; the
-  job is built so adding that trigger later is a one-line wiring change — it reuses the identical job.
+**Delivery decision (resolved): throttled, two-phase; auto-start on-prem, infra-started flag on GROWI.cloud.**
+- **Why not unconditional auto-start**: GROWI.cloud apps share a MongoDB, and a duty cycle bounds
+  one instance's busy share, not the total. Every app starting its backfill at once would load the
+  shared cluster at (apps × duty). Cloud infra therefore needs to start apps in waves, and sizing a
+  wave from the per-app load is what bounds the total.
+- **Start rule** (a pure function of three inputs, so it is tested as a truth table; evaluated
+  every tick, so the flag takes effect without a restart):
+
+  | `backlinks:backfillAutoStart` (`BACKLINKS_BACKFILL_AUTO_START`) | `app:growiCloudUri` | job document `startRequested` | Runs? |
+  |---|---|---|---|
+  | `false` | any | any | no (hard off) |
+  | `true` | any | any | yes (forced) |
+  | unset | not set | any | yes (on-prem default; completes with no admin action) |
+  | unset | set | `true` | yes (cloud: started by infra) |
+  | unset | set | `false` or absent | no (cloud default; fails closed) |
+
+  An explicit env value always wins. Otherwise `app:growiCloudUri != null` means GROWI.cloud, and
+  the job waits for `startRequested`. The URI alone is used as the cloud signal, not the URI plus
+  `app:growiAppIdForCloud`: it is the broader test, which is the safe direction for a gate. An
+  on-prem install that sets `GROWI_CLOUD_URI` for some other reason would wait for the flag (or
+  `BACKLINKS_BACKFILL_AUTO_START=true`); the repo uses it only as a cloud marker (help links,
+  staff credits, PDF export, admin links), so that group is expected to be very small. The env
+  variable is read at boot, so `false` takes effect at the next restart; the flag does not.
+- **Cloud start = a flag in the job document, set by infra.** The `PageLinkBackfillJob` document
+  is the control and status surface for operators outside the app:
+  - The app **upserts the document at boot with `$setOnInsert`** (idle, `startRequested: false`),
+    so infra only ever updates it and an existing `true` is never reset.
+  - **Field ownership**: infra writes only `startRequested`, with a field-level `$set` (never a
+    whole-document replace); the app writes everything else (`status`, `phase`, progress marker,
+    processed counts per phase, `recentCutoff`, claim/lease, `completedAt`, `lastError`).
+  - The tick **reads the document directly from the database**, not through `configManager`, whose
+    DB-config cache is reloaded only by `updateConfig` + pubsub and would not see an out-of-band
+    write.
+  - **Pause / stop**: the flag is re-checked between chunks. When the rule stops allowing the run,
+    the job releases its claim, keeps its marker, and sets `status: paused`; setting the flag back
+    to `true` resumes from the marker. No restart is involved.
+  - **Status for operators**: `status` (`idle` / `running` / `paused` / `complete` / `failed`),
+    `phase`, counts, `completedAt` and `lastError` are the contract an operator script polls to
+    know when one app's backfill is finished before starting the next.
+  - Idle cost on cloud is one primary-key read per idle tick; the idle interval is a B3.3 choice
+    (minutes are enough).
+  - Rationale and the operating procedure (modelled on the v8 `revisions` index pre-creation) are
+    in research.md.
+- **Duty per phase** (config keys and env names proposed; B3 fixes them): recent pages
+  (`updatedAt` within the last `backlinks:backfillRecentWindowDays`, default 365) at
+  `backlinks:backfillRecentDutyCyclePercent` (default 25), then older pages at
+  `backlinks:backfillOlderDutyCyclePercent` (default 10). All three are operator-tunable so cloud
+  can change them without a release. These are separate from `backlinks:dutyCyclePercent`, which
+  paces the live listener's queue.
+- An admin-triggered start (operator picks an off-peak window / raises the duty cycle) stays
+  **deferred**; the job is built so adding that trigger later is a one-line wiring change — it
+  reuses the identical job. It must stay hidden or disabled on GROWI.cloud so customer admins
+  cannot start backfills outside infra's waves. An on-prem install the cloud signal wrongly gates
+  can already be started with the flag or `BACKLINKS_BACKFILL_AUTO_START=true`.
+- The backlinks panel should show an "index still building / not started" state while the job is
+  incomplete, so a gated or in-progress backfill is a visible gap and not a silent one.
 
 ## Data Models
 

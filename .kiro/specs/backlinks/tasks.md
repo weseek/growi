@@ -447,19 +447,27 @@ confirms B1's index choice. (Not a hard dependency — either order is correct.)
 
 ## Story B3 — Backfill of pre-existing pages
 
-**Nature:** Online, throttled, resumable, auto-started `CronService` job that populates rows for pages
-that existed before the feature. Reuses the page-bulk-export scaffolding (`CronService` base,
+**Nature:** Online, throttled, resumable, two-phase (recent pages first) `CronService` job that
+populates rows for pages that existed before the feature. It auto-starts on-prem; on GROWI.cloud
+it waits for an infra-set `startRequested` flag on its job document (see the start rule in
+design.md's Delivery decision). Reuses the page-bulk-export scaffolding (`CronService` base,
 `createBatchStream`, cursor→resume→`pipeline` skeleton, watchdog start/stop) and the B1 extractor; the
 new code is the in-memory `{path→_id}` map, the `bulkWrite` upsert sink, and the atomic claim. An
 admin-triggered start was deferred as a one-line future change. Independent of B4/B5.
 
 - [ ] B3.1 Add the backfill job state model
-  - Add a single-document model tracking backfill status, a progress marker (the last `_id`
-    processed, in `_id` order), and an atomic-claim field with `leaseExpiresAt` so only one instance
-    runs the job, it stops once complete, and a claim held by a dead owner can be taken over once
-    its lease expires
+  - Add a single-document model tracking backfill `status` (`idle` / `running` / `paused` /
+    `complete` / `failed`), the current phase (`recent` / `older`), the `recentCutoff` computed once
+    at the first claim, a progress marker (the last `_id` processed in the current phase, in `_id`
+    order, reset when the phase advances), processed counts per phase, `completedAt`, `lastError`,
+    an infra-owned `startRequested` flag, and an atomic-claim field with `leaseExpiresAt` so only
+    one instance runs the job, it stops once complete, and a claim held by a dead owner can be
+    taken over once its lease expires
+  - Create the document idle at boot with an upsert that uses `$setOnInsert`, so an existing
+    `startRequested: true` is never reset; the app never writes `startRequested` afterwards
   - Done when a unit test shows the claim succeeds once, is rejected for a second concurrent
-    claimant while the lease is live, and succeeds for a new claimant after the lease expires
+    claimant while the lease is live, and succeeds for a new claimant after the lease expires, and
+    a second boot leaves an existing `startRequested: true` and the progress fields untouched
   - _Requirements: 4.3_
   - _Boundary: PageLinkBackfillJob_
   - _Depends: B1.2_
@@ -470,10 +478,16 @@ admin-triggered start was deferred as a one-line future change. Independent of B
     links via the B1 extractor (passing the configured site URL), resolve permalink targets via an
     id-existence check against the known page ids (not the path map), and bulk-upsert rows; persist
     the progress marker **after** each chunk's writes and resume from it on restart
+  - Run two phases in order: pages with `updatedAt >= recentCutoff` at the recent duty (default
+    25%), then the remaining pages at the older duty (default 10%); complete only when the second
+    finishes. Window and both duties are config-driven (design.md's Delivery decision)
   - Throttle by a per-tick time budget (≈250 ms of extraction), not a page count; yield to the event
     loop between pages once a slice limit is exceeded; renew the lease on every chunk; guard
     against overlapping ticks with an in-process `isRunning` flag reset in `finally`; skip
     immediately once the job document is complete
+  - Re-evaluate the start rule between chunks; when it stops allowing the run, release the claim,
+    keep the marker and set `status: paused`, so a cleared flag pauses the job and a set flag
+    resumes it from the marker. Record `lastError` and set `status: failed` when a chunk fails
   - Settle four open questions and record them in design.md: write ordering against the live
     listener on the same page (can a stale backfill write overwrite fresher rows?), whether the
     pacing reuses the B2.2 listener's mechanism as-is, whether to cap the body size parsed (at
@@ -487,12 +501,19 @@ admin-triggered start was deferred as a one-line future change. Independent of B
   - _Boundary: PageLinkBackfillCron_
   - _Depends: B3.1, B1.3, B1.2_
 
-- [ ] B3.3 Register and auto-start the backfill job
-  - Register the backfill cron in server setup and auto-start it (throttled) after boot, mirroring
-    the page-bulk-export watchdog start/stop; stop permanently once the job document is marked complete
+- [ ] B3.3 Register the backfill job and gate its start
+  - Register the backfill cron in server setup and start it (throttled) after boot when the start
+    rule allows, mirroring the page-bulk-export watchdog start/stop; stop permanently once the job
+    document is marked complete
+  - Implement the start rule as a pure function of `backlinks:backfillAutoStart`,
+    `app:growiCloudUri` and the job document's `startRequested` (explicit env value wins; otherwise
+    a set URI means the job waits for the flag). The tick reads the job document directly from the
+    database, not through `configManager`; the idle interval is chosen here
   - Note: edits the same server-setup file as B1.12 — sequence after it to avoid a merge
-  - Done when, after boot, the job claims and runs to completion on a fresh dataset and marks itself
-    complete so it does not re-run
+  - Done when a five-row truth-table test covers the start rule, setting `startRequested` on an
+    idle cloud-configured app starts it within one idle interval with no restart, and,
+    after boot with the rule allowing it, the job claims and runs both phases to completion on a
+    fresh dataset and marks itself complete so it does not re-run
   - _Requirements: 4.1_
   - _Boundary: crowi setup, PageLinkBackfillCron_
   - _Depends: B3.2, B1.12_

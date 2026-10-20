@@ -329,9 +329,65 @@
   (acceptable per 4.2 — completeness only required *after* completion; new edits index instantly).
   In-process means the parse still shares the one JS thread; the duty cycle bounds but cannot
   remove that contention — only `worker_threads` could, which GROWI lacks (deferred).
-- **Delivery decision (resolved)**: **auto-start** the throttled job from `crowi` setup after boot —
-  no admin action, guaranteed completion. Admin-triggered start deferred (a one-line wiring change to
-  add later, reusing the identical job). Implementation reuses the page-bulk-export scaffolding:
+- **Delivery decision (resolved)**: throttled, two-phase (recent pages at 25% duty, then older at
+  10%); auto-started on-prem, and on GROWI.cloud started by infra through a flag in the job
+  document. Admin-triggered start deferred (a one-line wiring change to add later, reusing the
+  identical job). The start rule and duty settings are in design.md's Delivery decision; the
+  reasoning behind them is here:
+  - *Unconditional auto-start was rejected for cloud*: apps share one MongoDB, a duty cycle bounds
+    per-instance load only, so a fleet starting together has no aggregate cap. Waves bound it.
+  - *Operator-controlled start vs an admin setting*: an admin button would let cloud customers
+    start backfills at arbitrary times, outside infra's waves. For on-prem there is no shared
+    database, so auto-start is safe and needs no action, which avoids the "customers never notice
+    an opt-in" problem.
+  - *Cloud detection by `app:growiCloudUri`, with an explicit override*: a dedicated variable alone
+    fails open (a forgotten variable starts the backfill on shared Mongo), while gating on the URI
+    fails closed. The false-positive cost is an on-prem install not auto-starting until the flag
+    or the env override is set, a delay and not an outage. Not verified outside the repo: whether infra sets `GROWI_CLOUD_URI` on every cloud
+    app, which the gate relies on — confirm with the infra team.
+  - *Two phases by `updatedAt`, with a stored cutoff*: skipping old pages entirely would break full
+    coverage (4.1), so they run second at a lower duty. The cutoff is stored on the job so the sets
+    do not shift across restarts.
+  - *Cloud start mechanism: a flag in the job document (resolved)*. Waves must be decoupled from
+    both the release and from restarts: release stages are sized for release risk, nothing makes a
+    release wait for a backfill to finish, and an app restart may be visible to customers (migrations
+    run at boot and sockets drop). The job document is read directly each tick, so infra can start,
+    pause and resume one app at a time with no restart and no release involvement. This matches
+    how GROWI.cloud infra already ran the v8 `revisions` index pre-creation (see the precedent
+    below).
+  - *Precedent — v8 `revisions` index pre-creation* (internal wiki page, Redmine 186296): to avoid
+    all apps building `{ author: 1, createdAt: -1 }` at once through `autoIndex` at v8 boot, infra
+    pre-created it per app from an `operation-mongo` pod with the admin credential (databases named
+    `growi-app-{GrowiAppId}`), over the active apps (`GrowiApp.status = 'UP'`, 295 on 2026-07-02),
+    largest plans first. A script takes a comma-separated batch of ids, processes them one at a
+    time, aborts on the first failure, and never chains batches; a person checks Grafana (shared
+    MongoDB I/O, CPU, memory) between batches. Batch size starts near 5 and grows to 10 and 20;
+    the target is about 50 apps a day. The backfill wave procedure reuses this shape with one
+    difference: `createIndex` returns when it finishes, but setting `startRequested` returns at
+    once, so the wave script must poll `status` / `completedAt` / `lastError` and stop on `failed`
+    before moving to the next app or batch. The index build and the backfill both load `revisions`,
+    so if backlinks ships with or shortly after v8 the index pre-creation goes first.
+  - *Considered, not adopted for the cloud start*: an env var per wave (needs a restart per wave);
+    tying waves to staged releases (couples release timing to backfill duration, which nothing
+    enforces); a hashed per-app start offset (spreads starts but neither avoids overlap nor caps
+    load, because an app does not know the others' durations); a scheduled absolute start time in
+    an env var (a deterministic slot plan, but the schedule is fixed until the next restart and
+    cannot react to cluster load); a control-plane permission endpoint (the only option with a real
+    concurrency cap and no per-app action, but infra would have to build and run it). *Fallback if
+    infra cannot write to tenant databases*: an authenticated start/status HTTP endpoint on the
+    app, protected by a per-app secret from the deploy config — same job-document contract, a
+    different way to set the flag; it needs real auth and audit recording.
+  - *Also considered, not adopted*: lazy backfill on page view (cannot work for backlinks, which
+    come from other pages' bodies); a cross-tenant lock in shared state; an infra-run external
+    script that parses pages (the parse needs the app's extractor). Candidates to add later:
+    reading bodies with `secondaryPreferred` (backfill tolerates stale reads, not verified against
+    the cluster) and backing off when chunk latency rises.
+  - *Still to confirm with the infra team*: that `GROWI_CLOUD_URI` is set on every cloud app; that
+    they are comfortable setting and reading one field on each app's job document directly, and
+    how they will watch progress across apps; the cluster headroom and which apps share which
+    cluster; and the ordering against the v8 index pre-creation. The backfill load they would be
+    shown is estimated, not measured — B3.2's performance run replaces the estimates.
+  Implementation reuses the page-bulk-export scaffolding:
   `CronService` base, `createBatchStream`, the cursor→resume(progress marker)→`pipeline` skeleton, and
   the watchdog start/stop logic; the new code is link extraction/resolution, the in-memory `{path→_id}`
   map, the `bulkWrite` upsert sink, and an atomic claim (stronger than the bulk-export watchdog race).
