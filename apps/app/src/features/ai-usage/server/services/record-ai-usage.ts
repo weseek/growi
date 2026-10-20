@@ -14,15 +14,16 @@ import loggerFactory from '~/utils/logger';
 import { prisma } from '~/utils/prisma';
 
 import type { AiUsageFeature } from '../../interfaces/ai-usage-feature';
-import { estimateCallCostUsd } from './estimate-call-cost';
+import {
+  estimateCallCostUsd,
+  TOKENS_PER_PRICE_UNIT,
+} from './estimate-call-cost';
 import { sumTokenUsage, type TokenUsage } from './token-usage';
 import { readUsageBaseModel } from './usage-base-model';
 
 const logger = loggerFactory(
   'growi:features:ai-usage:services:record-ai-usage',
 );
-
-const TOKENS_PER_PRICE_UNIT = 1_000_000;
 
 export type AiUsageEntry = {
   readonly userId: string;

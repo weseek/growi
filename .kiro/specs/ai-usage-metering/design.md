@@ -163,9 +163,11 @@ graph TB
 apps/app/src/features/ai-usage/
 ├── interfaces/
 │   ├── ai-usage-report.ts          # 公開 API の応答の型（クライアントからも読める）
+│   ├── ai-usage-feature.ts         # 記録の種類（chat / suggest-path / thread-title）の型と定数
+│   ├── ai-usage-retention.ts       # 記録の保持日数（90 日）。TTL と公開 API の since の上限が共有する
 │   └── ai-disabled-reason.ts       # 停止理由のコードの定数（catalog_stale）
 └── server/
-    ├── index.ts                    # 外へ出す入口: Prisma 拡張、ルーター、集計器、起動時の検証
+    ├── index.ts                    # 外へ出す入口: ルーター、集計器、起動時の検証
     ├── models/
     │   └── ai-usage-log.ts         # Mongoose スキーマ（TTL インデックス）＋ Prisma 拡張（書き込みと集計）
     ├── services/
@@ -207,6 +209,7 @@ apps/app/src/features/mastra/server/services/usage-metering/
 - `apps/app/prisma/schema.prisma` — `model aiusagelogs` を足す。
 - `apps/app/src/utils/prisma.ts` — `ai-usage-log` の Prisma 拡張を登録する（これで Mongoose のスキーマも起動時に読まれ、TTL インデックスが作られる）。import はモデルのファイル `~/features/ai-usage/server/models/ai-usage-log` を直接指す（`refreshed-model-catalog` と同じ）。`features/ai-usage/server` の入口（`index.ts`）を経由すると、ルートとサービスまで読み込み、`effective-model-catalog.ts` → `~/utils/prisma` と循環するためである。
 - `apps/app/src/server/routes/apiv3/index.js` — `routerForAdmin.use('/ai-usage', …)` を healthcheck の隣に足す。
+- `apps/app/src/server/crowi/session-id.ts`（新規）— 固定のセッション ID を返す `genid` を作る `createSessionIdGenerator` を置く（`crowi/index.ts` から切り出してテストできるようにする）。
 - `apps/app/src/server/crowi/index.ts`（セッションの設定）— `genid` が healthcheck のパスにだけ固定のセッション ID を返している処理を、固定 ID を使うパスの一覧（healthcheck と `/_api/v3/ai-usage`。パスごとに別の ID）を引く形にする。
 - `apps/app/src/features/rate-limiter/config/index.ts` — `'/_api/v3/ai-usage'` の既定値を足す。
 - `apps/app/src/server/service/config-manager/config-definition.ts` — `ai:usageBaseModel` と `ai:disabledReason` を足し、`env:useOnlyEnvVars:ai` の固定対象に加える。`ai:modelCatalogRefreshOnStartup` の既定値を `true` にする（6.7）。

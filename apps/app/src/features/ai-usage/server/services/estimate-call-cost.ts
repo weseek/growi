@@ -5,7 +5,7 @@ import type {
 
 import type { TokenUsage } from './token-usage';
 
-const TOKENS_PER_PRICE_UNIT = 1_000_000;
+export const TOKENS_PER_PRICE_UNIT = 1_000_000;
 
 // The exceeded tier with the largest boundary wins; its missing fields are
 // never filled from the base prices (see design.md EstimateCallCost).
