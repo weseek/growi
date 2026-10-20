@@ -1,10 +1,15 @@
 import React, { type JSX, useEffect, useRef } from 'react';
 import { GROWI_IS_CONTENT_RENDERING_ATTR } from '@growi/core/dist/consts';
+import mermaid from 'mermaid';
+import { v7 as uuidV7 } from 'uuid';
 
 import { useNextThemes } from '~/stores-universal/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
-import { scheduleMermaidRender } from '../client/services';
+import { prepareMermaidSource } from '../client/services';
+
+// initialize() bypasses Mermaid's render queue; configure themes per diagram.
+mermaid.initialize({});
 
 const logger = loggerFactory('growi:features:mermaid:MermaidViewer');
 
@@ -27,29 +32,36 @@ export const MermaidViewer = React.memo(
       let current = true;
       let rafId: number | undefined;
       container.setAttribute(GROWI_IS_CONTENT_RENDERING_ATTR, 'true');
-      const cancel = scheduleMermaidRender({
-        source: value,
-        isDarkMode,
-        container,
-        onRendered: () => {
+      const renderDiagram = async (): Promise<void> => {
+        try {
+          const { svg } = await mermaid.render(
+            `mermaid-${uuidV7()}`,
+            prepareMermaidSource(value, isDarkMode),
+            container,
+          );
+          // A newer queued render can already be using this container.
           if (!current) return;
+          if (!container.isConnected) {
+            container.setAttribute(GROWI_IS_CONTENT_RENDERING_ATTR, 'false');
+            return;
+          }
+          container.innerHTML = svg;
           // Let the browser compute SVG layout before the auto-scroll notification.
           rafId = requestAnimationFrame(() => {
             if (current) {
               container.setAttribute(GROWI_IS_CONTENT_RENDERING_ATTR, 'false');
             }
           });
-        },
-        onError: (error) => {
+        } catch (error) {
           if (!current) return;
-          logger.error(error);
+          if (container.isConnected) logger.error(error);
           container.setAttribute(GROWI_IS_CONTENT_RENDERING_ATTR, 'false');
-        },
-      });
+        }
+      };
+      void renderDiagram();
 
       return () => {
         current = false;
-        cancel();
         if (rafId != null) {
           cancelAnimationFrame(rafId);
         }

@@ -1,1 +1,1 @@
-export { scheduleMermaidRender } from './render-mermaid';
+export { prepareMermaidSource } from './prepare-mermaid-source';

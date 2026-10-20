@@ -144,3 +144,84 @@ test('recovers from invalid syntax and still renders other diagrams', async ({
   await expect(diagrams(page).nth(1)).toContainText('Ordinary finish');
   await expect(preview(page)).not.toContainText('Syntax error');
 });
+
+test('renders warmed swimlanes and a flowchart together in dark mode', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await edit(page, `${swimlane}\n%% dark first`, swimlane, flowchart);
+  await expect(diagrams(page)).toHaveCount(3);
+  await expectLanes(diagrams(page).nth(0));
+  await expectLanes(diagrams(page).nth(1));
+  await expect(diagrams(page).nth(2)).toContainText('Ordinary start');
+  await expect(
+    preview(page).locator('[data-growi-is-content-rendering="true"]'),
+  ).toHaveCount(0);
+});
+
+test('keeps frontmatter valid while its diagram follows the color scheme', async ({
+  page,
+}) => {
+  await edit(page, `---\ntitle: Swimlane with frontmatter\n---\n${swimlane}`);
+  await expectLanes(diagrams(page).first());
+  const node = diagrams(page).first().locator('.node rect').first();
+  const lightFill = await node.evaluate(
+    (element) => getComputedStyle(element).fill,
+  );
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await expect
+    .poll(() => node.evaluate((element) => getComputedStyle(element).fill))
+    .not.toBe(lightFill);
+  await expectLanes(diagrams(page).first());
+  await page.emulateMedia({ colorScheme: 'light' });
+  await expect
+    .poll(() => node.evaluate((element) => getComputedStyle(element).fill))
+    .toBe(lightFill);
+  await expectLanes(diagrams(page).first());
+});
+
+for (const [name, header] of [
+  ['frontmatter theme', '---\nconfig:\n  theme: forest\n---\n'],
+  ['inline frontmatter theme', '---\nconfig: {theme: forest}\n---\n'],
+  ['user directive', '%%{init: {"theme": "forest"}}%%\n'],
+  [
+    'user directive after frontmatter',
+    '---\ntitle: User theme\n---\n%%{init: {"theme": "forest"}}%%\n',
+  ],
+]) {
+  test(`preserves ${name} without leaking into the next diagram`, async ({
+    page,
+  }) => {
+    await edit(page, header + flowchart, flowchart);
+    await expect(diagrams(page)).toHaveCount(2);
+    const themed = diagrams(page).nth(0).locator('.node rect').first();
+    const plain = diagrams(page).nth(1).locator('.node rect').first();
+    const forestFill = await themed.evaluate(
+      (element) => getComputedStyle(element).fill,
+    );
+    const lightFill = await plain.evaluate(
+      (element) => getComputedStyle(element).fill,
+    );
+    expect(forestFill).not.toBe(lightFill);
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await expect
+      .poll(() => plain.evaluate((element) => getComputedStyle(element).fill))
+      .not.toBe(lightFill);
+    await expect(
+      preview(page).locator('[data-growi-is-content-rendering="true"]'),
+    ).toHaveCount(0);
+    expect(
+      await themed.evaluate((element) => getComputedStyle(element).fill),
+    ).toBe(forestFill);
+    await page.emulateMedia({ colorScheme: 'light' });
+    await expect
+      .poll(() => plain.evaluate((element) => getComputedStyle(element).fill))
+      .toBe(lightFill);
+    await expect(
+      preview(page).locator('[data-growi-is-content-rendering="true"]'),
+    ).toHaveCount(0);
+    expect(
+      await themed.evaluate((element) => getComputedStyle(element).fill),
+    ).toBe(forestFill);
+  });
+}

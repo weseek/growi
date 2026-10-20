@@ -15,6 +15,8 @@ vi.mock('~/stores-universal/use-next-themes', () => ({
 }));
 vi.mock('~/utils/logger', () => ({ default: () => ({ error: state.error }) }));
 
+const initializationCalls = [...vi.mocked(mermaid.initialize).mock.calls];
+
 const result = (text = 'current'): RenderResult => ({
   svg: `<svg><text>${text}</text></svg>`,
   diagramType: 'flowchart-v2',
@@ -54,6 +56,24 @@ afterEach(async () => {
 });
 
 describe('MermaidViewer', () => {
+  it('initializes once at module load, not when viewers mount or update', async () => {
+    expect(initializationCalls).toEqual([[{}]]);
+    const { rerender } = render(
+      <>
+        <MermaidViewer value="first" />
+        <MermaidViewer value="second" />
+      </>,
+    );
+    await flush();
+    rerender(
+      <ThemeContext.Provider value={true}>
+        <MermaidViewer value="updated" />
+      </ThemeContext.Provider>,
+    );
+    await flush();
+    expect(mermaid.initialize).not.toHaveBeenCalled();
+  });
+
   it('marks rendering immediately and completes only on the next frame', async () => {
     const pending = deferRender();
     const { container } = render(<MermaidViewer value="graph TD; A-->B" />);
@@ -85,29 +105,66 @@ describe('MermaidViewer', () => {
     expect(status(container)).toBe('true');
     pending.resolve(result('dark'));
     await flush();
-    expect(mermaid.initialize).toHaveBeenLastCalledWith({ theme: 'dark' });
+    expect(mermaid.render).toHaveBeenLastCalledWith(
+      expect.any(String),
+      '%%{init: {"theme": "dark"}}%%\ngraph TD; A-->B',
+      element,
+    );
+    expect(mermaid.initialize).not.toHaveBeenCalled();
     expect(status(container)).toBe('true');
     await frame();
     expect(status(container)).toBe('false');
   });
 
-  it('discards old source results and renders only the latest pending source', async () => {
+  it('keeps the latest source even when obsolete results arrive later', async () => {
     const old = deferRender();
+    const intermediate = deferRender();
     const latest = deferRender();
     const { container, rerender } = render(<MermaidViewer value="old" />);
     rerender(<MermaidViewer value="intermediate" />);
     rerender(<MermaidViewer value="latest" />);
-    old.resolve(result('obsolete'));
-    await flush();
-    expect(container).not.toHaveTextContent('obsolete');
     expect(status(container)).toBe('true');
-    expect(
-      vi.mocked(mermaid.render).mock.calls.map(([, source]) => source),
-    ).toEqual(['old', 'latest']);
     latest.resolve(result('latest'));
     await flush();
     await frame();
+    old.resolve(result('obsolete'));
+    intermediate.resolve(result('intermediate'));
+    await flush();
+    await frame();
     expect(container.querySelector('svg')).toHaveTextContent('latest');
+    expect(container).not.toHaveTextContent('obsolete');
+    expect(container).not.toHaveTextContent('intermediate');
+    expect(status(container)).toBe('false');
+  });
+
+  it('does not overwrite a newer render using the same container after a theme change', async () => {
+    const old = deferRender();
+    const { container, rerender } = render(
+      <ThemeContext.Provider value={false}>
+        <MermaidViewer value="unchanged source" />
+      </ThemeContext.Provider>,
+    );
+    const element = container.firstElementChild;
+    const latest = Promise.withResolvers<RenderResult>();
+    deferred.push(latest);
+    vi.mocked(mermaid.render).mockImplementationOnce((_id, _source, target) => {
+      if (target) target.innerHTML = '<svg><text>In progress</text></svg>';
+      return latest.promise;
+    });
+    rerender(
+      <ThemeContext.Provider value={true}>
+        <MermaidViewer value="unchanged source" />
+      </ThemeContext.Provider>,
+    );
+    expect(container.firstElementChild).toBe(element);
+    old.resolve(result('obsolete'));
+    await flush();
+    expect(element).toHaveTextContent('In progress');
+    expect(status(container)).toBe('true');
+    latest.resolve(result('latest dark'));
+    await flush();
+    await frame();
+    expect(element).toHaveTextContent('latest dark');
     expect(status(container)).toBe('false');
   });
 
@@ -156,9 +213,9 @@ describe('MermaidViewer', () => {
     expect(state.error).toHaveBeenCalledWith(error);
   });
 
-  it('completes on a synchronous initialization error', async () => {
-    vi.mocked(mermaid.initialize).mockImplementationOnce(() => {
-      throw new Error('initialization failed');
+  it('completes on a synchronous render error', async () => {
+    vi.mocked(mermaid.render).mockImplementationOnce(() => {
+      throw new Error('render failed');
     });
     const { container } = render(<MermaidViewer value="graph TD; A-->B" />);
     await flush();
@@ -206,7 +263,7 @@ describe('MermaidViewer', () => {
     expect(status(container)).toBe('false');
   });
 
-  it('keeps the Strict Mode replacement exclusive until the cancelled render settles', async () => {
+  it('ignores the obsolete Strict Mode effect and publishes its replacement', async () => {
     const first = deferRender();
     const second = deferRender();
     const { container } = render(
@@ -214,11 +271,10 @@ describe('MermaidViewer', () => {
         <MermaidViewer value="graph TD; A-->B" />
       </StrictMode>,
     );
-    expect(mermaid.initialize).toHaveBeenCalledTimes(1);
     first.resolve(result('obsolete'));
     await flush();
     expect(container).not.toHaveTextContent('obsolete');
-    expect(mermaid.initialize).toHaveBeenCalledTimes(2);
+    expect(mermaid.initialize).not.toHaveBeenCalled();
     second.resolve(result('current'));
     await flush();
     await frame();
@@ -227,7 +283,7 @@ describe('MermaidViewer', () => {
     expect(status(container)).toBe('false');
   });
 
-  it('shares scheduling across viewer instances', async () => {
+  it('renders multiple viewer instances with unique SVG IDs', async () => {
     const first = deferRender();
     const { container } = render(
       <>
@@ -235,7 +291,6 @@ describe('MermaidViewer', () => {
         <MermaidViewer value="second" />
       </>,
     );
-    expect(mermaid.render).toHaveBeenCalledTimes(1);
     first.resolve(result('first'));
     await flush();
     await frame();
@@ -243,5 +298,42 @@ describe('MermaidViewer', () => {
     expect(
       container.querySelectorAll(`[${GROWI_IS_CONTENT_RENDERING_ATTR}="true"]`),
     ).toHaveLength(0);
+    const ids = vi.mocked(mermaid.render).mock.calls.map(([id]) => id);
+    expect(new Set(ids).size).toBe(2);
+  });
+
+  it.each([
+    'resolve',
+    'reject',
+  ] as const)('finishes a disconnected current container without publishing: %s', async (settlement) => {
+    const pending = deferRender();
+    const { container } = render(<MermaidViewer value="source" />);
+    const element = container.firstElementChild;
+    expect(element).not.toBeNull();
+    element?.remove();
+    if (settlement === 'resolve') pending.resolve(result('obsolete'));
+    else pending.reject(new Error('disconnected'));
+    await flush();
+    await frame();
+    expect(element).not.toHaveTextContent('obsolete');
+    expect(element).toHaveAttribute(GROWI_IS_CONTENT_RENDERING_ATTR, 'false');
+    expect(state.error).not.toHaveBeenCalled();
+    if (element) container.append(element);
+  });
+
+  it('preserves an explicit frontmatter theme during a dark-mode render', async () => {
+    const source = '---\nconfig:\n  theme: forest\n---\nflowchart TD\nA --> B';
+    render(
+      <ThemeContext.Provider value={true}>
+        <MermaidViewer value={source} />
+      </ThemeContext.Provider>,
+    );
+    await flush();
+    expect(mermaid.render).toHaveBeenCalledWith(
+      expect.any(String),
+      source,
+      expect.any(HTMLDivElement),
+    );
+    expect(mermaid.initialize).not.toHaveBeenCalled();
   });
 });
