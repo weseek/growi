@@ -184,14 +184,14 @@
   - 完了の状態: 乱数を固定したテストで、待ってから取得すること、次の契機で前の取得がすぐ動くこと、手動リフレッシュが待たないことが確かめられる。
   - _Requirements: 6.4, 6.5, 6.6_
 
-- [ ] 7. 全体の確認
-- [ ] 7.1 実際に動かして、記録と公開 API を確かめる
+- [x] 7. 全体の確認
+- [x] 7.1 実際に動かして、記録と公開 API を確かめる
   - 前提: AI のプロバイダのキーを 1 つ以上、ユーザーから受け取る（この環境には用意されていない）。
   - 開発サーバーを起動し、チャット・suggest-path・タイトル生成を実際に動かして、3 種類の記録ができること、公開 API が合計とカタログの取得日時を返すことを確かめる。
   - 完了の状態: 3 種類の記録と公開 API の応答を実際に確認している。
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 4.1, 4.2_
 
-- [ ] 7.2 実際のキーで、キャッシュのトークン数が記録に入るかを確かめる
+- [x] 7.2 実際のキーで、キャッシュのトークン数が記録に入るかを確かめる
   - 前提: OpenAI・Anthropic・Google のキーをユーザーから受け取る。
   - キャッシュが効く長さのチャットを 2 回送り、キャッシュ読み取り（Anthropic は書き込みも）のトークン数が記録に入るかを確かめる。
   - 完了の状態: 確かめた結果を umbrella の roadmap の未決に書いている。キーが用意できなかったプロバイダは「未確認」と書けば完了とする。
@@ -228,3 +228,4 @@
 - 6.1: `isCatalogRefreshAllowed()`（同期）は `isAiEnabled() || readAiDisabledReason() === catalog_stale`。ジョブのモジュールは ai-usage の入口を静的に import する（ジョブ自体は `crowi/index.ts` から `await import()` でしか読まれず、入口はすでにルート経由で起動時に読まれている）。**8 の取りこぼし注意:** `ai-provider-multi-vendor/research.md` の L271 付近に「opt-in・既定 OFF」の記述が残っているので、8 の見直しの対象に含める。
 - 6.2: `randomSleep(maxMs, signal?)`（共有ユーティリティ）に任意の `signal` を足した（中断するとタイマーを消して resolve、reject しない）。node-cron / CronService は実行の重なりを止めないので、次の契機が前の待ちを打ち切る動きが実際に起きる。手動リフレッシュ（管理画面のルート）は `refreshModelCatalog` を直接呼ぶので待たない。
 - 7.3: `pnpm run lint`（終了コード 0）、`pnpm run test`（apps/app 全体: 7286 件通過）、`pnpm run build`（終了コード 0）。全体テストで 3 ファイルが落ちたが、`construct-convert-map.integ.ts` は今回 Mongoose モデルが 1 つ増えた（`AiUsageLog`）ため期待値 33→34 に直した。他は生成物の未作成（`pre:styles-components` / `pre:styles-commons` / vault-manager の dist）で、生成後に通る。`growi-vault/__tests__/clone-e2e.integ.ts` の 4 件は `repository not found` で落ちる既存の失敗（変更前のコミットでも同じ）。
+- 7.1/7.2: 専用の DB（`growi_ai_usage_smoke`）で dev サーバーを起動し、OpenAI と Anthropic の実キーで確かめた。チャット・タイトル生成・suggest-path の 3 種類が記録され、公開 API の合計（基準モデル設定時は `weightedUnits` の合計）とカタログの取得日時が返った。キャッシュ読み取りは OpenAI で記録に入る。Anthropic は、Mastra 経由のチャットが `cache_control` を付けないため 0 で入る（指定を付けた実リクエストでは書き込み・読み取りとも入ることをミドルウェアで確認）。Google はキーがなく未確認（結果は umbrella の roadmap の未決 2）。
