@@ -1,5 +1,11 @@
 # @growi/core
 
+## 3.0.1
+
+### Patch Changes
+
+- [#12081](https://github.com/growilabs/growi/pull/12081) [`fd3a693`](https://github.com/growilabs/growi/commit/fd3a69339f65a4062fab8852b02e8a5c7110f751) Thanks [@yotatameguchi-boop](https://github.com/yotatameguchi-boop)! - Fix deep equality incorrectly treating objects with different own keys as equal when their values are undefined or inherited.
+
 ## 3.0.0
 
 ### Major Changes
