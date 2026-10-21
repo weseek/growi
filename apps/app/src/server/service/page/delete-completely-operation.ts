@@ -61,8 +61,15 @@ export const deleteCompletelyOperation = async (
   // cascade-attachment-removal-inputs); no-op for ids already in string form.
   const pageIdStrings = pageIds.map((pageId) => pageId.toString());
 
-  // Delete reply comments first, then top-level comments, to avoid foreign key constraint violations.
+  // Children first (reactions -> replies -> comments); the reply/comment order avoids foreign key constraint violations.
   await prisma.$transaction([
+    prisma.commentreactions.deleteMany({
+      where: {
+        pageId: {
+          in: pageIdStrings,
+        },
+      },
+    }),
     prisma.comments.deleteMany({
       where: {
         pageId: {
