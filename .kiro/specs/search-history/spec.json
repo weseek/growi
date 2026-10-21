@@ -1,16 +1,16 @@
 {
   "feature_name": "search-history",
   "created_at": "2026-10-16T09:19:54.000Z",
-  "updated_at": "2026-10-16T09:19:54.000Z",
+  "updated_at": "2026-10-21T04:48:09.284Z",
   "language": "ja",
-  "phase": "requirements-generated",
+  "phase": "design-generated",
   "approvals": {
     "requirements": {
       "generated": true,
-      "approved": false
+      "approved": true
     },
     "design": {
-      "generated": false,
+      "generated": true,
       "approved": false
     },
     "tasks": {
