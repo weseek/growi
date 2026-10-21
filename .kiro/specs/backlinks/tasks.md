@@ -508,7 +508,9 @@ admin-triggered start was deferred as a one-line future change. Independent of B
   - Implement the start rule as a pure function of `backlinks:backfillAutoStart`,
     `app:growiCloudUri` and the job document's `startRequested` (explicit env value wins; otherwise
     a set URI means the job waits for the flag). The tick reads the job document directly from the
-    database, not through `configManager`; the idle interval is chosen here
+    database, not through `configManager`; the idle interval is chosen here (1 to 5 minutes).
+    `complete` unschedules the tick and is not re-scheduled at boot; `failed` keeps the tick so a
+    re-set flag resumes from the marker
   - Note: edits the same server-setup file as B1.12 — sequence after it to avoid a merge
   - Done when a five-row truth-table test covers the start rule, setting `startRequested` on an
     idle cloud-configured app starts it within one idle interval with no restart, and,

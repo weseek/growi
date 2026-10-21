@@ -407,6 +407,17 @@
     script that parses pages (the parse needs the app's extractor). Candidates to add later:
     reading bodies with `secondaryPreferred` (backfill tolerates stale reads, not verified against
     the cluster) and backing off when chunk latency rises.
+  - *Infra answers (2026-10-21)*: the GROWI.cloud release job updates at most 5 apps every 20
+    minutes (15 an hour, 360 a day); restarting an app is not treated as an outage, though strictly
+    it is one; querying a tenant database directly depends on the operation, and infra wants to be
+    consulted before it is run. Consequences: (1) auto-starting on update was rejected again —
+    concurrent backfills would be `5 × (backfill duration ÷ 20 min)`, and nothing bounds the
+    duration, so slowing the release would only guess at it and would couple release timing to the
+    backfill. (2) The release goes out at the normal cadence (about 295 active apps finish in under
+    a day) and the waves run afterwards, so the waves, not the release, set the pace. (3) Setting
+    `startRequested` is a direct tenant-database write, so the procedure and the field-level `$set`
+    contract go to infra for agreement before the first wave; the HTTP start/status endpoint above
+    is the fallback if they decline.
   - *Still to confirm with the infra team*: that `GROWI_CLOUD_URI` is set on every cloud app; that
     they are comfortable setting and reading one field on each app's job document directly, and
     how they will watch progress across apps; the cluster headroom and which apps share which

@@ -950,7 +950,18 @@ useSWRxBacklinks(pageId: string | null): SWRResponse<IBacklinkResponse, IErrorV3
     `phase`, counts, `completedAt` and `lastError` are the contract an operator script polls to
     know when one app's backfill is finished before starting the next.
   - Idle cost on cloud is one primary-key read per idle tick; the idle interval is a B3.3 choice
-    (minutes are enough).
+    (minutes are enough; 1 to 5 minutes is the intended range). It only sets the latency between
+    infra setting the flag and the job starting. It does not affect pause, which is checked
+    between chunks while the job runs.
+  - **`complete` is terminal for the tick**: once the document reads `complete`, the cron
+    unschedules itself, and is not scheduled at boot when the document already reads `complete`.
+    The boot upsert never touches an existing document, so a restart does not re-run the job; a
+    deliberate re-run means resetting the document. `failed` is not terminal: the tick keeps
+    reading so infra can set the flag again and resume from the marker.
+  - **Wave targeting**: the document exists only after an app has booted the new version, so the
+    wave script targets apps already on it. A plain field-level update on an app without the
+    document matches nothing. Setting the flag ahead of the release with an upsert would make the
+    app start at boot and defeat the control.
   - Rationale and the operating procedure (modelled on the v8 `revisions` index pre-creation) are
     in research.md.
 - **Duty per phase** (config keys and env names proposed; B3 fixes them): recent pages
