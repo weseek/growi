@@ -223,13 +223,9 @@ vi.mock('next/router', () => ({
   useRouter: () => ({ push: vi.fn() }),
 }));
 
-// Breakpoint state driving the resizable container: controllable so a test can
-// render the sidebar below the sm breakpoint (full width, no resize handle).
-const { deviceState } = vi.hoisted(() => ({
-  deviceState: { isLargerThanSm: true },
-}));
+// Render at or above the sm breakpoint so the resize handle is present
 vi.mock('~/states/ui/device', () => ({
-  useDeviceLargerThanSm: () => [deviceState.isLargerThanSm, vi.fn()] as const,
+  useDeviceLargerThanSm: () => [true, vi.fn()] as const,
 }));
 
 /** Locate the live EditorView mounted inside PageMentionInput. */
@@ -282,7 +278,6 @@ const submitViaEvent = async (container: HTMLElement): Promise<void> => {
 };
 
 beforeEach(() => {
-  deviceState.isLargerThanSm = true;
   sidebarStatus.current = { isOpened: true, openSeq: 0 };
   sendMessage.mockClear();
   regenerate.mockClear();
@@ -700,41 +695,16 @@ describe('ChatSidebar — empty input is not submittable', () => {
   });
 });
 
-describe('ChatSidebar — resizable width', () => {
-  const queryHandle = () =>
-    screen.queryByRole('button', { name: 'Resize sidebar' });
-
-  // happy-dom performs no layout; pin a desktop viewport so the viewport-based
-  // upper bound does not cap the default width.
-  beforeAll(() => {
-    Object.defineProperty(document.documentElement, 'clientWidth', {
-      configurable: true,
-      value: 1280,
-    });
-  });
-
-  it('renders the panel at the stored width with a resize handle', () => {
-    const { container } = render(<ChatSidebar />);
-
-    // default width from the (un-hydrated) width atom
-    const area = container.querySelector<HTMLElement>('.overflow-hidden');
-    expect(area?.style.width).toBe('500px');
-    expect(queryHandle()).not.toBeNull();
-  });
-
+// Width, drag and breakpoint behavior are covered by
+// ChatSidebarResizableContainer.spec; this only guards how ChatSidebar hosts it.
+describe('ChatSidebar — resize handle placement', () => {
   it('keeps the resize handle reachable: the fixed root does not clip overflow and hosts the handle', () => {
     const { container } = render(<ChatSidebar />);
     const root = container.firstElementChild;
+    const handle = screen.getByRole('button', { name: 'Resize sidebar' });
 
     expect(root?.classList.contains('position-fixed')).toBe(true);
     expect(root?.classList.contains('overflow-hidden')).toBe(false);
-    expect(root?.contains(queryHandle())).toBe(true);
-  });
-
-  it('renders without a resize handle below the sm breakpoint', () => {
-    deviceState.isLargerThanSm = false;
-    render(<ChatSidebar />);
-
-    expect(queryHandle()).toBeNull();
+    expect(root?.contains(handle)).toBe(true);
   });
 });

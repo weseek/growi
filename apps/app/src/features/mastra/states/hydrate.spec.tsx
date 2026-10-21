@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { renderHook } from '@testing-library/react';
 import { Provider, useAtomValue } from 'jotai';
 
+import { SidebarContentsType } from '~/interfaces/ui';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 
 import {
@@ -26,7 +27,7 @@ const renderHydrated = (userUISettings?: IUserUISettings) => {
 };
 
 const settingsWith = (aiChatSidebarWidth?: number): IUserUISettings => ({
-  currentSidebarContents: 'tree' as IUserUISettings['currentSidebarContents'],
+  currentSidebarContents: SidebarContentsType.TREE,
   currentProductNavWidth: 320,
   preferCollapsedModeByUser: false,
   aiChatSidebarWidth,

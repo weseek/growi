@@ -177,7 +177,11 @@ describe('PUT /user-ui-settings handler', () => {
 // chain accepts/rejects, not how the chain is built.
 const runPutValidators = async (
   settings: Record<string, unknown>,
-): Promise<{ hasErrors: boolean; failedFields: string[] }> => {
+): Promise<{
+  hasErrors: boolean;
+  failedFields: string[];
+  sanitized: Record<string, unknown>;
+}> => {
   const req = {
     body: { settings },
     cookies: {},
@@ -192,6 +196,7 @@ const runPutValidators = async (
   return {
     hasErrors: !result.isEmpty(),
     failedFields: result.array().map((e) => e.param),
+    sanitized: req.body.settings,
   };
 };
 
@@ -223,6 +228,14 @@ describe('validatorForPutUserUISettings', () => {
     it('accepts a positive integer', async () => {
       const { hasErrors } = await runPutValidators({ aiChatSidebarWidth: 500 });
       expect(hasErrors).toBe(false);
+    });
+
+    it('converts a numeric string to a number so it is stored as a number', async () => {
+      const { hasErrors, sanitized } = await runPutValidators({
+        aiChatSidebarWidth: '640',
+      });
+      expect(hasErrors).toBe(false);
+      expect(sanitized.aiChatSidebarWidth).toBe(640);
     });
 
     it.each([

@@ -149,7 +149,7 @@ apps/app/src/
 - `apps/app/src/server/routes/apiv3/user-ui-settings.ts` — バリデータ `isInt({ min: 1 }).toInt()`、`updateData` allow-list、Swagger の request/response に追加
 - `apps/app/src/server/routes/apiv3/user-ui-settings.spec.ts` — 永続化・session・バリデータのケースを追加
 - `apps/app/src/pages/basic-layout-page/hydrate.ts` — `useHydrateChatSidebarAtoms(userUISettings)` を呼ぶ
-- `apps/app/src/features/mastra/client/components/ChatSidebar/ChatSidebar.spec.tsx` — ResizableContainer をモックせず描画し、幅反映と sm 未満のハンドル非表示を確認（必要なら `~/states/ui/device` をモック）
+- `apps/app/src/features/mastra/client/components/ChatSidebar/ChatSidebar.spec.tsx` — ResizableContainer をモックせず描画し、ハンドルが最外コンテナ配下にクリップされず描画されることを確認（`~/states/ui/device` をモック）
 
 ## System Flows
 
@@ -391,12 +391,12 @@ export const ChatSidebarResizableContainer = (props: Props): JSX.Element;
 - `compute-width.spec.ts`: left/right の幅計算、min/max クランプ、`maxWidth < minWidth` 時に min 優先、`isCollapseGesture` の境界（`minWidth / 2` ちょうどは false）。
 - `chat-sidebar-width.spec.tsx`: `getChatSidebarMaxWidth`（960 上限、viewport−320、min 下回り時は 360）、`clampChatSidebarWidth`（undefined/NaN → 500、範囲外 → 丸め）、`useChatSidebarWidth` の set で `scheduleToPut` が `{ aiChatSidebarWidth }` で呼ばれ、小数は整数に丸められる（`~/client/services/user-ui-settings` をモック）。
 - `hydrate.spec.tsx`: `userUISettings` あり/なし/範囲外で base atom の値（Jotai `Provider` + `renderHook`）。
-- `user-ui-settings.spec.ts`（追加）: `aiChatSidebarWidth` が `$set` に到達、省略時は `$set` に含まれない、ゲストは session に書かれる、validator が `500` を受理し `'abc'` / `0` / `12.5` を拒否する。
+- `user-ui-settings.spec.ts`（追加）: `aiChatSidebarWidth` が `$set` に到達、省略時は `$set` に含まれない、ゲストは session に書かれる、validator が `500` を受理し `'abc'` / `0` / `12.5` を拒否する。数値文字列 `'640'` は数値 `640` に変換される（`toInt()`）。
 
 ### Component Tests (happy-dom)
 - `ResizableArea.spec.tsx`: `anchor="right"` で mousedown → mousemove(clientX) → `onResize` に `viewportWidth - clientX`（min/max 丸め済み）が渡る。mouseup で最後の幅が `onResizeDone` に渡り、移動せずに離したときは呼ばれない。`onCollapsed` なしで最小未満の mouseup → `onCollapsed` なし・`onResizeDone` あり。`onCollapsed` ありで最小/2 未満 → `onCollapsed`（左サイドバー互換）。`disabled` → ハンドルが描画されない。
 - `ChatSidebarResizableContainer.spec.tsx`: `useDeviceLargerThanSm` が true → atom の幅が style に反映されハンドルが存在、false → ハンドルなし（全幅はメディアクエリのため happy-dom では検証しない）。判定が false のままでも初回描画から保存幅が style に反映される。`onResizeDone` 経由で atom が更新される。ビューポート 1000px でドラッグ上限が 680（= 1000 − 320）になること、保存幅 900 が描画時に 680 へ収まり保存値は書き換えられないこと、`resize` 後に上限へ追従すること。
-- `ChatSidebar.spec.tsx`（既存＋追加）: 既存ケースが通ること、グローバル atom の幅が style に反映されること、sm 未満でハンドルが描画されないこと、最外コンテナに `overflow-hidden` が無くハンドルがその配下に描画されること（`~/states/ui/device` をモック）。
+- `ChatSidebar.spec.tsx`（既存＋追加）: 既存ケースが通ること、最外コンテナに `overflow-hidden` が無くハンドルがその配下に描画されること（`~/states/ui/device` をモック）。幅・ドラッグ・sm 判定は `ChatSidebarResizableContainer.spec.tsx` が担い、ここでは重複させない。
 
 ### Manual Smoke
 - 左サイドバー: ドック時のドラッグ、最小幅 348px、半分未満で折りたたみ、保存、ドロワー/折りたたみ時はハンドルなし、初回描画で幅が飛ばない（6.x）。
