@@ -223,11 +223,6 @@ vi.mock('next/router', () => ({
   useRouter: () => ({ push: vi.fn() }),
 }));
 
-// Render at or above the sm breakpoint so the resize handle is present
-vi.mock('~/states/ui/device', () => ({
-  useDeviceLargerThanSm: () => [true, vi.fn()] as const,
-}));
-
 /** Locate the live EditorView mounted inside PageMentionInput. */
 const getView = (container: HTMLElement): EditorView => {
   const dom = container.querySelector<HTMLElement>('.cm-editor');
@@ -692,19 +687,5 @@ describe('ChatSidebar — empty input is not submittable', () => {
     await submitViaEvent(container);
 
     expect(sendMessage).not.toHaveBeenCalled();
-  });
-});
-
-// Width, drag and breakpoint behavior are covered by
-// ChatSidebarResizableContainer.spec; this only guards how ChatSidebar hosts it.
-describe('ChatSidebar — resize handle placement', () => {
-  it('keeps the resize handle reachable: the fixed root does not clip overflow and hosts the handle', () => {
-    const { container } = render(<ChatSidebar />);
-    const root = container.firstElementChild;
-    const handle = screen.getByRole('button', { name: 'Resize sidebar' });
-
-    expect(root?.classList.contains('position-fixed')).toBe(true);
-    expect(root?.classList.contains('overflow-hidden')).toBe(false);
-    expect(root?.contains(handle)).toBe(true);
   });
 });

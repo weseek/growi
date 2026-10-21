@@ -19,6 +19,7 @@ import { useDeviceLargerThanSm } from '~/states/ui/device';
 
 import styles from './ChatSidebarResizableContainer.module.scss';
 
+const rootClass = styles['grw-chat-sidebar'] ?? '';
 const areaClass = styles['grw-chat-sidebar-resizable-area'] ?? '';
 
 type Props = {
@@ -70,17 +71,24 @@ export const ChatSidebarResizableContainer = (props: Props): JSX.Element => {
 
   // Below sm the panel is full width (see the module stylesheet) and cannot be resized
   return (
-    <ResizableArea
-      anchor="right"
-      className={`h-100 overflow-hidden ${areaClass}`}
-      width={width}
-      minWidth={CHAT_SIDEBAR_WIDTH_MIN}
-      maxWidth={maxWidth}
-      disabled={!isLargerThanSm}
-      onResize={resizeHandler}
-      onResizeDone={resizeDoneHandler}
+    // The root must not clip overflow: the resize handle sits just outside the
+    // panel's left edge, positioned against this fixed root. Content clipping
+    // lives on the resizable area instead.
+    <div
+      className={`tw-root position-fixed top-0 end-0 h-100 border-start bg-body shadow-sm ${rootClass}`}
     >
-      {children}
-    </ResizableArea>
+      <ResizableArea
+        anchor="right"
+        className={`h-100 overflow-hidden ${areaClass}`}
+        width={width}
+        minWidth={CHAT_SIDEBAR_WIDTH_MIN}
+        maxWidth={maxWidth}
+        disabled={!isLargerThanSm}
+        onResize={resizeHandler}
+        onResizeDone={resizeDoneHandler}
+      >
+        {children}
+      </ResizableArea>
+    </div>
   );
 };

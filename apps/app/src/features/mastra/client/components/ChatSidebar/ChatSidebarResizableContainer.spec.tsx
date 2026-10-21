@@ -90,6 +90,15 @@ describe('ChatSidebarResizableContainer', () => {
       expect(queryHandle()).not.toBeNull();
     });
 
+    it('keeps the resize handle reachable: the fixed root does not clip overflow and hosts the handle', () => {
+      const { container } = renderContainer();
+      const root = container.firstElementChild;
+
+      expect(root?.classList.contains('position-fixed')).toBe(true);
+      expect(root?.classList.contains('overflow-hidden')).toBe(false);
+      expect(root?.contains(queryHandle())).toBe(true);
+    });
+
     it('keeps the content clipped inside the panel', () => {
       renderContainer();
 
