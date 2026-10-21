@@ -1,3 +1,4 @@
+export { MAX_REACTION_KINDS_PER_COMMENT } from './limits';
 export type {
   FormatReactionUser,
   ReactionChip,
