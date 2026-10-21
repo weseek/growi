@@ -167,6 +167,9 @@ apps/app/src/migrations/
 apps/app/src/server/service/import/overwrite-params/
 ├── searchhistories.ts                 # [保存] user を ObjectId に戻す
 └── searchhistories.spec.ts
+
+apps/app/src/server/service/import/
+└── import-search-histories.integ.ts   # [保存] インポートの往復（user の ObjectId 化・再記録で重複しないこと）
 ```
 
 ### Modified Files
@@ -175,6 +178,7 @@ apps/app/src/server/service/import/overwrite-params/
 - `apps/app/src/server/routes/apiv3/users.js` — [保存] `statusDelete()` と `externalaccounts.deleteMany` の直後で、`removeAllSearchHistoriesOfUser(user._id.toString())` を呼ぶ。
 - `apps/app/src/server/service/import/overwrite-params/index.ts` — [保存] `case 'searchhistories'` を追加する。
 - `apps/app/src/server/service/import/non-transferable-collections.ts` — [保存] `TRANSFERABLE_COLLECTIONS` に `'searchhistories'` を追加する。
+- `apps/app/src/client/components/Admin/ExportArchiveData/SelectCollectionsModal.tsx` — [保存] `GROUPS_USER` に `'searchhistories'` を追加する。これがないと「その他」に分類され、ユーザーデータ向けの警告（パスワードシードの注意）が出ない。
 - `apps/app/src/features/search/client/interfaces/downshift.ts` — [保存] `DownshiftItem` を `NavigateItem | SearchItem` の union にする。
 - `apps/app/src/features/search/client/components/SearchMenuItem.tsx` — [保存] `url` の代わりに `item: DownshiftItem` を受け取る。
 - `apps/app/src/features/search/client/components/SearchMethodMenuItem.tsx` — [保存] 各項目に `historyKeyword` を付ける。
@@ -215,6 +219,7 @@ sequenceDiagram
     API->>Service: record userId keyword
     Service->>Service: upsert then trim to 50
     API-->>Recorder: searchHistory
+    Recorder->>Recorder: global mutate moves searchHistory to the top of the SWR cache
     Note over Recorder: failure is logged only
 ```
 
@@ -272,7 +277,7 @@ sequenceDiagram
 | 3.5 | 古いものから削除する | Service | 切り詰め | 記録 |
 | 4.1 | 本人の履歴を新しい順に返す | Service, list route | `GET /` | — |
 | 4.2 | 識別子・キーワード・最終検索日時を返す | Service | `ISearchHistory` | — |
-| 4.3 | 記録の応答は一覧の 1 件と同じ形 | record route | `POST /` → `searchHistory` | 記録 |
+| 4.3 | 記録の応答は一覧の 1 件と同じ形 | record route, recordSearchHistory | `POST /` → `searchHistory`（クライアントは SWR のキャッシュの先頭へ反映） | 記録 |
 | 4.4 | 0 件なら空の一覧を返す | list route | `searchHistories: []` | — |
 | 5.1 | 記録・一覧は本人だけ | list / record route | `req.user._id` だけを使う | — |
 | 5.2 | 他人を指定する手段を出さない | list / record route | 要求に userId を含めない | — |
@@ -285,19 +290,19 @@ sequenceDiagram
 | 6.4 | 検索結果を変えない | （検索 API に触れない） | — | — |
 | 7.1 | ユーザー削除で履歴を消す | users route, Service | `removeAllByUser` | — |
 | 7.2 | 一時停止では消さない | users route | 削除の分岐だけに追加 | — |
-| 7.3 | エクスポートの対象 | （`IGNORED_COLLECTION_NAMES` に入れない） | — | — |
+| 7.3 | エクスポートの対象 | （`IGNORED_COLLECTION_NAMES` に入れない）, SelectCollectionsModal | `GROUPS_USER` に `searchhistories` を追加 | — |
 | 7.4 | インポートで元のユーザーに戻す | overwrite-params/searchhistories | `user` → ObjectId | — |
 | 7.5 | g2g の対象 | non-transferable-collections, overwrite-params | `TRANSFERABLE_COLLECTIONS` | — |
 | 8.1 | 空入力時に新しい順で最大 10 件 | SearchHistoryMenuItems, Store | `SEARCH_HISTORY_DISPLAY_LIMIT` | — |
 | 8.2 | 検索方法の下に置き、起点を変えない | SearchModal, search-menu-index | `getSearchMethodMenuItemCount` | — |
-| 8.3 | 開いた時点の最新を出す | Store | マウントのたびに再検証 | — |
+| 8.3 | 開いた時点の最新を出す | Store, recordSearchHistory | マウントのたびに再検証。再検証の完了前も、記録の応答でキャッシュの先頭を更新済み | 記録 |
 | 8.4 | 入力があれば出さない | SearchModal | 空入力のときだけ描画 | — |
 | 8.5 | 0 件なら出さない | SearchHistoryMenuItems | 空なら何も描画しない | — |
 | 8.6 | ゲストには出さない | Store | SWR のキーを `null` | — |
 | 8.7 | `/_private-legacy-pages` では出さない | Store, modal state | `isSearchHistoryEnabled` | — |
 | 8.8 | 取得に失敗しても妨げない | SearchHistoryMenuItems | `error` のときは何も描画しない | — |
 | 9.1 | マウスでもキーボードでも選べる | SearchHistoryMenuItems | `SearchMenuItem` + `getItemProps` | — |
-| 9.2 | 選ぶと検索を実行する | SearchModal | `SearchItem` → `onSearch` | 記録 |
+| 9.2 | 選ぶと検索を実行する | SearchModal, recordSearchHistory | `SearchItem` → `onSearch`。直前の検索が先頭に来るよう、キャッシュを記録の応答で更新 | 記録 |
 | 9.3 | Enter と同じ扱い | SearchModal | `searchHandler` を共有 | 記録 |
 | 9.4 | 保存時の形のまま記録し、繰り上げる | SearchModal, Service | `SearchItem.keyword` をそのまま記録 | 記録 |
 | 10.1 | 削除ボタンとアクセシブルなラベル | SearchHistoryMenuItems | `aria-label`（i18n） | — |
@@ -464,6 +469,7 @@ export const overwriteParams: OverwriteParams; // { user: (value) => new ObjectI
 
 #### users route（変更）
 - ユーザー削除 API で `statusDelete()`・`prisma.externalaccounts.deleteMany` の直後に、`removeAllSearchHistoriesOfUser(user._id.toString())` を呼ぶ（7.1）。一時停止などほかの状態遷移には追加しない（7.2）。
+- 履歴の削除が失敗した場合は、`externalaccounts` の削除と同じく、既存の `catch` が `logger.error` に残して 500 を返す。ユーザーは削除済みの状態になっているため、履歴が残ったことを運用者がログから追えるようにする。履歴は画面から参照できないので、この失敗はユーザーに影響しない。
 
 ### Client
 
@@ -529,6 +535,8 @@ export type DownshiftItem = NavigateItem | SearchItem;
 export const recordSearchHistory: (keyword: string) => void;
 ```
 - `apiv3Post('/search-history', { keyword })` を呼び、`catch` で `logger.error` に残す。トーストは出さない（6.2, 6.3）。
+- 成功したら、応答の `searchHistory` を使って SWR のグローバル `mutate` で `/search-history` のキャッシュを更新する（`revalidate: false`）。キャッシュ内の同じ `_id` の項目を取り除いたうえで、その項目を先頭に置く。キャッシュが未取得（`undefined`）のときは何もしない。サービスはフックではないので、フック経由の `mutate` ではなくグローバルの `mutate` を使う。
+- これにより、モーダルを開き直した直後に SWR が前回のキャッシュを表示しても、直前の検索が先頭に来る。再検証が終わる前に「↓ + Enter」で再検索しても、別の履歴を選ばない（8.3, 9.2）。キャッシュの更新に失敗しても、`catch` でログに残すだけで検索は妨げない（6.2）。
 
 #### useSWRxSearchHistories（`client/stores/search-history.ts`）
 
@@ -564,7 +572,11 @@ export const resolveHighlightedHistory: (
   histories: readonly ISearchHistory[],
 ) => ISearchHistory | null;
 
-/** Keeps the same index, clamps to the last remaining history, or null when none remain. */
+/**
+ * Keeps the same index, clamps to the last remaining history, or null when none remain.
+ * `remainingCount` is the number of histories visible after the deletion,
+ * i.e. `min(total - 1, SEARCH_HISTORY_DISPLAY_LIMIT)` (the 11th history moves up into view).
+ */
 export const nextHighlightedIndexAfterDelete: (
   highlightedIndex: number,
   startIndex: number,
@@ -649,6 +661,7 @@ model searchhistories {
 - `search-history-keyword.spec.ts`: 前後の空白の除去と内部の空白の保持、演算子トークンの保持、空白のみ → `null`、200 コードポイントちょうどは保存し 201 は `null`（サロゲートペアを 1 文字と数える）、完全一致の引用符込みでの長さ判定（2.1, 2.2, 2.5〜2.7）。
 - `search-menu-index.spec.ts`: 空入力で 1・入力ありで 3、ハイライトが履歴の範囲外なら `null`、削除後は同じ index を保ち・末尾なら 1 つ前へ・0 件なら `null`（8.2, 10.3）。
 - `overwrite-params/searchhistories.spec.ts`: 文字列の `user` が ObjectId に変換される（7.4）。
+- `record-search-history.spec.ts`（追加）: 記録の成功で、SWR のキャッシュの先頭にその項目が置かれ、同じ `_id` の既存項目は重複しない。キャッシュが未取得のときは何もしない（8.3, 9.2）。
 - `record-search-history.spec.ts`: API の失敗で reject せず、ログに残す（6.2, 6.3）。
 
 ### Integration Tests（実 MongoDB）
@@ -656,6 +669,10 @@ model searchhistories {
 - `routes/search-history/search-history.integ.ts`: 未ログインでは 3 操作とも拒否される。GET は本人の分だけを新しい順で返し、0 件なら `[]` を返す。POST の応答は一覧の 1 件と同じ形。DELETE で存在しない ID と他人の ID の応答（ステータス・本文）が完全に一致する。読み取りスコープだけのトークンでは POST と DELETE が拒否される（4.1〜4.4, 5.1〜5.3, 5.5, 11.1〜11.4）。
 - `20261021120000-add-unique-index-to-searchhistories.integ.ts`: `up` の後に `user_1_keyword_1` が一意インデックスとして存在し、名前が `schema.prisma` の `map` と一致する。`down` で消える。
 - 既存の `non-transferable-collections.integ.ts`: `searchhistories` が `TRANSFERABLE_COLLECTIONS` に入っていることで通る（7.5）。
+- インポートの往復（`import-search-histories.integ.ts`）: `searchhistories` は Mongoose のモデルを持たない初めての移行対象なので、実際のインポートの処理を通して確かめる。文字列の `user` と ISO 形式の `lastSearchedAt` を持つ、エクスポート形式の JSON をインポートし、次の 3 点を確かめる（3.1, 7.4, 7.5）。
+  - `user` が ObjectId で保存され、`listSearchHistories(userId)` がその行を返す。`lastSearchedAt` は Date になっている。
+  - 同じキーワードで `recordSearchHistory(userId, keyword)` を呼ぶと、新しい行は増えず、その行の `lastSearchedAt` が更新され、`_id` は変わらない。`user` が文字列のまま保存されると、`@db.ObjectId` の条件に合わず、一意インデックスも重複を防げないため、この確認が必要。
+  - インポートした履歴が 50 件を超えて繰り上がり・切り詰めの対象になる（新しい記録で最も古い 1 件が消える）。
 - ユーザー削除 API の統合テスト: 削除済みにしたユーザーの履歴が消え、ほかのユーザーの履歴は残る（7.1）。
 
 ### Component Tests（RTL）
