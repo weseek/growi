@@ -329,8 +329,9 @@ export const listCommentsRouteHandlersFactory = (
           return res.apiv3Err(notFoundOrForbidden(), 404);
         }
 
+        // The reactions are loaded in task 3.3; an empty list keeps the type until then.
         const body: ListCommentsResponseBody = {
-          comments: result.comments.map(toCommentListItem),
+          comments: result.comments.map((row) => toCommentListItem(row, [])),
         };
         return res.apiv3(body);
       } catch (err) {
