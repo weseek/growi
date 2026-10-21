@@ -256,7 +256,7 @@ apps/app/src/features/backlinks/
   migration) and the app boots anyway, so duplicates are reachable; without the explicit first-wins
   the winner would be decided by aggregation order, which is not guaranteed. The depth cap is a
   parameter (`maxDepth`), not baked into the pipeline: `$graphLookup` is memory-bound at 100MB with
-  no disk spill, so the save path passes 50, while page view passes nothing — a cap there would
+  no disk spill, so the save path passes `REDIRECT_CHAIN_MAX_DEPTH`, while page view passes nothing — a cap there would
   answer an old URL with a not-found once the chain outgrows it.
 - `apps/app/src/client/components/PageAccessoriesModal/PageAccessoriesModal.tsx` (+ the
   modal-contents map in `apps/app/src/states/ui/modal/page-accessories.ts`) — add the **Backlinks**
@@ -555,7 +555,7 @@ function resolveToPageIds(paths: string[]): Promise<Map<string, ObjectId>>;
   (the id *is* the target; no path lookup, no redirect-following). **(1)** the rest → one
   `Page.find({path: {$in}, $or: [{isEmpty: false}, {isEmpty: null}]})` — the `isEmpty`
   clause matches `findByPath`, including the v4-compat `null` — **and**, concurrently,
-  `PageRedirect.retrievePageRedirectEndpointsBatch(allPaths, 50)` → **(2)** a path with a redirect
+  `PageRedirect.retrievePageRedirectEndpointsBatch(allPaths, REDIRECT_CHAIN_MAX_DEPTH)` → **(2)** a path with a redirect
   resolves at `end.toPath`, a path without one resolves at its own live page → **(3)** else absent.
   Step (2) needs one more path query, but only for endpoints step (1) did not already answer.
 - Always read `.end.toPath` (handles A→B→C via `$graphLookup`).
@@ -584,7 +584,7 @@ function resolveToPageIds(paths: string[]): Promise<Map<string, ObjectId>>;
   the link index. Note that sharing the pipeline only makes the two agree about *where a chain
   ends*; the live-page-versus-redirect precedence above is a separate decision this resolver has
   to make deliberately. This resolver only projects `end.toPath` out of the result.
-- **The depth cap is the caller's, not the pipeline's.** The save path passes `maxDepth: 50`
+- **The depth cap is the caller's, not the pipeline's.** The save path passes `REDIRECT_CHAIN_MAX_DEPTH`
   because it runs on every save and `$graphLookup` is memory-bound at 100MB with no spill to disk.
   Page view calls the same static with no cap: shortening a chain there would answer an old URL
   with a not-found for a page that was renamed more times than the cap.

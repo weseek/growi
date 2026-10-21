@@ -534,7 +534,7 @@ B3/B5.
     re-implement the existing singular `retrievePageRedirectEndpoints` over it, so the
     `$graphLookup` pipeline and deepest-hop rule exist once and page view cannot disagree with the
     link index about where a chain ends. Keep the depth cap a **parameter**: the save path passes
-    50, page view passes none (a cap there turns a much-renamed page's old URL into a not-found)
+    `REDIRECT_CHAIN_MAX_DEPTH`, page view passes none (a cap there turns a much-renamed page's old URL into a not-found)
   - Done when tests cover single and double redirect chains resolving to the endpoint, a redirect
     winning over a live page at the same path, the unresolved case, several paths resolving in one
     lookup, converging chains keyed by input, a cycle advancing one hop rather than hanging, an
@@ -580,7 +580,7 @@ B3/B5.
 - [x] B4.5 Bound how many chains one redirect lookup walks
   - Deliberately deferred out of B4.1 (judged out of that PR's scope), and independent of
     B4.2–B4.4 — pick it up at any point after B4.1.
-  - B4.1 capped the *depth* of a chain (`maxDepth: 50` from the save path) but nothing caps the
+  - B4.1 capped the *depth* of a chain (`REDIRECT_CHAIN_MAX_DEPTH` from the save path) but nothing caps the
     *width*: `retrievePageRedirectEndpointsBatch` receives every link path on the page, and B4.1's
     precedence decision means it receives them on **every** save rather than only the ones that
     missed. `$graphLookup` is memory-bound at 100MB and cannot spill to disk, so a page carrying

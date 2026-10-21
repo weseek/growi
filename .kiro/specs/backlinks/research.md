@@ -181,7 +181,7 @@
 ### Decision: resolve `toPage` through `PageRedirect`; rename needs no write-time work
 
 - **Context**: Requirement 5 (links survive rename/move, including descendants).
-- **Selected Approach**: Resolution order — `PageRedirect.retrievePageRedirectEndpointsBatch(allPaths, 50)`
+- **Selected Approach**: Resolution order — `PageRedirect.retrievePageRedirectEndpointsBatch(allPaths, REDIRECT_CHAIN_MAX_DEPTH)`
   for every path, concurrently with the live path lookup; a path with a redirect resolves at its
   chain's `end.toPath`, a path without one resolves at its own live page; else unresolved. Because
   rename keeps `_id`, existing inbound `toPage` caches stay valid; new links to the old path resolve
@@ -217,7 +217,7 @@
   two copies can drift (a `maxDepth` cap, a collection rename) so that page view and the link
   index disagree about where a chain ends, which is exactly the invariant this feature relies on.
 - **Trade-offs**: Redirect records accumulate (`removePageRedirectsByToPath` is unused) — a
-  data-hygiene caveat, not a correctness one. The save path caps its walk at `maxDepth: 50`, since
+  data-hygiene caveat, not a correctness one. The save path caps its walk at `REDIRECT_CHAIN_MAX_DEPTH`, since
   `$graphLookup` is memory-bound at 100MB and cannot spill to disk, so an unbounded walk fails the
   whole aggregation rather than degrading. **The cap is an argument, not a property of the static**:
   it was first written into the shared pipeline, which silently made page view answer a URL whose
