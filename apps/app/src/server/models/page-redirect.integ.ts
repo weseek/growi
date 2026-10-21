@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+import { chunk } from '~/utils/array-utils';
 import { prisma } from '~/utils/prisma';
 
 import { FROM_PATHS_CHUNK_SIZE } from './page-redirect';
@@ -408,8 +409,8 @@ describe('PageRedirect', () => {
 
     test('shoud resolve every fromPath of a set larger than one chunk', async () => {
       // setup:
-      // /first and /last converge on /shared -> /end, and are far enough apart
-      // in the input to start in different chunks
+      // /first and /last converge on /shared -> /end and must start in
+      // different chunks (asserted below)
       const fillerCount = FROM_PATHS_CHUNK_SIZE + 1;
       const fillerFromPaths = Array.from(
         { length: fillerCount },
@@ -427,17 +428,22 @@ describe('PageRedirect', () => {
         ],
       });
 
+      const requestedFromPaths = ['/first', ...fillerFromPaths, '/last'];
+      const chunkIndexOf = (fromPath: string) =>
+        chunk(requestedFromPaths, FROM_PATHS_CHUNK_SIZE).findIndex((c) =>
+          c.includes(fromPath),
+        );
+      expect(chunkIndexOf('/first')).not.toEqual(chunkIndexOf('/last'));
+
       // when:
       const { client, aggregations } = withAggregationCount();
       const endpointsByFromPath =
-        await client.pageredirects.retrievePageRedirectEndpointsBatch([
-          '/first',
-          ...fillerFromPaths,
-          '/last',
-        ]);
+        await client.pageredirects.retrievePageRedirectEndpointsBatch(
+          requestedFromPaths,
+        );
 
       // then:
-      expect(aggregations()).toBeGreaterThan(1);
+      expect(aggregations()).toEqual(2);
       expect(endpointsByFromPath.get('/first')?.end.toPath).toEqual('/end');
       expect(endpointsByFromPath.get('/last')?.end.toPath).toEqual('/end');
       expect(endpointsByFromPath.get('/filler0')?.end.toPath).toEqual(
