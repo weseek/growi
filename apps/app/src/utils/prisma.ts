@@ -5,9 +5,11 @@ import {
   Prisma,
 } from '~/generated/prisma/client';
 import { extension as ActivityExtension } from '~/server/models/activity';
+import { extension as AttachmentExtension } from '~/server/models/attachment';
 import { extension as BookmarkExtension } from '~/server/models/bookmark';
 import { extension as BookmarkFolderExtension } from '~/server/models/bookmark-folder';
 import { extension as ExternalAccountExtension } from '~/server/models/external-account';
+import { extension as PageRedirectExtension } from '~/server/models/page-redirect';
 import { extension as PageTagRelationExtension } from '~/server/models/page-tag-relation';
 import { extension as RevisionExtension } from '~/server/models/revision';
 import { extension as ShareLinkExtension } from '~/server/models/share-link';
@@ -214,11 +216,13 @@ export const createPrisma = (datasourceUrl?: string) =>
       },
     })
     .$extends(ActivityExtension)
+    .$extends(AttachmentExtension)
     .$extends(BookmarkExtension)
     .$extends(BookmarkFolderExtension)
     .$extends(CommentExtension)
     .$extends(ExternalAccountExtension)
     .$extends(MastraRefreshedModelCatalogExtension)
+    .$extends(PageRedirectExtension)
     .$extends(RevisionExtension)
     .$extends(ShareLinkExtension)
     .$extends(UserExtension)
