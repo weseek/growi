@@ -74,7 +74,7 @@ type PageRedirectsContext = typeof prisma.pageredirects;
  * disk), so the number of starts bounds the stage the way `maxDepth` bounds a
  * chain. `retrieveEndpointsBatch` applies it, so callers never size their input.
  */
-export const FROM_PATHS_CHUNK_SIZE = 500;
+export const FROM_PATHS_CHUNK_SIZE = 100;
 
 /**
  * Resolves the endpoint of each requested `fromPath`'s redirect chain.
