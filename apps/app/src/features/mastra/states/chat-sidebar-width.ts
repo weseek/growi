@@ -6,7 +6,7 @@ export const CHAT_SIDEBAR_WIDTH_DEFAULT = 500;
 export const CHAT_SIDEBAR_WIDTH_MIN = 360;
 export const CHAT_SIDEBAR_WIDTH_MAX = 960;
 // Page width that must stay visible beside the open sidebar
-export const CHAT_SIDEBAR_VIEWPORT_RESERVE = 320;
+const CHAT_SIDEBAR_VIEWPORT_RESERVE = 320;
 
 export const getChatSidebarMaxWidth = (viewportWidth: number): number => {
   const byViewport = viewportWidth - CHAT_SIDEBAR_VIEWPORT_RESERVE;

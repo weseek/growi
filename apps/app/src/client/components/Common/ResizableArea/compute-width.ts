@@ -1,6 +1,6 @@
 export type ResizableAnchor = 'left' | 'right';
 
-export type ComputeWidthInput = {
+type ComputeWidthInput = {
   readonly anchor: ResizableAnchor;
   /** Pointer x in viewport coordinates (MouseEvent.clientX) */
   readonly pointerX: number;

@@ -119,7 +119,7 @@ graph TB
 apps/app/src/
 ├── client/components/Common/ResizableArea/        # git mv from Sidebar/ResizableArea（移設のみのコミット）
 │   ├── index.ts                                    # export { ResizableArea, getViewportWidth }
-│   ├── viewport.ts                                 # 新規: getViewportWidth（スクロールバーを除くビューポート幅、SSR では undefined）
+│   ├── viewport.ts                                 # 新規: getViewportWidth（スクロールバーを除くビューポート幅。ブラウザ専用）
 │   ├── props.d.ts                                  # ResizableAreaProps に anchor / maxWidth を追加
 │   ├── ResizableArea.tsx                           # 薄いアダプタ: イベント登録と純関数呼び出し、anchor でハンドル配置
 │   ├── ResizableArea.module.scss                   # .grw-navigation-draggable-right（right: 100%）を追加
@@ -236,7 +236,7 @@ sequenceDiagram
 ```typescript
 export type ResizableAnchor = 'left' | 'right';
 
-export type ComputeWidthInput = {
+type ComputeWidthInput = {
   readonly anchor: ResizableAnchor;
   readonly pointerX: number;        // MouseEvent.clientX
   readonly viewportWidth: number;   // document.documentElement.clientWidth
@@ -300,7 +300,7 @@ export type ResizableAreaProps = {
 export const CHAT_SIDEBAR_WIDTH_DEFAULT = 500;
 export const CHAT_SIDEBAR_WIDTH_MIN = 360;
 export const CHAT_SIDEBAR_WIDTH_MAX = 960;
-export const CHAT_SIDEBAR_VIEWPORT_RESERVE = 320;
+const CHAT_SIDEBAR_VIEWPORT_RESERVE = 320;
 
 /** max(MIN, min(MAX, viewportWidth - RESERVE)) */
 export const getChatSidebarMaxWidth = (viewportWidth: number): number;

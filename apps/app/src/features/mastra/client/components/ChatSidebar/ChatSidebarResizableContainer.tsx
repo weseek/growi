@@ -26,12 +26,11 @@ type Props = {
 };
 
 // Tracks the viewport width so the upper bound follows window resizes
-const useViewportWidth = (): number | undefined => {
+const useViewportWidth = (): number => {
   const [viewportWidth, setViewportWidth] = useState(getViewportWidth);
 
   useEffect(() => {
     const handler = () => setViewportWidth(getViewportWidth());
-    handler();
     window.addEventListener('resize', handler);
     return () => window.removeEventListener('resize', handler);
   }, []);
@@ -59,15 +58,13 @@ export const ChatSidebarResizableContainer = (props: Props): JSX.Element => {
     [setStoredWidth],
   );
 
-  const maxWidth =
-    viewportWidth == null ? undefined : getChatSidebarMaxWidth(viewportWidth);
+  const maxWidth = getChatSidebarMaxWidth(viewportWidth);
 
   // The stored width may exceed what the current viewport allows (saved on a
   // wider screen), so the upper bound is applied on every render, not only
   // while dragging. The stored value itself is left untouched.
   const requestedWidth = draggingWidth ?? storedWidth;
-  const width =
-    maxWidth == null ? requestedWidth : Math.min(requestedWidth, maxWidth);
+  const width = Math.min(requestedWidth, maxWidth);
 
   // Below sm the panel is full width (see the module stylesheet) and cannot be resized
   return (

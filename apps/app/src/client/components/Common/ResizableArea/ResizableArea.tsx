@@ -6,9 +6,6 @@ import { getViewportWidth } from './viewport';
 
 import styles from './ResizableArea.module.scss';
 
-// Mouse events only fire in a browser, so the viewport is always known here
-const getViewportWidthForDrag = (): number => getViewportWidth() ?? 0;
-
 export const ResizableArea = memo((props: ResizableAreaProps): JSX.Element => {
   const {
     className,
@@ -34,7 +31,7 @@ export const ResizableArea = memo((props: ResizableAreaProps): JSX.Element => {
       const newWidth = computeWidthFromPointer({
         anchor,
         pointerX: event.clientX,
-        viewportWidth: getViewportWidthForDrag(),
+        viewportWidth: getViewportWidth(),
         minWidth,
         maxWidth,
       });
@@ -52,7 +49,7 @@ export const ResizableArea = memo((props: ResizableAreaProps): JSX.Element => {
         isCollapseGesture({
           anchor,
           pointerX: event.clientX,
-          viewportWidth: getViewportWidthForDrag(),
+          viewportWidth: getViewportWidth(),
           minWidth,
         });
 
