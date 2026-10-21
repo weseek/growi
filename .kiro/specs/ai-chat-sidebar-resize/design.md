@@ -344,7 +344,7 @@ type Props = { children: React.ReactNode };
 export const ChatSidebarResizableContainer = (props: Props): JSX.Element;
 ```
 - `width` は sm 判定によらず常に現在幅（ドラッグ中はローカル state、それ以外は atom）を渡す。sm 未満の全幅は `ChatSidebarResizableContainer.module.scss` のメディアクエリが inline width を `!important` で上書きして実現する。`isLargerThanSm` は `disabled`（ハンドルの有無）にだけ使う。
-- ビューポート幅を `resize` イベントで追従する state として持ち、`maxWidth = getChatSidebarMaxWidth(viewportWidth)` を描画ごとに算出する。描画する幅は `min(ドラッグ中の幅 ?? 保存幅, maxWidth)` とし、より広い画面で保存された幅や、ウィンドウ縮小後の幅もその場で上限に収める（保存値そのものは書き換えない。2.2 / 3.5）。
+- 上限幅 `maxWidth = getChatSidebarMaxWidth(viewportWidth)` を `resize` イベントで追従する state として持つ（ビューポート幅ではなく上限を持つので、上限が変わらない resize では再描画しない）。描画する幅は `min(ドラッグ中の幅 ?? 保存幅, maxWidth)` とし、より広い画面で保存された幅や、ウィンドウ縮小後の幅もその場で上限に収める（保存値そのものは書き換えない。2.2 / 3.5）。
 - `onResize` → ローカル state、`onResizeDone` → `setChatSidebarWidth`（atom → `scheduleToPut`）。
 - 内側 div に `h-100 overflow-hidden` を置き（5.3）、外側 fixed コンテナからは `overflow-hidden` と幅指定を外す（5.1）。外側は `position: fixed` の shrink-to-fit で内側幅に一致する。
 

@@ -25,17 +25,21 @@ type Props = {
   children: ReactNode;
 };
 
-// Tracks the viewport width so the upper bound follows window resizes
-const useViewportWidth = (): number => {
-  const [viewportWidth, setViewportWidth] = useState(getViewportWidth);
+const computeMaxWidth = (): number =>
+  getChatSidebarMaxWidth(getViewportWidth());
+
+// Follows window resizes; holding the bound rather than the viewport width
+// skips re-renders while the bound stays the same (e.g. capped at the maximum)
+const useMaxWidth = (): number => {
+  const [maxWidth, setMaxWidth] = useState(computeMaxWidth);
 
   useEffect(() => {
-    const handler = () => setViewportWidth(getViewportWidth());
+    const handler = () => setMaxWidth(computeMaxWidth());
     window.addEventListener('resize', handler);
     return () => window.removeEventListener('resize', handler);
   }, []);
 
-  return viewportWidth;
+  return maxWidth;
 };
 
 export const ChatSidebarResizableContainer = (props: Props): JSX.Element => {
@@ -44,7 +48,7 @@ export const ChatSidebarResizableContainer = (props: Props): JSX.Element => {
   const [isLargerThanSm] = useDeviceLargerThanSm();
   const [storedWidth, setStoredWidth] = useChatSidebarWidth();
   const [draggingWidth, setDraggingWidth] = useState<number | null>(null);
-  const viewportWidth = useViewportWidth();
+  const maxWidth = useMaxWidth();
 
   const resizeHandler = useCallback((newWidth: number) => {
     setDraggingWidth(newWidth);
@@ -57,8 +61,6 @@ export const ChatSidebarResizableContainer = (props: Props): JSX.Element => {
     },
     [setStoredWidth],
   );
-
-  const maxWidth = getChatSidebarMaxWidth(viewportWidth);
 
   // The stored width may exceed what the current viewport allows (saved on a
   // wider screen), so the upper bound is applied on every render, not only
