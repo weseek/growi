@@ -79,4 +79,15 @@ describe('useChatSidebarWidth', () => {
     expect(scheduleToPut).toHaveBeenCalledTimes(1);
     expect(scheduleToPut).toHaveBeenCalledWith({ aiChatSidebarWidth: 640 });
   });
+
+  it('rounds a fractional width to an integer before persisting it', () => {
+    const { result } = renderHook(() => useChatSidebarWidth(), { wrapper });
+
+    act(() => {
+      result.current[1](500.6);
+    });
+
+    expect(result.current[0]).toBe(501);
+    expect(scheduleToPut).toHaveBeenCalledWith({ aiChatSidebarWidth: 501 });
+  });
 });

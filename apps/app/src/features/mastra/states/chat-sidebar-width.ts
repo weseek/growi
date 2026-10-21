@@ -37,8 +37,10 @@ export const aiChatSidebarWidthAtom = atom<number>(CHAT_SIDEBAR_WIDTH_DEFAULT);
 const aiChatSidebarWidthAtomExt = atom(
   (get) => get(aiChatSidebarWidthAtom),
   (_get, set, update: number) => {
-    set(aiChatSidebarWidthAtom, update);
-    scheduleToPut({ aiChatSidebarWidth: update });
+    // The API accepts integer widths only
+    const width = Math.round(update);
+    set(aiChatSidebarWidthAtom, width);
+    scheduleToPut({ aiChatSidebarWidth: width });
   },
 );
 
