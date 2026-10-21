@@ -1,4 +1,4 @@
-import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { atom, useAtom } from 'jotai';
 
 import { scheduleToPut } from '~/client/services/user-ui-settings';
 
@@ -8,13 +8,11 @@ export const CHAT_SIDEBAR_WIDTH_MAX = 960;
 // Page width that must stay visible beside the open sidebar
 const CHAT_SIDEBAR_VIEWPORT_RESERVE = 320;
 
-export const getChatSidebarMaxWidth = (viewportWidth: number): number => {
-  const byViewport = viewportWidth - CHAT_SIDEBAR_VIEWPORT_RESERVE;
-  return Math.max(
-    CHAT_SIDEBAR_WIDTH_MIN,
-    Math.min(CHAT_SIDEBAR_WIDTH_MAX, byViewport),
-  );
-};
+const clampToFixedRange = (width: number): number =>
+  Math.min(CHAT_SIDEBAR_WIDTH_MAX, Math.max(CHAT_SIDEBAR_WIDTH_MIN, width));
+
+export const getChatSidebarMaxWidth = (viewportWidth: number): number =>
+  clampToFixedRange(viewportWidth - CHAT_SIDEBAR_VIEWPORT_RESERVE);
 
 /**
  * Viewport-independent clamp for a persisted width: hydration also runs during
@@ -25,10 +23,7 @@ export const clampChatSidebarWidth = (width: number | undefined): number => {
   if (width == null || !Number.isFinite(width)) {
     return CHAT_SIDEBAR_WIDTH_DEFAULT;
   }
-  return Math.min(
-    CHAT_SIDEBAR_WIDTH_MAX,
-    Math.max(CHAT_SIDEBAR_WIDTH_MIN, width),
-  );
+  return clampToFixedRange(width);
 };
 
 // Base atom, exported for SSR hydration
@@ -44,8 +39,5 @@ const aiChatSidebarWidthAtomExt = atom(
   },
 );
 
-export const useChatSidebarWidth = (): [number, (width: number) => void] => {
-  const width = useAtomValue(aiChatSidebarWidthAtomExt);
-  const setWidth = useSetAtom(aiChatSidebarWidthAtomExt);
-  return [width, setWidth];
-};
+export const useChatSidebarWidth = (): [number, (width: number) => void] =>
+  useAtom(aiChatSidebarWidthAtomExt);
