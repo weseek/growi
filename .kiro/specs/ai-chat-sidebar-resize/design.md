@@ -146,7 +146,7 @@ apps/app/src/
 - `apps/app/src/client/components/Sidebar/Sidebar.tsx` — `ResizableArea` / `ResizableAreaFallback` / `ResizableAreaProps` の import を `../Common/ResizableArea` へ変更（挙動変更なし）
 - `apps/app/src/interfaces/user-ui-settings.ts` — `aiChatSidebarWidth?: number` を追加
 - `apps/app/src/server/models/user-ui-settings.ts` — `aiChatSidebarWidth: { type: Number }` を追加
-- `apps/app/src/server/routes/apiv3/user-ui-settings.ts` — バリデータ `isInt({ min: 1 })`、`updateData` allow-list、Swagger の request/response に追加
+- `apps/app/src/server/routes/apiv3/user-ui-settings.ts` — バリデータ `isInt({ min: 1 }).toInt()`、`updateData` allow-list、Swagger の request/response に追加
 - `apps/app/src/server/routes/apiv3/user-ui-settings.spec.ts` — 永続化・session・バリデータのケースを追加
 - `apps/app/src/pages/basic-layout-page/hydrate.ts` — `useHydrateChatSidebarAtoms(userUISettings)` を呼ぶ
 - `apps/app/src/features/mastra/client/components/ChatSidebar/ChatSidebar.spec.tsx` — ResizableContainer をモックせず描画し、幅反映と sm 未満のハンドル非表示を確認（必要なら `~/states/ui/device` をモック）
@@ -174,14 +174,14 @@ sequenceDiagram
     end
     U->>RA: mouseup
     RA->>RA: onCollapsed undefined so no collapse check
-    RA->>CRC: onResizeDone(clientWidth)
+    RA->>CRC: onResizeDone(last dragged width)
     CRC->>WA: set(width)
     WA->>SP: scheduleToPut aiChatSidebarWidth
     SP-->>API: debounced PUT (1500ms, merged with other settings)
 ```
 
 - ドラッグ中は `dragging` クラスで width トランジションを止め（1.5）、終了後は既存の 100ms トランジションに戻る（1.6）。
-- hydrate 時は `clampChatSidebarWidth(saved)` で固定範囲（360〜960）にだけ丸める（ビューポート非依存）。ビューポート上限は描画・ドラッグ時に `getChatSidebarMaxWidth(viewportWidth)` で適用する（SSR/CSR の hydrate 結果を一致させるため）。
+- hydrate 時は `clampChatSidebarWidth(saved)` で固定範囲（360〜960）にだけ丸める（ビューポート非依存）。ビューポート上限は描画・ドラッグ時に `getChatSidebarMaxWidth(viewportWidth)` で適用する（hydrate はビューポートを知らない SSR でも走るため。また狭い画面で開いただけで保存値を書き換えないため）。
 
 ## Requirements Traceability
 
@@ -194,7 +194,7 @@ sequenceDiagram
 | 1.5 | ドラッグ中アニメなし | ResizableArea（`dragging`） | — | sequence |
 | 1.6 | 非ドラッグ時の短いアニメ | ResizableArea.module.scss | — | — |
 | 1.7 | オーバーレイ維持 | ChatSidebar（fixed）, ChatSidebar.module.scss | — | — |
-| 2.1 / 2.2 / 2.5 | 最小・最大・初期値 | chat-sidebar-width（定数, `getChatSidebarMaxWidth`） | `ChatSidebarWidthLimits` | — |
+| 2.1 / 2.2 / 2.5 | 最小・最大・初期値 | chat-sidebar-width（定数, `getChatSidebarMaxWidth`） | `CHAT_SIDEBAR_WIDTH_*` 定数 | — |
 | 2.3 | 最小未満で閉じない | ResizableArea（`onCollapsed` 省略時はクランプ） | `isCollapseGesture` | sequence |
 | 2.4 | 最大でクランプ | computeWidthFromPointer（`maxWidth`） | — | sequence |
 | 3.1 | 確定時に保存 | aiChatSidebarWidthAtomExt → scheduleToPut | State | sequence |
@@ -276,7 +276,7 @@ export type ResizableAreaProps = {
   onCollapsed?: () => void;       // 省略時は折りたたみ判定を行わず minWidth にクランプ
 };
 ```
-- 挙動: mousemove で `computeWidthFromPointer` の結果を `onResize` に通知し `dragging` クラスを付ける。mouseup で `onCollapsed != null && isCollapseGesture(...)` なら `onCollapsed`、それ以外は `clientWidth` を `onResizeDone` に通知し `dragging` を外す。
+- 挙動: mousemove で `computeWidthFromPointer` の結果を `onResize` に通知し `dragging` クラスを付ける。mouseup で `onCollapsed != null && isCollapseGesture(...)` なら `onCollapsed`、それ以外は最後の mousemove で計算した幅を `onResizeDone` に通知し（一度も動かしていなければ通知しない）、`dragging` を外す。
 - ハンドル配置: `anchor === 'left'` → 既存の `.grw-navigation-draggable`（`left: 100%`）、`'right'` → 追加の修飾クラスで `right: 100%`（`left` は auto）。ハンドルは親の positioned 要素（外側コンテナ）基準で絶対配置されるため、**親は `overflow: hidden` にしてはならない**（5.1）。
 - 後方互換: `anchor` / `maxWidth` 省略時は既存の左サイドバー挙動（`pointerX` → `clientX` への変更のみ）。
 
@@ -309,7 +309,7 @@ export const getChatSidebarMaxWidth = (viewportWidth: number): number;
 export const clampChatSidebarWidth = (width: number | undefined): number;
 
 export const aiChatSidebarWidthAtom: PrimitiveAtom<number>;           // base（hydrate 用に export）
-export const useChatSidebarWidth: () => [number, (width: number) => void]; // 派生 atom: set 時に scheduleToPut({ aiChatSidebarWidth })
+export const useChatSidebarWidth: () => [number, (width: number) => void]; // 派生 atom: set 時に整数へ丸めて scheduleToPut({ aiChatSidebarWidth })
 ```
 - State model: base atom（初期値 DEFAULT）＋ 書き込み派生 atom。`~/states/ui/sidebar` の `currentProductNavWidthAtomExt` と同型。
 - Persistence: `scheduleToPut` の debounce（1500ms）に相乗り。既存設定と同じ PUT にまとまる（3.2）。
@@ -368,7 +368,7 @@ export const ChatSidebarResizableContainer = (props: Props): JSX.Element;
 |--------|----------|---------|----------|--------|
 | PUT | /_api/v3/user-ui-settings | `{ settings: { aiChatSidebarWidth?: number, ...既存 } }` | 保存後の `IUserUISettings`（既存形式） | 400（`isInt({ min: 1 })` 違反、apiV3FormValidator）、500 |
 
-- バリデータ: `body('settings.aiChatSidebarWidth').optional().isInt({ min: 1 })`。
+- バリデータ: `body('settings.aiChatSidebarWidth').optional().isInt({ min: 1 }).toInt()`。`toInt()` で数値文字列を数値に変換し、ゲストの session にも数値で保存する。
 - ハンドラ: `updateData` に `aiChatSidebarWidth: settings.aiChatSidebarWidth` を追加（null-strip は既存ロジックで 3.7 を満たす）。ゲストは `req.session.uiSettings` へ（既存ループ）。
 - モデル: `aiChatSidebarWidth: { type: Number }`（default なし。未設定時はクライアントの DEFAULT）。
 - Swagger: requestBody と 200 response の properties に追加。
@@ -389,12 +389,12 @@ export const ChatSidebarResizableContainer = (props: Props): JSX.Element;
 
 ### Unit Tests
 - `compute-width.spec.ts`: left/right の幅計算、min/max クランプ、`maxWidth < minWidth` 時に min 優先、`isCollapseGesture` の境界（`minWidth / 2` ちょうどは false）。
-- `chat-sidebar-width.spec.ts`: `getChatSidebarMaxWidth`（960 上限、viewport−320、min 下回り時は 360）、`clampChatSidebarWidth`（undefined/NaN → 500、範囲外 → 丸め）、`useChatSidebarWidth` の set で `scheduleToPut` が `{ aiChatSidebarWidth }` で呼ばれる（`~/client/services/user-ui-settings` をモック）。
+- `chat-sidebar-width.spec.tsx`: `getChatSidebarMaxWidth`（960 上限、viewport−320、min 下回り時は 360）、`clampChatSidebarWidth`（undefined/NaN → 500、範囲外 → 丸め）、`useChatSidebarWidth` の set で `scheduleToPut` が `{ aiChatSidebarWidth }` で呼ばれ、小数は整数に丸められる（`~/client/services/user-ui-settings` をモック）。
 - `hydrate.spec.tsx`: `userUISettings` あり/なし/範囲外で base atom の値（Jotai `Provider` + `renderHook`）。
 - `user-ui-settings.spec.ts`（追加）: `aiChatSidebarWidth` が `$set` に到達、省略時は `$set` に含まれない、ゲストは session に書かれる、validator が `500` を受理し `'abc'` / `0` / `12.5` を拒否する。
 
 ### Component Tests (happy-dom)
-- `ResizableArea.spec.tsx`: `anchor="right"` で mousedown → mousemove(clientX) → `onResize` に `viewportWidth - clientX`（min/max 丸め済み）が渡る。mouseup で `onResizeDone`。`onCollapsed` なしで最小未満の mouseup → `onCollapsed` なし・`onResizeDone` あり。`onCollapsed` ありで最小/2 未満 → `onCollapsed`（左サイドバー互換）。`disabled` → ハンドルが描画されない。
+- `ResizableArea.spec.tsx`: `anchor="right"` で mousedown → mousemove(clientX) → `onResize` に `viewportWidth - clientX`（min/max 丸め済み）が渡る。mouseup で最後の幅が `onResizeDone` に渡り、移動せずに離したときは呼ばれない。`onCollapsed` なしで最小未満の mouseup → `onCollapsed` なし・`onResizeDone` あり。`onCollapsed` ありで最小/2 未満 → `onCollapsed`（左サイドバー互換）。`disabled` → ハンドルが描画されない。
 - `ChatSidebarResizableContainer.spec.tsx`: `useDeviceLargerThanSm` が true → atom の幅が style に反映されハンドルが存在、false → ハンドルなし（全幅はメディアクエリのため happy-dom では検証しない）。判定が false のままでも初回描画から保存幅が style に反映される。`onResizeDone` 経由で atom が更新される。ビューポート 1000px でドラッグ上限が 680（= 1000 − 320）になること、保存幅 900 が描画時に 680 へ収まり保存値は書き換えられないこと、`resize` 後に上限へ追従すること。
 - `ChatSidebar.spec.tsx`（既存＋追加）: 既存ケースが通ること、グローバル atom の幅が style に反映されること、sm 未満でハンドルが描画されないこと、最外コンテナに `overflow-hidden` が無くハンドルがその配下に描画されること（`~/states/ui/device` をモック）。
 

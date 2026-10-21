@@ -62,6 +62,13 @@
 - **Trade-offs**: 既存の `pageX` 参照を `clientX` に変える（fixed/sticky 要素の幅はビューポート基準が正しい。横スクロールが無い通常時は同値）。
 - **Follow-up**: 左サイドバーの手動スモークで差異が無いことを確認する。
 
+### Decision: 確定幅は最後の mousemove で計算した幅とし、移動なしの mouseup では通知しない
+- **Context**: 既存実装は mouseup 時の `clientWidth`（実描画幅）を `onResizeDone` に渡していた。チャットサイドバーは保存幅がビューポート上限を超えると描画幅だけを上限に収める。
+- **Alternatives Considered**: (1) 従来どおり mouseup で `clientWidth` を通知、(2) 最後に `onResize` へ通知した幅を確定値とし、一度も動かしていなければ通知しない
+- **Selected Approach**: 2。
+- **Rationale**: (1) ではハンドルをクリックしただけで、上限に収められた描画幅（例: 保存 900 → 描画 680）が保存値を上書きしてしまう。(2) なら確定値は利用者がドラッグで指定した幅だけになる。
+- **Trade-offs**: 左サイドバーでもクリックのみ（移動なし）のときの保存が行われなくなるが、従来も同じ幅を再保存していただけなので観測可能な差は無く、Req 6.1 の「確定幅の保存」は維持される。
+
 ### Decision: 折りたたみジェスチャは `onCollapsed` が渡されたときだけ有効
 - **Context**: チャットサイドバーには折りたたみ状態が無く、`close()` はスレッド離脱を意味する。
 - **Alternatives Considered**: (1) 常に発火し呼び出し側で無視、(2) `onCollapsed` 未指定なら判定自体を行わず最小幅にクランプ、(3) ドラッグで閉じる
@@ -74,7 +81,7 @@
 - **Alternatives Considered**: (1) サーバーで固定範囲（360〜960）を強制、(2) サーバーは `isInt({ min: 1 })` で形式のみ、クライアントが hydrate 時と描画時にクランプ
 - **Selected Approach**: 2。
 - **Rationale**: `currentProductNavWidth`（`isNumeric()` のみ）と整合しつつ、非整数・負数による document 汚染は防ぐ。古い永続値はクライアントのクランプで吸収する。
-- **Follow-up**: hydrate は SSR と CSR で同じ結果である必要があるため、hydrate 時のクランプは固定範囲（360〜960）だけを使い、ビューポート上限は描画・ドラッグ時に適用する。
+- **Follow-up**: hydrate はビューポートを知らない SSR（ページの `useHydrateAtoms`）でも走り、また狭い画面で開いただけで保存値を書き換えたくないため、hydrate 時のクランプは固定範囲（360〜960）だけを使い、ビューポート上限は描画・ドラッグ時に適用する（保存値はそのまま、描画幅だけを収める）。
 
 ### Decision: 幅 atom と hydrate フックは Mastra feature 内に置き、`basic-layout-page/hydrate.ts` から合成する
 - **Context**: `userUISettings` は BasicLayout 系ページの SSR props として既に渡っている。

@@ -17,9 +17,9 @@ export const getChatSidebarMaxWidth = (viewportWidth: number): number => {
 };
 
 /**
- * Viewport-independent clamp for a persisted width, so SSR and CSR hydrate to
- * the same value. The viewport-dependent upper bound is applied at render and
- * drag time via getChatSidebarMaxWidth.
+ * Viewport-independent clamp for a persisted width: hydration also runs during
+ * SSR, where the viewport is unknown. The viewport-dependent upper bound is
+ * applied at render and drag time via getChatSidebarMaxWidth.
  */
 export const clampChatSidebarWidth = (width: number | undefined): number => {
   if (width == null || !Number.isFinite(width)) {

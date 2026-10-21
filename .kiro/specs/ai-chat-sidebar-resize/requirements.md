@@ -10,10 +10,10 @@ AI チャットサイドバー（`apps/app/src/features/mastra/client/components
 
 - 既存の左サイドバー用リサイズ部品 `ResizableArea`（`apps/app/src/client/components/Sidebar/ResizableArea/`）を `apps/app/src/client/components/Common/ResizableArea/` へ移設し、`anchor: 'left' | 'right'` と `maxWidth` を追加して右端固定パネルでも使えるよう汎用化する。幅の計算は純関数として切り出す。左サイドバーの挙動は変えない（移設のみのコミットを先行させ、その上に機能追加を積む）。
 - 「最小幅の半分未満までドラッグしたら折りたたむ（`onCollapsed`）」は `onCollapsed` が渡されたときだけ発火させる。チャットサイドバーは `onCollapsed` を渡さず、最小幅でクランプする（ドラッグで閉じない。閉じるのはヘッダーの × ボタンのみ）。
-- 幅は `IUserUISettings` に `aiChatSidebarWidth?: number` として永続化する。Mongoose スキーマ、`PUT /user-ui-settings` のバリデータ（`isInt({ min: 1 })` で形式のみ検証）、ハンドラ内の `updateData` allow-list、Swagger コメント、ゲスト用の session 書き込みを `currentProductNavWidth` / `aiChatSelectedModelKey` と同様に対応する。
+- 幅は `IUserUISettings` に `aiChatSidebarWidth?: number` として永続化する。Mongoose スキーマ、`PUT /user-ui-settings` のバリデータ（`isInt({ min: 1 })` で形式のみ検証し、`toInt()` で数値化）、ハンドラ内の `updateData` allow-list、Swagger コメント、ゲスト用の session 書き込みを `currentProductNavWidth` / `aiChatSelectedModelKey` と同様に対応する。
 - クライアント側は Mastra feature 内に幅 atom と、確定時に `scheduleToPut({ aiChatSidebarWidth })` を呼ぶ派生 atom を置く（`currentProductNavWidth` と同じ形）。初期値の注入は feature 内に `useHydrateChatSidebarAtoms(userUISettings)` を用意し、`apps/app/src/pages/basic-layout-page/hydrate.ts` から呼ぶ（`~/states/ui/sidebar` から feature を import する向きにはしない）。注入時に min/max へクランプする。
 - パラメータ: デフォルト幅 500px、最小幅 360px、最大幅は 960px と「ビューポート幅 − 320px」の小さい方（本文は `tw:max-w-4xl` = 896px で中央寄せされるため、それ以上は余白になる）。
-- Bootstrap の sm ブレークポイント（576px）未満では従来どおり 100% 幅とし、リサイズを無効化する（`useDeviceLargerThanSm`）。
+- Bootstrap の sm ブレークポイント（576px）未満では従来どおり 100% 幅（CSS メディアクエリ）とし、リサイズを無効化する（`useDeviceLargerThanSm`）。
 - ChatSidebar 外側コンテナの `overflow-hidden` がドラッグハンドルをクリップしないように overflow 制御の位置を見直す。SCSS の固定幅（sm 以上 500px）は撤去し、デフォルト幅は atom の初期値に移す。
 - スレッド切替で ChatSidebar が remount されても幅は維持される（atom はグローバル）。リロード後も永続化された幅が復元される。
 - テスト: 純関数 spec、ResizableArea のドラッグ操作 spec（右アンカーの幅計算、disabled 時はハンドル非表示、onCollapsed 未指定時は折りたたまない）、`user-ui-settings.spec.ts` への追加（ログイン時 `$set` 到達、ゲスト時 session、バリデータ受理/拒否）、幅 atom / hydrate フックの spec、`ChatSidebar.spec.tsx` への追加（atom の幅が style に反映、sm 未満でハンドル非表示）。
