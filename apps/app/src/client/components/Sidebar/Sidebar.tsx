@@ -30,7 +30,9 @@ import {
 } from '~/states/ui/sidebar';
 
 import { DrawerToggler } from '../Common/DrawerToggler';
-import type { ResizableAreaProps } from '../Common/ResizableArea/props';
+import type { ResizableAreaProps } from '../Common/ResizableArea';
+// Imported directly, not via the barrel, so ResizableArea itself stays in the
+// dynamically loaded chunk below
 import { ResizableAreaFallback } from '../Common/ResizableArea/ResizableAreaFallback';
 import {
   AppTitleOnEditorSidebarHead,
