@@ -40,7 +40,7 @@
 ### デバイス判定
 - **Sources Consulted**: `apps/app/src/states/ui/device.ts`。
 - **Findings**: `useDeviceLargerThanSm()` が `[isLargerThanSm, set]` を返し、`matchMedia` で sm（576px）境界を監視する。初期値は `false`（SSR 安全）。
-- **Implications**: sm 未満で `disabled` にする判定に流用できる。初期 `false` のため、クライアント初回描画の一瞬は「全幅」になり得るが、ChatSidebar はユーザー操作で開く client-only コンポーネントなので実害はない。
+- **Implications**: sm 未満で `disabled` にする（ハンドルを出さない）判定に流用できる。ただし初期 `false` が `true` に確定するのは mount 後の effect で、atom を確定させる既存の呼び出し元は編集画面の `PageHeader` だけなので、閲覧画面ではチャットのマウント時点では未確定のまま。これを全幅/可変幅の切替に使うと、デスクトップで初回描画が全幅になり、続く width トランジションで縮むのが見える（実機で再現）。全幅の切替は CSS のメディアクエリで行い、JS の判定はハンドルの有無だけに使う。
 
 ## Architecture Pattern Evaluation
 
@@ -95,7 +95,7 @@
 ## Risks & Mitigations
 - 移設と機能追加を同一コミットにすると rename 検出が効かない — 移設のみのコミットを先行させる。
 - 外側 fixed コンテナの `overflow-hidden` がハンドルを隠す — overflow 制御を ResizableArea 側（内側）へ移し、外側は shrink-to-fit にする。
-- `useDeviceLargerThanSm` の初期値 `false` による初回描画の全幅 — client-only・操作後に開くコンポーネントのため実害なし。テストでは hook をモックして両分岐を検証する。
+- `useDeviceLargerThanSm` の初期値 `false` による初回描画の全幅 — 全幅の切替を CSS メディアクエリ（`media-breakpoint-down(sm)` で inline width を `!important` 上書き）に任せ、JS の判定に依存させない。テストでは hook をモックし、判定が `false` のままでも初回から保存幅で描画されることを検証する。
 - 既存の `pageX` → `clientX` 変更 — 横スクロール無しでは同値。左サイドバーの手動スモークで確認。
 
 ## References

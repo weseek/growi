@@ -731,12 +731,10 @@ describe('ChatSidebar — resizable width', () => {
     expect(root?.contains(queryHandle())).toBe(true);
   });
 
-  it('renders full width without a resize handle below the sm breakpoint', () => {
+  it('renders without a resize handle below the sm breakpoint', () => {
     deviceState.isLargerThanSm = false;
-    const { container } = render(<ChatSidebar />);
+    render(<ChatSidebar />);
 
-    const area = container.querySelector<HTMLElement>('.overflow-hidden');
-    expect(area?.style.width).toBe('');
     expect(queryHandle()).toBeNull();
   });
 });

@@ -152,15 +152,23 @@ describe('ChatSidebarResizableContainer', () => {
     });
   });
 
+  // Full width below sm comes from a media query, which happy-dom does not
+  // evaluate; only the JS-driven part is asserted here.
   describe('on a viewport below the sm breakpoint', () => {
-    it('renders full width without a resize handle', () => {
+    it('renders without a resize handle', () => {
       deviceState.isLargerThanSm = false;
       renderContainer();
 
-      expect(getResizableArea().style.width).toBe('');
-      expect(getResizableArea().classList.contains('w-100')).toBe(true);
       expect(queryHandle()).toBeNull();
     });
+  });
+
+  // The breakpoint state starts as false until it resolves after mount
+  it('renders the stored width on the first render, before the breakpoint is known', () => {
+    deviceState.isLargerThanSm = false;
+    renderContainer(640);
+
+    expect(getResizableArea().style.width).toBe('640px');
   });
 
   it('follows the breakpoint when it changes', () => {
@@ -174,7 +182,6 @@ describe('ChatSidebarResizableContainer', () => {
       </ChatSidebarResizableContainer>,
     );
     expect(queryHandle()).toBeNull();
-    expect(getResizableArea().style.width).toBe('');
 
     deviceState.isLargerThanSm = true;
     rerender(

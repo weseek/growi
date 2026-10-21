@@ -17,6 +17,10 @@ import {
 } from '~/features/mastra/states';
 import { useDeviceLargerThanSm } from '~/states/ui/device';
 
+import styles from './ChatSidebarResizableContainer.module.scss';
+
+const areaClass = styles['grw-chat-sidebar-resizable-area'] ?? '';
+
 type Props = {
   children: ReactNode;
 };
@@ -62,17 +66,14 @@ export const ChatSidebarResizableContainer = (props: Props): JSX.Element => {
   // wider screen), so the upper bound is applied on every render, not only
   // while dragging. The stored value itself is left untouched.
   const requestedWidth = draggingWidth ?? storedWidth;
-  const boundedWidth =
+  const width =
     maxWidth == null ? requestedWidth : Math.min(requestedWidth, maxWidth);
 
-  // Below sm the panel is always full width and cannot be resized
-  const width = isLargerThanSm ? boundedWidth : undefined;
-  const widthClass = isLargerThanSm ? '' : 'w-100';
-
+  // Below sm the panel is full width (see the module stylesheet) and cannot be resized
   return (
     <ResizableArea
       anchor="right"
-      className={`h-100 overflow-hidden ${widthClass}`}
+      className={`h-100 overflow-hidden ${areaClass}`}
       width={width}
       minWidth={CHAT_SIDEBAR_WIDTH_MIN}
       maxWidth={maxWidth}

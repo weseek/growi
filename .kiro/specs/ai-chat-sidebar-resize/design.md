@@ -137,6 +137,7 @@ apps/app/src/
 │   └── client/components/ChatSidebar/
 │       ├── ChatSidebarResizableContainer.tsx       # 新規: sm 判定・ローカル幅・atom 接続・ResizableArea 配置
 │       ├── ChatSidebarResizableContainer.spec.tsx  # 新規
+│       ├── ChatSidebarResizableContainer.module.scss # 新規: sm 未満で内側エリアを全幅に上書き
 │       ├── ChatSidebar.tsx                         # 外側コンテナを ResizableContainer で包む
 │       └── ChatSidebar.module.scss                 # 固定幅撤去、sm 未満のみ width: 100%
 ```
@@ -204,7 +205,7 @@ sequenceDiagram
 | 3.6 | 入力エラー拒否 | user-ui-settings ルート validator | API | — |
 | 3.7 | 他設定のみの要求で不変 | ルート（null-strip 既存） | API | — |
 | 3.8 | 既存 API 相乗り | ルート（allow-list, Swagger） | API | — |
-| 4.1 / 4.2 / 4.3 / 4.4 | sm 判定 | ChatSidebarResizableContainer（`useDeviceLargerThanSm`）, ChatSidebar.module.scss | — | — |
+| 4.1 / 4.2 / 4.3 / 4.4 | sm 判定 | ChatSidebarResizableContainer（ハンドル有無は `useDeviceLargerThanSm`、全幅は ChatSidebarResizableContainer.module.scss のメディアクエリ）, ChatSidebar.module.scss | — | — |
 | 5.1 | ハンドルがクリップされない | ChatSidebar（外側 overflow 撤去）, ChatSidebarResizableContainer（内側 overflow-hidden） | — | — |
 | 5.2 | スクロールバー補正維持 | ChatSidebar.module.scss（`margin-right` 維持） | — | — |
 | 5.3 | 横スクロールなし | ChatSidebarResizableContainer（内側 `overflow-hidden`） | — | — |
@@ -342,7 +343,7 @@ export const useHydrateChatSidebarAtoms = (userUISettings?: IUserUISettings): vo
 type Props = { children: React.ReactNode };
 export const ChatSidebarResizableContainer = (props: Props): JSX.Element;
 ```
-- `isLargerThanSm` が false → `ResizableArea` に `disabled` と `width: undefined` を渡し、内側 div は `w-100`（全幅）。true → `width = 現在幅`（ドラッグ中はローカル state、それ以外は atom）。
+- `width` は sm 判定によらず常に現在幅（ドラッグ中はローカル state、それ以外は atom）を渡す。sm 未満の全幅は `ChatSidebarResizableContainer.module.scss` のメディアクエリが inline width を `!important` で上書きして実現する。`isLargerThanSm` は `disabled`（ハンドルの有無）にだけ使う。
 - ビューポート幅を `resize` イベントで追従する state として持ち、`maxWidth = getChatSidebarMaxWidth(viewportWidth)` を描画ごとに算出する。描画する幅は `min(ドラッグ中の幅 ?? 保存幅, maxWidth)` とし、より広い画面で保存された幅や、ウィンドウ縮小後の幅もその場で上限に収める（保存値そのものは書き換えない。2.2 / 3.5）。
 - `onResize` → ローカル state、`onResizeDone` → `setChatSidebarWidth`（atom → `scheduleToPut`）。
 - 内側 div に `h-100 overflow-hidden` を置き（5.3）、外側 fixed コンテナからは `overflow-hidden` と幅指定を外す（5.1）。外側は `position: fixed` の shrink-to-fit で内側幅に一致する。
@@ -350,7 +351,7 @@ export const ChatSidebarResizableContainer = (props: Props): JSX.Element;
 **Implementation Notes**
 - Integration: `ChatSidebar.tsx` の最外 div は `tw-root position-fixed top-0 end-0 h-100 border-start bg-body shadow-sm ${moduleClass}` を維持し、直下を `ChatSidebarResizableContainer` で包む。`ChatSidebar.module.scss` は `width: 100%` を sm 未満のみに限定し、sm 以上の `width: 500px` を削除。`z-index` と `margin-right` 補正は維持（5.2）。
 - Validation: `ChatSidebarResizableContainer.spec.tsx`（`~/states/ui/device` をモックして両分岐）。`ChatSidebar.spec.tsx` は既存モックのまま描画できることを確認。
-- Risks: `useDeviceLargerThanSm` 初期値 `false` による初回一瞬の全幅。client-only・操作後に開くため許容。
+- Risks: `useDeviceLargerThanSm` は初期値 `false` で mount 後に確定するため、全幅の切替に使うとデスクトップで初回描画が全幅になる。全幅は CSS に任せ、判定はハンドルの有無にだけ使う（research.md「デバイス判定」）。
 
 ### Server
 
@@ -394,7 +395,7 @@ export const ChatSidebarResizableContainer = (props: Props): JSX.Element;
 
 ### Component Tests (happy-dom)
 - `ResizableArea.spec.tsx`: `anchor="right"` で mousedown → mousemove(clientX) → `onResize` に `viewportWidth - clientX`（min/max 丸め済み）が渡る。mouseup で `onResizeDone`。`onCollapsed` なしで最小未満の mouseup → `onCollapsed` なし・`onResizeDone` あり。`onCollapsed` ありで最小/2 未満 → `onCollapsed`（左サイドバー互換）。`disabled` → ハンドルが描画されない。
-- `ChatSidebarResizableContainer.spec.tsx`: `useDeviceLargerThanSm` が true → atom の幅が style に反映されハンドルが存在、false → ハンドルなし・全幅クラス。`onResizeDone` 経由で atom が更新される。ビューポート 1000px でドラッグ上限が 680（= 1000 − 320）になること、保存幅 900 が描画時に 680 へ収まり保存値は書き換えられないこと、`resize` 後に上限へ追従すること。
+- `ChatSidebarResizableContainer.spec.tsx`: `useDeviceLargerThanSm` が true → atom の幅が style に反映されハンドルが存在、false → ハンドルなし（全幅はメディアクエリのため happy-dom では検証しない）。判定が false のままでも初回描画から保存幅が style に反映される。`onResizeDone` 経由で atom が更新される。ビューポート 1000px でドラッグ上限が 680（= 1000 − 320）になること、保存幅 900 が描画時に 680 へ収まり保存値は書き換えられないこと、`resize` 後に上限へ追従すること。
 - `ChatSidebar.spec.tsx`（既存＋追加）: 既存ケースが通ること、グローバル atom の幅が style に反映されること、sm 未満でハンドルが描画されないこと、最外コンテナに `overflow-hidden` が無くハンドルがその配下に描画されること（`~/states/ui/device` をモック）。
 
 ### Manual Smoke

@@ -1,0 +1,10 @@
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
+
+// Full width below sm is decided by CSS, not by the JS breakpoint state: that
+// state starts as false and resolves only after mount, which would render the
+// first frame full width on a desktop. !important overrides the inline width.
+.grw-chat-sidebar-resizable-area {
+  @include bs.media-breakpoint-down(sm) {
+    width: 100% !important;
+  }
+}
