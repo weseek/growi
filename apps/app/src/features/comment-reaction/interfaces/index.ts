@@ -1,4 +1,11 @@
 export type {
+  FormatReactionUser,
+  ReactionChip,
+  ReactionUser,
+  ReactionUserRow,
+  ReactionUserSummary,
+} from './reaction-chip';
+export type {
   ParsedReactionKey,
   ReactionKey,
   ReactionKeyError,
