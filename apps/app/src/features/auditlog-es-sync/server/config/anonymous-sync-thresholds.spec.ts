@@ -1,4 +1,5 @@
 import { configManager } from '~/server/service/config-manager';
+import { CONFIG_DEFINITIONS } from '~/server/service/config-manager/config-definition';
 
 import {
   anonymousSyncThresholdConfigKeys,
@@ -61,11 +62,11 @@ describe('getAnonymousSyncThreshold', () => {
   });
 
   it('resolves the shared key for unlisted endpoints to its own configManager key', () => {
-    vi.mocked(configManager.getConfig).mockReturnValue(25000);
+    vi.mocked(configManager.getConfig).mockReturnValue(77);
 
     const threshold = getAnonymousSyncThreshold(OTHER_ENDPOINTS_THRESHOLD_KEY);
 
-    expect(threshold).toBe(25000);
+    expect(threshold).toBe(77);
     expect(configManager.getConfig).toHaveBeenCalledWith(
       'app:auditLogEsSyncAnonymousThresholdOther',
     );
@@ -77,13 +78,19 @@ describe('getAnonymousSyncThreshold', () => {
   it('falls back to the default when the configured value is not a number (e.g. parseInt of "abc")', () => {
     vi.mocked(configManager.getConfig).mockReturnValue(Number.NaN);
 
-    expect(getAnonymousSyncThreshold('/_api/v3/login')).toBe(5000);
+    expect(getAnonymousSyncThreshold('/_api/v3/login')).toBe(
+      CONFIG_DEFINITIONS['app:auditLogEsSyncAnonymousThresholdLogin']
+        .defaultValue,
+    );
   });
 
   it('falls back to the default when the configured value is negative', () => {
     vi.mocked(configManager.getConfig).mockReturnValue(-1);
 
-    expect(getAnonymousSyncThreshold('/_api/v3/register')).toBe(1000);
+    expect(getAnonymousSyncThreshold('/_api/v3/register')).toBe(
+      CONFIG_DEFINITIONS['app:auditLogEsSyncAnonymousThresholdRegister']
+        .defaultValue,
+    );
   });
 
   it('reports an invalid value only once, not on every event', () => {

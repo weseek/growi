@@ -20,10 +20,10 @@ type AnonymousSyncThresholdConfigKey =
 // on syncing anonymous audit logs to Elasticsearch. See decide-es-sync-for-event.ts for
 // how this is applied.
 //
-// Endpoints listed here have their own counter and threshold, derived from their own
-// rate-limiter entry. Every other anonymous log shares a single counter under
-// OTHER_ENDPOINTS_THRESHOLD_KEY — one shared bucket, not one per path, because an
-// attacker controls the path and could otherwise spread a flood across unbounded keys.
+// Endpoints listed here have their own counter and threshold. Every other anonymous
+// log shares a single counter under OTHER_ENDPOINTS_THRESHOLD_KEY — one shared bucket,
+// not one per path, because an attacker controls the path and could otherwise spread
+// a flood across unbounded keys.
 //
 // Keys are `req.originalUrl` shapes (see add-activity.ts) — always carrying GROWI's
 // `/_api/v3` prefix, since a bare route path (e.g. '/login') never matches real traffic.
