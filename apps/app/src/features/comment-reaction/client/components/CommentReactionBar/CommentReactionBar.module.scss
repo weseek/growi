@@ -74,3 +74,10 @@
     }
   }
 }
+
+.reaction-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  align-items: center;
+}
