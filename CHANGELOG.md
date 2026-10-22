@@ -119,7 +119,7 @@
 ### 🐛 Bug Fixes
 
 * fix: Clean pages automatically using cron job (#11513) @arvid-e
-* fix(page-bulk-export): Embed attachment images in exported PDFs (RELAY mode) (#11859) @yuki-takei
+* fix(page-bulk-export): Embed attachment images in exported PDFs (RELAY mode) (#11859) @yuki-takei @gucchy55
 * fix: Enforce access control on revision-by-id and attachment-by-id apiv3 routes (#11810) @yuki-takei
 
 ## [v8.0.2](https://github.com/growilabs/compare/v8.0.1...v8.0.2) - 2026-08-25
