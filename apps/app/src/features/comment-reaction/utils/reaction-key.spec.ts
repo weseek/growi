@@ -1,12 +1,14 @@
 import pickerData from '@emoji-mart/data/sets/15/native.json';
 import emojiNativeLookup from '@growi/emoji-mart-data';
 
+import type { ReactionKey } from '../interfaces';
 import {
   fromPickerSelection,
   normalizeReactionKey,
   parseReactionKey,
   resolveReactionGlyph,
   toSlackReactionName,
+  tryParseReactionKey,
 } from './reaction-key';
 
 type PickerEmoji = { id: string; skins: { native: string }[] };
@@ -159,6 +161,42 @@ describe('parseReactionKey', () => {
       shortcode: '+1',
       skinTone: 5,
     });
+  });
+});
+
+// A persisted key can be malformed or outlive the emoji data, so these inputs bypass normalizeReactionKey.
+const MALFORMED_KEYS = [
+  'garbage',
+  'unicode:',
+  ':+1',
+  'unicode:+1::skin-tone-9',
+  'unicode:+1:extra',
+  'custom:+1',
+];
+
+describe('tryParseReactionKey', () => {
+  it('returns the same result as parseReactionKey for a valid key', () => {
+    const key = unwrap('unicode:+1::skin-tone-3');
+
+    expect(tryParseReactionKey(key)).toEqual(parseReactionKey(key));
+  });
+
+  it.each(
+    MALFORMED_KEYS,
+  )('returns null instead of throwing for "%s"', (key) => {
+    expect(tryParseReactionKey(key)).toBeNull();
+  });
+
+  it('returns null for a well-formed key outside the unicode namespace', () => {
+    expect(tryParseReactionKey('custom:party')).toBeNull();
+  });
+});
+
+describe('parseReactionKey on invalid keys', () => {
+  it.each(MALFORMED_KEYS)('throws for "%s"', (key) => {
+    expect(() => parseReactionKey(key as ReactionKey)).toThrow(
+      `Not a valid reaction key: ${key}`,
+    );
   });
 });
 

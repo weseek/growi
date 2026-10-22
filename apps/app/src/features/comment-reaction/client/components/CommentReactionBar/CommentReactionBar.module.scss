@@ -1,0 +1,53 @@
+// One bordered frame split into two pressable parts. Each part keeps a
+// touch-sized hit area so a tap on one never lands on the other.
+.reaction-chip {
+  display: inline-flex;
+  align-items: stretch;
+  overflow: hidden;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 1rem;
+
+  &.reaction-chip-mine {
+    background-color: var(--bs-primary-bg-subtle);
+    border-color: var(--bs-primary);
+  }
+
+  .reaction-chip-emoji,
+  .reaction-chip-count {
+    min-width: 2.25rem;
+    min-height: 2rem;
+    padding: 0 0.5rem;
+    color: inherit;
+    background: transparent;
+    border: 0;
+  }
+
+  .reaction-chip-emoji {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .reaction-chip-count {
+    font-size: 0.85rem;
+    border-left: 1px solid var(--bs-border-color);
+  }
+
+  button.reaction-chip-emoji:not(:disabled):hover,
+  .reaction-chip-count:hover {
+    background-color: var(--bs-secondary-bg);
+  }
+
+  button:disabled {
+    cursor: default;
+    opacity: 0.6;
+  }
+}
+
+.reaction-users-list {
+  max-height: 12rem;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  list-style: none;
+}

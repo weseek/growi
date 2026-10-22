@@ -105,13 +105,22 @@ export const normalizeReactionKey = (
   return { ok: true, value: buildKey(canonical, skinTone) };
 };
 
-export const parseReactionKey = (key: ReactionKey): ParsedReactionKey => {
+/** Non-throwing counterpart of parseReactionKey, for persisted keys that may outlive the emoji data or be malformed. */
+export const tryParseReactionKey = (key: string): ParsedReactionKey | null => {
   const structure = parseStructure(key);
   if (!structure.ok || structure.value.namespace !== SUPPORTED_NAMESPACE) {
-    throw new Error(`Not a valid reaction key: ${key}`);
+    return null;
   }
   const { shortcode, skinTone } = structure.value;
   return { namespace: SUPPORTED_NAMESPACE, shortcode, skinTone };
+};
+
+export const parseReactionKey = (key: ReactionKey): ParsedReactionKey => {
+  const parsed = tryParseReactionKey(key);
+  if (parsed == null) {
+    throw new Error(`Not a valid reaction key: ${key}`);
+  }
+  return parsed;
 };
 
 /** Strips the namespace: 'unicode:+1::skin-tone-3' -> '+1::skin-tone-3'. */

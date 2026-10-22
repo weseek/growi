@@ -4,4 +4,5 @@ export {
   parseReactionKey,
   resolveReactionGlyph,
   toSlackReactionName,
+  tryParseReactionKey,
 } from './reaction-key';
