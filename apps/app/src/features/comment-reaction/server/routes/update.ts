@@ -6,6 +6,7 @@ import { body, param } from 'express-validator';
 import type { HydratedDocument } from 'mongoose';
 
 import { notFoundOrForbidden } from '~/features/comment/server/routes/not-found-or-forbidden';
+import { getCommentListItem } from '~/features/comment/server/service/comment-get';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
@@ -17,8 +18,15 @@ import { findPageAndMetaDataByViewer } from '~/server/service/page/find-page-and
 import loggerFactory from '~/utils/logger';
 import { prisma } from '~/utils/prisma';
 
-import type { UpdateCommentReactionRequestBody } from '../../dto';
+import type {
+  UpdateCommentReactionRequestBody,
+  UpdateCommentReactionResponseBody,
+} from '../../dto';
 import { normalizeReactionKey } from '../../utils';
+import {
+  addReaction,
+  removeReaction,
+} from '../service/comment-reaction-service';
 
 const logger = loggerFactory('growi:routes:apiv3:comments:reactions:update');
 
@@ -29,7 +37,8 @@ type Req = Request<
   ApiV3Response,
   UpdateCommentReactionRequestBody
 > & {
-  user?: HydratedDocument<IUser>;
+  // loginRequired rejects guests before the handler runs.
+  user: HydratedDocument<IUser>;
 };
 
 /**
@@ -81,7 +90,7 @@ type Req = Request<
  *                    description: true to add the reaction, false to remove it.
  *        responses:
  *          200:
- *            description: The reaction is in the requested state.
+ *            description: The reaction is in the requested state. `comment.reactions` is null when the write succeeded but the reactions could not be read back; refetch the comments in that case.
  *            content:
  *              application/json:
  *                schema:
@@ -110,7 +119,7 @@ type Req = Request<
  *            description: Not authenticated, or the access token lacks the required scope.
  *          404:
  *            description: >
- *              The comment does not exist, or the caller may not view its page.
+ *              The comment does not exist (including when it was deleted while the request ran), or the caller may not view its page.
  *              These cases are deliberately indistinguishable (error code
  *              `notfound_or_forbidden`).
  *            content:
@@ -190,13 +199,46 @@ export const updateCommentReactionRouteHandlersFactory = (
           );
         }
 
-        return res.apiv3Err(
-          new ErrorV3(
-            'Updating a reaction is not available',
-            'comment-reaction-update-unavailable',
-          ),
-          501,
+        const reactionTarget = { commentId: target.id, pageId: target.pageId };
+        const userId = String(req.user._id);
+        let changed: boolean;
+        if (req.body.isReacted) {
+          const added = await addReaction(
+            { prisma },
+            reactionTarget,
+            userId,
+            emoji.value,
+          );
+          if (added.kind === 'kind-limit-exceeded') {
+            return res.apiv3Err(
+              new ErrorV3(
+                'The comment cannot have more kinds of reactions',
+                'reaction-kind-limit-exceeded',
+              ),
+              409,
+            );
+          }
+          changed = added.kind === 'added';
+        } else {
+          const removed = await removeReaction(
+            { prisma },
+            reactionTarget,
+            userId,
+            emoji.value,
+          );
+          changed = removed.kind === 'removed';
+        }
+
+        const comment = await getCommentListItem(
+          { prisma },
+          { commentId: target.id, pageId: target.pageId, viewerId: userId },
         );
+        if (comment == null) {
+          return res.apiv3Err(notFoundOrForbidden(), 404);
+        }
+
+        const body: UpdateCommentReactionResponseBody = { changed, comment };
+        return res.apiv3(body);
       } catch (err) {
         logger.error('Failed to update comment reaction', err);
         return res.apiv3Err(

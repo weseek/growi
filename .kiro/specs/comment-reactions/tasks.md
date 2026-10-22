@@ -150,7 +150,7 @@
   - _Requirements: 4.2, 4.4, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7_
   - _Depends: 2.1, 3.1, 3.5_
 
-- [ ] 5.2 追加・解除を実行し、最新のコメントを返す
+- [x] 5.2 追加・解除を実行し、最新のコメントを返す
   - サービスで追加・解除を行い、状態が変わったかどうかと、書き込みのあとに読み直したコメント(3.4 のサービス)を返す
   - 種類数の上限では 409 `reaction-kind-limit-exceeded` を返し、コメントは読み直さない
   - 読み直しでコメントが無かったときは 404 `notfound_or_forbidden`。読み直しでリアクションだけ取り込めなかったときは 200 で、そのコメントのリアクションは `null`
@@ -299,4 +299,4 @@
 - 3.1:ICommentListItem.reactions を、loadReactionChips の戻り値に合わせて readonly ReactionChip[] | null とした。design.md(249 行目、660 行目)は ReactionChip[] | null のままなので、合わせる必要がある。
 - 3.3:Prisma のデリゲートのメソッド(例: `prisma.commentreactions.findMany`)を `vi.spyOn` して `vi.restoreAllMocks()` すると、そのメソッドが `undefined` になり後続のテストが落ちる。リアクションの取り込みの失敗は、生のコレクションに `emoji` の無い行を入れて再現した。「取り込んで、失敗したらログを残して `null`」の処理(`loadReactionChipsOrNull`)は、3.4 で `features/comment/server/service/load-reaction-chips-or-null.ts` に移し、一覧(`list.ts`)と1件(`getCommentListItem`)の両方から使っている。
 - 3.4:`getCommentListItem({ prisma }, { commentId, pageId, viewerId })` は `ICommentListItem | null`(`null` は「無い」)を返す。3.5 の route と PUT の route はこの null を 404 に変換する。
-- 5.1:PUT の要求・応答の型は、design.md の `interfaces/api.ts` ではなく `features/comment-reaction/dto/update-comment-reaction.ts`(barrel は `dto/index.ts`)に置き、名前は既存の `GetCommentResponseBody` に合わせて `UpdateCommentReactionRequestBody` / `UpdateCommentReactionResponseBody` とした。応答が `ICommentListItem` を含み、層 1 の `interfaces` から `comment` を import できない(`comment/interfaces` → `comment-reaction/interfaces` と循環もする)ため。8.x のクライアントはこの型を使う。handler は対象の解決のあと 501 `comment-reaction-update-unavailable` で終わる仮の応答になっており、5.2 で置き換える。`notFoundOrForbidden()` は `features/comment/server/routes/not-found-or-forbidden.ts` に共通化し、一覧・単体・PUT から使っている。
+- 5.1:PUT の要求・応答の型は、design.md の `interfaces/api.ts` ではなく `features/comment-reaction/dto/update-comment-reaction.ts`(barrel は `dto/index.ts`)に置き、名前は既存の `GetCommentResponseBody` に合わせて `UpdateCommentReactionRequestBody` / `UpdateCommentReactionResponseBody` とした。応答が `ICommentListItem` を含み、層 1 の `interfaces` から `comment` を import できない(`comment/interfaces` → `comment-reaction/interfaces` と循環もする)ため。8.x のクライアントはこの型を使う。`notFoundOrForbidden()` は `features/comment/server/routes/not-found-or-forbidden.ts` に共通化し、一覧・単体・PUT から使っている。

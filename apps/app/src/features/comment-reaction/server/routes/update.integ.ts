@@ -14,6 +14,7 @@ import type { PageDocument, PageModel } from '~/server/models/page';
 import addCustomFunctionToResponse from '~/server/routes/apiv3/response';
 import { prisma } from '~/utils/prisma';
 
+import { MAX_REACTION_KINDS_PER_COMMENT } from '../../interfaces';
 import { updateCommentReactionRouteHandlersFactory } from './update';
 
 // Same harness as comment/server/routes/get.integ.ts: the real middleware chain
@@ -329,6 +330,240 @@ describe('PUT /_api/v3/comments/:id/reactions', () => {
       expect(res.body.errors).toEqual([
         expect.objectContaining({ code: 'invalid-reaction-emoji' }),
       ]);
+    });
+  });
+
+  describe('adding and removing (Requirement 2.1, 2.2, 2.6, 2.7, 2.8, 2.9, 11.3)', () => {
+    const createComment = async (): Promise<string> =>
+      (
+        await prisma.comments.create({
+          data: {
+            pageId: publicPageId,
+            creatorId: String(owner._id),
+            comment: 'comment to react to',
+          },
+        })
+      ).id;
+    const countRows = (commentId: string, userId: string, emoji: string) =>
+      prisma.commentreactions.count({ where: { commentId, userId, emoji } });
+
+    it('adds the requester reaction and returns the comment with its chip', async () => {
+      currentUser = viewer;
+      const commentId = await createComment();
+
+      const res = await putReaction(commentId, VALID_BODY);
+
+      expect(res.status).toBe(200);
+      expect(res.body.changed).toBe(true);
+      expect(res.body.comment.id).toBe(commentId);
+      expect(res.body.comment.reactions).toEqual([
+        expect.objectContaining({
+          emoji: 'unicode:+1',
+          count: 1,
+          reactedByMe: true,
+        }),
+      ]);
+      expect(await countRows(commentId, String(viewer._id), 'unicode:+1')).toBe(
+        1,
+      );
+    });
+
+    it("returns other users' reactions in the chip as well", async () => {
+      currentUser = viewer;
+      const commentId = await createComment();
+      await prisma.commentreactions.create({
+        data: {
+          commentId,
+          pageId: publicPageId,
+          userId: String(owner._id),
+          emoji: 'unicode:+1',
+          createdAt: new Date(),
+        },
+      });
+
+      const res = await putReaction(commentId, VALID_BODY);
+
+      expect(res.status).toBe(200);
+      expect(res.body.comment.reactions).toEqual([
+        expect.objectContaining({
+          emoji: 'unicode:+1',
+          count: 2,
+          reactedByMe: true,
+        }),
+      ]);
+      expect(res.body.comment.reactions[0].users).toHaveLength(2);
+    });
+
+    it('answers changed: false and adds no row when the reaction already exists', async () => {
+      currentUser = viewer;
+      const commentId = await createComment();
+      await putReaction(commentId, VALID_BODY);
+
+      const res = await putReaction(commentId, VALID_BODY);
+
+      expect(res.status).toBe(200);
+      expect(res.body.changed).toBe(false);
+      expect(res.body.comment.reactions).toEqual([
+        expect.objectContaining({ emoji: 'unicode:+1', count: 1 }),
+      ]);
+      expect(await countRows(commentId, String(viewer._id), 'unicode:+1')).toBe(
+        1,
+      );
+    });
+
+    it('removes the reaction, then answers changed: false for a second removal', async () => {
+      currentUser = viewer;
+      const commentId = await createComment();
+      await putReaction(commentId, VALID_BODY);
+
+      const first = await putReaction(commentId, {
+        emoji: 'unicode:+1',
+        isReacted: false,
+      });
+      const second = await putReaction(commentId, {
+        emoji: 'unicode:+1',
+        isReacted: false,
+      });
+
+      expect(first.status).toBe(200);
+      expect(first.body.changed).toBe(true);
+      expect(first.body.comment.reactions).toEqual([]);
+      expect(second.status).toBe(200);
+      expect(second.body.changed).toBe(false);
+      expect(await countRows(commentId, String(viewer._id), 'unicode:+1')).toBe(
+        0,
+      );
+    });
+
+    it('stores an alias under its canonical key', async () => {
+      currentUser = viewer;
+      const commentId = await createComment();
+
+      const res = await putReaction(commentId, {
+        emoji: 'unicode:thumbsup',
+        isReacted: true,
+      });
+
+      expect(res.status).toBe(200);
+      expect(res.body.comment.reactions).toEqual([
+        expect.objectContaining({ emoji: 'unicode:+1' }),
+      ]);
+    });
+
+    it('lets the author react to their own comment', async () => {
+      currentUser = owner;
+      const commentId = await createComment();
+
+      const res = await putReaction(commentId, VALID_BODY);
+
+      expect(res.status).toBe(200);
+      expect(res.body.changed).toBe(true);
+      expect(await countRows(commentId, String(owner._id), 'unicode:+1')).toBe(
+        1,
+      );
+    });
+
+    describe('at the kind limit (Requirement 7.2, 7.3)', () => {
+      const seedFullComment = async (): Promise<string> => {
+        const commentId = await createComment();
+        await prisma.commentreactions.createMany({
+          data: [
+            'unicode:+1',
+            ...Array.from(
+              { length: MAX_REACTION_KINDS_PER_COMMENT - 1 },
+              (_, i) => `unicode:seeded_kind_${i}`,
+            ),
+          ].map((emoji) => ({
+            commentId,
+            pageId: publicPageId,
+            userId: String(owner._id),
+            emoji,
+            createdAt: new Date(),
+          })),
+        });
+        return commentId;
+      };
+
+      it('rejects a new kind with 409 and adds no row', async () => {
+        currentUser = viewer;
+        const commentId = await seedFullComment();
+
+        const res = await putReaction(commentId, {
+          emoji: 'unicode:tada',
+          isReacted: true,
+        });
+
+        expect(res.status).toBe(409);
+        expect(res.body.errors).toEqual([
+          expect.objectContaining({ code: 'reaction-kind-limit-exceeded' }),
+        ]);
+        expect(
+          await countRows(commentId, String(viewer._id), 'unicode:tada'),
+        ).toBe(0);
+      });
+
+      it('still lets the requester add an existing kind', async () => {
+        currentUser = viewer;
+        const commentId = await seedFullComment();
+
+        const res = await putReaction(commentId, VALID_BODY);
+
+        expect(res.status).toBe(200);
+        expect(res.body.changed).toBe(true);
+        expect(res.body.comment.reactions).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({ emoji: 'unicode:+1', count: 2 }),
+          ]),
+        );
+      });
+    });
+
+    it('answers 404 when the comment is gone by the time it is read back', async () => {
+      currentUser = viewer;
+      const commentId = await createComment();
+      const findByIdAndViewer = Page.findByIdAndViewer.bind(Page);
+      vi.spyOn(Page, 'findByIdAndViewer').mockImplementationOnce(
+        async (...args) => {
+          await prisma.comments.delete({ where: { id: commentId } });
+          return findByIdAndViewer(...args);
+        },
+      );
+
+      const res = await putReaction(commentId, VALID_BODY);
+
+      expect(res.status).toBe(404);
+      expect(res.body.errors).toEqual([
+        expect.objectContaining({ code: 'notfound_or_forbidden' }),
+      ]);
+    });
+
+    it('answers 200 with reactions: null when only the reactions cannot be read back', async () => {
+      currentUser = viewer;
+      const commentId = await createComment();
+      // Written around Prisma: a row lacking the required `emoji` makes the reaction read throw.
+      const { insertedId } = await mongoose.connection
+        .collection('commentreactions')
+        .insertOne({
+          comment: new Types.ObjectId(commentId),
+          page: new Types.ObjectId(publicPageId),
+          user: owner._id,
+          createdAt: new Date(),
+        });
+      try {
+        const res = await putReaction(commentId, {
+          emoji: 'unicode:+1',
+          isReacted: false,
+        });
+
+        expect(res.status).toBe(200);
+        expect(res.body.changed).toBe(false);
+        expect(res.body.comment.id).toBe(commentId);
+        expect(res.body.comment.reactions).toBeNull();
+      } finally {
+        await mongoose.connection
+          .collection('commentreactions')
+          .deleteOne({ _id: insertedId });
+      }
     });
   });
 
