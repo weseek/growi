@@ -2,7 +2,10 @@ import { Types } from 'mongoose';
 
 import type { ActivityDocument } from '~/server/models/activity';
 
-import { OTHER_ENDPOINTS_THRESHOLD_KEY } from '../config/anonymous-sync-thresholds';
+import {
+  EXTERNAL_AUTH_THRESHOLD_KEY,
+  OTHER_ENDPOINTS_THRESHOLD_KEY,
+} from '../config/anonymous-sync-thresholds';
 import { decideEsSyncForEvent } from './decide-es-sync-for-event';
 import { filterAdmittedUpserts } from './filter-admitted-upserts';
 
@@ -60,7 +63,32 @@ describe('filterAdmittedUpserts', () => {
   });
 
   it.each([
+    '/passport/google',
+    '/passport/github',
+    '/passport/oidc',
+    '/passport/saml',
     '/passport/google/callback?code=x',
+    '/passport/github/callback',
+    '/passport/oidc/callback',
+    '/passport/saml/callback',
+  ])('gates an anonymous log at external sign-in endpoint %s under its own key', async (endpoint) => {
+    vi.mocked(decideEsSyncForEvent).mockResolvedValue('dropped');
+    const activity = makeActivity({ endpoint });
+
+    const admitted = await filterAdmittedUpserts([activity]);
+
+    expect(admitted).toEqual([]);
+    expect(decideEsSyncForEvent).toHaveBeenCalledWith(
+      activity._id.toString(),
+      EXTERNAL_AUTH_THRESHOLD_KEY,
+      expect.any(Date),
+      expect.any(Number),
+    );
+  });
+
+  it.each([
+    '/passport/unknown-provider',
+    '/passport/github/callback/extra',
     '/_api/v3/complete-registration',
     '/_api/v3/logout',
   ])('gates an anonymous log at unlisted endpoint %s under the shared key', async (endpoint) => {

@@ -3,6 +3,7 @@ import { CONFIG_DEFINITIONS } from '~/server/service/config-manager/config-defin
 
 import {
   anonymousSyncThresholdConfigKeys,
+  EXTERNAL_AUTH_THRESHOLD_KEY,
   getAnonymousSyncThreshold,
   OTHER_ENDPOINTS_THRESHOLD_KEY,
 } from './anonymous-sync-thresholds';
@@ -24,13 +25,15 @@ vi.mock('~/utils/logger', () => ({
 
 describe('anonymousSyncThresholdConfigKeys', () => {
   it('declares the real req.originalUrl shape for each abuse-sensitive endpoint', () => {
-    // Activity.endpoint is req.originalUrl, always carrying GROWI's /_api/v3 prefix —
-    // a bare route path like '/login' never matches real traffic.
+    // Activity.endpoint is req.originalUrl — a bare route path like '/login' never
+    // matches real traffic. API routes carry GROWI's /_api/v3 prefix; the external
+    // sign-in routes live under /passport.
     expect(Object.keys(anonymousSyncThresholdConfigKeys)).toEqual([
       '/_api/v3/login',
       '/_api/v3/register',
       '/_api/v3/forgot-password',
       '/_api/v3/installer',
+      EXTERNAL_AUTH_THRESHOLD_KEY,
     ]);
   });
 });
@@ -58,6 +61,17 @@ describe('getAnonymousSyncThreshold', () => {
 
     expect(configManager.getConfig).toHaveBeenCalledWith(
       'app:auditLogEsSyncAnonymousThresholdForgotPassword',
+    );
+  });
+
+  it('resolves the external sign-in key to its own configManager key', () => {
+    vi.mocked(configManager.getConfig).mockReturnValue(40);
+
+    const threshold = getAnonymousSyncThreshold(EXTERNAL_AUTH_THRESHOLD_KEY);
+
+    expect(threshold).toBe(40);
+    expect(configManager.getConfig).toHaveBeenCalledWith(
+      'app:auditLogEsSyncAnonymousThresholdExternalAuth',
     );
   });
 

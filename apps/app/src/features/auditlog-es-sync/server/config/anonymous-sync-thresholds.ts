@@ -14,6 +14,7 @@ type AnonymousSyncThresholdConfigKey =
   | 'app:auditLogEsSyncAnonymousThresholdRegister'
   | 'app:auditLogEsSyncAnonymousThresholdForgotPassword'
   | 'app:auditLogEsSyncAnonymousThresholdInstaller'
+  | 'app:auditLogEsSyncAnonymousThresholdExternalAuth'
   | 'app:auditLogEsSyncAnonymousThresholdOther';
 
 // Per-endpoint cap (admitted anonymous-log events per 1-minute window, all IPs combined)
@@ -25,8 +26,9 @@ type AnonymousSyncThresholdConfigKey =
 // not one per path, because an attacker controls the path and could otherwise spread
 // a flood across unbounded keys.
 //
-// Keys are `req.originalUrl` shapes (see add-activity.ts) — always carrying GROWI's
-// `/_api/v3` prefix, since a bare route path (e.g. '/login') never matches real traffic.
+// Keys are `req.originalUrl` shapes (see add-activity.ts), so a bare route path (e.g.
+// '/login') never matches real traffic: API routes carry GROWI's `/_api/v3` prefix, and
+// the external sign-in routes live under `/passport`.
 //
 // Values point at configManager keys (config-definition.ts), not raw numbers, so
 // operators (including GROWI.cloud) can override a threshold at runtime via the
@@ -34,6 +36,10 @@ type AnonymousSyncThresholdConfigKey =
 export type AnonymousSyncThresholdConfigKeyMap = {
   [endpoint: string]: AnonymousSyncThresholdConfigKey;
 };
+
+// Every external sign-in route (start and callback, whichever provider) shares one counter.
+export const EXTERNAL_AUTH_THRESHOLD_KEY =
+  '/passport/(?:github|google|oidc|saml)(?:/callback)?';
 
 // Regex-keyed, matching the shape of rate-limiter's defaultConfigWithRegExp so the two
 // stay visually comparable even though their value sources differ.
@@ -44,6 +50,8 @@ export const anonymousSyncThresholdConfigKeys: AnonymousSyncThresholdConfigKeyMa
     '/_api/v3/forgot-password':
       'app:auditLogEsSyncAnonymousThresholdForgotPassword',
     '/_api/v3/installer': 'app:auditLogEsSyncAnonymousThresholdInstaller',
+    [EXTERNAL_AUTH_THRESHOLD_KEY]:
+      'app:auditLogEsSyncAnonymousThresholdExternalAuth',
   };
 
 // Cannot collide with a listed key: every listed key starts with '/'.

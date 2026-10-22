@@ -84,6 +84,7 @@ export const CONFIG_KEYS = [
   'app:auditLogEsSyncAnonymousThresholdRegister',
   'app:auditLogEsSyncAnonymousThresholdForgotPassword',
   'app:auditLogEsSyncAnonymousThresholdInstaller',
+  'app:auditLogEsSyncAnonymousThresholdExternalAuth',
   'app:auditLogEsSyncAnonymousThresholdOther',
   'app:serviceType',
   'app:deploymentType',
@@ -576,17 +577,23 @@ export const CONFIG_DEFINITIONS = {
   }),
   'app:auditLogEsSyncAnonymousThresholdForgotPassword': defineConfig<number>({
     envVarName: 'ANONYMOUS_ES_SYNC_THRESHOLD_FORGOT_PASSWORD',
-    defaultValue: 25,
+    defaultValue: 10,
   }),
   'app:auditLogEsSyncAnonymousThresholdInstaller': defineConfig<number>({
     envVarName: 'ANONYMOUS_ES_SYNC_THRESHOLD_INSTALLER',
-    defaultValue: 5,
+    defaultValue: 3,
   }),
-  // Shared by every endpoint not listed in anonymous-sync-thresholds.ts. Attackers
-  // can pick these paths, so the cap stays small.
+  // Failed sign-ins through external providers (OAuth/OIDC/SAML), shared across them.
+  // Like login: rare in normal operation, bursty when an identity provider is down.
+  'app:auditLogEsSyncAnonymousThresholdExternalAuth': defineConfig<number>({
+    envVarName: 'ANONYMOUS_ES_SYNC_THRESHOLD_EXTERNAL_AUTH',
+    defaultValue: 50,
+  }),
+  // Shared by every endpoint not listed in anonymous-sync-thresholds.ts, so an
+  // attacker spreading a flood across arbitrary paths cannot raise the total.
   'app:auditLogEsSyncAnonymousThresholdOther': defineConfig<number>({
     envVarName: 'ANONYMOUS_ES_SYNC_THRESHOLD_OTHER',
-    defaultValue: 50,
+    defaultValue: 100,
   }),
   'app:serviceType': defineConfig<GrowiServiceType>({
     envVarName: 'SERVICE_TYPE',
