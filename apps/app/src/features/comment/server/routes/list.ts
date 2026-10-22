@@ -1,5 +1,5 @@
 import type { IUser } from '@growi/core';
-import { isIPageNotFoundInfo, SCOPE } from '@growi/core';
+import { SCOPE } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler } from 'express';
 import { query } from 'express-validator';
@@ -11,7 +11,6 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { setup as certifySharedPageFactory } from '~/server/middlewares/certify-shared-page';
 import loginRequiredFactory from '~/server/middlewares/login-required';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
-import { findPageAndMetaDataByViewer } from '~/server/service/page/find-page-and-meta-data-by-viewer';
 import loggerFactory from '~/utils/logger';
 import { prisma } from '~/utils/prisma';
 
@@ -19,6 +18,7 @@ import type {
   ListCommentsRequestQuery,
   ListCommentsResponseBody,
 } from '../../interfaces';
+import { canViewCommentsOfPage } from '../authorization/can-view-comments-of-page';
 import { toCommentListItem } from '../serializers/to-comment-list-item';
 import { type ListCommentsInput, listComments } from '../service/comment-list';
 
@@ -292,20 +292,6 @@ export const listCommentsRouteHandlersFactory = (
     query('shareLinkId').optional().isString().bail().isMongoId(),
   ];
 
-  // Trust only the flag set by certifySharedPage, which verified that the
-  // share link belongs to this pageId; never the raw shareLinkId query.
-  const canViewPage = async (req: Req): Promise<boolean> => {
-    if (req.isSharedPage === true) {
-      return true;
-    }
-    const { meta } = await findPageAndMetaDataByViewer(
-      pageService,
-      pageGrantService,
-      { pageId: req.query.pageId, path: null, user: req.user, basicOnly: true },
-    );
-    return !isIPageNotFoundInfo(meta);
-  };
-
   // revisionId is dropped on share-link access (see design.md, list route).
   const toListInput = (req: Req): ListCommentsInput =>
     req.isSharedPage === true
@@ -320,7 +306,12 @@ export const listCommentsRouteHandlersFactory = (
     loginRequired,
     async (req: Req, res: ApiV3Response) => {
       try {
-        if (!(await canViewPage(req))) {
+        if (
+          !(await canViewCommentsOfPage(
+            { pageService, pageGrantService },
+            { req, pageId: req.query.pageId },
+          ))
+        ) {
           return res.apiv3Err(notFoundOrForbidden(), 404);
         }
 
