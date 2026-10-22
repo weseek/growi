@@ -28,6 +28,7 @@ import { CommentEditor } from '~/client/components/PageComment/CommentEditor';
 import { CommentRevisionLink } from '~/client/components/PageComment/CommentRevisionLink';
 import { DeleteConfirmAlert } from '~/client/components/PageComment/DeleteConfirmAlert';
 import RevisionRenderer from '~/components/PageView/RevisionRenderer';
+import { CommentReactionBar } from '~/features/comment-reaction/client';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useCurrentUser } from '~/states/global';
 
@@ -150,6 +151,11 @@ const InlineCommentReplyItem: FC<InlineCommentReplyItemProps> = (
           }
           footer={
             <>
+              <CommentReactionBar
+                pageId={pageId}
+                commentId={reply.id}
+                isReadOnly={false}
+              />
               {deleteError != null && (
                 <span
                   className="text-danger d-block"

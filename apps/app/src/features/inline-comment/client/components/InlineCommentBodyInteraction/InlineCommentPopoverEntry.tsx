@@ -30,6 +30,7 @@ import { DeleteConfirmAlert } from '~/client/components/PageComment/DeleteConfir
 import RevisionRenderer from '~/components/PageView/RevisionRenderer';
 import { Username } from '~/components/User/Username';
 import type { ICommentCreatorSummary } from '~/features/comment/interfaces';
+import { CommentReactionBar } from '~/features/comment-reaction/client';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 
 import { MentionPickerButton } from '../InlineCommentForm/MentionPickerButton';
@@ -40,6 +41,7 @@ import styles from './InlineCommentPreviewPopover.module.scss';
 
 type InlineCommentPopoverEntryProps = {
   id: string;
+  pageId: string;
   /** `null` when the creator relation could not be resolved, as both comment DTOs allow. */
   creator: ICommentCreatorSummary | null;
   /**
@@ -69,6 +71,7 @@ export const InlineCommentPopoverEntry = (
 ): JSX.Element => {
   const {
     id,
+    pageId,
     creator,
     createdAt,
     commentText,
@@ -250,6 +253,8 @@ export const InlineCommentPopoverEntry = (
           )}
         </div>
       )}
+
+      <CommentReactionBar pageId={pageId} commentId={id} isReadOnly={false} />
 
       {editError != null && (
         <span

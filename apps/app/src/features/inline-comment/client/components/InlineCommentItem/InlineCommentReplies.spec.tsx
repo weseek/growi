@@ -37,6 +37,21 @@ import { InlineCommentReplies } from './InlineCommentReplies';
 // successful submit both close it back to the toggle button".
 // ---------------------------------------------------------------------------
 
+vi.mock('~/features/comment-reaction/client', () => ({
+  CommentReactionBar: (props: {
+    pageId: string;
+    commentId: string;
+    isReadOnly: boolean;
+  }) => (
+    <div
+      data-testid="comment-reaction-bar"
+      data-page-id={props.pageId}
+      data-comment-id={props.commentId}
+      data-read-only={String(props.isReadOnly)}
+    />
+  ),
+}));
+
 // `InlineCommentReplyItem` reuses `InlineCommentItem.module.scss`'s
 // `.icon-button-container` hover-visibility rule via import, not by
 // duplicating a new rule -- see InlineCommentReplies.tsx's top-of-file
@@ -727,5 +742,22 @@ describe('InlineCommentReplies', () => {
 
       expect(link?.closest('.icon-button-container')).not.toBeNull();
     });
+  });
+});
+
+describe('InlineCommentReplies — reaction bar', () => {
+  it('shows one reaction bar per reply, keyed to that reply', () => {
+    renderReplies({
+      replies: [reply({ id: 'reply1' }), reply({ id: 'reply2' })],
+    });
+
+    const bars = screen.getAllByTestId('comment-reaction-bar');
+    expect(
+      bars.map((bar) => bar.getAttribute('data-comment-id')).sort(),
+    ).toEqual(['reply1', 'reply2']);
+    for (const bar of bars) {
+      expect(bar).toHaveAttribute('data-page-id', 'page1');
+      expect(bar).toHaveAttribute('data-read-only', 'false');
+    }
   });
 });

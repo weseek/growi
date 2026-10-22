@@ -44,6 +44,21 @@ const mockCreatePopper = vi.fn(
   }),
 );
 
+vi.mock('~/features/comment-reaction/client', () => ({
+  CommentReactionBar: (props: {
+    pageId: string;
+    commentId: string;
+    isReadOnly: boolean;
+  }) => (
+    <div
+      data-testid="comment-reaction-bar"
+      data-page-id={props.pageId}
+      data-comment-id={props.commentId}
+      data-read-only={String(props.isReadOnly)}
+    />
+  ),
+}));
+
 vi.mock('@popperjs/core', () => ({
   createPopper: (reference: unknown, popper: unknown, options: unknown) =>
     mockCreatePopper(reference, popper, options),
@@ -1276,5 +1291,22 @@ describe('InlineCommentPreviewPopover', () => {
     await userEvent.click(picker);
 
     expect(commentInputControls.insertMention).toHaveBeenCalledWith('alice');
+  });
+});
+
+describe('InlineCommentPreviewPopover — reaction bar', () => {
+  it('shows a reaction bar for the origin comment and for each reply', () => {
+    renderPopover({
+      replies: [reply({ id: 'reply1' }), reply({ id: 'reply2' })],
+    });
+
+    const bars = screen.getAllByTestId('comment-reaction-bar');
+    expect(
+      bars.map((bar) => bar.getAttribute('data-comment-id')).sort(),
+    ).toEqual(['comment1', 'reply1', 'reply2']);
+    for (const bar of bars) {
+      expect(bar).toHaveAttribute('data-page-id', 'page1');
+      expect(bar).toHaveAttribute('data-read-only', 'false');
+    }
   });
 });

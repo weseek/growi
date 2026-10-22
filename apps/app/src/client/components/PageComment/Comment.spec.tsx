@@ -29,6 +29,21 @@ import type { ICommentHasId } from '../../../interfaces/comment';
 // chain that Req 13.9 cares about, without depending on their internals.
 // ---------------------------------------------------------------------------
 
+vi.mock('~/features/comment-reaction/client', () => ({
+  CommentReactionBar: (props: {
+    pageId: string;
+    commentId: string;
+    isReadOnly: boolean;
+  }) => (
+    <div
+      data-testid="comment-reaction-bar"
+      data-page-id={props.pageId}
+      data-comment-id={props.commentId}
+      data-read-only={String(props.isReadOnly)}
+    />
+  ),
+}));
+
 vi.mock('./Comment.module.scss', () => ({
   default: { 'comment-styles': 'comment-styles' },
 }));
@@ -326,5 +341,26 @@ describe('Comment — delete confirmation (design.md: 削除確認UIの共通化
       screen.queryByTestId('comment-delete-confirm'),
     ).not.toBeInTheDocument();
     expect(screen.getByTestId('revision-renderer')).toBeInTheDocument();
+  });
+});
+
+describe('Comment — reaction bar', () => {
+  it('shows the reaction bar for this comment inside the comment box', () => {
+    const { container } = renderComment(baseComment, { isReadOnly: false });
+
+    const bar = screen.getByTestId('comment-reaction-bar');
+    expect(bar).toHaveAttribute('data-page-id', 'page1');
+    expect(bar).toHaveAttribute('data-comment-id', baseComment._id);
+    expect(bar).toHaveAttribute('data-read-only', 'false');
+    expect(container.querySelector('.page-comment-main')).toContainElement(bar);
+  });
+
+  it('hands the bar a read-only flag when the hosting view is read-only', () => {
+    renderComment(baseComment, { isReadOnly: true });
+
+    expect(screen.getByTestId('comment-reaction-bar')).toHaveAttribute(
+      'data-read-only',
+      'true',
+    );
   });
 });

@@ -29,6 +29,21 @@ import type { InlineCommentWithReplies } from '../../../interfaces';
 // replies subtree is a separate component with its own spec.
 // ---------------------------------------------------------------------------
 
+vi.mock('~/features/comment-reaction/client', () => ({
+  CommentReactionBar: (props: {
+    pageId: string;
+    commentId: string;
+    isReadOnly: boolean;
+  }) => (
+    <div
+      data-testid="comment-reaction-bar"
+      data-page-id={props.pageId}
+      data-comment-id={props.commentId}
+      data-read-only={String(props.isReadOnly)}
+    />
+  ),
+}));
+
 // `inline-comment-quote` is declared as `:global(.inline-comment-quote)` in the
 // real SCSS, so CSS Modules never adds it to the JS-side lookup table — the
 // mock must not fabricate that key, or a regression where the component reads
@@ -1357,5 +1372,30 @@ describe('InlineCommentItem', () => {
         screen.getByText('inline_comment.resolve').closest('button'),
       ).toBeDisabled();
     });
+  });
+});
+
+describe('InlineCommentItem — reaction bar', () => {
+  it('shows the reaction bar for the origin comment', () => {
+    const { container } = renderItem();
+
+    const bar = screen.getByTestId('comment-reaction-bar');
+    expect(bar).toHaveAttribute('data-page-id', 'page1');
+    expect(bar).toHaveAttribute('data-comment-id', 'comment1');
+    expect(bar).toHaveAttribute('data-read-only', 'false');
+    expect(getMain(container)).toContainElement(bar);
+  });
+
+  it('does not show the reaction bar in the collapsed resolved display', () => {
+    renderItem(
+      {
+        resolvedById: 'user1',
+        resolvedAt: new Date('2026-01-02T00:00:00.000Z'),
+      },
+      {},
+      { collapsed: true },
+    );
+
+    expect(screen.queryByTestId('comment-reaction-bar')).toBeNull();
   });
 });

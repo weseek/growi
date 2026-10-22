@@ -4,6 +4,7 @@ import { format } from 'date-fns/format';
 import { parseISO } from 'date-fns/parseISO';
 import { UncontrolledTooltip } from 'reactstrap';
 
+import { CommentReactionBar } from '~/features/comment-reaction/client';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 
 import RevisionRenderer from '../../../components/PageView/RevisionRenderer';
@@ -226,6 +227,11 @@ export const Comment = (props: CommentProps): JSX.Element => {
                   </>
                 )}
               </div>
+              <CommentReactionBar
+                pageId={pageId}
+                commentId={commentId}
+                isReadOnly={isReadOnly}
+              />
               {deleteError != null && (
                 <span
                   className="text-danger d-block"
