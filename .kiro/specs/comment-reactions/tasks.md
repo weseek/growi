@@ -128,7 +128,7 @@
   - _Requirements: 6.1, 6.4, 11.2, 11.6_
   - _Depends: 3.2, 3.4_
 
-- [ ] 4. (P) 監査ログの action と snapshot の拡張
+- [x] 4. (P) 監査ログの action と snapshot の拡張
   - リアクションの追加・解除の2つの action を、既存のコメントの操作と同じグループ(Medium)に足し、通知に使うグループには入れない。監査ログの「コメント」の分類に自動で入ることを確かめる
   - snapshot に絵文字を持つ variant を足し、全 variant の項目を任意で持つ型を定義する。Prisma の snapshot の型に絵文字の項目を足す(Mongoose のスキーマには足さない)
   - snapshot を保存する2つの口(作成時と更新時)が、新しい型で読み、絵文字を保存するようにする

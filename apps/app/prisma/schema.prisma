@@ -37,6 +37,7 @@ type ActivitiesSnapshot {
   pagePath     String?
   pageId       String? @db.ObjectId
   fileSize     Int?
+  emoji        String?
 }
 
 type PageoperationsExPage {
