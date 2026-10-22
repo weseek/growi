@@ -7,6 +7,11 @@ import type { HydratedDocument } from 'mongoose';
 
 import { notFoundOrForbidden } from '~/features/comment/server/routes/not-found-or-forbidden';
 import { getCommentListItem } from '~/features/comment/server/service/comment-get';
+import {
+  SupportedAction,
+  SupportedEventModel,
+  SupportedTargetModel,
+} from '~/interfaces/activity';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
@@ -22,6 +27,7 @@ import type {
   UpdateCommentReactionRequestBody,
   UpdateCommentReactionResponseBody,
 } from '../../dto';
+import type { ReactionKey } from '../../interfaces';
 import { normalizeReactionKey } from '../../utils';
 import {
   addReaction,
@@ -40,6 +46,88 @@ type Req = Request<
   // loginRequired rejects guests before the handler runs.
   user: HydratedDocument<IUser>;
 };
+
+type ReactionTarget = { commentId: string; pageId: string };
+
+type Reaction = ReactionTarget & { emoji: ReactionKey };
+
+type ApplyReactionResult =
+  | { kind: 'kind-limit-exceeded' }
+  | { kind: 'applied'; changed: boolean };
+
+// Null covers a missing comment and a page the viewer cannot see alike, so
+// callers cannot tell the two apart.
+const resolveViewableComment = async (
+  { pageService, pageGrantService }: Crowi,
+  req: Req,
+): Promise<ReactionTarget | null> => {
+  const comment = await prisma.comments.findUnique({
+    where: { id: req.params.id },
+    select: { id: true, pageId: true },
+  });
+  if (comment == null) {
+    return null;
+  }
+
+  const { meta } = await findPageAndMetaDataByViewer(
+    pageService,
+    pageGrantService,
+    { pageId: comment.pageId, path: null, user: req.user, basicOnly: true },
+  );
+  if (isIPageNotFoundInfo(meta)) {
+    return null;
+  }
+  return { commentId: comment.id, pageId: comment.pageId };
+};
+
+const applyReaction = async (
+  { emoji, ...target }: Reaction,
+  userId: string,
+  isReacted: boolean,
+): Promise<ApplyReactionResult> => {
+  if (isReacted) {
+    const added = await addReaction({ prisma }, target, userId, emoji);
+    return added.kind === 'kind-limit-exceeded'
+      ? { kind: 'kind-limit-exceeded' }
+      : { kind: 'applied', changed: added.kind === 'added' };
+  }
+  const removed = await removeReaction({ prisma }, target, userId, emoji);
+  return { kind: 'applied', changed: removed.kind === 'removed' };
+};
+
+// Emit before res.apiv3() — see rules/activity-recording.md.
+const recordReactionActivity = (
+  crowi: Crowi,
+  req: Req,
+  res: ApiV3Response,
+  { emoji, ...target }: Reaction,
+): void => {
+  crowi.events.activity.emit('update', res.locals.activity._id, {
+    action: req.body.isReacted
+      ? SupportedAction.ACTION_COMMENT_REACTION_ADD
+      : SupportedAction.ACTION_COMMENT_REACTION_REMOVE,
+    target: target.pageId,
+    targetModel: SupportedTargetModel.MODEL_PAGE,
+    event: target.commentId,
+    eventModel: SupportedEventModel.MODEL_COMMENT,
+    snapshot: { username: req.user.username, emoji },
+  });
+};
+
+const invalidReactionEmojiError = (): ErrorV3 =>
+  new ErrorV3('Emoji is not a usable reaction', 'invalid-reaction-emoji');
+
+const kindLimitExceededError = (): ErrorV3 =>
+  new ErrorV3(
+    'The comment cannot have more kinds of reactions',
+    'reaction-kind-limit-exceeded',
+  );
+
+const updateFailedError = (): ErrorV3 =>
+  new ErrorV3(
+    'Failed to update comment reaction',
+    'comment-reaction-update-failed',
+  );
 
 /**
  * @swagger
@@ -146,7 +234,6 @@ export const updateCommentReactionRouteHandlersFactory = (
 ): RequestHandler[] => {
   const loginRequired = loginRequiredFactory(crowi, false);
   const addActivity = generateAddActivityMiddleware();
-  const { pageService, pageGrantService } = crowi;
 
   const validator = [
     param('id').isMongoId(),
@@ -164,90 +251,49 @@ export const updateCommentReactionRouteHandlersFactory = (
     apiV3FormValidator,
     async (req: Req, res: ApiV3Response) => {
       try {
-        const target = await prisma.comments.findUnique({
-          where: { id: req.params.id },
-          select: { id: true, pageId: true },
-        });
-        if (target == null) {
-          return res.apiv3Err(notFoundOrForbidden(), 404);
-        }
-
         // The page check runs before the emoji check, so an invalid emoji
         // cannot tell a forbidden comment from a missing one.
-        const { meta } = await findPageAndMetaDataByViewer(
-          pageService,
-          pageGrantService,
-          {
-            pageId: target.pageId,
-            path: null,
-            user: req.user,
-            basicOnly: true,
-          },
-        );
-        if (isIPageNotFoundInfo(meta)) {
+        const target = await resolveViewableComment(crowi, req);
+        if (target == null) {
           return res.apiv3Err(notFoundOrForbidden(), 404);
         }
 
         const emoji = normalizeReactionKey(req.body.emoji);
         if (!emoji.ok) {
-          return res.apiv3Err(
-            new ErrorV3(
-              'Emoji is not a usable reaction',
-              'invalid-reaction-emoji',
-            ),
-            400,
-          );
+          return res.apiv3Err(invalidReactionEmojiError(), 400);
         }
 
-        const reactionTarget = { commentId: target.id, pageId: target.pageId };
+        const reaction = { ...target, emoji: emoji.value };
         const userId = String(req.user._id);
-        let changed: boolean;
-        if (req.body.isReacted) {
-          const added = await addReaction(
-            { prisma },
-            reactionTarget,
-            userId,
-            emoji.value,
-          );
-          if (added.kind === 'kind-limit-exceeded') {
-            return res.apiv3Err(
-              new ErrorV3(
-                'The comment cannot have more kinds of reactions',
-                'reaction-kind-limit-exceeded',
-              ),
-              409,
-            );
-          }
-          changed = added.kind === 'added';
-        } else {
-          const removed = await removeReaction(
-            { prisma },
-            reactionTarget,
-            userId,
-            emoji.value,
-          );
-          changed = removed.kind === 'removed';
+        const result = await applyReaction(
+          reaction,
+          userId,
+          req.body.isReacted,
+        );
+        if (result.kind === 'kind-limit-exceeded') {
+          return res.apiv3Err(kindLimitExceededError(), 409);
         }
 
         const comment = await getCommentListItem(
           { prisma },
-          { commentId: target.id, pageId: target.pageId, viewerId: userId },
+          { ...target, viewerId: userId },
         );
         if (comment == null) {
           return res.apiv3Err(notFoundOrForbidden(), 404);
         }
 
-        const body: UpdateCommentReactionResponseBody = { changed, comment };
-        return res.apiv3(body);
+        if (result.changed) {
+          recordReactionActivity(crowi, req, res, reaction);
+        }
+
+        const responseBody: UpdateCommentReactionResponseBody = {
+          changed: result.changed,
+          comment,
+        };
+        return res.apiv3(responseBody);
       } catch (err) {
         logger.error('Failed to update comment reaction', err);
-        return res.apiv3Err(
-          new ErrorV3(
-            'Failed to update comment reaction',
-            'comment-reaction-update-failed',
-          ),
-          500,
-        );
+        return res.apiv3Err(updateFailedError(), 500);
       }
     },
   ];
