@@ -387,11 +387,18 @@
     largest plans first. A script takes a comma-separated batch of ids, processes them one at a
     time, aborts on the first failure, and never chains batches; a person checks Grafana (shared
     MongoDB I/O, CPU, memory) between batches. Batch size starts near 5 and grows to 10 and 20;
-    the target is about 50 apps a day. The backfill wave procedure reuses this shape with one
-    difference: `createIndex` returns when it finishes, but setting `startRequested` returns at
-    once, so the wave script must poll `status` / `completedAt` / `lastError` and stop on `failed`
-    before moving to the next app or batch. The index build and the backfill both load `revisions`,
-    so if backlinks ships with or shortly after v8 the index pre-creation goes first.
+    the plan was about 50 apps a day, but the run recorded on the page covered every plan group on
+    2026-07-07 (batches of 5 to 10), and a 30-app sample (20 random, 10 of the largest or slowest)
+    all had the index afterwards. That pace does not predict the backfill's: a `createIndex` took
+    seconds to about two minutes per app (the largest, 14 GB of revisions, 109 s), while the
+    backfill runs for much longer under its duty cycle, and its per-app time is not measured yet.
+    The backfill wave procedure reuses this shape with one difference: `createIndex` returns when
+    it finishes, but setting `startRequested` returns at once, so the wave script must poll
+    `status` / `completedAt` / `lastError` and stop on `failed` before moving to the next app or
+    batch. Starting apps in parallel also needs a per-cluster concurrency cap, which the
+    sequential index script never had; it is chosen from B3.2's measured per-app load and
+    Grafana, not from this precedent. A sample check after the waves (the `complete` status plus a
+    spot check of rows) mirrors the verification the index run used.
   - *Considered, not adopted for the cloud start*: an env var per wave (needs a restart per wave);
     tying waves to staged releases (couples release timing to backfill duration, which nothing
     enforces); a hashed per-app start offset (spreads starts but neither avoids overlap nor caps
@@ -421,7 +428,7 @@
   - *Still to confirm with the infra team*: that `GROWI_CLOUD_URI` is set on every cloud app; that
     they are comfortable setting and reading one field on each app's job document directly, and
     how they will watch progress across apps; the cluster headroom and which apps share which
-    cluster; and the ordering against the v8 index pre-creation. The backfill load they would be
+    cluster. The backfill load they would be
     shown is estimated, not measured — B3.2's performance run replaces the estimates.
   Implementation reuses the page-bulk-export scaffolding:
   `CronService` base, `createBatchStream`, the cursor→resume(progress marker)→`pipeline` skeleton, and
