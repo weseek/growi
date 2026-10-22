@@ -204,7 +204,7 @@ apps/app/src/features/backlinks/
 │   │   ├── page-link.ts          # Prisma extension (Prisma.defineExtension) — the pagelinks model methods
 │   │   ├── page-link-indexes.ts  # index declaration + ensurePageLinkIndexes (integ harness; production uses the migration)
 │   │   ├── throw-on-write-errors.ts    # $runCommandRaw replies carry writeErrors/writeConcernError inside ok:1 — throw on both
-│   │   └── page-link-backfill-job.ts   # (B3) Mongoose model: backfill progress marker + atomic claim (multi-instance)
+│   │   └── page-link-backfill-job.ts   # (B3.1) Prisma extension on the prisma-only `pagelinkbackfilljobs` collection: job state + atomic claim (multi-instance)
 │   ├── services/
 │   │   ├── extract-internal-link-paths.ts  # pure: (markdown, pagePath, siteUrl?) => Promise<string[]> (resolved, deduped)
 │   │   ├── target-page-resolution.ts   # toPaths -> Map<toPath, toPage id> (permalink by id | findByPath + redirect) — live path only
