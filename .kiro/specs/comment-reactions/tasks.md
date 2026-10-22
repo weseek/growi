@@ -102,7 +102,7 @@
   - 完了の状態: 判定の結合テストと一覧の既存の結合テストが変更なしで通る
   - _Requirements: 6.1_
 
-- [ ] 3.3 コメント一覧の応答の各コメントにリアクションを載せる
+- [x] 3.3 コメント一覧の応答の各コメントにリアクションを載せる
   - 一覧の取得のあと、ローダーで要求者(ゲストは無し)から見たチップを取り込み、整形に渡す
   - ローダーが失敗したときは、ログを残して全コメントのリアクションを `null` にして返す。コメント自体の取得の失敗は従来どおり 500
   - 公開仕様の一覧の1件の記述に、リアクションの項目(チップの各項目と `null` の意味)を足す
@@ -297,3 +297,4 @@
 - 2.1 のレビューで判明:アーカイブや G2G からのインポートでは、emoji が normalizeReactionKey を通らずに保存されるため、正規形でないキーが検証をすり抜ける可能性がある。どのタスクで扱うかは未定で、PR でレビュアーに確認する予定。
 - 2.4 の実装:サービスは design.md の Service Interface と異なり、ローダーと同じく依存を先頭に取る関数 `addReaction({ prisma }, target, userId, emoji)` / `removeReaction(...)` として公開している(route タスクはこの形で呼ぶ)。種類数の上限の判定は同時の別種追加で 1〜2 件超過しうる(許容)。結合テストは `MONGO_URI` を設定して実 DB(一意インデックスのあるクローン)で実行すること。
 - 3.1:ICommentListItem.reactions を、loadReactionChips の戻り値に合わせて readonly ReactionChip[] | null とした。design.md(249 行目、660 行目)は ReactionChip[] | null のままなので、合わせる必要がある。
+- 3.3:Prisma のデリゲートのメソッド(例: `prisma.commentreactions.findMany`)を `vi.spyOn` して `vi.restoreAllMocks()` すると、そのメソッドが `undefined` になり後続のテストが落ちる。リアクションの取り込みの失敗は、生のコレクションに `emoji` の無い行を入れて再現した。「取り込んで、失敗したらログを残して `null`」の処理(`loadReactionChipsOrNull`)は今は `list.ts` にあるので、3.4 で共有の場所へ移すこと。

@@ -5,6 +5,10 @@ import type { Request, RequestHandler } from 'express';
 import { query } from 'express-validator';
 import type { HydratedDocument } from 'mongoose';
 
+import {
+  loadReactionChips,
+  type ReactionChip,
+} from '~/features/comment-reaction/server';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
@@ -19,7 +23,10 @@ import type {
   ListCommentsResponseBody,
 } from '../../interfaces';
 import { canViewCommentsOfPage } from '../authorization/can-view-comments-of-page';
-import { toCommentListItem } from '../serializers/to-comment-list-item';
+import {
+  toCommentListItem,
+  toCreatorSummary,
+} from '../serializers/to-comment-list-item';
 import { type ListCommentsInput, listComments } from '../service/comment-list';
 
 const logger = loggerFactory('growi:routes:apiv3:comments:list');
@@ -38,6 +45,22 @@ type Req = Request<
 // the response never tells which one it was (rules/page-write-action-403-404.md).
 const notFoundOrForbidden = (): ErrorV3 =>
   new ErrorV3('Page is not found or forbidden', 'notfound_or_forbidden');
+
+// A reaction load failure must not hide the comments: it yields null instead.
+const loadReactionChipsOrNull = async (
+  commentIds: readonly string[],
+  viewerId: string | null,
+): Promise<ReadonlyMap<string, readonly ReactionChip[]> | null> => {
+  try {
+    return await loadReactionChips(
+      { prisma },
+      { commentIds, viewerId, formatUser: toCreatorSummary },
+    );
+  } catch (err) {
+    logger.error('Failed to load comment reactions', err);
+    return null;
+  }
+};
 
 /**
  * @swagger
@@ -76,6 +99,7 @@ const notFoundOrForbidden = (): ErrorV3 =>
  *          - anchorOriginRevisionId
  *          - resolvedById
  *          - resolvedAt
+ *          - reactions
  *        properties:
  *          _id:
  *            type: string
@@ -196,6 +220,70 @@ const notFoundOrForbidden = (): ErrorV3 =>
  *            format: date-time
  *            nullable: true
  *            description: Inline only. When the thread was resolved. Null while unresolved.
+ *          reactions:
+ *            type: array
+ *            nullable: true
+ *            description: >
+ *              Emoji reactions on this comment, one chip per emoji (skin-tone
+ *              variants are separate chips), ordered by when the earliest
+ *              remaining reaction of each emoji was added. An empty array means
+ *              the comment has no reactions; null means the reactions could not
+ *              be loaded (the comments are still returned).
+ *            items:
+ *              $ref: '#/components/schemas/CommentReactionChip'
+ *      CommentReactionChip:
+ *        description: The reactions of one emoji on a comment.
+ *        type: object
+ *        additionalProperties: false
+ *        required:
+ *          - emoji
+ *          - count
+ *          - reactedByMe
+ *          - users
+ *        properties:
+ *          emoji:
+ *            type: string
+ *            description: >
+ *              Reaction key in canonical form `unicode:<emoji-mart id>`, with
+ *              `::skin-tone-<2-6>` appended for a skin-tone variant (e.g.
+ *              `unicode:+1`, `unicode:+1::skin-tone-3`).
+ *            example: 'unicode:+1'
+ *          count:
+ *            type: integer
+ *            minimum: 1
+ *            description: Number of users who reacted with this emoji, including users whose record no longer exists.
+ *          reactedByMe:
+ *            type: boolean
+ *            description: Whether the requesting user reacted with this emoji. Always false for a guest.
+ *          users:
+ *            type: array
+ *            description: The users who reacted with this emoji, in the order they reacted.
+ *            items:
+ *              oneOf:
+ *                - type: object
+ *                  additionalProperties: false
+ *                  required:
+ *                    - _id
+ *                    - username
+ *                    - name
+ *                    - imageUrlCached
+ *                  properties:
+ *                    _id:
+ *                      type: string
+ *                      description: User ID.
+ *                    username:
+ *                      type: string
+ *                      description: Username, used for the user's home page path.
+ *                    name:
+ *                      type: string
+ *                      nullable: true
+ *                      description: Display name.
+ *                    imageUrlCached:
+ *                      type: string
+ *                      nullable: true
+ *                      description: URL of the profile image. Null when not cached yet.
+ *                - type: string
+ *                  description: The user ID when the user record no longer exists (same rule as the comment `creator`).
  */
 
 /**
@@ -320,9 +408,19 @@ export const listCommentsRouteHandlersFactory = (
           return res.apiv3Err(notFoundOrForbidden(), 404);
         }
 
-        // The reactions are loaded in task 3.3; an empty list keeps the type until then.
+        const chipsByCommentId = await loadReactionChipsOrNull(
+          result.comments.map((row) => row.id),
+          req.user != null ? String(req.user._id) : null,
+        );
         const body: ListCommentsResponseBody = {
-          comments: result.comments.map((row) => toCommentListItem(row, [])),
+          comments: result.comments.map((row) =>
+            toCommentListItem(
+              row,
+              chipsByCommentId == null
+                ? null
+                : (chipsByCommentId.get(row.id) ?? []),
+            ),
+          ),
         };
         return res.apiv3(body);
       } catch (err) {
