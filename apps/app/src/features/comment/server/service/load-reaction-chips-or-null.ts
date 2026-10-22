@@ -7,7 +7,9 @@ import type { prisma } from '~/utils/prisma';
 
 import { toCreatorSummary } from '../serializers/to-comment-list-item';
 
-const logger = loggerFactory('growi:features:comment:load-reaction-chips');
+const logger = loggerFactory(
+  'growi:features:comment:service:load-reaction-chips-or-null',
+);
 
 type LoadReactionChipsOrNullDeps = {
   readonly prisma: Pick<typeof prisma, 'commentreactions' | 'users'>;
