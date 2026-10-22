@@ -84,8 +84,8 @@ vi.mock('../../../ai-sdk-modules/resolve-mastra-model', () => ({
 }));
 
 // Replace memory with an inert stub: mastra-modules/index.ts (loaded by the
-// registration tests) also pulls in growi-agent.ts -> ../memory, which would
-// spin up MongoDBStore at module load. Both resolve to the same module.
+// registration tests) pulls in growi-agent.ts -> ../memory, which would
+// spin up MongoDBStore at module load.
 vi.mock('../../memory', () => ({
   memory: { id: 'stub-memory' },
 }));
@@ -100,7 +100,6 @@ resolverMock.fn.mockImplementation(() => {
   throw new Error('Mastra LLM provider is not configured (set AI_PROVIDER)');
 });
 
-import { memory as mockedMemory } from '../../memory';
 import { SUMMARIZE_INSTRUCTIONS } from './instructions';
 import { limitedGetPageContentTool } from './limited-get-page-content-tool';
 import type { SummarizeRequestContextShape } from './request-context';
@@ -159,7 +158,7 @@ describe('summarizeAgent', () => {
     });
   });
 
-  describe('tools composition (Requirement 1.4 — cross-agent thread replay)', () => {
+  describe('tools composition', () => {
     it('registers limitedGetPageContentTool under the key "getPageContentTool" (same key growiAgent uses)', () => {
       const config = getCapturedConfig();
 
@@ -182,11 +181,11 @@ describe('summarizeAgent', () => {
     });
   });
 
-  describe('memory (Requirement 1.4 — follow-up questions need thread history)', () => {
-    it('connects the shared memory instance', () => {
+  describe('memory', () => {
+    it('is stateless: no memory is connected, so a summary persists no thread', () => {
       const config = getCapturedConfig();
 
-      expect(config.memory).toBe(mockedMemory);
+      expect(config.memory).toBeUndefined();
     });
   });
 

@@ -127,18 +127,7 @@ describe('POST /summary — settles PAGE_AI_SUMMARIZE with its operator (drift g
       'findByIdAndViewer',
     ).mockResolvedValue(page as unknown as HydratedDocument<PageDocument>);
 
-    const memory = {
-      createThread: vi.fn(
-        async ({ resourceId, threadId }: Record<string, string>) => ({
-          id: threadId,
-          resourceId,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        }),
-      ),
-    };
     mocks.getAgent.mockReturnValue({
-      getMemory: async () => memory,
       stream: async () => ({
         uiChunks: SUMMARY_CHUNKS,
         usage: Promise.resolve({}),

@@ -2,6 +2,8 @@ import type { IUserHasId } from '@growi/core';
 
 import type SearchService from '~/server/service/search';
 
+import type { PreparedPageBody } from '../tools/page-content';
+
 /**
  * Shape of RequestContext keys shared between the post-message handler
  * (writer) and each Mastra tool's execute (reader).
@@ -27,9 +29,15 @@ import type SearchService from '~/server/service/search';
  *   an idempotent defense-in-depth re-validation rather than the first rounding
  *   pass. It stays optional only for the type's sake; the handler always sets a
  *   concrete resolved key when AI is configured.
+ *
+ * Notes on `preparedPageBodies`:
+ * - Keyed by page id. getPageContentTool fills it on the first read of each
+ *   page, so later reads within the same request reuse the prepared body. No
+ *   route sets it; the tool creates it on first use.
  */
 export type MastraRequestContextShape = {
   user: IUserHasId;
   searchService: SearchService;
   modelKey?: string;
+  preparedPageBodies?: Map<string, PreparedPageBody>;
 };
