@@ -1,8 +1,32 @@
 # Changelog
 
-## [Unreleased](https://github.com/growilabs/compare/v8.0.7...HEAD)
+## [Unreleased](https://github.com/growilabs/compare/v8.0.8...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v8.0.8](https://github.com/growilabs/compare/v8.0.7...v8.0.8) - 2026-10-22
+
+### 🔒 Security
+
+* Rebuild the Docker image on Node.js 24.22.1, which fixes 10 vulnerabilities including a Brotli decoder RCE (CVE-2026-111497) and TLS hostname verification bypasses (CVE-2026-105483, CVE-2026-106069). Users running the official Docker image should pull the new image and redeploy. See https://nodejs.org/en/blog/vulnerability/october-2026-security-releases
+
+### 🧰 Maintenance
+
+### 💎 Features
+
+* feat(ai): Enable Anthropic prompt caching (#12087) @yuki-takei
+* feat: Add GROWI extended elements to the slash command (#12062) @Ryosei-Fukushima
+
+### 🚀 Improvement
+
+* imprv: Unify env-var-only storage settings across AWS, GCS and Azure (#12074) @yotatameguchi-boop
+
+### 🧰 Maintenance
+
+* fix(test): deliver selectionchange asynchronously in component tests (#12088) @yuki-takei
+* chore(test): Bump local MongoMemoryServer binary to 8.0.13 (#12078) @yuki-takei
+* ci(deps): Bump next from 16.3.3 to 16.4.1 (#12069) @[dependabot[bot]](https://github.com/apps/dependabot)
+* ci: pass GLIBC_TUNABLES rseq=1 to MongoDB for the Linux 7.0 runner kernel (#12091) @yuki-takei
 
 ## [v8.0.7](https://github.com/growilabs/compare/v8.0.6...v8.0.7) - 2026-10-07
 
