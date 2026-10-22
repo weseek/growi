@@ -344,6 +344,24 @@ model pagebulkexportpagesnapshots {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 }
 
+model pagelinkbackfilljobs {
+  // The single control/status document of the backlinks backfill. Prisma-only and `v`-less like
+  // pagelinks; GROWI.cloud infra writes `startRequested` into it directly, so this collection
+  // name and that field name are an operator contract.
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  status          String    @default("idle")
+  phase           String?
+  recentCutoff    DateTime?
+  progressMarker  String?   @db.ObjectId
+  recentProcessed Int       @default(0)
+  olderProcessed  Int       @default(0)
+  startRequested  Boolean   @default(false)
+  completedAt     DateTime?
+  lastError       String?
+  claimedBy       String?
+  leaseExpiresAt  DateTime?
+}
+
 model pagelinks {
   // No `v`/`__v`: this collection is prisma-only and has never been written by
   // mongoose, so it carries no optimistic-concurrency version key — same as the other

@@ -456,7 +456,7 @@ design.md's Delivery decision). Reuses the page-bulk-export scaffolding (`CronSe
 `{path→_id}` map, the per-page upsert sink, the paced loop, and the atomic claim. An
 admin-triggered start was deferred as a one-line future change. Independent of B4/B5.
 
-- [ ] B3.1 Add the backfill job state model
+- [x] B3.1 Add the backfill job state model
   - Add a single-document model tracking backfill `status` (`idle` / `running` / `paused` /
     `complete` / `failed`), the current phase (`recent` / `older`), the `recentCutoff` computed once
     at the first claim, a progress marker (the last `_id` processed in the current phase, in `_id`
@@ -466,6 +466,9 @@ admin-triggered start was deferred as a one-line future change. Independent of B
     taken over once its lease expires
   - Create the document idle at boot with an upsert that uses `$setOnInsert`, so an existing
     `startRequested: true` is never reset; the app never writes `startRequested` afterwards
+  - Built as a Prisma-only collection (`pagelinkbackfilljobs`, no `v`, like `pagelinks`) with raw
+    commands, addressed by a fixed `_id` so no unique index or migration is needed; lease expiry is
+    judged on the database clock (`$$NOW`). Renewing and releasing the claim belong to B3.2
   - Done when a unit test shows the claim succeeds once, is rejected for a second concurrent
     claimant while the lease is live, and succeeds for a new claimant after the lease expires, and
     a second boot leaves an existing `startRequested: true` and the progress fields untouched
