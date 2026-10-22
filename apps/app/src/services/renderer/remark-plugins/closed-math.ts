@@ -1,4 +1,5 @@
 import type { Root } from 'mdast';
+import type {} from 'remark-parse';
 import type { Plugin } from 'unified';
 
 /** Only accept fenced math with a closing fence in the live preview. */
