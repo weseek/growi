@@ -568,7 +568,7 @@ export const CONFIG_DEFINITIONS = {
   // per-IP rate limiter, which is a separate layer guarding the app, not Elasticsearch.
   'app:auditLogEsSyncAnonymousThresholdLogin': defineConfig<number>({
     envVarName: 'ANONYMOUS_ES_SYNC_THRESHOLD_LOGIN',
-    defaultValue: 100,
+    defaultValue: 50,
   }),
   'app:auditLogEsSyncAnonymousThresholdRegister': defineConfig<number>({
     envVarName: 'ANONYMOUS_ES_SYNC_THRESHOLD_REGISTER',
