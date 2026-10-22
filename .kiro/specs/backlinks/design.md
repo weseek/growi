@@ -684,13 +684,21 @@ findForwardLinkHealth(fromPageId: ObjectId, user: IUser | null, userGroups: Obje
     private paths to anyone who can read the linking page. Resolution itself is grant-blind by
     design (it must match what a click does, and the live path lookup was always grant-blind), so
     the filter belongs on this read path, not in `resolveToPageIds`.
-  - **One query does both jobs.** Finding `trashed` targets needs the target page's `status`, and
-    the leak fix needs the target pages run through the grant filter — that is the *same* set of
-    documents, so it is a single `Page` query, not a grant query plus a status round trip. Shape: the
-    non-null `toPage` ids → `PageQueryBuilder(Page.find({ _id: { $in: targetIds }, status: deleted }))`
+  - **One query does both jobs for `trashed`.** Finding `trashed` targets needs the target page's
+    `status`, and the leak fix needs the target pages run through the grant filter — that is the
+    *same* set of documents, so it is a single `Page` query, not a grant query plus a status round
+    trip. Shape: the non-null `toPage` ids → `PageQueryBuilder(Page.find({ _id: { $in: targetIds }, status: deleted }))`
     → `addViewerCondition(user, userGroups, true)` → `.select('_id path')`. Every returned document is a `trashed`
     target; the status condition runs in the query so healthy targets — usually nearly all of them —
-    are never sent back. `broken` rows (`toPage == null`) are settled with no lookup at all.
+    are never sent back.
+  - **A second query settles whether each cached target exists at all** (`findDanglingTargets`):
+    `Page.find({ _id: { $in: <every non-null toPage> } }).select('_id')`, with **no** viewer
+    condition and no status condition. It runs alongside the `trashed` query, so a read costs the
+    outbound-row read plus these two `Page` queries, and the second one *does* return the healthy
+    targets' ids (a bare `_id` each). The existence test must not see the grant filter — see the
+    omission bullet below.
+  - **`broken` rows (`toPage == null`) need no page lookup to be classified**, but a self-row filter
+    still resolves their paths (`findPathsResolvingTo`) so a transient self row is not reported.
   - **It cannot reuse `buildVisibleSourcesQuery`.** That builder calls
     `addConditionToExcludeTrashed()`, and trashed targets are exactly what this read reports — so
     forward-health builds its own query that applies the grant condition **only**, plus the
@@ -699,10 +707,17 @@ findForwardLinkHealth(fromPageId: ObjectId, user: IUser | null, userGroups: Obje
     page's *current* `path` from that query; for a `broken` row there is no page, so it is the row's
     own `toPath` — faithful to what the body actually links to. That is also why a broken row leaks
     nothing: `toPath` is text the linking page's own author wrote.
-  - **A non-null `toPage` absent from the query result is omitted**, not reported as broken: "the
-    viewer may not read it" and "the document is gone" are indistinguishable from the result set, and
-    reporting the latter would leak the former's existence. A genuinely permanently-deleted target
-    becomes `broken` because the delete-family reconcile (B5.2) nulls the inbound cache.
+  - **A non-null `toPage` absent from the grant-filtered `trashed` result is omitted**, not reported
+    as broken: "the viewer may not read it" and "the document is gone" are indistinguishable from
+    that result set, and reporting the latter would leak the former's existence.
+  - **A non-null `toPage` that matches no page at all is `broken`.** Normally a permanently-deleted
+    target becomes `broken` through `toPage == null`, because the delete-family reconcile (B5.2)
+    nulls the inbound cache. A row can still keep the id of a page that no longer exists when
+    recording P's links raced the permanent delete of a target Q (P resolved Q's id, Q was deleted
+    and its cleanup ran, then P's write put the id back), or when a delete reconcile failed every
+    retry. `findDanglingTargets` reports those as `broken`, with the row's own `toPath` as `path`.
+    Its existence check deliberately skips the viewer condition: a page the viewer cannot read still
+    exists, so it stays omitted by the rule above instead of leaking as `broken`.
   - **"Anyone with the link" targets count as readable** (`addViewerCondition(user, userGroups, true)`),
     unlike `findBacklinks`' sources: the viewer holds the link — it is in the subject's body — and
     following it opens the page, so hiding its trashed state would only hide a fixable link.
