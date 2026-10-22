@@ -273,12 +273,12 @@
   and the Elasticsearch reindex (streams, GC per batch, admin Socket.IO progress).
 - **Selected Approach**:
   1. migrate-mongo creates **only the indexes** (fast, safe to block on at boot).
-  2. The heavy backfill is an **online `CronService` job** modeled on page-bulk-export: a
-     time-budgeted chunk per tick (the duty cycle over measured extraction time is the throttle),
-     resumable via a progress-marker document (last `_id`, saved after the chunk's writes),
-     run-once + multi-instance-safe via an **atomic Mongo claim** (`findOneAndUpdate`) with a
-     renewed lease for crash recovery, an in-process overlap flag, progress over the admin
-     Socket.IO channel.
+  2. The heavy backfill is an **online job** started by a `CronService` poll and run as a
+     self-paced loop: after each page it rests in proportion to the work (the duty cycle over
+     measured extraction time is the throttle), resumable via a progress-marker document (last
+     `_id`, saved at checkpoints after the pages' writes), run-once + multi-instance-safe via an
+     **atomic Mongo claim** (`findOneAndUpdate`) with a lease renewed at checkpoints for crash
+     recovery, an in-process overlap flag, progress over the admin Socket.IO channel.
   3. Resolution during backfill uses an **in-memory `{path → _id}` map** built from one projection
      query (hash lookups, not per-link DB round-trips); redirect-following skipped (stragglers
      self-heal on next edit/read).
@@ -316,11 +316,11 @@
 - **Scheduler facts that shape the throttle** (node-cron 3.0.3 source): the callback is not
   awaited and there is no no-overlap option, so ticks can overlap on a slow write; a tick due
   while the previous is running is dropped (`recoverMissedExecutions: false`) and the next starts
-  immediately; polling is once per second. Hence the overlap flag, and a time budget instead of
-  `cadence × chunk size`.
+  immediately; polling is once per second. Hence the overlap flag, and a measured-time throttle
+  instead of `cadence × chunk size`.
 - **Duty cycle vs. stall length**: the duty cycle is the average share of wall time the job is
   active; only its synchronous parsing blocks the event loop. What live requests feel is the longest
-  uninterrupted block, so the loop yields after a slice limit. Success is judged on event-loop
+  uninterrupted block, which the per-page rest bounds at one page. Success is judged on event-loop
   delay max/p99 (`perf_hooks.monitorEventLoopDelay`), not on the duty number.
 - **Considered and deferred — MongoDB `$regex` prefilter**: skip parsing pages whose current
   revision cannot contain a link. Deferred because (1) the benefit is unmeasured (27% pass rate on
@@ -335,9 +335,9 @@
   under the source page; *lazy start (first backlinks panel open)* — cheap and can be added later
   without changing the job; *admin trigger* — already deferred above.
 - **Open questions (settle in B3.2)**: write ordering between the live listener and the backfill on
-  the same page (can a stale backfill read overwrite fresher rows?); whether the backfill's pacing
-  reuses the listener's measured-time mechanism as-is; whether to cap the body size parsed, since
-  the budget and slice checks run between pages and cannot bound one large page (~1.1 s at
+  the same page (can a stale backfill read overwrite fresher rows?); the checkpoint cadence and
+  lease length; the policy for a page whose write keeps failing; whether to cap the body size
+  parsed, since the per-page rest cannot interrupt a parse and so cannot bound one large page (~1.1 s at
   333 KiB on the B2.2 pipeline; about 400 KiB of table-dense text reaches 1 s on the current one).
   Parse time is linear in size, so a size cap bounds the stall. Options considered: skip-and-record
   (a gap that is visible but still missing until the page's next save), truncate (loses the links
@@ -345,11 +345,20 @@
   `worker_threads`). A table-aware guard (count of table-row lines) and skipping pages that contain
   tables were considered unnecessary once the parser pin removed the quadratic cost, and skipping
   them would silently lose link-bearing tables.
-- **Pacing alternative (settle in B3.2)**: a cron tick with a time budget (as designed) versus a
-  self-paced loop that works for a slice and sleeps for a multiple of it. The sleep-based form
-  gives an exact duty and short, evenly spaced bursts, and sidesteps node-cron's 1 s cadence floor
-  and dropped ticks; it costs the reuse of the `CronService` scaffolding and requires moving the
-  marker save, write and lease renewal off the tick boundary. Neither shape bounds one large page.
+- **Pacing shape (resolved): rest proportional to work, per page** (PR #12066 review notes).
+  Three shapes were compared. *A — cron tick with a time budget (about 250 ms) and a yield*:
+  follows the `CronService` / page-bulk-export pattern and a tick is a natural checkpoint, but it
+  needs two knobs, hits node-cron's 1 s floor and dropped ticks (so an overlap guard), delivers one
+  burst per second, and is a second pacing design next to the live drain. *B — sleep proportional
+  to work per slice (about 50 ms of work, then a multiple of it)*: exact duty and evenly spaced
+  short bursts, but a slice accumulator and a second knob, stalls up to the slice length on small
+  pages, and custom loop code. *C — sleep proportional to work per page, as the live drain does*:
+  chosen. One setting (the duty), the longest stall is one page, the rest calculation is shared with
+  the drain after a small refactor, and it is the same design as B2.2. Costs: about one timer per
+  page (negligible here; the 1 ms timer floor makes the duty slightly under target on tiny pages),
+  the drain's handler cannot be reused as is because the backfill needs its own step over the
+  in-memory path→id map, and a separate checkpoint cadence is needed. None of A, B or C bounds one
+  large page; the body-size cap does. Long rests after a large page are harmless.
 - **Trade-offs**: backlinks are incomplete for pre-existing pages until the job finishes
   (acceptable per 4.2 — completeness only required *after* completion; new edits index instantly).
   In-process means the parse still shares the one JS thread; the duty cycle bounds but cannot
@@ -496,8 +505,9 @@
   boot-blocking migration); in-memory `{path→_id}` resolution; cursor + `createBatchStream` +
   idempotent `bulkWrite` upserts; resumable progress marker; atomic Mongo claim with a renewed
   lease for multi-instance and crash recovery. See the backfill decision above.
-- **Backfill CPU contention with live traffic** (single JS thread) — Mitigation: per-tick time
-  budget (duty cycle) plus a bounded continuous block (yield between pages); conservative default;
+- **Backfill CPU contention with live traffic** (single JS thread) — Mitigation: a rest
+  proportional to the work after every page (duty cycle), so a stall is at most one page;
+  conservative default;
   admin-tunable. Full elimination needs
   `worker_threads` (deferred, no infra).
 - **Redirect record accumulation** — Mitigation: none required for correctness (`$graphLookup`

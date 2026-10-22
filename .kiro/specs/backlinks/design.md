@@ -57,7 +57,7 @@ schema to build them on connect, and deploy never runs `prisma db push`).
 - Resolution of a stored `toPath` to a target page `_id` (`toPage` cache), including redirect
   following and direct `_id` resolution when `toPath` is a permalink.
 - Synchronization of `PageLink` rows in response to page-lifecycle events.
-- The one-time backfill: a background `CronService` job that populates rows for pre-existing pages
+- The one-time backfill: a background job (a `CronService` poll starts a self-paced loop) that populates rows for pre-existing pages
   without taking the wiki offline. (The `pagelinks` indexes themselves come from the index
   migration — cheap on an empty collection — not from this job.)
 - The read API + SWR hook + UI panel that present backlinks and forward-link health.
@@ -185,7 +185,7 @@ graph TB
 | Rendering | Existing unified remark/rehype plugins | Server-side link extraction | Node-compatible; trimmed processor (link plugins only) |
 | Data / Storage | MongoDB via **Prisma** (`~/utils/prisma`) | `pagelinks` collection + indexes | Prisma-only collection: no mongoose schema, methods on a `Prisma.defineExtension` block; indexes provisioned by `migrations/20260901064500-add-indexes-to-pagelinks.js` (nothing runs `prisma db push`, so schema.prisma declares indexes but creates none) |
 | Messaging / Events | `crowi.events.page` (Node EventEmitter) | Sync triggers | Subscribe only |
-| Background job | `CronService` / node-cron (existing) | One-time backfill of pre-existing pages | Chunked + resumable + throttled; mirrors page-bulk-export job; admin Socket.IO progress |
+| Background job | `CronService` / node-cron (existing) as the start poll | One-time backfill of pre-existing pages | Self-paced loop, rest proportional to work per page; resumable; admin Socket.IO progress |
 
 ## File Structure Plan
 
@@ -215,7 +215,7 @@ apps/app/src/features/backlinks/
 │   │   ├── find-backlinks.ts           # read query: backlink sources filtered by viewer grant
 │   │   ├── find-forward-link-health.ts # (B5.4) read query: a page's trashed/broken outbound targets, viewer-filtered
 │   │   ├── page-link-service.ts        # thin Crowi adapter: subscribes to crowi.events.page, owns config access, delegates
-│   │   └── page-link-backfill-cron.ts  # (B3) CronService: chunked, resumable, throttled backfill (in-memory path->id map)
+│   │   └── page-link-backfill-cron.ts  # (B3) CronService start poll + self-paced, resumable backfill loop (in-memory path->id map)
 │   └── routes/
 │       └── backlinks.ts                # apiv3 route factory (GET) — getBacklinksHandlerFactory
 └── client/
@@ -369,7 +369,7 @@ needs no write — derived state reads the restored page's status.
 | getBacklinksHandlerFactory (routes/backlinks.ts) | API | Read endpoint — incoming backlinks **+ forward-link health** (B5.9) | 1.1,1.7,2.x,6.4 | apiv3 middleware (P0), PageLinkService (P0) | API |
 | useSWRxBacklinks | Client store | Fetch backlinks **+ link targets** (B5.9) | 1.1,6.4 | apiv3Get (P0) | Service |
 | BacklinksPanel / BacklinkListItem | UI | Render list, empty state, target-state badge | 1.1,1.7,1.8,6.4 | useSWRxBacklinks, PageListItemS (P1) | — |
-| PageLinkBackfillCron | Batch | Populate pre-existing pages (chunked, resumable, throttled, online) | 4.1,4.2,4.3 | CronService (P0), extractInternalLinkPaths (P0), Revision, in-memory path→id map (P0) | Batch, State |
+| PageLinkBackfillCron | Batch | Populate pre-existing pages (self-paced, resumable, throttled, online) | 4.1,4.2,4.3 | CronService (P0), extractInternalLinkPaths (P0), Revision, in-memory path→id map (P0) | Batch, State |
 
 ### Data / Server logic
 
@@ -819,28 +819,31 @@ useSWRxBacklinks(pageId: string | null): SWRResponse<IBacklinkResponse, IErrorV3
 | Requirements | 4.1, 4.2, 4.3 |
 
 **Responsibilities & Constraints**
-- Extends `CronService` (node-cron) and follows the **page-bulk-export job** precedent: each tick
-  processes a bounded **chunk** of pages, persists progress, then idles until the next tick.
-- **Throttle = a duty cycle over measured time, not a page count.** Because the job shares the
-  single JS thread, bounding the time it holds the thread is the only lever on contention with live
-  traffic. Each tick has a **time budget** (≈250 ms of extraction work; the duty is set per phase,
-  25% for recent pages and 10% for older ones, operator-tunable — see the Delivery decision) and
-  stops taking pages once it is spent, as the save-time listener does (B2.2).
-  A page-denominated chunk is not a throttle: extraction cost spans ~700× across bodies, and
-  node-cron polls at a 1 s minimum cadence and drops a tick that falls due while the previous one is
-  still running (`recoverMissedExecutions: false`), so a chunk that outlasts the interval leaves
-  almost no idle time.
-- **Bounded continuous blocking.** The duty cycle fixes the average, not the stall length. The
-  extraction loop is synchronous and has no natural `await` once bodies are read per batch, so it
-  **yields to the event loop (`setImmediate`) whenever the time since its last yield exceeds a
-  slice limit** (tens of ms), then continues with the next page. Nothing is skipped; the check is
-  made between pages, so the worst stall is the slice limit plus the slowest single page.
-  The test is event-loop delay (max / p99), not duty cycle.
-- **Single-page overshoot (open — settle in B3.2)**: neither the tick budget nor the slice limit can
-  interrupt a parse, so one large body overshoots both (measured on the B2.2 pipeline: ~88 ms at
-  32.6 KiB, ~1.1 s at 333 KiB — a single stall longer than the whole 250 ms budget, and near-100%
-  duty for that stretch because node-cron drops the tick that falls due meanwhile). Only a check
-  made **before parsing** bounds a single page's stall, and body size is that check: parse time is
+- Runs as a **self-paced loop**, not a chunk per cron tick. The `CronService` (node-cron) poll only
+  starts it: each idle tick reads the job document and, when the start rule allows, claims the job
+  and runs the loop until the job completes, pauses or fails. This departs from the page-bulk-export
+  chunk-per-tick shape; the scaffolding it reuses is the `CronService` base, `createBatchStream`
+  and the cursor→resume skeleton. Options compared are in research.md.
+- **Throttle = a duty cycle over measured time, with rest proportional to work, per page.** Because
+  the job shares the single JS thread, the time it holds the thread is the only lever on
+  contention with live traffic. After each page the loop rests `restRatio × extractionMs`, where
+  `restRatio = (100 − duty) / duty` — the same rule the live drain uses (B2.2), so the duty is
+  exact by construction. The duty is set per phase (25% for recent pages, 10% for older ones,
+  operator-tunable — see the Delivery decision). The rest is also the yield, so there is no tick
+  budget, no slice limit and no zero-length yield. The charged work is capped at the drain's
+  `MAX_CHARGED_EXTRACTION_MS` (5000 ms), which bounds the charge, not the resulting rest, so the
+  configured duty stays exact for every legitimate measurement. A timer's 1 ms floor makes the
+  duty slightly under target on tiny pages, which is the gentle direction.
+  The rest computation is shared with the live drain as one pure function; the drain's loop and
+  `handlePageUpsertById` are not reused, because the backfill resolves through the in-memory map.
+  A page-denominated chunk was never a throttle: extraction cost spans ~700× across bodies.
+- **Bounded continuous blocking = one page.** The loop never holds the thread longer than one
+  page's parse, plus its writes' synchronous part. The test is event-loop delay (max / p99), not
+  duty cycle.
+- **Single-page overshoot (open — settle in B3.2)**: the per-page rest cannot interrupt a parse, so one
+  large body stalls the thread for its whole parse time (measured on the B2.2 pipeline: ~88 ms at
+  32.6 KiB, ~1.1 s at 333 KiB — a single stall, however low the configured duty). The rest that follows a large page (about 2.7 s at 25% after an 850 ms parse) is harmless: the
+  stall is the problem, and only a check made **before parsing** bounds it, and body size is that check: parse time is
   linear in size (≈1.5 ms/KiB for text, ≈2.5 ms/KiB for table-dense bodies, ≈0.4 ms/KiB for code
   and draw.io blocks), so 1 s is about 700 KiB of text or about 400 KiB of tables (see research.md). The
   linearity depends on `micromark-extension-gfm-table` ≥ 2.1.2, pinned by a workspace override;
@@ -850,22 +853,21 @@ useSWRxBacklinks(pageId: string | null): SWRResponse<IBacklinkResponse, IErrorV3
   is visible rather than silent) is undecided. The save-time listener has the same single-page
   exposure, so whether the cap is shared with it is part of that decision. Off-thread parsing is
   the alternative and stays deferred.
-- **Alternative pacing — sleep proportional to work (open — settle in B3.2)**: instead of a cron
-  tick that spends a budget and then idles until the next tick, the job works for a slice (≈50 ms)
-  and then `await`s a timer of a multiple of the work (≈150 ms for 25% duty). One mechanism then
-  replaces both the tick budget and the zero-length yield: the duty is exact by construction, the
-  load is spread as short bursts instead of one burst per second, and the cron cadence is needed
-  only to start the job. It also removes the dropped-tick behavior and the 1 s cron floor. Costs:
-  it departs from the `CronService` / page-bulk-export pattern this design otherwise reuses (a
-  custom timer loop); the per-chunk work (page-link writes, progress marker, lease renewal) must
-  move from "per tick" to a per-N-pages or per-interval step, trading more DB writes against more
-  pages redone after a crash; and it still cannot bound a single large page, so the body-size cap
-  above applies either way. The overlap flag is needed in both shapes if anything can start a
-  second loop.
-- **No overlapping ticks.** node-cron 3.0.3 does not await the tick callback and has no
-  no-overlap option, so a tick awaiting a slow DB write can overlap the next one on the same
-  progress marker. An **in-process `isRunning` flag**, reset in `finally`, makes an overlapping tick
-  return immediately.
+- **Checkpoint cadence (open — settle in B3.2)**: the progress marker, the per-phase counts, the
+  lease renewal and the start-rule re-check run every N pages or T seconds, not after every page.
+  The marker is advanced in memory only after a page's rows are written and saved at the
+  checkpoint, so a crash redoes at most one interval's pages, which the idempotent upsert makes
+  safe. `leaseExpiresAt` must outlast T plus the longest single rest (up to 45 s at 10% duty with
+  the charge capped at 5000 ms), or a healthy loop loses its claim between checkpoints. N, T and
+  the lease length are B3.2 choices, to be set from the performance run.
+- **Failing page (open — settle in B3.2)**: a page whose write keeps failing needs a policy so it
+  cannot stall the walk. The live drain's shape (a bounded number of attempts, then log and move
+  on) is the starting point; what the backfill adds is a count of skipped pages on the job document
+  so the gap is visible.
+- **No overlapping loops.** node-cron 3.0.3 does not await the tick callback and has no no-overlap
+  option, so an idle tick that falls due while the loop is running would start a second loop on
+  the same progress marker. An **in-process `isRunning` flag**, set when the loop starts and reset
+  in `finally`, makes that tick return immediately.
 - **Two phases, recent pages first**: the job walks the pages twice, each a separate pass in `_id`
   order. Phase `recent` takes pages with `updatedAt >= recentCutoff`, phase `older` takes the rest;
   the job is complete only when `older` finishes, so coverage stays full (4.1) and old pages simply
@@ -881,17 +883,18 @@ useSWRxBacklinks(pageId: string | null): SWRResponse<IBacklinkResponse, IErrorV3
 - **Resumable**: a `PageLinkBackfillJob` document stores the current `phase` and a progress marker —
   the **last `_id` processed in that phase, walking pages in `_id` order** — so a restart continues
   rather than restarting (4.3). The marker resets when the phase advances.
-  The marker is saved **after** the chunk's page-link writes: delivery is at-least-once, a crash
-  redoes at most one chunk, and the idempotent upsert on `{fromPage,toPath}` makes that safe. Saving
-  it before the writes would silently skip the chunk after a crash.
+  The marker is saved at a checkpoint, and only up to a page whose page-link writes are done:
+  delivery is at-least-once, a crash redoes at most one checkpoint interval, and the idempotent
+  upsert on `{fromPage,toPath}` makes that safe. Saving it ahead of the writes would silently skip
+  pages after a crash.
 - **Run-once + multi-instance safe**: the job document carries an **atomic claim**
   (`findOneAndUpdate`) so only one instance in a multi-container deployment runs it, and it stops
   permanently once complete. (GROWI has no distributed lock; this Mongo claim is the minimal
   hardening over the bulk-export pattern, which has a known race window.) The claim is **per job**
-  (one control document), not per chunk or per page, and it does not replace the in-process
+  (one control document), not per checkpoint or per page, and it does not replace the in-process
   overlap flag.
 - **Crash recovery via a lease**: a claim held by a dead owner would otherwise block the job
-  forever. The claim carries `leaseExpiresAt`, **renewed on every chunk**, and the claim filter also
+  forever. The claim carries `leaseExpiresAt`, **renewed at every checkpoint**, and the claim filter also
   matches a document whose lease has expired, so another instance takes over and resumes from the
   progress marker.
 - **Write ordering vs. the live listener (open — settle in B3.2)**: the backfill reads a page body
@@ -907,21 +910,22 @@ useSWRxBacklinks(pageId: string | null): SWRResponse<IBacklinkResponse, IErrorV3
 **Contracts**: Batch [x] / State [x]
 
 ##### Batch / Job Contract
-- Trigger: the cron is registered from `crowi` setup on every deployment and **re-evaluates the start
-  rule below on every tick**; it runs (throttled) only while the rule allows it. Skips immediately
+- Trigger: the cron poll is registered from `crowi` setup on every deployment and **re-evaluates the
+  start rule below on every idle tick and at every checkpoint of a running loop**; the loop runs
+  (paced) only while the rule allows it. Skips immediately
   if the job document is marked complete. (Admin-triggered start deferred — see Delivery decision
   below.)
-- Input per chunk: a cursor page-batch (`Page.find(...).cursor({ batch_size })` +
-  `createBatchStream`) in `_id` order, restricted to the current phase's `updatedAt` range and
-  starting after the progress marker; body via
-  `Revision.findById(page.revision).body`. The chunk ends when the tick's time budget is spent.
+- Input: a cursor page-batch (`Page.find(...).cursor({ batch_size })` + `createBatchStream`) in
+  `_id` order, restricted to the current phase's `updatedAt` range and starting after the progress
+  marker; body via `Revision.findById(page.revision).body`. The loop walks it page by page and
+  rests after each page; there is no per-tick chunk.
 - Per page: `extractInternalLinkPaths(body, page.path, siteUrl)` → resolve each path via the in-memory
-  map (or, for a permalink path, via the id-existence set) → batched upserts. **`pagelinks` is a
-  Prisma-only collection with no mongoose model, so there is no `Model.bulkWrite`**: the chunk write
-  is either repeated `replaceOutboundLinks` calls or a new batched model method on the extension —
+  map (or, for a permalink path, via the id-existence set) → that page's upserts. **`pagelinks` is a
+  Prisma-only collection with no mongoose model, so there is no `Model.bulkWrite`**: a page's write
+  is either a `replaceOutboundLinks` call or a new batched model method on the extension —
   and if it uses `$runCommandRaw`, its reply must go through `throwOnWriteErrors` like every other
-  raw write here. B3 decides which; `ordered: false` remains the intent for a chunk.
-- Idempotency: unique `{fromPage,toPath}` + upsert; safe to re-run and to resume mid-chunk (4.3).
+  raw write here. B3 decides which; `ordered: false` remains the intent for a page's rows.
+- Idempotency: unique `{fromPage,toPath}` + upsert; safe to re-run and to resume mid-run (4.3).
 - Progress/observability: emit count/total over the existing admin Socket.IO channel (as the
   Elasticsearch reindex does).
 
@@ -958,7 +962,7 @@ useSWRxBacklinks(pageId: string | null): SWRResponse<IBacklinkResponse, IErrorV3
   - The tick **reads the document directly from the database**, not through `configManager`, whose
     DB-config cache is reloaded only by `updateConfig` + pubsub and would not see an out-of-band
     write.
-  - **Pause / stop**: the flag is re-checked between chunks. When the rule stops allowing the run,
+  - **Pause / stop**: the flag is re-checked at each checkpoint. When the rule stops allowing the run,
     the job releases its claim, keeps its marker, and sets `status: paused`; setting the flag back
     to `true` resumes from the marker. No restart is involved.
   - **Status for operators**: `status` (`idle` / `running` / `paused` / `complete` / `failed`),
@@ -967,7 +971,7 @@ useSWRxBacklinks(pageId: string | null): SWRResponse<IBacklinkResponse, IErrorV3
   - Idle cost on cloud is one primary-key read per idle tick; the idle interval is a B3.3 choice
     (minutes are enough; 1 to 5 minutes is the intended range). It only sets the latency between
     infra setting the flag and the job starting. It does not affect pause, which is checked
-    between chunks while the job runs.
+    at the checkpoints while the job runs.
   - **`complete` is terminal for the tick**: once the document reads `complete`, the cron
     unschedules itself, and is not scheduled at boot when the document already reads `complete`.
     The boot upsert never touches an existing document, so a restart does not re-run the job; a
@@ -1128,8 +1132,8 @@ interface IBacklinkResponse {
   created at a path that another path redirects to repoints those rows too (5.1, 5.2).
 - Trash → derived `trashed`; permanent delete → `broken`; restore → `normal` (6.1–6.3).
 - Backfill: rows produced for pre-existing pages match the live create/update path (4.2); running
-  the job twice, or resuming after an interrupted chunk, produces no duplicate rows (4.3); the
-  atomic claim prevents two instances/ticks from double-processing.
+  the job twice, or resuming after an interrupted run, produces no duplicate rows (4.3); the
+  atomic claim prevents two instances/loops from double-processing.
 
 ### E2E / UI Tests
 - Backlinks tab on a page lists linking pages with title + path; empty state when none
@@ -1194,7 +1198,7 @@ interface IBacklinkResponse {
   - Trade-off: the index trails the save by up to (tick interval × queue depth) — acceptable, since
     the listener is already fire-and-forget and eventually consistent.
 - **Backfill** is the only bulk-CPU operation. It runs online but on the single JS thread, so its
-  per-tick time budget (duty cycle) and its bounded continuous block bound latency impact on live
+  per-page rest (duty cycle) and its bounded continuous block (one page) bound latency impact on live
   traffic; the in-memory `{path→_id}` map keeps link resolution CPU-bound, not round-trip-bound.
   Measured ~5 ms/page; full-speed ~10 min/100k pages, ~50 min/500k, scaled by duty cycle and page
   size. Body reads remain one DB read per page unless B3.2 batches them.
@@ -1222,13 +1226,15 @@ graph TB
     Boot[boot: migrate-mongo] --> Idx[index migration creates pagelinks indexes]
     Idx --> Serve[app serves traffic]
     Serve --> Claim{atomic claim job doc}
-    Claim -- not claimed/complete --> Tick[cron tick: process one chunk]
-    Tick --> Map[resolve via in-memory path to id map]
-    Map --> Bulk[batched upsert pagelinks unordered]
-    Bulk --> Save[persist progress marker]
+    Claim -- not claimed/complete --> Page[next page in id order]
+    Page --> Map[resolve via in-memory path to id map]
+    Map --> Bulk[upsert the page rows]
+    Bulk --> Rest[rest in proportion to the work]
+    Rest --> Cp{checkpoint due}
+    Cp -- yes --> Save[persist marker and renew lease]
+    Cp -- no --> Done
     Save --> Done{all pages processed}
-    Done -- no --> Idle[idle until next tick throttle]
-    Idle --> Tick
+    Done -- no --> Page
     Done -- yes --> Mark[mark job complete]
 ```
 
@@ -1238,5 +1244,5 @@ graph TB
   full speed, scaled up by the inverse duty cycle (e.g. ~40 min/100k at 25% duty) and by average
   page size. For the known customer sizes (largest 45k pages, most under 3k) this is minutes, not
   hours; see `research.md` for the benchmark, the scale table and the unmeasured caveats.
-- Rollback: stop the cron and drop the `PageLink` collection (indexes go with it). Recovery from a
+- Rollback: stop the job and drop the `PageLink` collection (indexes go with it). Recovery from a
   crash = resume from the progress marker; idempotent upserts make partial progress safe.

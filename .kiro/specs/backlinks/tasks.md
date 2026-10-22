@@ -447,12 +447,13 @@ confirms B1's index choice. (Not a hard dependency — either order is correct.)
 
 ## Story B3 — Backfill of pre-existing pages
 
-**Nature:** Online, throttled, resumable, two-phase (recent pages first) `CronService` job that
+**Nature:** Online, throttled, resumable, two-phase (recent pages first) job, started by a
+`CronService` poll and run as a self-paced loop (rest proportional to work, per page), that
 populates rows for pages that existed before the feature. It auto-starts on-prem; on GROWI.cloud
 it waits for an infra-set `startRequested` flag on its job document (see the start rule in
 design.md's Delivery decision). Reuses the page-bulk-export scaffolding (`CronService` base,
-`createBatchStream`, cursor→resume→`pipeline` skeleton, watchdog start/stop) and the B1 extractor; the
-new code is the in-memory `{path→_id}` map, the `bulkWrite` upsert sink, and the atomic claim. An
+`createBatchStream`, cursor→resume skeleton) and the B1 extractor; the new code is the in-memory
+`{path→_id}` map, the per-page upsert sink, the paced loop, and the atomic claim. An
 admin-triggered start was deferred as a one-line future change. Independent of B4/B5.
 
 - [ ] B3.1 Add the backfill job state model
@@ -473,42 +474,45 @@ admin-triggered start was deferred as a one-line future change. Independent of B
   - _Depends: B1.2_
 
 - [ ] B3.2 Implement the throttled, resumable backfill job
-  - Implement a cron-based job that, per tick, processes a bounded chunk of pages: build/reuse an
+  - Implement a self-paced loop that walks the pages in `_id` order one at a time: build/reuse an
     in-memory path→id map (one projection query) for resolution instead of per-link lookups, extract
     links via the B1 extractor (passing the configured site URL), resolve permalink targets via an
-    id-existence check against the known page ids (not the path map), and bulk-upsert rows; persist
-    the progress marker **after** each chunk's writes and resume from it on restart
+    id-existence check against the known page ids (not the path map), upsert that page's rows, then
+    rest. Persist the progress marker at each checkpoint and resume from it on restart
   - Run two phases in order: pages with `updatedAt >= recentCutoff` at the recent duty (default
     25%), then the remaining pages at the older duty (default 10%); complete only when the second
     finishes. Window and both duties are config-driven (design.md's Delivery decision)
-  - Throttle by a per-tick time budget (≈250 ms of extraction), not a page count; yield to the event
-    loop between pages once a slice limit is exceeded; renew the lease on every chunk; guard
-    against overlapping ticks with an in-process `isRunning` flag reset in `finally`; skip
-    immediately once the job document is complete
-  - Re-evaluate the start rule between chunks; when it stops allowing the run, release the claim,
-    keep the marker and set `status: paused`, so a cleared flag pauses the job and a set flag
-    resumes it from the marker. Record `lastError` and set `status: failed` when a chunk fails
-  - Settle four open questions and record them in design.md: write ordering against the live
-    listener on the same page (can a stale backfill write overwrite fresher rows?), whether the
-    pacing reuses the B2.2 listener's mechanism as-is, whether to cap the body size parsed (at
-    what size, and how skipped pages are recorded) since one large page overshoots the budget,
-    and whether to keep the cron-tick time budget or use the sleep-proportional-to-work loop
-    described in design.md as the alternative
+  - Pace by resting `restRatio × extractionMs` after each page, with the charged work capped as in
+    the live drain; extract the drain's rest computation into one pure function both call. The rest
+    is the yield, so there is no tick budget or slice limit. Checkpoint every N pages or T seconds:
+    save the marker and counts, renew the lease, re-check the start rule. Guard against a second
+    loop with an in-process `isRunning` flag reset in `finally`; skip immediately once the job
+    document is complete
+  - When the start rule stops allowing the run, release the claim, keep the marker and set
+    `status: paused`, so a cleared flag pauses the job and a set flag resumes it from the marker.
+    Record `lastError` and set `status: failed` when the loop fails
+  - Settle the remaining open questions and record them in design.md: write ordering against the
+    live listener on the same page (can a stale backfill write overwrite fresher rows?), whether to
+    cap the body size parsed (at what size, and how skipped pages are recorded) since one large page
+    stalls the thread for its whole parse, the checkpoint cadence and lease length (the lease must
+    outlast the checkpoint interval plus the longest single rest), and the policy for a page whose
+    write keeps failing. The pacing shape is decided: the per-page proportional rest
   - Done when running the job over a seeded dataset (including pages linked by permalink and by
     same-wiki absolute URL) populates rows equivalent to the live path, a re-run/resume adds no
-    duplicates, no tick overlaps a still-running one, and progress is emitted on the admin channel
+    duplicates, no second loop starts while one is running, and progress is emitted on the admin
+    channel
   - _Requirements: 4.1, 4.2, 4.3_
   - _Boundary: PageLinkBackfillCron_
   - _Depends: B3.1, B1.3, B1.2_
 
 - [ ] B3.3 Register the backfill job and gate its start
-  - Register the backfill cron in server setup and start it (throttled) after boot when the start
-    rule allows, mirroring the page-bulk-export watchdog start/stop; stop permanently once the job
-    document is marked complete
+  - Register the backfill cron poll in server setup; when the start rule allows, an idle tick starts
+    the paced loop (B3.2). Stop the poll permanently once the job document is marked complete
   - Implement the start rule as a pure function of `backlinks:backfillAutoStart`,
     `app:growiCloudUri` and the job document's `startRequested` (explicit env value wins; otherwise
     a set URI means the job waits for the flag). The tick reads the job document directly from the
-    database, not through `configManager`; the idle interval is chosen here (1 to 5 minutes).
+    database, not through `configManager`; the idle interval is chosen here (1 to 5 minutes), and
+    the running loop re-checks the rule at each checkpoint.
     `complete` unschedules the tick and is not re-scheduled at boot; `failed` keeps the tick so a
     re-set flag resumes from the marker
   - Note: edits the same server-setup file as B1.12 — sequence after it to avoid a merge
@@ -521,11 +525,11 @@ admin-triggered start was deferred as a one-line future change. Independent of B
   - _Depends: B3.2, B1.12_
 
 - [ ] B3.4 Backfill tests
-  - Verify backfill output matches the live path; running twice or resuming after an interrupted chunk
+  - Verify backfill output matches the live path; running twice or resuming after an interrupted run
     produces no duplicates; the atomic claim prevents two instances/ticks double-processing
   - Correctness cases: kill mid-run and resume (no missing or duplicate rows); two instances (only
     one works); owner stopped and lease expires (another takes over); artificially slow write
-    (ticks do not overlap); backfilled rows equal the live path's for the same pages (4.2)
+    (an idle tick does not start a second loop); backfilled rows equal the live path's for the same pages (4.2)
   - Done when these pass against a seeded dataset
   - Performance run (not part of CI): seed ~45–50k pages in a separate database (e.g. `growi_perf`)
     with `insertMany`, so the live listener creates no `PageLink` rows, using a realistic spread of
