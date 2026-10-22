@@ -273,10 +273,12 @@
   and the Elasticsearch reindex (streams, GC per batch, admin Socket.IO progress).
 - **Selected Approach**:
   1. migrate-mongo creates **only the indexes** (fast, safe to block on at boot).
-  2. The heavy backfill is an **online `CronService` job** modeled on page-bulk-export: chunk per
-     tick (cadence × chunk = duty cycle = the throttle), resumable via a progress-marker document,
-     run-once + multi-instance-safe via an **atomic Mongo claim** (`findOneAndUpdate`), progress
-     over the admin Socket.IO channel.
+  2. The heavy backfill is an **online job** started by a `CronService` poll and run as a
+     self-paced loop: after each page it rests in proportion to the work (the duty cycle over
+     measured extraction time is the throttle), resumable via a progress-marker document (last
+     `_id`, saved at checkpoints after the pages' writes), run-once + multi-instance-safe via an
+     **atomic Mongo claim** (`findOneAndUpdate`) with a lease renewed at checkpoints for crash
+     recovery, an in-process overlap flag, progress over the admin Socket.IO channel.
   3. Resolution during backfill uses an **in-memory `{path → _id}` map** built from one projection
      query (hash lookups, not per-link DB round-trips); redirect-following skipped (stragglers
      self-heal on next edit/read).
@@ -285,13 +287,159 @@
   full plugin chain. Central estimate ~5 ms/page. Full-speed totals (also = blocking-downtime if
   it ran at boot): ~1 min/10k, ~10 min/100k, ~50 min/500k, ~1.7 h/1M. Online throttled =
   full-speed ÷ duty cycle (e.g. 25% ⇒ ×4); ×~4 again if pages average ~15 KB.
+- **Parse cost is linear in body size** (measured locally through the real
+  `extractInternalLinkPaths` on synthetic bodies, median of 3 after warm-up, one machine; the
+  benchmark script is not kept). Per KiB: text ≈1.5 ms, table-dense bodies ≈2.5 ms (many 10×4,
+  50×6 or 300-row tables, or one giant table), log/code blocks ≈0.4 ms, a draw.io block ≈0.2 ms
+  (stored inline as a ```` ```drawio ```` fence and parsed as a single `code` node; attachments add
+  only a short reference), a mixed page ≈0.9 ms. Reaching ~100 / 250 / 500 / 1000 ms takes about
+  70 / 190 / 350 / 700 KiB of text (≈13k / 35k / 64k / 129k words) and about 45 / 105 / 210 /
+  400 KiB of tables (≈600 / 1,500 / 2,800 / 5,000 rows; the 1 s point is extrapolated from 864 ms
+  at 336 KiB). Reference pages: a typical 600-word page
+  5 ms, a 7,000-word document 48 ms, a 1,000-row table 217 ms, a runbook with a table and code
+  33 ms. The 87 ms per 60 KB anchor above agrees with the text rate.
+- **Parser pin — `micromark-extension-gfm-table` ≥ 2.1.2**: up to 2.1.1 the GFM parse is quadratic
+  in table cells (400 ten-row tables, 202 KiB: 10.7 s against 232 ms with plain remark-parse; one
+  1,000-row table 1.6 s; 800 ten-row tables 44 s). `EditMap.add` scanned the whole edit list on
+  every edit (about 90% of parse time in a CPU profile); 2.1.2 indexes edits by position and
+  parses 405 KiB / 8,000 rows in 1.2 s. A workspace override pins it because remark-gfm reaches the
+  package through `micromark-extension-gfm`, which only asks for ^2.0.0. Not chosen: an extraction
+  pipeline without the table construct (plain remark-parse plus the autolink-literal extension) —
+  about 2.5× faster than 2.1.2 on table-dense bodies (0.55 s against 1.4 s at 422 KiB) and the same
+  links on a 1,200-link fixture, but it differs from the renderer where GFM splits cells
+  (`[a | b](/x)`, `|` in a link destination) and gives up a single source of link forms.
+- **Scale assumption (customer data)**: largest wiki 45k pages, most under 3k, a few at 8k–20k.
+  Estimated at 25% duty (unmeasured): ~1.5 min for 3k pages, 4–8 min for 8k–20k, ~18 min for 45k
+  (~70 min if pages average 15 KB). This covers only the customers we can see; self-hosted
+  installs may be larger, which is why the job stays online and throttled rather than assuming
+  small wikis.
+- **Scheduler facts that shape the throttle** (node-cron 3.0.3 source): the callback is not
+  awaited and there is no no-overlap option, so ticks can overlap on a slow write; a tick due
+  while the previous is running is dropped (`recoverMissedExecutions: false`) and the next starts
+  immediately; polling is once per second. Hence the overlap flag, and a measured-time throttle
+  instead of `cadence × chunk size`.
+- **Duty cycle vs. stall length**: the duty cycle is the average share of wall time the job is
+  active; only its synchronous parsing blocks the event loop. What live requests feel is the longest
+  uninterrupted block, which the per-page rest bounds at one page. Success is judged on event-loop
+  delay max/p99 (`perf_hooks.monitorEventLoopDelay`), not on the duty number.
+- **Considered and deferred — MongoDB `$regex` prefilter**: skip parsing pages whose current
+  revision cannot contain a link. Deferred because (1) the benefit is unmeasured (27% pass rate on
+  59 short dev pages says little); (2) the regex is a second definition of "a link", and a miss
+  means permanently missing backlinks, silently — a dev regex missed reference-style links,
+  `<https://…>` autolinks and possibly bare URLs (unverified against the extractor); (3) it must
+  target only each page's *current* revision (a naive all-revisions query matched 2× as many);
+  (4) DB read load is similar to the plain scan, which reads every body anyway. If added: one
+  source of link forms or a drift test against the extractor, and a deliberately broad regex.
+- **Other options ruled out**: *lazy per target* — not exact (relative links, wiki-links,
+  renames) and depends on Elasticsearch; *lazy on view of the source page* — cannot work, rows live
+  under the source page; *lazy start (first backlinks panel open)* — cheap and can be added later
+  without changing the job; *admin trigger* — already deferred above.
+- **Open questions (settle in B3.2)**: write ordering between the live listener and the backfill on
+  the same page (can a stale backfill read overwrite fresher rows?); the checkpoint cadence and
+  lease length; the policy for a page whose write keeps failing; whether to cap the body size
+  parsed, since the per-page rest cannot interrupt a parse and so cannot bound one large page (~1.1 s at
+  333 KiB on the B2.2 pipeline; about 400 KiB of table-dense text reaches 1 s on the current one).
+  Parse time is linear in size, so a size cap bounds the stall. Options considered: skip-and-record
+  (a gap that is visible but still missing until the page's next save), truncate (loses the links
+  after the cutoff, silently — rejected), parse off-thread (the real fix, deferred with
+  `worker_threads`). A table-aware guard (count of table-row lines) and skipping pages that contain
+  tables were considered unnecessary once the parser pin removed the quadratic cost, and skipping
+  them would silently lose link-bearing tables.
+- **Pacing shape (resolved): rest proportional to work, per page** (PR #12066 review notes).
+  Three shapes were compared. *A — cron tick with a time budget (about 250 ms) and a yield*:
+  follows the `CronService` / page-bulk-export pattern and a tick is a natural checkpoint, but it
+  needs two knobs, hits node-cron's 1 s floor and dropped ticks (so an overlap guard), delivers one
+  burst per second, and is a second pacing design next to the live drain. *B — sleep proportional
+  to work per slice (about 50 ms of work, then a multiple of it)*: exact duty and evenly spaced
+  short bursts, but a slice accumulator and a second knob, stalls up to the slice length on small
+  pages, and custom loop code. *C — sleep proportional to work per page, as the live drain does*:
+  chosen. One setting (the duty), the longest stall is one page, the rest calculation is shared with
+  the drain after a small refactor, and it is the same design as B2.2. Costs: about one timer per
+  page (negligible here; the 1 ms timer floor makes the duty slightly under target on tiny pages),
+  the drain's handler cannot be reused as is because the backfill needs its own step over the
+  in-memory path→id map, and a separate checkpoint cadence is needed. None of A, B or C bounds one
+  large page; the body-size cap does. Long rests after a large page are harmless.
 - **Trade-offs**: backlinks are incomplete for pre-existing pages until the job finishes
   (acceptable per 4.2 — completeness only required *after* completion; new edits index instantly).
   In-process means the parse still shares the one JS thread; the duty cycle bounds but cannot
   remove that contention — only `worker_threads` could, which GROWI lacks (deferred).
-- **Delivery decision (resolved)**: **auto-start** the throttled job from `crowi` setup after boot —
-  no admin action, guaranteed completion. Admin-triggered start deferred (a one-line wiring change to
-  add later, reusing the identical job). Implementation reuses the page-bulk-export scaffolding:
+- **Delivery decision (resolved)**: throttled, two-phase (recent pages at 25% duty, then older at
+  10%); auto-started on-prem, and on GROWI.cloud started by infra through a flag in the job
+  document. Admin-triggered start deferred (a one-line wiring change to add later, reusing the
+  identical job). The start rule and duty settings are in design.md's Delivery decision; the
+  reasoning behind them is here:
+  - *Unconditional auto-start was rejected for cloud*: apps share one MongoDB, a duty cycle bounds
+    per-instance load only, so a fleet starting together has no aggregate cap. Waves bound it.
+  - *Operator-controlled start vs an admin setting*: an admin button would let cloud customers
+    start backfills at arbitrary times, outside infra's waves. For on-prem there is no shared
+    database, so auto-start is safe and needs no action, which avoids the "customers never notice
+    an opt-in" problem.
+  - *Cloud detection by `app:growiCloudUri`, with an explicit override*: a dedicated variable alone
+    fails open (a forgotten variable starts the backfill on shared Mongo), while gating on the URI
+    fails closed. The false-positive cost is an on-prem install not auto-starting until the flag
+    or the env override is set, a delay and not an outage. Not verified outside the repo: whether infra sets `GROWI_CLOUD_URI` on every cloud
+    app, which the gate relies on — confirm with the infra team.
+  - *Two phases by `updatedAt`, with a stored cutoff*: skipping old pages entirely would break full
+    coverage (4.1), so they run second at a lower duty. The cutoff is stored on the job so the sets
+    do not shift across restarts.
+  - *Cloud start mechanism: a flag in the job document (resolved)*. Waves must be decoupled from
+    both the release and from restarts: release stages are sized for release risk, nothing makes a
+    release wait for a backfill to finish, and an app restart may be visible to customers (migrations
+    run at boot and sockets drop). The job document is read directly each tick, so infra can start,
+    pause and resume one app at a time with no restart and no release involvement. This matches
+    how GROWI.cloud infra already ran the v8 `revisions` index pre-creation (see the precedent
+    below).
+  - *Precedent — v8 `revisions` index pre-creation* (internal wiki page, Redmine 186296): to avoid
+    all apps building `{ author: 1, createdAt: -1 }` at once through `autoIndex` at v8 boot, infra
+    pre-created it per app from an `operation-mongo` pod with the admin credential (databases named
+    `growi-app-{GrowiAppId}`), over the active apps (`GrowiApp.status = 'UP'`, 295 on 2026-07-02),
+    largest plans first. A script takes a comma-separated batch of ids, processes them one at a
+    time, aborts on the first failure, and never chains batches; a person checks Grafana (shared
+    MongoDB I/O, CPU, memory) between batches. Batch size starts near 5 and grows to 10 and 20;
+    the plan was about 50 apps a day, but the run recorded on the page covered every plan group on
+    2026-07-07 (batches of 5 to 10), and a 30-app sample (20 random, 10 of the largest or slowest)
+    all had the index afterwards. That pace does not predict the backfill's: a `createIndex` took
+    seconds to about two minutes per app (the largest, 14 GB of revisions, 109 s), while the
+    backfill runs for much longer under its duty cycle, and its per-app time is not measured yet.
+    The backfill wave procedure reuses this shape with one difference: `createIndex` returns when
+    it finishes, but setting `startRequested` returns at once, so the wave script must poll
+    `status` / `completedAt` / `lastError` and stop on `failed` before moving to the next app or
+    batch. Starting apps in parallel also needs a per-cluster concurrency cap, which the
+    sequential index script never had; it is chosen from B3.2's measured per-app load and
+    Grafana, not from this precedent. A sample check after the waves (the `complete` status plus a
+    spot check of rows) mirrors the verification the index run used.
+  - *Considered, not adopted for the cloud start*: an env var per wave (needs a restart per wave);
+    tying waves to staged releases (couples release timing to backfill duration, which nothing
+    enforces); a hashed per-app start offset (spreads starts but neither avoids overlap nor caps
+    load, because an app does not know the others' durations); a scheduled absolute start time in
+    an env var (a deterministic slot plan, but the schedule is fixed until the next restart and
+    cannot react to cluster load); a control-plane permission endpoint (the only option with a real
+    concurrency cap and no per-app action, but infra would have to build and run it). *Fallback if
+    infra cannot write to tenant databases*: an authenticated start/status HTTP endpoint on the
+    app, protected by a per-app secret from the deploy config — same job-document contract, a
+    different way to set the flag; it needs real auth and audit recording.
+  - *Also considered, not adopted*: lazy backfill on page view (cannot work for backlinks, which
+    come from other pages' bodies); a cross-tenant lock in shared state; an infra-run external
+    script that parses pages (the parse needs the app's extractor). Candidates to add later:
+    reading bodies with `secondaryPreferred` (backfill tolerates stale reads, not verified against
+    the cluster) and backing off when chunk latency rises.
+  - *Infra answers (2026-10-21)*: the GROWI.cloud release job updates at most 5 apps every 20
+    minutes (15 an hour, 360 a day); restarting an app is not treated as an outage, though strictly
+    it is one; querying a tenant database directly depends on the operation, and infra wants to be
+    consulted before it is run. Consequences: (1) auto-starting on update was rejected again —
+    concurrent backfills would be `5 × (backfill duration ÷ 20 min)`, and nothing bounds the
+    duration, so slowing the release would only guess at it and would couple release timing to the
+    backfill. (2) The release goes out at the normal cadence (about 295 active apps finish in under
+    a day) and the waves run afterwards, so the waves, not the release, set the pace. (3) Setting
+    `startRequested` is a direct tenant-database write, so the procedure and the field-level `$set`
+    contract go to infra for agreement before the first wave; the HTTP start/status endpoint above
+    is the fallback if they decline.
+  - *Still to confirm with the infra team*: that `GROWI_CLOUD_URI` is set on every cloud app; that
+    they are comfortable setting and reading one field on each app's job document directly, and
+    how they will watch progress across apps; the cluster headroom and which apps share which
+    cluster. The backfill load they would be
+    shown is estimated, not measured — B3.2's performance run replaces the estimates.
+  Implementation reuses the page-bulk-export scaffolding:
   `CronService` base, `createBatchStream`, the cursor→resume(progress marker)→`pipeline` skeleton, and
   the watchdog start/stop logic; the new code is link extraction/resolution, the in-memory `{path→_id}`
   map, the `bulkWrite` upsert sink, and an atomic claim (stronger than the bulk-export watchdog race).
@@ -355,10 +503,12 @@
   explicit non-trashed status filter to the backlink-source query; verify during implementation.
 - **Backfill on very large wikis** — Mitigation: online throttled `CronService` job (not a
   boot-blocking migration); in-memory `{path→_id}` resolution; cursor + `createBatchStream` +
-  idempotent `bulkWrite` upserts; resumable progress marker; atomic Mongo claim for
-  multi-instance. See the backfill decision above.
-- **Backfill CPU contention with live traffic** (single JS thread) — Mitigation: duty-cycle
-  throttle via cron cadence; conservative default; admin-tunable. Full elimination needs
+  idempotent `bulkWrite` upserts; resumable progress marker; atomic Mongo claim with a renewed
+  lease for multi-instance and crash recovery. See the backfill decision above.
+- **Backfill CPU contention with live traffic** (single JS thread) — Mitigation: a rest
+  proportional to the work after every page (duty cycle), so a stall is at most one page;
+  conservative default;
+  admin-tunable. Full elimination needs
   `worker_threads` (deferred, no infra).
 - **Redirect record accumulation** — Mitigation: none required for correctness (`$graphLookup`
   handles depth); note for future cleanup.
