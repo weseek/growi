@@ -267,7 +267,7 @@
 * fix: Suppress modifier shortcuts in editable elements (#11340) @yuki-takei
 * fix: escape </style> breakout in renderCustomCss (#11298) @yuki-takei
 * fix: Use req.user.username in LDAP Execute Sync instead of req.user.name (#11356) @yuki-takei
-* feat(page-bulk-export): Rework bulk PDF/HTML export to render Markdown like the web (tables, math, emoji, directives) (#11288) @yuki-takei
+* feat(page-bulk-export): Rework bulk PDF/HTML export to render Markdown like the web (tables, math, emoji, directives) (#11288) @yuki-takei @bondICha
 
 ### 🧰 Maintenance
 
