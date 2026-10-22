@@ -51,3 +51,26 @@
   overflow-y: auto;
   list-style: none;
 }
+
+.add-reaction {
+  display: inline-flex;
+
+  .add-reaction-button {
+    min-width: 2.25rem;
+    min-height: 2rem;
+    padding: 0 0.5rem;
+    color: inherit;
+    background: transparent;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 1rem;
+
+    &:disabled {
+      cursor: default;
+      opacity: 0.6;
+    }
+
+    &:not(:disabled):hover {
+      background-color: var(--bs-secondary-bg);
+    }
+  }
+}
