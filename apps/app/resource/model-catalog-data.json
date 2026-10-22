@@ -1,6 +1,6 @@
 {
   "_source": "https://models.dev/api.json (MIT)",
-  "_generatedAt": "2026-10-07T15:40:51.745Z",
+  "_generatedAt": "2026-10-22T10:22:57.643Z",
   "models": {
     "openai": [
       {
@@ -68,16 +68,8 @@
         "name": "GPT-5.2"
       },
       {
-        "id": "gpt-5.2-chat-latest",
-        "name": "GPT-5.2 Chat"
-      },
-      {
         "id": "gpt-5.2-pro",
         "name": "GPT-5.2 Pro"
-      },
-      {
-        "id": "gpt-5.3-chat-latest",
-        "name": "GPT-5.3 Chat (latest)"
       },
       {
         "id": "gpt-5.3-codex",
@@ -196,6 +188,10 @@
       {
         "id": "claude-haiku-4-5-20251001",
         "name": "Claude Haiku 4.5"
+      },
+      {
+        "id": "claude-haiku-5-5",
+        "name": "Claude Haiku 5.5"
       },
       {
         "id": "claude-opus-4-5",
@@ -320,12 +316,20 @@
         "name": "Gemini 3.8 Flash"
       },
       {
+        "id": "gemini-4-argon",
+        "name": "Gemini 4 Argon"
+      },
+      {
         "id": "gemini-flash-latest",
         "name": "Gemini Flash Latest"
       },
       {
         "id": "gemini-flash-lite-latest",
         "name": "Gemini Flash-Lite Latest"
+      },
+      {
+        "id": "gemini-pro-latest",
+        "name": "Gemini Pro Latest"
       },
       {
         "id": "gemma-4-26b-a4b-it",
