@@ -20,6 +20,7 @@ import type {
 } from '../../interfaces';
 import { canViewCommentsOfPage } from '../authorization/can-view-comments-of-page';
 import { getCommentListItem } from '../service/comment-get';
+import { notFoundOrForbidden } from './not-found-or-forbidden';
 
 const logger = loggerFactory('growi:routes:apiv3:comments:get');
 
@@ -32,11 +33,6 @@ type Req = Request<
   user?: HydratedDocument<IUser>;
   isSharedPage?: boolean;
 };
-
-// Same body for "page forbidden", "comment missing" and "comment of another
-// page" so the response never tells which one it was.
-const notFoundOrForbidden = (): ErrorV3 =>
-  new ErrorV3('Page is not found or forbidden', 'notfound_or_forbidden');
 
 /**
  * @swagger

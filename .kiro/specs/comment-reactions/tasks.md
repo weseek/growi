@@ -140,7 +140,7 @@
   - _Boundary: Activity 定義の拡張_
 
 - [ ] 5. Core: リアクションの書き込み API
-- [ ] 5.1 書き込み API の認可、入力の検証、対象の解決を作り、登録する
+- [x] 5.1 書き込み API の認可、入力の検証、対象の解決を作り、登録する
   - ミドルウェアの順は、書き込みスコープのアクセストークンの解析 → ゲストを許可しないログイン → 閲覧専用ユーザーの設定による除外 → 監査ログの準備 → 入力の検証 とする(`activity-recording.md` の順)。共有リンクの判定は通さない
   - 入力は、コメント ID(有効な ID)、絵文字(文字列、長さの上限 64)、追加か解除かの真偽値(厳密)。絵文字は 2.1 の正規化を通し、通らなければ 400 `invalid-reaction-emoji`
   - コメントの存在とページの閲覧権限を確かめ、どちらで失敗しても同じ 404 `notfound_or_forbidden`
@@ -299,3 +299,4 @@
 - 3.1:ICommentListItem.reactions を、loadReactionChips の戻り値に合わせて readonly ReactionChip[] | null とした。design.md(249 行目、660 行目)は ReactionChip[] | null のままなので、合わせる必要がある。
 - 3.3:Prisma のデリゲートのメソッド(例: `prisma.commentreactions.findMany`)を `vi.spyOn` して `vi.restoreAllMocks()` すると、そのメソッドが `undefined` になり後続のテストが落ちる。リアクションの取り込みの失敗は、生のコレクションに `emoji` の無い行を入れて再現した。「取り込んで、失敗したらログを残して `null`」の処理(`loadReactionChipsOrNull`)は、3.4 で `features/comment/server/service/load-reaction-chips-or-null.ts` に移し、一覧(`list.ts`)と1件(`getCommentListItem`)の両方から使っている。
 - 3.4:`getCommentListItem({ prisma }, { commentId, pageId, viewerId })` は `ICommentListItem | null`(`null` は「無い」)を返す。3.5 の route と PUT の route はこの null を 404 に変換する。
+- 5.1:PUT の要求・応答の型は、design.md の `interfaces/api.ts` ではなく `features/comment-reaction/dto/update-comment-reaction.ts`(barrel は `dto/index.ts`)に置き、名前は既存の `GetCommentResponseBody` に合わせて `UpdateCommentReactionRequestBody` / `UpdateCommentReactionResponseBody` とした。応答が `ICommentListItem` を含み、層 1 の `interfaces` から `comment` を import できない(`comment/interfaces` → `comment-reaction/interfaces` と循環もする)ため。8.x のクライアントはこの型を使う。handler は対象の解決のあと 501 `comment-reaction-update-unavailable` で終わる仮の応答になっており、5.2 で置き換える。`notFoundOrForbidden()` は `features/comment/server/routes/not-found-or-forbidden.ts` に共通化し、一覧・単体・PUT から使っている。

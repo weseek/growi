@@ -22,6 +22,7 @@ import { canViewCommentsOfPage } from '../authorization/can-view-comments-of-pag
 import { toCommentListItem } from '../serializers/to-comment-list-item';
 import { type ListCommentsInput, listComments } from '../service/comment-list';
 import { loadReactionChipsOrNull } from '../service/load-reaction-chips-or-null';
+import { notFoundOrForbidden } from './not-found-or-forbidden';
 
 const logger = loggerFactory('growi:routes:apiv3:comments:list');
 
@@ -34,11 +35,6 @@ type Req = Request<
   user?: HydratedDocument<IUser>;
   isSharedPage?: boolean;
 };
-
-// Same body for "page missing", "page forbidden" and "revision not found" so
-// the response never tells which one it was (rules/page-write-action-403-404.md).
-const notFoundOrForbidden = (): ErrorV3 =>
-  new ErrorV3('Page is not found or forbidden', 'notfound_or_forbidden');
 
 /**
  * @swagger
