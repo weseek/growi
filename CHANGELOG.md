@@ -21,6 +21,11 @@
 
 * imprv: Unify env-var-only storage settings across AWS, GCS and Azure (#12074) @yotatameguchi-boop
 
+### 🐛 Bug Fixes
+
+* fix(core): compare own keys in deep equality (#12081) @yotatameguchi-boop
+* fix: prevent Mermaid swimlane rendering race (#12065) @krishgera
+
 ### 🧰 Maintenance
 
 * fix(test): deliver selectionchange asynchronously in component tests (#12088) @yuki-takei
@@ -141,6 +146,8 @@
 * fix: Report a conflict when renaming a page with a stale revisionId (#11680) @yuki-takei
 * fix: Links to pages with non-ASCII paths reload the whole document (#11687) @yuki-takei
 * fix: Page created at a path with a leftover redirect was not reachable at that path (#11683) @yuki-takei
+* fix: Handle unavailable source pages when duplicating (#11753) @krishgera
+* fix: return canonical errors when renaming unavailable pages (#11615) @krishgera
 
 ### 🧰 Maintenance
 
@@ -237,6 +244,8 @@
 * fix(import): Harden admin data import (re-enable button on failure, await import) (#11474) @yuki-takei
 * fix: Prevent blank screen when Next.js falls back to the error page (#11423) @yuki-takei
 * fix: Prevent PageSelectModal infinite render loop (#11422) (#11428) @yuki-takei
+* fix(auth): LDAP login stays on login page until manual reload (#11386) @hamataku
+* fix(i18n): Pass user locale to FormattedDistanceDate (#11376) @mahirhir
 
 ## [v7.5.6](https://github.com/growilabs/compare/v7.5.5...v7.5.6) - 2026-06-25
 
