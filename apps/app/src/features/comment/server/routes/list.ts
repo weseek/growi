@@ -5,10 +5,6 @@ import type { Request, RequestHandler } from 'express';
 import { query } from 'express-validator';
 import type { HydratedDocument } from 'mongoose';
 
-import {
-  loadReactionChips,
-  type ReactionChip,
-} from '~/features/comment-reaction/server';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
@@ -23,11 +19,9 @@ import type {
   ListCommentsResponseBody,
 } from '../../interfaces';
 import { canViewCommentsOfPage } from '../authorization/can-view-comments-of-page';
-import {
-  toCommentListItem,
-  toCreatorSummary,
-} from '../serializers/to-comment-list-item';
+import { toCommentListItem } from '../serializers/to-comment-list-item';
 import { type ListCommentsInput, listComments } from '../service/comment-list';
+import { loadReactionChipsOrNull } from '../service/load-reaction-chips-or-null';
 
 const logger = loggerFactory('growi:routes:apiv3:comments:list');
 
@@ -45,22 +39,6 @@ type Req = Request<
 // the response never tells which one it was (rules/page-write-action-403-404.md).
 const notFoundOrForbidden = (): ErrorV3 =>
   new ErrorV3('Page is not found or forbidden', 'notfound_or_forbidden');
-
-// A reaction load failure must not hide the comments: it yields null instead.
-const loadReactionChipsOrNull = async (
-  commentIds: readonly string[],
-  viewerId: string | null,
-): Promise<ReadonlyMap<string, readonly ReactionChip[]> | null> => {
-  try {
-    return await loadReactionChips(
-      { prisma },
-      { commentIds, viewerId, formatUser: toCreatorSummary },
-    );
-  } catch (err) {
-    logger.error('Failed to load comment reactions', err);
-    return null;
-  }
-};
 
 /**
  * @swagger
@@ -409,8 +387,11 @@ export const listCommentsRouteHandlersFactory = (
         }
 
         const chipsByCommentId = await loadReactionChipsOrNull(
-          result.comments.map((row) => row.id),
-          req.user != null ? String(req.user._id) : null,
+          { prisma },
+          {
+            commentIds: result.comments.map((row) => row.id),
+            viewerId: req.user != null ? String(req.user._id) : null,
+          },
         );
         const body: ListCommentsResponseBody = {
           comments: result.comments.map((row) =>
