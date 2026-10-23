@@ -1,6 +1,6 @@
 {
   "_source": "https://models.dev/api.json (MIT)",
-  "_generatedAt": "2026-10-12T13:02:18.613Z",
+  "_generatedAt": "2026-10-23T07:23:02.940Z",
   "models": {
     "openai": [
       {
@@ -144,29 +144,11 @@
         }
       },
       {
-        "id": "gpt-5.2-chat-latest",
-        "name": "GPT-5.2 Chat",
-        "pricing": {
-          "input": 1.75,
-          "output": 14,
-          "cacheRead": 0.175
-        }
-      },
-      {
         "id": "gpt-5.2-pro",
         "name": "GPT-5.2 Pro",
         "pricing": {
           "input": 21,
           "output": 168
-        }
-      },
-      {
-        "id": "gpt-5.3-chat-latest",
-        "name": "GPT-5.3 Chat (latest)",
-        "pricing": {
-          "input": 1.75,
-          "output": 14,
-          "cacheRead": 0.175
         }
       },
       {
@@ -901,6 +883,15 @@
         }
       },
       {
+        "id": "gemini-4-argon",
+        "name": "Gemini 4 Argon",
+        "pricing": {
+          "input": 2,
+          "output": 10,
+          "cacheRead": 0.1
+        }
+      },
+      {
         "id": "gemini-flash-latest",
         "name": "Gemini Flash Latest",
         "pricing": {
@@ -916,6 +907,23 @@
           "input": 0.3,
           "output": 2.5,
           "cacheRead": 0.03
+        }
+      },
+      {
+        "id": "gemini-pro-latest",
+        "name": "Gemini Pro Latest",
+        "pricing": {
+          "input": 2,
+          "output": 12,
+          "cacheRead": 0.2,
+          "tiers": [
+            {
+              "input": 4,
+              "output": 18,
+              "cacheRead": 0.4,
+              "inputTokensAbove": 200000
+            }
+          ]
         }
       },
       {

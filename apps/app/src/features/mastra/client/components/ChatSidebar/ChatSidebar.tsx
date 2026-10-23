@@ -61,6 +61,7 @@ import {
 import { useSWRxMessages } from '../../stores/message';
 import { useSWRxChatModels } from '../../stores/models';
 import { useSWRINFxRecentThreads } from '../../stores/thread';
+import { ChatSidebarResizableContainer } from './ChatSidebarResizableContainer';
 import {
   createMastraChatTransport,
   resolveChatErrorDetail,
@@ -69,10 +70,6 @@ import {
 import { IncompleteResponseNotice } from './IncompleteResponseNotice';
 import { PageSources } from './PageSources';
 import { extractPageSources } from './page-sources';
-
-import styles from './ChatSidebar.module.scss';
-
-const moduleClass = styles['grw-chat-sidebar'] ?? '';
 
 export const ChatSidebar = (): JSX.Element => {
   const { t } = useTranslation();
@@ -249,9 +246,7 @@ export const ChatSidebar = (): JSX.Element => {
   };
 
   return (
-    <div
-      className={`tw-root position-fixed top-0 end-0 h-100 border-start bg-body shadow-sm overflow-hidden ${moduleClass}`}
-    >
+    <ChatSidebarResizableContainer>
       <div className="tw:max-w-4xl tw:mx-auto tw:py-3 tw:relative tw:size-full">
         <div className="tw:flex tw:flex-col tw:h-full">
           <div className="tw:flex tw:items-center tw:gap-2 tw:shrink-0 tw:px-3 tw:pb-2 tw:border-b tw:border-border">
@@ -495,6 +490,6 @@ export const ChatSidebar = (): JSX.Element => {
           </div>
         </div>
       </div>
-    </div>
+    </ChatSidebarResizableContainer>
   );
 };
