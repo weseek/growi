@@ -1,11 +1,6 @@
 /**
- * Regression guard: searchAuditlogSuggestions must reach the real Prisma
- * MongoDB fallback (not a mock) when Elasticsearch is unreachable. A prior
- * version passed the Prisma extension method as a bare function reference
- * through the field-handler registry, detaching it from `this` and throwing
- * `Cannot read properties of undefined (reading 'aggregateRaw')` at runtime
- * — invisible to search.spec.ts because that file mocks `~/utils/prisma`
- * entirely, so the detached call never touched the real extension context.
+ * searchAuditlogSuggestions must reach the real Prisma MongoDB fallback when
+ * Elasticsearch is unreachable (search.spec.ts mocks `~/utils/prisma`).
  */
 
 import mongoose, { Types } from 'mongoose';

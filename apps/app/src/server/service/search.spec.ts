@@ -315,6 +315,35 @@ describe('SearchService.searchAuditlogSuggestions()', () => {
     expect(mockUserModel.find).not.toHaveBeenCalled();
   });
 
+  it('should pass a trimmed q to ES so padded input still matches', async () => {
+    vi.mocked(
+      searchService.fullTextSearchDelegator.searchAuditlogByFuzzyWildcard,
+    ).mockResolvedValue(['/api/v3/pages']);
+
+    await searchService.searchAuditlogSuggestions(
+      ['endpoint'],
+      '  /api/v3/pages ',
+      10,
+    );
+
+    expect(
+      searchService.fullTextSearchDelegator.searchAuditlogByFuzzyWildcard,
+    ).toHaveBeenCalledWith('endpoint', '/api/v3/pages', 10);
+  });
+
+  it('should return {} without calling ES when q is whitespace only', async () => {
+    const result = await searchService.searchAuditlogSuggestions(
+      ['endpoint'],
+      '   ',
+      10,
+    );
+
+    expect(result).toEqual({});
+    expect(
+      searchService.fullTextSearchDelegator.searchAuditlogByFuzzyWildcard,
+    ).not.toHaveBeenCalled();
+  });
+
   it('should resolve both username and endpoint independently when both fields are requested', async () => {
     vi.mocked(
       searchService.fullTextSearchDelegator.searchAuditlogByFuzzyWildcard,
@@ -335,6 +364,45 @@ describe('SearchService.searchAuditlogSuggestions()', () => {
       username: { activeUsernames: ['alice'], inactiveUsernames: [] },
       endpoint: { endpoints: ['/api/v3/pages'] },
     });
+  });
+
+  it('should still return the other fields when one field fails', async () => {
+    searchService.isConfiguredOverride = false;
+    mockFindSnapshotUsernamesByUsernameRegex.mockResolvedValueOnce(['alice']);
+    mockFindEndpointsByEndpointRegex.mockRejectedValueOnce(
+      new Error('operation exceeded time limit'),
+    );
+    setupUserModelMock(mockUserModel, [
+      { username: 'alice', status: UserStatus.STATUS_ACTIVE },
+    ]);
+
+    const result = await searchService.searchAuditlogSuggestions(
+      ['username', 'endpoint'],
+      'ali',
+      10,
+    );
+
+    expect(result).toEqual({
+      username: { activeUsernames: ['alice'], inactiveUsernames: [] },
+    });
+  });
+
+  it('should reject when every requested field fails', async () => {
+    searchService.isConfiguredOverride = false;
+    mockFindSnapshotUsernamesByUsernameRegex.mockRejectedValueOnce(
+      new Error('operation exceeded time limit'),
+    );
+    mockFindEndpointsByEndpointRegex.mockRejectedValueOnce(
+      new Error('operation exceeded time limit'),
+    );
+
+    await expect(
+      searchService.searchAuditlogSuggestions(
+        ['username', 'endpoint'],
+        'ali',
+        10,
+      ),
+    ).rejects.toThrow();
   });
 
   it('should use the MongoDB fallback for endpoint when ES is not configured', async () => {

@@ -471,14 +471,29 @@ class SearchService implements SearchQueryParser, SearchResolver {
     q: string,
     limit: number,
   ): Promise<AuditlogSuggestionsResponse> {
-    if (q === '') return {};
+    const trimmedQ = q.trim();
+    if (trimmedQ === '') return {};
 
     const uniqueFields = [...new Set(fields)];
-    const responses = await Promise.all(
+    const settled = await Promise.allSettled(
       uniqueFields.map((field) =>
-        AUDITLOG_SUGGESTION_HANDLERS[field](this, q, limit),
+        AUDITLOG_SUGGESTION_HANDLERS[field](this, trimmedQ, limit),
       ),
     );
+
+    // A failing field is dropped so it can't take the others down with it;
+    // only when every field fails does the request fail.
+    const responses = settled.flatMap((result, i) => {
+      if (result.status === 'fulfilled') return [result.value];
+      logger.error(
+        `Failed to search auditlog suggestions (${uniqueFields[i]}).`,
+        result.reason,
+      );
+      return [];
+    });
+    if (settled.length > 0 && responses.length === 0) {
+      throw new Error('Failed to search auditlog suggestions for all fields.');
+    }
 
     return Object.assign({}, ...responses);
   }

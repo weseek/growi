@@ -89,6 +89,23 @@ describe('findEndpointsByEndpointRegex', () => {
     expect(result).toEqual(['/api/v3/a.b']);
   });
 
+  it('returns path-only endpoints, never exposing or splitting on the query string', async () => {
+    await prisma.activities.createMany({
+      data: [
+        makeActivityData({ endpoint: '/_api/search?q=secret-a' }),
+        makeActivityData({ endpoint: '/_api/search?q=secret-b' }),
+        makeActivityData({ endpoint: '/_api/search' }),
+      ],
+    });
+
+    const result = await prisma.activities.findEndpointsByEndpointRegex(
+      '/_api/search',
+      { offset: 0, limit: 10 },
+    );
+
+    expect(result).toEqual(['/_api/search']);
+  });
+
   it('returns [] when no endpoint matches the query', async () => {
     await prisma.activities.createMany({
       data: [makeActivityData({ endpoint: '/api/v3/pages' })],
@@ -112,6 +129,19 @@ describe('findEndpointsByEndpointRegex', () => {
     });
 
     const result = await prisma.activities.findEndpointsByEndpointRegex(q, {
+      offset: 0,
+      limit: 10,
+    });
+
+    expect(result).toEqual([]);
+  });
+
+  it('short-circuits to [] for a "/" plus one character, since the leading "/" narrows nothing', async () => {
+    await prisma.activities.createMany({
+      data: [makeActivityData({ endpoint: '/api/v3/pages' })],
+    });
+
+    const result = await prisma.activities.findEndpointsByEndpointRegex('/a', {
       offset: 0,
       limit: 10,
     });
