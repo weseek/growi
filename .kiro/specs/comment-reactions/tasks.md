@@ -294,9 +294,8 @@
 
 ## Implementation Notes
 
-- 2.1 のレビューで判明:アーカイブや G2G からのインポートでは、emoji が normalizeReactionKey を通らずに保存されるため、正規形でないキーが検証をすり抜ける可能性がある。どのタスクで扱うかは未定で、PR でレビュアーに確認する予定。
-- 2.4 の実装:サービスは design.md の Service Interface と異なり、ローダーと同じく依存を先頭に取る関数 `addReaction({ prisma }, target, userId, emoji)` / `removeReaction(...)` として公開している(route タスクはこの形で呼ぶ)。種類数の上限の判定は同時の別種追加で 1〜2 件超過しうる(許容)。結合テストは `MONGO_URI` を設定して実 DB(一意インデックスのあるクローン)で実行すること。
-- 3.1:ICommentListItem.reactions を、loadReactionChips の戻り値に合わせて readonly ReactionChip[] | null とした。design.md(249 行目、660 行目)は ReactionChip[] | null のままなので、合わせる必要がある。
+- 2.4 の実装:サービスは、ローダーと同じく依存を先頭に取る関数 `addReaction({ prisma }, target, userId, emoji)` / `removeReaction(...)` として公開している(design.md の Service Interface も同じ形。route タスクはこの形で呼ぶ)。種類数の上限の判定は同時の別種追加で 1〜2 件超過しうる(許容)。結合テストは `MONGO_URI` を設定して実 DB(一意インデックスのあるクローン)で実行すること。
+- 3.1:ICommentListItem.reactions を、loadReactionChips の戻り値に合わせて readonly ReactionChip[] | null とした。
 - 3.3:Prisma のデリゲートのメソッド(例: `prisma.commentreactions.findMany`)を `vi.spyOn` して `vi.restoreAllMocks()` すると、そのメソッドが `undefined` になり後続のテストが落ちる。リアクションの取り込みの失敗は、生のコレクションに `emoji` の無い行を入れて再現した。「取り込んで、失敗したらログを残して `null`」の処理(`loadReactionChipsOrNull`)は、3.4 で `features/comment/server/service/load-reaction-chips-or-null.ts` に移し、一覧(`list.ts`)と1件(`getCommentListItem`)の両方から使っている。
 - 3.4:`getCommentListItem({ prisma }, { commentId, pageId, viewerId })` は `ICommentListItem | null`(`null` は「無い」)を返す。3.5 の route と PUT の route はこの null を 404 に変換する。
-- 5.1:PUT の要求・応答の型は、design.md の `interfaces/api.ts` ではなく `features/comment-reaction/dto/update-comment-reaction.ts`(barrel は `dto/index.ts`)に置き、名前は既存の `GetCommentResponseBody` に合わせて `UpdateCommentReactionRequestBody` / `UpdateCommentReactionResponseBody` とした。応答が `ICommentListItem` を含み、層 1 の `interfaces` から `comment` を import できない(`comment/interfaces` → `comment-reaction/interfaces` と循環もする)ため。8.x のクライアントはこの型を使う。`notFoundOrForbidden()` は `features/comment/server/routes/not-found-or-forbidden.ts` に共通化し、一覧・単体・PUT から使っている。
+- 5.1:PUT の要求・応答の型は、`interfaces/` ではなく `features/comment-reaction/dto/update-comment-reaction.ts`(barrel は `dto/index.ts`)に置き、名前は既存の `GetCommentResponseBody` に合わせて `UpdateCommentReactionRequestBody` / `UpdateCommentReactionResponseBody` とした。応答が `ICommentListItem` を含み、層 1 の `interfaces` から `comment` を import できない(`comment/interfaces` → `comment-reaction/interfaces` と循環もする)ため。8.x のクライアントはこの型を使う。`notFoundOrForbidden()` は `features/comment/server/routes/not-found-or-forbidden.ts` に共通化し、一覧・単体・PUT から使っている。

@@ -72,8 +72,8 @@
 
 1. **リアクションの中核**（`features/comment-reaction/` の `interfaces`、`utils`、`server/models`、`server/service`）: Prisma（`commentreactions`、`users` の読み取り）、`@growi/emoji-mart-data` に依存してよい。`comment` のコードは、型も含めて import しない（リアクションした利用者の4項目の型 `ReactionUserSummary` は自前で定義する）。利用者の整形は、関数を引数で受け取る
 2. **コメントの取得**（`features/comment/server/` の service、serializers、`list.ts`、新設の `get.ts`）: 1 のローダー `loadReactionChips` と型 `ReactionChip` に依存してよい
-3. **リアクションの書き込みの route**（`features/comment-reaction/server/routes/update.ts`）: 1 と、2 の `getCommentListItem`（応答のコメントを作るため）に依存してよい
-4. **クライアント**: `comment-reaction` の client は、`comment` の client の `useSWRxCommentList` に依存してよい。コメントの表示部品（`client/components/PageComment/`、`features/inline-comment/client/`）は、`comment-reaction` の client の部品に依存してよい。逆向きは禁止
+3. **リアクションの書き込みの route**（`features/comment-reaction/server/routes/update.ts`）: 1 と、2 の `getCommentListItem`（応答のコメントを作るため）、`notFoundOrForbidden`（`features/comment/server/routes/not-found-or-forbidden.ts`。404 の本体を一覧・単体と共通にするため）に依存してよい。PUT の要求・応答の型を置く `dto/`（`features/comment-reaction/dto/`）は、層 1 の外にあり、`comment/interfaces` の `ICommentListItem` を型として import してよい（層 1 の `interfaces` からは import しない）。層 3 の route と層 4 の client だけが `dto/` を使う
+4. **クライアント**: `comment-reaction` の client は、`comment` の client の `useSWRxCommentList` と型 `ICommentListItem` に依存してよい。コメントの表示部品（`client/components/PageComment/`、`features/inline-comment/client/`）は、`comment-reaction` の client の部品に依存してよい。逆向きは禁止
 
 その他:
 - `comments` と `commentreactions` の読み書きは Prisma だけで行う。本スペックは、Mongoose のモデル・スキーマを新しく作らず、既存の Mongoose スキーマ（`comments`、`activities`）にも項目を足さない。Mongoose が担っていた操作のうち必要なもの（インデックスの作成、インポート時の ObjectId への型変換と `emoji` の正規化）は、migration script と import の `overwrite-params` で補う
@@ -178,8 +178,10 @@ apps/app/src/features/comment-reaction/
 │   ├── index.ts                     # 公開する型と定数の barrel
 │   ├── reaction-key.ts              # ReactionKey、ParsedReactionKey、SkinTone の型
 │   ├── reaction-chip.ts             # ReactionChip、ReactionUser、ReactionUserSummary
-│   ├── api.ts                       # PUT の要求・応答の型
 │   └── limits.ts                    # MAX_REACTION_KINDS_PER_COMMENT
+├── dto/
+│   ├── index.ts                     # barrel
+│   └── update-comment-reaction.ts   # PUT の要求・応答の型（UpdateCommentReactionRequestBody / ResponseBody）。応答が comment の ICommentListItem を含むため、層 1 の interfaces には置かない
 ├── utils/
 │   ├── index.ts                     # barrel
 │   ├── reaction-key.ts              # parse / normalize / toSlackName / fromPickerSelection / resolveGlyph（純粋関数、サーバーとクライアントで共有）
@@ -199,8 +201,10 @@ apps/app/src/features/comment-reaction/
 │   │   └── summarize-reactions.spec.ts
 │   └── routes/
 │       ├── update.ts                # PUT /_api/v3/comments/:id/reactions（@swagger を含む）
-│       └── update.integ.ts
+│       ├── update.integ.ts
+│       └── update-activity.integ.ts  # 監査ログの記録を DB から読み直して確かめる
 └── client/
+    ├── index.ts                     # client の公開口（components の barrel を再 export）
     ├── hooks/
     │   ├── use-comment-reactions.ts          # コメント一覧のキャッシュから1コメント分のチップを読み、PUT の応答でキャッシュの1件を置き換える
     │   ├── use-comment-reactions.spec.tsx
@@ -216,27 +220,33 @@ apps/app/src/features/comment-reaction/
             ├── CommentReactionBar.spec.tsx
             ├── CommentReactionBar.module.scss
             ├── ReactionChip.tsx             # 絵文字の部分（追加・解除）と人数の部分（利用者一覧を開く）、自分の強調
+            ├── ReactionChip.spec.tsx
             ├── ReactionUsersPopover.tsx     # 人数の部分から開く、リアクションした利用者の一覧
-            └── AddReactionButton.tsx        # 「＋」とピッカーの開閉、上限時の無効化
+            ├── ReactionUsersPopover.spec.tsx
+            ├── AddReactionButton.tsx        # 「＋」とピッカーの開閉、上限時の無効化
+            └── AddReactionButton.spec.tsx
 
 apps/app/src/features/comment/server/
 ├── routes/
 │   ├── get.ts                       # 新設: GET /_api/v3/comments/:id（@swagger を含む）
-│   └── get.integ.ts
+│   ├── get.integ.ts
+│   └── not-found-or-forbidden.ts    # 新設: 404 notfound_or_forbidden の共通の本体。一覧・単体・PUT が共有する
 ├── service/
 │   ├── comment-get.ts               # 新設: getCommentListItem（1件の取得 → リアクションの取り込み → 整形）
-│   └── comment-get.integ.ts
+│   ├── comment-get.integ.ts
+│   └── load-reaction-chips-or-null.ts  # 新設: loadReactionChips を呼び、失敗したらログを残して null を返す。一覧と単体が共有する
 └── authorization/
     ├── can-view-comments-of-page.ts       # 新設: list.ts の閲覧判定（共有リンク or 閲覧権限）を取り出し、一覧と単体で共有
     └── can-view-comments-of-page.integ.ts
 
 apps/app/src/migrations/
-├── <YYYYMMDDHHmmss>-add-indexes-to-commentreactions.js     # 新設: 一意インデックスと page インデックスを作る（前例: 20260619120000-add-unique-key-index-to-auditlog-es-sync-collections.js）
-└── <YYYYMMDDHHmmss>-add-indexes-to-commentreactions.integ.ts
+├── 20261016120000-add-indexes-to-commentreactions.js     # 新設: 一意インデックスと page インデックスを作る（前例: 20260619120000-add-unique-key-index-to-auditlog-es-sync-collections.js）
+└── 20261016120000-add-indexes-to-commentreactions.integ.ts
 
 apps/app/src/server/service/import/overwrite-params/
 ├── comment-reactions.ts             # 新設: インポート時に comment / page / user を ObjectId に戻し、emoji を正規のキーにそろえる
-└── comment-reactions.spec.ts
+├── comment-reactions.spec.ts
+└── comment-reactions.integ.ts
 
 packages/editor/src/client/components/EmojiPicker/
 ├── EmojiPicker.tsx                  # 遅延読み込みの emoji-mart ピッカー（肌の色の選択あり）。エディタに依存しない
@@ -246,9 +256,9 @@ packages/editor/src/client/components/EmojiPicker/
 
 ### Modified Files
 **comment スペックの契約に当たる変更（書き戻しの対象）**
-- `apps/app/src/features/comment/interfaces/comment-list.ts` — `ICommentListItem` に `reactions: ReactionChip[] | null` を追加。単体取得の要求・応答の型（`GetCommentRequestQuery`、`GetCommentResponseBody`）を追加。
+- `apps/app/src/features/comment/interfaces/comment-list.ts` — `ICommentListItem` に `reactions: readonly ReactionChip[] | null` を追加。単体取得の要求・応答の型（`GetCommentRequestQuery`、`GetCommentResponseBody`）を追加。
 - `apps/app/src/features/comment/server/serializers/to-comment-list-item.ts` — `toCommentListItem` が、行と、そのコメントのチップ（または `null`）を受け取って `reactions` を詰める（共通の `createCommentListItemMapper` の結果に `reactions` を足す）。`toCreatorSummary` を export し、引数の型を `Pick<CreatorRow, '_id' | 'username' | 'name' | 'imageUrlCached'>` に絞る（挙動は変えない。リアクションの利用者は `users.findMany` の `select` で必要な項目だけを取るため）。共通の型 `CommentListItemWith<TCreator>` は `Omit<ICommentListItem, 'creator' | 'reactions'>` にして、`toLegacyCommentListItem`（旧 API 用）の型と応答に `reactions` が入らないようにする（`comment` 要件 5.1）。
-- `apps/app/src/features/comment/server/routes/list.ts` — 一覧の取得のあと、`loadReactionChips` でリアクションを取り込む。閲覧判定は `can-view-comments-of-page.ts` に移す（挙動は変えない）。`@swagger` の `CommentListItem` に `reactions` を追加。
+- `apps/app/src/features/comment/server/routes/list.ts` — 一覧の取得のあと、`loadReactionChipsOrNull`（`loadReactionChips` を呼び、失敗したら `null`）でリアクションを取り込む。閲覧判定は `can-view-comments-of-page.ts` に移す（挙動は変えない）。`@swagger` の `CommentListItem` に `reactions` を追加。
 - `apps/app/src/server/routes/apiv3/index.js` — `/comments` の router に `GET /:id`（comment）と `PUT /:id/reactions`（comment-reaction）を登録。
 
 **本スペックの機能に当たる変更**
@@ -265,6 +275,9 @@ packages/editor/src/client/components/EmojiPicker/
 - `apps/app/src/features/inline-comment/client/components/InlineCommentItem/InlineCommentItem.tsx`、`InlineCommentReplies.tsx`、`InlineCommentBodyInteraction/InlineCommentPopoverEntry.tsx` — `footer` に `CommentReactionBar` を追加。`CollapsedInlineCommentItem` には追加しない（折りたたみ表示では本文も出さないため）。
 - `apps/app/public/static/locales/{en_US,fr_FR,ja_JP,ko_KR,zh_CN}/translation.json` — `comment_reaction.*` の文言を追加。
 - `apps/app/public/static/locales/{en_US,fr_FR,ja_JP,ko_KR,zh_CN}/admin.json` — `COMMENT_REACTION_ADD` / `COMMENT_REACTION_REMOVE` の表示名を追加。
+- `packages/emoji-mart-data/bin/build-lookup.ts`（`buildLookup` / `buildAliases`。`extract.ts` から切り出した純粋関数）とそのテスト。
+- `apps/app/bin/openapi/generate-spec-apiv3.sh` — `comment-reaction/server/routes/*.ts` を swagger の対象に加える。
+- `apps/app/src/features/inline-comment/client/components/InlineCommentBodyInteraction/InlineCommentPreviewPopover.tsx` — `pageId` を `InlineCommentPopoverEntry` に渡す。
 - `packages/emoji-mart-data/bin/extract.ts` — 肌の色に対応する絵文字は6件の `skins`（既定＋`skin-tone-2`〜`6`）を出力し、名前付き export `aliases` を追加する。型 `NativeLookup` の `skins` を非空タプル `readonly [{ native: string }, ...{ native: string }[]]` にする。
 
 **書き戻し（最終タスク）で変更する spec のファイル**
@@ -374,10 +387,10 @@ graph TB
 | 9.4 | 状態不変・拒否は記録しない | update route | `changed` が true のときだけ emit | 追加・解除 |
 | 9.5 | 通知しない | activity.ts | `EssentialActionGroup` に入れない | — |
 | 10.1, 10.2 | G2G で移す、同じ対応で表示 | import overwrite params, non-transferable-collections, index migration | `TRANSFERABLE_COLLECTIONS`、`overwrite-params` による ObjectId の型変換と `emoji` の正規化、移行先のインデックスは移行先の migration で作成済み | — |
-| 10.3 | アーカイブファイルからのインポートで取り込む | import overwrite params, index migration | `import-settings-builder.ts` から呼ばれる `generateOverwriteParams('commentreactions', ...)` による ObjectId の型変換、`flushAndInsert` はインデックスを残す（インポート先のインデックスは migration で作成済み） | — |
+| 10.3 | アーカイブファイルからのインポートで取り込む | import overwrite params, index migration | `import-settings-builder.ts` から呼ばれる `generateOverwriteParams('commentreactions', ...)` による ObjectId の型変換と `emoji` の正規化、`flushAndInsert` はインデックスを残す（インポート先のインデックスは migration で作成済み） | — |
 | 11.1 | 一覧の各コメントにリアクションを含める | comment の取得の拡張（`list.ts`）, loadReactionChips | `ICommentListItem.reactions` | 読み取り |
 | 11.2 | 1件の取得でも一覧の1件と同じ形で含める | comment の取得の拡張（`get.ts`、`getCommentListItem`） | `GET /comments/:id` の `comment` | 読み取り |
-| 11.3 | 追加・解除の応答で最新のコメントを返す | update route, getCommentListItem | `UpdateCommentReactionResponse.comment` | 追加・解除 |
+| 11.3 | 追加・解除の応答で最新のコメントを返す | update route, getCommentListItem | `UpdateCommentReactionResponseBody.comment` | 追加・解除 |
 | 11.4 | 絵文字・人数・利用者・自分のリアクションを返す | summarizeReactions | `ReactionChip`（`emoji` / `count` / `users` / `reactedByMe`） | — |
 | 11.5 | リアクション無しと取得失敗を区別できる | comment の取得の拡張 | `reactions: []` と `reactions: null` | 読み取り |
 | 11.6 | アクセストークンでも読める範囲で返す | comment の取得の拡張 | `accessTokenParser([SCOPE.READ.FEATURES.PAGE])`、`viewerId` はトークンの利用者 | 読み取り |
@@ -391,7 +404,7 @@ graph TB
 | reaction-key | Reaction core / utils | キーの検証・正規化・変換・グリフ解決 | 3.3, 4.1–4.6 | `@growi/emoji-mart-data`（P0） | Service |
 | commentreactions model | Reaction core / data | 永続化と Prisma 拡張（Prisma のみ） | 2.4, 2.5 | Prisma（P0） | State |
 | index migration | Migration | 一意インデックスと page インデックスの作成 | 2.4, 2.5, 10.2 | migrate-mongo（P0） | Batch |
-| import overwrite params | Import（既存の仕組み） | G2G・インポートでの参照項目の ObjectId への型変換 | 10.1, 10.2 | ImportService（P0） | Batch |
+| import overwrite params | Import（既存の仕組み） | G2G・インポートでの参照項目の ObjectId への型変換と `emoji` の正規化 | 10.1, 10.2, 10.3 | ImportService（P0） | Batch |
 | CommentReactionService | Reaction core / service | 追加・解除の業務規則（冪等、上限） | 2.4–2.8, 7.1–7.3 | model（P0）、reaction-key（P0） | Service |
 | summarizeReactions | Reaction core / service | 行 → チップの集計（純粋関数） | 1.1–1.6, 1.9, 1.10, 6.4, 11.4 | — | Service |
 | loadReactionChips | Reaction core / service | コメント ID 群のチップを読む（comment の取得が呼ぶ） | 1.1–1.6, 1.9, 6.1, 11.1 | model（P0）、summarizeReactions（P0） | Service |
@@ -517,21 +530,21 @@ declare function resolveReactionGlyph(key: ReactionKey): string | null;
 | Field | Detail |
 |-------|--------|
 | Intent | G2G 移行とファイルからのインポートで、`commentreactions` の参照項目を ObjectId に戻し、`emoji` を正規のキーにそろえる |
-| Requirements | 10.1, 10.2 |
+| Requirements | 10.1, 10.2, 10.3 |
 
 **Responsibilities & Constraints**
 - Mongoose のモデルが無いコレクションは、`convertDocuments` が `_id` と日付しか型変換しない。そのまま入ると `comment` / `page` / `user` が文字列になり、Prisma の `@db.ObjectId` の検索（`commentId: { in: [...] }` など）に一致しなくなる。
 - `overwrite-params/comment-reactions.ts` は `{ comment, page, user }` のそれぞれに、文字列を `new Types.ObjectId(value)` に変える関数を返す（既存の `overwrite-params/pages.ts` / `revisions.ts` と同じく、mongoose パッケージの `Types` を使う。モデルは使わない）。値が ObjectId として不正なら、そのまま返す（`keepOriginal` と同じ扱い）。あわせて `emoji` には `normalizeReactionKey` で正規化したキーを返す（保存する `emoji` を正規の形にそろえるため）。正規化できない値は、そのまま返す。
-- `generateOverwriteParams` に `case 'commentreactions'` を足す。この関数は、ファイルからのインポート（`import-settings-builder.ts`）と G2G（`g2g-transfer.ts`）の両方から呼ばれるので、どちらの経路でも型変換される。
+- `generateOverwriteParams` に `case 'commentreactions'` を足す。この関数は、ファイルからのインポート（`import-settings-builder.ts`）と G2G（`g2g-transfer.ts`）の両方から呼ばれるので、どちらの経路でも、参照項目の型変換と `emoji` の正規化が行われる。
 - 一意キーの衝突の検出（`detect-unique-conflicts.ts`）には加えない。対象は環境をまたいで自然キーが衝突しうるコレクションだけで、ObjectId で決まる一意キーは対象外。
 
 **Contracts**: Batch [x]
 
 ##### Batch / Job Contract
 - Trigger: `ImportService.convertDocuments` が `commentreactions` の各文書を変換するとき。
-- Input / validation: エクスポートされた JSON の文書（参照項目は 24 桁の16進文字列）。
-- Output / destination: 参照項目が ObjectId になった文書。
-- Idempotency & recovery: 既に ObjectId の値もそのまま ObjectId になる。
+- Input / validation: エクスポートされた JSON の文書（参照項目は 24 桁の16進文字列、`emoji` は別名を含みうるキー）。
+- Output / destination: 参照項目が ObjectId になり、`emoji` が正規のキーにそろった文書。
+- Idempotency & recovery: 既に ObjectId の値もそのまま ObjectId になり、既に正規のキーの `emoji` はそのまま返る。
 
 #### CommentReactionService
 
@@ -548,6 +561,10 @@ declare function resolveReactionGlyph(key: ReactionKey): string | null;
 
 ##### Service Interface
 ```typescript
+type CommentReactionServiceDeps = {
+  readonly prisma: Pick<typeof prisma, 'commentreactions'>;
+};
+
 type ReactionTarget = {
   readonly commentId: string;
   readonly pageId: string;
@@ -560,12 +577,22 @@ type AddReactionResult =
 
 type RemoveReactionResult = { readonly kind: 'removed' } | { readonly kind: 'not-reacted' };
 
-interface CommentReactionService {
-  addReaction(target: ReactionTarget, userId: string, emoji: ReactionKey): Promise<AddReactionResult>;
-  /** `emoji` は利用者が送ったままのキー。正規化前の別名で保存された行も外せるよう、送られたキーと正規化したキーの両方で削除する。 */
-  removeReaction(target: ReactionTarget, userId: string, emoji: string): Promise<RemoveReactionResult>;
-}
+declare function addReaction(
+  deps: CommentReactionServiceDeps,
+  target: ReactionTarget,
+  userId: string,
+  emoji: ReactionKey,
+): Promise<AddReactionResult>;
+
+/** `emoji` は利用者が送ったままのキー。正規化前の別名で保存された行も外せるよう、送られたキーと正規化したキーの両方で削除する。 */
+declare function removeReaction(
+  deps: CommentReactionServiceDeps,
+  target: ReactionTarget,
+  userId: string,
+  emoji: string,
+): Promise<RemoveReactionResult>;
 ```
+- 2つの関数は、`loadReactionChips` と同じく、依存（`{ prisma }`）を先頭の引数に取る。クラスやオブジェクトにまとめない。
 - Preconditions: `target` は閲覧判定済みの実在するコメント。`addReaction` の `emoji` は `normalizeReactionKey` を通ったキー。`removeReaction` の `emoji` は、route が `normalizeReactionKey` で検証済みの、送られたままのキー。
 - Postconditions: `added` / `already-reacted` の後は行がちょうど1つ存在する。`removed` / `not-reacted` の後は行が存在しない。
 - Invariants: 同じ `(commentId, userId, emoji)` の行は高々1つ。
@@ -618,7 +645,7 @@ declare function summarizeReactions(
 ): ReadonlyMap<string, readonly ReactionChip[]>;   // key: commentId; chips ordered per 1.6
 
 declare function loadReactionChips(
-  deps: { readonly prisma: Pick<PrismaClient, 'commentreactions' | 'users'> },
+  deps: { readonly prisma: Pick<typeof prisma, 'commentreactions' | 'users'> },
   input: {
     readonly commentIds: readonly string[];
     readonly viewerId: string | null;
@@ -627,60 +654,14 @@ declare function loadReactionChips(
 ): Promise<ReadonlyMap<string, readonly ReactionChip[]>>;   // every commentId present; [] when none
 ```
 
-### Comment の取得の拡張（書き戻しの対象）
+### Comment の取得の拡張（comment スペックの契約）
 
-| Field | Detail |
-|-------|--------|
-| Intent | 一覧・単体の応答の各コメントにリアクションを載せる。コメント単体の取得 API を新設する |
-| Requirements | 2.9, 6.1, 6.5, 11.1, 11.2, 11.5, 11.6 |
+一覧・単体の応答の各コメントへの `reactions` の取り込み、コメント単体の取得 API（`GET /_api/v3/comments/:id`）、閲覧判定の共有関数 `canViewCommentsOfPage`、`getCommentListItem`、`loadReactionChipsOrNull` は、`comment` スペックが持つ契約である。契約の詳細と判断の理由は `.kiro/specs/comment/design.md` と `research.md` を参照する。
 
-**Responsibilities & Constraints**
-- `canViewCommentsOfPage(deps, { req, pageId })`: `list.ts` の閲覧判定（`req.isSharedPage === true`、または `findPageAndMetaDataByViewer` の結果が not-found でない）を取り出した関数。一覧と単体で共有する。挙動は変えない。
-- 一覧（`list.ts`）: `listComments` で取得したあと、`loadReactionChips` を呼び、`toCommentListItem(row, chips)` で整形する。`viewerId` は `req.user?._id`（ゲストは `null`）。
-- 単体（`get.ts`）: `pageId` を必須にする。`certifySharedPage` が `pageId` と `shareLinkId` の組で共有リンクを検証するため、また、共有リンクの検証と取得の ID を分けないため。コメントは `getCommentListItem` で、`id` と `pageId` の両方が一致するものだけを取る。無ければ 404 `notfound_or_forbidden`（他のページのコメント ID を、共有リンクで読ませない）。共有リンク経由でも、インラインコメントを含めて返す（一覧と同じ範囲。`comment` 要件 3.3）。`revisionId` は受け付けない（版による絞り込みは一覧だけの機能）。
-- `getCommentListItem({ prisma }, { commentId, pageId, viewerId })`: `prisma.comments.findFirst({ where: { id: commentId, pageId }, include: { creator: true } })` → `loadReactionChips` → `toCommentListItem`。単体の route と、本スペックの PUT の route が共有する。
-- リアクションの取り込みに失敗したとき（`loadReactionChips` が例外を投げたとき）は、ログを残し、対象のコメントの `reactions` を `null` にして応答する（要件 6.5）。コメント自体の取得の失敗は、従来どおり 500。
-- 旧式の `GET /_api/comments.get` は変えない。`toLegacyCommentListItem` の型は `Omit<ICommentListItem, 'creator' | 'reactions'>` をもとにするので、`reactions` は型にも応答にも現れない。
-
-**Contracts**: API [x] / Service [x]
-
-##### API Contract
-| Method | Endpoint | Request | Response | Errors |
-|--------|----------|---------|----------|--------|
-| GET | /_api/v3/comments | query: `pageId`（必須）、`revisionId`、`shareLinkId`（任意）— 変更なし | `{ comments: ICommentListItem[] }`（各件に `reactions` を追加） | 変更なし |
-| GET | /_api/v3/comments/:id | path: `id`。query: `pageId`（必須）、`shareLinkId`（任意） | `{ comment: ICommentListItem }` | 400（形式不正）、401/403（未認証でゲスト不可、アクセストークンのスコープ不足）、404 `notfound_or_forbidden`（コメントが無い、そのページのコメントでない、ページを読めない）、500 `comment-get-failed` |
-
-- 単体の認可の連鎖は一覧と同じ: `accessTokenParser([SCOPE.READ.FEATURES.PAGE], { acceptLegacy: true })` → validators（`param('id')`、`query('pageId')` は `isString().bail().isMongoId()`、`query('shareLinkId')` は任意で同じ）→ `apiV3FormValidator` → `certifySharedPage` → `loginRequiredFactory(crowi, true)` → handler。
-- 単体の route にも `@swagger` を付け、応答は `CommentListItem` を参照する。`CommentListItem` の `reactions` には、`ReactionChip` の項目と、`null` の意味を書く。
-
-##### Service Interface
-```typescript
-interface ICommentListItem {
-  // ...existing fields unchanged...
-  /** Reactions on this comment, ordered per the comment-reactions spec; null when they could not be loaded. */
-  reactions: ReactionChip[] | null;
-}
-
-interface GetCommentRequestQuery {
-  pageId: string;
-  shareLinkId?: string;
-}
-
-interface GetCommentResponseBody {
-  comment: ICommentListItem;
-}
-
-declare function canViewCommentsOfPage(
-  deps: { readonly pageService: PageService; readonly pageGrantService: PageGrantService },
-  input: { readonly req: { readonly isSharedPage?: boolean; readonly user?: IUserHasId }; readonly pageId: string },
-): Promise<boolean>;
-
-declare function getCommentListItem(
-  deps: { readonly prisma: Pick<PrismaClient, 'comments' | 'commentreactions' | 'users'> },
-  input: { readonly commentId: string; readonly pageId: string; readonly viewerId: string | null },
-): Promise<ICommentListItem | null>;   // null when the comment does not exist on that page
-```
-- `reactions` の意味: `[]` はリアクションが無いこと、`null` は取り込めなかったこと。
+本スペックが `comment` に求めるのは、次の点だけである（要件 2.9、6.1、6.5、11.1、11.2、11.5、11.6）。
+- `ICommentListItem.reactions` は、`[]`（リアクション無し）と `null`（取り込めなかった）を区別する。
+- `getCommentListItem({ prisma }, { commentId, pageId, viewerId })` は、PUT の route が応答のコメントを作るために共有する。コメントが無い、または別のページのコメントなら `null` を返す。
+- `loadReactionChips` を呼ぶ側（`comment`）が、リアクションの取り込みの失敗をコメントの取得の失敗にしない。
 
 ### Reaction の書き込み
 
@@ -704,21 +685,22 @@ declare function getCommentListItem(
 ##### API Contract
 | Method | Endpoint | Request | Response | Errors |
 |--------|----------|---------|----------|--------|
-| PUT | /_api/v3/comments/:id/reactions | path: `id`。body（JSON）: `{ emoji, isReacted }` | `UpdateCommentReactionResponse` | 400 `validation_failed`（閲覧専用ユーザー、入力の形式不正）/ `invalid-reaction-emoji`、401/403、404 `notfound_or_forbidden`（コメントが無い、ページを読めない、読み直しの時点でコメントが削除されていた）、409 `reaction-kind-limit-exceeded`（`isReacted: true` のときだけ）、500 `comment-reaction-update-failed` |
+| PUT | /_api/v3/comments/:id/reactions | path: `id`。body（JSON）: `{ emoji, isReacted }` | `UpdateCommentReactionResponseBody` | 400 `validation_failed`（閲覧専用ユーザー、入力の形式不正）/ `invalid-reaction-emoji`、401/403、404 `notfound_or_forbidden`（コメントが無い、ページを読めない、読み直しの時点でコメントが削除されていた）、409 `reaction-kind-limit-exceeded`（`isReacted: true` のときだけ）、500 `comment-reaction-update-failed` |
 
 ```typescript
 /** isReacted: true = add, false = remove (explicit, never a toggle; see requirement 2.7, 2.8). */
-type UpdateCommentReactionRequest = {
+type UpdateCommentReactionRequestBody = {
   readonly emoji: string;
   readonly isReacted: boolean;
 };
 
-type UpdateCommentReactionResponse = {
+type UpdateCommentReactionResponseBody = {
   readonly changed: boolean;
   /** The target comment as GET /_api/v3/comments/:id returns it, with its latest reactions. */
   readonly comment: ICommentListItem;
 };
 ```
+- 型は `features/comment-reaction/dto/update-comment-reaction.ts` に置く（応答が `comment` の `ICommentListItem` を含み、層 1 の `interfaces` から `comment` を import できないため）。
 - Validation: `id` は `isMongoId()`。`emoji` は `isString()` と長さの上限（64 文字）のあと、handler で `normalizeReactionKey` を通す。`isReacted` は `isBoolean({ strict: true })`。
 - 追加と解除を1つの PUT の body にまとめるのは、ページの「いいね」（`PUT /_api/v3/page/likes` の `{ pageId, bool }`）と揃えるためと、`emoji` をクエリに載せないため（`unicode:+1` の `+` は、クエリでは手で書いた要求で空白に化ける）。
 - Idempotency: 同じ PUT を何度送っても結果の状態は同じで、2回目以降は `changed: false`（要件 2.7、2.8）。
@@ -935,9 +917,9 @@ type CommentReactionBarProps = {
 - `loadReactionChips`（本物の DB と、拡張を適用した Prisma Client）: 存在する利用者の `users` の要素が、`_id`（利用者の ID と一致し、`undefined` でない）、`username`、`name`、`imageUrlCached` の4項目だけを持つこと（要件 6.4、11.4）。モックでは計算項目 `_id` の有無が再現できないので、本物の DB で確かめる。
 - 利用者の文書が無いリアクション（本物の DB に、存在しない `userId` のリアクションを直接入れる）: `GET /_api/v3/comments` が 200 を返し、そのページのほかのリアクションも含めて `reactions` が `null` にならないこと。該当するチップの `count` にその利用者が含まれ、`users` に ID 文字列で現れること。同じページのコメントの投稿者の文書が無いときの `creator`（ID 文字列）と同じ形であること（要件 1.9、1.10、6.4）。
 - `commentreactions` に Prisma のリレーションが宣言されていないことを前提にした回帰テスト: リアクションの付いた利用者の文書を Prisma（`prisma.users.deleteMany`）で消しても、リアクションが原因の P2014 にならないこと（ただし `comments.creator` など既存のリレーションが残る利用者は対象外にする）。
-- G2G: `non-transferable-collections.integ.ts` が `commentreactions`（Prisma のモデルから検出される）を含めて通ること。エクスポート形式（JSON 文字列化）のデータを `convertDocuments` と `generateOverwriteParams('commentreactions', ...)` で変換して書き込んだとき、`comment` / `page` / `user` が ObjectId、`createdAt` が Date になり、`loadReactionChips` で取得できること（要件 10.1、10.2）。
+- G2G: `non-transferable-collections.integ.ts` が `commentreactions`（Prisma のモデルから検出される）を含めて通ること。エクスポート形式（JSON 文字列化）のデータを `convertDocuments` と `generateOverwriteParams('commentreactions', ...)` で変換して書き込んだとき、`comment` / `page` / `user` が ObjectId、`createdAt` が Date、別名の `emoji` が正規のキー（例: `unicode:+1`）になり、Prisma でコメント ID から取得できること（要件 10.1、10.2）。
 - activity model の保存口: `createByParameters` に `snapshot: { username, emoji }` を渡したとき、および `updateByParameters` に `snapshot: { emoji }` を渡したときに、DB から読み直した文書の `snapshot.emoji` が渡した値であること。添付ファイルの項目（`originalName` など）と `username` の保存が変わらないこと（既存の `activity` の統合テストの回帰）。
-- index migration（`<YYYYMMDDHHmmss>-add-indexes-to-commentreactions.integ.ts`）: `up` で2つのインデックスが、Prisma の `map` と同じ名前・キーで作られること。重複した文書があるとき、最も古い1件が残り、一意インデックスが作られること。2回実行しても失敗しないこと。`down` でインデックスが消えること（コレクションが無くても失敗しないこと）。
+- index migration（`20261016120000-add-indexes-to-commentreactions.integ.ts`）: `up` で2つのインデックスが、Prisma の `map` と同じ名前・キーで作られること。重複した文書があるとき、最も古い1件が残り、一意インデックスが作られること。2回実行しても失敗しないこと。`down` でインデックスが消えること（コレクションが無くても失敗しないこと）。
 
 ### E2E/UI Tests
 - 通常コメントに「＋」から 👍 を付け、チップの人数が 1 になり、もう一度押すと消えること（要件 2.1〜2.3、3.3）。
@@ -961,7 +943,7 @@ type CommentReactionBarProps = {
 - 追加の API の流量制限は設けない。既定の流量制限（利用者ごとに 1 分 500 回）が適用される。
 
 ## Migration Strategy
-- データの移行は無い（新しいコレクション）。インデックスは migration script（`<YYYYMMDDHHmmss>-add-indexes-to-commentreactions.js`）が作る。タイムスタンプは実装時に決め、既存の最新の migration より後にする。
+- データの移行は無い（新しいコレクション）。インデックスは migration script（`20261016120000-add-indexes-to-commentreactions.js`）が作る。
 - `ICommentListItem.reactions` の追加は、項目の追加だけなので、既存の API 利用者（MCP、SDK、外部スクリプト）と後方互換である。
 - `ActivitiesSnapshot` への `emoji` の追加は任意項目なので、既存の activity に影響しない。
 - `@growi/emoji-mart-data` の出力形の変更は、型を非空タプルにして `skins[0]` を保つことで、既存の利用者（本文のレンダラー、エディタの自動補完）と互換にする。
