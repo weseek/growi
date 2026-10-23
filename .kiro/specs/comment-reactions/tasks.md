@@ -276,7 +276,7 @@
   - 完了の状態: すべてのコマンドが成功する
   - _Requirements: 1.1, 11.1_
 
-- [ ] 10. `comment` スペックへ契約の変更を書き戻す
+- [x] 10. `comment` スペックへ契約の変更を書き戻す
 - [x] 10.1 `comment` スペックの requirements.md と design.md に、リアクションの項目と単体取得 API を書き込む
   - requirements.md の要件 1 の末尾に、一覧の各コメントがリアクションを含むことの受け入れ条件を足す。単体取得 API を新しい要件として末尾に足す。既存の要件の番号は付け直さない
   - design.md の応答の型、整形、一覧のルートの記述にリアクションの項目を書き、単体取得のルートとサービス、閲覧判定の共有関数、Allowed Dependencies(リアクションのローダーへの依存)を足す
@@ -285,7 +285,7 @@
   - _Requirements: 11.1, 11.2, 11.5_
   - _Depends: 9.3_
 
-- [ ] 10.2 設計の理由づけを `comment` の research.md へ移し、spec.json を更新する
+- [x] 10.2 設計の理由づけを `comment` の research.md へ移し、spec.json を更新する
   - 単体取得でページ ID を必須にした理由、`null` と空の配列の区別、旧 API にリアクションを載せない理由など、`comment` の契約に関わる判断を `comment` の research.md に移す
   - `comment` の spec.json の `updated_at` を更新する。`phase` と `approvals` は触れない
   - 本スペック自体は削除しない(新しい機能を持つスペックとして残す。design.md「Amend Target」)
