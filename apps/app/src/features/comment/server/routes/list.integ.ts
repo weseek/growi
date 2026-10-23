@@ -687,7 +687,7 @@ describe('GET /_api/v3/comments', () => {
     });
   });
 
-  describe('reactions on each comment (Requirement 1.9, 1.10, 6.1, 6.2, 6.4, 6.5, 11.1, 11.5, 11.6)', () => {
+  describe('reactions on each comment (comment-reactions Requirement 1.9, 1.10, 6.1, 6.2, 6.4, 6.5, 11.1, 11.5, 11.6)', () => {
     const summaryOf = (user: HydratedDocument<IUser>) => ({
       _id: String(user._id),
       username: user.username,

@@ -197,7 +197,7 @@ describe('PUT /_api/v3/comments/:id/reactions — audit log', () => {
     vi.restoreAllMocks();
   });
 
-  describe('a request that changed the state (Requirement 9.1, 9.2)', () => {
+  describe('a request that changed the state (comment-reactions Requirement 9.1, 9.2)', () => {
     it('records one COMMENT_REACTION_ADD row with the operator, targets, emoji and username', async () => {
       const commentId = await createComment();
 
@@ -341,7 +341,7 @@ describe('PUT /_api/v3/comments/:id/reactions — audit log', () => {
     });
   });
 
-  describe('a request that did not add or remove anything (Requirement 9.4)', () => {
+  describe('a request that did not add or remove anything (comment-reactions Requirement 9.4)', () => {
     it('leaves no row for an add that changed nothing', async () => {
       const commentId = await createComment();
       await putReaction(commentId, { emoji: THUMBS_UP, isReacted: true });

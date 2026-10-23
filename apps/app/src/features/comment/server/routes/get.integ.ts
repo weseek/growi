@@ -265,7 +265,7 @@ describe('GET /_api/v3/comments/:id', () => {
     vi.restoreAllMocks();
   });
 
-  describe('same content as the list (Requirement 11.2, 6.4)', () => {
+  describe('same content as the list (comment-reactions Requirement 11.2, 6.4)', () => {
     it.each([
       ['a regular comment with reactions', () => regularCommentId],
       ['an inline comment', () => inlineCommentId],
@@ -302,7 +302,7 @@ describe('GET /_api/v3/comments/:id', () => {
     });
   });
 
-  describe('existence is not disclosed (Requirement 6.1)', () => {
+  describe('existence is not disclosed (comment-reactions Requirement 6.1)', () => {
     it('answers a forbidden page, a missing comment, and a comment of another page with the same 404', async () => {
       currentUser = viewer;
 
@@ -324,7 +324,7 @@ describe('GET /_api/v3/comments/:id', () => {
     });
   });
 
-  describe('share-link access (Requirement 6.1)', () => {
+  describe('share-link access (comment-reactions Requirement 6.1)', () => {
     it('returns an inline comment of the shared page to a guest, the same as the list through the link', async () => {
       vi.spyOn(crowi.aclService, 'isGuestAllowedToRead').mockReturnValue(false);
 
@@ -367,7 +367,7 @@ describe('GET /_api/v3/comments/:id', () => {
     });
   });
 
-  describe('guest and access-token access match the list (Requirement 6.1, 11.6)', () => {
+  describe('guest and access-token access match the list (comment-reactions Requirement 6.1, 11.6)', () => {
     type AccessCase = {
       guestAllowed: boolean;
       token?: () => string;
