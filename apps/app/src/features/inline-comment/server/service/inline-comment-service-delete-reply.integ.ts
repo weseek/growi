@@ -18,10 +18,14 @@ describe('InlineCommentService.deleteReply (reaction cleanup)', () => {
   const commentIds: string[] = [];
   const reactionCommentIds: string[] = [];
 
-  const service = new InlineCommentService({
-    prisma,
-    commentService: { prepareMentionNotifications: vi.fn() },
-    updateCommentCount: vi.fn().mockResolvedValue(undefined),
+  let service: InlineCommentService;
+
+  beforeAll(() => {
+    service = new InlineCommentService({
+      prisma,
+      commentService: { prepareMentionNotifications: vi.fn() },
+      updateCommentCount: vi.fn().mockResolvedValue(undefined),
+    });
   });
 
   const createInlineComment = async (

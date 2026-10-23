@@ -3,6 +3,7 @@ import type { prisma } from '~/utils/prisma';
 
 import type { ReactionKey } from '../../interfaces';
 import { MAX_REACTION_KINDS_PER_COMMENT } from '../../interfaces';
+import { normalizeReactionKey } from '../../utils';
 
 type CommentReactionServiceDeps = {
   readonly prisma: Pick<typeof prisma, 'commentreactions'>;
@@ -70,14 +71,20 @@ export const addReaction = async (
   return { kind: 'added' };
 };
 
+/**
+ * `emoji` is the key as sent by the client. A row imported before keys were normalized may
+ * still be stored under an alias, so both the sent and the canonical form are removed.
+ */
 export const removeReaction = async (
   { prisma: client }: CommentReactionServiceDeps,
   { commentId }: ReactionTarget,
   userId: string,
-  emoji: ReactionKey,
+  emoji: string,
 ): Promise<RemoveReactionResult> => {
+  const normalized = normalizeReactionKey(emoji);
+  const emojis = normalized.ok ? [emoji, normalized.value] : [emoji];
   const { count } = await client.commentreactions.deleteMany({
-    where: { commentId, userId, emoji },
+    where: { commentId, userId, emoji: { in: [...new Set(emojis)] } },
   });
   return count > 0 ? { kind: 'removed' } : { kind: 'not-reacted' };
 };

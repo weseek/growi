@@ -1,4 +1,4 @@
-import type { JSX } from 'react';
+import type { JSX, RefObject } from 'react';
 import { useTranslation } from 'next-i18next';
 import { Popover, PopoverBody, PopoverHeader } from 'reactstrap';
 
@@ -17,7 +17,7 @@ const toKey = (user: ReactionUser): string =>
   typeof user === 'string' ? user : user._id;
 
 type ReactionUsersPopoverProps = {
-  readonly target: string;
+  readonly target: RefObject<HTMLElement>;
   readonly isOpen: boolean;
   readonly toggle: () => void;
   readonly users: readonly ReactionUser[];

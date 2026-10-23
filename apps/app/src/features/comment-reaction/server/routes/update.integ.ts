@@ -450,6 +450,31 @@ describe('PUT /_api/v3/comments/:id/reactions', () => {
       ]);
     });
 
+    it('removes a legacy row stored under an alias key via the alias the client sent', async () => {
+      currentUser = viewer;
+      const commentId = await createComment();
+      await prisma.commentreactions.create({
+        data: {
+          commentId,
+          pageId: publicPageId,
+          userId: String(viewer._id),
+          emoji: 'unicode:thumbsup',
+          createdAt: new Date(),
+        },
+      });
+
+      const res = await putReaction(commentId, {
+        emoji: 'unicode:thumbsup',
+        isReacted: false,
+      });
+
+      expect(res.status).toBe(200);
+      expect(res.body.changed).toBe(true);
+      expect(
+        await countRows(commentId, String(viewer._id), 'unicode:thumbsup'),
+      ).toBe(0);
+    });
+
     it('lets the author react to their own comment', async () => {
       currentUser = owner;
       const commentId = await createComment();

@@ -82,6 +82,7 @@ const resolveViewableComment = async (
 
 const applyReaction = async (
   { emoji, ...target }: Reaction,
+  requestedEmoji: string,
   userId: string,
   isReacted: boolean,
 ): Promise<ApplyReactionResult> => {
@@ -91,7 +92,12 @@ const applyReaction = async (
       ? { kind: 'kind-limit-exceeded' }
       : { kind: 'applied', changed: added.kind === 'added' };
   }
-  const removed = await removeReaction({ prisma }, target, userId, emoji);
+  const removed = await removeReaction(
+    { prisma },
+    target,
+    userId,
+    requestedEmoji,
+  );
   return { kind: 'applied', changed: removed.kind === 'removed' };
 };
 
@@ -267,6 +273,7 @@ export const updateCommentReactionRouteHandlersFactory = (
         const userId = String(req.user._id);
         const result = await applyReaction(
           reaction,
+          req.body.emoji,
           userId,
           req.body.isReacted,
         );

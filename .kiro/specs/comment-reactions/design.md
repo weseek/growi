@@ -43,7 +43,7 @@
 
 ### This Spec Owns
 - `commentreactions` コレクション（Prisma モデルのみ。Mongoose のモデル・スキーマは持たない）と、その一意性の不変条件 `(commentId, userId, emoji)`
-- `commentreactions` のインデックスを作る migration script（`src/migrations/`）と、G2G 移行・インポートでの参照項目の型変換（`overwrite-params/comment-reactions.ts`）
+- `commentreactions` のインデックスを作る migration script（`src/migrations/`）と、G2G 移行・インポートでの参照項目の型変換と `emoji` の正規化（`overwrite-params/comment-reactions.ts`）
 - リアクションキーの形式（`unicode:<shortcode>[::skin-tone-<2..6>]`）と、その検証・正規化・グリフ解決（`reaction-key` モジュール）
 - リアクションの集計の規則（チップの単位、並び順、人数、`reactedByMe`、利用者の整形）と、その結果の型 `ReactionChip`
 - `PUT /_api/v3/comments/:id/reactions` の契約（入力、応答、認可、エラー）
@@ -76,7 +76,7 @@
 4. **クライアント**: `comment-reaction` の client は、`comment` の client の `useSWRxCommentList` に依存してよい。コメントの表示部品（`client/components/PageComment/`、`features/inline-comment/client/`）は、`comment-reaction` の client の部品に依存してよい。逆向きは禁止
 
 その他:
-- `comments` と `commentreactions` の読み書きは Prisma だけで行う。本スペックは、Mongoose のモデル・スキーマを新しく作らず、既存の Mongoose スキーマ（`comments`、`activities`）にも項目を足さない。Mongoose が担っていた操作のうち必要なもの（インデックスの作成、インポート時の ObjectId への型変換）は、migration script と import の `overwrite-params` で補う
+- `comments` と `commentreactions` の読み書きは Prisma だけで行う。本スペックは、Mongoose のモデル・スキーマを新しく作らず、既存の Mongoose スキーマ（`comments`、`activities`）にも項目を足さない。Mongoose が担っていた操作のうち必要なもの（インデックスの作成、インポート時の ObjectId への型変換と `emoji` の正規化）は、migration script と import の `overwrite-params` で補う
 - サーバーの認可は、既存の部品（`accessTokenParser`、`certifySharedPage`、`loginRequiredFactory`、`excludeReadOnlyUserIfCommentNotAllowed`、`generateAddActivityMiddleware`、`apiV3FormValidator`、`findPageAndMetaDataByViewer`）だけで組む。並行実装しない
 - 削除の経路（`removeWithReplies`、`deleteReply`、`deleteCompletelyOperation`）は、Prisma の `commentreactions` だけを直接使う。`comment-reaction` のコードは import しない
 - クライアントは、`states/context.ts` のフック、`useIsCommentActionBlockedForReadOnlyUser`、`useIsTrashPage`、`apiv3-client`、`toastr`、reactstrap、`@growi/editor/dist/client/components/EmojiPicker` を使ってよい
@@ -94,7 +94,7 @@
 - コメントを削除する経路の追加（リアクションの削除を足し忘れると、表示されない孤立したリアクションが残る。「削除経路の拡張」を参照）
 - `commentreactions` に Prisma のリレーション（`users`、`comments`、`pages` のどれでも）を宣言すること（読み取りの `include` が孤立した行で失敗する、または親の削除が P2014 で止まる。「削除経路の拡張」を参照）
 - 利用者を物理削除する経路の追加、またはインポート・G2G での `users` の扱いの変更（利用者の文書が無いリアクションが増える。本スペックは ID 文字列で表示して人数に数えるので壊れないが、表示の想定を見直す）
-- `commentreactions` のインデックスのキー・名前の変更（migration と Prisma の `@@unique` / `@@index` の `map` を一致させ続ける必要がある）、または参照項目（`comment` / `page` / `user`）の追加・改名（G2G の `overwrite-params` の更新が要る）
+- `commentreactions` のインデックスのキー・名前の変更（migration と Prisma の `@@unique` / `@@index` の `map` を一致させ続ける必要がある）、または参照項目（`comment` / `page` / `user`）や `emoji` の追加・改名、または絵文字キーの正規化規則の変更（G2G の `overwrite-params` の更新が要る）
 
 ## Architecture
 
@@ -235,7 +235,7 @@ apps/app/src/migrations/
 └── <YYYYMMDDHHmmss>-add-indexes-to-commentreactions.integ.ts
 
 apps/app/src/server/service/import/overwrite-params/
-├── comment-reactions.ts             # 新設: インポート時に comment / page / user を ObjectId に戻す
+├── comment-reactions.ts             # 新設: インポート時に comment / page / user を ObjectId に戻し、emoji を正規のキーにそろえる
 └── comment-reactions.spec.ts
 
 packages/editor/src/client/components/EmojiPicker/
@@ -373,7 +373,7 @@ graph TB
 | 9.3 | 既存のコメント操作と同じ分類 | activity.ts | `/^COMMENT_/` のカテゴリ、`MediumActionGroup` | — |
 | 9.4 | 状態不変・拒否は記録しない | update route | `changed` が true のときだけ emit | 追加・解除 |
 | 9.5 | 通知しない | activity.ts | `EssentialActionGroup` に入れない | — |
-| 10.1, 10.2 | G2G で移す、同じ対応で表示 | import overwrite params, non-transferable-collections, index migration | `TRANSFERABLE_COLLECTIONS`、`overwrite-params` による ObjectId の型変換、移行先のインデックスは移行先の migration で作成済み | — |
+| 10.1, 10.2 | G2G で移す、同じ対応で表示 | import overwrite params, non-transferable-collections, index migration | `TRANSFERABLE_COLLECTIONS`、`overwrite-params` による ObjectId の型変換と `emoji` の正規化、移行先のインデックスは移行先の migration で作成済み | — |
 | 10.3 | アーカイブファイルからのインポートで取り込む | import overwrite params, index migration | `import-settings-builder.ts` から呼ばれる `generateOverwriteParams('commentreactions', ...)` による ObjectId の型変換、`flushAndInsert` はインデックスを残す（インポート先のインデックスは migration で作成済み） | — |
 | 11.1 | 一覧の各コメントにリアクションを含める | comment の取得の拡張（`list.ts`）, loadReactionChips | `ICommentListItem.reactions` | 読み取り |
 | 11.2 | 1件の取得でも一覧の1件と同じ形で含める | comment の取得の拡張（`get.ts`、`getCommentListItem`） | `GET /comments/:id` の `comment` | 読み取り |
@@ -516,12 +516,12 @@ declare function resolveReactionGlyph(key: ReactionKey): string | null;
 
 | Field | Detail |
 |-------|--------|
-| Intent | G2G 移行とファイルからのインポートで、`commentreactions` の参照項目を ObjectId に戻す |
+| Intent | G2G 移行とファイルからのインポートで、`commentreactions` の参照項目を ObjectId に戻し、`emoji` を正規のキーにそろえる |
 | Requirements | 10.1, 10.2 |
 
 **Responsibilities & Constraints**
 - Mongoose のモデルが無いコレクションは、`convertDocuments` が `_id` と日付しか型変換しない。そのまま入ると `comment` / `page` / `user` が文字列になり、Prisma の `@db.ObjectId` の検索（`commentId: { in: [...] }` など）に一致しなくなる。
-- `overwrite-params/comment-reactions.ts` は `{ comment, page, user }` のそれぞれに、文字列を `new Types.ObjectId(value)` に変える関数を返す（既存の `overwrite-params/pages.ts` / `revisions.ts` と同じく、mongoose パッケージの `Types` を使う。モデルは使わない）。値が ObjectId として不正なら、そのまま返す（`keepOriginal` と同じ扱い）。
+- `overwrite-params/comment-reactions.ts` は `{ comment, page, user }` のそれぞれに、文字列を `new Types.ObjectId(value)` に変える関数を返す（既存の `overwrite-params/pages.ts` / `revisions.ts` と同じく、mongoose パッケージの `Types` を使う。モデルは使わない）。値が ObjectId として不正なら、そのまま返す（`keepOriginal` と同じ扱い）。あわせて `emoji` には `normalizeReactionKey` で正規化したキーを返す（保存する `emoji` を正規の形にそろえるため）。正規化できない値は、そのまま返す。
 - `generateOverwriteParams` に `case 'commentreactions'` を足す。この関数は、ファイルからのインポート（`import-settings-builder.ts`）と G2G（`g2g-transfer.ts`）の両方から呼ばれるので、どちらの経路でも型変換される。
 - 一意キーの衝突の検出（`detect-unique-conflicts.ts`）には加えない。対象は環境をまたいで自然キーが衝突しうるコレクションだけで、ObjectId で決まる一意キーは対象外。
 
@@ -541,7 +541,7 @@ declare function resolveReactionGlyph(key: ReactionKey): string | null;
 | Requirements | 2.4, 2.5, 2.6, 2.7, 2.8, 7.1, 7.2, 7.3 |
 
 **Responsibilities & Constraints**
-- 呼び出し元（route）で、認証、閲覧判定、キーの正規化が済んでいることを前提にする。投稿者本人かどうかは判定しない（要件 2.6）。
+- 呼び出し元（route）で、認証、閲覧判定、キーの検証が済んでいることを前提にする（追加は正規化済みのキーを受け取り、解除は送られたままのキーを受け取る）。投稿者本人かどうかは判定しない（要件 2.6）。
 - 上限の判定: そのコメントに現在ある異なる `emoji` の数が `MAX_REACTION_KINDS_PER_COMMENT` 以上で、かつ追加する `emoji` がまだ無い場合だけ拒否する（要件 7.2、7.3）。
 
 **Contracts**: Service [x]
@@ -562,10 +562,11 @@ type RemoveReactionResult = { readonly kind: 'removed' } | { readonly kind: 'not
 
 interface CommentReactionService {
   addReaction(target: ReactionTarget, userId: string, emoji: ReactionKey): Promise<AddReactionResult>;
-  removeReaction(target: ReactionTarget, userId: string, emoji: ReactionKey): Promise<RemoveReactionResult>;
+  /** `emoji` は利用者が送ったままのキー。正規化前の別名で保存された行も外せるよう、送られたキーと正規化したキーの両方で削除する。 */
+  removeReaction(target: ReactionTarget, userId: string, emoji: string): Promise<RemoveReactionResult>;
 }
 ```
-- Preconditions: `target` は閲覧判定済みの実在するコメント。`emoji` は `normalizeReactionKey` を通ったキー。
+- Preconditions: `target` は閲覧判定済みの実在するコメント。`addReaction` の `emoji` は `normalizeReactionKey` を通ったキー。`removeReaction` の `emoji` は、route が `normalizeReactionKey` で検証済みの、送られたままのキー。
 - Postconditions: `added` / `already-reacted` の後は行がちょうど1つ存在する。`removed` / `not-reacted` の後は行が存在しない。
 - Invariants: 同じ `(commentId, userId, emoji)` の行は高々1つ。
 
@@ -857,7 +858,7 @@ type CommentReactionBarProps = {
   - **絵文字の部分**: `canReact` が true のときは `button` 要素で、押すと追加・解除する（要件 2.1、2.2）。`aria-pressed={reactedByMe}`、`aria-label` に絵文字名を入れる。`canReact` が false のときは押せない要素（`span`）にする。グリフは `resolveReactionGlyph`。解決できない（絵文字データの更新で消えた）ときは `:<shortcode>:` の文字列を出す。
   - **人数の部分**: `canReact` によらず、常に `button` 要素にする。押す（クリック・タップ）と `ReactionUsersPopover` を開き、もう一度押すか外側を押すと閉じる。追加・解除の API は呼ばない。`aria-label` に人数（「N 人がリアクション」）を入れ、`aria-haspopup="dialog"` と `aria-expanded` を付ける。ゲスト・共有リンク閲覧者も、この部分から利用者一覧を見られる（要件 6.2）。
   - 2つの部分は枠の中で区切り線で分け、タッチ端末で押し分けられるよう、それぞれの押せる範囲を十分な大きさにする（具体的な寸法は実装で決める）。
-  - Popover の対象の DOM id は `useId()` で作る（コメントごとに繰り返されるため）。
+  - Popover の対象は、人数ボタンへの ref（`ReactionUsersPopover` の `target` は `RefObject<HTMLElement>`）。`useId()` の文字列はコロンを含み、reactstrap がセレクターとして解決できないため使わない（`apps/app/.claude/rules/ui-pitfalls.md`）。
 - ReactionUsersPopover: reactstrap の `Popover`（`trigger="legacy"`。クリック・タップで開き、外側のクリック・タップで閉じる）で、チップの `users` を `createdAt` の昇順のまま並べる。表示名は、`name` があれば `name`、無ければ `username`、ID 文字列ならそのまま（要件 1.10）。人数が多いときは、高さの上限を決めて中をスクロールさせる。
 - AddReactionButton: `canReact` のときだけ描画する（要件 3.1、5.4、5.6、5.7）。チップの数が `MAX_REACTION_KINDS_PER_COMMENT` 以上なら無効化し、ツールチップで上限に達したことを示す。サーバーの 409 を受けた場合は、`useCommentReactions` が同じ文言のトーストを出して一覧を取り直す（要件 7.2）。ピッカーの `onSelect` は `fromPickerSelection` でキーにし、`setReaction(key, true)` を呼ぶ（要件 3.3、3.4）。閉じたら何もしない（要件 3.6）。
 - EmojiPicker（`packages/editor`）: props は `{ isOpen: boolean; onSelect: (selection: { id: string; skin?: number }) => void; onClose: () => void; theme?: 'light' | 'dark' | 'auto' }`。初めて開いたときに `@emoji-mart/react` と `@emoji-mart/data` を動的 import する（ページ表示時の読み込みを増やさない）。`@emoji-mart/data` の既定の export は `sets/15/native.json` で、`@growi/emoji-mart-data` の抽出元（サーバーの検証の根拠）と同じデータなので、ピッカーで選べる絵文字はすべてサーバーの検証を通る。reactstrap の `Modal`（中央寄せ）で表示し、スマートフォンでも使える。`skinTonePosition` を有効にする（要件 3.5）。
@@ -867,7 +868,7 @@ type CommentReactionBarProps = {
 
 ### Domain Model
 - 集約: リアクションは、コメントに従属する値に近いエンティティ。単独で更新されず、追加と削除だけを持つ。外から見るときは、常にコメントの一部（`ICommentListItem.reactions`）として現れる。
-- 不変条件: `(commentId, userId, emoji)` は一意。`emoji` は `normalizeReactionKey` を通った正規の形。`pageId` は、そのコメントの `pageId` と一致する（コメントはページをまたいで移動しない）。
+- 不変条件: `(commentId, userId, emoji)` は一意。`emoji` は `normalizeReactionKey` を通った正規の形（インポート時に `overwrite-params` が正規化する。それ以前にインポートされた別名のキーの行は、解除時に別名でも削除できる）。`pageId` は、そのコメントの `pageId` と一致する（コメントはページをまたいで移動しない）。
 
 ### Physical Data Model
 
@@ -889,7 +890,7 @@ type CommentReactionBarProps = {
 ### Data Contracts & Integration
 - コメントを返す3つの応答（`GET /comments` の各件、`GET /comments/:id`、`PUT /comments/:id/reactions` の `comment`）は、同じ `ICommentListItem`（`reactions` を含む）を返す。利用者は、どの応答でも同じ型でコメントとリアクションを扱える。
 - `ReactionChip` の型は `features/comment-reaction/interfaces` に置き、`ICommentListItem` はそれを型として参照する（`comment` → `comment-reaction` の型の依存）。逆向きの依存は、型も含めて無い（リアクションした利用者の型は `ReactionUserSummary` を自前で持つ）。
-- G2G: ID は付け替えずに保持される。エクスポートで文字列になった `comment` / `page` / `user` は、インポート時に `overwrite-params/comment-reactions.ts` で ObjectId に戻る。`_id` と `createdAt` は、既定の変換（`keepOriginal`）で ObjectId と Date に戻る（要件 10.2）。
+- G2G: ID は付け替えずに保持される。エクスポートで文字列になった `comment` / `page` / `user` は、インポート時に `overwrite-params/comment-reactions.ts` で ObjectId に戻る。`emoji` は同じ `overwrite-params` で正規のキーにそろう。`_id` と `createdAt` は、既定の変換（`keepOriginal`）で ObjectId と Date に戻る（要件 10.2）。
 
 ## Error Handling
 
@@ -915,7 +916,7 @@ type CommentReactionBarProps = {
 - `classifyReactionUpdateFailure`: `reaction-kind-limit-exceeded` → `kind-limit-exceeded`、`notfound_or_forbidden` → `comment-unavailable`、`validation_failed`・`invalid-reaction-emoji`・`code` の無いエラー・配列でない値・通信の失敗 → `failed` になること。
 - `useCanReactToComments`: ゲスト、共有リンク、閲覧専用（許可あり／なし）、`isReadOnly`、ごみ箱のページの組み合わせ（要件 5.4〜5.7、6.2）。
 - `CommentReactionBar`: チップと人数の表示、自分のチップの `aria-pressed`、絵文字の部分を押すと API が呼ばれること、人数の部分を押すと利用者一覧（表示名、`username`、ID 文字列）が開き API は呼ばれないこと、`canReact` が false のとき「＋」が無く、絵文字の部分を押しても API を呼ばず、人数の部分からは利用者一覧が開くこと、上限で「＋」が無効になること、チップが無く読み取り専用なら何も描画しないこと、`chips` が `null` なら何も描画しないこと（要件 1.1〜1.7、1.10、3.1、6.2、6.5、7.2）。
-- `overwrite-params/comment-reactions`: 24 桁の16進文字列が ObjectId になること、不正な値はそのまま返ること、`generateOverwriteParams('commentreactions', ...)` がこの params を返すこと（要件 10.2）。
+- `overwrite-params/comment-reactions`: 24 桁の16進文字列が ObjectId になること、不正な値はそのまま返ること、`emoji` の別名（肌の色つきを含む）が正規のキーになり、正規化できない値はそのまま返ること、`generateOverwriteParams('commentreactions', ...)` がこの params を返すこと（要件 10.2）。
 - `@growi/emoji-mart-data`: 既存の `skins[0]` の値が拡張前と一致すること、肌の色対応の絵文字が6件の `skins` を持つこと、`aliases` の存在。`@emoji-mart/data` の既定の export のすべての id（と肌の色）が `normalizeReactionKey` を通ること（ピッカーとサーバーの検証のずれの検出）。
 
 ### Integration Tests

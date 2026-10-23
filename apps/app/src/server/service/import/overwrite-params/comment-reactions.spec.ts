@@ -62,6 +62,33 @@ describe('overwrite params for commentreactions', () => {
     });
   });
 
+  describe('emoji', () => {
+    const params = generateForCommentReactions();
+
+    it.each([
+      ['an alias', 'unicode:thumbsup', 'unicode:+1'],
+      [
+        'an alias with a skin tone',
+        'unicode:thumbsup::skin-tone-3',
+        'unicode:+1::skin-tone-3',
+      ],
+      ['an already canonical key', 'unicode:+1', 'unicode:+1'],
+    ])('normalizes %s', (_label, value, expected) => {
+      expect(convert(params.emoji, value)).toBe(expected);
+    });
+
+    it.each([
+      ['unknown emoji', 'unicode:no-such-emoji-xyz'],
+      ['unsupported namespace', 'custom:thumbsup'],
+      ['malformed key', 'thumbsup'],
+      ['empty string', ''],
+      ['null', null],
+      ['number', 42],
+    ])('returns a value that cannot be normalized as is: %s', (_l, value) => {
+      expect(convert(params.emoji, value)).toBe(value);
+    });
+  });
+
   it('is what generateOverwriteParams returns for the commentreactions collection', () => {
     const params = generateOverwriteParams(
       'commentreactions',
@@ -69,7 +96,12 @@ describe('overwrite params for commentreactions', () => {
       {} as GrowiArchiveImportOption,
     );
 
-    expect(Object.keys(params).sort()).toEqual(['comment', 'page', 'user']);
+    expect(Object.keys(params).sort()).toEqual([
+      'comment',
+      'emoji',
+      'page',
+      'user',
+    ]);
     for (const field of REFERENCE_FIELDS) {
       const result = convert(params[field], HEX);
       expect(result).toBeInstanceOf(ObjectId);

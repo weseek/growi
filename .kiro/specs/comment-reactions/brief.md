@@ -170,7 +170,7 @@
   - コメントにはリアルタイム更新が無いので、画面の状態が古いまま操作されることがある。反転型では、別タブで付けた 👍 を古い画面から押すと、本人の意図（追加）に反して解除になってしまう。
   - 明示型なら、既に付いているものへの「追加」や、付いていないものへの「解除」は何もせずに成功扱いにでき、何度送っても結果が変わらない。
   - `emoji` はクエリではなく JSON body で送る（`unicode:+1` の `+` がクエリでは空白に化けるため）。
-- **GROWI 間移行（G2G）・インポート**: リアクションのコレクションは移行対象とし、`non-transferable-collections.ts` の `TRANSFERABLE_COLLECTIONS` に登録する。Mongoose のモデルが無いコレクションは、インポート時に `_id` と日付以外の参照項目が文字列のまま入るので、コレクションごとの `overwrite-params` で `comment` / `page` / `user` を ObjectId に戻す（G2G とファイルインポートの両方で適用される）。
+- **GROWI 間移行（G2G）・インポート**: リアクションのコレクションは移行対象とし、`non-transferable-collections.ts` の `TRANSFERABLE_COLLECTIONS` に登録する。Mongoose のモデルが無いコレクションは、インポート時に `_id` と日付以外の参照項目が文字列のまま入るので、コレクションごとの `overwrite-params` で `comment` / `page` / `user` を ObjectId に戻し、`emoji` を正規のキーにそろえる（G2G とファイルインポートの両方で適用される）。
 - **監査ログ**: 新しい action は `MediumActionGroup` に入れ（既存のコメント操作と同じ扱い）、通知のグループには入れない。snapshot の `emoji` は、Prisma の `ActivitiesSnapshot` に足すだけでは保存されない（`createByParameters` などが決まった項目だけを取り出して保存し直すため）ので、保存口にも足す。Mongoose の `snapshotSchema` には足さない（書き込みも読み取りも Prisma で行われるため）。
 - **絵文字キー**
   - 標準絵文字は `@growi/emoji-mart-data` に存在するショートコードだけを受け付け、サーバー側で検証する（任意の文字列を保存させない）。

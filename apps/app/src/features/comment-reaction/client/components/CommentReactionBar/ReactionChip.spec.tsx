@@ -270,9 +270,5 @@ describe('ReactionChip', () => {
 
     expect(await screen.findByText('Carol')).toBeTruthy();
     expect(screen.queryByText('Alice A.')).toBeNull();
-    const ids = screen
-      .getAllByRole('button', { name: /^comment_reaction.reacted_count/ })
-      .map((button) => button.id);
-    expect(new Set(ids).size).toBe(2);
   });
 });

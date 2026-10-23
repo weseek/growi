@@ -1,5 +1,7 @@
 import { Types } from 'mongoose';
 
+import { normalizeReactionKey } from '~/features/comment-reaction/utils';
+
 import type { OverwriteParams } from '../import-settings';
 import type { OverwriteFunction } from '../overwrite-function';
 
@@ -19,10 +21,20 @@ const restoreObjectId: OverwriteFunction = (value) => {
   return value;
 };
 
+// Keys exported before normalization may hold an alias; one that cannot be normalized is kept as is.
+const normalizeEmoji: OverwriteFunction = (value) => {
+  if (typeof value !== 'string') {
+    return value;
+  }
+  const normalized = normalizeReactionKey(value);
+  return normalized.ok ? normalized.value : value;
+};
+
 // No Mongoose model backs this collection, so convertDocuments casts nothing but `_id` and
 // dates; the keys are the stored Mongo field names, not the Prisma field names.
 export const generateOverwriteParams = (): OverwriteParams => ({
   comment: restoreObjectId,
+  emoji: normalizeEmoji,
   page: restoreObjectId,
   user: restoreObjectId,
 });

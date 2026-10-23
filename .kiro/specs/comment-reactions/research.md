@@ -195,6 +195,17 @@
 - **Trade-offs**: キーの文字列が少し長くなる。パースが必要になるが、純粋関数1つに閉じ込める。
 - **Follow-up**: 将来 `slack:<teamId>:<name>` などを足すときは、パーサーの判別ユニオンに variant を足す。
 
+### Decision: 解除は送られたキーと正規化したキーの両方で削除し、インポートでは `emoji` を正規化する
+- **Context**: 正規化されずに保存されたキー（例: `unicode:thumbsup`）の行がインポートで入りうる。route が正規化したキー（`unicode:+1`）だけで削除すると、その行のリアクションを利用者が外せない。
+- **Alternatives Considered**:
+  1. インポートでの正規化だけにする（それ以前に入った行が残る）
+  2. 解除だけを両方のキーで削除する（保存する行が正規の形にそろわない）
+  3. 両方入れる
+- **Selected Approach**: 3。`removeReaction` は送られたままのキーとその正規形の両方を `deleteMany` の対象にし、`overwrite-params/comment-reactions.ts` は `emoji` を正規化する（正規化できない値はそのまま返す）。
+- **Rationale**: インポートの正規化で今後の行を正規の形にそろえ、解除の両方削除で、すでに入った行を外せるようにする。
+- **Trade-offs**: `removeReaction` の引数が `ReactionKey` から送られたままの文字列に広がり、サービスで再度正規化する。別名と正規のキーの行が同じ `(commentId, userId)` に両方あれば、1回の解除で両方が消える（同じ絵文字なので意図どおり）。
+- **Follow-up**: 別名のキーの行が別のチップとして表示される点（要件 4.5）は未対応。表示側で正規化してまとめるか、既存の行を移行で正規化するかを別途決める。
+
 ### Decision: 絵文字データは `@growi/emoji-mart-data` を広げて使う
 - **Context**: 要件 4.1〜4.5 の検証（サーバー）と、肌の色付きのグリフの表示（クライアント）。
 - **Alternatives Considered**:

@@ -11,16 +11,18 @@ vi.mock('next-i18next', () => ({
 vi.mock('./CommentReactionBar.module.scss', () => ({ default: {} }));
 
 const ANCHOR_ID = 'users-popover-anchor';
+const anchorRef = { current: document.body };
 
 // The anchor must already be in the DOM when the popover opens, as it is in ReactionChip.
 const renderPopover = (users: readonly ReactionUser[], isOpen = true): void => {
   const anchor = document.createElement('button');
   anchor.id = ANCHOR_ID;
   document.body.appendChild(anchor);
+  anchorRef.current = anchor;
 
   const tree = (open: boolean): JSX.Element => (
     <ReactionUsersPopover
-      target={ANCHOR_ID}
+      target={anchorRef}
       isOpen={open}
       toggle={vi.fn()}
       users={users}

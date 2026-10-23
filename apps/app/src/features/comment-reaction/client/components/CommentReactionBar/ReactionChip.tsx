@@ -1,5 +1,5 @@
 import type { JSX } from 'react';
-import { useCallback, useId, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 
 import type {
@@ -27,8 +27,8 @@ export const ReactionChip = ({
 }: ReactionChipProps): JSX.Element => {
   const { t } = useTranslation();
   const [isUsersOpen, setIsUsersOpen] = useState(false);
-  // useId() yields ':r1:'; the colons are not valid in the '#id' selector reactstrap builds.
-  const countId = `reaction-chip-count-${useId().replaceAll(':', '')}`;
+  // A ref target: useId() output contains colons, which reactstrap cannot resolve as a selector.
+  const countRef = useRef<HTMLButtonElement>(null);
 
   const { emoji, count, reactedByMe, users } = chip;
   // A persisted key can be malformed or outlive the emoji data; never let it break the render.
@@ -73,7 +73,7 @@ export const ReactionChip = ({
       )}
       <button
         type="button"
-        id={countId}
+        ref={countRef}
         className={styles['reaction-chip-count']}
         aria-label={t('comment_reaction.reacted_count', { count })}
         aria-haspopup="dialog"
@@ -82,7 +82,7 @@ export const ReactionChip = ({
         {count}
       </button>
       <ReactionUsersPopover
-        target={countId}
+        target={countRef}
         isOpen={isUsersOpen}
         toggle={toggleUsers}
         users={users}

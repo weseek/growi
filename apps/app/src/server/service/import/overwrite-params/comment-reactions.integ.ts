@@ -41,7 +41,7 @@ describe('importing commentreactions in the export format', () => {
         comment: commentIds[0],
         page: new ObjectId(),
         user: new ObjectId(),
-        emoji: 'unicode:+1',
+        emoji: 'unicode:thumbsup',
         createdAt: new Date('2026-01-02T03:04:05.000Z'),
         __v: 0,
       },

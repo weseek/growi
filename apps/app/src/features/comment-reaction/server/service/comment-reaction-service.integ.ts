@@ -1,4 +1,6 @@
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
+
+import { replaceMongoDbName } from '^/test/setup/mongo/utils';
 
 import { prisma } from '~/utils/prisma';
 
@@ -22,7 +24,25 @@ describe('comment-reaction-service', () => {
   const countRows = (commentId: string, userId: string, emoji: string) =>
     prisma.commentreactions.count({ where: { commentId, userId, emoji } });
 
+  // Without MONGO_URI the in-memory DB never runs migrations, so the unique index the
+  // concurrent-add test relies on must be built here. The migration connects with
+  // getMongoUri(), which must name the same database as the worker's connection.
+  beforeAll(async () => {
+    const mongoUri = process.env.MONGO_URI;
+    if (mongoUri != null) {
+      vi.stubEnv(
+        'MONGO_URI',
+        replaceMongoDbName(mongoUri, mongoose.connection.name),
+      );
+    }
+    const migrate = await import(
+      '~/migrations/20261016120000-add-indexes-to-commentreactions'
+    );
+    await migrate.up();
+  });
+
   afterAll(async () => {
+    vi.unstubAllEnvs();
     await prisma.commentreactions.deleteMany({
       where: { commentId: { in: createdCommentIds } },
     });
@@ -74,6 +94,42 @@ describe('comment-reaction-service', () => {
       ).resolves.toEqual({ kind: 'not-reacted' });
 
       await expect(countRows(target.commentId, userId, emoji)).resolves.toBe(0);
+    });
+
+    it('removes a row stored under an alias key when that alias is sent', async () => {
+      const target = newTarget();
+      const userId = newUserId();
+      await prisma.commentreactions.create({
+        data: {
+          commentId: target.commentId,
+          pageId: target.pageId,
+          userId,
+          emoji: 'unicode:thumbsup',
+          createdAt: new Date(),
+        },
+      });
+
+      await expect(
+        removeReaction({ prisma }, target, userId, 'unicode:thumbsup'),
+      ).resolves.toEqual({ kind: 'removed' });
+
+      await expect(
+        countRows(target.commentId, userId, 'unicode:thumbsup'),
+      ).resolves.toBe(0);
+    });
+
+    it('removes a row stored under the canonical key when an alias key is requested', async () => {
+      const target = newTarget();
+      const userId = newUserId();
+      await addReaction({ prisma }, target, userId, key('unicode:+1'));
+
+      await expect(
+        removeReaction({ prisma }, target, userId, 'unicode:thumbsup'),
+      ).resolves.toEqual({ kind: 'removed' });
+
+      await expect(
+        countRows(target.commentId, userId, 'unicode:+1'),
+      ).resolves.toBe(0);
     });
 
     it('only removes the requesting user’s own row', async () => {
