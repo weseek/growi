@@ -157,3 +157,16 @@ _実施日: 2026-10-21 / 対象: requirements.md（未承認の段階で実施�
 - **activity の drift テスト**: `activity-recording.md` の Rule 1 は、activity を emit する route に drift テストを求めている。route の integ テストは `add-activity` をモックしているので、emit の順序の不具合を検出できない。そこで `page/create-page.integ.ts` に倣った drift テストを、design.md の Testing Strategy と tasks.md の 3.2 に追加した。
 - **amend spec かどうか**: amend spec ではないと判断した（`.claude/rules/spec-lifecycle.md`）。upgrade spec の cleanup スクリプトの要件（Req 3.3 / 3.4）と挙動は変えず、2 つ目の入口を追加するだけだからである。design.md の Out of Boundary に明記した。
 - **既存スクリプトのコメント**: 中止の理由として書かれている「ダウングレード後に認証できなくなる」は、実際の効果と合っていない。そのため、tasks.md の 2.2 でこのコメントを Decision を指す一文に置き換える。
+
+## Design Review 6 回目の反映（独立レビュー, 2026-10-23）
+- **route テストの土台**: 前例の `file-upload-setting.integ.ts` は、`apiv3Err` の既定ステータスを 500 にした自前の実装を使っている。本物の既定値は 400 なので、これをまねると、handler が 500 を渡し忘れてもテストが通ってしまう。本物の `response.js` を組み込み、500 の指定を消すと落ちることを mutation で確かめる、と design.md と tasks.md に書いた。
+- **失敗後の再取得**: Error Handling 節（失敗時も `mutate()` する）と、client 節・テスト・タスク 4.2（エラートーストだけ）が食い違っていた。途中まで削除されている可能性があるので、失敗時も再取得する方に揃えた。
+- **共有 DB でのテスト**: route の handler はコレクション全体を対象にし、integ テストは同じ worker で DB を共有する。件数はマーカー付きのユーザーの変化で検証し、サービスは `vi.importActual` で部分モックにする。
+- **その他**: `ConfirmModal` は自分では閉じないので、セクション側で閉じる。logger は `vi.mock` で差し替えて検証する。302 で HTML が返った場合は、hook で取得エラーとして扱う。Testing Strategy で drift テストの下に入っていた 302 と 500 の項目を、routes の項目に移した。
+
+## Design Review 7 回目の反映（独立レビュー, 2026-10-23）
+判定は GO で、重大な問題はなかった。前回追加したテストの土台の指示（本物の `response.js`、サービスの部分モック、logger のモック、マーカーでの差分検証、drift テスト）は、どれもこのコードベースで実現できることを確認した。細かい指摘を 4 件反映した。
+- タスク 4.2 の完了条件に、「レスポンスに `counts` がない場合のエラー表示」と「確定時にモーダルが閉じること」を加えた
+- logger のモックは `adminRequired` の warn にも効くので、回数ではなく `info` の呼び出しの内容で検証する
+- テスト用の DB は worker ごとに分かれている（`growi_test_${VITEST_WORKER_ID}`）。「同じ worker で DB を共有する」という記述を正確にした
+- 500 のテスト項目を、GET（1.5）と DELETE（2.7）に分けた

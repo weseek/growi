@@ -44,7 +44,7 @@
 
 ### Allowed Dependencies
 - `server/models/user/password-hash-format-filters.ts`（分類フィルタ）と `server/models/user/conts.ts`（UserStatus）
-- 既存のミドルウェア: `accessTokenParser`、`loginRequired`、`adminRequired`、`generateAddActivityMiddleware`、`crowi.events.activity`
+- 既存のミドルウェア: `accessTokenParser`、`loginRequiredStrictly`、`adminRequired`、`generateAddActivityMiddleware`、`crowi.events.activity`
 - クライアント: `apiv3-client`、`toastr`、`Admin/App/ConfirmModal`、`swr`
 - 依存の向きは次のとおりとし、逆向きの import は禁止する。
 
@@ -331,7 +331,9 @@ export const useSWRxPasswordHashStatus: () => SWRResponse<PasswordHashFormatCoun
   - `confirmButtonTitle`: 削除
   - `onCancel`: モーダルを閉じるだけ
   - `ConfirmModal` には手を加えない。実行ボタンは既存どおり `btn-outline-primary` のままで、処理中も無効化しない。二重に実行されても、サーバー側の削除が冪等なので実害はない（2 回目は `unsetCount: 0`）。
-- 確定したら `apiv3Delete('/security-setting/legacy-passwords')` を呼ぶ。成功したら `toastSuccess`（件数を含む）を出して `mutate()` する。失敗したら `toastError` を出す（2.4, 2.7）。
+- 確定したら `apiv3Delete('/security-setting/legacy-passwords')` を呼ぶ。成功したら `toastSuccess`（件数を含む）を出して `mutate()` する。失敗したら `toastError` を出し、途中まで削除されている可能性があるので、こちらも `mutate()` で件数を取り直す（2.4, 2.7）。
+- `ConfirmModal` は `onConfirm` でモーダルを閉じないので、セクション側で開閉の状態を持ち、確定したときに閉じる。
+- hook は、レスポンスに `counts` がない場合（302 のリダイレクトで HTML が返った場合など）をエラーとして扱う（1.5）。
 - 文言はすべて `t('admin:security_settings.legacy_password_cleanup.*')` を使う（6.1）。
 
 ## Error Handling
@@ -348,19 +350,26 @@ export const useSWRxPasswordHashStatus: () => SWRResponse<PasswordHashFormatCoun
   - 他の区分（新形式のみ、旧形式のみ、未設定）の文書が変わらないこと（2.2）
   - 2 回目の呼び出しで `unset: 0` になること（2.6）
   - 除去した後も、元のパスワードで `passwordHashService.verify` が成功すること（2.8）
-- **Integration（routes: `legacy-password-cleanup.integ.ts`、supertest）**: `file-upload-setting.integ.ts` に倣い、`access-token-parser`、`login-required`、`add-activity` はモックに差し替える。`admin-required` だけは本物を使い、`req.user` に admin が true または false のユーザーを注入する。`vi.mock` はファイル全体に効くので、モックに差し替えると管理者以外の 302 を検証できなくなるため
+- **Integration（routes: `legacy-password-cleanup.integ.ts`、supertest）**: `file-upload-setting.integ.ts` に倣い、`access-token-parser`、`login-required`、`add-activity` はモックに差し替える。`admin-required` だけは本物を使い、`req.user` に admin が true または false のユーザーを注入する（`vi.mock` はファイル全体に効くので、差し替えると 302 を検証できない）。次の 3 点は前例に倣わない。
+  - **レスポンスの拡張は本物を使う**: `file-upload-setting.integ.ts` の自前の `apiv3Err` は既定のステータスが 500 なので、handler が 500 を渡し忘れてもテストが通ってしまう。`routes/apiv3/response.js` の拡張を express に組み込み、既定値 400 の本物の挙動でテストする。エラー時の検証は、handler から `, 500` を消すと落ちることを mutation で確かめる。
+  - **サービスは部分モックにする**: 例外の場合を作るために、`vi.mock` で共有サービスを `vi.importActual` の実装に差し替え、例外のテストでだけ `mockRejectedValueOnce` を使う。それ以外のテストは本物のサービスで DB を操作する。
+  - **件数は差分で検証する**: handler は `baseFilter` なしでコレクション全体を対象にする。テスト用の DB は worker ごとに分かれている（`growi_test_${VITEST_WORKER_ID}`）が、同じファイル内の他のテストや migration が作ったデータは残りうる。そのため、件数は全体の絶対値ではなく、マーカー付きで用意したユーザーの変化（そのユーザーから `password` が消えたか、件数が用意した数以上増減したか）で検証する。
+  - **ログの検証**: handler は `logger` をモジュールのトップレベルで作るので、`passport-local-lazy-migration.integ.ts` に倣い `vi.mock('~/utils/logger')` で差し替えて検証する。この差し替えは本物の `adminRequired` の `logger.warn` にも効くので、呼び出しの回数ではなく、実行者と件数を含む `info` の呼び出しがあることを確かめる。
+
+  検証すること:
   - GET のレスポンスが `counts` の数値だけで、ハッシュのフィールドを含まないこと（1.1, 4.4）
-  - DELETE が `unsetCount` を返し、`ADMIN_LEGACY_PASSWORD_DELETE` で activity を emit すること（2.4, 4.3）
+  - DELETE が `unsetCount` を返し、マーカー付きの両形式ユーザーから `password` が消え、`ADMIN_LEGACY_PASSWORD_DELETE` で activity を emit すること（2.4, 4.3）
   - DELETE が成功したとき、実行者と件数を含むログを出すこと（4.5）
-- **Integration（drift: `delete-legacy-passwords-activity.integ.ts`）**: `activity-recording.md` の Rule 1 が求める drift テスト。`page/create-page.integ.ts` に倣い、本物の `addActivity`、ActivityService の listener、activity の確定処理、Prisma を使う。偽の `res` は `apiv3()` の中で同期的に `finish` を発火させる。この状態でも、確定した `ADMIN_LEGACY_PASSWORD_DELETE` の行に実行者（`user`）が残ることを確かめる。監査ログを有効にし、記録範囲を LARGE に設定してから実行する（4.3）。上の route の integ テストは `add-activity` をモックし、emit をスパイにしているので、この順序の不具合は検出できない
-  - 管理者でないユーザーで呼んだとき（本物の `adminRequired` に `admin: false` のユーザーを与える）、302 になり、件数を返さず、文書も変更しないこと（4.1, 4.2）
-  - サービスが例外を投げたとき、500 のエラーコードを返し、`ADMIN_LEGACY_PASSWORD_DELETE` を emit しないこと（2.7）。fail-safe が残す `ACTION_UNSETTLED` の行は activity 基盤の責任なので、ここでは検証しない
+  - 管理者でないユーザーで呼んだとき（本物の `adminRequired` に `admin: false` のユーザーを与える）、302 になり、件数を返さず、マーカー付きのユーザーの文書も変わらないこと（4.1, 4.2）
+  - GET でサービスが例外を投げたとき、500 とエラーコードを返すこと（1.5）
+  - DELETE でサービスが例外を投げたとき、500 とエラーコードを返し、`ADMIN_LEGACY_PASSWORD_DELETE` を emit しないこと（2.7）。fail-safe が残す `ACTION_UNSETTLED` の行は activity 基盤の責任なので、ここでは検証しない
+- **Integration（drift: `delete-legacy-passwords-activity.integ.ts`）**: `activity-recording.md` の Rule 1 が求める drift テスト。`page/create-page.integ.ts` に倣い、本物の `addActivity`、ActivityService の listener、activity の確定処理、Prisma を使う。偽の `res` は `apiv3()` の中で同期的に `finish` を発火させる。この状態でも、確定した `ADMIN_LEGACY_PASSWORD_DELETE` の行に実行者（`user`）が残ることを確かめる。監査ログを有効にし、記録範囲を LARGE に設定してから実行する（4.3）。上の route の integ テストは `add-activity` をモックし、emit をスパイにしているので、この順序の不具合は検出できない。本物の handler は worker の DB 全体を対象に削除するが、このテストが確かめるのは activity の行だけなので問題ない
 - **Regression**: 既存の `password-hash-cleanup.integ.ts` を変更せずに通すこと（5.1, 5.2）。
 - **Component（`LegacyPasswordCleanupSetting.spec.tsx`、RTL）**
   - 件数と ACTIVE 内訳を表示すること（1.1–1.3）
-  - `both === 0` のとき、または取得エラーのとき、ボタンが無効になること（1.5, 2.5）
-  - 確認モーダルに件数とダウングレードの警告が出ること。キャンセルしたら API が呼ばれないこと（3.1–3.4）
-  - 確定して成功したら件数入りのトーストが出て再取得されること。失敗したらエラーのトーストだけが出ること（1.4, 2.4, 2.7）
+  - `both === 0` のとき、取得エラーのとき、またはレスポンスに `counts` がないとき、ボタンが無効になること（1.5, 2.5）
+  - 確認モーダルに件数とダウングレードの警告が出ること。キャンセルしたら API が呼ばれないこと。確定したらモーダルが閉じること（3.1–3.4）
+  - 確定して成功したら件数入りのトーストが出て再取得されること。失敗したらエラーのトーストが出て、成功のトーストは出ず、件数は再取得されること（1.4, 2.4, 2.7）
 - **i18n（`LegacyPasswordCleanupSetting.i18n.spec.ts`）**: `features/growi-vault/client/i18n-reconcile.spec.ts` に倣い、追加したすべてのキー（`security_settings.legacy_password_cleanup.*` と `audit_log_action.ADMIN_LEGACY_PASSWORD_DELETE`）が 5 ロケールすべての `admin.json` に空でない文字列として存在することを確かめる。このブランチには i18n キーを検査する lint スクリプトがないので、この spec を 6.1 の検証とする。
 
 ## Security Considerations
