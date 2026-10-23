@@ -13,6 +13,8 @@ import loginRequiredFactory from '~/server/middlewares/login-required';
 import loggerFactory from '~/utils/logger';
 import { prisma } from '~/utils/prisma';
 
+import { expiredAtValidator } from './share-link-expired-at-validator';
+
 const logger = loggerFactory('growi:routes:apiv3:share-links');
 
 const router = express.Router();
@@ -85,7 +87,6 @@ const validator = {};
  * @returns {import('express').Router} router
  */
 export const setup = (crowi) => {
-  const today = new Date();
   const loginRequired = loginRequiredFactory(crowi);
   const adminRequired = adminRequiredFactory(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
@@ -189,10 +190,7 @@ export const setup = (crowi) => {
     // validate the page id is MongoId
     body('relatedPage').isMongoId().withMessage('Page Id is required'),
     // validate expireation date is not empty, is not before today and is date.
-    body('expiredAt')
-      .if((value) => value != null)
-      .isAfter(today.toString())
-      .withMessage('Your Selected date is past'),
+    expiredAtValidator(),
     // validate the length of description is max 100.
     body('description')
       .isLength({ min: 0, max: 100 })
