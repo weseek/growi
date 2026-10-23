@@ -80,10 +80,17 @@ export const CONFIG_KEYS = [
   'app:auditLogActionGroupSize',
   'app:auditLogAdditionalActions',
   'app:auditLogExcludeActions',
+  'app:auditLogEsSyncAnonymousThresholdLogin',
+  'app:auditLogEsSyncAnonymousThresholdRegister',
+  'app:auditLogEsSyncAnonymousThresholdForgotPassword',
+  'app:auditLogEsSyncAnonymousThresholdInstaller',
+  'app:auditLogEsSyncAnonymousThresholdExternalAuth',
+  'app:auditLogEsSyncAnonymousThresholdOther',
   'app:serviceType',
   'app:deploymentType',
   'app:ssrMaxRevisionBodyLength',
   'app:wipPageExpirationSeconds',
+  'app:wipPageCleanupCronSchedule',
   'app:isReadOnlyForNewUser',
   'app:vaultEnabled',
   'app:vaultManagerEndpoint',
@@ -289,10 +296,6 @@ export const CONFIG_KEYS = [
   'slackbot:withProxy:saltForGtoP',
   'slackbot:withProxy:saltForPtoG',
 
-  // OpenAI Settings
-  'openai:serviceType',
-  'openai:apiKey',
-
   // AI Tools Settings
   'aiTools:suggestPathAgenticSearchLimit',
   'aiTools:suggestPathAgenticChildListingLimit',
@@ -363,6 +366,7 @@ export const CONFIG_KEYS = [
   'env:useOnlyEnvVars:app:fileUploadType',
   'env:useOnlyEnvVars:security:passport-local',
   'env:useOnlyEnvVars:security:passport-saml',
+  'env:useOnlyEnvVars:aws',
   'env:useOnlyEnvVars:gcs',
   'env:useOnlyEnvVars:azure',
   'env:useOnlyEnvVars:ai',
@@ -556,6 +560,41 @@ export const CONFIG_DEFINITIONS = {
     envVarName: 'AUDIT_LOG_EXCLUDE_ACTIONS',
     defaultValue: undefined,
   }),
+  // Per-endpoint cap (admitted anonymous-log events per 1-minute window, all IPs
+  // combined) on syncing anonymous audit logs to Elasticsearch — see
+  // features/auditlog-es-sync/server/service/decide-es-sync-for-event.ts.
+  //
+  // Launch placeholders pending GROWI.cloud's own traffic measurement: a small
+  // multiple of each endpoint's expected legitimate peak. Not derived from the
+  // per-IP rate limiter, which is a separate layer guarding the app, not Elasticsearch.
+  'app:auditLogEsSyncAnonymousThresholdLogin': defineConfig<number>({
+    envVarName: 'ANONYMOUS_ES_SYNC_THRESHOLD_LOGIN',
+    defaultValue: 50,
+  }),
+  'app:auditLogEsSyncAnonymousThresholdRegister': defineConfig<number>({
+    envVarName: 'ANONYMOUS_ES_SYNC_THRESHOLD_REGISTER',
+    defaultValue: 50,
+  }),
+  'app:auditLogEsSyncAnonymousThresholdForgotPassword': defineConfig<number>({
+    envVarName: 'ANONYMOUS_ES_SYNC_THRESHOLD_FORGOT_PASSWORD',
+    defaultValue: 50,
+  }),
+  'app:auditLogEsSyncAnonymousThresholdInstaller': defineConfig<number>({
+    envVarName: 'ANONYMOUS_ES_SYNC_THRESHOLD_INSTALLER',
+    defaultValue: 3,
+  }),
+  // Failed sign-ins through external providers (OAuth/OIDC/SAML), shared across them.
+  // Like login: rare in normal operation, bursty when an identity provider is down.
+  'app:auditLogEsSyncAnonymousThresholdExternalAuth': defineConfig<number>({
+    envVarName: 'ANONYMOUS_ES_SYNC_THRESHOLD_EXTERNAL_AUTH',
+    defaultValue: 50,
+  }),
+  // Shared by every endpoint not listed in anonymous-sync-thresholds.ts, so an
+  // attacker spreading a flood across arbitrary paths cannot raise the total.
+  'app:auditLogEsSyncAnonymousThresholdOther': defineConfig<number>({
+    envVarName: 'ANONYMOUS_ES_SYNC_THRESHOLD_OTHER',
+    defaultValue: 100,
+  }),
   'app:serviceType': defineConfig<GrowiServiceType>({
     envVarName: 'SERVICE_TYPE',
     defaultValue: GrowiServiceType.onPremise,
@@ -571,6 +610,13 @@ export const CONFIG_DEFINITIONS = {
   'app:wipPageExpirationSeconds': defineConfig<number>({
     envVarName: 'WIP_PAGE_EXPIRATION_SECONDS',
     defaultValue: 172800,
+  }),
+  // Sweep that deletes expired WIP pages. An empty value disables it, which an
+  // operator needs when the sweep is too heavy for their wiki or must be run
+  // out-of-band; the pages then simply keep their (unenforced) expiry.
+  'app:wipPageCleanupCronSchedule': defineConfig<string>({
+    envVarName: 'WIP_PAGE_CLEANUP_CRON_SCHEDULE',
+    defaultValue: '0 3 * * *',
   }),
   'app:isReadOnlyForNewUser': defineConfig<boolean>({
     envVarName: 'DEFAULT_USER_READONLY',
@@ -1018,19 +1064,24 @@ export const CONFIG_DEFINITIONS = {
     defaultValue: undefined,
   }),
   'aws:s3Bucket': defineConfig<NonBlankString>({
+    envVarName: 'S3_BUCKET',
     defaultValue: toNonBlankString('growi'),
   }),
   'aws:s3Region': defineConfig<NonBlankString>({
+    envVarName: 'S3_REGION',
     defaultValue: toNonBlankString('ap-northeast-1'),
   }),
   'aws:s3AccessKeyId': defineConfig<NonBlankString | undefined>({
+    envVarName: 'S3_ACCESS_KEY_ID',
     defaultValue: undefined,
   }),
   'aws:s3SecretAccessKey': defineConfig<NonBlankString | undefined>({
+    envVarName: 'S3_SECRET_ACCESS_KEY',
     defaultValue: undefined,
     isSecret: true,
   }),
   'aws:s3CustomEndpoint': defineConfig<NonBlankString | undefined>({
+    envVarName: 'S3_CUSTOM_ENDPOINT',
     defaultValue: undefined,
   }),
 
@@ -1286,17 +1337,6 @@ export const CONFIG_DEFINITIONS = {
     isSecret: true,
   }),
 
-  // OpenAI Settings
-  'openai:serviceType': defineConfig<'openai' | 'azure-openai'>({
-    envVarName: 'OPENAI_SERVICE_TYPE',
-    defaultValue: 'openai',
-  }),
-  'openai:apiKey': defineConfig<string | undefined>({
-    envVarName: 'OPENAI_API_KEY',
-    defaultValue: undefined,
-    isSecret: true,
-  }),
-
   // AI chat (Mastra) Settings — multi-provider: several providers can be
   // configured at once, one fixed slot per supported provider.
   //
@@ -1542,6 +1582,10 @@ export const CONFIG_DEFINITIONS = {
     envVarName: 'SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS',
     defaultValue: false,
   }),
+  'env:useOnlyEnvVars:aws': defineConfig<boolean>({
+    envVarName: 'AWS_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS',
+    defaultValue: false,
+  }),
   'env:useOnlyEnvVars:gcs': defineConfig<boolean>({
     envVarName: 'GCS_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS',
     defaultValue: false,
@@ -1635,8 +1679,27 @@ export const ENV_ONLY_GROUPS: EnvOnlyGroup[] = [
     ],
   },
   {
+    controlKey: 'env:useOnlyEnvVars:aws',
+    targetKeys: [
+      'aws:s3Bucket',
+      'aws:s3Region',
+      'aws:s3AccessKeyId',
+      'aws:s3SecretAccessKey',
+      'aws:s3CustomEndpoint',
+      'aws:referenceFileWithRelayMode',
+      'aws:lifetimeSecForTemporaryUrl',
+      'aws:s3ObjectCannedACL',
+    ],
+  },
+  {
     controlKey: 'env:useOnlyEnvVars:gcs',
-    targetKeys: ['gcs:apiKeyJsonPath', 'gcs:bucket', 'gcs:uploadNamespace'],
+    targetKeys: [
+      'gcs:apiKeyJsonPath',
+      'gcs:bucket',
+      'gcs:uploadNamespace',
+      'gcs:referenceFileWithRelayMode',
+      'gcs:lifetimeSecForTemporaryUrl',
+    ],
   },
   {
     controlKey: 'env:useOnlyEnvVars:azure',
@@ -1646,6 +1709,8 @@ export const ENV_ONLY_GROUPS: EnvOnlyGroup[] = [
       'azure:clientSecret',
       'azure:storageAccountName',
       'azure:storageContainerName',
+      'azure:referenceFileWithRelayMode',
+      'azure:lifetimeSecForTemporaryUrl',
     ],
   },
   {

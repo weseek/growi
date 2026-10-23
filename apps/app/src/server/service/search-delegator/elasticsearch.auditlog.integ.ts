@@ -121,12 +121,16 @@ describe('ElasticsearchDelegator.addAllAuditlogs()', () => {
     expect(mockES8Client.bulk).not.toHaveBeenCalled();
   });
 
-  it('skips activities that have no username', async () => {
+  it('skips activities that have neither username nor endpoint', async () => {
     const withName = new mongoose.Types.ObjectId();
     await insertActivities([
       { _id: withName, username: 'alice' },
       { _id: new mongoose.Types.ObjectId(), username: null },
-      { _id: new mongoose.Types.ObjectId(), username: '' },
+      // Activity.createByParameters defaults endpoint to '' but leaves
+      // username undefined (stored as null) when the caller omits it — so ''
+      // for endpoint, not username, is the real shape of an activity with
+      // neither an authenticated operator nor an endpoint.
+      { _id: new mongoose.Types.ObjectId(), username: '', endpoint: '' },
     ]);
 
     await delegator.addAllAuditlogs();
@@ -192,5 +196,31 @@ describe('ElasticsearchDelegator.addAllAuditlogs()', () => {
     await delegator.addAllAuditlogs();
 
     expect(mockES8Client.bulk).toHaveBeenCalledTimes(2);
+  });
+
+  it('indexes anonymous logs at a threshold-gated endpoint regardless of the live-sync threshold', async () => {
+    // The anonymous-log threshold gates only the live change-stream sync; a reindex
+    // must index every such log even when the threshold would admit none.
+    vi.mocked(configManager.getConfig).mockImplementation((key) => {
+      if (key === 'app:elasticsearchVersion') return 8;
+      if (key === 'app:elasticsearchReindexBulkSize') return 100;
+      if (key === 'app:auditLogEsSyncAnonymousThresholdLogin') return 0;
+      return false;
+    });
+    const id1 = new mongoose.Types.ObjectId();
+    const id2 = new mongoose.Types.ObjectId();
+    await insertActivities([
+      { _id: id1, username: null, endpoint: '/_api/v3/login' },
+      { _id: id2, username: null, endpoint: '/_api/v3/login' },
+    ]);
+
+    await delegator.addAllAuditlogs();
+
+    expect(mockES8Client.bulk).toHaveBeenCalledWith({
+      body: expect.arrayContaining([
+        { index: { _index: 'auditlogs', _id: id1.toString() } },
+        { index: { _index: 'auditlogs', _id: id2.toString() } },
+      ]),
+    });
   });
 });

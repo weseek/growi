@@ -1,8 +1,161 @@
 # Changelog
 
-## [Unreleased](https://github.com/growilabs/compare/v8.0.0...HEAD)
+## [Unreleased](https://github.com/growilabs/compare/v8.0.7...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v8.0.7](https://github.com/growilabs/compare/v8.0.6...v8.0.7) - 2026-10-07
+
+### 🚀 Improvement
+
+* imprv: Use isRevisionOfPage for the existing revision/page checks (#12054) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix(page): Reject empty or non-member user groups when creating or updating group-restricted pages (#12050) @yuki-takei
+* fix(page): Keep /user and the top page public even when changed through the grant API (#12051) @yuki-takei
+* fix(app): Ensure the user home page exists when user creation/activation completes (#12017) @yuki-takei
+
+### 🧰 Maintenance
+
+* support(ci): push slackbot-proxy release image to Artifact Registry (#12033) @yuki-takei
+* ci(slackbot-proxy): use Workload Identity Federation for Google Cloud auth (#12039) @yuki-takei
+* ci(deps): Bump @opentelemetry/instrumentation-mongoose from 0.63.0 to 0.67.0 (#12038) @[dependabot[bot]](https://github.com/apps/dependabot)
+* ci(deps): Bump compression from 1.7.4 to 1.8.2 (#12037) @[dependabot[bot]](https://github.com/apps/dependabot)
+* ci(deps): Bump katex from 0.16.47 to 0.18.2 (#12036) @[dependabot[bot]](https://github.com/apps/dependabot)
+
+## [v8.0.6](https://github.com/growilabs/compare/v8.0.5...v8.0.6) - 2026-10-05
+
+### 🐛 Bug Fixes
+
+* fix: dedupe @types/node so .next symlinks survive pnpm deploy (v8.0.5 SSR failure) (#12010) @yuki-takei
+
+## [v8.0.5](https://github.com/growilabs/compare/v8.0.4...v8.0.5) - 2026-10-05
+
+### 🚀 Improvement
+
+* imprv(comment): Add GET /_api/v3/comments (#12000) @yuki-takei
+* imprv(inline-comment): Move the creation UI to the cursor edge and collapse resolved comments by default (#11989) @yuki-takei
+* imprv(sidebar): Hide single-viewer count and zero comment count in history (#11995) @yuki-takei
+* imprv(ui): comment button, lsx list wrap, and footer author avatar (#11940) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix(slacbot-proxy): Fix slackbot-proxy failures on Slack Enterprise Grid installs (#11904) @ryota-t0401
+* fix: Show access token expiration date (#11984) @ryota-t0401
+* fix(growi-vault): Propagate recursive page delete to vault_instructions (#11978) @yuki-takei
+
+### 🧰 Maintenance
+
+* chore(i18n): apply translation-only updates from POEditor (#11943) @[growi-i18n-pr-publisher[bot]](https://github.com/apps/growi-i18n-pr-publisher)
+* chore(i18n): review structural updates from POEditor (#11935) @[growi-i18n-pr-publisher[bot]](https://github.com/apps/growi-i18n-pr-publisher)
+* support(i18n): Mint i18n sync tokens from two GitHub Apps at runtime, no stored PATs (#11920) @yuki-takei
+* ci(deps): bump next from 16.2.6 to 16.3.3 (#11888) @[dependabot[bot]](https://github.com/apps/dependabot)
+* ci(deps): bump js-yaml from 4.3.1 to 4.3.2 (#11887) @[dependabot[bot]](https://github.com/apps/dependabot)
+* ci(deps): bump qs from 6.15.2 to 6.16.0 (#11854) @[dependabot[bot]](https://github.com/apps/dependabot)
+
+## [v8.0.4](https://github.com/growilabs/compare/v8.0.3...v8.0.4) - 2026-09-14
+
+### 💎 Features
+
+* feat: Add inline comments on page body text selections (#11844) @yuki-takei
+* feat: UI for advanced search filters (#11597) @arvid-e
+
+### 🚀 Improvement
+
+* imprv(lsx): Add tag-based filtering to $lsx (#11883) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix(turbo): generate vendor-styles.prebuilt files before component tests (#11882) @yuki-takei
+* fix: Preserve inline style and class on rendered headings (#11894) @yuki-takei
+* fix: Read-only users could publish/unpublish pages (#11895) @yuki-takei
+* fix(vault): Stop sending required revisionId as empty string (#11878) @yuki-takei
+
+### 🧰 Maintenance
+
+* support(i18n): Add community translation pipeline via POEditor (#11874) @yuki-takei
+
+## [v8.0.3](https://github.com/growilabs/compare/v8.0.2...v8.0.3) - 2026-09-07
+
+### 💎 Features
+
+* feat(editor): Add slash command to the Markdown editor (#11838) @Ryosei-Fukushima
+
+### 🚀 Improvement
+
+* imprv(news): Render GROWI news as Markdown (#11608) @ryotaro-nagahara
+* imprv: Refactoring for extracting shared page-access check for attachment retrieval (#11813) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Clean pages automatically using cron job (#11513) @arvid-e
+* fix(page-bulk-export): Embed attachment images in exported PDFs (RELAY mode) (#11859) @yuki-takei
+* fix: Enforce access control on revision-by-id and attachment-by-id apiv3 routes (#11810) @yuki-takei
+
+## [v8.0.2](https://github.com/growilabs/compare/v8.0.1...v8.0.2) - 2026-08-25
+
+### 💎 Features
+
+* No changes
+  
+* feat(g2g-transfer): Add a migration mode that replaces the destination and keeps its admins able to sign in (#11695) @yuki-takei
+  
+
+### 🐛 Bug Fixes
+
+* fix(file-uploader): Restore update button on FileUploadSetting for GROWI.cloud (#11771) @yuki-takei
+* fix(g2g-transfer): Extend G2G unique-conflict detection to externalaccounts/externalusergroups (#11749) @yuki-takei
+* fix: Guard array length before indexing in POST /pages/delete (#11768) @yuki-takei
+* fix: Unify not-found/forbidden responses to a uniform 404 for write-action page routes (#11762) @yuki-takei
+* fix(attachment): Enforce page-viewer permission for guest requests too (#11756) @yuki-takei
+* fix(NextLink): decide client-side routing from an explicit route list (#11747) @yuki-takei
+* fix(page-bulk-export): ERR_MODULE_NOT_FOUND on production builds (#11729) @yuki-takei
+* fix: SelectGroupModal uses list-group with checkbox rows (#11701) @yuki-takei
+* fix: Reduce SSR payload on admin/ai, admin/vault, admin/app by dropping preloadAllLang (#11697) @yuki-takei
+* fix: Report a conflict when deleting a page with a stale revisionId (#11684) @yuki-takei
+* fix: Report a conflict when renaming a page with a stale revisionId (#11680) @yuki-takei
+* fix: Links to pages with non-ASCII paths reload the whole document (#11687) @yuki-takei
+* fix: Page created at a path with a leftover redirect was not reachable at that path (#11683) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Prisma page-tag-relation model (#11691) @mizozobu
+* support: Publish vault-manager and pdf-converter images from master via changesets (#11679) @yuki-takei
+
+## [v8.0.1](https://github.com/growilabs/compare/v8.0.0...v8.0.1) - 2026-08-10
+
+### 💎 Features
+
+* feat: Audit Log fuzzy search by username (#11621) @Appleple47
+* feat: Syntax highlighting view in admin custom (#11453) @mariko-h
+
+### 🚀 Improvement
+
+* imprv(mastra): Focus the chat prompt input when the chat sidebar opens (#11527) @miya
+
+### 🐛 Bug Fixes
+
+* fix(comment): Make /comments.update respond so editing leaves edit mode (#11641) @yuki-takei
+* fix(drawio): Fix math, shapes, menu contrast and DRAWIO_URI on self-hosted instances (#11633) @yuki-takei
+* fix(g2g-transfer): Fix expiring keys, overwritten destination records and silent partial imports (#11658) @yuki-takei
+* fix(g2g-transfer): Abort G2G transfer before import when unique-constraint conflicts exist (#11643) @yuki-takei
+* fix(g2g-transfer): Prevent auth bypass and path traversal in the transfer receiver (#11631) @yuki-takei
+* fix(vault): Reject requests for objects outside the requester's view (#11604) @yuki-takei
+* fix(vault): Recover a bootstrap whose runner is gone (#11599) @yuki-takei
+* fix(vault): Shrink the clone transfer and fix the sparse-checkout recipe (#11605) @yuki-takei
+* fix(vault-manager): Prevent clone checkouts from failing due to long page names (#11603) @yuki-takei
+* fix: Replace dead Slack invite link with a single redirect page (#11626) @yuki-takei
+* fix: Restore native "Choose File" button styling outside .tw-root (#11613) @yuki-takei
+* fix: Bookmark folder authorization and bookmark display restriction (#11478) @arvid-e
+
+### 🧰 Maintenance
+
+* ci(deps-dev): bump vite from 6.4.2 to 6.4.3 (#11533) @[dependabot[bot]](https://github.com/apps/dependabot)
+* ci(deps): bump mermaid from 11.15.0 to 11.16.1 (#11662) @[dependabot[bot]](https://github.com/apps/dependabot)
+* ci(deps): bump js-yaml from 4.2.0 to 4.3.1 (#11663) @[dependabot[bot]](https://github.com/apps/dependabot)
+* chore(app): remove orphaned openai:serviceType / openai:apiKey config keys (#11652) @yuki-takei
+* support(contributors): Add Allan Wirth as a contributor (#11647) @yuki-takei
 
 ## [v8.0.0](https://github.com/growilabs/compare/v7.5.7...v8.0.0) - 2026-07-27
 

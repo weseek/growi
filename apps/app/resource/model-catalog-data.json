@@ -1,6 +1,6 @@
 {
   "_source": "https://models.dev/api.json (MIT)",
-  "_generatedAt": "2026-07-27T10:41:42.068Z",
+  "_generatedAt": "2026-10-07T15:40:51.745Z",
   "models": {
     "openai": [
       {
@@ -128,6 +128,30 @@
         "name": "GPT-5.6 Terra"
       },
       {
+        "id": "gpt-6-astra",
+        "name": "GPT-6 Astra"
+      },
+      {
+        "id": "gpt-6-luna",
+        "name": "GPT-6 Luna"
+      },
+      {
+        "id": "gpt-6-sol",
+        "name": "GPT-6 Sol"
+      },
+      {
+        "id": "gpt-6.1-sol",
+        "name": "GPT-6.1 Sol"
+      },
+      {
+        "id": "gpt-daybreak-blue-latest",
+        "name": "Daybreak Blue"
+      },
+      {
+        "id": "gpt-daybreak-red-latest",
+        "name": "Daybreak Red"
+      },
+      {
         "id": "gpt-realtime-2.1",
         "name": "GPT-Realtime-2.1"
       },
@@ -162,20 +186,16 @@
         "name": "Claude Fable 5"
       },
       {
+        "id": "claude-fable-5-1",
+        "name": "Claude Fable 5.1"
+      },
+      {
         "id": "claude-haiku-4-5",
         "name": "Claude Haiku 4.5 (latest)"
       },
       {
         "id": "claude-haiku-4-5-20251001",
         "name": "Claude Haiku 4.5"
-      },
-      {
-        "id": "claude-opus-4-1",
-        "name": "Claude Opus 4.1 (latest)"
-      },
-      {
-        "id": "claude-opus-4-1-20250805",
-        "name": "Claude Opus 4.1"
       },
       {
         "id": "claude-opus-4-5",
@@ -202,6 +222,10 @@
         "name": "Claude Opus 5"
       },
       {
+        "id": "claude-opus-5-5",
+        "name": "Claude Opus 5.5"
+      },
+      {
         "id": "claude-sonnet-4-5",
         "name": "Claude Sonnet 4.5 (latest)"
       },
@@ -216,6 +240,10 @@
       {
         "id": "claude-sonnet-5",
         "name": "Claude Sonnet 5"
+      },
+      {
+        "id": "claude-sonnet-5-5",
+        "name": "Claude Sonnet 5.5"
       }
     ],
     "google": [
@@ -226,14 +254,6 @@
       {
         "id": "deep-research-preview-04-2026",
         "name": "Deep Research Preview (Apr-21-2026)"
-      },
-      {
-        "id": "gemini-2.0-flash",
-        "name": "Gemini 2.0 Flash"
-      },
-      {
-        "id": "gemini-2.0-flash-lite",
-        "name": "Gemini 2.0 Flash-Lite"
       },
       {
         "id": "gemini-2.5-computer-use-preview-10-2025",
@@ -254,10 +274,6 @@
       {
         "id": "gemini-3-flash-preview",
         "name": "Gemini 3 Flash Preview"
-      },
-      {
-        "id": "gemini-3-pro-preview",
-        "name": "Gemini 3 Pro Preview"
       },
       {
         "id": "gemini-3.1-flash-lite",
@@ -296,16 +312,20 @@
         "name": "Gemini 3.6 Flash"
       },
       {
+        "id": "gemini-3.7-flash",
+        "name": "Gemini 3.7 Flash"
+      },
+      {
+        "id": "gemini-3.8-flash",
+        "name": "Gemini 3.8 Flash"
+      },
+      {
         "id": "gemini-flash-latest",
         "name": "Gemini Flash Latest"
       },
       {
         "id": "gemini-flash-lite-latest",
         "name": "Gemini Flash-Lite Latest"
-      },
-      {
-        "id": "gemini-robotics-er-1.6-preview",
-        "name": "Gemini Robotics-ER 1.6 Preview"
       },
       {
         "id": "gemma-4-26b-a4b-it",

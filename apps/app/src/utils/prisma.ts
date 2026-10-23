@@ -5,9 +5,14 @@ import {
   Prisma,
 } from '~/generated/prisma/client';
 import { extension as ActivityExtension } from '~/server/models/activity';
+import { extension as AttachmentExtension } from '~/server/models/attachment';
 import { extension as BookmarkExtension } from '~/server/models/bookmark';
 import { extension as BookmarkFolderExtension } from '~/server/models/bookmark-folder';
 import { extension as ExternalAccountExtension } from '~/server/models/external-account';
+import { extension as PageRedirectExtension } from '~/server/models/page-redirect';
+import { extension as PageTagRelationExtension } from '~/server/models/page-tag-relation';
+import { extension as RevisionExtension } from '~/server/models/revision';
+import { extension as ShareLinkExtension } from '~/server/models/share-link';
 import { extension as TagExtension } from '~/server/models/tag';
 import { extension as UserExtension } from '~/server/models/user/index.prisma';
 
@@ -100,7 +105,7 @@ export async function paginateLogic<T>(
 
   const page = Math.ceil((offset + 1) / limit);
   const pagingCounter = (page - 1) * limit + 1;
-  const totalPages = Math.ceil(totalDocs / limit);
+  const totalPages = Math.max(1, Math.ceil(totalDocs / limit));
 
   // mongoose-paginate-v2 compatible hasPrevPage/prevPage:
   // - page === 1 && offset !== 0: hasPrevPage=true, prevPage=1 (edge case)
@@ -211,13 +216,22 @@ export const createPrisma = (datasourceUrl?: string) =>
       },
     })
     .$extends(ActivityExtension)
+    .$extends(AttachmentExtension)
     .$extends(BookmarkExtension)
     .$extends(BookmarkFolderExtension)
     .$extends(CommentExtension)
     .$extends(ExternalAccountExtension)
     .$extends(MastraRefreshedModelCatalogExtension)
+    .$extends(PageRedirectExtension)
+    .$extends(RevisionExtension)
+    .$extends(ShareLinkExtension)
     .$extends(UserExtension)
-    .$extends(TagExtension);
+    // TagExtension must precede PageTagRelationExtension: the latter calls
+    // client.tags.getIdToNameMap/findOrCreateMany (custom Tag methods) from
+    // within its own factory, which only exist on `client` once TagExtension
+    // has already been applied earlier in the chain.
+    .$extends(TagExtension)
+    .$extends(PageTagRelationExtension);
 
 export const prisma = createPrisma();
 
