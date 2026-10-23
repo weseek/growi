@@ -577,7 +577,7 @@ export const CONFIG_DEFINITIONS = {
   }),
   'app:auditLogEsSyncAnonymousThresholdForgotPassword': defineConfig<number>({
     envVarName: 'ANONYMOUS_ES_SYNC_THRESHOLD_FORGOT_PASSWORD',
-    defaultValue: 10,
+    defaultValue: 50,
   }),
   'app:auditLogEsSyncAnonymousThresholdInstaller': defineConfig<number>({
     envVarName: 'ANONYMOUS_ES_SYNC_THRESHOLD_INSTALLER',
