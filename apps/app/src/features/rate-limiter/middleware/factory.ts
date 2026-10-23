@@ -22,10 +22,10 @@ const normalizeEndpointPath = (path: string): string => {
     // Keep malformed paths distinct; routing may reject them later.
   }
 
-  const lowerCasedPath = decodedPath.toLowerCase();
-  return lowerCasedPath.length > 1
-    ? lowerCasedPath.replace(/\/$/, '')
-    : lowerCasedPath;
+  const normalizedPath = decodedPath.toLowerCase().replace(/\/{2,}/g, '/');
+  return normalizedPath.length > 1
+    ? normalizedPath.replace(/\/+$/, '')
+    : normalizedPath;
 };
 
 // config sample

@@ -108,6 +108,10 @@ describe('middlewareFactory', () => {
     ['/_api/v3/forgot-password', 'POST', 5],
     ['/_api/v3/forgot-password', 'PUT', 5],
     ['/_api/v3/user-activation/token', 'GET', 5],
+    ['/_api/v3//login', 'POST', 5],
+    ['/_API/v3//LOGIN//', 'POST', 5],
+    ['/_api/v3/invited//', 'POST', 20],
+    ['/_api/v3//forgot-password//', 'PUT', 5],
   ])('applies the configured auth limit to %s %s', async (path, method, maxRequests) => {
     const configs = await configsUsedFor(path, method);
 
@@ -134,4 +138,26 @@ describe('middlewareFactory', () => {
     expect(caseAndSlashVariant[0]?.key).toBe(canonical[0]?.key);
     expect(encodedVariant[0]?.key).toBe(canonical[0]?.key);
   });
+
+  it.each([
+    ['/_api/v3/login', '/_api/v3//login', 'POST'],
+    ['/_api/v3/login', '/_API/v3//LOGIN//', 'POST'],
+    ['/_api/v3/invited', '/_api/v3/invited//', 'POST'],
+    [
+      '/_api/v3/forgot-password',
+      '/_api/v3//forgot-password//',
+      'PUT',
+    ],
+  ])(
+    'uses the same per-IP bucket and limit for %s and %s',
+    async (canonicalPath, variantPath, method) => {
+      const canonical = await consumeCallsFor(canonicalPath, method);
+      const variant = await consumeCallsFor(variantPath, method);
+
+      expect(variant[0]?.key).toBe(canonical[0]?.key);
+      expect(variant[0]?.config?.maxRequests).toBe(
+        canonical[0]?.config?.maxRequests,
+      );
+    },
+  );
 });
