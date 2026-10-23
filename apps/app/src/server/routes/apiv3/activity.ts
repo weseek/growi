@@ -485,9 +485,10 @@ export const setup = (crowi: Crowi): Router => {
    *       - name: field
    *         in: query
    *         required: false
+   *         description: Field(s) to suggest. Repeatable. When omitted, every field is searched.
    *         schema:
    *           type: string
-   *           enum: [username]
+   *           enum: [username, endpoint]
    *       - name: q
    *         in: query
    *         required: false
