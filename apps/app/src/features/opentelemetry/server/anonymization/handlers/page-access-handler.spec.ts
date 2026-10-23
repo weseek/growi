@@ -6,19 +6,20 @@ import { pageAccessModule } from './page-access-handler';
 describe('pageAccessModule', () => {
   describe('canHandle', () => {
     it.each`
-      description              | url                            | expected
-      ${'root path'}           | ${'/'}                         | ${false}
-      ${'API endpoint'}        | ${'/_api/v3/search'}           | ${false}
-      ${'static resource'}     | ${'/static/css/style.css'}     | ${false}
-      ${'favicon'}             | ${'/favicon.ico'}              | ${false}
-      ${'assets'}              | ${'/assets/image.png'}         | ${false}
-      ${'Next.js resource'}    | ${'/_next/chunk.js'}           | ${false}
-      ${'file with extension'} | ${'/file.pdf'}                 | ${false}
-      ${'Users top page'}      | ${'/user'}                     | ${false}
-      ${'Users homepage'}      | ${'/user/john'}                | ${true}
-      ${'Users page'}          | ${'/user/john/projects'}       | ${true}
-      ${'page path'}           | ${'/path/to/page'}             | ${true}
-      ${'ObjectId path'}       | ${'/58a4569921a8424d00a1aa0e'} | ${false}
+      description                              | url                            | expected
+      ${'root path'}                           | ${'/'}                         | ${false}
+      ${'API endpoint'}                        | ${'/_api/v3/search'}           | ${false}
+      ${'static resource'}                     | ${'/static/css/style.css'}     | ${false}
+      ${'favicon'}                             | ${'/favicon.ico'}              | ${false}
+      ${'assets'}                              | ${'/assets/image.png'}         | ${false}
+      ${'Next.js resource'}                    | ${'/_next/chunk.js'}           | ${false}
+      ${'file with extension'}                 | ${'/file.pdf'}                 | ${false}
+      ${'Users top page'}                      | ${'/user'}                     | ${false}
+      ${'Users homepage'}                      | ${'/user/john'}                | ${true}
+      ${'Users page'}                          | ${'/user/john/projects'}       | ${true}
+      ${'page path with non-ASCII characters'} | ${'/Sandbox/日本語ページ'}     | ${true}
+      ${'page path'}                           | ${'/path/to/page'}             | ${true}
+      ${'ObjectId path'}                       | ${'/58a4569921a8424d00a1aa0e'} | ${false}
     `('should return $expected for $description', ({ url, expected }) => {
       const result = pageAccessModule.canHandle(url);
       expect(result).toBe(expected);
@@ -27,6 +28,19 @@ describe('pageAccessModule', () => {
 
   describe('handle', () => {
     describe('URL path anonymization', () => {
+      it('should anonymize a page path with non-ASCII characters', () => {
+        const mockRequest = {} as IncomingMessage;
+        const url = '/Sandbox/日本語ページ';
+
+        expect(pageAccessModule.canHandle(url)).toBe(true);
+
+        const result = pageAccessModule.handle(mockRequest, url);
+        const anonymizedTarget = result?.['http.target'];
+
+        expect(anonymizedTarget).toMatch(/^\/\[HASHED:[a-f0-9]{16}\]$/);
+        expect(anonymizedTarget).not.toContain('日本語');
+      });
+
       it.each`
         description                  | url                              | expectedPath
         ${'user subpage path'}       | ${'/user/john/projects'}         | ${'/user/[USERNAME_HASHED:96d9632f363564cc]/[HASHED:2577c0f557b2e4b5]'}
