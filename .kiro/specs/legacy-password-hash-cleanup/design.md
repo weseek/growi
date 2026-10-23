@@ -296,6 +296,8 @@ export function unsetLegacyPasswordOfMigratedUsers(
 **Implementation Notes**
 - DELETE は成功したときだけ `activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_LEGACY_PASSWORD_DELETE })` を呼ぶ。`unsetCount` が 0 でも呼ぶ（実行したという事実を残す）。snapshot は既定のまま。実際に記録されるかどうかは監査ログの設定で決まる（`AUDIT_LOG_ENABLED=true` かつ `LARGE`、または `AUDIT_LOG_ADDITIONAL_ACTIONS` で個別に追加）（4.3）。
 - DELETE は成功したとき、監査ログの設定にかかわらず `logger.info` で実行者（`req.user._id` と `username`）と `unsetCount` を 1 行出す（4.5）。
+- emit は `res.apiv3()` より前に行い、その間に `await` を挟まない（`apps/app/.claude/rules/activity-recording.md` Rule 1）。後にすると、activity が実行者なし（`user: null`）で確定してしまう。
+- 失敗時は `res.apiv3Err(new ErrorV3(...), 500)` のように、ステータス 500 を明示して渡す。`apiv3Err` は、ステータスを省くと 400 を返す（`routes/apiv3/response.js`）。前例の `delete-all-access-tokens.ts` や `security-settings/index.js` の DELETE はステータスを省いているので、そこに倣わない。GET も同じ。
 - レスポンスは件数だけを返し、ユーザーの文書は返さない（4.4）。
 - OpenAPI の JSDoc は、既存の security-setting エンドポイントの書き方に合わせる。
 
@@ -323,7 +325,7 @@ export const useSWRxPasswordHashStatus: () => SWRResponse<PasswordHashFormatCoun
 - ボタンは `btn-danger`。取得中、取得エラー、`both === 0` のときは `disabled` にする（1.5, 2.5）。取得エラーのときは、件数表の代わりにエラーメッセージを出す。
 - 確認には `ConfirmModal` を使う（3.1–3.4）。
   - `warningMessage`: 対象件数と、取り消せないこと
-  - `supplymentaryMessage`: ダウングレード時の影響（ACTIVE ユーザーはパスワードリセットで復旧でき、それ以外は個別に対応が必要）
+  - `supplymentaryMessage`: ダウングレード時の影響（ACTIVE ユーザーはパスワードリセットで復旧でき、それ以外は個別に対応が必要）。加えて、ダウングレードから戻した直後で再アップグレード準備スクリプトを実行していない場合は、先に実行すること（実行前に削除すると、現在のパスワードでログインできないユーザーが出る）
   - `confirmButtonTitle`: 削除
   - `onCancel`: モーダルを閉じるだけ
   - `ConfirmModal` には手を加えない。実行ボタンは既存どおり `btn-outline-primary` のままで、処理中も無効化しない。二重に実行されても、サーバー側の削除が冪等なので実害はない（2 回目は `unsetCount: 0`）。
