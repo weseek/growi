@@ -1,3 +1,4 @@
+import { extension as AiUsageLogExtension } from '~/features/ai-usage/server/models/ai-usage-log';
 import { extension as CommentExtension } from '~/features/comment/server';
 import { extension as MastraRefreshedModelCatalogExtension } from '~/features/mastra/server/models/refreshed-model-catalog';
 import {
@@ -216,6 +217,7 @@ export const createPrisma = (datasourceUrl?: string) =>
       },
     })
     .$extends(ActivityExtension)
+    .$extends(AiUsageLogExtension)
     .$extends(AttachmentExtension)
     .$extends(BookmarkExtension)
     .$extends(BookmarkFolderExtension)
