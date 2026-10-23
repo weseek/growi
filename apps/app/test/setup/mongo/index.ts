@@ -32,6 +32,8 @@ const waitForModelInit = async (): Promise<void> => {
   });
 };
 
+// Spawning MongoMemoryReplSet and waiting for index builds can exceed
+// vitest's default 10s hookTimeout under a full parallel run.
 beforeAll(async () => {
   // Skip if already connected (setupFiles run per test file, but connection persists per worker)
   if (mongoose.connection.readyState === 1) {
@@ -75,7 +77,7 @@ beforeAll(async () => {
 
   await mongoose.connect(uri, mongoOptions);
   await waitForModelInit();
-});
+}, 60_000);
 
 afterAll(async () => {
   await mongoose.disconnect();
