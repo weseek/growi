@@ -1,6 +1,6 @@
 import { validationResult } from 'express-validator';
 
-import { expiredAtValidator } from './share-link-expired-at-validator';
+import { expiredAtValidator } from './expired-at-validator';
 
 const validate = async (expiredAt?: string | null) => {
   const req = { body: { expiredAt } };
