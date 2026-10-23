@@ -78,6 +78,7 @@
 その他:
 - `comments` と `commentreactions` の読み書きは Prisma だけで行う。本スペックは、Mongoose のモデル・スキーマを新しく作らず、既存の Mongoose スキーマ（`comments`、`activities`）にも項目を足さない。Mongoose が担っていた操作のうち必要なもの（インデックスの作成、インポート時の ObjectId への型変換と `emoji` の正規化）は、migration script と import の `overwrite-params` で補う
 - サーバーの認可は、既存の部品（`accessTokenParser`、`certifySharedPage`、`loginRequiredFactory`、`excludeReadOnlyUserIfCommentNotAllowed`、`generateAddActivityMiddleware`、`apiV3FormValidator`、`findPageAndMetaDataByViewer`）だけで組む。並行実装しない
+- import の `overwrite-params`（`server/service/import/overwrite-params/comment-reactions.ts`）は、`emoji` の正規化のために 1 の `features/comment-reaction/utils`（`normalizeReactionKey`）に依存してよい。`comment-reaction` のほかのコードは import しない
 - 削除の経路（`removeWithReplies`、`deleteReply`、`deleteCompletelyOperation`）は、Prisma の `commentreactions` だけを直接使う。`comment-reaction` のコードは import しない
 - クライアントは、`states/context.ts` のフック、`useIsCommentActionBlockedForReadOnlyUser`、`useIsTrashPage`、`apiv3-client`、`toastr`、reactstrap、`@growi/editor/dist/client/components/EmojiPicker` を使ってよい
 

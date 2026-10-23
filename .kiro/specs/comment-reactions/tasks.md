@@ -294,7 +294,7 @@
 
 ## Implementation Notes
 
-- 2.4 の実装:サービスは、ローダーと同じく依存を先頭に取る関数 `addReaction({ prisma }, target, userId, emoji)` / `removeReaction(...)` として公開している(design.md の Service Interface も同じ形。route タスクはこの形で呼ぶ)。種類数の上限の判定は同時の別種追加で 1〜2 件超過しうる(許容)。結合テストは `MONGO_URI` を設定して実 DB(一意インデックスのあるクローン)で実行すること。
+- 2.4 の実装:サービスは、ローダーと同じく依存を先頭に取る関数 `addReaction({ prisma }, target, userId, emoji)` / `removeReaction(...)` として公開している(design.md の Service Interface も同じ形。route タスクはこの形で呼ぶ)。種類数の上限の判定は同時の別種追加で 1〜2 件超過しうる(許容)。結合テストは、`MONGO_URI` の有無にかかわらず、`beforeAll` でインデックスの migration を実行して一意インデックスを作るので、インメモリ DB でも外部 DB でも実行できる。
 - 3.1:ICommentListItem.reactions を、loadReactionChips の戻り値に合わせて readonly ReactionChip[] | null とした。
 - 3.3:Prisma のデリゲートのメソッド(例: `prisma.commentreactions.findMany`)を `vi.spyOn` して `vi.restoreAllMocks()` すると、そのメソッドが `undefined` になり後続のテストが落ちる。リアクションの取り込みの失敗は、生のコレクションに `emoji` の無い行を入れて再現した。「取り込んで、失敗したらログを残して `null`」の処理(`loadReactionChipsOrNull`)は、3.4 で `features/comment/server/service/load-reaction-chips-or-null.ts` に移し、一覧(`list.ts`)と1件(`getCommentListItem`)の両方から使っている。
 - 3.4:`getCommentListItem({ prisma }, { commentId, pageId, viewerId })` は `ICommentListItem | null`(`null` は「無い」)を返す。3.5 の route と PUT の route はこの null を 404 に変換する。
