@@ -80,6 +80,12 @@ export const CONFIG_KEYS = [
   'app:auditLogActionGroupSize',
   'app:auditLogAdditionalActions',
   'app:auditLogExcludeActions',
+  'app:auditLogEsSyncAnonymousThresholdLogin',
+  'app:auditLogEsSyncAnonymousThresholdRegister',
+  'app:auditLogEsSyncAnonymousThresholdForgotPassword',
+  'app:auditLogEsSyncAnonymousThresholdInstaller',
+  'app:auditLogEsSyncAnonymousThresholdExternalAuth',
+  'app:auditLogEsSyncAnonymousThresholdOther',
   'app:serviceType',
   'app:deploymentType',
   'app:ssrMaxRevisionBodyLength',
@@ -553,6 +559,41 @@ export const CONFIG_DEFINITIONS = {
   'app:auditLogExcludeActions': defineConfig<string | undefined>({
     envVarName: 'AUDIT_LOG_EXCLUDE_ACTIONS',
     defaultValue: undefined,
+  }),
+  // Per-endpoint cap (admitted anonymous-log events per 1-minute window, all IPs
+  // combined) on syncing anonymous audit logs to Elasticsearch — see
+  // features/auditlog-es-sync/server/service/decide-es-sync-for-event.ts.
+  //
+  // Launch placeholders pending GROWI.cloud's own traffic measurement: a small
+  // multiple of each endpoint's expected legitimate peak. Not derived from the
+  // per-IP rate limiter, which is a separate layer guarding the app, not Elasticsearch.
+  'app:auditLogEsSyncAnonymousThresholdLogin': defineConfig<number>({
+    envVarName: 'ANONYMOUS_ES_SYNC_THRESHOLD_LOGIN',
+    defaultValue: 50,
+  }),
+  'app:auditLogEsSyncAnonymousThresholdRegister': defineConfig<number>({
+    envVarName: 'ANONYMOUS_ES_SYNC_THRESHOLD_REGISTER',
+    defaultValue: 50,
+  }),
+  'app:auditLogEsSyncAnonymousThresholdForgotPassword': defineConfig<number>({
+    envVarName: 'ANONYMOUS_ES_SYNC_THRESHOLD_FORGOT_PASSWORD',
+    defaultValue: 50,
+  }),
+  'app:auditLogEsSyncAnonymousThresholdInstaller': defineConfig<number>({
+    envVarName: 'ANONYMOUS_ES_SYNC_THRESHOLD_INSTALLER',
+    defaultValue: 3,
+  }),
+  // Failed sign-ins through external providers (OAuth/OIDC/SAML), shared across them.
+  // Like login: rare in normal operation, bursty when an identity provider is down.
+  'app:auditLogEsSyncAnonymousThresholdExternalAuth': defineConfig<number>({
+    envVarName: 'ANONYMOUS_ES_SYNC_THRESHOLD_EXTERNAL_AUTH',
+    defaultValue: 50,
+  }),
+  // Shared by every endpoint not listed in anonymous-sync-thresholds.ts, so an
+  // attacker spreading a flood across arbitrary paths cannot raise the total.
+  'app:auditLogEsSyncAnonymousThresholdOther': defineConfig<number>({
+    envVarName: 'ANONYMOUS_ES_SYNC_THRESHOLD_OTHER',
+    defaultValue: 100,
   }),
   'app:serviceType': defineConfig<GrowiServiceType>({
     envVarName: 'SERVICE_TYPE',
