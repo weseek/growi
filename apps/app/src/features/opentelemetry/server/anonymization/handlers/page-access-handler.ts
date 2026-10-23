@@ -122,7 +122,7 @@ export const pageAccessModule: AnonymizationModule = {
 
       // Use GROWI's isCreatablePage logic to determine if this is a valid page path
       // This excludes API endpoints, system paths, etc.
-      return isCreatablePage(path);
+      return isCreatablePage(decodeURIComponent(path));
     } catch {
       // If URL parsing fails, don't handle it
       return false;
