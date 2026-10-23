@@ -27,9 +27,7 @@ type AuthorizedRequest<
   TQuery = Record<string, never>,
   TBody = unknown,
 > = Request<TParams, unknown, TBody, TQuery> & {
-  // loginRequired runs before every handler. `isAdmin` is not a real user
-  // field (see delete-share-link.integ.ts); the DELETE /:id bypass reads it as-is.
-  user: IUserHasId & { isAdmin?: boolean };
+  user: IUserHasId;
 };
 
 interface CreateShareLinkBody {
@@ -491,7 +489,7 @@ export const setup = (crowi: Crowi): Router => {
         }
 
         // check permission
-        if (!user.isAdmin) {
+        if (!user.admin) {
           const page = await Page.findByIdAndViewer(
             shareLinkToDelete.relatedPageId,
             user,
