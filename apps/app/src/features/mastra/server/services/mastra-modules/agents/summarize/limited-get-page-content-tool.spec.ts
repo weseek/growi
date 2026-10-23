@@ -267,6 +267,61 @@ describe('limitedGetPageContentTool', () => {
       });
       expect(budget.used).toBe(outlineChars + 4);
     });
+
+    it('drops trailing outline entries that do not fit, never exceeding the limit', async () => {
+      const requestContext = buildRequestContext();
+      const outline = [1, 2, 3].map((line) => ({
+        line,
+        level: 2,
+        heading: `Section ${line}`,
+      }));
+      const twoEntriesChars = JSON.stringify(outline.slice(0, 2)).length;
+      const budget = buildBudget(twoEntriesChars + 5);
+      requestContext.set('pageReadBudget', budget);
+      delegateSpy.mockResolvedValue({
+        result: 'ok' as const,
+        page: { ...okOutlineOnly().page, outline },
+      });
+
+      const result = await invokeExecute({ pageId: 'p1' }, requestContext);
+
+      expect(result).toMatchObject({
+        page: { outline: outline.slice(0, 2) },
+      });
+      expect(budget.used).toBe(twoEntriesChars);
+    });
+
+    it('omits the outline when not even an empty one fits', async () => {
+      const requestContext = buildRequestContext();
+      const budget = buildBudget(100, 99);
+      requestContext.set('pageReadBudget', budget);
+      delegateSpy.mockResolvedValue(okOutlineOnly());
+
+      const result = await invokeExecute({ pageId: 'p1' }, requestContext);
+
+      expect(result).toMatchObject({
+        result: 'ok',
+        page: { outline: undefined },
+      });
+      expect(budget.used).toBe(99);
+    });
+
+    it('does not split a surrogate pair when cutting the body', async () => {
+      const requestContext = buildRequestContext();
+      const budget = buildBudget(3);
+      requestContext.set('pageReadBudget', budget);
+      delegateSpy.mockResolvedValue(okWithContent('ab😀cd'));
+
+      const result = await invokeExecute(
+        { pageId: 'p1', offset: 1 },
+        requestContext,
+      );
+
+      expect(result).toMatchObject({
+        page: { content: 'ab', hasMore: true },
+      });
+      expect(budget.used).toBe(2);
+    });
   });
 
   describe('never modifies getPageContentTool', () => {

@@ -29,9 +29,11 @@ The tool you call is named "getPageContentTool" (a budget-limited wrapper — ca
    Do not stop early just because the outline told you the page's structure — read the actual body content.
 5. \`totalLines\` is a REFERENCE-ONLY estimate for judging how much of the page remains and whether your summary will be based on the full page or only part of it. Never use \`totalLines\` itself as a stop condition — only the three conditions in point 4 above decide when to stop reading.
 
-## Step 2 — When the read budget is exhausted
+## Step 2 — When you could not read to the end
 
 If \`getPageContentTool\` returns \`limit_exceeded\`, stop calling it immediately and produce a summary from the content you have already read. Explicitly state in your answer that the summary is based on a PARTIAL reading of the page (you did not reach the end).
+
+The same applies whenever you write the summary without having received \`hasMore: false\` — for example, when the last \`content\` you received was cut short with \`hasMore: true\` and the tool can no longer be called. State that the summary is PARTIAL in that case too.
 
 ## Step 3 — Output format
 

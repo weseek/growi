@@ -5,7 +5,11 @@ import { visit } from 'unist-util-visit';
 import { summarizeDrawioDiagram } from './drawio-diagram';
 
 const EMBEDDED_IMAGE = '[embedded image]';
+const EMBEDDED_DATA = '[embedded data]';
 const HTML_DATA_IMAGE_URI = /data:image\/[^\s"'<>]+/gi;
+const DATA_IMAGE_URI = /^data:image\//i;
+// Shared by every draw.io diagram on the page (see ai-summarize research.md 7.11).
+const MAX_DRAWIO_INFLATED_BYTES = 10 * 1024 * 1024;
 
 type Replacement = {
   readonly start: number;
@@ -31,17 +35,47 @@ const replacementsInHtml = (
     text: EMBEDDED_IMAGE,
   }));
 
+// Only the URL is replaced, so a link's text and a definition's label stay.
+// The URL follows the text or label, so it is the last match in the node's
+// source range, even when the text repeats it.
+const replacementOfUrl = (
+  body: string,
+  [start, end]: [number, number],
+  url: string,
+): Replacement[] => {
+  const index = body.lastIndexOf(url, end - url.length);
+  return index < start
+    ? []
+    : [
+        {
+          start: index,
+          end: index + url.length,
+          text: DATA_IMAGE_URI.test(url) ? EMBEDDED_IMAGE : EMBEDDED_DATA,
+        },
+      ];
+};
+
 const collectReplacements = (body: string, tree: Root): Replacement[] => {
   const replacements: Replacement[] = [];
+  let drawioRoom = MAX_DRAWIO_INFLATED_BYTES;
   visit(tree, (node) => {
     const offsets = offsetsOf(node);
     if (offsets == null) return;
     const [start, end] = offsets;
     if (node.type === 'code' && node.lang === 'drawio') {
-      const text = summarizeDrawioDiagram(node.value);
+      const { text, inflatedBytes } = summarizeDrawioDiagram(
+        node.value,
+        drawioRoom,
+      );
+      drawioRoom -= inflatedBytes;
       replacements.push({ start, end, text });
     } else if (node.type === 'image' && node.url.startsWith('data:')) {
       replacements.push({ start, end, text: EMBEDDED_IMAGE });
+    } else if (
+      (node.type === 'link' || node.type === 'definition') &&
+      node.url.startsWith('data:')
+    ) {
+      replacements.push(...replacementOfUrl(body, offsets, node.url));
     } else if (node.type === 'html' && node.value.includes('data:')) {
       replacements.push(...replacementsInHtml(body, offsets));
     }

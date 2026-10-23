@@ -57,6 +57,12 @@ describe('SUMMARIZE_INSTRUCTIONS', () => {
     );
   });
 
+  it('instructs to state that the summary is partial whenever reading ended before hasMore false, not only on limit_exceeded', () => {
+    expect(SUMMARIZE_INSTRUCTIONS).toMatch(
+      /without having received `?hasMore: false`?[\s\S]{0,250}PARTIAL/,
+    );
+  });
+
   it('instructs the output format: one lead sentence plus 3-5 bullet points', () => {
     expect(SUMMARIZE_INSTRUCTIONS).toMatch(/lead sentence|one[- ]sentence/i);
     expect(SUMMARIZE_INSTRUCTIONS).toMatch(/3[-–]5|three to five/i);

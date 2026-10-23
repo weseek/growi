@@ -16,7 +16,7 @@
 - 永続化された要約を、本文と同じ権限ゲート経由で、以後そのページを開く全閲覧者にデフォルト表示する。
 - 永続化された要約が保存後のページ更新によって古くなった可能性を、控えめに（背景色を変える等の目立つ演出なしに）示す。追加のLLM呼び出し・DBアクセスなしで判定できるようにする。
 - 永続化された要約を、閲覧者ごとに自分の画面上でのみ非表示にする手段を提供する（ページに紐づく永続データ自体は変更せず、他の閲覧者や同一ユーザーの別ブラウザ・別デバイスには影響しない。再表示機能は設けない）。
-- 長いページについて、既存の検索Q&A用途の読み取り方針を変えずに、要約時のみ全文カバレッジの読み取り方針を適用する。読み取り量の上限は、以下の3層構えで制御される：**(1) limitedGetPageContentTool がLLMに渡す文字数を 60,000文字でカット（ハード上限、コードで強制）、(2) 上限に達した後と最後のステップでは、`prepareStep` でツールを使えなくする（コードで強制）、(3) instructions が limit_exceeded 受領時に読み取りを打ち切り、部分的な要約である旨を明示する（LLM依存）**。`maxSteps=6` は全体のステップ数の上限である。
+- 長いページについて、既存の検索Q&A用途の読み取り方針を変えずに、要約時のみ全文カバレッジの読み取り方針を適用する。読み取り量の上限は、以下の3層構えで制御される：**(1) limitedGetPageContentTool がLLMに渡す文字数を 60,000文字でカット（ハード上限、コードで強制）、(2) 上限に達した後と最後のステップでは、`prepareStep` でツールを使えなくする（コードで強制）、(3) instructions が、`hasMore === false` を受け取らずに要約を書く場合（limit_exceeded の受領、本文が上限で切られた、ツールが使えなくなった）に部分的な要約である旨を明示させる（LLM依存）**。`maxSteps=6` は全体のステップ数の上限である。
 - 要約対象コンテンツの取得経路を既存の `getPageContentTool` に一本化し（読み取り量の上限を強制する専用ラッパー越しに呼び出す）、要約生成のたびに閲覧権限が再チェックされる構造を維持する。
 - 本文に埋め込まれた画像のデータと draw.io の図を、LLMに渡す前に短い文字に置き換える。要約だけでなく、同じツールを使う検索Q&A・パス提案にも効かせる。
 - 利用状況をOpenTelemetryの既存カスタムメトリクス基盤にCounterとして計測する。
@@ -288,11 +288,11 @@ flowchart TD
 
 - **ハード上限（ツール呼び出し側、コードで強制）**: `summarizeAgent` は `getPageContentTool` を直接使わず、専用の `limitedGetPageContentTool`（`suggestPathAgent` の `limitedSearchTool` と同じラッパーパターン）経由でのみ本文を取得する。`RequestContext` の `pageReadBudget: { used: number; limit: number }` を1リクエストにつき1個生成し、`limit` は **60,000文字**とする（1500行程度に相当する量）。数えるのはLLMに渡す文字数であり、行数ではない。1行がとても長いページ（埋め込み画像、1行のJSONなど）でも、行数で数えると量を抑えられないためである。
   - 1回目の呼び出し（`offset` 省略）で返す見出しの一覧も、LLMに渡す形（JSONにした文字数）で `used` に足す。足さないと、見出しが多いページで同じ一覧を何度も送れてしまう。
-  - 本文は、上限までの残りの文字数で切って返し、切った場合は `hasMore: true` とする。したがって `used` が `limit` を超えることはない。
+  - 見出しの一覧と本文は、上限までの残りの文字数で切って返し、本文を切った場合は `hasMore: true` とする。したがって `used` が `limit` を超えることはない。
   - `used >= limit` の状態で呼ばれた場合は本文を取得せず `limit_exceeded` を返す。これが要件2.1の「最大読み取り量の上限」を実際に保証する機構である。
 - **上限到達後のツール停止（呼び出し側、コードで強制）**: `/summary` ルートは `summarizeAgent.stream()` に `prepareStep` を渡す。`prepareStep` は各ステップの直前に呼ばれ、`pageReadBudget.used >= pageReadBudget.limit` のとき、または最後のステップ（`stepNumber >= maxSteps - 1`）のときに `{ toolChoice: 'none' }` を返す。そのステップではLLMはツールを呼べず、読んだ内容から要約を書く。LLMが instructions に従うかどうかに関係なく、上限の後に読み直しが続かない。`stopWhen` は使わない（条件を満たした時点で処理全体が終わり、要約が書かれないため）。ツールに渡す `pageReadBudget` と `prepareStep` が見る `pageReadBudget` は同じオブジェクトである。
 - **ステップ数（呼び出し側）**: `maxSteps` は **6** とする（`post-message.ts` の `maxSteps: 10` とは独立）。内訳は、見出しの一覧の取得1回＋本文の読み込み最大4回＋要約を書く1回である。最後のステップではツールを使えないため、本文を読めるのは最大4回で、要約は必ず書かれる。1行40文字程度のページなら3回（1回500行 × 3 ≒ 1500行）で上限の60,000文字に達し、5回目のステップで要約を書く。1行が短いページでは上限より先に4回を使い切り、それまでに読んだ範囲で要約を書く（部分的な要約になる）。両者は別の呼び出し箇所のパラメータであるため、この値が `growiAgent` の呼び出しに影響することはない（2.3）。
-- **打ち切り時の振る舞い（instructions側）**: `summarizeAgent` のinstructionsは、`limitedGetPageContentTool` から `limit_exceeded` を受け取った時点で読み取りを止め、「読み取れた範囲からの要約である」ことを明示して要約を生成するよう指示する。上限そのものはツールと `prepareStep` がコードで強制するため、instructionsは打ち切り後の振る舞いのみを規定すればよい。
+- **打ち切り時の振る舞い（instructions側）**: `summarizeAgent` のinstructionsは、`limitedGetPageContentTool` から `limit_exceeded` を受け取った時点で読み取りを止め、「読み取れた範囲からの要約である」ことを明示して要約を生成するよう指示する。`limit_exceeded` を受け取らずに終わる場合もある（最後の本文が残りの文字数で切られて `hasMore: true` のまま `prepareStep` がツールを止めた場合や、最後のステップに達した場合）ため、`hasMore === false` を受け取らずに要約を書くときは常に部分的な要約である旨を明示させる。上限そのものはツールと `prepareStep` がコードで強制するため、instructionsは打ち切り後の振る舞いのみを規定すればよい。
 
 ### 要約の永続化・共有表示・ローカル非表示
 
@@ -396,7 +396,7 @@ sequenceDiagram
     2. **2回目以降は `offset` を明示して**（1始まりの行番号）、ページ先頭から順に本文を段階的に読み込む。各呼び出しの結果の `hasMore` と、読み込んだ行数の累計を参考に、次の `offset` を決めて読み進める。`content` が `undefined` でない限り、その行数を累積カウンタに加算する。
     3. **打ち切り条件は次の3つのみ**: (i) `hasMore === false` が返った（＝全文を読み終えた）、(ii) `limit_exceeded` が返った（＝読み取り量のハード上限に到達した）、(iii) `not_found_or_forbidden` 等の失敗が返った（＝これ以上読めない）。それ以外の理由で読み取りを途中でやめてはならない。特に、アウトラインだけを見て「構成が分かったので本文は読まなくてよい」と判断してはならない（要件2.1の全文カバレッジに反する）。
     4. `totalLines` は**カバレッジ判定の参考値**として用いる（`getPageContentTool` の応答に常に含まれる）。「あと何行残っているか」の見積り、および要約が全文に基づくか一部に基づくかの自己判断の材料とする。打ち切り条件そのものは (3) の3条件で判定し、`totalLines` の値で代替しない。**`content` が `undefined` のときは行数を加算しない**（加算量0。初回のアウトラインのみ取得や失敗応答の場合）。
-  - **(b) 打ち切り時の明示**: `limitedGetPageContentTool` から `limit_exceeded` を受け取ったら読み取りを止め、要約が部分的な内容に基づくものである旨を明示する。
+  - **(b) 打ち切り時の明示**: `limitedGetPageContentTool` から `limit_exceeded` を受け取ったら読み取りを止め、要約が部分的な内容に基づくものである旨を明示する。`hasMore === false` を受け取らずに要約を書く場合（本文が上限で切られた後にツールが使えなくなった場合を含む）も同様に明示する。
   - **(c) 出力形式**: リード文1文＋主要ポイント3〜5個の箇条書きで出力する。
   - **(d) 応答言語**: リクエストで指定されたロケールの言語で応答する。指定がなければページ本文の言語で応答する。
 - `growi-agent.ts` のinstructionsとは完全に独立したファイルとし、共有しない。
@@ -420,7 +420,7 @@ export const summarizeAgent: Agent; // registered in mastra-modules/index.ts as 
 
 **Implementation Notes**
 - Integration: `mastra-modules/index.ts` の `Mastra` インスタンスに `summarizeAgent` として登録する（`suggestPathAgent` と同じ並び）。
-- Validation: `limit_exceeded` を受け取った場合に「部分的な内容に基づく」旨を明示する文言をinstructionsでテンプレート化し、出力形式の一貫性をテストで検証する。
+- Validation: `limit_exceeded` を受け取った場合、および `hasMore === false` を受け取らずに要約を書く場合に「部分的な内容に基づく」旨を明示する文言をinstructionsでテンプレート化し、出力形式の一貫性をテストで検証する。
 - Risks: なし。読み取り量の上限は `limitedGetPageContentTool` が、上限後のツール呼び出しの停止はルートの `prepareStep` が、どちらもコードで強制するため、LLMが指示に従わなくてもコスト超過は発生しない。
 
 #### LimitedGetPageContentTool
@@ -434,8 +434,8 @@ export const summarizeAgent: Agent; // registered in mastra-modules/index.ts as 
 - `RequestContext` の `pageReadBudget: { used: number; limit: number }` を読む。存在しない場合は本文を取得せず `context_error` を返す（`limitedSearchTool` と同じ規約）。
 - `used >= limit` の場合は `getPageContentTool` に委譲せず `limit_exceeded` を返す。
 - それ以外は `getPageContentTool` へ入力をそのまま委譲し、返された結果をバジェットに収めてから `used` に足して返す（`page-read-budget.ts` の `fitPageToBudget`）。
-  - 見出しの一覧（`outline`）があれば、JSONにした文字数を先に数える。
-  - 本文（`content`）は、見出しの一覧を数えた後の残りの文字数で切る。切った場合は `hasMore: true` にする。
+  - 見出しの一覧（`outline`）があれば、JSONにした文字数を先に数える。残りの文字数に収まらない場合は、収まるところまで末尾の見出しを落とす。
+  - 本文（`content`）は、見出しの一覧を数えた後の残りの文字数で切る。切った場合は `hasMore: true` にする。サロゲートペアの途中では切らない（不正なUnicodeをLLMに渡さないため）。
   - 失敗応答（`not_found_or_forbidden` 等）は数えない。
 - 切らなかった場合、委譲結果の `hasMore` / `totalLines` は加工せずそのまま通す（Agentが段階的読み取りの判断に使うため）。`limit_exceeded` を返す場合はこれらを含めない。
 - `growiAgent` はこのツールを一切参照しない。`getPageContentTool` 自体の入出力契約は変更しない。
@@ -456,7 +456,7 @@ export const limitedGetPageContentTool: Tool; // used only by summarizeAgent
 
 **Implementation Notes**
 - Integration: `suggestPathAgent` の `limited-search-tool.ts` と同じファイル構成・命名パターンに揃える。
-- Validation: バジェット未設定時の `context_error`、`used >= limit` 時の `limit_exceeded`（委譲なし）、通常時の委譲＋文字数の加算、見出しの一覧の加算、最後の1回で残りの分だけを返すことをユニットテストで検証する。
+- Validation: バジェット未設定時の `context_error`、`used >= limit` 時の `limit_exceeded`（委譲なし）、通常時の委譲＋文字数の加算、見出しの一覧の加算、最後の1回で残りの分だけを返すこと、残りに収まらない見出しを末尾から落とすこと、サロゲートペアの途中で切らないことをユニットテストで検証する。
 - Risks: なし（既存ツールをラップするのみ）。
 
 #### GetPageContentTool（既存・変更）
@@ -469,7 +469,8 @@ export const limitedGetPageContentTool: Tool; // used only by summarizeAgent
 **Responsibilities & Constraints**（理由は research.md 7.11）
 - 置き換え（要約・検索Q&A・パス提案のすべてに効く）:
   - URL が `data:` で始まる Markdown の画像、HTML の部品の中の `data:image/...` → `[embedded image]`
-  - `drawio` のコードブロック → `[draw.io diagram: <図に書かれた文字> / ...]`。文字は `mxCell` の `value` と、`UserObject` / `object` の `label`。圧縮された形は `embed.ts` と同じ手順で XML に戻し、`<mxfile>` は各 `<diagram>` を読む。戻せない図・文字のない図は `[draw.io diagram]`
+  - URL が `data:` で始まるリンクと参照定義（`[ref]: data:...`）→ URL の部分だけを `[embedded image]`（`data:image/` のとき）または `[embedded data]` にする。リンクの文字と参照のラベルは残す
+  - `drawio` のコードブロック → `[draw.io diagram: <図に書かれた文字> / ...]`。文字は `mxCell` の `value` と、`UserObject` / `object` の `label`。圧縮された形は `embed.ts` と同じ手順で XML に戻し、`<mxfile>` は各 `<diagram>` を読む。戻せない図・文字のない図は `[draw.io diagram]`。圧縮された図を展開してよい量は1ページの全図の合計で 10MiB とし、超えた図も `[draw.io diagram]` にする
   - mermaid は置き換えない
 - 置き換える場所は `fromMarkdown` の構文解析で探し、各部品の `position` の範囲を元の本文の文字列の上で置き換える。
 - 見出しの一覧と行の切り出しは、置き換えた後の本文から作る。
@@ -480,7 +481,7 @@ export const limitedGetPageContentTool: Tool; // used only by summarizeAgent
 
 **Implementation Notes**
 - Integration: 置き換え・見出しの一覧・行の切り出しは `tools/page-content/` の純粋関数にまとめ、`get-page-content-tool.ts` はそれを呼ぶだけにする。
-- Validation: `get-page-content-tool.integ.ts` で、画像と draw.io（圧縮した形と圧縮していない形の両方）を含むページを実際のDBから読んで検証する。
+- Validation: `get-page-content-tool.integ.ts` で、画像と draw.io（圧縮した形と圧縮していない形の両方）を含むページを実際のDBから読んで検証する。展開量の上限（1つの図の中の複数ページにまたがる場合、1ページの複数の図にまたがる場合）はユニットテストで検証する。
 - Risks: 同じリクエストの中でページが更新されても、2回目以降は最初に読んだ本文を返す（行番号の整合を保つため許容する）。
 
 ### mastra/routes
@@ -705,8 +706,8 @@ export const limitedGetPageContentTool: Tool; // used only by summarizeAgent
 - **周辺のモック**: `configManager` は `getConfig(key)` の switch で `app:aiEnabled` 等を返す（`aiReadyGuard` の分岐を実際に通すため）。認証ミドルウェア（`~/server/middlewares/login-required` はデフォルトエクスポートを含めてモックし、`req.user` を注入するパススルーにする。`access-token-parser` も同様）。`~/utils/logger` は無害化する。`Crowi` インスタンスは `vitest-mock-extended` の `mock<Crowi>()` を使い、型アサーションを避ける（`.claude/rules/testing.md`）。ルートは `express` + `supertest` でHTTP経由で駆動する。
 
 ### Unit Tests
-- `summarize-agent`: instructionsに全文カバレッジ・`limit_exceeded`受領時の打ち切り・出力形式の各方針の文言が含まれることを検証する。
-- `limited-get-page-content-tool`: `pageReadBudget` 未設定時の `context_error`、`used >= limit` 時に委譲せず `limit_exceeded` を返すこと、通常時は `getPageContentTool` に委譲し `used` が返された文字数分増加すること（1行がとても長い場合も文字数で数えること）を検証する。加えて、見出しの一覧が文字数で数えられ、見出しだけの呼び出しを繰り返しても上限で止まること、最後の1回では残りの文字数だけが返り `hasMore: true` になること、失敗応答では `used` が加算されないことを検証する。
+- `summarize-agent`: instructionsに全文カバレッジ・`limit_exceeded`受領時の打ち切り・`hasMore === false` を受け取らずに要約を書く場合の部分要約の明示・出力形式の各方針の文言が含まれることを検証する。
+- `limited-get-page-content-tool`: `pageReadBudget` 未設定時の `context_error`、`used >= limit` 時に委譲せず `limit_exceeded` を返すこと、通常時は `getPageContentTool` に委譲し `used` が返された文字数分増加すること（1行がとても長い場合も文字数で数えること）を検証する。加えて、見出しの一覧が文字数で数えられ、見出しだけの呼び出しを繰り返しても上限で止まること、最後の1回では残りの文字数だけが返り `hasMore: true` になること、残りに収まらない見出しは末尾から落とし `used` が `limit` を超えないこと、本文をサロゲートペアの途中で切らないこと、失敗応答では `used` が加算されないことを検証する。
 - `step-tool-choice`: 上限に達したとき、および最後のステップで `{ toolChoice: 'none' }` を返し、それ以外ではツールを使えるままにすることを検証する。
 - `summarize-stream-outcome`: 前のステップの文字が新しいステップの開始で忘れられること、error チャンクが記録されること、`finishReason` と本文の有無による正常終了の判定を検証する。
 - `page-content`（`drawio-diagram` / `prepared-page-body`）: GetPageContentTool の Validation に挙げた置き換えのケースと、行の切り出しを検証する。

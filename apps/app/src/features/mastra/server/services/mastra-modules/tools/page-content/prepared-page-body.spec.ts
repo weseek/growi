@@ -1,3 +1,5 @@
+import pako from 'pako';
+
 import { countLines, preparePageBody, sliceLines } from './prepared-page-body';
 
 const DATA_URI = `data:image/png;base64,${'A'.repeat(10_000)}`;
@@ -32,6 +34,30 @@ describe('preparePageBody', () => {
       expect(body).toBe('> quoted\n> <img src="[embedded image]">\n> end');
     });
 
+    it('replaces the data URI of a reference-style image definition, keeping its label', () => {
+      const { body } = preparePageBody(
+        `see ![chart][ref]\n\n[ref]: ${DATA_URI}`,
+      );
+
+      expect(body).toBe('see ![chart][ref]\n\n[ref]: [embedded image]');
+    });
+
+    it('replaces the URL of a link whose text repeats it, not the text', () => {
+      const { body } = preparePageBody(
+        '[data:text/plain,hi](data:text/plain,hi)',
+      );
+
+      expect(body).toBe('[data:text/plain,hi]([embedded data])');
+    });
+
+    it('replaces the data URI of a link, keeping its text', () => {
+      const { body } = preparePageBody(
+        'get [the file](data:application/pdf;base64,JVBERi0xLjQ=) here',
+      );
+
+      expect(body).toBe('get [the file]([embedded data]) here');
+    });
+
     it.each([
       ['a backtick fence', `\`\`\`drawio\n${DIAGRAM}\n\`\`\``],
       ['a tilde fence', `~~~drawio\n${DIAGRAM}\n~~~`],
@@ -61,6 +87,19 @@ describe('preparePageBody', () => {
       const source = '```mermaid\ngraph TD\n  A --> B\n```';
 
       expect(preparePageBody(source).body).toBe(source);
+    });
+
+    it('stops inflating compressed drawio blocks once the page has used up its inflate limit', () => {
+      const inflatesTo6MiB = Buffer.from(
+        pako.deflateRaw(
+          `<mxGraphModel><root><mxCell id="2" value="Big" vertex="1" /></root>${'x'.repeat(6 * 1024 * 1024)}</mxGraphModel>`,
+        ),
+      ).toString('base64');
+      const block = `\`\`\`drawio\n${inflatesTo6MiB}\n\`\`\``;
+
+      const { body } = preparePageBody(`${block}\n\n${block}`);
+
+      expect(body).toBe('[draw.io diagram: Big]\n\n[draw.io diagram]');
     });
 
     it('replaces several embeds in one page, leaving the text between them intact', () => {

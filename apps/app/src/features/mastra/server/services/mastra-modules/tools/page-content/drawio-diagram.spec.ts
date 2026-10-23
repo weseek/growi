@@ -14,15 +14,17 @@ const GRAPH_MODEL = [
 const compress = (xml: string): string =>
   Buffer.from(pako.deflateRaw(encodeURIComponent(xml))).toString('base64');
 
+// No inflate limit, for tests about what the stand-in says.
+const labelsOf = (code: string): string =>
+  summarizeDrawioDiagram(code, Number.MAX_SAFE_INTEGER).text;
+
 describe('summarizeDrawioDiagram', () => {
   it('keeps the cell labels of an uncompressed diagram, with HTML removed', () => {
-    expect(summarizeDrawioDiagram(GRAPH_MODEL)).toBe(
-      '[draw.io diagram: Web server / DB]',
-    );
+    expect(labelsOf(GRAPH_MODEL)).toBe('[draw.io diagram: Web server / DB]');
   });
 
   it('keeps the cell labels of a compressed diagram', () => {
-    expect(summarizeDrawioDiagram(compress(GRAPH_MODEL))).toBe(
+    expect(labelsOf(compress(GRAPH_MODEL))).toBe(
       '[draw.io diagram: Web server / DB]',
     );
   });
@@ -35,7 +37,7 @@ describe('summarizeDrawioDiagram', () => {
       '</mxfile>',
     ].join('');
 
-    expect(summarizeDrawioDiagram(mxfile)).toBe(
+    expect(labelsOf(mxfile)).toBe(
       '[draw.io diagram: Web server / DB / Load balancer]',
     );
   });
@@ -48,12 +50,45 @@ describe('summarizeDrawioDiagram', () => {
       '</root></mxGraphModel>',
     ].join('');
 
-    expect(summarizeDrawioDiagram(xml)).toBe(
-      '[draw.io diagram: Web server / DB]',
-    );
+    expect(labelsOf(xml)).toBe('[draw.io diagram: Web server / DB]');
+  });
+
+  describe('the inflate limit', () => {
+    const MiB = 1024 * 1024;
+    // Compresses to a few KB, inflates to about `size` bytes.
+    const padded = (label: string, size: number): string =>
+      compress(
+        `<mxGraphModel><root><mxCell id="2" value="${label}" vertex="1" /></root>${'x'.repeat(size)}</mxGraphModel>`,
+      );
+
+    it('falls back to a bare placeholder past the limit, reporting what it inflated', () => {
+      const summary = summarizeDrawioDiagram(padded('Huge', 6 * MiB), 5 * MiB);
+
+      expect(summary.text).toBe('[draw.io diagram]');
+      expect(summary.inflatedBytes).toBe(5 * MiB);
+    });
+
+    it('reports the inflated size of a diagram within the limit', () => {
+      const summary = summarizeDrawioDiagram(padded('Small', MiB), 5 * MiB);
+
+      expect(summary.text).toBe('[draw.io diagram: Small]');
+      expect(summary.inflatedBytes).toBeGreaterThan(MiB);
+      expect(summary.inflatedBytes).toBeLessThan(2 * MiB);
+    });
+
+    it('counts the limit across the pages of one mxfile', () => {
+      const page = `<diagram id="p">${padded('Half', 3 * MiB)}</diagram>`;
+
+      expect(
+        summarizeDrawioDiagram(`<mxfile>${page}</mxfile>`, 5 * MiB).text,
+      ).toBe('[draw.io diagram: Half]');
+      expect(
+        summarizeDrawioDiagram(`<mxfile>${page}${page}</mxfile>`, 5 * MiB).text,
+      ).toBe('[draw.io diagram]');
+    });
   });
 
   it('falls back to a bare placeholder for data that does not decode', () => {
-    expect(summarizeDrawioDiagram('not-a-diagram')).toBe('[draw.io diagram]');
+    expect(labelsOf('not-a-diagram')).toBe('[draw.io diagram]');
   });
 });
