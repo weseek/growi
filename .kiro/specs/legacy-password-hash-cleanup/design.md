@@ -40,6 +40,7 @@
 - 認証時のハッシュ検証と遅延移行（password-hash-upgrade が持つ）
 - status migration、downgrade-prep、reupgrade-prep スクリプト
 - 監査ログの記録ゲートや snapshot の型（activity-log 系 spec が持つ）
+- password-hash-upgrade spec の契約の変更。この spec は amend spec ではない（`.claude/rules/spec-lifecycle.md`）。upgrade spec の cleanup スクリプトの要件（Req 3.3 / 3.4）と挙動はそのまま残し、旧 `password` を削除する 2 つ目の入口として画面を追加するだけである。upgrade spec の design.md の Phase 3（全員の移行を確認したあとに cleanup を行う）は、CLI で行う手順として引き続き有効である。画面からはそれより前でも削除できるが、その理由は research.md の Decision「CLI では中止し、画面では中止しない理由」に書いた。Phase 3 に含まれる旧 SHA-256 の検証コードの削除も、この spec では扱わない
 
 ### Allowed Dependencies
 - `server/models/user/password-hash-format-filters.ts`（分類フィルタ）と `server/models/user/conts.ts`（UserStatus）
@@ -125,6 +126,7 @@ apps/app/src/
 │   └── routes/apiv3/security-settings/
 │       ├── password-hash-status.ts           # GET handler factory
 │       ├── delete-legacy-passwords.ts        # DELETE handler factory（監査ログ付き）
+│       ├── delete-legacy-passwords-activity.integ.ts  # activity の確定で実行者が残るかの drift テスト
 │       └── legacy-password-cleanup.integ.ts  # 2 つの handler の supertest
 ├── stores/admin/
 │   └── password-hash-status.ts              # useSWRxPasswordHashStatus
@@ -350,6 +352,7 @@ export const useSWRxPasswordHashStatus: () => SWRResponse<PasswordHashFormatCoun
   - GET のレスポンスが `counts` の数値だけで、ハッシュのフィールドを含まないこと（1.1, 4.4）
   - DELETE が `unsetCount` を返し、`ADMIN_LEGACY_PASSWORD_DELETE` で activity を emit すること（2.4, 4.3）
   - DELETE が成功したとき、実行者と件数を含むログを出すこと（4.5）
+- **Integration（drift: `delete-legacy-passwords-activity.integ.ts`）**: `activity-recording.md` の Rule 1 が求める drift テスト。`page/create-page.integ.ts` に倣い、本物の `addActivity`、ActivityService の listener、activity の確定処理、Prisma を使う。偽の `res` は `apiv3()` の中で同期的に `finish` を発火させる。この状態でも、確定した `ADMIN_LEGACY_PASSWORD_DELETE` の行に実行者（`user`）が残ることを確かめる。監査ログを有効にし、記録範囲を LARGE に設定してから実行する（4.3）。上の route の integ テストは `add-activity` をモックし、emit をスパイにしているので、この順序の不具合は検出できない
   - 管理者でないユーザーで呼んだとき（本物の `adminRequired` に `admin: false` のユーザーを与える）、302 になり、件数を返さず、文書も変更しないこと（4.1, 4.2）
   - サービスが例外を投げたとき、500 のエラーコードを返し、`ADMIN_LEGACY_PASSWORD_DELETE` を emit しないこと（2.7）。fail-safe が残す `ACTION_UNSETTLED` の行は activity 基盤の責任なので、ここでは検証しない
 - **Regression**: 既存の `password-hash-cleanup.integ.ts` を変更せずに通すこと（5.1, 5.2）。

@@ -154,3 +154,6 @@ _実施日: 2026-10-21 / 対象: requirements.md（未承認の段階で実施�
 - **中止判定の理由**: Design Decisions に「CLI では中止し、画面では中止しない理由」を追加した。
 - **再アップグレード準備との順序**: 確認ダイアログの警告（3.3）に、「ダウングレードから戻した直後は、再アップグレード準備スクリプトを先に実行すること」を加えた。
 - **activity の emit の順序**: `apps/app/.claude/rules/activity-recording.md` の Rule 1（emit は `res.apiv3()` の前に行う）を、design.md と tasks.md の 3.2 に明記した。
+- **activity の drift テスト**: `activity-recording.md` の Rule 1 は、activity を emit する route に drift テストを求めている。route の integ テストは `add-activity` をモックしているので、emit の順序の不具合を検出できない。そこで `page/create-page.integ.ts` に倣った drift テストを、design.md の Testing Strategy と tasks.md の 3.2 に追加した。
+- **amend spec かどうか**: amend spec ではないと判断した（`.claude/rules/spec-lifecycle.md`）。upgrade spec の cleanup スクリプトの要件（Req 3.3 / 3.4）と挙動は変えず、2 つ目の入口を追加するだけだからである。design.md の Out of Boundary に明記した。
+- **既存スクリプトのコメント**: 中止の理由として書かれている「ダウングレード後に認証できなくなる」は、実際の効果と合っていない。そのため、tasks.md の 2.2 でこのコメントを Decision を指す一文に置き換える。
